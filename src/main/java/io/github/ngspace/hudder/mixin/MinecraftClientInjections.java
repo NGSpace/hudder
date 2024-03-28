@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import io.github.ngspace.hudder.config.ConfigManager;
-import io.github.ngspace.hudder.data_management.DataStorage;
+import io.github.ngspace.hudder.data_management.Advanced;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.DebugHud;
 
@@ -19,7 +19,7 @@ public abstract class MinecraftClientInjections {
     @Inject(method = "render", at = @At(value = "INVOKE",
     		target = "Ljava/lang/String;format(Ljava/util/Locale;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;"))
     public void getGpuUsage(boolean tick, CallbackInfo ci) {
-    	DataStorage.gpuUsage = gpuUtilizationPercentage > 100 ? 100 : gpuUtilizationPercentage;
+    	Advanced.gpuUsage = gpuUtilizationPercentage > 100 ? 100 : gpuUtilizationPercentage;
     }
 
     @Redirect(method = "render", at = @At(value = "INVOKE",

@@ -7,6 +7,7 @@ You can go into hudder's settings and change the main file to:
 - "hud"
 - "hand"
 - "armor"
+- "basic"
 - or create your own hud!
 
 ;bottomleft;

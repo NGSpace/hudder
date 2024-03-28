@@ -2,7 +2,6 @@ package io.github.ngspace.hudder.compilers;
 
 import java.util.Arrays;
 
-import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.meta.Element;
 import io.github.ngspace.hudder.meta.Meta;
@@ -76,10 +75,10 @@ public class DefaultCompiler extends TextCompiler {
 							safeappend = true;
 							break;
 						case '&':
-							resultBuilder.append('§');
+							resultBuilder.append('\u00A7');//§ \u00A7
 							break;
 						case '#': compileState = ADVANCED_CONDITION_STATE;break;
-//						case '@': compileState = WHILE_STATE;break; 
+//						case '@': compileState = WHILE_STATE;break;
 						default:
 							resultBuilder.append(c);
 							break;

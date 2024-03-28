@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.CompileException;
 import io.github.ngspace.hudder.compilers.CompileResult;
 import io.github.ngspace.hudder.config.ConfigManager;
@@ -38,7 +37,6 @@ public class Meta {
 	private void addString(String txt, String pos, boolean cleanup) throws CompileException {
 		String text = txt;
 		if (cleanup) {
-//			Hudder.LOGGER.info(cleanup + txt);
 			int buffer = ConfigManager.getConfig().metaBuffer;
 			if (buffer<10) {
 				for (int i = 0; i<buffer;i++) {

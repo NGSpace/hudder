@@ -47,12 +47,13 @@ public class Hudder implements ModInitializer {
     public static String LastFailMessage = "";
     ConfigInfo config = ConfigManager.getConfig();
     public static MinecraftClient ins = null;
+    public static long onesecdelay = 0;
 
 	@Override
 	public void onInitialize() {
 		ins = MinecraftClient.getInstance();
 		
-		String[] defaultfiles = {"hand","armor","hud","tutorial"};
+		String[] defaultfiles = {"hand","armor","hud","tutorial","basic"};
 		for (String file : defaultfiles) {
 			File dest = new File(ConfigInfo.FOLDER + file);
 			if (dest.exists()) continue;
@@ -94,6 +95,7 @@ public class Hudder implements ModInitializer {
 				// reset the key
 				boolean valid = wk.reset();
 				if (!valid) {
+					wk = null;
 					LOGGER.error("Unable to watch for changes in File!");
 					showErrorToast(ins);
 				}

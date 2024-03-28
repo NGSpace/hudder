@@ -21,7 +21,6 @@ import me.shedaniel.math.Color;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 public class ConfigMenu implements ConfigScreenFactory<Screen> {

@@ -61,6 +61,7 @@ public class MetaCompiler {
 		methods.put("fullnumber",s);
 		var decimalMethods = new DecimalMethod();
 		methods.put("decimalpoint", decimalMethods);
+		methods.put("float", decimalMethods);
 		var stringMethods = new StringMethods();
 		methods.put("concat", stringMethods);
 		methods.put("multiplystring", stringMethods);

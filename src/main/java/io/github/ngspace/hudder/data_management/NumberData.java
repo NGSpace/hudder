@@ -14,6 +14,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.world.LightType;
 import net.minecraft.world.World;
+import static io.github.ngspace.hudder.data_management.Advanced.*;
 
 public class NumberData {private NumberData() {}
 	static double MB = 1024d*1024d;
@@ -24,14 +25,18 @@ public class NumberData {private NumberData() {}
 		PlayerEntity p = ins.player;
 		WorldRenderer wr = ins.worldRenderer;
 		World world = ins.world;
+		int fps = getFPS(ins);
 		return switch(key) {
 			
 			/* Performance */
-			case "fps": yield (double) ins.getCurrentFps();
+			case "fps": yield (double) fps;
+			case "avgfps","avg_fps": yield (double) getAverageFPS();
+			case "minfps","min_fps": yield (double) getMinimumFPS();
+			case "maxfps","max_fps": yield (double) getMaximumFPS();
 			case "ping": yield (double) ins.getNetworkHandler().getPlayerListEntry(p.getName().getString()).getLatency();
 			case "tps": yield (double) getTPS(ins);
-			case "gpu_d": yield DataStorage.gpuUsage;
-			case "gpu": yield (double) ((int)DataStorage.gpuUsage);
+			case "gpu_d": yield Advanced.gpuUsage;
+			case "gpu": yield (double) ((int)Advanced.gpuUsage);
 			case "cpu": throw new CompileException("due to my lack of skills and mental abilites cpu is unavaliable");
 			
 			/* Memory */
