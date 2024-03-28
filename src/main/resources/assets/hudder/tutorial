@@ -1,0 +1,14 @@
+;topleft;;add,hud;
+
+
+
+&6Welcome to hudder!
+You can go into hudder's settings and change the main file to:
+- "hud"
+- "hand"
+- "armor"
+- or create your own hud!
+
+;bottomleft;
+
+for a tutorial on how to make your own hud you can go to the mod's github
