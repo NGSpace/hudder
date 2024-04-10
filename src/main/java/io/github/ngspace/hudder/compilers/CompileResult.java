@@ -7,10 +7,10 @@ public class CompileResult {
 	public String BottomLeftText;
 	public String TopRightText;
 	public String BottomRightText;
-	public final float TLScale;
-	public final float BLScale;
-	public final float TRScale;
-	public final float BRScale;
+	public float TLScale;
+	public float BLScale;
+	public float TRScale;
+	public float BRScale;
 	public Element[] elements;
 	
 	
@@ -19,6 +19,7 @@ public class CompileResult {
 	 * Bottom Left, Scale
 	 * Top Right, Scale
 	 * Bottom Right, Scale
+	 * Elements
 	 */
 	public CompileResult(String TL, float TLScale,
 			String BL, float BLScale,

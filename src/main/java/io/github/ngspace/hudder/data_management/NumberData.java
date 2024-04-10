@@ -1,10 +1,15 @@
 package io.github.ngspace.hudder.data_management;
 
+import static io.github.ngspace.hudder.data_management.Advanced.getAverageFPS;
+import static io.github.ngspace.hudder.data_management.Advanced.getFPS;
+import static io.github.ngspace.hudder.data_management.Advanced.getMaximumFPS;
+import static io.github.ngspace.hudder.data_management.Advanced.getMinimumFPS;
+import static java.lang.System.currentTimeMillis;
+
 import java.util.Collection;
 
 import org.joml.Random;
 
-import io.github.ngspace.hudder.compilers.CompileException;
 import io.github.ngspace.hudder.config.ConfigManager;
 import io.github.ngspace.hudder.mixin.ParticleManagerAccessor;
 import io.github.ngspace.hudder.mixin.WorldRendererAccess;
@@ -14,13 +19,12 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.world.LightType;
 import net.minecraft.world.World;
-import static io.github.ngspace.hudder.data_management.Advanced.*;
 
 public class NumberData {private NumberData() {}
 	static double MB = 1024d*1024d;
     static Runtime runtime = Runtime.getRuntime();
 	
-	public static Double getNumber(String key) throws CompileException {
+	public static Double getNumber(String key) {
 		MinecraftClient ins = MinecraftClient.getInstance();
 		PlayerEntity p = ins.player;
 		WorldRenderer wr = ins.worldRenderer;
@@ -37,7 +41,9 @@ public class NumberData {private NumberData() {}
 			case "tps": yield (double) getTPS(ins);
 			case "gpu_d": yield Advanced.gpuUsage;
 			case "gpu": yield (double) ((int)Advanced.gpuUsage);
-			case "cpu": throw new CompileException("due to my lack of skills and mental abilites cpu is unavaliable");
+//			case "cpu": throw new CompileException("due to my lack of skills and mental abilites cpu is unavaliable");
+			
+			
 			
 			/* Memory */
 			case "totalmemory","maxmemory","totalram","maxram": yield runtime.maxMemory() / MB;
@@ -48,6 +54,11 @@ public class NumberData {private NumberData() {}
 				double totalmem = (runtime.maxMemory())/MB;
 				yield (double) ((int)(usedmem/totalmem*100));
 			case "freememory_percentage","freeram_percentage": yield (double) runtime.freeMemory() / runtime.maxMemory();
+			
+			
+			
+			/* Computer */
+			case "time": yield (double) currentTimeMillis();
 			
 			
 			
@@ -69,6 +80,7 @@ public class NumberData {private NumberData() {}
 			case "xpos","x": yield (double) p.getBlockX();
 			case "ypos","y": yield (double) p.getBlockY();
 			case "zpos","z": yield (double) p.getBlockZ();
+			case "selectedslot": yield (double) p.getInventory().selectedSlot;
 			
 			
 
@@ -87,16 +99,19 @@ public class NumberData {private NumberData() {}
 			
 			case "random","rng": yield (double) new Random().nextFloat();
 			
+			
+			
 			/* Hudder rendering */
 			case "width": yield (double) ins.getWindow().getScaledWidth();
 			case "height": yield (double) ins.getWindow().getScaledHeight();
 			case "guiscale": yield ins.getWindow().getScaleFactor();
 
-			case "color": yield (double) ConfigManager.getConfig().color;
 			case "scale": yield (double) ConfigManager.getConfig().scale;
+			case "color": yield (double) ConfigManager.getConfig().color;
 			case "yoffset": yield (double) ConfigManager.getConfig().yoffset;
 			case "xoffset": yield (double) ConfigManager.getConfig().xoffset;
 			case "lineheight": yield (double) ConfigManager.getConfig().lineHeight;
+			case "metabuffer": yield (double) ConfigManager.getConfig().metaBuffer;
 			
 			default: yield null;
 		};

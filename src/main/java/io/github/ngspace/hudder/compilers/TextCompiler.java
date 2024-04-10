@@ -7,32 +7,26 @@ import io.github.ngspace.hudder.config.ConfigInfo;
 public abstract class TextCompiler extends AVarTextCompiler {
 	
 	@Override public Object getVariable(String key) throws CompileException {
-		if (getOperator(key)!=null) {
-			return ActualConditionCheck(key);
-		}
+		if (getOperator(key)!=null) return conditionCheck(key);
 		String[] values = key.split("=",2);
 		if (values.length==1) return super.getVariable(key);
 		Object newval = super.getVariable(values[1]);
 		put(values[0].trim(), newval);
-		
 		return newval;
 	}
 	
-	public CompileResult calcCondition(ConfigInfo ci, String... CAR) throws CompileException {
+	public CompileResult solveCondition(ConfigInfo ci, String... CAR) throws CompileException {
 		for (int i = 0;i<CAR.length;i++) {
 			String cond = CAR[i];
 			if (i%2!=0||CAR.length==i) continue;
-			boolean res = ActualConditionCheck(cond);
 			
-			if (res&&CAR.length>i+1)
-				return compile(ci, CAR[i+1].substring(1,CAR[i+1].length()-1));
-			if (i+1==CAR.length&&CAR.length%2!=0) 
-				return compile(ci, cond.substring(1,cond.length()-1));
+			if (conditionCheck(cond)&&CAR.length>i+1) return compile(ci, CAR[i+1].substring(1,CAR[i+1].length()-1));
+			if (i+1==CAR.length&&CAR.length%2!=0) return compile(ci, cond.substring(1,cond.length()-1));
 		}
 		return CompileResult.of("");
 	}
 	
-	public boolean ActualConditionCheck(String condition) throws CompileException {
+	public boolean conditionCheck(String condition) throws CompileException {
 		String operator = getOperator(condition);
 		
 		if (operator==null) return Boolean.valueOf(String.valueOf(getVariable(condition.toLowerCase())));
@@ -51,13 +45,8 @@ public abstract class TextCompiler extends AVarTextCompiler {
 			case "<=" -> numcond1<=numcond2;
 			case ">"  -> numcond1> numcond2;
 			case "<"  -> numcond1< numcond2;
-			default -> throw new RuntimeException("Unknown condition reached");//Someone is tampering
+			default -> throw new RuntimeException("Unknown condition: " + condition);//Someone is tampering fo sure
 		};
-	}
-	
-	public boolean isParsable(String string) {
-		try {Double.parseDouble(string);} catch (NumberFormatException e) {return false;}
-		return true;
 	}
 	
 	/**
@@ -65,11 +54,11 @@ public abstract class TextCompiler extends AVarTextCompiler {
 	 */
 	public String getOperator(String condString) {
 		if (condString.contains("==")) return "==";
-		if (condString.contains("!=")) return "!=";
 		if (condString.contains(">=")) return ">=";
 		if (condString.contains("<=")) return "<=";
 		if (condString.contains(">")) return ">";
 		if (condString.contains("<")) return "<";
+		if (condString.contains("!=")) return "!=";
 		return null;
 	}
 }

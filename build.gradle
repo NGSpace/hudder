@@ -47,7 +47,7 @@ dependencies {
 
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	
-	//provided group: 'org.openjdk.nashorn', name: 'nashorn-core', version: '15.4'
+	provided group: 'com.caoccao.javet', name: 'javet', version: '3.1.0'
 	// https://mvnrepository.com/artifact/com.github.oshi/oshi-core
 	//provided group: 'com.github.oshi', name: 'oshi-core', version: '6.5.0'
 	

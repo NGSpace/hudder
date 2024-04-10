@@ -1,5 +1,7 @@
 package io.github.ngspace.hudder.data_management;
 
+import static io.github.ngspace.hudder.data_management.Advanced.isKeyHeld;
+
 import java.util.Optional;
 
 import com.mojang.datafixers.DataFixUtils;
@@ -23,10 +25,14 @@ public class BooleanData {private BooleanData(){}
 			case "hudhidden": yield ins.options.hudHidden;
 			case "showdebug": yield ins.getDebugHud().shouldShowDebugHud();
 			
+			
 			/* Hudder */
 			case "enabled": yield true; //Duh
 			case "shadow": yield ConfigManager.getConfig().shadow;
-			default: yield null;
+			case "showinf3": yield ConfigManager.getConfig().showInF3;
+			case "javascriptenabled": yield ConfigManager.getConfig().javascript;
+			case "globalvariablesenabled": yield ConfigManager.getConfig().globalVariablesEnabled;
+			default: int keyheld = isKeyHeld(key); yield keyheld==0 ? null : keyheld==2;
 		};
 	}
 }

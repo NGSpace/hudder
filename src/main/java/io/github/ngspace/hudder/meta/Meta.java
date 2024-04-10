@@ -27,27 +27,22 @@ public class Meta {
 	public float BRScale = 1;
 	public List<Element> elements = new ArrayList<Element>();
 
-	public Meta(String string) {
-		setTextLocation(string, ConfigManager.getConfig().scale);
-	}
-	public void addString(String txt, boolean cleanup) throws CompileException {
-		addString(txt,pos,cleanup);
-	}
+	public Meta(String string) {setTextLocation(string, ConfigManager.getConfig().scale);}
+	public void addString(String txt, boolean cleanup) throws CompileException {addString(txt,pos,cleanup);}
 	
-	private void addString(String txt, String pos, boolean cleanup) throws CompileException {
+	protected void addString(String txt, String pos, boolean cleanup) throws CompileException {
 		String text = txt;
 		if (cleanup) {
 			int buffer = ConfigManager.getConfig().metaBuffer;
-			if (buffer<10) {
-				for (int i = 0; i<buffer;i++) {
+			if (buffer<10)
+				for (int i = 0; i<buffer;i++)
 					try {
 						if (text.startsWith("\r\n")) text = text.substring(2);
 						if (text.endsWith("\r\n")) text = text.substring(0, text.length() - 2);
 					} catch (StringIndexOutOfBoundsException e) {
 						throw new CompileException("Empty section \"" + pos + "\"");
 					}
-				}
-			} else text = text.trim();
+			else text = text.trim();
 		}
 		switch (pos) {
 			case TOPLEFT: TLText+=text; break;
@@ -77,14 +72,10 @@ public class Meta {
 
 	public void combineWithResult(CompileResult compile, boolean combineText) throws CompileException {
 		if (combineText) {
-			addString(compile.TopLeftText, TOPLEFT, false);
-			TLScale = compile.TLScale;
-			addString(compile.BottomLeftText, BOTTOMLEFT, false);
-			BLScale = compile.BLScale;
-			addString(compile.TopRightText, TOPRIGHT, false);
-			TRScale = compile.TRScale;
-			addString(compile.BottomRightText, BOTTOMRIGHT, false);
-			BRScale = compile.BRScale;
+			addString(compile.TopLeftText, TOPLEFT, false);        TLScale = compile.TLScale;
+			addString(compile.BottomLeftText, BOTTOMLEFT, false);  BLScale = compile.BLScale;
+			addString(compile.TopRightText, TOPRIGHT, false);      TRScale = compile.TRScale;
+			addString(compile.BottomRightText, BOTTOMRIGHT, false);BRScale = compile.BRScale;
 		}
 		Collections.addAll(elements, compile.elements);
 	}

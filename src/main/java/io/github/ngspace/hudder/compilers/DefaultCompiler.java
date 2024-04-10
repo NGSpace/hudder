@@ -3,7 +3,6 @@ package io.github.ngspace.hudder.compilers;
 import java.util.Arrays;
 
 import io.github.ngspace.hudder.config.ConfigInfo;
-import io.github.ngspace.hudder.meta.Element;
 import io.github.ngspace.hudder.meta.Meta;
 import io.github.ngspace.hudder.meta.MetaCompiler;
 import net.minecraft.client.MinecraftClient;
@@ -39,16 +38,12 @@ public class DefaultCompiler extends TextCompiler {
 		boolean condSafe = false;
 		boolean safeappend = false;
 		
-		int compileState = 0;
+		int compileState = TEXT_STATE;
 		try {
 		for (int ind = 0;ind<text.length();ind++) {
-			
 			char c = text.charAt(ind);
 			col++;
-			if (c=='\n') {
-				line++;
-				col=0;
-			}
+			if (c=='\n') {line++;col=0;}
 			switch (compileState) {
 				case TEXT_STATE: {
 					if (safeappend) {
@@ -87,9 +82,7 @@ public class DefaultCompiler extends TextCompiler {
 				}
 				case VARIABLE_STATE: {
 					switch (c) {
-						case '{':
-							bracketscount++;
-							break;
+						case '{':bracketscount++;break;
 						case '}':
 							bracketscount--;
 							if (bracketscount==0) {
@@ -114,9 +107,11 @@ public class DefaultCompiler extends TextCompiler {
 					switch (c) {
 						case '%': 
 							compileState = TEXT_STATE;
-							CompileResult res = calcCondition(info,AddToStringArray(condArgs,condArgBuilder.toString().trim()));
-							for (Element e : res.elements) currentMeta.elements.add(e);
-							resultBuilder.append(res.TopLeftText);
+							CompileResult res = solveCondition(info,
+									AddToStringArray(condArgs,condArgBuilder.toString().trim()));
+//							for (Element e : res.elements) currentMeta.elements.add(e);
+//							resultBuilder.append(res.TopLeftText);
+							currentMeta.combineWithResult(res, true);
 							break;
 						case '"':
 							quotesafe = !quotesafe;
@@ -152,7 +147,7 @@ public class DefaultCompiler extends TextCompiler {
 							currentMeta.addString(resultBuilder.toString(), true);
 							resultBuilder.setLength(0);
 						}
-						resultBuilder.append(metacomp.execute(info, currentMeta, this, metabuilder));
+						metacomp.execute(info, currentMeta, this, metabuilder);
 						metabuilder = new String[0];
 					}
 					break;
@@ -172,7 +167,7 @@ public class DefaultCompiler extends TextCompiler {
 						else condBuilder.append(c);
 					}
 					StringBuilder strb = new StringBuilder();
-					boolean condition = ActualConditionCheck(condBuilder.toString());
+					boolean condition = conditionCheck(condBuilder.toString());
 					ind++;
 					if (ind<text.length()&&text.charAt(ind)=='\t') {
 						ind++;
@@ -187,12 +182,12 @@ public class DefaultCompiler extends TextCompiler {
 						}
 					} else ind--;
 					if (isWhile) {
-						while(ActualConditionCheck(condBuilder.toString()))
+						while(conditionCheck(condBuilder.toString()))
 							currentMeta.combineWithResult(compile(info, strb.toString()), false);
 						break;
 					}
 					if (condition) {
-						var result = compile(info, strb.toString());
+						CompileResult result = compile(info, strb.toString());
 						currentMeta.combineWithResult(result, false);
 						String resStr = (result.TopLeftText);
 						resultBuilder.append(resStr);
@@ -216,22 +211,19 @@ public class DefaultCompiler extends TextCompiler {
 	public String getErrorMessage(int compileState) {
 		StringBuilder strb = new StringBuilder();
 		strb.append(switch(compileState) {
-			case TEXT_STATE -> "An unknown error has occurred";
 			case VARIABLE_STATE -> "Expected '}'";
 			case CONDITION_STATE -> "Expected '#'";
 			case META_STATE -> "Expected ';'";
 			case ADVANCED_CONDITION_STATE -> "Expected End of ADVANCED_CONDITION_STATE";
 			case WHILE_STATE -> "Expected End of WHILE_STATE";
-			default -> "r";
+			default -> "An unknown error has occurred";
 		});
 		return strb.toString();
 	}
 
 	protected Object getCleanVariable(String string) throws CompileException {
 		Object val = getVariable(string.toLowerCase());
-		if (val instanceof Double && (((double)val)%1==0) || val instanceof Float && (((float)val)%1==0)) {
-			return ((Number)val).longValue();
-		}
+		if (val instanceof Number num&&num.doubleValue()%1==0) return num.longValue();
 		return val;
 	}
 	public static String[] AddToStringArray(String[] arr, String string) {

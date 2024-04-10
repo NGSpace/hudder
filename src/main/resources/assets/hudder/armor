@@ -7,7 +7,9 @@ Calculate how much we need to scale the item to make it fit a fixed a fixed widt
 {itemscale=(itemsize/guiscale)*5}
 %guiscale==6, "{offset=0}","{offset=0.5}"%
 {tempscale=itemscale*16}
+
 8 pixels
+
 ;helmet,width/2-tempscale-offset-guiscale,height/2-tempscale+.5,itemscale;
 ;chestplate,width/2-tempscale-offset-guiscale,height/2+.1,itemscale;
 ;pants,width/2-offset+guiscale+.5,height/2-tempscale+.5,itemscale;
