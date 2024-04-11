@@ -5,17 +5,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 
 import io.github.ngspace.hudder.Hudder;
+import io.github.ngspace.hudder.compilers.ATextCompiler;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.gui.entries.MultiElementListEntry;
 import me.shedaniel.clothconfig2.gui.entries.NestedListListEntry;
-import me.shedaniel.clothconfig2.impl.ConfigEntryBuilderImpl;
 //import net.minecraft.chat.Component;
 import me.shedaniel.math.Color;
 import net.minecraft.client.gui.screen.Screen;
@@ -27,116 +29,124 @@ public class ConfigMenu implements ConfigScreenFactory<Screen> {
 	
 	@Override public Screen create(Screen parent) {
 		ConfigInfo config = ConfigManager.getConfig();
+		
 		ConfigBuilder builder = ConfigBuilder.create()
-			.setTitle(Text.of(Hudder.MOD_ID))
+			.setTitle(Text.translatable(Hudder.MOD_ID))
 			.setSavingRunnable(config::saveConfig)
 			.setTransparentBackground(true)
 			.setEditable(true)
 			.setParentScreen(parent);
 
-		ConfigEntryBuilderImpl entryBuilder = (ConfigEntryBuilderImpl) builder.entryBuilder();
-		ConfigCategory general = builder.getOrCreateCategory(Text.of("General"));
-		ConfigCategory text = builder.getOrCreateCategory(Text.of("Text"));
-		ConfigCategory advanced = builder.getOrCreateCategory(Text.of("Advanced"));
-		ConfigCategory variables = builder.getOrCreateCategory(Text.of("Global Variables"));
-		general.addEntry(entryBuilder.startBooleanToggle(Text.of("Enabled"), config.enabled)
+		ConfigEntryBuilder entryBuilder = builder.entryBuilder();
+		entryBuilder.setResetButtonKey(Text.translatable("hudder.reset"));
+		ConfigCategory general = builder.getOrCreateCategory(Text.translatable("hudder.general"));
+		ConfigCategory text = builder.getOrCreateCategory(Text.translatable("hudder.text"));
+		ConfigCategory advanced = builder.getOrCreateCategory(Text.translatable("hudder.advanced"));
+		ConfigCategory variables = builder.getOrCreateCategory(Text.translatable("hudder.global_variables"));
+		Function<Boolean, Text> yesno = b->Text.translatable("hudder."+b);
+		general.addEntry(entryBuilder.startBooleanToggle(Text.translatable("hudder.general.enabled"),config.enabled)
 				.setSaveConsumer(b -> config.enabled = b)
-				.setTooltip(Text.of("Whether "+Hudder.MOD_ID+" should be enabled or not (duh)"))
+				.setYesNoTextSupplier(yesno)
+				.setTooltip(Text.translatable("hudder.general.enabled.tooltip"))
 				.build());
-		/** Still kinda useless until I get JS to work :P */
-//		category.addEntry(entryBuilder.startStrField(Text.of("Complier Type"), config.compilertype)
-//	    		.setTooltip(Text.of("Change the type of compiler"))
-//	    		.setDefaultValue("Default")
-//	    		.setSaveConsumer(b -> config.compilertype = b)
-//	    		.setErrorSupplier(e->{
-//	    			if (ATextCompiler.compilers.get(e)==null)
-//	    				return Optional.of(Text.of("Invalid compiler type"));
-//	    			return Optional.empty();
-//	    		})
-//	    		.build());
+		
 		
 		/* General */
 		general.addEntry(entryBuilder.startStrField(
-				Text.literal("Main file"), config.mainfile)
-				.setTooltip(Text.literal("Change the main file\n"
-						+"\u00A77The file must be located in the \u00A76.minecraft/config/"+Hudder.MOD_ID
-						+"\u00A77 folder"))
+				Text.translatable("hudder.general.mainfile"), config.mainfile)
+				.setTooltip(Text.translatable("hudder.general.mainfile.tooltip"))
 				.setDefaultValue("hud")
 				.setSaveConsumer(b -> config.mainfile = b)
 				.setErrorSupplier(e->{
 					if (!new File(ConfigInfo.FOLDER + e).exists()) return 
-							Optional.of(Text.of("File does not exist in the .minecraft/config/"
-									+Hudder.MOD_ID+" folder"));
+							Optional.of(Text.translatable("hudder.general.mainfile.error"));
 					return Optional.empty();
 				})
 				.build());
-		general.addEntry(entryBuilder.startFloatField(Text.of("Default scale"), config.scale)
-				.setTooltip(Text.of("Control the default scale of meta elements"),
-						Text.of("\u00A77This can be overriden by elements specifying the size on their own"))
+		general.addEntry(entryBuilder.startFloatField(Text.translatable("hudder.general.scale"), config.scale)
+				.setTooltip(Text.translatable("hudder.general.scale.tooltip"))
 				.setSaveConsumer(b -> config.scale = b)
 				.setDefaultValue(1f)
 				.build());
 		general.addEntry(entryBuilder
-				.startTextDescription(Text.literal("\u00A77The files are located in the \"\u00A76config/"
-				+Hudder.MOD_ID+"\u00A77\" folder").styled(s -> s
-				.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Click to open folder")))
+				.startTextDescription(Text.translatable("hudder.general.folder").styled(s -> s
+				.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, 
+						Text.translatable("hudder.general.folder.tooltip")))
 				.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, ConfigInfo.FOLDER)))).build());
 		
 		
 		/* Text */
-		text.addEntry(entryBuilder.startColorField(Text.of("Text Color"), getColor(config.color))
-				.setTooltip(Text.of("Change the color of the text"))
+		text.addEntry(entryBuilder.startColorField(Text.translatable("hudder.text.color"), getColor(config.color))
+				.setTooltip(Text.translatable("hudder.text.color.tooltip"))
 				.setAlphaMode(false)
 				.setDefaultValue(config.color)
 				.setSaveConsumer(b -> config.color = b)
 				.build());
-		text.addEntry(entryBuilder.startBooleanToggle(Text.of("Text shadow"), config.shadow)
-				.setTooltip(Text.of("Whether text should have a shadow"))
+		text.addEntry(entryBuilder.startBooleanToggle(Text.translatable("hudder.text.shadow"), config.shadow)
+				.setTooltip(Text.translatable("hudder.text.shadow.tooltip"))
 				.setSaveConsumer(b -> config.shadow = b)
+				.setYesNoTextSupplier(yesno)
 				.setDefaultValue(true)
 				.build());
-		text.addEntry(entryBuilder.startIntField(Text.of("Text offset - Y"), config.yoffset)
-				.setTooltip(Text.of("Control the y offset of the text"))
+		text.addEntry(entryBuilder.startIntField(Text.translatable("hudder.text.yoffset"), config.yoffset)
+				.setTooltip(Text.translatable("hudder.text.yoffset.tooltip"))
 				.setSaveConsumer(b -> config.yoffset = b)
 				.setDefaultValue(1)
 				.build());
-		text.addEntry(entryBuilder.startIntField(Text.of("Text offset - X"), config.xoffset)
-				.setTooltip(Text.of("Control the x offset of the text"))
+		text.addEntry(entryBuilder.startIntField(Text.translatable("hudder.text.xoffset"), config.xoffset)
+				.setTooltip(Text.translatable("hudder.text.xoffset.tooltip"))
 				.setSaveConsumer(b -> config.xoffset = b)
 				.setDefaultValue(1)
 				.build());
-		text.addEntry(entryBuilder.startIntField(Text.of("Text line height"), config.lineHeight)
-				.setTooltip(Text.of("Control the line height of the text"))
+		text.addEntry(entryBuilder.startIntField(Text.translatable("hudder.text.height"), config.lineHeight)
+				.setTooltip(Text.translatable("hudder.text.height.tooltip"))
 				.setSaveConsumer(b -> config.lineHeight = b)
 				.setDefaultValue(10)
 				.build());
 		
 		/* Advanced */
-		advanced.addEntry(entryBuilder.startIntField(Text.of("Meta line buffer"), config.metaBuffer)
-				.setTooltip(Text.of("Control how many newlines should be deleted around meta changes"))
+		advanced.addEntry(entryBuilder.startIntField(Text.translatable("hudder.advanced.meta"), config.metaBuffer)
+				.setTooltip(Text.translatable("hudder.advanced.meta.tooltip"))
 				.setSaveConsumer(b -> config.metaBuffer = b)
 				.setDefaultValue(2)
 				.build());
-		advanced.addEntry(entryBuilder.startBooleanToggle(Text.of("Show in F3"), config.showInF3)
-				.setTooltip(Text.of("Whether should still render hud in f3"))
+		advanced.addEntry(entryBuilder.startBooleanToggle(Text.translatable("hudder.advanced.f3"), config.showInF3)
+				.setTooltip(Text.translatable("hudder.advanced.f3.tooltip"))
 				.setSaveConsumer(b -> config.showInF3 = b)
+				.setYesNoTextSupplier(yesno)
+				.setDefaultValue(false)
+				.build());
+		advanced.addEntry(entryBuilder.startStrField(Text.translatable("hudder.advanced.compilertype"), 
+				config.compilertype)
+	    		.setTooltip(Text.translatable("hudder.advanced.compilertype.tooltip"))
+	    		.setDefaultValue("Default")
+	    		.setSaveConsumer(b -> config.compilertype = b)
+	    		.setErrorSupplier(e->ATextCompiler.compilers.get(e)==null?
+	    				Optional.of(Text.translatable("hudder.advanced.compilertype.error")):Optional.empty())
+	    		.build());
+		advanced.addEntry(
+				entryBuilder.startBooleanToggle(Text.translatable("hudder.advanced.javascript"), config.javascript)
+				.setTooltip(Text.translatable("hudder.advanced.javascript.tooltip"))
+				.setSaveConsumer(b -> config.javascript = b)
+				.setYesNoTextSupplier(yesno)
 				.setDefaultValue(false)
 				.build());
 		
 		
+		
 
 		variables.addEntry(entryBuilder
-				.startBooleanToggle(Text.of("Global variables"), config.globalVariablesEnabled)
-				.setTooltip(Text.of("Whether global variables should be used"))
+				.startBooleanToggle(Text.translatable("hudder.global_variables"),
+						config.globalVariablesEnabled)
+				.setTooltip(Text.translatable("hudder.global_variables.enabled.tooltip"))
 				.setSaveConsumer(b -> config.globalVariablesEnabled = b)
+				.setYesNoTextSupplier(yesno)
 				.setDefaultValue(true)
 				.build());
 		variables.addEntry(new NestedListListEntry<Variable, MultiElementListEntry<Variable>>(
-                Text.of("Global Variables"), getList(),
+                Text.translatable("hudder.global_variables"), getList(),
                 true, 
-                () -> Optional.of(new Text[]{
-                		Text.of("Control variables and set values without editing the files"),
-                		Text.of("\u00A77This can also be used to create parameters for "+Hudder.MOD_ID+" files")}),
+                () -> Optional.of(new Text[]{Text.translatable("hudder.global_variables.tooltip")}),
                 this::makelist,
                 () -> new ArrayList<Variable>(),
                 entryBuilder.getResetButtonKey(),
@@ -148,7 +158,7 @@ public class ConfigMenu implements ConfigScreenFactory<Screen> {
 	}
     private List<Variable> getList() {
     	ArrayList<Variable> ar = new ArrayList<Variable>();
-    	for (var v : ConfigManager.getConfig().globalVariables.entrySet())
+    	for (Map.Entry<String, Object> v : ConfigManager.getConfig().globalVariables.entrySet())
     		ar.add(new Variable(v.getKey(),v.getValue()));
 		return ar;
 	}
@@ -158,15 +168,15 @@ public class ConfigMenu implements ConfigScreenFactory<Screen> {
             variable,
             Arrays.asList(
                 entryBuilder.startTextField(
-                        Text.of("Key"),
+                        Text.translatable("hudder.global_variables.key"),
                         variable != null ? variable.key : "")
-                    .setTooltip(Text.of("The name of the variable"))
+                    .setTooltip(Text.translatable("hudder.global_variables.key.tooltip"))
                     .setSaveConsumer(name -> variable.key = name)
                     .build(),
                 entryBuilder.startStrField(
-                        Text.of("Value"),
+                        Text.translatable("hudder.global_variables.value"),
                         variable != null ? variable.value.toString() : "")
-                    .setTooltip(Text.of("The value of the variable"))
+                    .setTooltip(Text.translatable("hudder.global_variables.value.tooltip"))
                     .setSaveConsumer(value -> variable.value = value)
                     .build()
             ),
@@ -190,7 +200,6 @@ public class ConfigMenu implements ConfigScreenFactory<Screen> {
 		int b = (argb)&0xFF;
 		int g = (argb>>8)&0xFF;
 		int r = (argb>>16)&0xFF;
-//		int a = (argb>>24)&0xFF;
 		return Color.ofRGBA(r, g, b, 0xFF);
 	}
 }

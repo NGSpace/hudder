@@ -15,16 +15,17 @@ public abstract class ATextCompiler {
 	public static void registerCompiler(String name, String classname) {compilers.put(name, classname);}
 	
 	static {
+		/* Default */
 		registerCompiler("defaultcompiler", DEFAULT_COMPILER);
-		registerCompiler("Default Compiler", DEFAULT_COMPILER);
+		registerCompiler("default compiler", DEFAULT_COMPILER);
 		registerCompiler("default", DEFAULT_COMPILER);
-		registerCompiler("Default", DEFAULT_COMPILER);
+		registerCompiler("hudder", DEFAULT_COMPILER);
 		
 		
-		/* JavaScript (Disabled for now) */
-//		registerCompiler("js", "io.github.ngspace.hudder.compilers.JavaScriptCompiler");
-//		registerCompiler("javascript", "io.github.ngspace.hudder.compilers.JavaScriptCompiler");
-//		registerCompiler("javascriptcompiler", "io.github.ngspace.hudder.compilers.JavaScriptCompiler");
+		/* JavaScript */
+		registerCompiler("js", "io.github.ngspace.hudder.compilers.JavaScriptCompiler");
+		registerCompiler("javascript", "io.github.ngspace.hudder.compilers.JavaScriptCompiler");
+		registerCompiler("javascriptcompiler", "io.github.ngspace.hudder.compilers.JavaScriptCompiler");
 		
 		
 		registerCompiler("empty",EMPTYCOM);
@@ -33,17 +34,11 @@ public abstract class ATextCompiler {
 		registerCompiler( null , EMPTYCOM);
 	}
 
-	private Map<String, Object> variables = new HashMap<String, Object>();
+	protected Map<String, Object> variables = new HashMap<String, Object>();
 	
 	public abstract CompileResult compile(ConfigInfo info, String text) throws CompileException;
-	
 	public abstract Object getVariable(String key) throws CompileException;
 	
-	public void put(String key, Object value) {
-		variables.put(key, value);
-	}
-	
-	public Object get(String key) {
-		return variables.get(key);
-	}
+	public void put(String key, Object value) {variables.put(key, value);}
+	public Object get(String key) {return variables.get(key);}
 }

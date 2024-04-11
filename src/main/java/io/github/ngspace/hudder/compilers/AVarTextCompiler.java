@@ -24,43 +24,18 @@ public abstract class AVarTextCompiler extends ATextCompiler {
 		} catch (Exception e) {
 			return getPureVariable(variable);
 		}
-		// Imma keep this here just in case, this is obsulete now but may be useful later.
-//		if ("".equals(key)) return getPureVariable(variable);
-//		Object valuetoparse = getPureVariable(key).toString()	;
-//		Object obj = null;
-//		if (!(valuetoparse instanceof Double))
-//			try {
-//				obj = Double.parseDouble(String.valueOf(valuetoparse));
-//			} catch (NumberFormatException e) {
-//				return variable;
-//			}
-//		if (!(obj instanceof Number))
-//			return String.format("§4{Can not complete math operation: '%s' is not a number!}§r", key);
 	}
-	protected Number getCleanValue(Number val) {
-		if (val instanceof Double && (((double)val)%1==0) || val instanceof Float && (((float)val)%1==0))
-			return val.longValue();
-		return val;
-	}
-	public Object getPureVariable(String key) throws CompileException {
-		return getNonNull(getNumber(key), getString(key), getBoolean(key), getPrimitive(key));
+	public Object getPureVariable(String key) {
+		Object obj = getNumber(key);
+		if (obj!=null) return obj;
+		if ((obj=getBoolean(key))!=null) return obj;
+		if ((obj=getString(key))!=null) return obj;
+		if ((obj=get(key))!=null) return obj;
+		if ((obj=ConfigManager.getConfig().globalVariables.get(key))!=null) return obj;
+		return getPrimitive(key);
 	}
 	public Object getPrimitive(String key) {
-		return switch (key) {
-			case "true": yield true;
-			case "false": yield false;
-			case "null": yield "null"; //LOL
-			
-			/* key wasn't found, look at variables map, if non is found there; return the name of the key. */
-			default:
-				String t = key.toLowerCase().trim();
-				Object res = ConfigManager.getConfig().globalVariables.get(t);
-				if (res==null) res = get(key);
-				yield res != null ? res : key;
-		};
-	}
-	public Object getNonNull(Object... obj) {
-		for (Object o : obj) if (o!=null) return o;
-		return null;
+		/* If key wasn't found, return the name of the key. */
+		return switch (key) {case "true" -> true; case "false" -> false; default -> key;};
 	}
 }

@@ -1,7 +1,7 @@
 {
 	"schemaVersion": 1,
 	"id": "hudder",
-	"version": "1.0.0",
+	"version": "2.0.0",
 	"name": "Hudder",
 	"description": "Add a highly customizable hud to your game!",
 	"authors": [
@@ -16,7 +16,7 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": ["io.github.ngspace.hudder.Hudder"],
-    	"modmenu": [ "io.github.ngspace.hudder.config.HudderModMenuApiImpl" ]
+    	"modmenu": [ "io.github.ngspace.hudder.config.HudderModMenuImpl" ]
 	},
 	"mixins": [
 		"hudder.mixins.json"

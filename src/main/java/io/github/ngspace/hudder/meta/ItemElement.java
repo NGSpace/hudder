@@ -6,7 +6,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 
 public class ItemElement extends Element {
-
+	private static final long serialVersionUID = -4033666012277014500L;
 	public final ItemStack stack;
 	public final double x1;
 	public final double y1;
@@ -39,5 +39,4 @@ public class ItemElement extends Element {
         	if (showcount) context.drawItemInSlot(Hudder.ins.textRenderer,stack, (int)x, (int)y);
         }
 	}
-
 }

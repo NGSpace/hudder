@@ -2,32 +2,28 @@ package io.github.ngspace.hudder.meta;
 
 import static io.github.ngspace.hudder.Hudder.renderText;
 
-import io.github.ngspace.hudder.config.ConfigInfo;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 
-@SuppressWarnings("resource")
 public class TextElement extends Element {
-	public final double x1;
-	public final double y1;
+	
+	private static final long serialVersionUID = -7265671672610205526L;
+	
 	public final String text;
-	final float scale1;
-	private ConfigInfo ci;
+	public final int x;
+	public final int y;
+	public final int color;
+	public final float scale;
+	public final boolean shadow;
 
-	public TextElement(double x1, double y1, String text, float scale, ConfigInfo info) {
-		this.x1 = x1;
-		this.y1 = y1;
-		this.scale1 = scale;
-		this.ci = info;
+	public TextElement(int x, int y, String text, float scale, int color, boolean shadow) {
+		this.x = x;
+		this.y = y;
+		this.scale = scale;
 		this.text = text;
+		this.color = color;
+		this.shadow = shadow;
 	}
-
 	@Override public void RenderElement(DrawContext context) {
-		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-		int y = (int) y1;
-		int x = (int) x1;
-		float scale = scale1;
-		renderText(context,textRenderer, text, x, y, ci.color, scale, ci.shadow);
+		renderText(context, text, x, y, color, scale, shadow);
 	}
 }

@@ -21,58 +21,73 @@ import io.github.ngspace.hudder.meta.methods.StringMethods;
 import io.github.ngspace.hudder.meta.methods.TextMethod;
 
 public class MetaCompiler {
-	public Map<String, IMethod> methods = new HashMap<String,IMethod>();
-	public MetaCompiler() {
-		var itemstackmethod = new ItemStackMethods();
-		methods.put("slot", itemstackmethod);
-		methods.put("item", itemstackmethod);
-		methods.put("hand", itemstackmethod);
-		methods.put("selectedslot", itemstackmethod);
-		methods.put("hat", itemstackmethod);
-		methods.put("helmet", itemstackmethod);
-		methods.put("chestplate", itemstackmethod);
-		methods.put("leggings", itemstackmethod);
-		methods.put("pants", itemstackmethod);
-		methods.put("boots", itemstackmethod);
-		methods.put("offhand", itemstackmethod);
-		IMethod v=(ci,meta,compiler,args)->
-			meta.setTextLocation(args[0],(float) (args.length>1?tryParse(args[1]):ci.scale));
-		methods.put(BOTTOMRIGHT, v);
-		methods.put(TOPLEFT, v);
-		methods.put(TOPRIGHT, v);
-		methods.put(BOTTOMLEFT, v);
-		methods.put(MUTE, v);
-		var loadMethod = new LoadMethod();
-		methods.put("load", loadMethod);
-		methods.put("execute", loadMethod);
-		methods.put("compile", loadMethod);
-		methods.put("run", loadMethod);
-		methods.put("add", loadMethod);
-		var textMethods = new TextMethod();
-		methods.put("text", textMethods);
-		IMethod s = (ci,meta,comp,args) -> {
+	public static Map<String, IMethod> methods = new HashMap<String,IMethod>();
+	static {
+		IMethod itemstackmethod = new ItemStackMethods();
+		register("slot", itemstackmethod);
+		register("item", itemstackmethod);
+		register("hand", itemstackmethod);
+		register("selectedslot", itemstackmethod);
+		register("hat", itemstackmethod);
+		register("helmet", itemstackmethod);
+		register("chestplate", itemstackmethod);
+		register("leggings", itemstackmethod);
+		register("pants", itemstackmethod);
+		register("boots", itemstackmethod);
+		register("offhand", itemstackmethod);
+		IMethod v=(ci,meta,c,args)->meta.setTextLocation(args[0],(float) (args.length>1?tryParse(args[1]):ci.scale));
+		register(BOTTOMRIGHT, v);
+		register(TOPLEFT, v);
+		register(TOPRIGHT, v);
+		register(BOTTOMLEFT, v);
+		register(MUTE, v);
+		IMethod loadMethod = new LoadMethod();
+		register("load", loadMethod);
+		register("execute", loadMethod);
+		register("compile", loadMethod);
+		register("run", loadMethod);
+		register("add", loadMethod);
+		IMethod textMethods = new TextMethod();
+		register("text", textMethods);
+		IMethod intify = (ci,meta,comp,args) -> {
 			try {
 				comp.put(args[1],(int)tryParse(comp.getVariable(args[1].trim())));
 			} catch (IndexOutOfBoundsException e) {
 				throw new CompileException("\""+args[0]+"\" only accepts \""+args[0]+",[Variable]\"");
 			}
 		};
-		methods.put("int",s);
-		methods.put("fullnumber",s);
-		var decimalMethods = new DecimalMethod();
-		methods.put("decimalpoint", decimalMethods);
-		methods.put("float", decimalMethods);
-		var stringMethods = new StringMethods();
-		methods.put("concat", stringMethods);
-		methods.put("multiplystring", stringMethods);
-		methods.put("substring", stringMethods);
-		methods.put("string", stringMethods);
+		register("int",intify);
+		register("fullnumber",intify);
+		IMethod decimalMethods = new DecimalMethod();
+		register("decimalpoint", decimalMethods);
+		register("float", decimalMethods);
+		IMethod stringMethods = new StringMethods();
+		register("concat", stringMethods);
+		register("multiplystring", stringMethods);
+		register("substring", stringMethods);
+		register("string", stringMethods);
 	}
-	public String execute(ConfigInfo ci, Meta meta, ATextCompiler compiler, String[] args) throws CompileException {
+	/**
+	 * Calls the method with the name of the first value in the args parameter.
+	 * @param config - The config used
+	 * @param meta - The current meta
+	 * @param compiler - The compiler
+	 * @param args - the parameters
+	 * @throws CompileException - if no message is found under the name found first value in the args parameter or
+	 *  if the method itself called this exception.
+	 */
+	public void execute(ConfigInfo config, Meta meta, ATextCompiler compiler, String[] args) throws CompileException {
 		if (args.length==0) throw new CompileException("Empty method call");
 		IMethod ameta = methods.get(args[0].toLowerCase());
 		if (ameta==null) throw new CompileException("Unknown method " + args[0]);
-		ameta.execute(ci, meta, compiler, args);
-		return "";
+		ameta.invoke( config, meta, compiler, args);
+	}
+	/**
+	 * Register a meta method
+	 * @param name - the command
+	 * @param method - the method
+	 */
+	public static void register(String name, IMethod method) {
+		methods.put(name,method);
 	}
 }

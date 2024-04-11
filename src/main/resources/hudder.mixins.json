@@ -5,8 +5,8 @@
 	"client": [
     	"WorldRendererAccess",
     	"ParticleManagerAccessor",
-    	"MinecraftClientAccessor",
-    	"MinecraftClientInjections"
+    	"MinecraftClientInjections",
+    	"KeyboardInjections"
 	],
 	"mixins": [
 	],

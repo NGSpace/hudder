@@ -8,7 +8,7 @@ import io.github.ngspace.hudder.meta.Meta;
 public class StringMethods extends AMethod {
 
 	@Override
-	public void execute(ConfigInfo ci, Meta meta, ATextCompiler compiler, String... args) throws CompileException {
+	public void invoke(ConfigInfo ci, Meta meta, ATextCompiler compiler, String... args) throws CompileException {
 		String type = "concat";
 		try {
 			type = args[0].toLowerCase();
@@ -40,8 +40,7 @@ public class StringMethods extends AMethod {
 					compiler.put(args[1],args[2]);
 					break;
 				}
-				default:
-					throw new IllegalArgumentException("Unexpected value: " + type);
+				default: throw new IllegalArgumentException("Unexpected value: " + type);
 			}
 		} catch (IndexOutOfBoundsException e) {
 			throw new CompileException("\""+type+"\" only accepts \""+type
@@ -50,7 +49,7 @@ public class StringMethods extends AMethod {
 					+(type.equals("string")                  ?",[string],[result variable name]" :"")
 					+(type.equals("substring") ?",[string],[start],[end],[result variable name]" :"")
 					+ "\"");
-		}
+		} catch (Exception e) {throw new CompileException(e.getLocalizedMessage());}
 	}
 
 }

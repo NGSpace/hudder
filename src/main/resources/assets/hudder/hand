@@ -8,4 +8,5 @@ Calculate how much we need to scale the item to make it fit a fixed a fixed widt
 %guiscale>=6, "{offset=0}", "{offset=0.5}"%
 
 8 pixels
+
 ;hand, width/2-(itemscale*8)-offset, height/2+(itemscale/itemsize*guiscale)*2.9, itemscale,true;
