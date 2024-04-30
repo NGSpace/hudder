@@ -109,8 +109,6 @@ public class DefaultCompiler extends TextCompiler {
 							compileState = TEXT_STATE;
 							CompileResult res = solveCondition(info,
 									AddToStringArray(condArgs,condArgBuilder.toString().trim()));
-//							for (Element e : res.elements) currentMeta.elements.add(e);
-//							resultBuilder.append(res.TopLeftText);
 							currentMeta.combineWithResult(res, true);
 							break;
 						case '"':
@@ -166,8 +164,9 @@ public class DefaultCompiler extends TextCompiler {
 						} else if(c==' '&&condBuilder.toString().equals("if")) condBuilder.setLength(0);
 						else condBuilder.append(c);
 					}
-					StringBuilder strb = new StringBuilder();
-					boolean condition = conditionCheck(condBuilder.toString());
+					String cond = condBuilder.toString();
+					StringBuilder instructions = new StringBuilder();
+					boolean condition = conditionCheck(cond);
 					ind++;
 					if (ind<text.length()&&text.charAt(ind)=='\t') {
 						ind++;
@@ -175,24 +174,23 @@ public class DefaultCompiler extends TextCompiler {
 							c = text.charAt(ind);
 							if ((c=='\n')&&ind+1<text.length()) {
 								if (text.charAt(ind+1)=='\t') {ind++;}
-								else {strb.append('\n');break;}
+								else {instructions.append('\n');break;}
 								
 							}
-							if (condition) strb.append(c);
+							if (condition) instructions.append(c);
 						}
 					} else ind--;
+					if (!condition) break;
 					if (isWhile) {
-						while(conditionCheck(condBuilder.toString()))
-							currentMeta.combineWithResult(compile(info, strb.toString()), false);
+						String cmds = instructions.toString();
+						while(conditionCheck(cond)) currentMeta.combineWithResult(compile(info, cmds), false);
 						break;
 					}
-					if (condition) {
-						CompileResult result = compile(info, strb.toString());
-						currentMeta.combineWithResult(result, false);
-						String resStr = (result.TopLeftText);
-						resultBuilder.append(resStr);
-						if (resStr.length()>0&&resStr.charAt(resStr.length()-1)!='\n')resultBuilder.append('\n');
-					}
+					CompileResult result = compile(info, instructions.toString());
+					currentMeta.combineWithResult(result, false);
+					String resStr = (result.TopLeftText);
+					resultBuilder.append(resStr);
+					if (resStr.length()>0&&resStr.charAt(resStr.length()-1)!='\n')resultBuilder.append('\n');
 					break;
 				}
 				default: throw new CompileException("Compiler reached an unknown state: "+compileState,line,col);
@@ -200,7 +198,7 @@ public class DefaultCompiler extends TextCompiler {
 		}
 		} catch (CompileException e) {
 			throw new CompileException(e.getMessage(),line+e.line,-1);
-		} catch (Exception e) {throw new CompileException(e.getMessage());}
+		}
 		currentMeta.addString(resultBuilder.toString(), true);
 		
 		if (compileState!=0) throw new CompileException(getErrorMessage(compileState),line,col);
@@ -231,5 +229,4 @@ public class DefaultCompiler extends TextCompiler {
 		newarr[arr.length] = string;
 		return newarr;
 	}
-
 }

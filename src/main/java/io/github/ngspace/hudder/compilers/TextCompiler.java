@@ -14,7 +14,13 @@ public abstract class TextCompiler extends AVarTextCompiler {
 		put(values[0].trim(), newval);
 		return newval;
 	}
-	
+	/**
+	 * Solves an if...else...etc condition and returns it's value.
+	 * @param ci - the ConfigInfo object
+	 * @param CAR - The conditions and results
+	 * @return the result of the conditions
+	 * @throws CompileException
+	 */
 	public CompileResult solveCondition(ConfigInfo ci, String... CAR) throws CompileException {
 		for (int i = 0;i<CAR.length;i++) {
 			String cond = CAR[i];

@@ -5,11 +5,9 @@ import static io.github.ngspace.hudder.data_management.NumberData.getNumber;
 import static io.github.ngspace.hudder.data_management.StringData.getString;
 import static io.github.ngspace.hudder.util.MathUtils.eval;
 
-import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.config.ConfigManager;
 
 public abstract class AVarTextCompiler extends ATextCompiler {
-	public static ConfigInfo info = ConfigManager.getConfig();
 	
 	@Override public Object getVariable(String variable) throws CompileException {
 		String advkey = variable.trim().replace(" ", "");

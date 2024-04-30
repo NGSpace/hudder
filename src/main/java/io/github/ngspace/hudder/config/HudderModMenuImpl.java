@@ -26,7 +26,7 @@ public class HudderModMenuImpl implements ModMenuApi {
 	                .position(width/2-100, height-52).size(200, 20).build());
 	    }
 	    @Override public void render(DrawContext drawContext, int mouseX, int mouseY, float delta) {
-	    	Text INSTALLCLOTH = Text.literal("You need to install Cloth Config 13.0.121 or above to open this menu.");
+	    	Text INSTALLCLOTH = Text.translatable("hudder.noclothapi");
 	        super.render(drawContext, mouseX, mouseY, delta);
 	        drawContext.drawTextWithShadow(client.textRenderer, INSTALLCLOTH,
 	        		(width-client.textRenderer.getWidth(INSTALLCLOTH))/2, height/3, 0xAA0000);

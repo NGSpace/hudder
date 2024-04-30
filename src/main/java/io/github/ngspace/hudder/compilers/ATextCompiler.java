@@ -8,6 +8,7 @@ import io.github.ngspace.hudder.config.ConfigInfo;
 public abstract class ATextCompiler {
 	
 	public static Map<String, String> compilers = new HashMap<String, String>();
+	private static final Map<String, ATextCompiler> loadedcomps = new HashMap<String,ATextCompiler>();
 	
 	public static final String EMPTYCOM = "io.github.ngspace.hudder.compilers.EmptyCompiler";
 	public static final String DEFAULT_COMPILER = "io.github.ngspace.hudder.compilers.DefaultCompiler";
@@ -33,8 +34,18 @@ public abstract class ATextCompiler {
 		registerCompiler("null", EMPTYCOM);
 		registerCompiler( null , EMPTYCOM);
 	}
+	
+	public static ATextCompiler getCompilerFromName(String name) throws ReflectiveOperationException,
+		IllegalArgumentException, SecurityException {
+		
+		String comp = name.toLowerCase();
+		if (ATextCompiler.compilers.get(comp)==null) return getCompilerFromName("default");
+		if (!loadedcomps.containsKey(comp)) loadedcomps.put(comp,(ATextCompiler) Class.forName
+				(ATextCompiler.compilers.get(comp)).getDeclaredConstructor().newInstance());
+		return loadedcomps.get(comp);
+	}
 
-	protected Map<String, Object> variables = new HashMap<String, Object>();
+	protected static Map<String, Object> variables = new HashMap<String, Object>();
 	
 	public abstract CompileResult compile(ConfigInfo info, String text) throws CompileException;
 	public abstract Object getVariable(String key) throws CompileException;

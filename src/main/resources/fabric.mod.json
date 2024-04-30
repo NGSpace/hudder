@@ -1,7 +1,7 @@
 {
 	"schemaVersion": 1,
 	"id": "hudder",
-	"version": "2.0.0",
+	"version": "3.0.0",
 	"name": "Hudder",
 	"description": "Add a highly customizable hud to your game!",
 	"authors": [
@@ -9,6 +9,7 @@
 	],
 	"contact": {
 		"Modrinth": "https://modrinth.com/mod/hudder",
+		"CurseForge": "https://www.curseforge.com/minecraft/mc-mods/hudder",
 		"GitHub": "https://github.com/NGSpace/hudder"
 	},
 	"license": "MIT License",

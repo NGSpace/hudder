@@ -12,7 +12,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.hit.HitResult.Type;
@@ -27,6 +26,8 @@ public class StringData {private StringData() {}
 			case "cpu_info": yield GlDebugInfo.getCpuInfo();
 			case "operating_system": yield Advanced.OS;
 			
+			case "helditem_name": yield ins.player.getInventory()
+				.getStack(ins.player.getInventory().selectedSlot).getName().getString();
 			
 			case "biome":
 				Optional<RegistryKey<Biome>> i = ins.world.getBiome(ins.player.getBlockPos()).getKey();

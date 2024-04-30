@@ -1,6 +1,6 @@
 package io.github.ngspace.hudder.compilers;
 
-import io.github.ngspace.hudder.meta.Element;
+import io.github.ngspace.hudder.meta.elements.Element;
 
 public class CompileResult {
 	public String TopLeftText;

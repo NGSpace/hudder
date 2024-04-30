@@ -15,8 +15,5 @@ import net.minecraft.client.particle.ParticleTextureSheet;
 @Environment(EnvType.CLIENT)
 @Mixin(ParticleManager.class)
 public interface ParticleManagerAccessor {
-	
-	@Accessor("particles")
-	public Map<ParticleTextureSheet, Queue<Particle>> getParticles();
-	
+	@Accessor("particles") public Map<ParticleTextureSheet, Queue<Particle>> getParticles();
 }

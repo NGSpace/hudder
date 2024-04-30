@@ -14,6 +14,7 @@ import net.minecraft.client.MinecraftClient;
 public class Advanced {private Advanced() {}
 	public static double gpuUsage = 0;
     
+	public static float delta = 1;
 	
 	
 	public static String OS = null; static{

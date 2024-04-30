@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.meta;
+package io.github.ngspace.hudder.meta.elements;
 
 import io.github.ngspace.hudder.Hudder;
 import net.minecraft.client.gui.DrawContext;
@@ -22,7 +22,7 @@ public class ItemElement extends Element {
 	}
 	
 	@Override
-	public void RenderElement(DrawContext context) {
+	public void RenderElement(DrawContext context, float delta) {
 		float y = (float) y1;
 		float x = (float) x1;
         MatrixStack matrixStack = context.getMatrices();

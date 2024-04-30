@@ -61,5 +61,20 @@
 	"hudder.advanced.compilertype.error": "סוג קומפילר לא תקין",
 	
 	"hudder.advanced.javascript": "Javascript מופעל",
-	"hudder.advanced.javascript.tooltip": "האם JavaScript מופעל"
+	"hudder.advanced.javascript.tooltip": "האם JavaScript מופעל",
+	
+	
+	"hudder.noclothapi": "עליך להתקין Cloth Config 13.0.121 ומעלה כדי להשתמש בתפריט זה.",
+
+	"hudder.text.backgroundcolor": "צבע רקע",
+	"hudder.text.backgroundcolor.tooltip": "שנה את צבע ברירת המחדל של הרקע.",
+	
+	"hudder.text.background": "הרקע מופעל",
+	"hudder.text.background.tooltip": "האם צריך להוסיף רקע לטקסט כברירת מחדל.",
+	
+	"hudder.advanced.removehotbar": "הסר סרגל חם",
+	"hudder.advanced.removehotbar.tooltip": "\u00A74אזהרה - זה יהפוך את ה-HOTBAR ובר הבריאות שלך לבלתי נראה עד שיושבת.\n\u00A7fאם ה-Hudder צריך להסתיר את כל רכיבי ה-GUI הקשורים ל-Hotbar.",
+	
+	"hudder.advanced.limitrate": "הגבלת קצב המהדר",
+	"hudder.advanced.limitrate.tooltip": "\u00A74אזהרה - זה עלול לגרום לבעיות ביצועים.\n\u00A7fהשבתה זו תעביר את הידור קבצי ה-Hudder מהפעלת כל סימון לקוח להפעלת כל פריים."
 }
