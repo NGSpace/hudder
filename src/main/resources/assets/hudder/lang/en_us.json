@@ -61,5 +61,21 @@
 	"hudder.advanced.compilertype.error":"Invalid compiler type",
 	
 	"hudder.advanced.javascript": "Javascript enabled",
-	"hudder.advanced.javascript.tooltip": "Whether JavaScript is enabled"
+	"hudder.advanced.javascript.tooltip": "Whether JavaScript is enabled",
+	
+	
+	
+	"hudder.noclothapi": "You need to install Cloth Config 13.0.121 or above to use this menu.",
+	
+	"hudder.text.backgroundcolor": "Background color",
+	"hudder.text.backgroundcolor.tooltip": "Change the default color of the background.",
+	
+	"hudder.text.background": "Background enabled",
+	"hudder.text.background.tooltip": "Whether should add a background to the text by default.",
+	
+	"hudder.advanced.removehotbar": "Remove hotbar",
+	"hudder.advanced.removehotbar.tooltip": "\u00A74WARNING - THIS WILL MAKE YOUR HOTBAR AND HEALTH BAR INVISIBLE UNTIL DISABLED.\n\u00A7fWhether hudder should hide all Hotbar related GUI elements.",
+	
+	"hudder.advanced.limitrate": "Limit compiler rate",
+	"hudder.advanced.limitrate.tooltip": "\u00A74WARNING - THIS MAY CAUSE PERFORMANCE ISSUES.\n\u00A7fDisabling this will move hudder file compilation from running every client tick to running every frame."
 }

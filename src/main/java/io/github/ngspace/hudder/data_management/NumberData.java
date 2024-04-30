@@ -16,6 +16,8 @@ import io.github.ngspace.hudder.mixin.WorldRendererAccess;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.world.LightType;
 import net.minecraft.world.World;
@@ -43,6 +45,7 @@ public class NumberData {private NumberData() {}
 			case "gpu": yield (double) ((int)Advanced.gpuUsage);
 //			case "cpu": throw new CompileException("due to my lack of skills and mental abilites cpu is unavaliable");
 			
+			case "delta": yield (double) Advanced.delta;
 			
 			
 			/* Memory */
@@ -112,6 +115,18 @@ public class NumberData {private NumberData() {}
 			case "xoffset": yield (double) ConfigManager.getConfig().xoffset;
 			case "lineheight": yield (double) ConfigManager.getConfig().lineHeight;
 			case "metabuffer": yield (double) ConfigManager.getConfig().metaBuffer;
+			case "backgroundcolor": yield (double) ConfigManager.getConfig().backgroundcolor;
+			
+			
+			
+			/* Item Durabilities V3.0.0 */
+			case "held_item_durability","helmet_durability","chestplate_durability","leggings_durability",
+			"boots_durability","offhand_durability": {
+				ItemStack stack = getStack(key, p.getInventory());
+				yield (double) stack.getMaxDamage() - stack.getDamage();
+			}
+			case "held_item_max_durability","helmet_max_durability","chestplate_max_durability","leggings_max_durability",
+			"boots_max_durability","offhand_max_durability":yield (double) getStack(key, p.getInventory()).getMaxDamage();
 			
 			default: yield null;
 		};
@@ -119,5 +134,15 @@ public class NumberData {private NumberData() {}
 	public static float getTPS(MinecraftClient client) {
         IntegratedServer server = client.getServer();
         return server == null ? -1f : server.getTickManager().getTickRate();
+	}
+	public static ItemStack getStack(String type, PlayerInventory inv) {
+		//I took some short cuts for a tiny performance increase. Probably not even calculatable.
+		if (type.startsWith("held")) return inv.getStack(inv.selectedSlot);//held_item
+		if (type.startsWith("helm")) return inv.getArmorStack(3);//helmet
+		if (type.startsWith("c")) return inv.getArmorStack(2);//chestplate
+		if (type.startsWith("l")) return inv.getArmorStack(1);//leggings
+		if (type.startsWith("b")) return inv.getArmorStack(0);//boots
+		if (type.startsWith("o")) return inv.offHand.get(0);//offhand
+		throw new IllegalArgumentException("Unexpected value: " + type);
 	}
 }

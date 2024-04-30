@@ -17,6 +17,7 @@ public class BooleanData {private BooleanData(){}
 	public static Boolean getBoolean(String key) {
 		MinecraftClient ins = MinecraftClient.getInstance();
 		PlayerEntity p = ins.player;
+		@SuppressWarnings("resource")
 		World betterworld = DataFixUtils.orElse(Optional.ofNullable(ins.getServer()).flatMap(integratedServer ->
 			Optional.ofNullable(integratedServer.getWorld(ins.world.getRegistryKey()))), ins.world);
 		return switch (key) {
@@ -32,6 +33,9 @@ public class BooleanData {private BooleanData(){}
 			case "showinf3": yield ConfigManager.getConfig().showInF3;
 			case "javascriptenabled": yield ConfigManager.getConfig().javascript;
 			case "globalvariablesenabled": yield ConfigManager.getConfig().globalVariablesEnabled;
+			case "background": yield ConfigManager.getConfig().background;
+			case "removegui": yield ConfigManager.getConfig().removegui;
+			case "limitrate": yield ConfigManager.getConfig().limitrate;
 			default: int keyheld = isKeyHeld(key); yield keyheld==0 ? null : keyheld==2;
 		};
 	}

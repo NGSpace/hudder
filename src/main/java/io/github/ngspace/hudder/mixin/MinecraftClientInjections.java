@@ -20,14 +20,13 @@ public abstract class MinecraftClientInjections {
     @Shadow private double gpuUtilizationPercentage;
 
     @Inject(method = "render", at = @At(value = "INVOKE",
-    		target = "Ljava/lang/String;format(Ljava/util/Locale;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;"))
+    		target = "Ljava/lang/String;format(Ljava/util/L"
+    				+ "ocale;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;"))
     public void getGpuUsage(boolean tick, CallbackInfo ci) {
     	Advanced.gpuUsage = gpuUtilizationPercentage > 100 ? 100 : gpuUtilizationPercentage;
     }
-
     @Redirect(method = "render", at = @At(value = "INVOKE",
     		target = "Lnet/minecraft/client/gui/hud/DebugHud;shouldShowDebugHud()Z"))
-    public boolean shouldGetGpuUsage(DebugHud hud) {
-        return hud.shouldShowDebugHud() || ConfigManager.getConfig().enabled;
-    }
+    public boolean shouldGetGpuUsage(DebugHud hud){return hud.shouldShowDebugHud()||ConfigManager.getConfig().enabled;}
 }
+  

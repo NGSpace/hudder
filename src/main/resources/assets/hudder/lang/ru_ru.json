@@ -61,5 +61,21 @@
 	"hudder.advanced.compilertype.error":"Неверный тип компилятора",
 	
 	"hudder.advanced.javascript": "Javascript включен",
-	"hudder.advanced.javascript.tooltip": "Включен ли JavaScript"
+	"hudder.advanced.javascript.tooltip": "Включен ли JavaScript",
+	
+	
+	
+	"hudder.noclothapi": "Чтобы использовать это меню, вам необходимо установить Cloth Config 13.0.121 или более позднюю версию.",
+
+	"hudder.text.backgroundcolor": "Цвет фона",
+	"hudder.text.backgroundcolor.tooltip": "Изменить цвет фона по умолчанию.",
+	
+	"hudder.text.background": "Фон включен",
+	"hudder.text.background.tooltip": "Добавлен ли фон к тексту по умолчанию.",
+	
+	"hudder.advanced.removehotbar": "Удалить панель быстрого доступа",
+	"hudder.advanced.removehotbar.tooltip": "\u00A74ВНИМАНИЕ! ЭТО СДЕЛАЕТ ВАШУ ГОРЯЧУЮ ПАНЕЛЬ И ПАНЕЛЬ ЗДОРОВЬЯ НЕВИДИМЫМИ ДО ОТКЛЮЧЕНИЯ.\n\u00A7fДолжен ли hudder скрывать все элементы графического интерфейса, связанные с горячей панелью.",
+	
+	"hudder.advanced.limitrate": "Ограничить частоту компиляции",
+	"hudder.advanced.limitrate.tooltip": "\u00A74ВНИМАНИЕ — ЭТО МОЖЕТ ВЫЗВАТЬ ПРОБЛЕМЫ С ПРОИЗВОДИТЕЛЬНОСТЬЮ.\n\u00A7fОтключение этого параметра переведет компиляцию файла hudder с запуска каждого тика клиента на запуск каждого кадра."
 }

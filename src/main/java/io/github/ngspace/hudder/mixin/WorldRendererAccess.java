@@ -9,6 +9,4 @@ import net.minecraft.client.render.WorldRenderer;
 
 @Environment(EnvType.CLIENT)
 @Mixin(WorldRenderer.class)
-public interface WorldRendererAccess {
-    @Accessor int getRegularEntityCount();
-}
+public interface WorldRendererAccess {@Accessor int getRegularEntityCount();}

@@ -108,26 +108,37 @@ public class MathUtils {
 	    expressionCache.put(str, res);
 	    return res;
 	}
-	
+
 	/**
 	 * Try to parse as double, if not return 0.
 	 * @param obj - the object to parse
 	 * @return a double representation of obj or 0.
 	 */
-	public static double tryParse(Object obj) {
+	public static double tryParse(Object obj) {return tryParse(obj, 0);}
+	/**
+	 * Try to parse as double, if not return def.
+	 * @param obj - the object to parse
+	 * @return a double representation of obj or def.
+	 */
+	public static double tryParse(Object obj, double def) {
 		if (obj instanceof Number num) return num.doubleValue();
 		try {return Double.parseDouble(String.valueOf(obj));}
-		catch (NumberFormatException e) {return 0;}
+		catch (NumberFormatException e) {return def;}
 	}
-	
 	/**
 	 * Try to parse as int, if not return 0.
 	 * @param obj - the object to parse
 	 * @return a int representation of obj or 0.
 	 */
-	public static int tryParseInt(Object text) {
+	public static int tryParseInt(Object text) {return tryParseInt(text,0);}
+	/**
+	 * Try to parse as int, if not return def.
+	 * @param obj - the object to parse
+	 * @return a int representation of obj or def.
+	 */
+	public static int tryParseInt(Object text, int def) {
 		if (text instanceof Number num) return num.intValue();
 		try {return Integer.parseInt(String.valueOf(text));}
-		catch (NumberFormatException e) {return 0;}
+		catch (NumberFormatException e) {return def;}
 	}
 }

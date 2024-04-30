@@ -6,7 +6,9 @@
     	"WorldRendererAccess",
     	"ParticleManagerAccessor",
     	"MinecraftClientInjections",
-    	"KeyboardInjections"
+    	"KeyboardInjections",
+    	"InGameHudInjections",
+    	"InGameHudAccessor"
 	],
 	"mixins": [
 	],
