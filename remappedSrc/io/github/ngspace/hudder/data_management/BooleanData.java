@@ -24,8 +24,7 @@ public class BooleanData {private BooleanData(){}
 			case "isslime", "is_slime": yield ChunkRandom.getSlimeRandom(p.getBlockX() >> 4, p.getBlockZ() >> 4,
 					((StructureWorldAccess)betterworld).getSeed(), 987234911L).nextInt(10) == 0;
 			case "hudhidden": yield ins.options.hudHidden;
-			case "showdebug": yield ins.options.debugEnabled;
-			case "ismultiplayer": yield !ins.isInSingleplayer();
+			case "showdebug": yield ins.getDebugHud().shouldShowDebugHud();
 			
 			
 			/* Hudder */

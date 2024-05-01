@@ -93,7 +93,7 @@ public class ConfigInfo {
 		catch (IOException e) {e.printStackTrace();Hudder.IS_DEBUG=true;}//Failed to save config, turn on IS_DEBUG.
 	}
 	public boolean shouldDrawResult(MinecraftClient ins) {
-		return !ins.options.hudHidden&&(!ins.options.debugEnabled||showInF3)&&enabled;
+		return !ins.options.hudHidden&&(!ins.getDebugHud().shouldShowDebugHud()||showInF3)&&enabled;
 	}
 	public boolean shouldCompile(MinecraftClient ins) {
 		return enabled&&ins.player!=null;

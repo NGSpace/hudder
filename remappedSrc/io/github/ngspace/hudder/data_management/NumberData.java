@@ -133,7 +133,7 @@ public class NumberData {private NumberData() {}
 	}
 	public static float getTPS(MinecraftClient client) {
         IntegratedServer server = client.getServer();
-        return server == null ? -1f : server.getTicks();
+        return server == null ? -1f : server.getTickManager().getTickRate();
 	}
 	public static ItemStack getStack(String type, PlayerInventory inv) {
 		//I took some short cuts for a tiny performance increase. Probably not even calculatable.

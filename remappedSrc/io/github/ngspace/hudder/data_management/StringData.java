@@ -35,16 +35,16 @@ public class StringData {private StringData() {}
 					yield i.get().getValue().toString();
 				yield null;
 			case "looking_at","block_in_front": {
-			    HitResult vec = ins.player.raycast(5,0,true);
+			    HitResult vec = ins.player.raycast(PlayerEntity.getReachDistance(ins.player.isCreative()),0,true);
 			    if (vec.getType()==Type.BLOCK) {
 			    	BlockHitResult res = (BlockHitResult) vec;
-			    	BlockState state = ins.player.getWorld().getBlockState(res.getBlockPos());
+			    	BlockState state = ins.player.method_48926().getBlockState(res.getBlockPos());
 			    	yield Registries.BLOCK.getId(state.getBlock()).toString();
 			    }
 			    yield "";
 			}
 			case "looking_at_pos": {
-				HitResult vec = ins.player.raycast(5,0,true);
+				HitResult vec = ins.player.raycast(PlayerEntity.getReachDistance(ins.player.isCreative()),0,true);
 			    if (vec.getType()==Type.BLOCK) {
 			    	BlockPos res = ((BlockHitResult) vec).getBlockPos();
 			    	yield "" + res.getX() + ' ' + res.getY() + ' ' + res.getZ();
