@@ -2,10 +2,12 @@ package io.github.ngspace.hudder.meta.elements;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.mixin.InGameHudAccessor;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.JumpingMount;
+import static io.github.ngspace.hudder.Hudder.ins;
 
 /**
  * This element is a merging of all builtin GUI elements (Status bars) 
@@ -34,7 +36,6 @@ public class GameHudElement extends Element {
 
 	@Override public void RenderElement(DrawContext context, float delta) {
 		try {
-			InGameHud hud = Hudder.ins.inGameHud;
 			InGameHudAccessor acchud = (InGameHudAccessor) (Hudder.ins.inGameHud);
 			float scaledWidth = context.getScaledWindowWidth();
 	        float scaledHeight = context.getScaledWindowHeight();
@@ -53,19 +54,33 @@ public class GameHudElement extends Element {
 			    	JumpingMount jumpingMount = Hudder.ins.player.getJumpingMount();
 		            if (jumpingMount != null) {
 				        matrixStack.translate(x-scaledWidth/2, y-scaledHeight + 39, 0f);
-				        hud.renderMountJumpBar(jumpingMount, context, i);
+				        acchud.callRenderMountJumpBar(jumpingMount, context, i);
 		            } else if (Hudder.ins.interactionManager.hasExperienceBar()) {
 				        matrixStack.translate(x-scaledWidth/2, y-scaledHeight + 35, 0f);
-				        hud.renderExperienceBar(context, i);
+				        TextRenderer textRenderer = ins.textRenderer;
+			    		int jj = ins.player.experienceLevel;
+			    		if (ins.interactionManager.hasExperienceBar() && jj > 0) {
+			    			ins.getProfiler().push("expLevel");
+			    			String string = "" + jj;
+			    			int j = (context.getScaledWindowWidth() - textRenderer.getWidth(string)) / 2;
+			    			int k = context.getScaledWindowHeight() - 31 - 8;
+			    			context.drawText(textRenderer, string, j + 1, k, 0, false);
+			    			context.drawText(textRenderer, string, j - 1, k, 0, false);
+			    			context.drawText(textRenderer, string, j, k + 1, 0, false);
+			    			context.drawText(textRenderer, string, j, k - 1, 0, false);
+			    			context.drawText(textRenderer, string, j, k, 8453920, false);
+			    			ins.getProfiler().pop();
+			    		}
+				        acchud.callRenderExperienceBar(context, i);
 		            }
 					break;
 				case HOTBAR:
 			        matrixStack.translate(x-scaledWidth/2, y-scaledHeight, 0f);
-			        acchud.callRenderHotbar(delta, context);
+			        acchud.callRenderHotbar(context, delta);
 					break;
 				case ITEM_TOOLTIP:
 			        matrixStack.translate(x-scaledWidth/2, y-scaledHeight+45, 0f);
-			        hud.renderHeldItemTooltip(context);
+			        acchud.callRenderHeldItemTooltip(context);
 					break;
 				default:
 					break;

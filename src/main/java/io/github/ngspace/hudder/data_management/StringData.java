@@ -34,23 +34,23 @@ public class StringData {private StringData() {}
 				if (i.isPresent())
 					yield i.get().getValue().toString();
 				yield null;
-			case "looking_at","block_in_front": {
-			    HitResult vec = ins.player.raycast(PlayerEntity.getReachDistance(ins.player.isCreative()),0,true);
-			    if (vec.getType()==Type.BLOCK) {
-			    	BlockHitResult res = (BlockHitResult) vec;
-			    	BlockState state = ins.player.getWorld().getBlockState(res.getBlockPos());
-			    	yield Registries.BLOCK.getId(state.getBlock()).toString();
-			    }
-			    yield "";
-			}
-			case "looking_at_pos": {
-				HitResult vec = ins.player.raycast(PlayerEntity.getReachDistance(ins.player.isCreative()),0,true);
-			    if (vec.getType()==Type.BLOCK) {
-			    	BlockPos res = ((BlockHitResult) vec).getBlockPos();
-			    	yield "" + res.getX() + ' ' + res.getY() + ' ' + res.getZ();
-			    }
-			    yield "";
-			}
+//			case "looking_at","block_in_front": {
+//			    HitResult vec = ins.player.raycast(PlayerEntity.getReachDistance(ins.player.isCreative()),0,true);
+//			    if (vec.getType()==Type.BLOCK) {
+//			    	BlockHitResult res = (BlockHitResult) vec;
+//			    	BlockState state = ins.player.getWorld().getBlockState(res.getBlockPos());
+//			    	yield Registries.BLOCK.getId(state.getBlock()).toString();
+//			    }
+//			    yield "";
+//			}
+//			case "looking_at_pos": {
+//				HitResult vec = ins.player.raycast(PlayerEntity.getReachDistance(ins.player.isCreative()),0,true);
+//			    if (vec.getType()==Type.BLOCK) {
+//			    	BlockPos res = ((BlockHitResult) vec).getBlockPos();
+//			    	yield "" + res.getX() + ' ' + res.getY() + ' ' + res.getZ();
+//			    }
+//			    yield "";
+//			}
 			
 			/* Hudder */
 			case "compilertype": yield ConfigManager.getConfig().compilertype;

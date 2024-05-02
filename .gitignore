@@ -3,6 +3,7 @@ bin/
 run/
 **/build/
 !src/**/build/
+remappedSrc/
 
 # Ignore Gradle GUI config
 gradle-app.setting
