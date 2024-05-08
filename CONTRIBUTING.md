@@ -9,4 +9,5 @@ If you do know here are some rules:
 1. No malicious code (obviously).
 2. No stupid code.
 3. Below 10k lines additions and deletions (combined)
-4. The rules don't apply to me (except the first one)
+4. Do not add dependencies.
+5. Do not add any precompiled code.
