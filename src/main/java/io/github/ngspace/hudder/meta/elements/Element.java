@@ -6,5 +6,5 @@ import net.minecraft.client.gui.DrawContext;
 
 public abstract class Element implements Serializable {
 	private static final long serialVersionUID = 6926629886320975623L;
-	public abstract void RenderElement(DrawContext context, float delta);
+	public abstract void renderElement(DrawContext context, float delta);
 }

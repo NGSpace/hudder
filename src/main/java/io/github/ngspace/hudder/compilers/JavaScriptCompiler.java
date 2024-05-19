@@ -57,7 +57,7 @@ public class JavaScriptCompiler extends AVarTextCompiler {
 				for(RuntimeCache c:cache.values())c.close();
 			} catch (IOException e) {
 				if (Hudder.IS_DEBUG) e.printStackTrace();
-				throw new RuntimeException(e.getLocalizedMessage());
+				throw new CompileException(e.getLocalizedMessage());
 			}
 			cache.clear();
 		});
@@ -97,13 +97,13 @@ public class JavaScriptCompiler extends AVarTextCompiler {
 	    		v8 = V8Host.getV8Instance().createV8Runtime();
 				v8.setConverter(OBJECT_CONVERTER);
 				v8.getGlobalObject().set("console", JavaScriptIO.class);
-				v8.getGlobalObject().set("hudder", JavaScriptIO.class);
+				v8.getGlobalObject().set("hudder" , JavaScriptIO.class);
 	    		
 	    		loadFunctions(v8);
 	    		
 	        	Exception exception = null;
-	        	try {v8.getExecutor(text).executeVoid();}
-	        	catch (Exception e) {exception = e;} //Do not recompile if there is a compiler error.
+	        	//Do not recompile if there is a compiler error.
+	        	try {v8.getExecutor(text).executeVoid();} catch (Exception e) {exception = e;}
 	        	cache.put(text, new RuntimeCache(v8,exception));
 	    	}
 	    	V8ValueGlobalObject gb = v8.getGlobalObject();
@@ -118,10 +118,10 @@ public class JavaScriptCompiler extends AVarTextCompiler {
 	    	
 	    	/* Scale */
 	    	
-	    	float TLscale = gb.has("topleftscale"    )?TLscale = (float) gb.get("topleftscale"    ).asDouble():1;
-	    	float BLscale = gb.has("bottomleftscale" )?TLscale = (float) gb.get("bottomleftscale" ).asDouble():1;
-	    	float TRscale = gb.has("toprightscale"   )?TLscale = (float) gb.get("toprightscale"   ).asDouble():1;
-	    	float BRscale = gb.has("bottomrightscale")?TLscale = (float) gb.get("bottomrightscale").asDouble():1;
+	    	float TLscale = gb.has("topleftscale"    ) ? (float) gb.get("topleftscale"    ).asDouble():1;
+	    	float BLscale = gb.has("bottomleftscale" ) ? (float) gb.get("bottomleftscale" ).asDouble():1;
+	    	float TRscale = gb.has("toprightscale"   ) ? (float) gb.get("toprightscale"   ).asDouble():1;
+	    	float BRscale = gb.has("bottomrightscale") ? (float) gb.get("bottomrightscale").asDouble():1;
 	    	
 		    return new CompileResult(TL, TLscale, BL, BLscale, TR, TRscale, BR, BRscale,
 		    		elms.toArray(new Element[elms.size()])); 

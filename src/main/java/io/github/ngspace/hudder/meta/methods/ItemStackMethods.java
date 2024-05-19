@@ -26,7 +26,8 @@ public class ItemStackMethods implements IMethod {
 		double x = args[0+offset].asDouble();
 		double y = args[1+offset].asDouble();
 		float scale = (float)(args.length>2+offset?args[2+offset].asDouble():ci.scale);
-		boolean showcount = args.length>3+offset ? args[3+offset].asBoolean() : true;
+		
+		boolean showcount = args.length<=3+offset || args[3+offset].asBoolean();
 		
 		PlayerInventory inv = ins.player.getInventory();
 		ItemStack stack = switch (type) {

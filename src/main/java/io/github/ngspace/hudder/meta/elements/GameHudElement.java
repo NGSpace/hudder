@@ -1,13 +1,13 @@
 package io.github.ngspace.hudder.meta.elements;
 
+import static io.github.ngspace.hudder.Hudder.ins;
+
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.mixin.InGameHudAccessor;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.JumpingMount;
-import static io.github.ngspace.hudder.Hudder.ins;
 
 /**
  * This element is a merging of all builtin GUI elements (Status bars) 
@@ -34,7 +34,7 @@ public class GameHudElement extends Element {
 		this.type = type;
 	}
 
-	@Override public void RenderElement(DrawContext context, float delta) {
+	@Override public void renderElement(DrawContext context, float delta) {
 		try {
 			InGameHudAccessor acchud = (InGameHudAccessor) (Hudder.ins.inGameHud);
 			float scaledWidth = context.getScaledWindowWidth();
@@ -79,7 +79,9 @@ public class GameHudElement extends Element {
 			        acchud.callRenderHotbar(context, delta);
 					break;
 				case ITEM_TOOLTIP:
-			        matrixStack.translate(x-scaledWidth/2, y-scaledHeight+45, 0f);
+					int tooltipy =  59;
+					if (!ins.interactionManager.hasStatusBars()) tooltipy -= 14;
+			        matrixStack.translate(x-scaledWidth/2, tooltipy-scaledHeight+y, 0f);
 			        acchud.callRenderHeldItemTooltip(context);
 					break;
 				default:

@@ -40,7 +40,7 @@ public class MathUtils {
 	        double parse() {
 	            nextChar();
 	            double x = parseExpression();
-	            if (pos < str.length()) throw new RuntimeException("Unexpected: " + (char)ch);
+	            if (pos < str.length()) throw new IllegalArgumentException("Unexpected char: " + (char)ch);
 	            return x;
 	        }
 	        
@@ -78,7 +78,7 @@ public class MathUtils {
 	            int startPos = this.pos;
 	            if (eat('(')) { // parentheses
 	                x = parseExpression();
-	                if (!eat(')')) throw new RuntimeException("Missing ')'");
+	                if (!eat(')')) throw new IllegalArgumentException("Missing ')'");
 	            } else if ((ch >= '0' && ch <= '9') || ch == '.') { // numbers
 	                while ((ch >= '0' && ch <= '9') || ch == '.') nextChar();
 	                x = Double.parseDouble(str.substring(startPos, this.pos));
@@ -97,7 +97,7 @@ public class MathUtils {
 //	                else if (func.equals("tan")) x = Math.tan(Math.toRadians(x));
 //	                else throw new RuntimeException("Unknown function: " + func);
 	            } else {
-	                throw new RuntimeException("Unexpected: " + (char)ch);
+	                throw new IllegalArgumentException("Unexpected char: " + (char)ch);
 	            }
 	            
 	            if (eat('^')) x = Math.pow(x, parseFactor()); // exponentiation

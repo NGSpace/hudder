@@ -16,7 +16,7 @@ public class LoadMethod implements IMethod {
 			throw new CompileException("\""+type+"\" only accepts \""+type+",[file],<text>,<compiler>\"");
 		try {
 			ATextCompiler ecompiler=(args.length>2?ATextCompiler.getCompilerFromName(args[2].getAbsoluteValue()):comp);
-			boolean AddText = (args.length>1 ? args[1].asBoolean(): false) || type.equals("add");
+			boolean AddText = (args.length<2 || args[1].asBoolean()) || type.equals("add");
 			meta.combineWithResult(ecompiler.compile(ci, HudFileUtils.getFile(args[0].getAbsoluteValue())), AddText);
 		} catch (ReflectiveOperationException | IllegalArgumentException | SecurityException | IOException e) {
 			throw new CompileException(e.getLocalizedMessage());

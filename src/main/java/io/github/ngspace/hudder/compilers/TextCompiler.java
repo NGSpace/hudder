@@ -51,7 +51,7 @@ public abstract class TextCompiler extends AVarTextCompiler {
 			case "<=" -> numcond1<=numcond2;
 			case ">"  -> numcond1> numcond2;
 			case "<"  -> numcond1< numcond2;
-			default -> throw new RuntimeException("Unknown condition: " + condition);//Someone is tampering fo sure
+			default -> throw new IllegalArgumentException("Unknown condition: "+condition);//Someone is tampering fo sure
 		};
 	}
 	

@@ -50,7 +50,7 @@ import net.minecraft.util.logging.LoggerPrintStream;
  * then you're gonna have a bad time.</h1>
  */
 public class Hudder implements ModInitializer {
-    public static String MOD_ID = "hudder";
+    public static final String MOD_ID = "hudder";
 	
     private static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static boolean IS_DEBUG = false;
@@ -124,9 +124,15 @@ public class Hudder implements ModInitializer {
 								Text.literal("\u00A7aLoaded File"));
 				    } else {
 						log(changed.getFileName() + " has changed! Clearing cache!");
-						HudFileUtils.clearCache();
-						showToast(ins, Text.literal("Refreshing "+changed.getFileName()+'!')
-								.formatted(Formatting.BOLD), Text.literal("\u00A7aLoaded File"));
+						try {
+							HudFileUtils.clearCache();
+							showToast(ins, Text.literal("Refreshing "+changed.getFileName()+'!')
+									.formatted(Formatting.BOLD), Text.literal("\u00A7aLoaded File"));
+						} catch (CompileException e) {
+							showToast(ins, Text.literal("\\u00A74Error refreshing "+changed.getFileName()+'!')
+									.formatted(Formatting.BOLD),Text.literal(e.getMessage()));
+							e.printStackTrace();
+						}
 				    }
 				}
 				if (!wk.reset()) {
@@ -214,7 +220,7 @@ public class Hudder implements ModInitializer {
         /* Top Right */
         String[] TR = text.TopRightText.split(NL_REGEX);
         yoff = info.yoffset;
-        xoff = 300 - info.xoffset;
+//        xoff = 300 - info.xoffset;
         for (String txt : TR) {
         	xoff = (int) (context.getScaledWindowWidth() - renderer.getWidth(txt) * text.TRScale - info.xoffset);
         	renderText(context, txt, xoff, yoff, color, text.TRScale, shadow, background, bgcolor);
@@ -225,14 +231,14 @@ public class Hudder implements ModInitializer {
         String[] BR = text.BottomRightText.split(NL_REGEX);
         yoff = (int) (context.getScaledWindowHeight() - countLines(text.BottomRightText) *
         		info.lineHeight * text.BRScale - info.yoffset + 1);
-        xoff = 300 - info.xoffset;
+//        xoff = 300 - info.xoffset;
         for (String txt : BR) {
         	xoff = (int) (context.getScaledWindowWidth() - renderer.getWidth(txt) * text.BRScale - info.xoffset);
         	renderText(context, txt, xoff, yoff, color, text.BRScale, shadow, background, bgcolor);
         	yoff+=info.lineHeight * text.BRScale;
         }
         
-        for (Element e : text.elements) e.RenderElement(context,delta);
+        for (Element e : text.elements) e.renderElement(context,delta);
     }
     public int countLines(String what) {
         int count = 1;
@@ -270,10 +276,6 @@ public class Hudder implements ModInitializer {
         bgBuilder.vertex(matrix, x+width, y+height, 0f).color(color).next();
         bgBuilder.vertex(matrix, x+width, y, 0f).color(color).next();
         bgBuilder.vertex(matrix, x, y, 0f).color(color).next();
-        BufferRenderer.drawWithGlobalProgram(bgBuilder.end());
-        bgBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
-        matrix = context.getMatrices().peek().getPositionMatrix();
-        bgBuilder.texture(0, 0);
         BufferRenderer.drawWithGlobalProgram(bgBuilder.end());
         RenderSystem.disableBlend();
 	}

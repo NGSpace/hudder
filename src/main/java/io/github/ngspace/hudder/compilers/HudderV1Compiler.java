@@ -7,7 +7,7 @@ import io.github.ngspace.hudder.meta.Meta;
 import io.github.ngspace.hudder.meta.MetaCompiler;
 import net.minecraft.client.MinecraftClient;
 
-public class DefaultCompiler extends TextCompiler {
+public class HudderV1Compiler extends TextCompiler {
 	public static final int TEXT_STATE = 0;
 	public static final int VARIABLE_STATE = 1;
 	public static final int CONDITION_STATE = 2;
@@ -70,7 +70,7 @@ public class DefaultCompiler extends TextCompiler {
 							safeappend = true;
 							break;
 						case '&':
-							resultBuilder.append('\u00A7');//§ \u00A7
+							resultBuilder.append('\u00A7');
 							break;
 						case '#': compileState = ADVANCED_CONDITION_STATE;break;
 //						case '@': compileState = WHILE_STATE;break;
@@ -105,18 +105,19 @@ public class DefaultCompiler extends TextCompiler {
 					if (quotesafe&&c!='"') {condArgBuilder.append(c);continue;}
 					if (condSafe) {condArgBuilder.append(c);condSafe=false;continue;}
 					switch (c) {
-						case '%': 
+						case '%':
 							compileState = TEXT_STATE;
 							CompileResult res = solveCondition(info,
-									AddToStringArray(condArgs,condArgBuilder.toString().trim()));
-							currentMeta.combineWithResult(res, true);
+									addToArray(condArgs,condArgBuilder.toString().trim()));
+							currentMeta.combineWithResult(res, false);
+							resultBuilder.append(res.TopLeftText);
 							break;
 						case '"':
 							quotesafe = !quotesafe;
 							condArgBuilder.append(c);
 							break;
 						case ',':
-							condArgs = AddToStringArray(condArgs,condArgBuilder.toString().trim());
+							condArgs = addToArray(condArgs,condArgBuilder.toString().trim());
 							condArgBuilder.setLength(0);
 							break;
 						default: condArgBuilder.append(c);break;
@@ -129,13 +130,13 @@ public class DefaultCompiler extends TextCompiler {
 							compileState = TEXT_STATE;
 							break;
 						case ',':
-							metabuilder = AddToStringArray(metabuilder,metaBuilder.toString().trim());
+							metabuilder = addToArray(metabuilder,metaBuilder.toString().trim());
 							metaBuilder.setLength(0);
 							break;
 						default: metaBuilder.append(c);break;
 					}
 					if (compileState!=META_STATE) {
-						metabuilder = AddToStringArray(metabuilder,metaBuilder.toString().trim());
+						metabuilder = addToArray(metabuilder,metaBuilder.toString().trim());
 						String command = metabuilder[0].toLowerCase();
 						if (command.equals(Meta.TOPLEFT)
 								||command.equals(Meta.BOTTOMLEFT)
@@ -224,8 +225,8 @@ public class DefaultCompiler extends TextCompiler {
 		if (val instanceof Number num&&num.doubleValue()%1==0) return num.longValue();
 		return val;
 	}
-	public static String[] AddToStringArray(String[] arr, String string) {
-		String[] newarr = Arrays.copyOf(arr, arr.length+1);
+	public static <T> T[] addToArray(T[] arr, T string) {
+		T[] newarr = Arrays.copyOf(arr, arr.length+1);
 		newarr[arr.length] = string;
 		return newarr;
 	}

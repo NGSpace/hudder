@@ -1,4 +1,4 @@
-/**
+/**;throw, can't run hotbar.js with the hudder compiler;
  * SO. MUCH. FUCKING. MATH. 
  */
 

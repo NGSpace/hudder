@@ -25,7 +25,7 @@ public class NativeTextureElement extends Element {
 //		var sc = new SpriteContents(id,new SpriteDimensions(width, height),img,new Builder().build());
 //		sprite = new Sprite(id, sc, width, height, 0, 0){};// Cheating in a protected constructor ;)
 	}
-	@Override public void RenderElement(DrawContext context, float delta) {
+	@Override public void renderElement(DrawContext context, float delta) {
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		context.drawTexture(id, x, y, 1, 0f, 0f, width, height, width, height);

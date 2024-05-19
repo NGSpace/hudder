@@ -14,7 +14,6 @@ import net.minecraft.client.gui.hud.InGameHud;
 @Environment(EnvType.CLIENT)
 @Mixin(InGameHud.class)
 public class InGameHudInjections {
-
 	public boolean shouldNotDraw() {return Hudder.config.removegui&&Hudder.config.shouldCompile(Hudder.ins);}
 
 	@Inject(method = "renderMainHud", at = @At("HEAD"),cancellable=true)
