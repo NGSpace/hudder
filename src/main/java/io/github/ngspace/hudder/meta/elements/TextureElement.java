@@ -17,7 +17,7 @@ public class TextureElement extends Element {
 		this.height=height;
 		this.id=id;
 	}
-	@Override public void RenderElement(DrawContext context, float delta) {
+	@Override public void renderElement(DrawContext context, float delta) {
 		context.drawTexture(id, x, y, 0, 0, 0, width, height, height, height);
 	}
 }

@@ -24,21 +24,32 @@ import io.github.ngspace.hudder.meta.methods.TextMethod;
 import io.github.ngspace.hudder.meta.methods.TexturesMethods;
 import io.github.ngspace.hudder.util.HudFileUtils;
 import io.github.ngspace.hudder.util.MathUtils;
+import net.minecraft.text.Text;
 
 public class MetaCompiler {
 	public Map<String, IMethod> methods = new HashMap<String,IMethod>();
-	static final String[] Var = new String[]{"[Variable]"};
+	public static final String[] Var = new String[]{"[Variable]"};
+	public static final String[] TextArg = new String[]{"[Text]"};
 	public MetaCompiler() {
 		
-		//Inventory Rendering
-		register(new ItemStackMethods(),"slot", "item", "hand", "selectedslot", "hat", "helmet", "chestplate", "leggings",
-				"pants", "boots", "offhand");
+		registerRenderingMethods();
 		
-		//Text and compiling
-		register((i,m,c,type,args)->m.setTextLocation(type,(float) (args.length>0?args[0].asDouble():i.scale)),
-				BOTTOMRIGHT, TOPLEFT, TOPRIGHT, BOTTOMLEFT, MUTE);
-		register(new LoadMethod(), "load", "execute", "compile", "run", "add");
-		register(new TextMethod(), "text");
+		
+		
+		//Logging and errors
+		register((c,m,a,t,s)->Hudder.ins.player.sendMessage(Text.of(s[0].asString())),1, TextArg, "alert");
+		register((c,m,a,t,s)->Hudder.log(s[0].asString()),1, TextArg, "log");
+		register((c,m,a,t,s)->Hudder.warn(s[0].asString()),1, TextArg, "warn");
+		register((c,m,a,t,s)->Hudder.error(s[0].asString()),1, TextArg, "error");
+		register((c,m,a,t,s)->{throw new CompileException(s[0].asString());},1, TextArg, "throw");
+		
+		
+		
+		//Inventory Management
+		register(new InventoryInformationMethods(), 2, new String[] {"[Slot number]",Var[0]}, "name", "durability",
+				"maxdurability","count","maxcount");
+		
+		
 		
 		//Mathematical operations
 		register(new DecimalMethods(), "decimalpoint", "float");
@@ -46,26 +57,18 @@ public class MetaCompiler {
 		 *   getAbsoluteValue() is the name the variable (aka the raw text supplied)
 		 *   asInt() is the value of the variable as an int (aka the result of getVariable() converted to int)
 		 */
-		register((ci,meta,comp,type,args)->comp.put(args[0].getAbsoluteValue(),args[0].asInt()),1,Var,"int","fullnumber");
+		register((ci,meta,comp,type,args)->comp.put(args[0].toString(),args[0].asInt()),1,Var,"int","fullnumber");
+		
+		
 		
 		//String Manipulation
 		register(new StringMethods(), "concat", "multiplystring", "substring", "string");
 		
-		//UI
-		register(new GUIMethods(), "health", "xpbar", "hotbar", "helditemtooltip");
-		register(new TexturesMethods(), "image", "png", "texture");
+		
 
 		//File-IO(THIS IS ALL YOU'RE GETTING, NO MORE FILE-IO! YOU'RE NOT WRITING OR READING FILES ON MY WATCH FUCKERS!)
 		String[] ar = new String[] {"[Filename]",Var[0]};
 		register((c,m,a,t,s)->a.put(s[1].getAbsoluteValue(), HudFileUtils.exists(s[0].asString())), 2, ar, "exists");
-		
-		//Text Width
-		register((c,m,a,t,s)->a.put(s[1].getAbsoluteValue(), Hudder.ins.textRenderer.getWidth(s[0].asString())),
-				2, new String[] {"[Text]",Var[0]}, "strwidth");
-		
-		//Inventory Management
-		register(new InventoryInformationMethods(), 2, new String[] {"[Slot number]",Var[0]}, "name", "durability",
-				"maxdurability","count","maxcount");
 	}
 	/**
 	 * Calls the method with the name of the first value in the args parameter.
@@ -123,6 +126,35 @@ public class MetaCompiler {
 		public int asInt() throws CompileException {return tryParseInt(compiler.getVariable(arg.trim()));}
 		public double asDouble() throws CompileException {return tryParse(compiler.getVariable(arg.trim()));}
 		public boolean asBoolean() {return tryParseBool(compiler.get(arg.trim()));}
+	}
+	
+	public void registerRenderingMethods() {
+		
+		
+		
+		//Inventory Rendering
+		register(new ItemStackMethods(),"slot","item","hand","selectedslot","hat", "helmet", "chestplate", "leggings",
+				"pants", "boots", "offhand");
+		
+		
+		
+		//Text and compiling
+		register((i,m,c,type,args)->m.setTextLocation(type,(float) (args.length>0?args[0].asDouble():i.scale)),
+				BOTTOMRIGHT, TOPLEFT, TOPRIGHT, BOTTOMLEFT, MUTE);
+		register(new LoadMethod(), "load", "execute", "compile", "run", "add");
+		register(new TextMethod(), "text");
+		
+		
+		
+		//UI
+		register(new GUIMethods(), "health", "xpbar", "hotbar", "helditemtooltip");
+		register(new TexturesMethods(), "image", "png", "texture");
+		
+		
+		
+		//Text Width
+		register((c,m,a,t,s)->a.put(s[1].getAbsoluteValue(), Hudder.ins.textRenderer.getWidth(s[0].asString())),
+				2, new String[] {"[Text]",Var[0]}, "strwidth");
 	}
 	/**
 	 * Try to parse as double, if not return 0.

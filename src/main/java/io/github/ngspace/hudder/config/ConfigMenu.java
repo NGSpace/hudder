@@ -1,6 +1,7 @@
 package io.github.ngspace.hudder.config;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import java.util.function.Function;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 
+import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.util.HudFileUtils;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
@@ -31,7 +33,15 @@ public class ConfigMenu implements ConfigScreenFactory<Screen> {
 		
 		ConfigBuilder builder = ConfigBuilder.create()
 			.setTitle(Text.literal("Hudder"))
-			.setSavingRunnable(config::save)
+			.setSavingRunnable(() -> {
+				try {
+					config.save();
+				} catch (IOException e) {
+					e.printStackTrace();
+					Hudder.showToast(Hudder.ins, Text.literal("Failed to save hudder config"), 
+							Text.literal(e.getMessage()));
+				}
+			})
 			.setDefaultBackgroundTexture(Identifier.tryParse("textures/block/dark_oak_planks.png"))
 			.setTransparentBackground(true)
 			.setEditable(true)
@@ -204,13 +214,13 @@ public class ConfigMenu implements ConfigScreenFactory<Screen> {
             Arrays.asList(
                 entryBuilder.startTextField(
                         Text.translatable("hudder.global_variables.key"),
-                        variable != null ? variable.key : "")
+                        variable.key)
                     .setTooltip(Text.translatable("hudder.global_variables.key.tooltip"))
                     .setSaveConsumer(name -> variable.key = name)
                     .build(),
                 entryBuilder.startStrField(
                         Text.translatable("hudder.global_variables.value"),
-                        variable != null ? variable.value.toString() : "")
+                        variable.value.toString())
                     .setTooltip(Text.translatable("hudder.global_variables.value.tooltip"))
                     .setSaveConsumer(value -> variable.value = value)
                     .build()

@@ -29,7 +29,7 @@ public class TextElement extends Element {
 		this.shadow = shadow;
 		this.background = background;
 	}
-	@Override public void RenderElement(DrawContext context, float delta) {
+	@Override public void renderElement(DrawContext context, float delta) {
 		renderText(context, text, x, y, color, scale, shadow, background, backgroundcolor);
 	}
 }

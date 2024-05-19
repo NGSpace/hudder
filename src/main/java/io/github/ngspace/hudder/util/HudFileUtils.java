@@ -8,13 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.ngspace.hudder.Hudder;
+import io.github.ngspace.hudder.compilers.CompileException;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.util.Identifier;
 
 public class HudFileUtils {private HudFileUtils() {}
 	
-	public static List<Runnable> chacheClearRunnables = new ArrayList<Runnable>();
+	public static List<ERunnable<CompileException>> chacheClearRunnables = new ArrayList<ERunnable<CompileException>>();
 
 	public static final String FABRIC_CONFIG_FOLDER = FabricLoader.getInstance().getConfigDir().toString();
 	public static final String FOLDER = FABRIC_CONFIG_FOLDER + separator + Hudder.MOD_ID + separator;
@@ -25,8 +26,8 @@ public class HudFileUtils {private HudFileUtils() {}
 	public static NativeImage getAndRegisterImage(String file, Identifier id) throws IOException {
 		return reader.getAndRegisterImage(FOLDER + sanitize(file), id);
 	}
-	public static void clearCache() {for (Runnable r : chacheClearRunnables) r.run();}
-	public static void addClearCacheListener(Runnable listener) {chacheClearRunnables.add(listener);}
+	public static void clearCache()throws CompileException{for(ERunnable<CompileException>r:chacheClearRunnables)r.run();}
+	public static void addClearCacheListener(ERunnable<CompileException> listener) {chacheClearRunnables.add(listener);}
 	
 	public static String sanitize(String f) {
 		int j = 0;
@@ -34,7 +35,7 @@ public class HudFileUtils {private HudFileUtils() {}
 		for (int i = 0;i<f.length();i++) {
 			char c = f.charAt(i);
 			if (c=='.') j++; else if (c=='/'||c=='\\') {
-				if (j==2&&k==0) throw new FuckYouException("Fuck you, I ain't this stupid to accept this: "+f);k = 0;
+				if (j==2&&k==0) {throw new FuckYouException("Fuck you, I ain't this stupid to accept this: "+f);}k = 0;
 			} else {j = 0;k++;}
 		}
 		return f;

@@ -15,7 +15,7 @@ import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.compilers.CompileException;
 import io.github.ngspace.hudder.compilers.CompileResult;
-import io.github.ngspace.hudder.compilers.DefaultCompiler;
+import io.github.ngspace.hudder.compilers.HudderV1Compiler;
 import io.github.ngspace.hudder.util.HudFileUtils;
 import net.minecraft.client.MinecraftClient;
 
@@ -48,17 +48,22 @@ public class ConfigInfo {
 	@Deprecated(forRemoval = false, since = "It's fucking creation")
 	@Expose public boolean debug = false;
 	
-	public ATextCompiler compiler = new DefaultCompiler();
+	public ATextCompiler compiler = new HudderV1Compiler();
 	private File configFile = new File(HudFileUtils.FOLDER + "hud.json");
 	
-	public ConfigInfo(File f) {configFile = f;readConfig();save();}
+	public ConfigInfo(File f) {configFile = f;readConfig();}
 
 	public CompileResult compile(String text) throws CompileException {
 		if (compiler!=null) return compiler.compile(this, text);
 		else throw new CompileException("There is no Compiler!");
 	}
 	public void readConfig() {
-		if (!configFile.exists()) save();
+		try {
+			if (!configFile.exists()) save();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return; //Cry about it but continue running.
+		}
 		try {
 			Hudder.log("Reading Hudder config!");
 			HudFileUtils.clearCache();
@@ -74,9 +79,9 @@ public class ConfigInfo {
 			Hudder.IS_DEBUG=true;//Failed to read config, turn on IS_DEBUG.
 		}
 		try {compiler = ATextCompiler.getCompilerFromName(compilertype.toLowerCase());} 
-		catch (Exception e) {compiler = new DefaultCompiler();e.printStackTrace();}
+		catch (Exception e) {compiler = new HudderV1Compiler();e.printStackTrace();}
 	}
-	private void setField(Field f, Object object) throws Exception {
+	private void setField(Field f, Object object) throws ReflectiveOperationException {
 		if (object instanceof Number num) {
 			if (f.getType().isAssignableFrom(int.class)) f.set(this, num.intValue());
 			else if (f.getType().isAssignableFrom(float.class)) f.set(this, num.floatValue());
@@ -87,8 +92,12 @@ public class ConfigInfo {
 			else f.set(this, object);
 		} else f.set(this, object);
 	}
-	public void save() {
+	public void save() throws IOException {
 		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
+		if (!configFile.exists()) {
+			configFile.getParentFile().mkdirs();
+			if (!configFile.createNewFile()) throw new IOException("Failed to create Hudder config file.");
+		}
 		try (FileWriter fw = new FileWriter(configFile)) {fw.append(gson.toJson(this));fw.flush();}
 		catch (IOException e) {e.printStackTrace();Hudder.IS_DEBUG=true;}//Failed to save config, turn on IS_DEBUG.
 	}

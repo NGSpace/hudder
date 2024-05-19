@@ -11,7 +11,7 @@ public abstract class ATextCompiler {
 	private static final Map<String, ATextCompiler> loadedcomps = new HashMap<String,ATextCompiler>();
 	
 	public static final String EMPTYCOM = "io.github.ngspace.hudder.compilers.EmptyCompiler";
-	public static final String DEFAULT_COMPILER = "io.github.ngspace.hudder.compilers.DefaultCompiler";
+	public static final String DEFAULT_COMPILER = "io.github.ngspace.hudder.compilers.HudderV1Compiler";
 	
 	public static void registerCompiler(String name, String classname) {compilers.put(name, classname);}
 	

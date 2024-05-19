@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.HashMap;
 
+import io.github.ngspace.hudder.compilers.CompileException;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.util.Identifier;
@@ -17,7 +18,7 @@ import net.minecraft.util.Identifier;
 /**
  * I decided to hide this class in this package for safety.
  */
-class CachedReader implements Runnable {
+class CachedReader implements ERunnable<CompileException> {
 	HashMap<String, String> savedFiles = new HashMap<String, String>();
 	HashMap<Identifier, Images> savedImages = new HashMap<Identifier, Images>();
 	class Images implements Closeable {

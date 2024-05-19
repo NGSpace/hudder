@@ -7,15 +7,8 @@ import java.util.Optional;
 import com.mojang.blaze3d.platform.GlDebugInfo;
 
 import io.github.ngspace.hudder.config.ConfigManager;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.hit.HitResult.Type;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
 
 public class StringData {private StringData() {}

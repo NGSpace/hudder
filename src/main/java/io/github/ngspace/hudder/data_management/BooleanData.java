@@ -8,15 +8,16 @@ import com.mojang.datafixers.DataFixUtils;
 
 import io.github.ngspace.hudder.config.ConfigManager;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.math.random.ChunkRandom;
+import net.minecraft.world.GameMode;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.World;
 
 public class BooleanData {private BooleanData(){}
 	public static Boolean getBoolean(String key) {
 		MinecraftClient ins = MinecraftClient.getInstance();
-		PlayerEntity p = ins.player;
+		ClientPlayerEntity p = ins.player;
 		@SuppressWarnings("resource")
 		World betterworld = DataFixUtils.orElse(Optional.ofNullable(ins.getServer()).flatMap(integratedServer ->
 			Optional.ofNullable(integratedServer.getWorld(ins.world.getRegistryKey()))), ins.world);
@@ -25,6 +26,12 @@ public class BooleanData {private BooleanData(){}
 					((StructureWorldAccess)betterworld).getSeed(), 987234911L).nextInt(10) == 0;
 			case "hudhidden": yield ins.options.hudHidden;
 			case "showdebug": yield ins.getDebugHud().shouldShowDebugHud();
+			
+			/* Player */
+			case "issurvival","is_survival": yield ins.interactionManager.getCurrentGameMode()==GameMode.SURVIVAL;
+			case "iscreative","is_creative": yield ins.interactionManager.getCurrentGameMode()==GameMode.CREATIVE;
+			case "isadventure","is_adventure": yield ins.interactionManager.getCurrentGameMode()==GameMode.ADVENTURE;
+			case "isspectator","is_spectator": yield ins.interactionManager.getCurrentGameMode()==GameMode.SPECTATOR;
 			
 			
 			/* Hudder */
