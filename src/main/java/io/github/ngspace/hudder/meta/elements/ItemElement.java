@@ -8,23 +8,20 @@ import net.minecraft.item.ItemStack;
 public class ItemElement extends Element {
 	private static final long serialVersionUID = -4033666012277014500L;
 	public final ItemStack stack;
-	public final double x1;
-	public final double y1;
+	public final double x;
+	public final double y;
 	public final boolean showcount;
 	public final float scale;
-	
 	public ItemElement(double x, double y, ItemStack stack, float scale, boolean showcount) {
 		this.stack = stack;
-		this.x1 = x;
-		this.y1 = y;
+		this.x = x;
+		this.y = y;
 		this.scale = scale;
 		this.showcount = showcount;
 	}
 	
 	@Override
 	public void renderElement(DrawContext context, float delta) {
-		float y = (float) y1;
-		float x = (float) x1;
         MatrixStack matrixStack = context.getMatrices();
         if (scale!=1f) {
             matrixStack.push();

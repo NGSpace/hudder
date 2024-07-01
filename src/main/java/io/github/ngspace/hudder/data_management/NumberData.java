@@ -41,7 +41,7 @@ public class NumberData {private NumberData() {}
 			case "maxfps","max_fps": yield (double) getMaximumFPS();
 			case "ping": yield (double) ins.getNetworkHandler().getPlayerListEntry(p.getName().getString()).getLatency();
 			case "tps": yield (double) getTPS(ins);
-			case "gpu_d": yield Advanced.gpuUsage;
+			case "gpu_d", "dgpu": yield Advanced.gpuUsage;
 			case "gpu": yield (double) ((int)Advanced.gpuUsage);
 //			case "cpu": throw new CompileException("due to my lack of skills and mental abilites cpu is unavaliable");
 			
@@ -62,6 +62,7 @@ public class NumberData {private NumberData() {}
 			
 			/* Computer */
 			case "time": yield (double) currentTimeMillis();
+			case "random","rng": yield (double) new Random().nextFloat();
 			
 			
 			
@@ -77,13 +78,24 @@ public class NumberData {private NumberData() {}
 			
 			
 			/* Other Player related information */
+			case "selectedslot": yield (double) p.getInventory().selectedSlot;
+			
+			
+			/* Player position */
 			case "dxpos","dx": yield p.getX();
 			case "dypos","dy": yield p.getY();
 			case "dzpos","dz": yield p.getZ();
 			case "xpos","x": yield (double) p.getBlockX();
 			case "ypos","y": yield (double) p.getBlockY();
 			case "zpos","z": yield (double) p.getBlockZ();
-			case "selectedslot": yield (double) p.getInventory().selectedSlot;
+			
+			
+			
+			/* Player roation*/
+			case "dpitch": yield (double) p.getPitch();
+			case "dyaw": yield p.getYaw() % 360d;
+			case "pitch": yield (double) (int) p.getPitch();
+			case "yaw": yield (double) (int) p.getYaw() % 360;
 			
 			
 
@@ -99,8 +111,7 @@ public class NumberData {private NumberData() {}
 			case "light": yield (double) world.getLightLevel(p.getBlockPos());
 			case "blocklight", "block_light": yield (double) world.getLightLevel(LightType.BLOCK,p.getBlockPos());
 			case "skylight", "sky_light": yield (double) world.getLightLevel(LightType.SKY,p.getBlockPos());
-			
-			case "random","rng": yield (double) new Random().nextFloat();
+			case "worldtime", "world_time": yield (double) world.getTimeOfDay();
 			
 			
 			
@@ -125,8 +136,8 @@ public class NumberData {private NumberData() {}
 				ItemStack stack = getStack(key, p.getInventory());
 				yield (double) stack.getMaxDamage() - stack.getDamage();
 			}
-			case "held_item_max_durability","helmet_max_durability","chestplate_max_durability","leggings_max_durability",
-			"boots_max_durability","offhand_max_durability":yield (double) getStack(key, p.getInventory()).getMaxDamage();
+			case"held_item_max_durability","helmet_max_durability","chestplate_max_durability","leggings_max_durability",
+			"boots_max_durability","offhand_max_durability":yield (double)getStack(key, p.getInventory()).getMaxDamage();
 			
 			default: yield null;
 		};
