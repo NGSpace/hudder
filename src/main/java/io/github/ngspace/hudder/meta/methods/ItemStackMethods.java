@@ -26,7 +26,7 @@ public class ItemStackMethods implements IMethod {
 		double x = args[0+offset].asDouble();
 		double y = args[1+offset].asDouble();
 		float scale = (float)(args.length>2+offset?args[2+offset].asDouble():ci.scale);
-		
+
 		boolean showcount = args.length<=3+offset || args[3+offset].asBoolean();
 		
 		PlayerInventory inv = ins.player.getInventory();
@@ -38,7 +38,7 @@ public class ItemStackMethods implements IMethod {
 			case "boots": yield inv.getArmorStack(0);
 			case "offhand": yield inv.offHand.get(0);
 			case "slot": yield inv.getStack(args[0].asInt());
-			case "item": yield new ItemStack(Registries.ITEM.get(Identifier.tryParse(args[1].asString())));
+			case "item": yield new ItemStack(Registries.ITEM.get(Identifier.tryParse(args[0].asString())));
 			default: throw new IllegalArgumentException("Unexpected value: " + type);
 		};
 		meta.elements.add(new ItemElement(x, y, stack, scale, showcount));

@@ -27,6 +27,7 @@ public class StringData {private StringData() {}
 				if (i.isPresent())
 					yield i.get().getValue().toString();
 				yield null;
+			case "dimension": yield ins.world.getDimension().effects().toString();
 //			case "looking_at","block_in_front": {
 //			    HitResult vec = ins.player.raycast(PlayerEntity.getReachDistance(ins.player.isCreative()),0,true);
 //			    if (vec.getType()==Type.BLOCK) {

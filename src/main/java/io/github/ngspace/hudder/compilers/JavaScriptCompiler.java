@@ -165,8 +165,8 @@ public class JavaScriptCompiler extends AVarTextCompiler {
     	//ItemStacks
     	
     	//Item
-    	bindConsumer(gb,s->new ItemElement(s[1].asInt(), s[2].asInt(), new ItemStack(Registries.ITEM.get(
-    			Identifier.tryParse(s[0].asString()))),(float)s[3].asDouble(), false),"drawItem");
+    	bindConsumer(gb,s->elms.add(new ItemElement(s[1].asInt(), s[2].asInt(), new ItemStack(Registries.ITEM.get(
+    			Identifier.tryParse(s[0].asString()))),(float)s[3].asDouble(), false)),"drawItem");
     	//Slot
     	bindConsumer(gb,s->elms.add(new ItemElement(s[1].asInt(),s[2].asInt(),ins.player.getInventory()
     			.getStack(s[0].asInt()),(float) s[3].asDouble(), s[4].asBoolean())),"drawSlot");
