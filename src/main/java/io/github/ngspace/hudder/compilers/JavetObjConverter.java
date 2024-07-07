@@ -14,27 +14,24 @@ public class JavetObjConverter extends JavetProxyConverter {
 	protected V8Value toV8Value(V8Runtime engine, Object object, int depth)
 			throws JavetException {
 		if (object instanceof CompileResult c) {
-			try (V8ValueObject newobj = engine.createV8ValueObject()) {
-				newobj.set("topleft", c.TopLeftText,
-						"bottomleft", c.BottomLeftText,
-						"topright", c.TopRightText,
-						"bottomright", c.BottomRightText,
-						"topleftscale", c.TLScale,
-						"bottomleftscale", c.BLScale,
-						"toprightscale", c.TRScale,
-						"bottomrightscale", c.BRScale);
-				return newobj;
-			}
-		}
-		if (object instanceof ItemStack stack) {
-			try (V8ValueObject newobj = engine.createV8ValueObject()) {
-				newobj.set("name", stack.getName().getString(),
-						"durability", stack.getMaxDamage()-stack.getDamage(),
-						"maxdurability", stack.getMaxDamage(),
-						"count", stack.getCount(),
-						"maxcount", stack.getMaxCount());
-				return newobj;
-			}
+			V8ValueObject newobj = engine.createV8ValueObject();
+			newobj.set("topleft", c.TopLeftText,
+					"bottomleft", c.BottomLeftText,
+					"topright", c.TopRightText,
+					"bottomright", c.BottomRightText,
+					"topleftscale", c.TLScale,
+					"bottomleftscale", c.BLScale,
+					"toprightscale", c.TRScale,
+					"bottomrightscale", c.BRScale);
+			return newobj;
+		} else if (object instanceof ItemStack stack) {
+			V8ValueObject newobj = engine.createV8ValueObject();
+			newobj.set("name", stack.getName().getString(),
+				"durability", stack.getMaxDamage()-stack.getDamage(),
+				"maxdurability", stack.getMaxDamage(),
+				"count", stack.getCount(),
+				"maxcount", stack.getMaxCount());
+			return newobj;
 		}
 		return super.toV8Value(engine, object, depth);
 	}
