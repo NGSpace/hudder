@@ -34,7 +34,6 @@ import io.github.ngspace.hudder.meta.elements.Element;
 import io.github.ngspace.hudder.meta.elements.GameHudElement;
 import io.github.ngspace.hudder.meta.elements.GameHudElement.GuiType;
 import io.github.ngspace.hudder.meta.elements.ItemElement;
-import io.github.ngspace.hudder.meta.elements.NativeTextureElement;
 import io.github.ngspace.hudder.meta.elements.TextElement;
 import io.github.ngspace.hudder.meta.elements.TextureElement;
 import io.github.ngspace.hudder.util.HudFileUtils;
@@ -207,9 +206,9 @@ public class JavaScriptCompiler extends AVarTextCompiler {
     		try {
     			boolean ex = HudFileUtils.exists(HudFileUtils.FOLDER + s[0].asString());
     			if (!ex) return false;
-        		Identifier id = new Identifier(s[0].asString().trim().toLowerCase());
+        		Identifier id = Identifier.of(s[0].asString().trim().toLowerCase());
         		HudFileUtils.getAndRegisterImage(s[0].asString(),id);
-        		elms.add(new NativeTextureElement(id,s[1].asInt(),s[2].asInt(),s[3].asInt(),s[4].asInt()));
+        		elms.add(new TextureElement(id,s[1].asInt(),s[2].asInt(),s[3].asInt(),s[4].asInt()));
 			} catch (IOException e) {return false;}
     		return true;
     	}, "drawLocalTexture", "drawPNG", "drawImage");

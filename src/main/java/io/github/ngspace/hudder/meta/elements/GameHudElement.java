@@ -6,6 +6,7 @@ import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.mixin.InGameHudAccessor;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.JumpingMount;
 
@@ -34,7 +35,7 @@ public class GameHudElement extends Element {
 		this.type = type;
 	}
 
-	@Override public void renderElement(DrawContext context, float delta) {
+	@Override public void renderElement(DrawContext context, RenderTickCounter delta) {
 		try {
 			InGameHudAccessor acchud = (InGameHudAccessor) (Hudder.ins.inGameHud);
 			float scaledWidth = context.getScaledWindowWidth();

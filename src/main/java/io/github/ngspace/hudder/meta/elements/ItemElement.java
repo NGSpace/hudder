@@ -2,6 +2,7 @@ package io.github.ngspace.hudder.meta.elements;
 
 import io.github.ngspace.hudder.Hudder;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 
@@ -21,7 +22,7 @@ public class ItemElement extends Element {
 	}
 	
 	@Override
-	public void renderElement(DrawContext context, float delta) {
+	public void renderElement(DrawContext context, RenderTickCounter delta) {
         MatrixStack matrixStack = context.getMatrices();
         if (scale!=1f) {
             matrixStack.push();

@@ -7,7 +7,6 @@ import io.github.ngspace.hudder.compilers.CompileException;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.meta.Meta;
 import io.github.ngspace.hudder.meta.MetaCompiler.Value;
-import io.github.ngspace.hudder.meta.elements.NativeTextureElement;
 import io.github.ngspace.hudder.meta.elements.TextureElement;
 import io.github.ngspace.hudder.util.HudFileUtils;
 import net.minecraft.util.Identifier;
@@ -20,13 +19,13 @@ public class TexturesMethods implements IMethod {
         		try {
         			boolean ex = HudFileUtils.exists(HudFileUtils.FOLDER + s[0].asString().trim());
         			if (!ex) return;
-            		Identifier id = new Identifier(s[0].asString().trim().toLowerCase());
+            		Identifier id = Identifier.of(s[0].asString().trim().toLowerCase());
 					HudFileUtils.getAndRegisterImage(s[0].asString(),id);
-	        		m.elements.add(new NativeTextureElement(id,s[1].asInt(),s[2].asInt(),s[3].asInt(),s[4].asInt()));
+	        		m.elements.add(new TextureElement(id,s[1].asInt(),s[2].asInt(),s[3].asInt(),s[4].asInt()));
 				} catch (IOException e) {
 					throw new CompileException(e.getLocalizedMessage());
 				}
-				break;
+				break;	
 			case "texture":
 				m.elements.add(new TextureElement(Identifier.tryParse(s[0].asString()),s[1].asInt(),
 		    			s[2].asInt(), s[3].asInt(),s[4].asInt()));

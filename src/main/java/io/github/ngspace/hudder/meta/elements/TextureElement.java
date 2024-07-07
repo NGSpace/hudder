@@ -1,6 +1,9 @@
 package io.github.ngspace.hudder.meta.elements;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.util.Identifier;
 
 public class TextureElement extends Element {
@@ -17,7 +20,10 @@ public class TextureElement extends Element {
 		this.height=height;
 		this.id=id;
 	}
-	@Override public void renderElement(DrawContext context, float delta) {
-		context.drawTexture(id, x, y, 0, 0, 0, width, height, height, height);
+	@Override public void renderElement(DrawContext context, RenderTickCounter delta) {
+		RenderSystem.enableBlend();
+		RenderSystem.defaultBlendFunc();
+		context.drawTexture(id, x, y, 0, 0f, 0f, width, height, width, height);
+		RenderSystem.disableBlend();
 	}
 }
