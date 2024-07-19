@@ -86,7 +86,7 @@ public class HudderV1Compiler extends TextCompiler {
 						case '}':
 							bracketscount--;
 							if (bracketscount==0) {
-								resultBuilder.append(getCleanVariable(varbuilder.toString()));
+								resultBuilder.append(getVariable(varbuilder.toString()));
 								varbuilder.setLength(0);
 								compileState = TEXT_STATE;
 							}
@@ -211,7 +211,7 @@ public class HudderV1Compiler extends TextCompiler {
 		StringBuilder strb = new StringBuilder();
 		strb.append(switch(compileState) {
 			case VARIABLE_STATE -> "Expected '}'";
-			case CONDITION_STATE -> "Expected '#'";
+			case CONDITION_STATE -> "Expected '%'";
 			case META_STATE -> "Expected ';'";
 			case ADVANCED_CONDITION_STATE -> "Expected End of ADVANCED_CONDITION_STATE";
 			case WHILE_STATE -> "Expected End of WHILE_STATE";
@@ -220,8 +220,9 @@ public class HudderV1Compiler extends TextCompiler {
 		return strb.toString();
 	}
 
-	protected Object getCleanVariable(String string) throws CompileException {
-		Object val = getVariable(string.toLowerCase());
+	@Override
+	public Object getVariable(String string) throws CompileException {
+		Object val = super.getVariable(string.toLowerCase());
 		if (val instanceof Number num&&num.doubleValue()%1==0) return num.longValue();
 		return val;
 	}
