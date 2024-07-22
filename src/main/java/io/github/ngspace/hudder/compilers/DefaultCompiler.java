@@ -109,7 +109,8 @@ public class DefaultCompiler extends TextCompiler {
 							compileState = TEXT_STATE;
 							CompileResult res = solveCondition(info,
 									AddToStringArray(condArgs,condArgBuilder.toString().trim()));
-							currentMeta.combineWithResult(res, true);
+							resultBuilder.append(res.TopLeftText);
+							currentMeta.combineWithResult(res, false);
 							break;
 						case '"':
 							quotesafe = !quotesafe;
