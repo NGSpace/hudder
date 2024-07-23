@@ -12,7 +12,7 @@
 		"CurseForge": "https://www.curseforge.com/minecraft/mc-mods/hudder",
 		"GitHub": "https://github.com/NGSpace/hudder"
 	},
-	"license": "MIT License",
+	"license": "Apache-2.0 license",
 	"icon": "assets/hudder/icon.png",
 	"environment": "*",
 	"entrypoints": {
