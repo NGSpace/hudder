@@ -99,6 +99,7 @@ public class NumberData {private NumberData() {}
 			case "light": yield (double) world.getLightLevel(p.getBlockPos());
 			case "blocklight", "block_light": yield (double) world.getLightLevel(LightType.BLOCK,p.getBlockPos());
 			case "skylight", "sky_light": yield (double) world.getLightLevel(LightType.SKY,p.getBlockPos());
+			case "worldtime", "world_time": yield (double) world.getTimeOfDay();
 			
 			case "random","rng": yield (double) new Random().nextFloat();
 			
