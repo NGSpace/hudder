@@ -145,8 +145,7 @@ public class Hudder implements ModInitializer {
             	RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
 	            try {
-	            	if (result!=null) renderer.drawCompileResult(context, ins.textRenderer, result, config,
-	            			delta);
+	            	if (result!=null) renderer.drawCompileResult(context, ins.textRenderer, result, config, delta);
 	            	else renderer.renderFail(context, LastFailMessage);
 				} catch (Exception e) {renderer.renderFail(context, e.getLocalizedMessage());}
             	RenderSystem.disableBlend();

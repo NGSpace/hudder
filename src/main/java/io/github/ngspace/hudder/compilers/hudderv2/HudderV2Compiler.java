@@ -11,6 +11,7 @@ import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.MetaV2Runtim
 import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.StringV2RuntimeElement;
 import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.VariableV2RuntimeElement;
 import io.github.ngspace.hudder.config.ConfigInfo;
+import io.github.ngspace.hudder.config.ConfigManager;
 import io.github.ngspace.hudder.meta.MetaCompiler;
 import net.minecraft.client.MinecraftClient;
 
@@ -47,6 +48,9 @@ public class HudderV2Compiler extends TextCompiler {
 			boolean condSafe = false;
 			boolean safeappend = false;
 			
+			boolean cleanup = true;
+			int cleanup_amount = ConfigManager.getConfig().metaBuffer;
+			
 			int compileState = TEXT_STATE;
 
 			for (int ind = 0;ind<text.length();ind++) {
@@ -55,6 +59,11 @@ public class HudderV2Compiler extends TextCompiler {
 				if (c=='\n') {line++;col=0;}
 				switch (compileState) {
 					case TEXT_STATE: {
+						if (cleanup&&cleanup_amount>0&&cleanup_amount<10) {
+							cleanup_amount--;
+							if (c=='\n'||c=='\r') continue;
+							else cleanup = false;
+						} else cleanup = false;
 						if (safeappend) {
 							resultBuilder.append(c);
 							safeappend = !safeappend;
@@ -74,8 +83,8 @@ public class HudderV2Compiler extends TextCompiler {
 								bracketscount = 1;
 								break;
 							case ';':
-								runtime.addRuntimeElement(new StringV2RuntimeElement(resultBuilder.toString(), true));
 								compileState = META_STATE;
+								runtime.addRuntimeElement(new StringV2RuntimeElement(resultBuilder.toString(), true));
 								resultBuilder.setLength(0);
 								break;
 							case '&':
@@ -148,6 +157,8 @@ public class HudderV2Compiler extends TextCompiler {
 							runtime.addRuntimeElement(new MetaV2RuntimeElement(metabuilder, runtime, info));
 							resultBuilder.setLength(0);
 							metabuilder = new String[0];
+							cleanup = true;
+							cleanup_amount = ConfigManager.getConfig().metaBuffer/2;
 						}
 						break;
 					}

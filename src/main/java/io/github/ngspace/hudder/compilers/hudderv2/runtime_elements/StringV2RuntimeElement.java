@@ -1,6 +1,7 @@
 package io.github.ngspace.hudder.compilers.hudderv2.runtime_elements;
 
 import io.github.ngspace.hudder.compilers.CompileException;
+import io.github.ngspace.hudder.config.ConfigManager;
 import io.github.ngspace.hudder.meta.Meta;
 
 public class StringV2RuntimeElement extends AV2RuntimeElement {
@@ -11,7 +12,18 @@ public class StringV2RuntimeElement extends AV2RuntimeElement {
 		this.cleanUp = cleanUp;
 	}
 	@Override public void execute(Meta meta, StringBuilder builder) throws CompileException {
-		builder.append(string);
-		if (cleanUp) {meta.addString(builder.toString(), cleanUp);builder.setLength(0);}
+		
+		if (cleanUp) {
+			String str = string;
+			int buffer = ConfigManager.getConfig().metaBuffer;
+			if (buffer<10)
+				for (int i = 0; i<buffer;i++) {
+					if (str.startsWith("\n")||str.startsWith("\r")) str = str.substring(1);
+				}
+//			System.out.println(str);
+			builder.append(str);
+			meta.addString(builder.toString(), false);
+			builder.setLength(0);
+		} else builder.append(string);
 	}
 }

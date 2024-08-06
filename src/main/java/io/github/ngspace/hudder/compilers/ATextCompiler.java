@@ -6,8 +6,6 @@ import java.util.Map;
 import io.github.ngspace.hudder.config.ConfigInfo;
 
 public abstract class ATextCompiler {
-	public ATextCompiler() {
-	}
 
 	protected static Map<String, Object> variables = new HashMap<String, Object>();
 	
