@@ -191,7 +191,7 @@ public class JavaScriptCompiler extends AVarTextCompiler {
     	//Compile
     	
     	bindFunction(gb, s-> {
-			CompileResult result = (s.length>1?ATextCompiler.getCompilerFromName(s[1].asString()):this)
+			CompileResult result = (s.length>1?Compilers.getCompilerFromName(s[1].asString()):this)
 					.compile(config, HudFileUtils.getFile(s[0].asString()));
 			Collections.addAll(elms, result.elements);
 			return result;

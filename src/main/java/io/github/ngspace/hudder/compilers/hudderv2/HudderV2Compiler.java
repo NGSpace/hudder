@@ -11,7 +11,6 @@ import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.MetaV2Runtim
 import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.StringV2RuntimeElement;
 import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.VariableV2RuntimeElement;
 import io.github.ngspace.hudder.config.ConfigInfo;
-import io.github.ngspace.hudder.meta.Meta;
 import io.github.ngspace.hudder.meta.MetaCompiler;
 import net.minecraft.client.MinecraftClient;
 

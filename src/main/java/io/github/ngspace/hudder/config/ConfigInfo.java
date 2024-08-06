@@ -15,6 +15,7 @@ import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.compilers.CompileException;
 import io.github.ngspace.hudder.compilers.CompileResult;
+import io.github.ngspace.hudder.compilers.Compilers;
 import io.github.ngspace.hudder.compilers.HudderV1Compiler;
 import io.github.ngspace.hudder.util.HudFileUtils;
 import net.minecraft.client.MinecraftClient;
@@ -78,7 +79,7 @@ public class ConfigInfo {
 			Hudder.log(e.getLocalizedMessage());
 			Hudder.IS_DEBUG=true;//Failed to read config, turn on IS_DEBUG.
 		}
-		try {compiler = ATextCompiler.getCompilerFromName(compilertype.toLowerCase());} 
+		try {compiler = Compilers.getCompilerFromName(compilertype.toLowerCase());} 
 		catch (Exception e) {compiler = new HudderV1Compiler();e.printStackTrace();}
 	}
 	private void setField(Field f, Object object) throws ReflectiveOperationException {

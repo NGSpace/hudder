@@ -3,6 +3,7 @@ package io.github.ngspace.hudder.meta.methods;
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.compilers.CompileException;
+import io.github.ngspace.hudder.compilers.Compilers;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.meta.Meta;
 import io.github.ngspace.hudder.meta.MetaCompiler.Value;
@@ -15,8 +16,8 @@ public class TextMethod implements IMethod {
 		if (args.length<3) throw new CompileException(
 				"\""+type+"\" only accepts \""+type+",[x],[y],[text],<scale>,<color>,<shadow>,<bg>,<bgcolor>\"");
 		try {
-			ATextCompiler compiler = args.length>8 ? ATextCompiler.getCompilerFromName(args[8].getAbsoluteValue()) 
-					: ATextCompiler.getCompilerFromName("empty");
+			ATextCompiler compiler = args.length>8 ? Compilers.getCompilerFromName(args[8].getAbsoluteValue()) 
+					: Compilers.getCompilerFromName("empty");
 			
 
 			int txlen = args[2].getAbsoluteValue().length();

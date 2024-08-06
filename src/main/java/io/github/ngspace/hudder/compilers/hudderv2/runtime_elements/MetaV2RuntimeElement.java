@@ -21,7 +21,7 @@ public class MetaV2RuntimeElement extends AV2RuntimeElement {
 	}
 
 	@Override public void execute(Meta meta, StringBuilder builder) throws CompileException {
-		String command = args[0].toLowerCase();
+//		String command = args[0].toLowerCase();
 //		if (command.equals(Meta.TOPLEFT)
 //				||command.equals(Meta.BOTTOMLEFT)
 //				||command.equals(Meta.TOPRIGHT)
