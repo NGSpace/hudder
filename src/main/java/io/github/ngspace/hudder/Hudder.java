@@ -154,7 +154,7 @@ public class Hudder implements ModInitializer {
         });
 		log(MOD_ID+" has been loaded!");
 		
-		Compilers.putCompiler("This is a lie", "io.github.ngspace.hudder.compilers.UnaccessableTestCompiler");
+		Compilers.registerCompiler("This is a lie", "io.github.ngspace.hudder.compilers.UnaccessableTestCompiler");
 	}
 	
 	public static void showToast(MinecraftClient CLIENT, Text title, Text content) {
