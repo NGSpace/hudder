@@ -32,7 +32,6 @@ public class HudderV2Compiler extends TextCompiler {
 	@Override public CompileResult compile(ConfigInfo info, String text) throws CompileException {
 		HudderV2Runtime runtime = runtimes.get(text);
 		if (runtime==null) {
-			System.out.println(text);
 			runtime = new HudderV2Runtime(this);
 			
 			StringBuilder resultBuilder = new StringBuilder();
@@ -57,6 +56,11 @@ public class HudderV2Compiler extends TextCompiler {
 				if (c=='\n') {line++;col=0;}
 				switch (compileState) {
 					case TEXT_STATE: {
+						if (safeappend) {
+							resultBuilder.append(c);
+							safeappend = !safeappend;
+							continue;
+						}
 						switch (c) {
 							case '%':
 								compileState = CONDITION_STATE;
@@ -78,6 +82,7 @@ public class HudderV2Compiler extends TextCompiler {
 							case '&':
 								resultBuilder.append('\u00A7');
 								break;
+							case '\\': safeappend = true;break;
 							default:
 								resultBuilder.append(c);
 						}
