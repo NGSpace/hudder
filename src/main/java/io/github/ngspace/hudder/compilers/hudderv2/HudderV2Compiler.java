@@ -15,7 +15,7 @@ import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.VariableV2Ru
 import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.WhileV2RuntimeElement;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.config.ConfigManager;
-import io.github.ngspace.hudder.meta.MetaCompiler;
+import io.github.ngspace.hudder.meta.MethodHandler;
 import net.minecraft.client.MinecraftClient;
 
 public class HudderV2Compiler extends TextCompiler {
@@ -26,7 +26,7 @@ public class HudderV2Compiler extends TextCompiler {
 	public static final int META_STATE = 3;
 	public static final int ADVANCED_CONDITION_STATE = 4;
 	public static final int WHILE_STATE = 5;
-	public final MetaCompiler metacomp = new MetaCompiler();
+	public final MethodHandler metacomp = new MethodHandler();
 	
 	public static MinecraftClient ins = MinecraftClient.getInstance();
 	
@@ -52,7 +52,7 @@ public class HudderV2Compiler extends TextCompiler {
 			boolean safeappend = false;
 			
 			boolean cleanup = true;
-			int cleanup_amount = ConfigManager.getConfig().metaBuffer;
+			int cleanup_amount = ConfigManager.getConfig().methodBuffer;
 			
 			int compileState = TEXT_STATE;
 
@@ -166,7 +166,7 @@ public class HudderV2Compiler extends TextCompiler {
 							resultBuilder.setLength(0);
 							metabuilder = new String[0];
 							cleanup = true;
-							cleanup_amount = ConfigManager.getConfig().metaBuffer/2;
+							cleanup_amount = ConfigManager.getConfig().methodBuffer/2;
 						}
 						break;
 					}

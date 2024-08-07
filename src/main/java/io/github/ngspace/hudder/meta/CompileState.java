@@ -9,7 +9,7 @@ import io.github.ngspace.hudder.compilers.CompileResult;
 import io.github.ngspace.hudder.config.ConfigManager;
 import io.github.ngspace.hudder.meta.elements.Element;
 
-public class Meta {
+public class CompileState {
 
 	public static final String TOPLEFT = "topleft";
 	public static final String BOTTOMLEFT = "bottomleft";
@@ -28,13 +28,13 @@ public class Meta {
 	public float BRScale = 1;
 	public List<Element> elements = new ArrayList<Element>();
 
-	public Meta(String string) {setTextLocation(string, ConfigManager.getConfig().scale);}
+	public CompileState(String string) {setTextLocation(string, ConfigManager.getConfig().scale);}
 	public void addString(String txt, boolean cleanup) throws CompileException {addString(txt,pos,cleanup);}
 	
 	protected void addString(String txt, String pos, boolean cleanup) throws CompileException {
 		String text = txt;
 		if (cleanup) {
-			int buffer = ConfigManager.getConfig().metaBuffer;
+			int buffer = ConfigManager.getConfig().methodBuffer;
 			if (buffer<10)
 				for (int i = 0; i<buffer;i++)
 					try {

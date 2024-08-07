@@ -1,13 +1,16 @@
 package io.github.ngspace.hudder.meta;
 
-import static io.github.ngspace.hudder.meta.Meta.BOTTOMLEFT;
-import static io.github.ngspace.hudder.meta.Meta.BOTTOMRIGHT;
-import static io.github.ngspace.hudder.meta.Meta.MUTE;
-import static io.github.ngspace.hudder.meta.Meta.TOPLEFT;
-import static io.github.ngspace.hudder.meta.Meta.TOPRIGHT;
+import static io.github.ngspace.hudder.meta.CompileState.BOTTOMLEFT;
+import static io.github.ngspace.hudder.meta.CompileState.BOTTOMRIGHT;
+import static io.github.ngspace.hudder.meta.CompileState.MUTE;
+import static io.github.ngspace.hudder.meta.CompileState.TOPLEFT;
+import static io.github.ngspace.hudder.meta.CompileState.TOPRIGHT;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.ATextCompiler;
@@ -26,11 +29,12 @@ import io.github.ngspace.hudder.util.HudFileUtils;
 import io.github.ngspace.hudder.util.MathUtils;
 import net.minecraft.text.Text;
 
-public class MetaCompiler {
+public class MethodHandler {
+	public List<Consumer<MethodHandler>> customMethods = new ArrayList<Consumer<MethodHandler>>();
 	public Map<String, IMethod> methods = new HashMap<String,IMethod>();
-	public static final String[] Var = new String[]{"[Variable]"};
-	public static final String[] TextArg = new String[]{"[Text]"};
-	public MetaCompiler() {
+	public static final String[] Var = {"[Variable]"};
+	public static final String[] TextArg = {"[Text]"};
+	public MethodHandler() {
 		
 		registerRenderingMethods();
 		
@@ -79,7 +83,7 @@ public class MetaCompiler {
 	 * @throws CompileException - if no message is found under the name found first value in the args parameter or
 	 *  if the method itself called this exception.
 	 */
-	public void execute(ConfigInfo config, Meta meta, ATextCompiler compiler, String[] args) throws CompileException {
+	public void execute(ConfigInfo config, CompileState meta, ATextCompiler compiler, String[] args) throws CompileException {
 		if (args.length==0) throw new CompileException("Empty method call");
 		IMethod ameta = methods.get(args[0].toLowerCase());
 		if (ameta==null) throw new CompileException("Unknown method " + args[0]);
@@ -112,6 +116,7 @@ public class MetaCompiler {
 	}
 	
 	public static class Value {
+		protected Value() {}
 		private String arg;
 		private ATextCompiler compiler;
 		public Value(String value, ATextCompiler compiler) {

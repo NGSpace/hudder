@@ -36,7 +36,7 @@ public class ConfigInfo {
 	@Expose public int yoffset = 1;
 	@Expose public int xoffset = 1;
 	@Expose public int lineHeight = 10;
-	@Expose public int metaBuffer = 2;
+	@Expose public int methodBuffer = 2;
 	//V3.0.0
 	@Expose public int backgroundcolor = 0x86353535;
 	@Expose public boolean background = false;

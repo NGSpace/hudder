@@ -4,13 +4,13 @@ import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.compilers.CompileException;
 import io.github.ngspace.hudder.config.ConfigInfo;
-import io.github.ngspace.hudder.meta.Meta;
-import io.github.ngspace.hudder.meta.MetaCompiler.Value;
+import io.github.ngspace.hudder.meta.CompileState;
+import io.github.ngspace.hudder.meta.MethodHandler.Value;
 import net.minecraft.item.ItemStack;
 
 public class InventoryInformationMethods implements IMethod {
 	@Override
-	public void invoke(ConfigInfo config, Meta m, ATextCompiler c, String type, Value... s) throws CompileException {
+	public void invoke(ConfigInfo config, CompileState m, ATextCompiler c, String type, Value... s) throws CompileException {
 		ItemStack stack = Hudder.ins.player.getInventory().getStack(s[0].asInt());
 		Object value = switch (type) {
 			case "name"         ->stack.getName().getString();

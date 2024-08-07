@@ -3,8 +3,8 @@ package io.github.ngspace.hudder.compilers;
 import java.util.Arrays;
 
 import io.github.ngspace.hudder.config.ConfigInfo;
-import io.github.ngspace.hudder.meta.Meta;
-import io.github.ngspace.hudder.meta.MetaCompiler;
+import io.github.ngspace.hudder.meta.CompileState;
+import io.github.ngspace.hudder.meta.MethodHandler;
 import net.minecraft.client.MinecraftClient;
 
 public class HudderV1Compiler extends TextCompiler {
@@ -14,14 +14,14 @@ public class HudderV1Compiler extends TextCompiler {
 	public static final int META_STATE = 3;
 	public static final int ADVANCED_CONDITION_STATE = 4;
 	public static final int WHILE_STATE = 5;
-	public final MetaCompiler metacomp = new MetaCompiler();
+	public final MethodHandler metacomp = new MethodHandler();
 	
 	public static MinecraftClient ins = MinecraftClient.getInstance();
 
 	@Override public CompileResult compile(ConfigInfo info, String text) throws CompileException {
 		
 		StringBuilder resultBuilder = new StringBuilder();
-		Meta currentMeta = new Meta(Meta.TOPLEFT);
+		CompileState currentMeta = new CompileState(CompileState.TOPLEFT);
 		
 		int line = 0;
 		int col = 0;
@@ -137,11 +137,11 @@ public class HudderV1Compiler extends TextCompiler {
 					if (compileState!=META_STATE) {
 						metabuilder = addToArray(metabuilder,metaBuilder.toString().trim());
 						String command = metabuilder[0].toLowerCase();
-						if (command.equals(Meta.TOPLEFT)
-								||command.equals(Meta.BOTTOMLEFT)
-								||command.equals(Meta.TOPRIGHT)
-								||command.equals(Meta.BOTTOMRIGHT)
-								||command.equals(Meta.MUTE)) {
+						if (command.equals(CompileState.TOPLEFT)
+								||command.equals(CompileState.BOTTOMLEFT)
+								||command.equals(CompileState.TOPRIGHT)
+								||command.equals(CompileState.BOTTOMRIGHT)
+								||command.equals(CompileState.MUTE)) {
 							currentMeta.addString(resultBuilder.toString(), true);
 							resultBuilder.setLength(0);
 						}

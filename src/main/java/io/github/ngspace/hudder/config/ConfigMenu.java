@@ -128,9 +128,9 @@ public class ConfigMenu implements ConfigScreenFactory<Screen> {
 				.build());
 		
 		/* Advanced */
-		advanced.addEntry(entryBuilder.startIntField(Text.translatable("hudder.advanced.meta"), config.metaBuffer)
-				.setTooltip(Text.translatable("hudder.advanced.meta.tooltip"))
-				.setSaveConsumer(b->config.metaBuffer=b)
+		advanced.addEntry(entryBuilder.startIntField(Text.translatable("hudder.advanced.method"), config.methodBuffer)
+				.setTooltip(Text.translatable("hudder.advanced.method.tooltip"))
+				.setSaveConsumer(b->config.methodBuffer=b)
 				.setDefaultValue(2)
 				.build());
 		advanced.addEntry(entryBuilder.startBooleanToggle(Text.translatable("hudder.advanced.f3"), config.showInF3)

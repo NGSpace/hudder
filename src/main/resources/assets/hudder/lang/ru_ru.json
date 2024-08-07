@@ -37,8 +37,8 @@
 	
 	"hudder.advanced": "Дополнительно",
 	
-	"hudder.advanced.meta": "Буфер мета-строк",
-	"hudder.advanced.meta.tooltip": "Управляйте количеством обрезаемых строк до и после метаданных",
+	"hudder.advanced.method": "Буфер мета-строк",
+	"hudder.advanced.method.tooltip": "Управляйте количеством обрезаемых строк до и после метаданных",
 	
 	"hudder.advanced.f3": "Показать при нажатии F3",
 	"hudder.advanced.f3.tooltip": "Должно рендериться, когда отображается F3",

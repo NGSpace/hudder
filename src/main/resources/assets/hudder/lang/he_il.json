@@ -37,8 +37,8 @@
 	
 	"hudder.advanced": "מתקדם",
 	
-	"hudder.advanced.meta": "Meta line buffer",
-	"hudder.advanced.meta.tooltip": "שלוט בכמות השורות שיש לקצץ לפני ואחרי metas",
+	"hudder.advanced.method": "Method line buffer",
+	"hudder.advanced.method.tooltip": "שלוט בכמות השורות שיש לקצץ לפני ואחרי Methods",
 	
 	"hudder.advanced.f3": "הצג ב-F3",
 	"hudder.advanced.f3.tooltip": "האם להראות כאשר f3 מוצג",

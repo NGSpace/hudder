@@ -3,7 +3,7 @@ package io.github.ngspace.hudder.compilers.hudderv2.runtime_elements;
 import io.github.ngspace.hudder.compilers.CompileException;
 import io.github.ngspace.hudder.compilers.hudderv2.V2Runtime;
 import io.github.ngspace.hudder.compilers.hudderv2.V2Value;
-import io.github.ngspace.hudder.meta.Meta;
+import io.github.ngspace.hudder.meta.CompileState;
 
 public class VariableV2RuntimeElement extends AV2RuntimeElement {
 	final V2Value value;
@@ -14,7 +14,7 @@ public class VariableV2RuntimeElement extends AV2RuntimeElement {
 	}
 
 	@Override
-	public void execute(Meta meta, StringBuilder builder) throws CompileException {
+	public void execute(CompileState meta, StringBuilder builder) throws CompileException {
 		builder.append(value.toObject());
 	}
 	

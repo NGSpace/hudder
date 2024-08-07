@@ -3,7 +3,7 @@ package io.github.ngspace.hudder.compilers.hudderv2.runtime_elements;
 import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.compilers.CompileException;
 import io.github.ngspace.hudder.config.ConfigInfo;
-import io.github.ngspace.hudder.meta.Meta;
+import io.github.ngspace.hudder.meta.CompileState;
 
 public class IfV2RuntimeElement extends AV2RuntimeElement {
 
@@ -20,7 +20,7 @@ public class IfV2RuntimeElement extends AV2RuntimeElement {
 	}
 	
 	@Override
-	public void execute(Meta meta, StringBuilder builder) throws CompileException {
+	public void execute(CompileState meta, StringBuilder builder) throws CompileException {
 		boolean condr = compiler.conditionCheck(condition);
 		if(condr) meta.combineWithResult(compiler.compile(info, cmds), false);
 	}

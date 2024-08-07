@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import io.github.ngspace.hudder.compilers.CompileException;
 import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.AV2RuntimeElement;
-import io.github.ngspace.hudder.meta.Meta;
+import io.github.ngspace.hudder.meta.CompileState;
 
 public class V2Runtime {
 	public final HudderV2Compiler compiler;
@@ -15,8 +15,8 @@ public class V2Runtime {
 	
 	
 	AV2RuntimeElement[] elements = new AV2RuntimeElement[0];
-	public Meta execute() throws CompileException {
-		Meta meta = new Meta(Meta.TOPLEFT);
+	public CompileState execute() throws CompileException {
+		CompileState meta = new CompileState(CompileState.TOPLEFT);
 		StringBuilder builder = new StringBuilder();
 		for (AV2RuntimeElement element : elements) element.execute(meta, builder);
 		return meta;
