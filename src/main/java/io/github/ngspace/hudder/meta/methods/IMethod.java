@@ -4,7 +4,7 @@ import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.compilers.CompileException;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.meta.CompileState;
-import io.github.ngspace.hudder.meta.MethodHandler.Value;
+import io.github.ngspace.hudder.meta.MethodValue;
 
 @FunctionalInterface
 public interface IMethod {
@@ -16,6 +16,6 @@ public interface IMethod {
 	 * @param args - the parameters supplied to this method
 	 * @throws CompileException - if the method is not called properly or is unable to execute.
 	 */
-	public void invoke(ConfigInfo config, CompileState meta, ATextCompiler compiler, String method, Value... args)
+	public void invoke(ConfigInfo config, CompileState meta, ATextCompiler compiler, String method, MethodValue... args)
 			throws CompileException;
 }

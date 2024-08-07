@@ -9,7 +9,7 @@ import io.github.ngspace.hudder.compilers.CompileResult;
 import io.github.ngspace.hudder.compilers.TextCompiler;
 import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.BasicConditionV2RuntimeElement;
 import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.IfV2RuntimeElement;
-import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.MetaV2RuntimeElement;
+import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.MethodV2RuntimeElement;
 import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.StringV2RuntimeElement;
 import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.VariableV2RuntimeElement;
 import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.WhileV2RuntimeElement;
@@ -37,14 +37,14 @@ public class HudderV2Compiler extends TextCompiler {
 		if (runtime==null) {
 			runtime = new V2Runtime(this);
 			
-			StringBuilder resultBuilder = new StringBuilder();
+			StringBuilder elemBuilder = new StringBuilder();
 			
 			int line = 0;
 			int col = 0;
 
 			int bracketscount = 0;
 
-			String[] metabuilder = {};
+			String[] methodbuilder = {};
 
 			String[] condArgs = {};
 			boolean quotesafe = false;
@@ -68,7 +68,7 @@ public class HudderV2Compiler extends TextCompiler {
 							else cleanup = false;
 						} else cleanup = false;
 						if (safeappend) {
-							resultBuilder.append(c);
+							elemBuilder.append(c);
 							safeappend = !safeappend;
 							continue;
 						}
@@ -76,75 +76,75 @@ public class HudderV2Compiler extends TextCompiler {
 							case '%':
 								compileState = CONDITION_STATE;
 								condArgs = new String[] {};
-								runtime.addRuntimeElement(new StringV2RuntimeElement(resultBuilder.toString(), false));
-								resultBuilder.setLength(0);
+								runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), false));
+								elemBuilder.setLength(0);
 								break;
 							case '{':
 								compileState = VARIABLE_STATE;
-								runtime.addRuntimeElement(new StringV2RuntimeElement(resultBuilder.toString(), false));
-								resultBuilder.setLength(0);
+								runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), false));
+								elemBuilder.setLength(0);
 								bracketscount = 1;
 								break;
 							case ';':
 								compileState = META_STATE;
-								runtime.addRuntimeElement(new StringV2RuntimeElement(resultBuilder.toString(), true));
-								resultBuilder.setLength(0);
+								runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), true));
+								elemBuilder.setLength(0);
 								break;
 							case '#':
 								compileState = ADVANCED_CONDITION_STATE;
-								runtime.addRuntimeElement(new StringV2RuntimeElement(resultBuilder.toString(), true));
-								resultBuilder.setLength(0);
+								runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), true));
+								elemBuilder.setLength(0);
 								break;
 							case '&':
-								resultBuilder.append('\u00A7');
+								elemBuilder.append('\u00A7');
 								break;
 							case '\\': safeappend = true;break;
 							default:
-								resultBuilder.append(c);
+								elemBuilder.append(c);
 						}
 						break;
 					}
 					case VARIABLE_STATE: {
 						switch (c) {
-							case '{':bracketscount++;resultBuilder.append(c);break;
+							case '{':bracketscount++;elemBuilder.append(c);break;
 							case '}':
 								bracketscount--;
 								if (bracketscount==0) {
-									runtime.addRuntimeElement(
-											new VariableV2RuntimeElement(resultBuilder.toString(), runtime));
-									resultBuilder.setLength(0);
+									runtime.addRuntimeElement(new VariableV2RuntimeElement
+											(elemBuilder.toString(), this));
+									elemBuilder.setLength(0);
 									compileState = TEXT_STATE;
-								} else resultBuilder.append(c);
+								} else elemBuilder.append(c);
 								break;
-							default: resultBuilder.append(c);break;
+							default: elemBuilder.append(c);break;
 						}
 						
 						break;
 					}
 					case CONDITION_STATE: {
 						if (c=='\\') {
-							if (condSafe) resultBuilder.append('\\');
+							if (condSafe) elemBuilder.append('\\');
 							else condSafe = true;
 							continue;
 						}
-						if (quotesafe&&c!='"') {resultBuilder.append(c);continue;}
-						if (condSafe) {resultBuilder.append(c);condSafe=false;continue;}
+						if (quotesafe&&c!='"') {elemBuilder.append(c);continue;}
+						if (condSafe) {elemBuilder.append(c);condSafe=false;continue;}
 						switch (c) {
 							case '%':
 								compileState = TEXT_STATE;
-								condArgs = addToArray(condArgs,resultBuilder.toString().trim());
-								runtime.addRuntimeElement(new BasicConditionV2RuntimeElement(condArgs, runtime, info));
-								resultBuilder.setLength(0);
+								condArgs = addToArray(condArgs,elemBuilder.toString().trim());
+								runtime.addRuntimeElement(new BasicConditionV2RuntimeElement(condArgs, this, info));
+								elemBuilder.setLength(0);
 								break;
 							case '"':
 								quotesafe = !quotesafe;
-								resultBuilder.append(c);
+								elemBuilder.append(c);
 								break;
 							case ',':
-								condArgs = addToArray(condArgs,resultBuilder.toString().trim());
-								resultBuilder.setLength(0);
+								condArgs = addToArray(condArgs,elemBuilder.toString().trim());
+								elemBuilder.setLength(0);
 								break;
-							default: resultBuilder.append(c);break;
+							default: elemBuilder.append(c);break;
 						}
 						
 						break;
@@ -155,16 +155,16 @@ public class HudderV2Compiler extends TextCompiler {
 								compileState = TEXT_STATE;
 								break;
 							case ',':
-								metabuilder = addToArray(metabuilder,resultBuilder.toString().trim());
-								resultBuilder.setLength(0);
+								methodbuilder = addToArray(methodbuilder,elemBuilder.toString().trim());
+								elemBuilder.setLength(0);
 								break;
-							default: resultBuilder.append(c);break;
+							default: elemBuilder.append(c);break;
 						}
 						if (compileState!=META_STATE) {
-							metabuilder = addToArray(metabuilder,resultBuilder.toString().trim());
-							runtime.addRuntimeElement(new MetaV2RuntimeElement(metabuilder, runtime, info));
-							resultBuilder.setLength(0);
-							metabuilder = new String[0];
+							methodbuilder = addToArray(methodbuilder,elemBuilder.toString().trim());
+							runtime.addRuntimeElement(new MethodV2RuntimeElement(methodbuilder, this, info));
+							elemBuilder.setLength(0);
+							methodbuilder = new String[0];
 							cleanup = true;
 							cleanup_amount = ConfigManager.getConfig().methodBuffer/2;
 						}
@@ -211,7 +211,7 @@ public class HudderV2Compiler extends TextCompiler {
 				}
 			}
 			
-			runtime.addRuntimeElement(new StringV2RuntimeElement(resultBuilder.toString(), true));
+			runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), true));
 			
 			if (compileState!=0) throw new CompileException(getErrorMessage(compileState),line,col);
 			
@@ -232,13 +232,13 @@ public class HudderV2Compiler extends TextCompiler {
 		});
 		return strb.toString();
 	}
-
 	@Override
 	public Object getVariable(String string) throws CompileException {
 		Object val = super.getVariable(string.toLowerCase());
 		if (val instanceof Number num&&num.doubleValue()%1==0) return num.longValue();
 		return val;
 	}
+	
 	public static <T> T[] addToArray(T[] arr, T t) {
 		T[] newarr = Arrays.copyOf(arr, arr.length+1);
 		newarr[arr.length] = t;

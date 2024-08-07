@@ -1,16 +1,17 @@
 package io.github.ngspace.hudder.compilers.hudderv2;
 
+import io.github.ngspace.hudder.compilers.AVarTextCompiler;
 import io.github.ngspace.hudder.compilers.CompileException;
-import io.github.ngspace.hudder.meta.MethodHandler.Value;
+import io.github.ngspace.hudder.meta.MethodValue;
 
-public class V2Value extends Value {
-	final V2Runtime runtime;
-	final String value;
-	public V2Value(String value, V2Runtime runtime) {
-		this.runtime = runtime;
-		this.value = value;
+public class V2Value extends MethodValue {
+	boolean isStatic = false;
+	public V2Value(String value, AVarTextCompiler compiler) {
+		super(value, compiler);
+		isStatic = compiler.isStaticVariable(value);
 	}
 	public Object toObject() throws CompileException {
-		return runtime.compiler.getVariable(value);
+		if (isStatic) return compiler.getStaticVariable(value);
+		return compiler.getVariable(value);
 	}
 }

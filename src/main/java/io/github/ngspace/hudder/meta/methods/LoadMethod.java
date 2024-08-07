@@ -7,12 +7,12 @@ import io.github.ngspace.hudder.compilers.CompileException;
 import io.github.ngspace.hudder.compilers.Compilers;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.meta.CompileState;
-import io.github.ngspace.hudder.meta.MethodHandler.Value;
+import io.github.ngspace.hudder.meta.MethodValue;
 import io.github.ngspace.hudder.util.HudFileUtils;
 
 public class LoadMethod implements IMethod {
 	@Override
-	public void invoke(ConfigInfo ci, CompileState meta, ATextCompiler comp, String type, Value... args) throws CompileException {
+	public void invoke(ConfigInfo ci, CompileState meta, ATextCompiler comp, String type, MethodValue... args) throws CompileException {
 		if (args.length<1)
 			throw new CompileException("\""+type+"\" only accepts \""+type+",[file],<text>,<compiler>\"");
 		try {

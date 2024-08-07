@@ -6,14 +6,14 @@ import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.compilers.CompileException;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.meta.CompileState;
-import io.github.ngspace.hudder.meta.MethodHandler.Value;
+import io.github.ngspace.hudder.meta.MethodValue;
 import io.github.ngspace.hudder.meta.elements.TextureElement;
 import io.github.ngspace.hudder.util.HudFileUtils;
 import net.minecraft.util.Identifier;
 
 public class TexturesMethods implements IMethod {
 
-	@Override public void invoke(ConfigInfo i, CompileState m, ATextCompiler c, String type, Value... s) throws CompileException {
+	@Override public void invoke(ConfigInfo i, CompileState m, ATextCompiler c, String type, MethodValue... s) throws CompileException {
 		switch (type) {
 			case "image","png":
         		try {

@@ -24,16 +24,35 @@ public abstract class AVarTextCompiler extends ATextCompiler {
 		}
 	}
 	public Object getPureVariable(String key) {
+		Object obj = getStaticVariable(key);
+		if (obj==null) return key;
+		return obj;
+	}
+	public boolean isStaticVariable(String key) {
+		return getOperator(key)==null && !key.contains("=") && !key.contains("+") && !key.contains("-")
+				&& !key.contains("*") && !key.contains("/") && !key.contains("%");
+	}
+	public Object getStaticVariable(String key) {
 		Object obj = getNumber(key);
 		if (obj!=null) return obj;
 		if ((obj=getBoolean(key))!=null) return obj;
 		if ((obj=getString(key))!=null) return obj;
-		if ((obj=get(key))!=null) return obj;
 		if ((obj=ConfigManager.getConfig().globalVariables.get(key))!=null) return obj;
-		return getPrimitive(key);
+		if ((obj=get(key))!=null) return obj;
+		if ("true".equals(key)) return true;
+		if ("false".equals(key)) return false;
+		return null;
 	}
-	public Object getPrimitive(String key) {
-		/* If key wasn't found, return the name of the key. */
-		return switch (key) {case "true" -> true; case "false" -> false; default -> key;};
+	/**
+	 * Dumbest thing I ever wrote... but it works.
+	 */
+	public String getOperator(String condString) {
+		if (condString.contains("==")) return "==";
+		if (condString.contains(">=")) return ">=";
+		if (condString.contains("<=")) return "<=";
+		if (condString.contains(">" )) return ">" ;
+		if (condString.contains("<" )) return "<" ;
+		if (condString.contains("!=")) return "!=";
+		return null;
 	}
 }

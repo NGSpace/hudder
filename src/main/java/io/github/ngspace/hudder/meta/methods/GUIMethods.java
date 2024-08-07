@@ -4,13 +4,13 @@ import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.compilers.CompileException;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.meta.CompileState;
-import io.github.ngspace.hudder.meta.MethodHandler.Value;
+import io.github.ngspace.hudder.meta.MethodValue;
 import io.github.ngspace.hudder.meta.elements.GameHudElement;
 import io.github.ngspace.hudder.meta.elements.GameHudElement.GuiType;
 
 public class GUIMethods implements IMethod {
 	@Override
-	public void invoke(ConfigInfo conf, CompileState meta, ATextCompiler comp, String type, Value... s) throws CompileException {
+	public void invoke(ConfigInfo conf, CompileState meta, ATextCompiler comp, String type, MethodValue... s) throws CompileException {
 		if (s.length!=2) throw new CompileException("\""+type+"\" only accepts \""+type+", [X], [Y]\"");
 		int x = s[0].asInt();
 		int y = s[1].asInt();

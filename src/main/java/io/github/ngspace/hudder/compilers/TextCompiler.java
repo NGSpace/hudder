@@ -54,17 +54,4 @@ public abstract class TextCompiler extends AVarTextCompiler {
 			default -> throw new IllegalArgumentException("Unknown condition: "+condition);//Someone is tampering fo sure
 		};
 	}
-	
-	/**
-	 * Dumbest thing I ever wrote... but it works.
-	 */
-	public String getOperator(String condString) {
-		if (condString.contains("==")) return "==";
-		if (condString.contains(">=")) return ">=";
-		if (condString.contains("<=")) return "<=";
-		if (condString.contains(">")) return ">";
-		if (condString.contains("<")) return "<";
-		if (condString.contains("!=")) return "!=";
-		return null;
-	}
 }

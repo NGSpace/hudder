@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import io.github.ngspace.hudder.Hudder;
-import io.github.ngspace.hudder.compilers.ATextCompiler;
+import io.github.ngspace.hudder.compilers.AVarTextCompiler;
 import io.github.ngspace.hudder.compilers.CompileException;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.meta.methods.DecimalMethods;
@@ -26,7 +26,6 @@ import io.github.ngspace.hudder.meta.methods.StringMethods;
 import io.github.ngspace.hudder.meta.methods.TextMethod;
 import io.github.ngspace.hudder.meta.methods.TexturesMethods;
 import io.github.ngspace.hudder.util.HudFileUtils;
-import io.github.ngspace.hudder.util.MathUtils;
 import net.minecraft.text.Text;
 
 public class MethodHandler {
@@ -83,12 +82,12 @@ public class MethodHandler {
 	 * @throws CompileException - if no message is found under the name found first value in the args parameter or
 	 *  if the method itself called this exception.
 	 */
-	public void execute(ConfigInfo config, CompileState meta, ATextCompiler compiler, String[] args) throws CompileException {
+	public void execute(ConfigInfo config, CompileState meta, AVarTextCompiler compiler, String[] args) throws CompileException {
 		if (args.length==0) throw new CompileException("Empty method call");
 		IMethod ameta = methods.get(args[0].toLowerCase());
 		if (ameta==null) throw new CompileException("Unknown method " + args[0]);
-		Value[] vals = new Value[args.length-1];
-		for (int i = 0;i<vals.length;i++) vals[i] = new Value(args[i+1],compiler);
+		MethodValue[] vals = new MethodValue[args.length-1];
+		for (int i = 0;i<vals.length;i++) vals[i] = new MethodValue(args[i+1],compiler);
 		ameta.invoke(config, meta, compiler, args[0], vals);
 	}
 	/**
@@ -113,24 +112,6 @@ public class MethodHandler {
 			method.invoke(config,meta,compiler,type,vals);
 		};
 		for (String name : names) methods.put(name,newmethod);
-	}
-	
-	public static class Value {
-		protected Value() {}
-		private String arg;
-		private ATextCompiler compiler;
-		public Value(String value, ATextCompiler compiler) {
-			this.arg=value;
-			this.compiler=compiler;
-		}
-		public String getAbsoluteValue() {return arg;}
-		@Override public String toString() {return getAbsoluteValue();}
-		public ATextCompiler getCompiler() {return compiler;}
-		
-		public String asString() throws CompileException {return String.valueOf(compiler.getVariable(arg.trim()));}
-		public int asInt() throws CompileException {return tryParseInt(compiler.getVariable(arg.trim()));}
-		public double asDouble() throws CompileException {return tryParse(compiler.getVariable(arg.trim()));}
-		public boolean asBoolean() {return tryParseBool(compiler.get(arg.trim()));}
 	}
 	
 	public void registerRenderingMethods() {
@@ -160,26 +141,5 @@ public class MethodHandler {
 		//Text Width
 		register((c,m,a,t,s)->a.put(s[1].getAbsoluteValue(), Hudder.ins.textRenderer.getWidth(s[0].asString())),
 				2, new String[] {"[Text]",Var[0]}, "strwidth");
-	}
-	/**
-	 * Try to parse as double, if not return 0.
-	 * @param obj - the object to parse
-	 * @return a double representation of obj or 0.
-	 */
-	public static double tryParse(Object obj) {return MathUtils.tryParse(obj);}
-	/**
-	 * Try to parse as int, if not return 0.
-	 * @param obj - the object to parse
-	 * @return a int representation of obj or 0.
-	 */
-	public static int tryParseInt(Object obj) {return MathUtils.tryParseInt(obj);}
-	/**
-	 * Parse as boolean.
-	 * @param obj - the object to parse
-	 * @return a boolean representation of object.
-	 */
-	public static boolean tryParseBool(Object object) {
-		if (object instanceof Boolean) return (boolean) object;
-		return Boolean.valueOf(String.valueOf(object));
 	}
 }
