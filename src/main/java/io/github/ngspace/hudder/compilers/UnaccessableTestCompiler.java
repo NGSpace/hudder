@@ -13,5 +13,11 @@ public class UnaccessableTestCompiler extends ATextCompiler {
 	public Object getVariable(String key) throws CompileException {
 		return "Advanchment unlocked: How did we get here?";
 	}
+
+	@Override
+	public boolean conditionCheck(String condition) throws CompileException {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 }

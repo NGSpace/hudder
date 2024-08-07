@@ -20,7 +20,6 @@ public class StringV2RuntimeElement extends AV2RuntimeElement {
 				for (int i = 0; i<buffer;i++) {
 					if (str.startsWith("\n")||str.startsWith("\r")) str = str.substring(1);
 				}
-//			System.out.println(str);
 			builder.append(str);
 			meta.addString(builder.toString(), false);
 			builder.setLength(0);

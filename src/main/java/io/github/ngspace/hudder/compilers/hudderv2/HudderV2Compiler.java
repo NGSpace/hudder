@@ -10,6 +10,7 @@ import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.BasicConditi
 import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.MetaV2RuntimeElement;
 import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.StringV2RuntimeElement;
 import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.VariableV2RuntimeElement;
+import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.WhileV2RuntimeElement;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.config.ConfigManager;
 import io.github.ngspace.hudder.meta.MetaCompiler;
@@ -27,12 +28,12 @@ public class HudderV2Compiler extends TextCompiler {
 	
 	public static MinecraftClient ins = MinecraftClient.getInstance();
 	
-	HashMap<String, HudderV2Runtime> runtimes = new HashMap<String, HudderV2Runtime>();
+	HashMap<String, V2Runtime> runtimes = new HashMap<String, V2Runtime>();
 
 	@Override public CompileResult compile(ConfigInfo info, String text) throws CompileException {
-		HudderV2Runtime runtime = runtimes.get(text);
+		V2Runtime runtime = runtimes.get(text);
 		if (runtime==null) {
-			runtime = new HudderV2Runtime(this);
+			runtime = new V2Runtime(this);
 			
 			StringBuilder resultBuilder = new StringBuilder();
 			
@@ -84,6 +85,11 @@ public class HudderV2Compiler extends TextCompiler {
 								break;
 							case ';':
 								compileState = META_STATE;
+								runtime.addRuntimeElement(new StringV2RuntimeElement(resultBuilder.toString(), true));
+								resultBuilder.setLength(0);
+								break;
+							case '#':
+								compileState = ADVANCED_CONDITION_STATE;
 								runtime.addRuntimeElement(new StringV2RuntimeElement(resultBuilder.toString(), true));
 								resultBuilder.setLength(0);
 								break;
@@ -160,6 +166,48 @@ public class HudderV2Compiler extends TextCompiler {
 							cleanup = true;
 							cleanup_amount = ConfigManager.getConfig().metaBuffer/2;
 						}
+						break;
+					}
+					case ADVANCED_CONDITION_STATE, WHILE_STATE: {
+						boolean isWhile = compileState==WHILE_STATE;
+						compileState = TEXT_STATE; //This mode is unique because it does it all in one go.
+						StringBuilder condBuilder = new StringBuilder();
+						for (;ind<text.length();ind++) {
+							if ((c = text.charAt(ind))=='\n') break;
+							else if(c==' '&&condBuilder.toString().equals("while")) {
+								condBuilder.setLength(0);
+								isWhile=true;
+							} else if(c==' '&&condBuilder.toString().equals("if")) condBuilder.setLength(0);
+							else condBuilder.append(c);
+						}
+						String cond = condBuilder.toString();
+						StringBuilder instructions = new StringBuilder();
+						boolean condition = conditionCheck(cond);
+						ind++;
+						if (ind<text.length()&&text.charAt(ind)=='\t') {
+							ind++;
+							for (;ind<text.length();ind++) {
+								c = text.charAt(ind);
+								if ((c=='\n')&&ind+1<text.length()) {
+									if (text.charAt(ind+1)=='\t') {ind++;}
+									else {instructions.append('\n');break;}
+									
+								}
+								if (condition) instructions.append(c);
+							}
+						} else ind--;
+						if (!condition) break;
+						if (isWhile) {
+							String cmds = instructions.toString();
+							runtime.addRuntimeElement(new WhileV2RuntimeElement(info, cond, cmds, this));
+							break;
+						}
+						//TODO Add if statements
+//						CompileResult result = compile(info, instructions.toString());
+//						currentMeta.combineWithResult(result, false);
+//						String resStr = (result.TopLeftText);
+//						resultBuilder.append(resStr);
+//						if (resStr.length()>0&&resStr.charAt(resStr.length()-1)!='\n')resultBuilder.append('\n');
 						break;
 					}
 					default: throw new CompileException("Unknown compile state: " + compileState);

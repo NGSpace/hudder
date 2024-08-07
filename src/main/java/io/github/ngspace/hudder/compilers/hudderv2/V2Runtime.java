@@ -6,9 +6,9 @@ import io.github.ngspace.hudder.compilers.CompileException;
 import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.AV2RuntimeElement;
 import io.github.ngspace.hudder.meta.Meta;
 
-public class HudderV2Runtime {
+public class V2Runtime {
 	public final HudderV2Compiler compiler;
-	public HudderV2Runtime(HudderV2Compiler compiler) {
+	public V2Runtime(HudderV2Compiler compiler) {
 		this.compiler = compiler;
 	}
 	

@@ -299,4 +299,9 @@ public class JavaScriptCompiler extends AVarTextCompiler {
 	 */
 	@FunctionalInterface
 	public static interface Cons<E extends Exception> extends NoThisAndNoResult<E> {}
+	@Override
+	public boolean conditionCheck(String condition) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
