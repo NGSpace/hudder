@@ -3,10 +3,12 @@ package io.github.ngspace.hudder.compilers.hudderv2;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.CompileException;
 import io.github.ngspace.hudder.compilers.CompileResult;
 import io.github.ngspace.hudder.compilers.TextCompiler;
 import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.BasicConditionV2RuntimeElement;
+import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.IfV2RuntimeElement;
 import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.MetaV2RuntimeElement;
 import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.StringV2RuntimeElement;
 import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.VariableV2RuntimeElement;
@@ -170,6 +172,7 @@ public class HudderV2Compiler extends TextCompiler {
 					}
 					case ADVANCED_CONDITION_STATE, WHILE_STATE: {
 						boolean isWhile = compileState==WHILE_STATE;
+						Hudder.log(isWhile);
 						compileState = TEXT_STATE; //This mode is unique because it does it all in one go.
 						StringBuilder condBuilder = new StringBuilder();
 						for (;ind<text.length();ind++) {
@@ -182,7 +185,6 @@ public class HudderV2Compiler extends TextCompiler {
 						}
 						String cond = condBuilder.toString();
 						StringBuilder instructions = new StringBuilder();
-						boolean condition = conditionCheck(cond);
 						ind++;
 						if (ind<text.length()&&text.charAt(ind)=='\t') {
 							ind++;
@@ -193,21 +195,16 @@ public class HudderV2Compiler extends TextCompiler {
 									else {instructions.append('\n');break;}
 									
 								}
-								if (condition) instructions.append(c);
+								instructions.append(c);
 							}
 						} else ind--;
-						if (!condition) break;
+						String cmds = instructions.toString();
 						if (isWhile) {
-							String cmds = instructions.toString();
 							runtime.addRuntimeElement(new WhileV2RuntimeElement(info, cond, cmds, this));
 							break;
 						}
-						//TODO Add if statements
-//						CompileResult result = compile(info, instructions.toString());
-//						currentMeta.combineWithResult(result, false);
-//						String resStr = (result.TopLeftText);
-//						resultBuilder.append(resStr);
-//						if (resStr.length()>0&&resStr.charAt(resStr.length()-1)!='\n')resultBuilder.append('\n');
+						System.out.println(isWhile);
+						runtime.addRuntimeElement(new IfV2RuntimeElement(info, cond, cmds, this));
 						break;
 					}
 					default: throw new CompileException("Unknown compile state: " + compileState);

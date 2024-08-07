@@ -73,7 +73,6 @@ public class HudderV1Compiler extends TextCompiler {
 							resultBuilder.append('\u00A7');
 							break;
 						case '#': compileState = ADVANCED_CONDITION_STATE;break;
-//						case '@': compileState = WHILE_STATE;break;
 						default:
 							resultBuilder.append(c);
 							break;
