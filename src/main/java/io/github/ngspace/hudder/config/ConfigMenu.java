@@ -13,7 +13,7 @@ import java.util.function.Function;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 
 import io.github.ngspace.hudder.Hudder;
-import io.github.ngspace.hudder.compilers.ATextCompiler;
+import io.github.ngspace.hudder.compilers.Compilers;
 import io.github.ngspace.hudder.util.HudFileUtils;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
@@ -128,9 +128,9 @@ public class ConfigMenu implements ConfigScreenFactory<Screen> {
 				.build());
 		
 		/* Advanced */
-		advanced.addEntry(entryBuilder.startIntField(Text.translatable("hudder.advanced.meta"), config.metaBuffer)
-				.setTooltip(Text.translatable("hudder.advanced.meta.tooltip"))
-				.setSaveConsumer(b->config.metaBuffer=b)
+		advanced.addEntry(entryBuilder.startIntField(Text.translatable("hudder.advanced.method"), config.methodBuffer)
+				.setTooltip(Text.translatable("hudder.advanced.method.tooltip"))
+				.setSaveConsumer(b->config.methodBuffer=b)
 				.setDefaultValue(2)
 				.build());
 		advanced.addEntry(entryBuilder.startBooleanToggle(Text.translatable("hudder.advanced.f3"), config.showInF3)
@@ -144,7 +144,7 @@ public class ConfigMenu implements ConfigScreenFactory<Screen> {
 	    		.setTooltip(Text.translatable("hudder.advanced.compilertype.tooltip"))
 	    		.setDefaultValue("hudder")
 	    		.setSaveConsumer(b->config.compilertype=b.toLowerCase())
-	    		.setErrorSupplier(e->ATextCompiler.compilers.get(e.toLowerCase())==null?
+	    		.setErrorSupplier(e->Compilers.get(e.toLowerCase())==null?
 	    				Optional.of(Text.translatable("hudder.advanced.compilertype.error")):Optional.empty())
 	    		.build());
 		advanced.addEntry(

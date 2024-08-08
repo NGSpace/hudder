@@ -5,15 +5,6 @@ import java.util.Objects;
 import io.github.ngspace.hudder.config.ConfigInfo;
 
 public abstract class TextCompiler extends AVarTextCompiler {
-	
-	@Override public Object getVariable(String key) throws CompileException {
-		if (getOperator(key)!=null) return conditionCheck(key);
-		String[] values = key.split("=",2);
-		if (values.length==1) return super.getVariable(key);
-		Object newval = super.getVariable(values[1]);
-		put(values[0].trim(), newval);
-		return newval;
-	}
 	/**
 	 * Solves an if...else...etc condition and returns it's value.
 	 * @param ci - the ConfigInfo object
@@ -53,18 +44,5 @@ public abstract class TextCompiler extends AVarTextCompiler {
 			case "<"  -> numcond1< numcond2;
 			default -> throw new IllegalArgumentException("Unknown condition: "+condition);//Someone is tampering fo sure
 		};
-	}
-	
-	/**
-	 * Dumbest thing I ever wrote... but it works.
-	 */
-	public String getOperator(String condString) {
-		if (condString.contains("==")) return "==";
-		if (condString.contains(">=")) return ">=";
-		if (condString.contains("<=")) return "<=";
-		if (condString.contains(">")) return ">";
-		if (condString.contains("<")) return "<";
-		if (condString.contains("!=")) return "!=";
-		return null;
 	}
 }

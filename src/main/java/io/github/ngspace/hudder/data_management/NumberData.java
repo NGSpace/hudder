@@ -125,7 +125,7 @@ public class NumberData {private NumberData() {}
 			case "yoffset": yield (double) ConfigManager.getConfig().yoffset;
 			case "xoffset": yield (double) ConfigManager.getConfig().xoffset;
 			case "lineheight": yield (double) ConfigManager.getConfig().lineHeight;
-			case "metabuffer": yield (double) ConfigManager.getConfig().metaBuffer;
+			case "metabuffer": yield (double) ConfigManager.getConfig().methodBuffer;
 			case "backgroundcolor": yield (double) ConfigManager.getConfig().backgroundcolor;
 			
 			

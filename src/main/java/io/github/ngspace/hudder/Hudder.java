@@ -21,6 +21,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.compilers.CompileException;
 import io.github.ngspace.hudder.compilers.CompileResult;
+import io.github.ngspace.hudder.compilers.Compilers;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.config.ConfigManager;
 import io.github.ngspace.hudder.data_management.Advanced;
@@ -144,14 +145,15 @@ public class Hudder implements ModInitializer {
             	RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
 	            try {
-	            	if (result!=null) renderer.drawCompileResult(context, ins.textRenderer, result, config,
-	            			delta);
+	            	if (result!=null) renderer.drawCompileResult(context, ins.textRenderer, result, config, delta);
 	            	else renderer.renderFail(context, LastFailMessage);
 				} catch (Exception e) {renderer.renderFail(context, e.getLocalizedMessage());}
             	RenderSystem.disableBlend();
 			}
         });
 		log(MOD_ID+" has been loaded!");
+		
+		Compilers.registerCompiler("This is a lie", "io.github.ngspace.hudder.compilers.UnaccessableTestCompiler");
 	}
 	
 	public static void showToast(MinecraftClient CLIENT, Text title, Text content) {
