@@ -1,6 +1,5 @@
 package io.github.ngspace.hudder.meta;
 
-import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.compilers.AVarTextCompiler;
 import io.github.ngspace.hudder.compilers.CompileException;
 import io.github.ngspace.hudder.util.MathUtils;
@@ -15,7 +14,7 @@ public class MethodValue {
 	}
 	public String getAbsoluteValue() {return value;}
 	@Override public String toString() {return getAbsoluteValue();}
-	public ATextCompiler getCompiler() {return compiler;}
+	public AVarTextCompiler getCompiler() {return compiler;}
 	
 	public String asString() throws CompileException {return String.valueOf(compiler.getVariable(value.trim()));}
 	public int asInt() throws CompileException {return tryParseInt(compiler.getVariable(value.trim()));}

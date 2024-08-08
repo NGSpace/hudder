@@ -14,25 +14,39 @@ public class V2Value extends MethodValue {
 	public boolean isSet = false;
 	public String setKey;
 	public V2Value setValue;
-	public V2Value(String value, AVarTextCompiler compiler) {
+	
+	public boolean isMath = false;
+	public V2Value[] values;
+	public char[] operations;
+	
+	protected V2Value(String value, AVarTextCompiler compiler) {
 		super(value.toLowerCase(), compiler);
 		isStatic = compiler.isStaticVariable(value.toLowerCase());
+		if (isStatic) return;
 		isDynamic = compiler.isDynamicVariable(value.toLowerCase());
-		String[] values = value.split("=",2);
-		isSet = values.length==2&&!compiler.isFirstEqualsCondition(value);
+		if (isDynamic) return;
+		String[] conditionValues = value.split("=",2);
+		isSet = conditionValues.length==2&&!compiler.isFirstEqualsCondition(value);
 		if (isSet) {
-			setKey = values[0];
-			setValue = new V2Value(values[1], compiler);
+			setKey = conditionValues[0];
+			setValue = of(conditionValues[1], compiler);
 			return;
 		}
-		int i = 0;
+		char c;
 		//TODO mathematical optimizations
 		System.out.println(value.toLowerCase() + " " + isStatic + " " + isDynamic + " " + isSet);
 	}
-	public Object toObject() throws CompileException {
+	
+	//Should ideally be overwritten by anyone extending this class
+	/**
+	 * Process the value and return it as an Object.
+	 * @return an Object of any kind.
+	 * @throws CompileException
+	 */
+	public Object get() throws CompileException {
 		if (isStatic) return compiler.getStaticVariable(value);
 		if (isDynamic) return compiler.getStaticVariable(value);
-		if (isSet) compiler.put(setKey, setValue.toObject());
+		if (isSet) compiler.put(setKey, setValue.get());
 		return compiler.getVariable(value);
 	}
 	
@@ -40,5 +54,31 @@ public class V2Value extends MethodValue {
 		T[] newarr = Arrays.copyOf(arr, arr.length+1);
 		newarr[arr.length] = t;
 		return newarr;
+	}
+	
+	public static class V2StringValue extends V2Value {
+		public V2StringValue(String value, AVarTextCompiler compiler) {
+			this.value=value;
+			this.compiler=compiler;
+		}
+		@Override public Object get() throws CompileException {
+			return value;
+		}
+	}
+	
+	public static V2Value of(String valuee, AVarTextCompiler compiler) {
+		String value = valuee.trim();
+		if (!value.startsWith("\"")||!value.endsWith("\"")) return new V2Value(valuee, compiler);
+		value = value.substring(1,value.length()-1);
+		char c;
+		boolean safe = false;
+		for (int i = 0;i<value.length();i++) {
+			c = value.charAt(i);
+			if (c=='\\') safe = !safe; else {
+				if (c=='"'&&!safe) return new V2Value(valuee, compiler); 
+				safe = false;
+			}
+		}
+		return new V2StringValue(value, compiler);
 	}
 }

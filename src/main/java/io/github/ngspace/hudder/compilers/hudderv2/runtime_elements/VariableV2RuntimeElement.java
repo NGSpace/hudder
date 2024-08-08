@@ -14,10 +14,10 @@ public class VariableV2RuntimeElement extends AV2RuntimeElement {
 	}
 
 	@Override public void execute(CompileState meta, StringBuilder builder) throws CompileException {
-		Object val = value.toObject();
+		Object val = value.get();
 		if (val instanceof Number num&&num.doubleValue()%1==0) val = num.longValue();
 		builder.append(val);
 	}
 	
-	public V2Value getValue(String s) {return new V2Value(s, compiler);}
+	public V2Value getValue(String s) {return V2Value.of(s, compiler);}
 }
