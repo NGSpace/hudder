@@ -9,11 +9,20 @@ import io.github.ngspace.hudder.config.ConfigManager;
 
 public abstract class AVarTextCompiler extends ATextCompiler {
 	
+	public boolean isFirstEqualsCondition(String key) {
+		int i = key.indexOf('=');
+		if (i==-1&&!key.contains(">")&&!key.contains("<")) return false;
+		if (i==key.length()) return false;
+		if (i==0) return false;
+		char pre = key.charAt(i-1);
+		return pre=='<'||pre=='>'||pre=='!'||key.charAt(i+1)=='=';
+	}
+	
 	@Override public Object getVariable(String key) throws CompileException {
-		if (getOperator(key)!=null) return conditionCheck(key);
+		if (isFirstEqualsCondition(key)) return conditionCheck(key);
 		String[] values = key.split("=",2);
 		if (values.length==1) return getMathVariable(key);
-		Object newval = getMathVariable(values[1]);
+		Object newval = getVariable(values[1]);
 		put(values[0].trim(), newval);
 		return newval;
 	}

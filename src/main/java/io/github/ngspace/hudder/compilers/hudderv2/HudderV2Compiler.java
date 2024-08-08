@@ -226,8 +226,8 @@ public class HudderV2Compiler extends TextCompiler {
 			case VARIABLE_STATE -> "Expected '}'";
 			case CONDITION_STATE -> "Expected '%'";
 			case META_STATE -> "Expected ';'";
-			case ADVANCED_CONDITION_STATE -> "Expected End of ADVANCED_CONDITION_STATE";
-			case WHILE_STATE -> "Expected End of WHILE_STATE";
+			case ADVANCED_CONDITION_STATE -> "Expected end of ADVANCED_CONDITION_STATE";
+			case WHILE_STATE -> "Expected end of WHILE_STATE";
 			default -> "An unknown error has occurred";
 		});
 		return strb.toString();
