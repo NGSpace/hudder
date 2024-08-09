@@ -30,6 +30,7 @@ public class V2Value extends MethodValue {
 		if (isSet) {
 			setKey = conditionValues[0];
 			setValue = of(conditionValues[1], compiler);
+			System.out.println(setValue.value + setValue.getClass());
 			return;
 		}
 		char c;
@@ -37,16 +38,20 @@ public class V2Value extends MethodValue {
 		System.out.println(value.toLowerCase() + " " + isStatic + " " + isDynamic + " " + isSet);
 	}
 	
-	//Should ideally be overwritten by anyone extending this class
 	/**
 	 * Process the value and return it as an Object.
+	 * Should ideally be overwritten by anyone extending this class
 	 * @return an Object of any kind.
 	 * @throws CompileException
 	 */
 	public Object get() throws CompileException {
 		if (isStatic) return compiler.getStaticVariable(value);
 		if (isDynamic) return compiler.getStaticVariable(value);
-		if (isSet) compiler.put(setKey, setValue.get());
+		if (isSet) {
+			Object ohsaycanyousee = setValue.get();//I'm not American, I'm just sleep deprived.
+			compiler.put(setKey, ohsaycanyousee);
+			return ohsaycanyousee;
+		}
 		return compiler.getVariable(value);
 	}
 	
@@ -57,28 +62,25 @@ public class V2Value extends MethodValue {
 	}
 	
 	public static class V2StringValue extends V2Value {
-		public V2StringValue(String value, AVarTextCompiler compiler) {
-			this.value=value;
-			this.compiler=compiler;
-		}
-		@Override public Object get() throws CompileException {
-			return value;
-		}
+		public V2StringValue(String value, AVarTextCompiler compiler) {this.value=value;this.compiler=compiler;}
+		@Override public Object get() throws CompileException {return value;}
 	}
 	
 	public static V2Value of(String valuee, AVarTextCompiler compiler) {
 		String value = valuee.trim();
 		if (!value.startsWith("\"")||!value.endsWith("\"")) return new V2Value(valuee, compiler);
 		value = value.substring(1,value.length()-1);
+		StringBuilder string = new StringBuilder();
 		char c;
 		boolean safe = false;
 		for (int i = 0;i<value.length();i++) {
 			c = value.charAt(i);
-			if (c=='\\') safe = !safe; else {
+			if (c=='\\'&&!safe) safe = true; else {
 				if (c=='"'&&!safe) return new V2Value(valuee, compiler); 
 				safe = false;
+				string.append(c);
 			}
 		}
-		return new V2StringValue(value, compiler);
+		return new V2StringValue(string.toString(), compiler);
 	}
 }
