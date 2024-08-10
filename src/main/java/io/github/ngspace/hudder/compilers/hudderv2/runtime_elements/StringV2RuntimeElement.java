@@ -7,12 +7,12 @@ import io.github.ngspace.hudder.meta.CompileState;
 public class StringV2RuntimeElement extends AV2RuntimeElement {
 	final String string;
 	final boolean cleanUp;
-	final boolean add;
+	final boolean addToMeta;
 	public StringV2RuntimeElement(String string, boolean cleanUp) {this(string,cleanUp,cleanUp);}
 	public StringV2RuntimeElement(String string, boolean cleanUp, boolean add) {
 		this.string = string;
 		this.cleanUp = cleanUp;
-		this.add = add;
+		this.addToMeta = add;
 	}
 	@Override public void execute(CompileState meta, StringBuilder builder) throws CompileException {
 
@@ -24,7 +24,7 @@ public class StringV2RuntimeElement extends AV2RuntimeElement {
 					if (str.endsWith("\n")||str.endsWith("\r")) str = str.substring(0, str.length()-1);
 				}
 		}
-		if (add) {
+		if (addToMeta) {
 			builder.append(str);
 			meta.addString(builder.toString(), false);
 			builder.setLength(0);
