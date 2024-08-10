@@ -212,7 +212,7 @@ public class HudderV2Compiler extends TextCompiler {
 				}
 			}
 			
-			runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), true));
+			runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), false, true));
 			
 			if (compileState!=0) throw new CompileException(getErrorMessage(compileState),line,col);
 			
