@@ -13,7 +13,7 @@ import java.util.function.Function;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 
 import io.github.ngspace.hudder.Hudder;
-import io.github.ngspace.hudder.compilers.Compilers;
+import io.github.ngspace.hudder.compilers.utils.Compilers;
 import io.github.ngspace.hudder.util.HudFileUtils;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;

@@ -4,7 +4,7 @@ import org.joml.Matrix4f;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import io.github.ngspace.hudder.compilers.CompileResult;
+import io.github.ngspace.hudder.compilers.utils.CompileResult;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.meta.elements.Element;
 import net.minecraft.client.font.TextRenderer;

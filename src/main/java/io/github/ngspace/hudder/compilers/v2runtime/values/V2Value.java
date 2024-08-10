@@ -1,12 +1,14 @@
-package io.github.ngspace.hudder.compilers.hudderv2;
+package io.github.ngspace.hudder.compilers.v2runtime.values;
 
 import java.util.Arrays;
 import java.util.Objects;
 
-import io.github.ngspace.hudder.compilers.AVarTextCompiler;
-import io.github.ngspace.hudder.compilers.CompileException;
+import io.github.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
+import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.meta.MethodValue;
 import io.github.ngspace.hudder.util.MathUtils;
+
+import static io.github.ngspace.hudder.compilers.v2runtime.values.V2Values.of;
 
 public class V2Value extends MethodValue {
 	protected V2Value() {}
@@ -26,7 +28,10 @@ public class V2Value extends MethodValue {
 	public String operator;
 	public V2Value comparison2;
 	
-	protected V2Value(String valuee, AVarTextCompiler compiler) {
+	/**
+	 * Use {@code V2Values.of(value, compiler)} instead.
+	 */
+	public V2Value(String valuee, AVarTextCompiler compiler) {
 		super(valuee.toLowerCase().trim(), compiler);
 		
 		String value = valuee.toLowerCase().trim();
@@ -50,10 +55,21 @@ public class V2Value extends MethodValue {
 		StringBuilder mathvalue = new StringBuilder();
 		for (int i = 0;i<value.length();i++) {
 			c = value.charAt(i);
+			if (c=='('&&mathvalue.isEmpty()) {
+				int parentheses = 0;
+				i++;
+				for (;i<value.length();i++) {
+					c = value.charAt(i);
+					if (c=='(') parentheses++;
+					if (c==')') {parentheses--;if (parentheses==-1) break;}
+					mathvalue.append(c);
+				}
+				System.out.println(mathvalue);
+				continue;
+			}
 			if (c=='+'||c=='-'||c=='*'||c=='/'||c=='%'||c=='^') {
 				tempValues = addToArray(tempValues, mathvalue.toString());
 				operations = addToArray(operations, c);
-				System.out.println(mathvalue.toString() + " " + tempValues.length + " " + operations.length);
 				mathvalue.setLength(0);
 				continue;
 			}
@@ -101,13 +117,11 @@ public class V2Value extends MethodValue {
 	 * @throws CompileException
 	 */
 	public Object get() throws CompileException {
-//		System.out.println(compiler.get("r"));
 		if (isStatic) return compiler.getStaticVariable(value);
 		if (isDynamic) return compiler.getDynamicVariable(value);
 		if (isSet) {
 			Object ohsaycanyousee = setValue.get();//I'm not American, I'm just sleep deprived.
 			compiler.put(setKey, ohsaycanyousee);
-//			System.out.println(ohsaycanyousee);
 			return ohsaycanyousee;
 		}
 		if (isComparison) return comparison1.compare(comparison2, operator);
@@ -149,7 +163,7 @@ public class V2Value extends MethodValue {
 			return result;
 		}
 //		return compiler.getVariable(value);
-		throw new RuntimeException("r");
+		throw new CompileException("Unknown value: " + value);
 	}
 
 	public static <T> T[] addToArray(T[] arr, T t) {
@@ -161,48 +175,5 @@ public class V2Value extends MethodValue {
 		char[] newarr = Arrays.copyOf(arr, arr.length+1);
 		newarr[arr.length] = t;
 		return newarr;
-	}
-
-	public static class V2StringValue extends V2Value {
-		public V2StringValue(String value, AVarTextCompiler compiler) {this.value=value;this.compiler=compiler;}
-		@Override public Object get() throws CompileException {return value;}
-	}
-	public static class V2DoubleValue extends V2Value {
-		double doubleVal;
-		public V2DoubleValue(double value, AVarTextCompiler compiler) {
-			this.value=Double.toString(value);
-			this.doubleVal = value;
-			this.compiler=compiler;
-		}
-		@Override public Object get() throws CompileException {return doubleVal;}
-	}
-	
-	
-	//Only after writing 80% of the values did I realize having one class that is all values is bad, I tried to
-	//lower the burden but as you can see it's too late, the damage has already been done... maybe in a later update...
-	public static V2Value of(String valuee, AVarTextCompiler compiler) {
-		String value = valuee.trim();
-		
-		//Maybe Double :3
-		try {return new V2DoubleValue(Double.parseDouble(value.trim()), compiler);} catch (Exception e) {}
-		
-		//Maybe String :)
-		if (!value.startsWith("\"")||!value.endsWith("\"")) return new V2Value(valuee, compiler);
-		
-		//Probably String :D
-		value = value.substring(1,value.length()-1);
-		StringBuilder string = new StringBuilder();
-		char c;
-		boolean safe = false;
-		for (int i = 0;i<value.length();i++) {
-			c = value.charAt(i);
-			if (c=='\\'&&!safe) safe = true; else {
-				if (c=='"'&&!safe) return new V2Value(valuee, compiler); //Not String ;_;
-				safe = false;
-				string.append(c);
-			}
-		}
-		//String! :D
-		return new V2StringValue(string.toString(), compiler);
 	}
 }

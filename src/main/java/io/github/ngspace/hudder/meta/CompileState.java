@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import io.github.ngspace.hudder.compilers.CompileException;
-import io.github.ngspace.hudder.compilers.CompileResult;
+import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.compilers.utils.CompileResult;
 import io.github.ngspace.hudder.config.ConfigManager;
 import io.github.ngspace.hudder.meta.elements.Element;
 

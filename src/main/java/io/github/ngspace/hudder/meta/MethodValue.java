@@ -1,7 +1,7 @@
 package io.github.ngspace.hudder.meta;
 
-import io.github.ngspace.hudder.compilers.AVarTextCompiler;
-import io.github.ngspace.hudder.compilers.CompileException;
+import io.github.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
+import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.util.MathUtils;
 
 public class MethodValue {

@@ -2,9 +2,9 @@ package io.github.ngspace.hudder.meta.methods;
 
 import java.io.IOException;
 
-import io.github.ngspace.hudder.compilers.ATextCompiler;
-import io.github.ngspace.hudder.compilers.CompileException;
-import io.github.ngspace.hudder.compilers.Compilers;
+import io.github.ngspace.hudder.compilers.abstractions.ATextCompiler;
+import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.compilers.utils.Compilers;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.meta.CompileState;
 import io.github.ngspace.hudder.meta.MethodValue;

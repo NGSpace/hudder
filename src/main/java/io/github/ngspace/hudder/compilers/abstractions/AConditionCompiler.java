@@ -1,7 +1,9 @@
-package io.github.ngspace.hudder.compilers;
+package io.github.ngspace.hudder.compilers.abstractions;
 
 import java.util.Objects;
 
+import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.compilers.utils.CompileResult;
 import io.github.ngspace.hudder.config.ConfigInfo;
 
 public abstract class AConditionCompiler extends AVarTextCompiler {

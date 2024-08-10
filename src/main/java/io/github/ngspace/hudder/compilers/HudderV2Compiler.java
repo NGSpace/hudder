@@ -1,18 +1,19 @@
-package io.github.ngspace.hudder.compilers.hudderv2;
+package io.github.ngspace.hudder.compilers;
 
 import java.util.Arrays;
 import java.util.HashMap;
 
 import io.github.ngspace.hudder.Hudder;
-import io.github.ngspace.hudder.compilers.CompileException;
-import io.github.ngspace.hudder.compilers.CompileResult;
-import io.github.ngspace.hudder.compilers.AConditionCompiler;
-import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.BasicConditionV2RuntimeElement;
-import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.IfV2RuntimeElement;
-import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.MethodV2RuntimeElement;
-import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.StringV2RuntimeElement;
-import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.VariableV2RuntimeElement;
-import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.WhileV2RuntimeElement;
+import io.github.ngspace.hudder.compilers.abstractions.AConditionCompiler;
+import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.compilers.utils.CompileResult;
+import io.github.ngspace.hudder.compilers.v2runtime.V2Runtime;
+import io.github.ngspace.hudder.compilers.v2runtime.runtime_elements.BasicConditionV2RuntimeElement;
+import io.github.ngspace.hudder.compilers.v2runtime.runtime_elements.IfV2RuntimeElement;
+import io.github.ngspace.hudder.compilers.v2runtime.runtime_elements.MethodV2RuntimeElement;
+import io.github.ngspace.hudder.compilers.v2runtime.runtime_elements.StringV2RuntimeElement;
+import io.github.ngspace.hudder.compilers.v2runtime.runtime_elements.VariableV2RuntimeElement;
+import io.github.ngspace.hudder.compilers.v2runtime.runtime_elements.WhileV2RuntimeElement;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.config.ConfigManager;
 import io.github.ngspace.hudder.meta.MethodHandler;

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.ngspace.hudder.Hudder;
-import io.github.ngspace.hudder.compilers.CompileException;
+import io.github.ngspace.hudder.compilers.utils.CompileException;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.util.Identifier;

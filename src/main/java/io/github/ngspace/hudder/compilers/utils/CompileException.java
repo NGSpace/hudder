@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.compilers;
+package io.github.ngspace.hudder.compilers.utils;
 
 public class CompileException extends Exception {
 	public final int line;

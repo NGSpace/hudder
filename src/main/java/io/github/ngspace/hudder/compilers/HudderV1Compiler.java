@@ -2,6 +2,9 @@ package io.github.ngspace.hudder.compilers;
 
 import java.util.Arrays;
 
+import io.github.ngspace.hudder.compilers.abstractions.AConditionCompiler;
+import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.compilers.utils.CompileResult;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.meta.CompileState;
 import io.github.ngspace.hudder.meta.MethodHandler;

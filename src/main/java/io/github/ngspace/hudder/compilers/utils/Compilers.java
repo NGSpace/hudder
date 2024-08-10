@@ -1,8 +1,9 @@
-package io.github.ngspace.hudder.compilers;
+package io.github.ngspace.hudder.compilers.utils;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import io.github.ngspace.hudder.compilers.abstractions.ATextCompiler;
 import io.github.ngspace.hudder.config.ConfigManager;
 
 public class Compilers {private Compilers() {}
@@ -11,7 +12,7 @@ public class Compilers {private Compilers() {}
 	private static final Map<String, ATextCompiler> loadedcomps = new HashMap<String,ATextCompiler>();
 	
 	private static final String EMPTYCOM = "io.github.ngspace.hudder.compilers.EmptyCompiler";
-	private static final String DEFAULT_COMPILER = "io.github.ngspace.hudder.compilers.hudderv2.HudderV2Compiler";
+	private static final String DEFAULT_COMPILER = "io.github.ngspace.hudder.compilers.HudderV2Compiler";
 	
 	
 	static {

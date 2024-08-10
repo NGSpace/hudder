@@ -1,8 +1,9 @@
-package io.github.ngspace.hudder.compilers.hudderv2.runtime_elements;
+package io.github.ngspace.hudder.compilers.v2runtime.runtime_elements;
 
-import io.github.ngspace.hudder.compilers.AVarTextCompiler;
-import io.github.ngspace.hudder.compilers.CompileException;
-import io.github.ngspace.hudder.compilers.hudderv2.V2Value;
+import io.github.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
+import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.compilers.v2runtime.values.V2Value;
+import io.github.ngspace.hudder.compilers.v2runtime.values.V2Values;
 import io.github.ngspace.hudder.meta.CompileState;
 
 public class VariableV2RuntimeElement extends AV2RuntimeElement {
@@ -19,5 +20,5 @@ public class VariableV2RuntimeElement extends AV2RuntimeElement {
 		builder.append(val);
 	}
 	
-	public V2Value getValue(String s) {return V2Value.of(s, compiler);}
+	public V2Value getValue(String s) {return V2Values.of(s, compiler);}
 }

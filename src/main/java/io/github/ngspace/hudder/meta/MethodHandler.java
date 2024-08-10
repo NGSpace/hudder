@@ -13,8 +13,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import io.github.ngspace.hudder.Hudder;
-import io.github.ngspace.hudder.compilers.AVarTextCompiler;
-import io.github.ngspace.hudder.compilers.CompileException;
+import io.github.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
+import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.meta.methods.DecimalMethods;
 import io.github.ngspace.hudder.meta.methods.GUIMethods;

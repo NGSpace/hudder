@@ -29,6 +29,11 @@ import com.caoccao.javet.values.reference.V8ValueFunction;
 import com.caoccao.javet.values.reference.V8ValueGlobalObject;
 
 import io.github.ngspace.hudder.Hudder;
+import io.github.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
+import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.compilers.utils.CompileResult;
+import io.github.ngspace.hudder.compilers.utils.Compilers;
+import io.github.ngspace.hudder.compilers.utils.JavetObjConverter;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.meta.elements.Element;
 import io.github.ngspace.hudder.meta.elements.GameHudElement;

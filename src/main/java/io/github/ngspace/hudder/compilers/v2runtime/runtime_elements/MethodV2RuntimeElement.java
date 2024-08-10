@@ -1,7 +1,7 @@
-package io.github.ngspace.hudder.compilers.hudderv2.runtime_elements;
+package io.github.ngspace.hudder.compilers.v2runtime.runtime_elements;
 
-import io.github.ngspace.hudder.compilers.AVarTextCompiler;
-import io.github.ngspace.hudder.compilers.CompileException;
+import io.github.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
+import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.meta.CompileState;
 import io.github.ngspace.hudder.meta.MethodHandler;
