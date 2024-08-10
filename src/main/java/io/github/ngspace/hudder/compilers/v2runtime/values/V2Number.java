@@ -10,5 +10,11 @@ public class V2Number extends V2Value {
 		this.doubleVal = value;
 		this.compiler=compiler;
 	}
-	@Override public Object get() throws CompileException {return doubleVal;}
+	
+	@Override public Double get() throws CompileException {return doubleVal;}
+	
+	@Override public boolean asBoolean() {return false;}
+	@Override public double asDouble() throws CompileException {return get();}
+	@Override public int asInt() throws CompileException {return get().intValue();}
+	@Override public String asString() throws CompileException {return "";}
 }
