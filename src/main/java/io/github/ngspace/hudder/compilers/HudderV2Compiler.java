@@ -215,7 +215,7 @@ public class HudderV2Compiler extends AConditionCompiler {
 			
 			runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), false, true));
 			
-			if (compileState!=0) throw new CompileException(getErrorMessage(compileState),line,col);
+			if (compileState!=0) throw new CompileException(getErrorMessage(compileState),-1,col);
 			
 			runtimes.put(text, runtime);
 		}

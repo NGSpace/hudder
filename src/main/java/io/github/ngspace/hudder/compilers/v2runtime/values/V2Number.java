@@ -13,7 +13,9 @@ public class V2Number extends V2Value {
 	
 	@Override public Double get() throws CompileException {return doubleVal;}
 	
-	@Override public boolean asBoolean() {return false;}
+	@Override public boolean asBoolean() throws CompileException {
+		throw new CompileException("Can not convert Double to Boolean");
+	}
 	@Override public double asDouble() throws CompileException {return get();}
 	@Override public int asInt() throws CompileException {return get().intValue();}
 	@Override public String asString() throws CompileException {return "";}

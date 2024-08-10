@@ -77,7 +77,9 @@ public abstract class AVarTextCompiler extends ATextCompiler {
 				&&!key.contains("/")&&!key.contains("*")&&!key.contains("%")&&!key.contains("=");
 	}
 	public Object getDynamicVariable(String key) {
-		return get(key);
+		Object obj = get(key);
+		if (obj!=null) return obj;
+		return key;
 	}
 	/**
 	 * Dumbest thing I ever wrote... but it works.

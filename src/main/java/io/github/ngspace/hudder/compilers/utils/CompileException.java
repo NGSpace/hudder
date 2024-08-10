@@ -5,8 +5,8 @@ public class CompileException extends Exception {
 	public final int col;
 	public final boolean fatal;
 	
-	public CompileException(String string) {this(string,0,0);}
-	public CompileException(String string, boolean fatal) {this(string,0,0,fatal);}
+	public CompileException(String string) {this(string,-1,0);}
+	public CompileException(String string, boolean fatal) {this(string,-1,0,fatal);}
 	public CompileException(String string, int line, int col) {this(string,line,col,false);}
 	public CompileException(String string, int line, int col, boolean fatal) {
 		super(string);

@@ -8,18 +8,16 @@ public class MethodValue {
 	protected MethodValue() {}
 	protected String value;
 	protected AVarTextCompiler compiler;
-	public MethodValue(String value, AVarTextCompiler compiler) {
-		this.value=value;
-		this.compiler=compiler;
-	}
+	public MethodValue(String value, AVarTextCompiler compiler) {this.value=value;this.compiler=compiler;}
 	public String getAbsoluteValue() {return value;}
-	@Override public String toString() {return getAbsoluteValue();}
 	public AVarTextCompiler getCompiler() {return compiler;}
 	
 	public String asString() throws CompileException {return String.valueOf(compiler.getVariable(value.trim()));}
 	public int asInt() throws CompileException {return tryParseInt(compiler.getVariable(value.trim()));}
 	public double asDouble() throws CompileException {return tryParse(compiler.getVariable(value.trim()));}
-	public boolean asBoolean() {return tryParseBool(compiler.get(value.trim()));}
+	public boolean asBoolean() throws CompileException {return tryParseBool(compiler.getVariable(value.trim()));}
+	
+	@Override public String toString() {return getAbsoluteValue();}
 	
 	/**
 	 * Try to parse as double, if not return 0.

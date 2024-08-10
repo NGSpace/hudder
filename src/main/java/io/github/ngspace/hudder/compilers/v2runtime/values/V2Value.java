@@ -1,14 +1,13 @@
 package io.github.ngspace.hudder.compilers.v2runtime.values;
 
+import static io.github.ngspace.hudder.compilers.v2runtime.values.V2Values.of;
+
 import java.util.Arrays;
 import java.util.Objects;
 
 import io.github.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.meta.MethodValue;
-import io.github.ngspace.hudder.util.MathUtils;
-
-import static io.github.ngspace.hudder.compilers.v2runtime.values.V2Values.of;
 
 public class V2Value extends MethodValue {
 	protected V2Value() {}
@@ -146,10 +145,10 @@ public class V2Value extends MethodValue {
 			int realSecondValuesLength = 0;
 			
 			//Multiply, Divide and Modulo (Sounds like either the slogan of a dictator...)
-			double result = MathUtils.tryParse(values[0].get());
+			double result = values[0].asDouble();
 			for (int i = 0;i<values.length;i++) {
 				if (i==operations.length) break;
-				var val2 = MathUtils.tryParse(values[i+1].get());
+				var val2 = values[i+1].asDouble();
 				if      (operations[i]=='*') result = result * val2;
 				else if (operations[i]=='/') result = result / val2;
 				else if (operations[i]=='%') result = result % val2;
@@ -157,7 +156,7 @@ public class V2Value extends MethodValue {
 				else {
 					secondValues[realSecondValuesLength] = result;
 					secondsOperations[realSecondValuesLength] = operations[i];
-					result = MathUtils.tryParse(values[i+1].get());
+					result = values[i+1].asDouble();
 					realSecondValuesLength++;
 				}
 			}
@@ -176,16 +175,40 @@ public class V2Value extends MethodValue {
 			}
 			return result;
 		}
-//		return compiler.getVariable(value);
 		throw new CompileException("Unknown value: " + value);
 	}
-
-	public static <T> T[] addToArray(T[] arr, T t) {
+	
+	@Override public boolean asBoolean() throws CompileException {
+		Object get = get();
+		if (get instanceof Boolean b) return b;
+		throw new CompileException("Incorrect type \"Boolean\" for value: \""+value+"\" of type " 
+				+get.getClass().getSimpleName());
+	}
+	@Override public double asDouble() throws CompileException {
+		Object get = get();
+		if (get instanceof Number b) return b.doubleValue();
+		throw new CompileException("Incorrect type \"Double\" for value: " +value+" of type "
+				+get.getClass().getName());
+	}
+	@Override public int asInt() throws CompileException {
+		Object get = get();
+		if (get instanceof Number b) return b.intValue();
+		throw new CompileException("Incorrect type \"Integer\" for value: "+value+" of type "
+				+get.getClass().getName());
+	}
+	@Override public String asString() throws CompileException {
+		Object get = get();
+		if (get instanceof String b) return b;
+		throw new CompileException("Incorrect type \"String\" for value: " +value+" of type "
+				+get.getClass().getName());
+	}
+	
+	private <T> T[] addToArray(T[] arr, T t) {
 		T[] newarr = Arrays.copyOf(arr, arr.length+1);
 		newarr[arr.length] = t;
 		return newarr;
 	}
-	public static char[] addToArray(char[] arr, char t) {
+	private char[] addToArray(char[] arr, char t) {
 		char[] newarr = Arrays.copyOf(arr, arr.length+1);
 		newarr[arr.length] = t;
 		return newarr;
