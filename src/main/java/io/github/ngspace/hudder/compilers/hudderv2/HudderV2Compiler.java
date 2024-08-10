@@ -51,7 +51,7 @@ public class HudderV2Compiler extends TextCompiler {
 			boolean condSafe = false;
 			boolean safeappend = false;
 			
-			boolean cleanup = true;
+			boolean cleanup = false;
 			int cleanup_amount = ConfigManager.getConfig().methodBuffer;
 			
 			int compileState = TEXT_STATE;
@@ -63,6 +63,7 @@ public class HudderV2Compiler extends TextCompiler {
 				switch (compileState) {
 					case TEXT_STATE: {
 						if (cleanup&&cleanup_amount>0&&cleanup_amount<10) {
+							System.out.println(cleanup);
 							cleanup_amount--;
 							if (c=='\n'||c=='\r') continue;
 							else cleanup = false;
