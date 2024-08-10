@@ -6,7 +6,7 @@ import java.util.HashMap;
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.CompileException;
 import io.github.ngspace.hudder.compilers.CompileResult;
-import io.github.ngspace.hudder.compilers.TextCompiler;
+import io.github.ngspace.hudder.compilers.AConditionCompiler;
 import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.BasicConditionV2RuntimeElement;
 import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.IfV2RuntimeElement;
 import io.github.ngspace.hudder.compilers.hudderv2.runtime_elements.MethodV2RuntimeElement;
@@ -18,7 +18,7 @@ import io.github.ngspace.hudder.config.ConfigManager;
 import io.github.ngspace.hudder.meta.MethodHandler;
 import net.minecraft.client.MinecraftClient;
 
-public class HudderV2Compiler extends TextCompiler {
+public class HudderV2Compiler extends AConditionCompiler {
 	
 	public static final int TEXT_STATE = 0;
 	public static final int VARIABLE_STATE = 1;

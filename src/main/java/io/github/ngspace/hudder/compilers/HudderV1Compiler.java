@@ -7,7 +7,7 @@ import io.github.ngspace.hudder.meta.CompileState;
 import io.github.ngspace.hudder.meta.MethodHandler;
 import net.minecraft.client.MinecraftClient;
 
-public class HudderV1Compiler extends TextCompiler {
+public class HudderV1Compiler extends AConditionCompiler {
 	public static final int TEXT_STATE = 0;
 	public static final int VARIABLE_STATE = 1;
 	public static final int CONDITION_STATE = 2;

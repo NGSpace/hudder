@@ -4,7 +4,7 @@ import java.util.Objects;
 
 import io.github.ngspace.hudder.config.ConfigInfo;
 
-public abstract class TextCompiler extends AVarTextCompiler {
+public abstract class AConditionCompiler extends AVarTextCompiler {
 	/**
 	 * Solves an if...else...etc condition and returns it's value.
 	 * @param ci - the ConfigInfo object
