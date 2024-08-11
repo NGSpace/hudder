@@ -18,10 +18,10 @@ public class ItemStackMethods implements IMethod {
 	public void invoke(ConfigInfo ci, CompileState meta, ATextCompiler comp, String type, MethodValue... args) throws CompileException {
 		int offset = "slot".equals(type)||"item".equals(type) ? 1:0;
 		if (args.length<2+offset) {
-			throw new CompileException("\""+type+"\" only accepts \""+type
+			throw new CompileException("\""+type+"\" only accepts ;"+type
 				+("slot".equals(type)?",[slot]":"")
 				+("item".equals(type)?",[item]":"")
-				+",[x],[y],<scale>,<show count>\"");
+				+",[x],[y],<scale>,<show count>;");
 		}
 		double x = args[0+offset].asDouble();
 		double y = args[1+offset].asDouble();

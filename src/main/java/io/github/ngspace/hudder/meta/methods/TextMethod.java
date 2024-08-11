@@ -14,7 +14,7 @@ public class TextMethod implements IMethod {
 	@Override
 	public void invoke(ConfigInfo ci, CompileState meta, ATextCompiler comp, String type, MethodValue... args) throws CompileException {
 		if (args.length<3) throw new CompileException(
-				"\""+type+"\" only accepts \""+type+",[x],[y],[text],<scale>,<color>,<shadow>,<bg>,<bgcolor>\"");
+				"\""+type+"\" only accepts ;"+type+",[x],[y],[text],<scale>,<color>,<shadow>,<bg>,<bgcolor>;");
 		try {
 			ATextCompiler compiler = args.length>8 ? Compilers.getCompilerFromName(args[8].getAbsoluteValue()) 
 					: Compilers.getCompilerFromName("empty");

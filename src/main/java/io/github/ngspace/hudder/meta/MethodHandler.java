@@ -73,6 +73,9 @@ public class MethodHandler {
 		String[] ar = new String[] {"[Filename]",Var[0]};
 		register((c,m,a,t,s)->a.put(s[1].getAbsoluteValue(), HudFileUtils.exists(s[0].asString())), 2, ar, "exists");
 	}
+	
+	
+	
 	/**
 	 * Calls the method with the name of the first value in the args parameter.
 	 * @param config - The config used
@@ -90,12 +93,18 @@ public class MethodHandler {
 		for (int i = 0;i<vals.length;i++) vals[i] = new MethodValue(args[i+1],compiler);
 		ameta.invoke(config, meta, compiler, args[0], vals);
 	}
+	
+	
+	
 	/**
 	 * Register a meta method with multiple names
 	 * @param method - the method
 	 * @param names - the command
 	 */
 	public void register(IMethod method, String... names) {for(String name:names)methods.put(name,method);}
+	
+	
+	
 	/**
 	 * Register a meta method with multiple names
 	 * @param method - the method
@@ -104,9 +113,9 @@ public class MethodHandler {
 	public void register(IMethod method, int length, String[] args, String... names) {
 		IMethod newmethod = (config,meta,compiler,type,vals)->{
 			if (vals.length<length) {
-				String err='"'+type+"\" only accepts \""+type+"";
+				String err='"'+type+"\" only accepts ;"+type+"";
 				for(String str:args)err+=", "+ str;
-				err+='"';
+				err+=';';
 				throw new CompileException(err);
 			}
 			method.invoke(config,meta,compiler,type,vals);
@@ -114,9 +123,9 @@ public class MethodHandler {
 		for (String name : names) methods.put(name,newmethod);
 	}
 	
+	
+	
 	public void registerRenderingMethods() {
-		
-		
 		
 		//Inventory Rendering
 		register(new ItemStackMethods(),"slot","item","hand","selectedslot","hat", "helmet", "chestplate", "leggings",

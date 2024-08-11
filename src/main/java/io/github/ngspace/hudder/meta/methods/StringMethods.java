@@ -42,12 +42,12 @@ public class StringMethods implements IMethod {
 				default: throw new IllegalArgumentException("Unexpected value: " + type);
 			}
 		} catch (IndexOutOfBoundsException e) {
-			throw new CompileException("\""+type+"\" only accepts \""+type
+			throw new CompileException("\""+type+"\" only accepts ;"+type
 					+(type.equals("concat")         ?",[string],[string],[result variable name]" :"")
 					+(type.equals("multiplystring") ?",[string],[amount],[result variable name]" :"")
 					+(type.equals("string")                  ?",[string],[result variable name]" :"")
 					+(type.equals("substring") ?",[string],[start],[end],[result variable name]" :"")
-					+ "\"");
+					+ ";");
 		} catch (Exception e) {throw new CompileException(e.getLocalizedMessage());}
 	}
 
