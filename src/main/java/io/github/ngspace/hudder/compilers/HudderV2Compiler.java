@@ -3,7 +3,6 @@ package io.github.ngspace.hudder.compilers;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.abstractions.AConditionCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileResult;
@@ -39,9 +38,6 @@ public class HudderV2Compiler extends AConditionCompiler {
 			runtime = new V2Runtime(this);
 			
 			StringBuilder elemBuilder = new StringBuilder();
-			
-			int line = 0;
-			int col = 0;
 
 			int bracketscount = 0;
 
@@ -59,12 +55,9 @@ public class HudderV2Compiler extends AConditionCompiler {
 
 			for (int ind = 0;ind<text.length();ind++) {
 				char c = text.charAt(ind);
-				col++;
-				if (c=='\n') {line++;col=0;}
 				switch (compileState) {
 					case TEXT_STATE: {
 						if (cleanup&&cleanup_amount>0&&cleanup_amount<10) {
-							System.out.println(cleanup);
 							cleanup_amount--;
 							if (c=='\n'||c=='\r') continue;
 							else cleanup = false;
@@ -94,7 +87,7 @@ public class HudderV2Compiler extends AConditionCompiler {
 								break;
 							case '#':
 								compileState = ADVANCED_CONDITION_STATE;
-								runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), true));
+								runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), false));
 								elemBuilder.setLength(0);
 								break;
 							case '&':
@@ -174,18 +167,17 @@ public class HudderV2Compiler extends AConditionCompiler {
 					}
 					case ADVANCED_CONDITION_STATE, WHILE_STATE: {
 						boolean isWhile = compileState==WHILE_STATE;
-						Hudder.log(isWhile);
-						compileState = TEXT_STATE; //This mode is unique because it does it all in one go.
-						StringBuilder condBuilder = new StringBuilder();
+						compileState = TEXT_STATE;
 						for (;ind<text.length();ind++) {
 							if ((c = text.charAt(ind))=='\n') break;
-							else if(c==' '&&condBuilder.toString().equals("while")) {
-								condBuilder.setLength(0);
+							else if(c==' '&&elemBuilder.toString().equals("while")) {
+								elemBuilder.setLength(0);
 								isWhile=true;
-							} else if(c==' '&&condBuilder.toString().equals("if")) condBuilder.setLength(0);
-							else condBuilder.append(c);
+							} else if(c==' '&&elemBuilder.toString().equals("if")) elemBuilder.setLength(0);
+							else elemBuilder.append(c);
 						}
-						String cond = condBuilder.toString();
+						String cond = elemBuilder.toString();
+						elemBuilder.setLength(0);
 						StringBuilder instructions = new StringBuilder();
 						ind++;
 						if (ind<text.length()&&text.charAt(ind)=='\t') {
@@ -205,7 +197,6 @@ public class HudderV2Compiler extends AConditionCompiler {
 							runtime.addRuntimeElement(new WhileV2RuntimeElement(info, cond, cmds, this));
 							break;
 						}
-						System.out.println(isWhile);
 						runtime.addRuntimeElement(new IfV2RuntimeElement(info, cond, cmds, this));
 						break;
 					}
@@ -215,7 +206,7 @@ public class HudderV2Compiler extends AConditionCompiler {
 			
 			runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), false, true));
 			
-			if (compileState!=0) throw new CompileException(getErrorMessage(compileState),-1,col);
+			if (compileState!=0) throw new CompileException(getErrorMessage(compileState));
 			
 			runtimes.put(text, runtime);
 		}

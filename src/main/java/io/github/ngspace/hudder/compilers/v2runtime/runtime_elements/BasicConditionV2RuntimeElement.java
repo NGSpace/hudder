@@ -41,7 +41,7 @@ public class BasicConditionV2RuntimeElement extends AV2RuntimeElement {
 	@Override public void execute(CompileState meta, StringBuilder builder) throws CompileException {
 		CompileResult res = null;
 		for (int i = 0;i<conditions.length;i++) {
-			if (conditions[i].asBoolean()) {
+			if (conditions[i].asBooleanSafe()) {
 				res = compiler.compile(info,results[i].asString());
 			}
 		}

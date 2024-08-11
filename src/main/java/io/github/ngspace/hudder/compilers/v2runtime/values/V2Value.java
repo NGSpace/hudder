@@ -66,7 +66,6 @@ public class V2Value extends MethodValue {
 						if (c=='"'&&!safe) break; //Not String ;_;
 					}
 				}
-				System.out.println(mathvalue);
 				continue;
 			}
 			if (c=='('&&mathvalue.isEmpty()) {
@@ -212,5 +211,13 @@ public class V2Value extends MethodValue {
 		char[] newarr = Arrays.copyOf(arr, arr.length+1);
 		newarr[arr.length] = t;
 		return newarr;
+	}
+
+	public boolean asBooleanSafe() {
+		try {
+			return asBoolean();
+		} catch (Exception e) {
+			return false;
+		}
 	}
 }
