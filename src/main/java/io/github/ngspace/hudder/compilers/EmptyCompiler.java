@@ -11,9 +11,5 @@ public class EmptyCompiler extends ATextCompiler {
 
 	@Override public Object getVariable(String key) throws CompileException {return "";}
 
-	@Override
-	public boolean conditionCheck(String condition) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	@Override public boolean conditionCheck(String condition) {return false;}
 }

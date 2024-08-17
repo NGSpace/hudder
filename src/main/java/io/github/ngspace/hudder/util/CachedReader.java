@@ -34,7 +34,7 @@ class CachedReader implements ERunnable<CompileException> {
 	}
 	
 	private boolean readFile(String file) throws IOException {
-		File f = new File(file);
+		File f = new File(sanitize(file));
 		if (!f.exists()) {
 			f.getParentFile().mkdirs();
 			if (!f.createNewFile()) return false;
@@ -52,7 +52,7 @@ class CachedReader implements ERunnable<CompileException> {
 			savedImages.get(id).close();
 			savedImages.remove(id);
 		}
-		NativeImage img = NativeImage.read(new FileInputStream(new File(file)));
+		NativeImage img = NativeImage.read(new FileInputStream(new File(sanitize(file))));
 		NativeImageBackedTexture tex = new NativeImageBackedTexture(img);
 		tex.registerTexture(ins.getTextureManager(), ins.getResourceManager(), id, null);
 		

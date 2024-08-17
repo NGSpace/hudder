@@ -43,7 +43,6 @@ public class NumberData {private NumberData() {}
 			case "tps": yield (double) getTPS(ins);
 			case "gpu_d", "dgpu": yield Advanced.gpuUsage;
 			case "gpu": yield (double) ((int)Advanced.gpuUsage);
-//			case "cpu": throw new CompileException("due to my lack of skills and mental abilites cpu is unavaliable");
 			
 			case "delta": yield (double) Advanced.delta;
 			

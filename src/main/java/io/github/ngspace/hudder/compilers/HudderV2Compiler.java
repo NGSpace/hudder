@@ -15,8 +15,6 @@ import io.github.ngspace.hudder.compilers.v2runtime.runtime_elements.VariableV2R
 import io.github.ngspace.hudder.compilers.v2runtime.runtime_elements.WhileV2RuntimeElement;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.config.ConfigManager;
-import io.github.ngspace.hudder.meta.MethodHandler;
-import net.minecraft.client.MinecraftClient;
 
 public class HudderV2Compiler extends AConditionCompiler {
 	
@@ -26,16 +24,13 @@ public class HudderV2Compiler extends AConditionCompiler {
 	public static final int META_STATE = 3;
 	public static final int ADVANCED_CONDITION_STATE = 4;
 	public static final int WHILE_STATE = 5;
-	public final MethodHandler metacomp = new MethodHandler();
-	
-	public static MinecraftClient ins = MinecraftClient.getInstance();
 	
 	HashMap<String, V2Runtime> runtimes = new HashMap<String, V2Runtime>();
 
 	@Override public CompileResult compile(ConfigInfo info, String text) throws CompileException {
 		V2Runtime runtime = runtimes.get(text);
 		if (runtime==null) {
-			runtime = new V2Runtime(this);
+			runtime = new V2Runtime();
 			
 			StringBuilder elemBuilder = new StringBuilder();
 
@@ -157,7 +152,7 @@ public class HudderV2Compiler extends AConditionCompiler {
 						}
 						if (compileState!=META_STATE) {
 							methodbuilder = addToArray(methodbuilder,elemBuilder.toString().trim());
-							runtime.addRuntimeElement(new MethodV2RuntimeElement(methodbuilder, this, info));
+							runtime.addRuntimeElement(new MethodV2RuntimeElement(methodbuilder, this, info, runtime));
 							elemBuilder.setLength(0);
 							methodbuilder = new String[0];
 							cleanup = true;
@@ -213,7 +208,7 @@ public class HudderV2Compiler extends AConditionCompiler {
 		return runtime.execute().toResult();
 	}
 	
-	public String getErrorMessage(int compileState) {
+	private String getErrorMessage(int compileState) {
 		StringBuilder strb = new StringBuilder();
 		strb.append(switch(compileState) {
 			case VARIABLE_STATE -> "Expected '}'";
@@ -231,7 +226,7 @@ public class HudderV2Compiler extends AConditionCompiler {
 		return val;
 	}
 	
-	public static <T> T[] addToArray(T[] arr, T t) {
+	private static <T> T[] addToArray(T[] arr, T t) {
 		T[] newarr = Arrays.copyOf(arr, arr.length+1);
 		newarr[arr.length] = t;
 		return newarr;

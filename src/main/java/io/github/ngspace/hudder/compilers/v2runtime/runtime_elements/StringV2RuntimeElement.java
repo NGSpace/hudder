@@ -16,7 +16,6 @@ public class StringV2RuntimeElement extends AV2RuntimeElement {
 		this.addToMeta = add;
 	}
 	@Override public void execute(CompileState meta, StringBuilder builder) throws CompileException {
-
 		String str = string;
 		if (cleanUp&&(buffer = ConfigManager.getConfig().methodBuffer)<10)
 			for (int i = 0; i<buffer;i++) {

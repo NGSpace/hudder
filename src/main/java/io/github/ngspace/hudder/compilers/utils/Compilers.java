@@ -22,7 +22,6 @@ public class Compilers {private Compilers() {}
 		putCompiler("default", DEFAULT_COMPILER);
 		putCompiler("hudder", DEFAULT_COMPILER);
 		putCompiler("hudderv2", DEFAULT_COMPILER);
-		putCompiler("hudderv1", "io.github.ngspace.hudder.compilers.HudderV1Compiler");
 		
 		
 		/* JavaScript */

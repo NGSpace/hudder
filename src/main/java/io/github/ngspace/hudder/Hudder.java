@@ -45,7 +45,6 @@ public class Hudder implements ModInitializer {
 	
     private static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static boolean IS_DEBUG = false;
-    public static final String NL_REGEX = "\r?\n";
     public static List<Consumer<ATextCompiler>> precomplistners = new ArrayList<Consumer<ATextCompiler>>();
     public static List<Consumer<ATextCompiler>> postcomplistners = new ArrayList<Consumer<ATextCompiler>>();
     
