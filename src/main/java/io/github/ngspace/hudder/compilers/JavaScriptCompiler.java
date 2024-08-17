@@ -29,8 +29,12 @@ import com.caoccao.javet.values.reference.V8ValueFunction;
 import com.caoccao.javet.values.reference.V8ValueGlobalObject;
 
 import io.github.ngspace.hudder.Hudder;
+import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.compilers.utils.CompileResult;
+import io.github.ngspace.hudder.compilers.utils.Compilers;
+import io.github.ngspace.hudder.compilers.utils.JavetObjConverter;
 import io.github.ngspace.hudder.config.ConfigInfo;
-import io.github.ngspace.hudder.meta.elements.Element;
+import io.github.ngspace.hudder.meta.elements.AUIElement;
 import io.github.ngspace.hudder.meta.elements.GameHudElement;
 import io.github.ngspace.hudder.meta.elements.GameHudElement.GuiType;
 import io.github.ngspace.hudder.meta.elements.ItemElement;
@@ -47,7 +51,7 @@ public class JavaScriptCompiler extends AVarTextCompiler {
 	
 	public Map<String, RuntimeCache> cache = new HashMap<String, RuntimeCache>();
 	public static JavetProxyConverter OBJECT_CONVERTER = new JavetObjConverter();
-	public List<Element> elms = new ArrayList<Element>();
+	public List<AUIElement> elms = new ArrayList<AUIElement>();
 	
 	public JavaScriptCompiler() {
 		Hudder.addPreCompilerListener(c->{if(c==this) elms.clear();});
@@ -70,13 +74,13 @@ public class JavaScriptCompiler extends AVarTextCompiler {
 		if ((obj=config.globalVariables.get(key))!=null) return obj;
 		return null;
 	}
-	public Element slot(int s, int x, int y, double scale, boolean showcount) {
+	public AUIElement slot(int s, int x, int y, double scale, boolean showcount) {
 		return new ItemElement(x,y,ins.player.getInventory().getStack(s),(float) scale, showcount);
 	}
-	public Element armor(int s, int x, int y, double scale, boolean showcount) {
+	public AUIElement armor(int s, int x, int y, double scale, boolean showcount) {
 		return new ItemElement(x,y,ins.player.getInventory().getArmorStack(s),(float) scale, showcount);
 	}
-	public Element offhand(int x, int y, double scale, boolean showcount) {
+	public AUIElement offhand(int x, int y, double scale, boolean showcount) {
 		return new ItemElement(x,y,ins.player.getInventory().offHand.get(0),(float) scale, showcount);
 	}
 	
@@ -123,7 +127,7 @@ public class JavaScriptCompiler extends AVarTextCompiler {
 	    	float BRscale = gb.has("bottomrightscale") ? (float) gb.get("bottomrightscale").asDouble():1;
 	    	
 		    return new CompileResult(TL, TLscale, BL, BLscale, TR, TRscale, BR, BRscale,
-		    		elms.toArray(new Element[elms.size()])); 
+		    		elms.toArray(new AUIElement[elms.size()])); 
 		} catch (JavetExecutionException e) {
 			if (Hudder.IS_DEBUG) e.printStackTrace();
 			var err = e.getScriptingError();
@@ -191,7 +195,7 @@ public class JavaScriptCompiler extends AVarTextCompiler {
     	//Compile
     	
     	bindFunction(gb, s-> {
-			CompileResult result = (s.length>1?ATextCompiler.getCompilerFromName(s[1].asString()):this)
+			CompileResult result = (s.length>1?Compilers.getCompilerFromName(s[1].asString()):this)
 					.compile(config, HudFileUtils.getFile(s[0].asString()));
 			Collections.addAll(elms, result.elements);
 			return result;
@@ -285,8 +289,7 @@ public class JavaScriptCompiler extends AVarTextCompiler {
 	 * Should be used alongside {@code bindFunction}
 	 * @param <E> any exception this function might throw.
 	 */
-	@FunctionalInterface
-	public static interface Func<E extends Exception> extends ThisAndResult<E> {
+	@FunctionalInterface public static interface Func<E extends Exception> extends ThisAndResult<E> {
 		public default V8Value call(V8Value thisObject, V8Value... v8Values) throws JavetException, E {
 			return asJSValue(thisObject.getV8Runtime(),exec(v8Values));
 		}
@@ -297,6 +300,5 @@ public class JavaScriptCompiler extends AVarTextCompiler {
 	 * Should be used alongside {@code bindConsumer}
 	 * @param <E> any exception this consumer might throw.
 	 */
-	@FunctionalInterface
-	public static interface Cons<E extends Exception> extends NoThisAndNoResult<E> {}
+	@FunctionalInterface public static interface Cons<E extends Exception> extends NoThisAndNoResult<E> {}
 }

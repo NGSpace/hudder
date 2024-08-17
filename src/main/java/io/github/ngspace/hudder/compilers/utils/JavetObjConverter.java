@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.compilers;
+package io.github.ngspace.hudder.compilers.utils;
 
 import com.caoccao.javet.exceptions.JavetException;
 import com.caoccao.javet.interop.V8Runtime;

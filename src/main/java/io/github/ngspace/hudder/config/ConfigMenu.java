@@ -13,7 +13,7 @@ import java.util.function.Function;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 
 import io.github.ngspace.hudder.Hudder;
-import io.github.ngspace.hudder.compilers.ATextCompiler;
+import io.github.ngspace.hudder.compilers.utils.Compilers;
 import io.github.ngspace.hudder.util.HudFileUtils;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
@@ -27,6 +27,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 public class ConfigMenu implements ConfigScreenFactory<Screen> {
+	public static final String URL = "https://ngspace.github.io/wiki";
 	ConfigInfo config = ConfigManager.getConfig();
 	
 	@Override public Screen create(Screen parent) {
@@ -54,14 +55,19 @@ public class ConfigMenu implements ConfigScreenFactory<Screen> {
 		ConfigCategory advanced = builder.getOrCreateCategory(Text.translatable("hudder.advanced"));
 		ConfigCategory variables = builder.getOrCreateCategory(Text.translatable("hudder.global_variables"));
 		Function<Boolean, Text> yesno = b->Text.translatable("hudder."+b);
+		
+		
+		/* General */
+		general.addEntry(entryBuilder
+				.startTextDescription(Text.translatable("hudder.general.wiki").styled(s -> s
+				.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, 
+						Text.translatable("hudder.general.wiki.tooltip")))
+				.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, URL)))).build());
 		general.addEntry(entryBuilder.startBooleanToggle(Text.translatable("hudder.general.enabled"),config.enabled)
 				.setSaveConsumer(b->config.enabled=b)
 				.setYesNoTextSupplier(yesno)
 				.setTooltip(Text.translatable("hudder.general.enabled.tooltip"))
 				.build());
-		
-		
-		/* General */
 		general.addEntry(entryBuilder.startStrField(
 				Text.translatable("hudder.general.mainfile"), config.mainfile)
 				.setTooltip(Text.translatable("hudder.general.mainfile.tooltip"))
@@ -128,9 +134,9 @@ public class ConfigMenu implements ConfigScreenFactory<Screen> {
 				.build());
 		
 		/* Advanced */
-		advanced.addEntry(entryBuilder.startIntField(Text.translatable("hudder.advanced.meta"), config.metaBuffer)
-				.setTooltip(Text.translatable("hudder.advanced.meta.tooltip"))
-				.setSaveConsumer(b->config.metaBuffer=b)
+		advanced.addEntry(entryBuilder.startIntField(Text.translatable("hudder.advanced.method"), config.methodBuffer)
+				.setTooltip(Text.translatable("hudder.advanced.method.tooltip"))
+				.setSaveConsumer(b->config.methodBuffer=b)
 				.setDefaultValue(2)
 				.build());
 		advanced.addEntry(entryBuilder.startBooleanToggle(Text.translatable("hudder.advanced.f3"), config.showInF3)
@@ -144,7 +150,7 @@ public class ConfigMenu implements ConfigScreenFactory<Screen> {
 	    		.setTooltip(Text.translatable("hudder.advanced.compilertype.tooltip"))
 	    		.setDefaultValue("hudder")
 	    		.setSaveConsumer(b->config.compilertype=b.toLowerCase())
-	    		.setErrorSupplier(e->ATextCompiler.compilers.get(e.toLowerCase())==null?
+	    		.setErrorSupplier(e->Compilers.get(e.toLowerCase())==null?
 	    				Optional.of(Text.translatable("hudder.advanced.compilertype.error")):Optional.empty())
 	    		.build());
 		advanced.addEntry(

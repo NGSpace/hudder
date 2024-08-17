@@ -5,6 +5,9 @@
 	
 	"hudder.general": "General",
 	
+	"hudder.general.wiki":"Click here to open Hudder's wiki in your browser",
+	"hudder.general.wiki.tooltip":"Click to open Wiki",
+	
 	"hudder.general.enabled":"Enabled",
 	"hudder.general.enabled.tooltip":"Whether Hudder should be enabled or not (duh)",
 	
@@ -13,7 +16,7 @@
 	"hudder.general.mainfile.error":"File does not exist in the .minecraft/config/Hudder folder",
 	
 	"hudder.general.scale":"Default Scale",
-	"hudder.general.scale.tooltip":"Control the default scale of meta elements\n\u00A77This can be overriden by elements specifying the size on their own",
+	"hudder.general.scale.tooltip":"Control the default scale of Methods \n\u00A77This can be overriden by elements specifying the size on their own",
 	
 	"hudder.general.folder":"\u00A77The files must be located in the \"\u00A76config/Hudder\u00A77\" folder",
 	"hudder.general.folder.tooltip":"Click to open folder",
@@ -37,8 +40,8 @@
 	
 	"hudder.advanced": "Advanced",
 	
-	"hudder.advanced.meta": "Meta line buffer",
-	"hudder.advanced.meta.tooltip": "Control the amount of lines to be trimmed before and after metas",
+	"hudder.advanced.method": "Method line buffer",
+	"hudder.advanced.method.tooltip": "Control the amount of lines to be trimmed before and after Methods",
 	
 	"hudder.advanced.f3": "Show in F3",
 	"hudder.advanced.f3.tooltip": "Should still render when f3 is showing",

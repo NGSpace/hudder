@@ -3,10 +3,10 @@ package io.github.ngspace.hudder.meta.methods;
 import static io.github.ngspace.hudder.Hudder.ins;
 
 import io.github.ngspace.hudder.compilers.ATextCompiler;
-import io.github.ngspace.hudder.compilers.CompileException;
+import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.config.ConfigInfo;
-import io.github.ngspace.hudder.meta.Meta;
-import io.github.ngspace.hudder.meta.MetaCompiler.Value;
+import io.github.ngspace.hudder.meta.CompileState;
+import io.github.ngspace.hudder.meta.MethodValue;
 import io.github.ngspace.hudder.meta.elements.ItemElement;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -15,13 +15,13 @@ import net.minecraft.util.Identifier;
 
 public class ItemStackMethods implements IMethod {
 	@Override
-	public void invoke(ConfigInfo ci, Meta meta, ATextCompiler comp, String type, Value... args) throws CompileException {
+	public void invoke(ConfigInfo ci, CompileState meta, ATextCompiler comp, String type, MethodValue... args) throws CompileException {
 		int offset = "slot".equals(type)||"item".equals(type) ? 1:0;
 		if (args.length<2+offset) {
-			throw new CompileException("\""+type+"\" only accepts \""+type
+			throw new CompileException("\""+type+"\" only accepts ;"+type
 				+("slot".equals(type)?",[slot]":"")
 				+("item".equals(type)?",[item]":"")
-				+",[x],[y],<scale>,<show count>\"");
+				+",[x],[y],<scale>,<show count>;");
 		}
 		double x = args[0+offset].asDouble();
 		double y = args[1+offset].asDouble();

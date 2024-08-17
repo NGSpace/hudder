@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import io.github.ngspace.hudder.compilers.CompileException;
-import io.github.ngspace.hudder.compilers.CompileResult;
+import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.compilers.utils.CompileResult;
 import io.github.ngspace.hudder.config.ConfigManager;
-import io.github.ngspace.hudder.meta.elements.Element;
+import io.github.ngspace.hudder.meta.elements.AUIElement;
 
-public class Meta {
+public class CompileState {
 
 	public static final String TOPLEFT = "topleft";
 	public static final String BOTTOMLEFT = "bottomleft";
@@ -26,15 +26,15 @@ public class Meta {
 	public float BLScale = 1;
 	public float TRScale = 1;
 	public float BRScale = 1;
-	public List<Element> elements = new ArrayList<Element>();
+	public List<AUIElement> elements = new ArrayList<AUIElement>();
 
-	public Meta(String string) {setTextLocation(string, ConfigManager.getConfig().scale);}
+	public CompileState(String string) {setTextLocation(string, ConfigManager.getConfig().scale);}
 	public void addString(String txt, boolean cleanup) throws CompileException {addString(txt,pos,cleanup);}
 	
 	protected void addString(String txt, String pos, boolean cleanup) throws CompileException {
 		String text = txt;
 		if (cleanup) {
-			int buffer = ConfigManager.getConfig().metaBuffer;
+			int buffer = ConfigManager.getConfig().methodBuffer;
 			if (buffer<10)
 				for (int i = 0; i<buffer;i++)
 					try {
@@ -68,7 +68,7 @@ public class Meta {
 	
 	public CompileResult toResult() {
 		return new CompileResult(TLText, TLScale, BLText, BLScale, TRText, TRScale, BRText, BRScale,
-				elements.toArray(new Element[elements.size()]));
+				elements.toArray(new AUIElement[elements.size()]));
 	}
 
 	public void combineWithResult(CompileResult compile, boolean combineText) throws CompileException {

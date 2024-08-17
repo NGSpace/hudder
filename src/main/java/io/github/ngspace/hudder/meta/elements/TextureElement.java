@@ -6,7 +6,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.util.Identifier;
 
-public class TextureElement extends Element {
+public class TextureElement extends AUIElement {
 	private static final long serialVersionUID = -3008870889825976036L;
 	public final int x;
 	public final int y;

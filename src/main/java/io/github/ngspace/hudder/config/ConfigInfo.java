@@ -13,9 +13,10 @@ import com.google.gson.annotations.Expose;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.ATextCompiler;
-import io.github.ngspace.hudder.compilers.CompileException;
-import io.github.ngspace.hudder.compilers.CompileResult;
-import io.github.ngspace.hudder.compilers.HudderV1Compiler;
+import io.github.ngspace.hudder.compilers.HudderV2Compiler;
+import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.compilers.utils.CompileResult;
+import io.github.ngspace.hudder.compilers.utils.Compilers;
 import io.github.ngspace.hudder.util.HudFileUtils;
 import net.minecraft.client.MinecraftClient;
 
@@ -35,7 +36,7 @@ public class ConfigInfo {
 	@Expose public int yoffset = 1;
 	@Expose public int xoffset = 1;
 	@Expose public int lineHeight = 10;
-	@Expose public int metaBuffer = 2;
+	@Expose public int methodBuffer = 2;
 	//V3.0.0
 	@Expose public int backgroundcolor = 0x86353535;
 	@Expose public boolean background = false;
@@ -48,7 +49,7 @@ public class ConfigInfo {
 	@Deprecated(forRemoval = false, since = "It's fucking creation")
 	@Expose public boolean debug = false;
 	
-	public ATextCompiler compiler = new HudderV1Compiler();
+	public ATextCompiler compiler = new HudderV2Compiler();
 	private File configFile = new File(HudFileUtils.FOLDER + "hud.json");
 	
 	public ConfigInfo(File f) {configFile = f;readConfig();}
@@ -78,8 +79,8 @@ public class ConfigInfo {
 			Hudder.log(e.getLocalizedMessage());
 			Hudder.IS_DEBUG=true;//Failed to read config, turn on IS_DEBUG.
 		}
-		try {compiler = ATextCompiler.getCompilerFromName(compilertype.toLowerCase());} 
-		catch (Exception e) {compiler = new HudderV1Compiler();e.printStackTrace();}
+		try {compiler = Compilers.getCompilerFromName(compilertype.toLowerCase());} 
+		catch (Exception e) {compiler = new HudderV2Compiler();e.printStackTrace();}
 	}
 	private void setField(Field f, Object object) throws ReflectiveOperationException {
 		if (object instanceof Number num) {

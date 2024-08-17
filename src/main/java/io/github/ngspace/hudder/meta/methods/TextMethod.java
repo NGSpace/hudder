@@ -2,21 +2,22 @@ package io.github.ngspace.hudder.meta.methods;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.ATextCompiler;
-import io.github.ngspace.hudder.compilers.CompileException;
+import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.compilers.utils.Compilers;
 import io.github.ngspace.hudder.config.ConfigInfo;
-import io.github.ngspace.hudder.meta.Meta;
-import io.github.ngspace.hudder.meta.MetaCompiler.Value;
+import io.github.ngspace.hudder.meta.CompileState;
+import io.github.ngspace.hudder.meta.MethodValue;
 import io.github.ngspace.hudder.meta.elements.TextElement;
 
 public class TextMethod implements IMethod {
 
 	@Override
-	public void invoke(ConfigInfo ci, Meta meta, ATextCompiler comp, String type, Value... args) throws CompileException {
+	public void invoke(ConfigInfo ci, CompileState meta, ATextCompiler comp, String type, MethodValue... args) throws CompileException {
 		if (args.length<3) throw new CompileException(
-				"\""+type+"\" only accepts \""+type+",[x],[y],[text],<scale>,<color>,<shadow>,<bg>,<bgcolor>\"");
+				"\""+type+"\" only accepts ;"+type+",[x],[y],[text],<scale>,<color>,<shadow>,<bg>,<bgcolor>;");
 		try {
-			ATextCompiler compiler = args.length>8 ? ATextCompiler.getCompilerFromName(args[8].getAbsoluteValue()) 
-					: ATextCompiler.getCompilerFromName("empty");
+			ATextCompiler compiler = args.length>8 ? Compilers.getCompilerFromName(args[8].getAbsoluteValue()) 
+					: Compilers.getCompilerFromName("empty");
 			
 
 			int txlen = args[2].getAbsoluteValue().length();

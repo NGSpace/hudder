@@ -5,6 +5,9 @@
 	
 	"hudder.general": "כללי",
 	
+	"hudder.general.wiki": "לחץ כאן כדי לפתוח את הוויקי של Hudder בדפדפן שלך",
+	"hudder.general.wiki.tooltip": "לחץ לפתיחת ויקי",
+	
 	"hudder.general.enabled": "מופעל",
 	"hudder.general.enabled.tooltip":"אם יש להפעיל את Hudder או לא",
 	
@@ -37,8 +40,8 @@
 	
 	"hudder.advanced": "מתקדם",
 	
-	"hudder.advanced.meta": "Meta line buffer",
-	"hudder.advanced.meta.tooltip": "שלוט בכמות השורות שיש לקצץ לפני ואחרי metas",
+	"hudder.advanced.method": "Method line buffer",
+	"hudder.advanced.method.tooltip": "שלוט בכמות השורות שיש לקצץ לפני ואחרי Methods",
 	
 	"hudder.advanced.f3": "הצג ב-F3",
 	"hudder.advanced.f3.tooltip": "האם להראות כאשר f3 מוצג",

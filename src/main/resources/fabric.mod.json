@@ -29,7 +29,7 @@
 		"fabric-api": "*"
 	},
 	"suggests": {
-		"another-mod": "*"
+		"fabric-api": "*"
 	},
 	"custom": {
 	    "modmenu": {

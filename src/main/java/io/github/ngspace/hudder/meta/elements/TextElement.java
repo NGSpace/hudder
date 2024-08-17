@@ -4,7 +4,7 @@ import io.github.ngspace.hudder.Hudder;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 
-public class TextElement extends Element {
+public class TextElement extends AUIElement {
 	
 	private static final long serialVersionUID = -7265671672610205526L;
 	
@@ -16,7 +16,6 @@ public class TextElement extends Element {
 	public final float scale;
 	public final boolean shadow;
 	public final boolean background;
-    public static final String NL_REGEX = "\r?\n";
 
 	public TextElement(int x, int y, String text, float scale, int color, boolean shadow,boolean background,
 			int backgroundcolor) {

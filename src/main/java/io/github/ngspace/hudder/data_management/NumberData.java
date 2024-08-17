@@ -43,7 +43,6 @@ public class NumberData {private NumberData() {}
 			case "tps": yield (double) getTPS(ins);
 			case "gpu_d", "dgpu": yield Advanced.gpuUsage;
 			case "gpu": yield (double) ((int)Advanced.gpuUsage);
-//			case "cpu": throw new CompileException("due to my lack of skills and mental abilites cpu is unavaliable");
 			
 			case "delta": yield (double) Advanced.delta;
 			
@@ -79,6 +78,8 @@ public class NumberData {private NumberData() {}
 			
 			/* Other Player related information */
 			case "selectedslot": yield (double) p.getInventory().selectedSlot;
+			case "xplevel": yield (double) p.experienceLevel;
+			case "xp": yield (double) p.totalExperience;
 			
 			
 			/* Player position */
@@ -125,7 +126,7 @@ public class NumberData {private NumberData() {}
 			case "yoffset": yield (double) ConfigManager.getConfig().yoffset;
 			case "xoffset": yield (double) ConfigManager.getConfig().xoffset;
 			case "lineheight": yield (double) ConfigManager.getConfig().lineHeight;
-			case "metabuffer": yield (double) ConfigManager.getConfig().metaBuffer;
+			case "methodbuffer": yield (double) ConfigManager.getConfig().methodBuffer;
 			case "backgroundcolor": yield (double) ConfigManager.getConfig().backgroundcolor;
 			
 			

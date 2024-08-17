@@ -1,10 +1,10 @@
 package io.github.ngspace.hudder.meta.methods;
 
 import io.github.ngspace.hudder.compilers.ATextCompiler;
-import io.github.ngspace.hudder.compilers.CompileException;
+import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.config.ConfigInfo;
-import io.github.ngspace.hudder.meta.Meta;
-import io.github.ngspace.hudder.meta.MetaCompiler.Value;
+import io.github.ngspace.hudder.meta.CompileState;
+import io.github.ngspace.hudder.meta.MethodValue;
 
 @FunctionalInterface
 public interface IMethod {
@@ -16,6 +16,6 @@ public interface IMethod {
 	 * @param args - the parameters supplied to this method
 	 * @throws CompileException - if the method is not called properly or is unable to execute.
 	 */
-	public void invoke(ConfigInfo config, Meta meta, ATextCompiler compiler, String method, Value... args)
+	public void invoke(ConfigInfo config, CompileState meta, ATextCompiler compiler, String method, MethodValue... args)
 			throws CompileException;
 }
