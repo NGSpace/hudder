@@ -38,13 +38,16 @@ public class MethodHandler {
 		registerRenderingMethods();
 		
 		
+		register(new LoadMethod(), "load", "execute", "compile", "run", "add");
+		
+		
 		
 		//Logging and errors
-		register((c,m,a,t,s)->Hudder.ins.player.sendMessage(Text.of(s[0].asString())),1, TextArg, "alert");
-		register((c,m,a,t,s)->Hudder.log(s[0].asString()),1, TextArg, "log");
-		register((c,m,a,t,s)->Hudder.warn(s[0].asString()),1, TextArg, "warn");
-		register((c,m,a,t,s)->Hudder.error(s[0].asString()),1, TextArg, "error");
-		register((c,m,a,t,s)->{throw new CompileException(s[0].asString());},1, TextArg, "throw");
+		register((c,m,a,t,s)->Hudder.ins.player.sendMessage(Text.of(s[0].asStringSafe())),1, TextArg, "alert");
+		register((c,m,a,t,s)->Hudder.log(s[0].asStringSafe()),1, TextArg, "log");
+		register((c,m,a,t,s)->Hudder.warn(s[0].asStringSafe()),1, TextArg, "warn");
+		register((c,m,a,t,s)->Hudder.error(s[0].asStringSafe()),1, TextArg, "error");
+		register((c,m,a,t,s)->{throw new CompileException(s[0].asStringSafe());},1, TextArg, "throw");
 		
 		
 		
@@ -60,18 +63,18 @@ public class MethodHandler {
 		 *   getAbsoluteValue() is the name the variable (aka the raw text supplied)
 		 *   asInt() is the value of the variable as an int (aka the result of getVariable() converted to int)
 		 */
-		register((ci,meta,comp,type,args)->comp.put(args[0].toString(),args[0].asInt()),1,Var,"int","fullnumber");
+		register((ci,meta,comp,type,args)->comp.put(args[0].asStringSafe(),args[0].asInt()),1,Var,"int","fullnumber");
 		
 		
 		
 		//String Manipulation
-		register(new StringMethods(), "concat", "multiplystring", "substring", "string");
+		register(new StringMethods(), "concat", "multiplystring", "substring");
 		
 		
 
 		//File-IO(THIS IS ALL YOU'RE GETTING, NO MORE FILE-IO! YOU'RE NOT WRITING OR READING FILES ON MY WATCH FUCKERS!)
 		String[] ar = new String[] {"[Filename]",Var[0]};
-		register((c,m,a,t,s)->a.put(s[1].getAbsoluteValue(), HudFileUtils.exists(s[0].asString())), 2, ar, "exists");
+		register((c,m,a,t,s)->a.put(s[1].getAbsoluteValue(), HudFileUtils.exists(s[0].asStringSafe())), 2, ar, "exists");
 	}
 	
 	
@@ -97,6 +100,23 @@ public class MethodHandler {
 	
 	
 	/**
+	 * Calls the method with the name of the first value in the args parameter.
+	 * @param config - The config used
+	 * @param meta - The current meta
+	 * @param compiler - The compiler
+	 * @param args - the parameters
+	 * @throws CompileException - if no message is found under the name found first value in the args parameter or
+	 *  if the method itself called this exception.
+	 */
+	public void execute(ConfigInfo config, CompileState meta, AVarTextCompiler compiler, String type, MethodValue[] vals) throws CompileException {
+		IMethod ameta = methods.get(type.toLowerCase());
+		if (ameta==null) throw new CompileException("Unknown method " + type);
+		ameta.invoke(config, meta, compiler, type, vals);
+	}
+	
+	
+	
+	/**
 	 * Register a meta method with multiple names
 	 * @param method - the method
 	 * @param names - the command
@@ -112,6 +132,7 @@ public class MethodHandler {
 	 */
 	public void register(IMethod method, int length, String[] args, String... names) {
 		IMethod newmethod = (config,meta,compiler,type,vals)->{
+			
 			if (vals.length<length) {
 				String err='"'+type+"\" only accepts ;"+type+"";
 				for(String str:args)err+=", "+ str;
@@ -121,6 +142,14 @@ public class MethodHandler {
 			method.invoke(config,meta,compiler,type,vals);
 		};
 		for (String name : names) methods.put(name,newmethod);
+	}
+	
+	
+	
+	public IMethod getMethod(String name) throws CompileException {
+		IMethod method = methods.get(name.toLowerCase());
+		if (method==null) throw new CompileException("Unknown method " + name);
+		return method;
 	}
 	
 	
@@ -136,19 +165,14 @@ public class MethodHandler {
 		//Text and compiling
 		register((i,m,c,type,args)->m.setTextLocation(type,(float) (args.length>0?args[0].asDouble():i.scale)),
 				BOTTOMRIGHT, TOPLEFT, TOPRIGHT, BOTTOMLEFT, MUTE);
-		register(new LoadMethod(), "load", "execute", "compile", "run", "add");
 		register(new TextMethod(), "text");
+		register((c,m,a,t,s)->a.put(s[1].asStringSafe(), Hudder.ins.textRenderer.getWidth(s[0].asString())),
+				2, new String[] {"[Text]",Var[0]}, "strwidth");
 		
 		
 		
 		//UI
 		register(new GUIMethods(), "health", "xpbar", "hotbar", "helditemtooltip");
 		register(new TexturesMethods(), "image", "png", "texture");
-		
-		
-		
-		//Text Width
-		register((c,m,a,t,s)->a.put(s[1].getAbsoluteValue(), Hudder.ins.textRenderer.getWidth(s[0].asString())),
-				2, new String[] {"[Text]",Var[0]}, "strwidth");
 	}
 }

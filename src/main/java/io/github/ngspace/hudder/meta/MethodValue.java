@@ -40,4 +40,20 @@ public class MethodValue {
 		if (object instanceof Boolean) return (boolean) object;
 		return Boolean.valueOf(String.valueOf(object));
 	}
+
+	public boolean asBooleanSafe() {
+		try {
+			return asBoolean();
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	public String asStringSafe() {
+		try {
+			return asString();
+		} catch (Exception e) {
+			return getAbsoluteValue();
+		}
+	}
 }

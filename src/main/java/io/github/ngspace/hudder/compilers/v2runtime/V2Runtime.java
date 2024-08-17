@@ -13,8 +13,6 @@ public class V2Runtime {
 		this.compiler = compiler;
 	}
 	
-	
-	
 	AV2RuntimeElement[] elements = new AV2RuntimeElement[0];
 	public CompileState execute() throws CompileException {
 		CompileState meta = new CompileState(CompileState.TOPLEFT);
@@ -23,11 +21,8 @@ public class V2Runtime {
 		return meta;
 	}
 	
+	public void addRuntimeElement(AV2RuntimeElement element) {elements = addToArray(elements, element);}
 	
-	
-	public void addRuntimeElement(AV2RuntimeElement element) {
-		elements = addToArray(elements, element);
-	}
 	public static <T> T[] addToArray(T[] arr, T t) {
 		T[] newarr = Arrays.copyOf(arr, arr.length+1);
 		newarr[arr.length] = t;

@@ -15,13 +15,13 @@ public class StringMethods implements IMethod {
 				case "concat": {
 					String str1 = args[1].asString();
 					String str2 = args[2].asString();
-					comp.put(args[3].getAbsoluteValue(),str1+str2);
+					comp.put(args[3].asStringSafe(),str1+str2);
 					break;
 				}
 				case "multiplystring": {
 					String str1 = args[1].asString();
 					int times = args[2].asInt();
-					comp.put(args[3].getAbsoluteValue(),str1.repeat(times));
+					comp.put(args[3].asStringSafe(),str1.repeat(times));
 					break;
 				}
 				case "substring": {
@@ -29,14 +29,10 @@ public class StringMethods implements IMethod {
 					int start = args[2].asInt();
 					int end = args[3].asInt();
 					try {
-						comp.put(args[4].getAbsoluteValue(),str1.substring(start,end));
+						comp.put(args[4].asStringSafe(),str1.substring(start,end));
 					} catch (IndexOutOfBoundsException e) {
 						throw new CompileException(e.getLocalizedMessage());
 					}
-					break;
-				}
-				case "string": {
-					comp.put(args[1].getAbsoluteValue(),args[2].getAbsoluteValue());
 					break;
 				}
 				default: throw new IllegalArgumentException("Unexpected value: " + type);

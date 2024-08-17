@@ -225,8 +225,7 @@ public class HudderV2Compiler extends AConditionCompiler {
 		});
 		return strb.toString();
 	}
-	@Override
-	public Object getVariable(String string) throws CompileException {
+	@Override public Object getVariable(String string) throws CompileException {
 		Object val = super.getVariable(string.toLowerCase());
 		if (val instanceof Number num&&num.doubleValue()%1==0) return num.longValue();
 		return val;

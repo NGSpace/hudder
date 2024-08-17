@@ -1,26 +1,37 @@
 package io.github.ngspace.hudder.compilers.v2runtime.runtime_elements;
 
+import java.util.Arrays;
+
 import io.github.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.compilers.v2runtime.values.V2Value;
+import io.github.ngspace.hudder.compilers.v2runtime.values.V2Values;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.meta.CompileState;
 import io.github.ngspace.hudder.meta.MethodHandler;
+import io.github.ngspace.hudder.meta.methods.IMethod;
 
 public class MethodV2RuntimeElement extends AV2RuntimeElement {
-	
-	private String[] args;
+
+	private V2Value[] values = {};
+	private String type;
 	private AVarTextCompiler compiler;
 	private ConfigInfo info;
+	private IMethod method;
 	
-	public final MethodHandler metacomp = new MethodHandler();
+	public final MethodHandler methodHandler = new MethodHandler();
 
-	public MethodV2RuntimeElement(String[] metabuilder, AVarTextCompiler compiler, ConfigInfo info) {
-		this.args = metabuilder;
+	public MethodV2RuntimeElement(String[] args, AVarTextCompiler compiler, ConfigInfo info) throws CompileException {
 		this.compiler = compiler;
 		this.info = info;
+		type = args[0];
+		for (int i = 1;i<args.length;i++) {
+			values = Arrays.copyOf(values, values.length+1);
+			values[values.length-1] = V2Values.of(args[i], compiler);
+		}
+		method = methodHandler.getMethod(type);
 	}
-
 	@Override public void execute(CompileState meta, StringBuilder builder) throws CompileException {
-		metacomp.execute(info, meta, compiler, args);
+		method.invoke(info, meta, compiler, type, values);
 	}
 }
