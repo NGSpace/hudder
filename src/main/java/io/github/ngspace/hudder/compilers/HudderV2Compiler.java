@@ -35,9 +35,8 @@ public class HudderV2Compiler extends AVarTextCompiler {
 
 			int bracketscount = 0;
 
-			String[] methodbuilder = {};
-
-			String[] condArgs = {};
+			String[] builder = {};
+			
 			boolean quotesafe = false;
 			boolean condSafe = false;
 			boolean safeappend = false;
@@ -64,7 +63,7 @@ public class HudderV2Compiler extends AVarTextCompiler {
 						switch (c) {
 							case '%':
 								compileState = CONDITION_STATE;
-								condArgs = new String[] {};
+								builder = new String[] {};
 								runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), false));
 								elemBuilder.setLength(0);
 								break;
@@ -78,6 +77,7 @@ public class HudderV2Compiler extends AVarTextCompiler {
 								compileState = META_STATE;
 								runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), true));
 								elemBuilder.setLength(0);
+								builder = new String[] {};
 								break;
 							case '#':
 								compileState = ADVANCED_CONDITION_STATE;
@@ -121,8 +121,8 @@ public class HudderV2Compiler extends AVarTextCompiler {
 						switch (c) {
 							case '%':
 								compileState = TEXT_STATE;
-								condArgs = addToArray(condArgs,elemBuilder.toString().trim());
-								runtime.addRuntimeElement(new BasicConditionV2RuntimeElement(condArgs, this, info));
+								builder = addToArray(builder,elemBuilder.toString().trim());
+								runtime.addRuntimeElement(new BasicConditionV2RuntimeElement(builder, this, info));
 								elemBuilder.setLength(0);
 								break;
 							case '"':
@@ -130,7 +130,7 @@ public class HudderV2Compiler extends AVarTextCompiler {
 								elemBuilder.append(c);
 								break;
 							case ',':
-								condArgs = addToArray(condArgs,elemBuilder.toString().trim());
+								builder = addToArray(builder,elemBuilder.toString().trim());
 								elemBuilder.setLength(0);
 								break;
 							default: elemBuilder.append(c);break;
@@ -144,16 +144,16 @@ public class HudderV2Compiler extends AVarTextCompiler {
 								compileState = TEXT_STATE;
 								break;
 							case ',':
-								methodbuilder = addToArray(methodbuilder,elemBuilder.toString().trim());
+								builder = addToArray(builder,elemBuilder.toString().trim());
 								elemBuilder.setLength(0);
 								break;
 							default: elemBuilder.append(c);break;
 						}
 						if (compileState!=META_STATE) {
-							methodbuilder = addToArray(methodbuilder,elemBuilder.toString().trim());
-							runtime.addRuntimeElement(new MethodV2RuntimeElement(methodbuilder, this, info, runtime));
+							builder = addToArray(builder,elemBuilder.toString().trim());
+							runtime.addRuntimeElement(new MethodV2RuntimeElement(builder, this, info, runtime));
 							elemBuilder.setLength(0);
-							methodbuilder = new String[0];
+							builder = new String[0];
 							cleanup = true;
 							cleanup_amount = ConfigManager.getConfig().methodBuffer/2;
 						}

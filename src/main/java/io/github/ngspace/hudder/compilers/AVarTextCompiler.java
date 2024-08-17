@@ -3,7 +3,6 @@ package io.github.ngspace.hudder.compilers;
 import static io.github.ngspace.hudder.data_management.BooleanData.getBoolean;
 import static io.github.ngspace.hudder.data_management.NumberData.getNumber;
 import static io.github.ngspace.hudder.data_management.StringData.getString;
-import static io.github.ngspace.hudder.util.MathUtils.eval;
 
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.config.ConfigManager;
@@ -24,32 +23,6 @@ public abstract class AVarTextCompiler extends ATextCompiler {
 		if (obj==null&&(obj=getDynamicVariable(key))!=null) return obj;
 		if (obj!=null) return obj;
 		return key;
-	}
-	
-	/**
-	 * Processes a string (ex. "1+2+fps") and returns a double if it was able to process the equation, or returns the
-	 * variable with that name.
-	 * 
-	 * @deprecated Please use V2Runtime and V2Value instead of manually processing Math variables.<br>
-	 * Will be removed by version 4.0.0
-	 * @param variable
-	 * @return the result
-	 * @throws CompileException 
-	 */
-	@Deprecated(since = "3.5.0", forRemoval = true)
-	public Object getMathVariable(String variable) throws CompileException {
-		String advkey = variable.trim().replace(" ", "");
-		String[] keys = advkey.split("[^\\d\\.A-z ]");
-		if (keys.length==1) return getVariable(variable);
-		for (String key : keys) {
-			if ("".equals(key)) continue;
-			advkey = advkey.replace(key, getVariable(key).toString());
-		}
-		try {
-			return eval(advkey); //Very Expensive operation so try to avoid it as much as possible.
-		} catch (Exception e) {
-			return getVariable(variable);
-		}
 	}
 	
 	
