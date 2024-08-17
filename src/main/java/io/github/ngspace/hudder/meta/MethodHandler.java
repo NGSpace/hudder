@@ -13,9 +13,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import io.github.ngspace.hudder.Hudder;
-import io.github.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
-import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.meta.methods.DecimalMethods;
 import io.github.ngspace.hudder.meta.methods.GUIMethods;
 import io.github.ngspace.hudder.meta.methods.IMethod;
@@ -35,9 +33,29 @@ public class MethodHandler {
 	public static final String[] TextArg = {"[Text]"};
 	public MethodHandler() {
 		
-		registerRenderingMethods();
+
+		//Inventory Rendering
+		register(new ItemStackMethods(),"slot","item","hand","selectedslot","hat", "helmet", "chestplate", "leggings",
+				"pants", "boots", "offhand");
 		
 		
+		
+		//Text and compiling
+		register((i,m,c,type,args)->m.setTextLocation(type,(float) (args.length>0?args[0].asDouble():i.scale)),
+				BOTTOMRIGHT, TOPLEFT, TOPRIGHT, BOTTOMLEFT, MUTE);
+		register(new TextMethod(), "text");
+		register((c,m,a,t,s)->a.put(s[1].getAbsoluteValue(), Hudder.ins.textRenderer.getWidth(s[0].asString())),
+				2, new String[] {"[Text]",Var[0]}, "strwidth");
+		
+		
+		
+		//UI
+		register(new GUIMethods(), "health", "xpbar", "hotbar", "helditemtooltip");
+		register(new TexturesMethods(), "image", "png", "texture");
+		
+		
+		
+		//Compiler
 		register(new LoadMethod(), "load", "execute", "compile", "run", "add");
 		
 		
@@ -63,7 +81,7 @@ public class MethodHandler {
 		 *   getAbsoluteValue() is the name the variable (aka the raw text supplied)
 		 *   asInt() is the value of the variable as an int (aka the result of getVariable() converted to int)
 		 */
-		register((ci,meta,comp,type,args)->comp.put(args[0].asStringSafe(),args[0].asInt()),1,Var,"int","fullnumber");
+		register((ci,meta,comp,type,args)->comp.put(args[0].getAbsoluteValue(),args[0].asInt()),1,Var,"int","fullnumber");
 		
 		
 		
@@ -75,43 +93,6 @@ public class MethodHandler {
 		//File-IO(THIS IS ALL YOU'RE GETTING, NO MORE FILE-IO! YOU'RE NOT WRITING OR READING FILES ON MY WATCH FUCKERS!)
 		String[] ar = new String[] {"[Filename]",Var[0]};
 		register((c,m,a,t,s)->a.put(s[1].getAbsoluteValue(), HudFileUtils.exists(s[0].asStringSafe())), 2, ar, "exists");
-	}
-	
-	
-	
-	/**
-	 * Calls the method with the name of the first value in the args parameter.
-	 * @param config - The config used
-	 * @param meta - The current meta
-	 * @param compiler - The compiler
-	 * @param args - the parameters
-	 * @throws CompileException - if no message is found under the name found first value in the args parameter or
-	 *  if the method itself called this exception.
-	 */
-	public void execute(ConfigInfo config, CompileState meta, AVarTextCompiler compiler, String[] args) throws CompileException {
-		if (args.length==0) throw new CompileException("Empty method call");
-		IMethod ameta = methods.get(args[0].toLowerCase());
-		if (ameta==null) throw new CompileException("Unknown method " + args[0]);
-		MethodValue[] vals = new MethodValue[args.length-1];
-		for (int i = 0;i<vals.length;i++) vals[i] = new MethodValue(args[i+1],compiler);
-		ameta.invoke(config, meta, compiler, args[0], vals);
-	}
-	
-	
-	
-	/**
-	 * Calls the method with the name of the first value in the args parameter.
-	 * @param config - The config used
-	 * @param meta - The current meta
-	 * @param compiler - The compiler
-	 * @param args - the parameters
-	 * @throws CompileException - if no message is found under the name found first value in the args parameter or
-	 *  if the method itself called this exception.
-	 */
-	public void execute(ConfigInfo config, CompileState meta, AVarTextCompiler compiler, String type, MethodValue[] vals) throws CompileException {
-		IMethod ameta = methods.get(type.toLowerCase());
-		if (ameta==null) throw new CompileException("Unknown method " + type);
-		ameta.invoke(config, meta, compiler, type, vals);
 	}
 	
 	
@@ -145,34 +126,15 @@ public class MethodHandler {
 	}
 	
 	
-	
-	public IMethod getMethod(String name) throws CompileException {
+	/**
+	 * Get the a registed method from it's name
+	 * @param name - The name of the method.
+	 * @return The method
+	 * @throws CompileException - if there is no method with that name.
+	 */
+	public IMethod getMethodFromName(String name) throws CompileException {
 		IMethod method = methods.get(name.toLowerCase());
 		if (method==null) throw new CompileException("Unknown method " + name);
 		return method;
-	}
-	
-	
-	
-	public void registerRenderingMethods() {
-		
-		//Inventory Rendering
-		register(new ItemStackMethods(),"slot","item","hand","selectedslot","hat", "helmet", "chestplate", "leggings",
-				"pants", "boots", "offhand");
-		
-		
-		
-		//Text and compiling
-		register((i,m,c,type,args)->m.setTextLocation(type,(float) (args.length>0?args[0].asDouble():i.scale)),
-				BOTTOMRIGHT, TOPLEFT, TOPRIGHT, BOTTOMLEFT, MUTE);
-		register(new TextMethod(), "text");
-		register((c,m,a,t,s)->a.put(s[1].asStringSafe(), Hudder.ins.textRenderer.getWidth(s[0].asString())),
-				2, new String[] {"[Text]",Var[0]}, "strwidth");
-		
-		
-		
-		//UI
-		register(new GUIMethods(), "health", "xpbar", "hotbar", "helditemtooltip");
-		register(new TexturesMethods(), "image", "png", "texture");
 	}
 }

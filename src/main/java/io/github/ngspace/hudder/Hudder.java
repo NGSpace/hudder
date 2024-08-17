@@ -162,6 +162,7 @@ public class Hudder implements ModInitializer {
 	public void showToast(MinecraftClient CLIENT, Text title) {showToast(CLIENT, title, Text.of(""));}
 	
 	public void compile(RenderTickCounter f) {
+		long duration = System.nanoTime();
 		try {
     		Advanced.delta = f!=null?f.getLastFrameDuration():3;
     		if (config.shouldCompile(ins)) {
@@ -169,6 +170,7 @@ public class Hudder implements ModInitializer {
     			result = config.compile(HudFileUtils.getFile(config.mainfile));
     			for (Consumer<ATextCompiler> con : postcomplistners) con.accept(config.compiler);
     		}
+    		log(System.nanoTime() - duration);
 		} catch (CompileException e) {
 			LastFailMessage = e.getLocalizedMessage()+(e.line!=-1?" at line "+(e.line+1)+" col "+e.col:"");
 			result = null;

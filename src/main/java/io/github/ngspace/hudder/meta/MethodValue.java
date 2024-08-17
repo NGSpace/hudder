@@ -53,7 +53,7 @@ public class MethodValue {
 		try {
 			return asString();
 		} catch (Exception e) {
-			return getAbsoluteValue();
+			return value;
 		}
 	}
 }

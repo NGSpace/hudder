@@ -20,6 +20,6 @@ public class InventoryInformationMethods implements IMethod {
 			case "maxcount"     ->stack.getMaxCount();
 			default -> throw new IllegalArgumentException();
 		};
-		c.put(s[1].asStringSafe(), value);
+		c.put(s[1].getAbsoluteValue(), value);
 	}
 }

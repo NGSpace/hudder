@@ -1,5 +1,6 @@
 package io.github.ngspace.hudder.meta.methods;
 
+import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.abstractions.ATextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.config.ConfigInfo;
@@ -13,23 +14,23 @@ public class StringMethods implements IMethod {
 		try {
 			switch (type) {
 				case "concat": {
-					String str1 = args[1].asString();
-					String str2 = args[2].asString();
-					comp.put(args[3].asStringSafe(),str1+str2);
+					String str1 = args[0].asString();
+					String str2 = args[1].asString();
+					comp.put(args[2].getAbsoluteValue(),str1+str2);
 					break;
 				}
 				case "multiplystring": {
-					String str1 = args[1].asString();
-					int times = args[2].asInt();
-					comp.put(args[3].asStringSafe(),str1.repeat(times));
+					String str1 = args[0].asString();
+					int times = args[1].asInt();
+					comp.put(args[2].getAbsoluteValue(),str1.repeat(times));
 					break;
 				}
 				case "substring": {
-					String str1 = args[1].asString();
-					int start = args[2].asInt();
-					int end = args[3].asInt();
+					String str1 = args[0].asString();
+					int start = args[1].asInt();
+					int end = args[2].asInt();
 					try {
-						comp.put(args[4].asStringSafe(),str1.substring(start,end));
+						comp.put(args[3].getAbsoluteValue(),str1.substring(start,end));
 					} catch (IndexOutOfBoundsException e) {
 						throw new CompileException(e.getLocalizedMessage());
 					}
@@ -38,6 +39,7 @@ public class StringMethods implements IMethod {
 				default: throw new IllegalArgumentException("Unexpected value: " + type);
 			}
 		} catch (IndexOutOfBoundsException e) {
+			if (Hudder.IS_DEBUG) e.printStackTrace();
 			throw new CompileException("\""+type+"\" only accepts ;"+type
 					+(type.equals("concat")         ?",[string],[string],[result variable name]" :"")
 					+(type.equals("multiplystring") ?",[string],[amount],[result variable name]" :"")

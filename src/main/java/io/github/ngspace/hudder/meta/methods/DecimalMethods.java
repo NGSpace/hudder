@@ -15,6 +15,6 @@ public class DecimalMethods implements IMethod {
 		double point = args[1].asDouble();
 		double d /*hehe double d*/ = args[0].asDouble();
 		double pow = Math.pow(10, point);
-		comp.put(args[0].asStringSafe(), ((int)(d * pow)) / pow);
+		comp.put(args[0].getAbsoluteValue(), ((int)(d * pow)) / pow);
 	}
 }

@@ -148,7 +148,7 @@ public class HudderV1Compiler extends AConditionCompiler {
 							currentMeta.addString(resultBuilder.toString(), true);
 							resultBuilder.setLength(0);
 						}
-						metacomp.execute(info, currentMeta, this, metabuilder);
+//						metacomp.execute(info, currentMeta, this, metabuilder); //Stop cryin ya little baby!
 						metabuilder = new String[0];
 					}
 					break;

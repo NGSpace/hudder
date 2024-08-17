@@ -290,8 +290,7 @@ public class JavaScriptCompiler extends AVarTextCompiler {
 	 * Should be used alongside {@code bindFunction}
 	 * @param <E> any exception this function might throw.
 	 */
-	@FunctionalInterface
-	public static interface Func<E extends Exception> extends ThisAndResult<E> {
+	@FunctionalInterface public static interface Func<E extends Exception> extends ThisAndResult<E> {
 		public default V8Value call(V8Value thisObject, V8Value... v8Values) throws JavetException, E {
 			return asJSValue(thisObject.getV8Runtime(),exec(v8Values));
 		}
@@ -302,11 +301,6 @@ public class JavaScriptCompiler extends AVarTextCompiler {
 	 * Should be used alongside {@code bindConsumer}
 	 * @param <E> any exception this consumer might throw.
 	 */
-	@FunctionalInterface
-	public static interface Cons<E extends Exception> extends NoThisAndNoResult<E> {}
-	@Override
-	public boolean conditionCheck(String condition) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	@FunctionalInterface public static interface Cons<E extends Exception> extends NoThisAndNoResult<E> {}
+	@Override public boolean conditionCheck(String condition) {return false;}
 }

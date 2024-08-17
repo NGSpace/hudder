@@ -29,7 +29,7 @@ public class MethodV2RuntimeElement extends AV2RuntimeElement {
 			values = Arrays.copyOf(values, values.length+1);
 			values[values.length-1] = V2Values.of(args[i], compiler);
 		}
-		method = methodHandler.getMethod(type);
+		method = methodHandler.getMethodFromName(type);
 	}
 	@Override public void execute(CompileState meta, StringBuilder builder) throws CompileException {
 		method.invoke(info, meta, compiler, type, values);
