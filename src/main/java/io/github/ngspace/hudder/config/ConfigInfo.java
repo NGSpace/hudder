@@ -12,8 +12,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 
 import io.github.ngspace.hudder.Hudder;
+import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.compilers.HudderV2Compiler;
-import io.github.ngspace.hudder.compilers.abstractions.ATextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileResult;
 import io.github.ngspace.hudder.compilers.utils.Compilers;

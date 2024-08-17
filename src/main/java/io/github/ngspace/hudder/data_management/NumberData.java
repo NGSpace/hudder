@@ -78,6 +78,8 @@ public class NumberData {private NumberData() {}
 			
 			/* Other Player related information */
 			case "selectedslot": yield (double) p.getInventory().selectedSlot;
+			case "xplevel": yield (double) p.experienceLevel;
+			case "xp": yield (double) p.totalExperience;
 			
 			
 			/* Player position */
@@ -124,7 +126,7 @@ public class NumberData {private NumberData() {}
 			case "yoffset": yield (double) ConfigManager.getConfig().yoffset;
 			case "xoffset": yield (double) ConfigManager.getConfig().xoffset;
 			case "lineheight": yield (double) ConfigManager.getConfig().lineHeight;
-			case "metabuffer": yield (double) ConfigManager.getConfig().methodBuffer;
+			case "methodbuffer": yield (double) ConfigManager.getConfig().methodBuffer;
 			case "backgroundcolor": yield (double) ConfigManager.getConfig().backgroundcolor;
 			
 			

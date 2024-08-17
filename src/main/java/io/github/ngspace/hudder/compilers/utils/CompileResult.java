@@ -1,6 +1,6 @@
 package io.github.ngspace.hudder.compilers.utils;
 
-import io.github.ngspace.hudder.meta.elements.Element;
+import io.github.ngspace.hudder.meta.elements.AUIElement;
 
 public class CompileResult {
 	public String TopLeftText;
@@ -11,7 +11,7 @@ public class CompileResult {
 	public float BLScale;
 	public float TRScale;
 	public float BRScale;
-	public Element[] elements;
+	public AUIElement[] elements;
 	
 	
 	/*
@@ -25,7 +25,7 @@ public class CompileResult {
 			String BL, float BLScale,
 			String TR, float TRScale,
 			String BR, float BRScale,
-			Element[] elements) {
+			AUIElement[] elements) {
 		this.TopLeftText = TL;
 		this.TLScale = TLScale;
 		this.BottomLeftText = BL;
@@ -38,6 +38,6 @@ public class CompileResult {
 	}
 	
 	public static CompileResult of(String s) {
-		return new CompileResult(s, 1, "", 1, "", 1, "", 1, new Element[0]);
+		return new CompileResult(s, 1, "", 1, "", 1, "", 1, new AUIElement[0]);
 	}
 }

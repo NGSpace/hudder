@@ -15,7 +15,7 @@ import net.minecraft.entity.JumpingMount;
  * with the goal of allowing the creation of a custom
  * game hud without forcing the user to reimplement every single UI Element themselves
  */
-public class GameHudElement extends Element {
+public class GameHudElement extends AUIElement {
 	public enum GuiType {
 		STATUS_BARS,
 		EXP_AND_MOUNT_BAR,

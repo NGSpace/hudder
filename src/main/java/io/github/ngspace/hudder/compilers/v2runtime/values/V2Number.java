@@ -1,6 +1,6 @@
 package io.github.ngspace.hudder.compilers.v2runtime.values;
 
-import io.github.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
+import io.github.ngspace.hudder.compilers.AVarTextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 
 public class V2Number extends V2Value {

@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.compilers.abstractions;
+package io.github.ngspace.hudder.compilers;
 
 import static io.github.ngspace.hudder.data_management.BooleanData.getBoolean;
 import static io.github.ngspace.hudder.data_management.NumberData.getNumber;

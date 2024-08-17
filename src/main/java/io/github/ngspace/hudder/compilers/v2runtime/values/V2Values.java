@@ -1,6 +1,6 @@
 package io.github.ngspace.hudder.compilers.v2runtime.values;
 
-import io.github.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
+import io.github.ngspace.hudder.compilers.AVarTextCompiler;
 
 public class V2Values {private V2Values() {}
 	

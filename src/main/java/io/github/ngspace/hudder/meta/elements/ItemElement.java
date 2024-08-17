@@ -6,7 +6,7 @@ import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 
-public class ItemElement extends Element {
+public class ItemElement extends AUIElement {
 	private static final long serialVersionUID = -4033666012277014500L;
 	public final ItemStack stack;
 	public final double x;

@@ -3,7 +3,6 @@ package io.github.ngspace.hudder.compilers;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import io.github.ngspace.hudder.compilers.abstractions.AConditionCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileResult;
 import io.github.ngspace.hudder.compilers.v2runtime.V2Runtime;
@@ -16,7 +15,7 @@ import io.github.ngspace.hudder.compilers.v2runtime.runtime_elements.WhileV2Runt
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.config.ConfigManager;
 
-public class HudderV2Compiler extends AConditionCompiler {
+public class HudderV2Compiler extends AVarTextCompiler {
 	
 	public static final int TEXT_STATE = 0;
 	public static final int VARIABLE_STATE = 1;
@@ -219,11 +218,6 @@ public class HudderV2Compiler extends AConditionCompiler {
 			default -> "An unknown error has occurred";
 		});
 		return strb.toString();
-	}
-	@Override public Object getVariable(String string) throws CompileException {
-		Object val = super.getVariable(string.toLowerCase());
-		if (val instanceof Number num&&num.doubleValue()%1==0) return num.longValue();
-		return val;
 	}
 	
 	private static <T> T[] addToArray(T[] arr, T t) {

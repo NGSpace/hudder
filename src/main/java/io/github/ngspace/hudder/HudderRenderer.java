@@ -6,7 +6,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import io.github.ngspace.hudder.compilers.utils.CompileResult;
 import io.github.ngspace.hudder.config.ConfigInfo;
-import io.github.ngspace.hudder.meta.elements.Element;
+import io.github.ngspace.hudder.meta.elements.AUIElement;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.BufferBuilder;
@@ -81,7 +81,7 @@ public class HudderRenderer {
         	yoff+=info.lineHeight * text.BRScale;
         }
         
-        for (Element e : text.elements) e.renderElement(context,delta);
+        for (AUIElement e : text.elements) e.renderElement(context,delta);
     }
     public int countLines(String what) {
         int count = 1;

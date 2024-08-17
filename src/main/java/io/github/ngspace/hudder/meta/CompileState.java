@@ -7,7 +7,7 @@ import java.util.List;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileResult;
 import io.github.ngspace.hudder.config.ConfigManager;
-import io.github.ngspace.hudder.meta.elements.Element;
+import io.github.ngspace.hudder.meta.elements.AUIElement;
 
 public class CompileState {
 
@@ -26,7 +26,7 @@ public class CompileState {
 	public float BLScale = 1;
 	public float TRScale = 1;
 	public float BRScale = 1;
-	public List<Element> elements = new ArrayList<Element>();
+	public List<AUIElement> elements = new ArrayList<AUIElement>();
 
 	public CompileState(String string) {setTextLocation(string, ConfigManager.getConfig().scale);}
 	public void addString(String txt, boolean cleanup) throws CompileException {addString(txt,pos,cleanup);}
@@ -68,7 +68,7 @@ public class CompileState {
 	
 	public CompileResult toResult() {
 		return new CompileResult(TLText, TLScale, BLText, BLScale, TRText, TRScale, BRText, BRScale,
-				elements.toArray(new Element[elements.size()]));
+				elements.toArray(new AUIElement[elements.size()]));
 	}
 
 	public void combineWithResult(CompileResult compile, boolean combineText) throws CompileException {

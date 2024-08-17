@@ -1,6 +1,6 @@
 package io.github.ngspace.hudder.compilers.v2runtime.runtime_elements;
 
-import io.github.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
+import io.github.ngspace.hudder.compilers.AVarTextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.v2runtime.values.V2Value;
 import io.github.ngspace.hudder.compilers.v2runtime.values.V2Values;

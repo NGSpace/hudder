@@ -4,7 +4,7 @@ import io.github.ngspace.hudder.Hudder;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 
-public class TextElement extends Element {
+public class TextElement extends AUIElement {
 	
 	private static final long serialVersionUID = -7265671672610205526L;
 	

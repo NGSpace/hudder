@@ -5,7 +5,7 @@ import static io.github.ngspace.hudder.compilers.v2runtime.values.V2Values.of;
 import java.util.Arrays;
 import java.util.Objects;
 
-import io.github.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
+import io.github.ngspace.hudder.compilers.AVarTextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.meta.MethodValue;
 

@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.compilers.abstractions;
+package io.github.ngspace.hudder.compilers;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,5 +16,4 @@ public abstract class ATextCompiler {
 	
 	public void put(String key, Object value) {variables.put(key, value);}
 	public Object get(String key) {return variables.get(key);}
-	public abstract boolean conditionCheck(String condition) throws CompileException;
 }
