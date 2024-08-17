@@ -5,6 +5,9 @@
 	
 	"hudder.general": "General",
 	
+	"hudder.general.wiki":"Click here to open Hudder's wiki in your browser",
+	"hudder.general.wiki.tooltip":"Click to open Wiki",
+	
 	"hudder.general.enabled":"Enabled",
 	"hudder.general.enabled.tooltip":"Whether Hudder should be enabled or not (duh)",
 	

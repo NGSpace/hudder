@@ -5,6 +5,9 @@
 	
 	"hudder.general": "Общий",
 	
+	"hudder.general.wiki":"Нажмите здесь, чтобы открыть вики Хаддера в вашем браузере",
+	"hudder.general.wiki.tooltip":"Нажмите, чтобы открыть вики",
+	
 	"hudder.general.enabled":"Включено",
 	"hudder.general.enabled.tooltip":"Должен ли Hudder быть включен или нет",
 	
