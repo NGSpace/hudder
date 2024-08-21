@@ -28,7 +28,7 @@ public abstract class AVarTextCompiler extends ATextCompiler {
 	
 	//I now realize the name "static variable" might be a little confusing, it means a variable that can't be modified
 	public boolean isStaticVariable(String key) {
-		return getStaticVariable(key)!=null;
+		return getStaticVariable(key)!=null||"null".equals(key);
 	}
 	public Object getStaticVariable(String key) {
 		Object obj = getNumber(key);
@@ -38,6 +38,7 @@ public abstract class AVarTextCompiler extends ATextCompiler {
 		if ((obj=ConfigManager.getConfig().globalVariables.get(key))!=null) return obj;
 		if ("true".equals(key)) return true;
 		if ("false".equals(key)) return false;
+		if ("null".equals(key)) return null;
 		return null;
 	}
 	public boolean isDynamicVariable(String key) {

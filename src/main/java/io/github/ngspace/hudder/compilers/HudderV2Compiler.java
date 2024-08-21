@@ -2,6 +2,7 @@ package io.github.ngspace.hudder.compilers;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileResult;
@@ -21,12 +22,12 @@ public class HudderV2Compiler extends AVarTextCompiler {
 	public static final int VARIABLE_STATE = 1;
 	public static final int CONDITION_STATE = 2;
 	public static final int META_STATE = 3;
-	public static final int ADVANCED_CONDITION_STATE = 4;
-	public static final int WHILE_STATE = 5;
+	public static final int HASHTAG_STATE = 4;
 	
-	HashMap<String, V2Runtime> runtimes = new HashMap<String, V2Runtime>();
+	Map<String, V2Runtime> runtimes = new HashMap<String, V2Runtime>();
 
 	@Override public CompileResult compile(ConfigInfo info, String text) throws CompileException {
+//		System.out.println(text);
 		V2Runtime runtime = runtimes.get(text);
 		if (runtime==null) {
 			runtime = new V2Runtime();
@@ -80,7 +81,8 @@ public class HudderV2Compiler extends AVarTextCompiler {
 								builder = new String[] {};
 								break;
 							case '#':
-								compileState = ADVANCED_CONDITION_STATE;
+								compileState = HASHTAG_STATE;
+								builder = new String[] {};
 								runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), false));
 								elemBuilder.setLength(0);
 								break;
@@ -94,20 +96,17 @@ public class HudderV2Compiler extends AVarTextCompiler {
 						break;
 					}
 					case VARIABLE_STATE: {
-						switch (c) {
-							case '{':bracketscount++;elemBuilder.append(c);break;
-							case '}':
-								bracketscount--;
-								if (bracketscount==0) {
-									runtime.addRuntimeElement(new VariableV2RuntimeElement
-											(elemBuilder.toString(), this));
-									elemBuilder.setLength(0);
-									compileState = TEXT_STATE;
-								} else elemBuilder.append(c);
-								break;
-							default: elemBuilder.append(c);break;
-						}
-						
+						if (c=='{') {
+							bracketscount++;elemBuilder.append(c);
+						} else if (c=='}') {
+							bracketscount--;
+							if (bracketscount==0) {
+								runtime.addRuntimeElement(new VariableV2RuntimeElement
+										(elemBuilder.toString(), this));
+								elemBuilder.setLength(0);
+								compileState = TEXT_STATE;
+							} else elemBuilder.append(c);
+						} else elemBuilder.append(c);
 						break;
 					}
 					case CONDITION_STATE: {
@@ -134,7 +133,7 @@ public class HudderV2Compiler extends AVarTextCompiler {
 								elemBuilder.setLength(0);
 								break;
 							default: elemBuilder.append(c);break;
-						}
+						}	
 						
 						break;
 					}
@@ -159,16 +158,20 @@ public class HudderV2Compiler extends AVarTextCompiler {
 						}
 						break;
 					}
-					case ADVANCED_CONDITION_STATE, WHILE_STATE: {
-						boolean isWhile = compileState==WHILE_STATE;
+					case HASHTAG_STATE: {
+						boolean isWhile = false;
+						boolean isDef = false;
 						compileState = TEXT_STATE;
+						boolean hasbeendefined = false;
 						for (;ind<text.length();ind++) {
 							if ((c = text.charAt(ind))=='\n') break;
-							else if(c==' '&&elemBuilder.toString().equals("while")) {
-								elemBuilder.setLength(0);
-								isWhile=true;
-							} else if(c==' '&&elemBuilder.toString().equals("if")) elemBuilder.setLength(0);
-							else elemBuilder.append(c);
+							if (!hasbeendefined) {
+								if(c==' '&&elemBuilder.toString().equals("while")) {hasbeendefined=true;isWhile=true;}
+								else if(c==' '&&elemBuilder.toString().equals("if")) {hasbeendefined=true;}
+								else if(c==' '&&elemBuilder.toString().equals("def")){isDef=true;hasbeendefined=true;}
+								if (hasbeendefined) {elemBuilder.setLength(0);continue;}
+							}
+							elemBuilder.append(c);
 						}
 						String cond = elemBuilder.toString();
 						elemBuilder.setLength(0);
@@ -187,6 +190,23 @@ public class HudderV2Compiler extends AVarTextCompiler {
 							}
 						} else ind--;
 						String cmds = instructions.toString();
+						if (isDef) {
+							builder = new String[0];
+							for (int i = 0;i<cond.length();i++) {
+								char ch = cond.charAt(i);
+								if (ch==',') {
+									builder = addToArray(builder, elemBuilder.toString().trim().toLowerCase());
+									elemBuilder.setLength(0);
+								} else elemBuilder = elemBuilder.append(ch);
+							}
+							if (!elemBuilder.toString().isBlank())
+								builder = addToArray(builder, elemBuilder.toString().trim().toLowerCase());
+							String name = builder[0];
+							String[] args = Arrays.copyOfRange(builder, 1, builder.length);
+							runtime.methodHandler.register(cmds, args, name);
+							elemBuilder.setLength(0);
+							break;
+						}
 						if (isWhile) {
 							runtime.addRuntimeElement(new WhileV2RuntimeElement(info, cond, cmds, this));
 							break;
@@ -213,8 +233,7 @@ public class HudderV2Compiler extends AVarTextCompiler {
 			case VARIABLE_STATE -> "Expected '}'";
 			case CONDITION_STATE -> "Expected '%'";
 			case META_STATE -> "Expected ';'";
-			case ADVANCED_CONDITION_STATE -> "Expected end of ADVANCED_CONDITION_STATE";
-			case WHILE_STATE -> "Expected end of WHILE_STATE";
+			case HASHTAG_STATE -> "Expected end of ADVANCED_CONDITION_STATE";
 			default -> "An unknown error has occurred";
 		});
 		return strb.toString();

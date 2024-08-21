@@ -96,33 +96,52 @@ public class MethodHandler {
 	}
 	
 	
-	
-	/**
-	 * Register a meta method with multiple names
-	 * @param method - the method
-	 * @param names - the command
-	 */
 	public void register(IMethod method, String... names) {for(String name:names)methods.put(name,method);}
 	
-	
-	
-	/**
-	 * Register a meta method with multiple names
-	 * @param method - the method
-	 * @param names - the command
-	 */
 	public void register(IMethod method, int length, String[] args, String... names) {
-		IMethod newmethod = (config,meta,compiler,type,vals)->{
+		IMethod newmethod = (config,meta,compiler,name,vals)->{
 			
 			if (vals.length<length) {
-				String err='"'+type+"\" only accepts ;"+type+"";
+				String err='"'+name+"\" only accepts ;"+name+"";
 				for(String str:args)err+=", "+ str;
 				err+=';';
 				throw new CompileException(err);
 			}
-			method.invoke(config,meta,compiler,type,vals);
+			method.invoke(config,meta,compiler,name,vals);
 		};
 		for (String name : names) methods.put(name,newmethod);
+	}
+	
+	public void register(String method, String[] argtypes, String name) {
+		int[] parameters = new int[argtypes.length];
+		for (int i = 0;i<argtypes.length;i++) {
+			if ("string".equals(argtypes[i])) parameters[i] = 1;
+			else if ("number".equals(argtypes[i])) parameters[i] = 2;
+			else if ("boolean".equals(argtypes[i])) parameters[i] = 3;
+			else if ("string_safe".equals(argtypes[i])) parameters[i] = 4;
+			else if ("number_safe".equals(argtypes[i])) parameters[i] = 5;
+			else if ("boolean_safe".equals(argtypes[i])) parameters[i] = 6;
+		}
+		String errb = '"'+name+"\" only accepts ;"+name+"";
+		for (String arg : argtypes) errb += ", [" + arg + "]";
+		errb+=';';
+		String err = errb;
+		System.out.println(method);
+		IMethod newmethod = (info,state,comp,type,vals)->{
+			if (vals.length!=argtypes.length)
+				throw new CompileException(err);
+			for (int i = 0;i<vals.length;i++) {
+				if      (parameters[i]==1) comp.put("arg"+(i+1), vals[i].asString());
+				else if (parameters[i]==2) comp.put("arg"+(i+1), vals[i].asDouble());
+				else if (parameters[i]==3) comp.put("arg"+(i+1), vals[i].asBoolean());
+				else if (parameters[i]==4) comp.put("arg"+(i+1), vals[i].asStringSafe());
+				else if (parameters[i]==5) comp.put("arg"+(i+1), vals[i].asDoubleSafe());
+				else if (parameters[i]==6) comp.put("arg"+(i+1), vals[i].asBooleanSafe());
+			}
+			var res = comp.compile(info, method);
+			state.combineWithResult(res, false);
+		};
+		methods.put(name,newmethod);
 	}
 	
 	

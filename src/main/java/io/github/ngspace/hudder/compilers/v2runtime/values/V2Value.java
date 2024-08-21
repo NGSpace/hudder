@@ -144,10 +144,10 @@ public class V2Value extends MethodValue {
 			int realSecondValuesLength = 0;
 			
 			//Multiply, Divide and Modulo (Sounds like either the slogan of a dictator...)
-			double result = values[0].asDouble();
+			double result = values[0].asDoubleSafe();
 			for (int i = 0;i<values.length;i++) {
 				if (i==operations.length) break;
-				var val2 = values[i+1].asDouble();
+				var val2 = values[i+1].asDoubleSafe();
 				if      (operations[i]=='*') result = result * val2;
 				else if (operations[i]=='/') result = result / val2;
 				else if (operations[i]=='%') result = result % val2;
@@ -155,7 +155,7 @@ public class V2Value extends MethodValue {
 				else {
 					secondValues[realSecondValuesLength] = result;
 					secondsOperations[realSecondValuesLength] = operations[i];
-					result = values[i+1].asDouble();
+					result = values[i+1].asDoubleSafe();
 					realSecondValuesLength++;
 				}
 			}

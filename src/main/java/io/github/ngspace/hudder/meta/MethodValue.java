@@ -19,7 +19,21 @@ public abstract class MethodValue {
 	public abstract double asDouble() throws CompileException;
 	public abstract boolean asBoolean() throws CompileException;
 
-	public String asStringSafe() {try {return asString();} catch (Exception e) {return value;}}
+	public String asStringSafe() {
+		try {
+			return asString();
+		} catch (Exception e) {
+			try {
+				return String.valueOf(asDouble());
+			} catch (Exception ex) {
+				try {
+					return String.valueOf(asBoolean());
+				} catch (Exception exc) {
+					return value;
+				}
+			}
+		}
+	}
 	public int asIntSafe() {try {return asInt();} catch (Exception e) {return 0;}}
 	public double asDoubleSafe() {try {return asDouble();} catch (Exception e) {return 0;}}
 	public boolean asBooleanSafe() {try {return asBoolean();} catch (Exception e) {return false;}}
