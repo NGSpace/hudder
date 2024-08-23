@@ -25,15 +25,16 @@ public class StringData {private StringData() {}
 			/* Computer info */
 			case "cpu_info": yield GlDebugInfo.getCpuInfo();
 			case "operating_system": yield Advanced.OS;
-			
+
 			case "helditem_name": yield ins.player.getInventory()
 				.getStack(ins.player.getInventory().selectedSlot).getName().getString();
-			
+
 			case "biome":
 				Optional<RegistryKey<Biome>> i = ins.world.getBiome(ins.player.getBlockPos()).getKey();
 				if (i.isPresent())
 					yield i.get().getValue().toString();
 				yield null;
+			case "dimension": yield ins.world.getDimension().effects().toString();
 			case "looking_at","block_in_front": {
 			    HitResult vec = ins.player.raycast(5,0,true);
 			    if (vec.getType()==Type.BLOCK) {
@@ -51,7 +52,7 @@ public class StringData {private StringData() {}
 			    }
 			    yield "";
 			}
-			
+
 			/* Hudder */
 			case "compilertype": yield ConfigManager.getConfig().compilertype;
 			case "mainfile": yield ConfigManager.getConfig().mainfile;

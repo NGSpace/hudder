@@ -33,7 +33,7 @@ public class NumberData {private NumberData() {}
 		World world = ins.world;
 		int fps = getFPS(ins);
 		return switch(key) {
-			
+
 			/* Performance */
 			case "fps": yield (double) fps;
 			case "avgfps","avg_fps": yield (double) getAverageFPS();
@@ -41,13 +41,12 @@ public class NumberData {private NumberData() {}
 			case "maxfps","max_fps": yield (double) getMaximumFPS();
 			case "ping": yield (double) ins.getNetworkHandler().getPlayerListEntry(p.getName().getString()).getLatency();
 			case "tps": yield (double) getTPS(ins);
-			case "gpu_d": yield Advanced.gpuUsage;
+			case "gpu_d", "dgpu": yield Advanced.gpuUsage;
 			case "gpu": yield (double) ((int)Advanced.gpuUsage);
-//			case "cpu": throw new CompileException("due to my lack of skills and mental abilites cpu is unavaliable");
-			
+
 			case "delta": yield (double) Advanced.delta;
-			
-			
+
+
 			/* Memory */
 			case "totalmemory","maxmemory","totalram","maxram": yield runtime.maxMemory() / MB;
 			case "usedmemory","usedram": yield (runtime.totalMemory() - runtime.freeMemory()) / MB;
@@ -57,51 +56,63 @@ public class NumberData {private NumberData() {}
 				double totalmem = (runtime.maxMemory())/MB;
 				yield (double) ((int)(usedmem/totalmem*100));
 			case "freememory_percentage","freeram_percentage": yield (double) runtime.freeMemory() / runtime.maxMemory();
-			
-			
-			
+
+
+
 			/* Computer */
 			case "time": yield (double) currentTimeMillis();
-			
-			
-			
+			case "random","rng": yield (double) new Random().nextFloat();
+
+
+
 			/* Food and health */
 			case "saturation": yield (double) p.getHungerManager().getSaturationLevel();
 			case "hunger": yield (double) p.getHungerManager().getFoodLevel();
 			case "previoushunger": yield (double) p.getHungerManager().getPrevFoodLevel();
 			case "exhaustion": yield (double) p.getHungerManager().getExhaustion();
-			
+
 			case "health", "hp": yield (double) p.getHealth();
 			case "maxhealth", "maxhp": yield (double) p.getMaxHealth();
-			
-			
-			
+
+
+
 			/* Other Player related information */
+			case "selectedslot": yield (double) p.getInventory().selectedSlot;
+			case "xplevel": yield (double) p.experienceLevel;
+			case "xp": yield (double) p.totalExperience;
+
+
+			/* Player position */
 			case "dxpos","dx": yield p.getX();
 			case "dypos","dy": yield p.getY();
 			case "dzpos","dz": yield p.getZ();
 			case "xpos","x": yield (double) p.getBlockX();
 			case "ypos","y": yield (double) p.getBlockY();
 			case "zpos","z": yield (double) p.getBlockZ();
-			case "selectedslot": yield (double) p.getInventory().selectedSlot;
-			
-			
+
+
+
+			/* Player roation*/
+			case "dpitch": yield (double) p.getPitch();
+			case "dyaw": yield p.getYaw() % 360d;
+			case "pitch": yield (double) (int) p.getPitch();
+			case "yaw": yield (double) (int) p.getYaw() % 360;
+
+
 
 			/* World Rendering */
 			case "entites": yield (double) ((WorldRendererAccess)wr).getRegularEntityCount();
 			case "particles": yield (double) ((ParticleManagerAccessor)ins.particleManager)
 				.getParticles().values().stream().mapToInt(Collection::size).sum();
 			case "chunks": yield wr.getChunkCount();
-			
-			
-			
+
+
+
 			/* World */
 			case "light": yield (double) world.getLightLevel(p.getBlockPos());
 			case "blocklight", "block_light": yield (double) world.getLightLevel(LightType.BLOCK,p.getBlockPos());
 			case "skylight", "sky_light": yield (double) world.getLightLevel(LightType.SKY,p.getBlockPos());
 			case "worldtime", "world_time": yield (double) world.getTimeOfDay();
-			
-			case "random","rng": yield (double) new Random().nextFloat();
 			
 			
 			

@@ -13,10 +13,10 @@ import net.minecraft.client.MinecraftClient;
 
 public class Advanced {private Advanced() {}
 	public static double gpuUsage = 0;
-    
+
 	public static float delta = 1;
-	
-	
+
+
 	public static String OS = null; static{
 		if (OS == null) {
 			String OS = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
@@ -26,13 +26,13 @@ public class Advanced {private Advanced() {}
 			else OS = "other";
 		}
 	}
-	
-	
-	
+
+
+
 	/* FPS */
-	
-	
-	
+
+
+
     private static final List<Integer> fpshistory = new ArrayList<Integer>();
 
     public static int getFPS(MinecraftClient ins) {
@@ -44,13 +44,13 @@ public class Advanced {private Advanced() {}
     public static int getMinimumFPS() {int max = fpshistory.get(0);for (int i:fpshistory) if (i<max) max=i;return max;}
     public static int getMaximumFPS() {int max = 0;for (int i:fpshistory) if (i>max) max=i;return max;}
     public static int getAverageFPS() {int sum = 0;for (int fps : fpshistory) sum+=fps;return sum/fpshistory.size();}
-    
-    
-    
+
+
+
     /* Keyboard */
-    
-    
-    
+
+
+
     public static final Map<Integer,Integer> keysheld = new HashMap<Integer,Integer>();
 
     //Kinda cheating?

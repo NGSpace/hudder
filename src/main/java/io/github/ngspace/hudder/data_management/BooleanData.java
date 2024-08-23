@@ -10,6 +10,7 @@ import io.github.ngspace.hudder.config.ConfigManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.random.ChunkRandom;
+import net.minecraft.world.GameMode;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.World;
 
@@ -25,9 +26,14 @@ public class BooleanData {private BooleanData(){}
 					((StructureWorldAccess)betterworld).getSeed(), 987234911L).nextInt(10) == 0;
 			case "hudhidden": yield ins.options.hudHidden;
 			case "showdebug": yield ins.options.debugEnabled;
-			case "ismultiplayer": yield !ins.isInSingleplayer();
-			
-			
+
+			/* Player */
+			case "issurvival","is_survival": yield ins.interactionManager.getCurrentGameMode()==GameMode.SURVIVAL;
+			case "iscreative","is_creative": yield ins.interactionManager.getCurrentGameMode()==GameMode.CREATIVE;
+			case "isadventure","is_adventure": yield ins.interactionManager.getCurrentGameMode()==GameMode.ADVENTURE;
+			case "isspectator","is_spectator": yield ins.interactionManager.getCurrentGameMode()==GameMode.SPECTATOR;
+
+
 			/* Hudder */
 			case "enabled": yield true; //Duh
 			case "shadow": yield ConfigManager.getConfig().shadow;
