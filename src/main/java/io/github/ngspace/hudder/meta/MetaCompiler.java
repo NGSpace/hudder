@@ -32,7 +32,7 @@ public class MetaCompiler {
 		
 		//Inventory Rendering
 		register(new ItemStackMethods(),"slot", "item", "hand", "selectedslot", "hat", "helmet", "chestplate", "leggings",
-				"pants", "boots", "offhand");
+				"pants", "boots", "offhand", "slot_trinkets");
 		
 		//Text and compiling
 		register((i,m,c,type,args)->m.setTextLocation(type,(float) (args.length>0?args[0].asDouble():i.scale)),

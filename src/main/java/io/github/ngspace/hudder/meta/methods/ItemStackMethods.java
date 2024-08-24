@@ -2,6 +2,7 @@ package io.github.ngspace.hudder.meta.methods;
 
 import static io.github.ngspace.hudder.Hudder.ins;
 
+import dev.emi.trinkets.api.TrinketsApi;
 import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.compilers.CompileException;
 import io.github.ngspace.hudder.config.ConfigInfo;
@@ -16,7 +17,7 @@ import net.minecraft.util.Identifier;
 public class ItemStackMethods implements IMethod {
 	@Override
 	public void invoke(ConfigInfo ci, Meta meta, ATextCompiler comp, String type, Value... args) throws CompileException {
-		int offset = "slot".equals(type)||"item".equals(type) ? 1:0;
+		int offset = "slot".equals(type)||"item".equals(type)||"slot_trinkets".equals(type) ? 1:0;
 		if (args.length<2+offset) {
 			throw new CompileException("\""+type+"\" only accepts \""+type
 				+("slot".equals(type)?",[slot]":"")
@@ -38,6 +39,17 @@ public class ItemStackMethods implements IMethod {
 			case "offhand": yield inv.offHand.get(0);
 			case "slot": yield inv.getStack(args[0].asInt());
 			case "item": yield new ItemStack(Registries.ITEM.get(Identifier.tryParse(args[1].asString())));
+			case "slot_trinkets": {
+				try {
+					var op = TrinketsApi.getTrinketComponent(ins.player);
+					if (op.isEmpty()) throw new CompileException("Optional is empty");
+					var all = op.get().getAllEquipped();
+					yield all.get(args[0].asInt()).getRight();
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw e;
+				}
+			}
 			default: throw new IllegalArgumentException("Unexpected value: " + type);
 		};
 		meta.elements.add(new ItemElement(x, y, stack, scale, showcount));
