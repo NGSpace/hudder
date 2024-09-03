@@ -32,8 +32,6 @@ public class MethodHandler {
 	public static final String[] Var = {"[Variable]"};
 	public static final String[] TextArg = {"[Text]"};
 	public MethodHandler() {
-		
-
 		//Inventory Rendering
 		register(new ItemStackMethods(),"slot","item","hand","selectedslot","hat", "helmet", "chestplate", "leggings",
 				"pants", "boots", "offhand");
@@ -127,9 +125,8 @@ public class MethodHandler {
 		errb+=';';
 		String err = errb;
 		System.out.println(method);
-		IMethod newmethod = (info,state,comp,type,vals)->{
-			if (vals.length!=argtypes.length)
-				throw new CompileException(err);
+		IMethod newmethod = (info,state,comp,type,vals) -> {
+			if (vals.length!=argtypes.length) throw new CompileException(err);
 			for (int i = 0;i<vals.length;i++) {
 				if      (parameters[i]==1) comp.put("arg"+(i+1), vals[i].asString());
 				else if (parameters[i]==2) comp.put("arg"+(i+1), vals[i].asDouble());
@@ -138,8 +135,7 @@ public class MethodHandler {
 				else if (parameters[i]==5) comp.put("arg"+(i+1), vals[i].asDoubleSafe());
 				else if (parameters[i]==6) comp.put("arg"+(i+1), vals[i].asBooleanSafe());
 			}
-			var res = comp.compile(info, method);
-			state.combineWithResult(res, false);
+			state.combineWithResult(comp.compile(info, method), false);
 		};
 		methods.put(name,newmethod);
 	}
