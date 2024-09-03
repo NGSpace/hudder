@@ -24,7 +24,56 @@ Hudder allows you to create a custom hud to appear on your screen in game using 
 
 ![150fps](https://cdn.modrinth.com/data/cached_images/e94855b58a39e5ef6c293f2a1d2c2eedfd6545ca.png)
 
-## You can learn more on the [wiki](https://ngspace.github.io/wiki/)
+### You can learn more on the [wiki](https://ngspace.github.io/wiki/)
 
-## Full Variable list can also be found [Here](https://ngspace.github.io/wiki/varlist).
-## Full Method list can also be found [Here](https://ngspace.github.io/wiki/methodlist).
+### Full Variable list can also be found [Here](https://ngspace.github.io/wiki/varlist).
+### Full Method list can also be found [Here](https://ngspace.github.io/wiki/methodlist).
+
+
+# How to Run, Compile and Add Hudder as a gradle dependency
+
+## Compiling
+Batch (Windows):
+```batchfile
+gradlew build
+```
+
+Unix (Mac/Linux):
+```shell
+./gradlew build
+```
+
+
+## Running
+Batch (Windows):
+```batchfile
+gradlew runClient
+```
+
+Unix (Mac/Linux):
+```shell
+./gradlew runClient
+```
+
+## Adding as a dependency
+
+```gradle
+repositories {
+	//...
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = "Modrinth"
+				url = "https://api.modrinth.com/maven"
+			}
+		}
+		filter {
+			includeGroup "maven.modrinth"
+		}
+	}
+}
+//...
+dependencies {
+	modImplementation "maven.modrinth:hudder:[Hudder Version]-[Minecraft version]"
+}
+```
