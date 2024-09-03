@@ -124,7 +124,6 @@ public class MethodHandler {
 		for (String arg : argtypes) errb += ", [" + arg + "]";
 		errb+=';';
 		String err = errb;
-		System.out.println(method);
 		IMethod newmethod = (info,state,comp,type,vals) -> {
 			if (vals.length!=argtypes.length) throw new CompileException(err);
 			for (int i = 0;i<vals.length;i++) {

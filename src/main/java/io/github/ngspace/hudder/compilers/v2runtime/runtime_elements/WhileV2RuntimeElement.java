@@ -1,10 +1,8 @@
 package io.github.ngspace.hudder.compilers.v2runtime.runtime_elements;
 
-import io.github.ngspace.hudder.compilers.ATextCompiler;
-import io.github.ngspace.hudder.compilers.AVarTextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.compilers.v2runtime.AV2Compiler;
 import io.github.ngspace.hudder.compilers.v2runtime.values.V2Value;
-import io.github.ngspace.hudder.compilers.v2runtime.values.V2Values;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.meta.CompileState;
 
@@ -13,10 +11,10 @@ public class WhileV2RuntimeElement extends AV2RuntimeElement {
 	private V2Value condition;
 	private ConfigInfo info;
 	private String cmds;
-	private ATextCompiler compiler;
+	private AV2Compiler compiler;
 
-	public WhileV2RuntimeElement(ConfigInfo info, String condition, String cmds, AVarTextCompiler compiler) {
-		this.condition = V2Values.of(condition, compiler);
+	public WhileV2RuntimeElement(ConfigInfo info, String condition, String cmds, AV2Compiler compiler) {
+		this.condition = compiler.getV2Value(condition);
 		this.cmds = cmds;
 		this.info = info;
 		this.compiler = compiler;

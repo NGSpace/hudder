@@ -1,12 +1,10 @@
 package io.github.ngspace.hudder.compilers.v2runtime.values;
 
-import static io.github.ngspace.hudder.compilers.v2runtime.values.V2Values.of;
-
 import java.util.Arrays;
 import java.util.Objects;
 
-import io.github.ngspace.hudder.compilers.AVarTextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.compilers.v2runtime.AV2Compiler;
 import io.github.ngspace.hudder.meta.MethodValue;
 
 public class V2Value extends MethodValue {
@@ -30,22 +28,23 @@ public class V2Value extends MethodValue {
 	/**
 	 * Use {@code V2Values.of(value, compiler)} instead.
 	 */
-	public V2Value(String valuee, AVarTextCompiler compiler) {
-		super(valuee.toLowerCase().trim(), compiler);
+	public V2Value(String valuee, AV2Compiler compiler) {
+		super(valuee.trim(), compiler);
 		
-		String value = valuee.toLowerCase().trim();
+		String value = valuee.trim();
 		
+		//TODO Fix setting a value to a string will make the String lowercase, I've got bigger issues rn.
 		isStatic = compiler.isStaticVariable(value.toLowerCase());
-		if (isStatic) return;
+		if (isStatic) return; else value = value.toLowerCase();
 		
 		isDynamic = compiler.isDynamicVariable(value.toLowerCase());
-		if (isDynamic) return;
+		if (isDynamic) return; else value = value.toLowerCase();
 		
 		String[] conditionValues = value.split("=",2);
 		isSet = conditionValues.length==2&&!compiler.isFirstEqualsCondition(value);
 		if (isSet) {
 			setKey = conditionValues[0];
-			setValue = of(conditionValues[1], compiler);
+			setValue = compiler.getV2Value(conditionValues[1]);
 			return;
 		}
 		
@@ -90,16 +89,16 @@ public class V2Value extends MethodValue {
 		tempValues = addToArray(tempValues, mathvalue.toString());
 		if (tempValues.length>1) {
 			isMath = true;
-			for (String tempVal : tempValues) values = addToArray(values, of(tempVal, compiler));
+			for (String tempVal : tempValues) values = addToArray(values, compiler.getV2Value(tempVal));
 		} else {
 			operator = compiler.getOperator(value);
 			var v = value.split(operator,2);
-			comparison1 = of(v[0], compiler);
-			comparison2 = of(v[1], compiler);
+			comparison1 = compiler.getV2Value(v[0]);
+			comparison2 = compiler.getV2Value(v[1]);
 			isComparison = true;
 		}
 	}
-	
+
 	public boolean compare(V2Value other, String comparisonOperator) throws CompileException {
 		Object val1 = get();
 		Object val2 = other.get();
@@ -145,6 +144,7 @@ public class V2Value extends MethodValue {
 			
 			//Multiply, Divide and Modulo (Sounds like either the slogan of a dictator...)
 			double result = values[0].asDoubleSafe();
+			System.out.println(result + " " + values[0].value);
 			for (int i = 0;i<values.length;i++) {
 				if (i==operations.length) break;
 				var val2 = values[i+1].asDoubleSafe();

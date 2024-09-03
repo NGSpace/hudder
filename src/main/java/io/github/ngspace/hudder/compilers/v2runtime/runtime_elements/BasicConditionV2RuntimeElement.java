@@ -5,8 +5,8 @@ import java.util.Arrays;
 import io.github.ngspace.hudder.compilers.AVarTextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileResult;
+import io.github.ngspace.hudder.compilers.v2runtime.AV2Compiler;
 import io.github.ngspace.hudder.compilers.v2runtime.values.V2Value;
-import io.github.ngspace.hudder.compilers.v2runtime.values.V2Values;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.meta.CompileState;
 
@@ -18,7 +18,7 @@ public class BasicConditionV2RuntimeElement extends AV2RuntimeElement {
 	AVarTextCompiler compiler;
 	ConfigInfo info;
 	boolean hasFinalElse;
-	public BasicConditionV2RuntimeElement(String[] condArgs, AVarTextCompiler compiler, ConfigInfo info) {
+	public BasicConditionV2RuntimeElement(String[] condArgs, AV2Compiler compiler, ConfigInfo info) {
 		this.compiler = compiler;
 		this.info = info;
 		
@@ -27,11 +27,11 @@ public class BasicConditionV2RuntimeElement extends AV2RuntimeElement {
 		for (int i = 0;i<condArgs.length;i++) {
 			String str = condArgs[i];
 			if (hasFinalElse&&i==condArgs.length-1) {
-				results = addToArray(results, V2Values.of(str, compiler));
+				results = addToArray(results, compiler.getV2Value(str));
 				break;
 			}
-			if (i%2==0) conditions = addToArray(conditions, V2Values.of(str, compiler));
-			else results = addToArray(results, V2Values.of(str, compiler));
+			if (i%2==0) conditions = addToArray(conditions, compiler.getV2Value(str));
+			else results = addToArray(results, compiler.getV2Value(str));
 		}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -1,12 +1,11 @@
 package io.github.ngspace.hudder.compilers.v2runtime.values;
 
-import io.github.ngspace.hudder.compilers.AVarTextCompiler;
+import io.github.ngspace.hudder.compilers.v2runtime.AV2Compiler;
 
 public class V2Values {private V2Values() {}
-	
 	//Only after writing 80% of the values did I realize having one class that is all values is bad, I tried to
 	//lower the burden but as you can see it's too late, the damage has already been done... maybe in a later update...
-	public static V2Value of(String valuee, AVarTextCompiler compiler) {
+	public static V2Value of(String valuee, AV2Compiler compiler) {
 		String value = valuee.trim();
 		
 		//Maybe Double :3
@@ -20,6 +19,7 @@ public class V2Values {private V2Values() {}
 		StringBuilder string = new StringBuilder();
 		char c;
 		boolean safe = false;
+		System.out.println(value);
 		for (int i = 0;i<value.length();i++) {
 			c = value.charAt(i);
 			if (c=='\\'&&!safe) safe = true; else {
