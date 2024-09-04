@@ -98,7 +98,7 @@ public class HudderV2Compiler extends AV2Compiler {
 							elemBuilder.setLength(0);
 							compileState = TEXT_STATE;
 						} else elemBuilder.append(c);
-					} else {System.out.println(c);;elemBuilder.append(c);}
+					} else elemBuilder.append(c);
 					break;
 				}
 				case CONDITION_STATE: {

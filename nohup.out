@@ -1,0 +1,1 @@
+kf.xmlgui: Shortcut for action  "mainToolBar" "Show Toolbar" set with QAction::setShortcut()! Use KActionCollection::setDefaultShortcut(s) instead.

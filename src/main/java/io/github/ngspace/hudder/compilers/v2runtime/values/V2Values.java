@@ -7,6 +7,7 @@ public class V2Values {private V2Values() {}
 	//lower the burden but as you can see it's too late, the damage has already been done... maybe in a later update...
 	public static V2Value of(String valuee, AV2Compiler compiler) {
 		String value = valuee.trim();
+		System.out.println(value);
 		
 		//Maybe Double :3
 		try {return new V2Number(Double.parseDouble(value.trim()), compiler);} catch (Exception e) {/*Do Nothin*/}
@@ -19,7 +20,6 @@ public class V2Values {private V2Values() {}
 		StringBuilder string = new StringBuilder();
 		char c;
 		boolean safe = false;
-		System.out.println(value);
 		for (int i = 0;i<value.length();i++) {
 			c = value.charAt(i);
 			if (c=='\\'&&!safe) safe = true; else {

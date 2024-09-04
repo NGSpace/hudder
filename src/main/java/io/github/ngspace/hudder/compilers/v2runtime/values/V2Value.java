@@ -32,6 +32,7 @@ public class V2Value extends MethodValue {
 		super(valuee.trim(), compiler);
 		
 		String value = valuee.trim();
+		System.out.println(value);
 		
 		//TODO Fix setting a value to a string will make the String lowercase, I've got bigger issues rn.
 		isStatic = compiler.isStaticVariable(value.toLowerCase());
@@ -45,12 +46,14 @@ public class V2Value extends MethodValue {
 		if (isSet) {
 			setKey = conditionValues[0];
 			setValue = compiler.getV2Value(conditionValues[1]);
+			System.out.println("isSet");
 			return;
 		}
 		
 		String[] tempValues = new String[0];
 		char c;
 		StringBuilder mathvalue = new StringBuilder();
+		System.out.println("ISMATH" + value);
 		for (int i = 0;i<value.length();i++) {//No, there is no string concatenation yet but better be prepared.
 			c = value.charAt(i);
 			if (c=='"'&&mathvalue.isEmpty()) {
@@ -102,23 +105,22 @@ public class V2Value extends MethodValue {
 	public boolean compare(V2Value other, String comparisonOperator) throws CompileException {
 		Object val1 = get();
 		Object val2 = other.get();
-		if (val1 instanceof Number num1 && val2 instanceof Number num2) {
-			double dou1 = num1.doubleValue();
-			double dou2 = num2.doubleValue();
-			return switch (comparisonOperator) {
-				case "==" -> dou1==dou2;
-				case "!=" -> dou1==dou2;
-				case ">=" -> dou1>=dou2;
-				case "<=" -> dou1<=dou2;
-				case ">"  -> dou1> dou2;
-				case "<"  -> dou1< dou2;
-				default -> throw new IllegalArgumentException("Unknown comparasion operator: " + comparisonOperator);
-			};
-		} else {
-			if (comparisonOperator.equals("==")) return  Objects.equals(val1, val2);
-			if (comparisonOperator.equals("!=")) return !Objects.equals(val1, val2);
+		boolean areNums = val1 instanceof Number && val2 instanceof Number;
+		double dou1 = 0;
+		double dou2 = 0;
+		if (areNums) {
+			dou1 = ((Number) val1).doubleValue();
+			dou2 = ((Number) val2).doubleValue();
 		}
-		return false;
+		return switch (comparisonOperator) {
+			case "==" -> areNums ? dou1==dou2 :  Objects.equals(val1, val2);
+			case "!=" -> areNums ? dou1!=dou2 : !Objects.equals(val1, val2);
+			case ">=" -> dou1>=dou2;
+			case "<=" -> dou1<=dou2;
+			case ">"  -> dou1> dou2;
+			case "<"  -> dou1< dou2;
+			default -> throw new IllegalArgumentException("Unknown comparasion operator: " + comparisonOperator);
+		};
 	}
 	
 	/**
@@ -144,7 +146,6 @@ public class V2Value extends MethodValue {
 			
 			//Multiply, Divide and Modulo (Sounds like either the slogan of a dictator...)
 			double result = values[0].asDoubleSafe();
-			System.out.println(result + " " + values[0].value);
 			for (int i = 0;i<values.length;i++) {
 				if (i==operations.length) break;
 				var val2 = values[i+1].asDoubleSafe();
