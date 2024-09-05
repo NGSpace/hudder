@@ -51,7 +51,6 @@ public class V2Value extends MethodValue {
 		String[] tempValues = new String[0];
 		char c;
 		StringBuilder mathvalue = new StringBuilder();
-		System.out.println("ISMATH" + value);
 		for (int i = 0;i<value.length();i++) {//No, there is no string concatenation yet but better be prepared.
 			c = value.charAt(i);
 			if (c=='"'&&mathvalue.isEmpty()) {

@@ -1,49 +1,58 @@
 package io.github.ngspace.hudder.util.testing;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 
-import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.config.ConfigInfo;
+import io.github.ngspace.hudder.util.testing.HudderUnitTest.HudderUnitTestResult;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 public class HudderUnitTester {
-	ATextCompiler compiler;
-	
-	public HudderUnitTester(ATextCompiler compiler) {
-		this.compiler=compiler;
-	}
-	
+	public ATextCompiler compiler;
 	public Map<String, HudderUnitTest> UnitTests = new HashMap<String, HudderUnitTest>();
 	
-	public void load(InputStream inputStream) throws IOException {
-		load(IOUtils.toString(inputStream, StandardCharsets.UTF_8));
-	}
+	public HudderUnitTester(ATextCompiler compiler) {this.compiler=compiler;}
+	
+	public void load(InputStream inputStream) throws IOException {load(IOUtils.toString(inputStream, UTF_8));}
 	public void load(String contents) {
-	    String[] conds = ("\n"+contents).split("\\n\\|\\|INPUT\\|\\|");
+	    String[] conds = ("\n"+contents).split("\\n\\n\\|\\|INPUT\\|\\|");
 	    for (String st : conds) {
 	    	if (st.isBlank()) continue;
 	    	String[] content = st.split("\n",2);
 	    	String[] inputandExpectation = content[1].split("\\n\\|\\|EXPECT\\|\\|\\n");
-//	    	System.out.println("Name: "+content[0]);
-//	    	System.out.println("Input: "+inputandExpectation[0]);
-//	    	System.out.println("Expectation: "+inputandExpectation[1]);
-//	    	System.out.println(inputandExpectation[0].equals(inputandExpectation[1]));
 	    	UnitTests.put(content[0], new HudderUnitTest(inputandExpectation[0], compiler, inputandExpectation[1]));
 	    }
+	    HudderUnitTestsSuggestionProvider.suggestions = new ArrayList<String>(UnitTests.keySet());
 	}
-	public Text test(ConfigInfo info, String name) {
-		return Text.literal(name+" "+UnitTests.get(name).test(info).b);
+	public HudderUnitTestResult test(ConfigInfo info, String name) {
+		return UnitTests.get(name).test(info);
 	}
 	public Text testAll(ConfigInfo config) {
-		return Text.literal("NOT IMPLANTED");
+		MutableText result = Text.literal("All tests:\n");
+		boolean failed = false;
+		Map<HudderUnitTestResult,String> failedtests = new HashMap<HudderUnitTestResult, String>();
+		for (String name : UnitTests.keySet()) {
+			var testresult = test(config, name);
+			result.append("\n").append(testresult.toText(name));
+			if (!testresult.isSucessful) {
+				failed = true;
+				failedtests.put(testresult, name);
+			}
+		}
+		if (failed) {
+			for (var failedtest : failedtests.entrySet()) {
+				//TODO finish this shi-
+			}
+		} else result.append(Text.literal("\n\nSUCCESSFUL"));
+		return result;
 	}
 }

@@ -1,4 +1,31 @@
-||INPUT||Test1
+
+||INPUT||Order of operations
+{6/2*(1+2)}
+||EXPECT||
+9
+
+||INPUT||Basic text
 Basic Bitch Test
 ||EXPECT||
-Basic Bitch Testr
+Basic Bitch Test
+
+||INPUT||Basic addition
+{1+1}
+||EXPECT||
+2
+
+||INPUT||Basic setting addition
+{r=1+1} {r}
+||EXPECT||
+2 2
+
+||INPUT||Intended failure
+FAIL
+||EXPECT||
+OKAY
+
+||INPUT||Newlines
+
+
+||EXPECT||
+

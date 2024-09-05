@@ -32,6 +32,7 @@ import io.github.ngspace.hudder.config.ConfigManager;
 import io.github.ngspace.hudder.data_management.Advanced;
 import io.github.ngspace.hudder.util.HudFileUtils;
 import io.github.ngspace.hudder.util.testing.HudderUnitTest;
+import io.github.ngspace.hudder.util.testing.HudderUnitTestsSuggestionProvider;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -173,9 +174,10 @@ public class Hudder implements ModInitializer {
 					context.getSource().sendFeedback(config.hudderTester.testAll(config));
 					return 1;
 				}))
-				.then(literal("test").then(argument("testname",StringArgumentType.word()).executes(context -> {
+				.then(literal("test").then(argument("testname",StringArgumentType.greedyString())
+				.suggests(new HudderUnitTestsSuggestionProvider()).executes(context -> {
 					String testname = StringArgumentType.getString(context, "testname");
-					context.getSource().sendFeedback(config.hudderTester.test(config,testname));
+					context.getSource().sendFeedback(config.hudderTester.test(config,testname).toText(testname));
 					return 1;
 				})))
 				.then(literal("reloadTests").executes(context -> {
