@@ -57,6 +57,8 @@ Unix (Mac/Linux):
 
 ## Adding as a dependency
 
+In your `build.gradle` add:
+
 ```gradle
 repositories {
 	//...
