@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.meta.elements;
+package io.github.ngspace.hudder.methods.elements;
 
 import io.github.ngspace.hudder.Hudder;
 import net.minecraft.client.gui.DrawContext;

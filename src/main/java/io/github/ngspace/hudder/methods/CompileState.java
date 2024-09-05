@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.meta;
+package io.github.ngspace.hudder.methods;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,7 +7,7 @@ import java.util.List;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileResult;
 import io.github.ngspace.hudder.config.ConfigManager;
-import io.github.ngspace.hudder.meta.elements.AUIElement;
+import io.github.ngspace.hudder.methods.elements.AUIElement;
 
 public class CompileState {
 

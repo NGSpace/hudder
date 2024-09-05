@@ -4,7 +4,7 @@ import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.v2runtime.AV2Compiler;
 import io.github.ngspace.hudder.compilers.v2runtime.values.V2Value;
 import io.github.ngspace.hudder.config.ConfigInfo;
-import io.github.ngspace.hudder.meta.CompileState;
+import io.github.ngspace.hudder.methods.CompileState;
 
 public class IfV2RuntimeElement extends AV2RuntimeElement {
 

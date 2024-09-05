@@ -1,5 +1,8 @@
 package io.github.ngspace.hudder;
 
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -8,6 +11,7 @@ import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -17,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.brigadier.arguments.StringArgumentType;
 
 import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
@@ -26,7 +31,9 @@ import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.config.ConfigManager;
 import io.github.ngspace.hudder.data_management.Advanced;
 import io.github.ngspace.hudder.util.HudFileUtils;
+import io.github.ngspace.hudder.util.testing.HudderUnitTest;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
@@ -35,7 +42,6 @@ import net.minecraft.client.toast.SystemToast;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.logging.LoggerPrintStream;
-
 /**
  * <h1>If you expect any comments or JavaDocs explaining the bug-filled shithole I call "my code"
  * then you're gonna have a bad time.</h1>
@@ -153,6 +159,39 @@ public class Hudder implements ModInitializer {
 		log(MOD_ID+" has been loaded!");
 		
 		Compilers.registerCompiler("This is a lie", "io.github.ngspace.hudder.compilers.UnaccessableTestCompiler");
+		
+		try {
+			config.hudderTester.load(getClass().getResourceAsStream(ASSETS + "UnitTests.hudder"));
+		} catch (Exception e) {
+			error("Could not load unit tests");
+			e.printStackTrace();
+		}
+		
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess)-> {
+			dispatcher.register(literal("huddertesting")
+				.then(literal("test_all").executes(context -> {
+					context.getSource().sendFeedback(config.hudderTester.testAll(config));
+					return 1;
+				}))
+				.then(literal("test").then(argument("testname",StringArgumentType.word()).executes(context -> {
+					String testname = StringArgumentType.getString(context, "testname");
+					context.getSource().sendFeedback(config.hudderTester.test(config,testname));
+					return 1;
+				})))
+				.then(literal("reloadTests").executes(context -> {
+					try {
+						config.hudderTester.UnitTests = new HashMap<String, HudderUnitTest>();
+						config.hudderTester.load(getClass().getResourceAsStream(ASSETS + "UnitTests.hudder"));
+						context.getSource().sendFeedback(Text.literal("Succesfully loaded tests"));
+					} catch (Exception e) {
+						error("Could not load unit tests");
+						e.printStackTrace();
+						context.getSource().sendFeedback(Text.literal("Could not load unit tests"));
+					}
+					return 1;
+				}))
+			);
+		});
 	}
 	
 	public static void showToast(MinecraftClient CLIENT, Text title, Text content) {

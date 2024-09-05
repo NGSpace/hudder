@@ -5,7 +5,7 @@ import java.util.Objects;
 
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.v2runtime.AV2Compiler;
-import io.github.ngspace.hudder.meta.MethodValue;
+import io.github.ngspace.hudder.methods.MethodValue;
 
 public class V2Value extends MethodValue {
 	protected V2Value() {}
@@ -32,7 +32,6 @@ public class V2Value extends MethodValue {
 		super(valuee.trim(), compiler);
 		
 		String value = valuee.trim();
-		System.out.println(value);
 		
 		//TODO Fix setting a value to a string will make the String lowercase, I've got bigger issues rn.
 		isStatic = compiler.isStaticVariable(value.toLowerCase());
@@ -46,7 +45,6 @@ public class V2Value extends MethodValue {
 		if (isSet) {
 			setKey = conditionValues[0];
 			setValue = compiler.getV2Value(conditionValues[1]);
-			System.out.println("isSet");
 			return;
 		}
 		

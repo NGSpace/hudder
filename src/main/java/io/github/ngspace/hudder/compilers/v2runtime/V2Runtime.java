@@ -4,8 +4,8 @@ import java.util.Arrays;
 
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.v2runtime.runtime_elements.AV2RuntimeElement;
-import io.github.ngspace.hudder.meta.CompileState;
-import io.github.ngspace.hudder.meta.MethodHandler;
+import io.github.ngspace.hudder.methods.CompileState;
+import io.github.ngspace.hudder.methods.MethodHandler;
 
 public class V2Runtime {
 	

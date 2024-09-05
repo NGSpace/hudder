@@ -18,6 +18,7 @@ import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileResult;
 import io.github.ngspace.hudder.compilers.utils.Compilers;
 import io.github.ngspace.hudder.util.HudFileUtils;
+import io.github.ngspace.hudder.util.testing.HudderUnitTester;
 import net.minecraft.client.MinecraftClient;
 
 public class ConfigInfo {
@@ -49,9 +50,14 @@ public class ConfigInfo {
 	@Deprecated(forRemoval = false, since = "It's fucking creation")
 	@Expose public boolean debug = false;
 	
+	
+	
 	public ATextCompiler compiler = new HudderV2Compiler();
 	private File configFile = new File(HudFileUtils.FOLDER + "hud.json");
+    public HudderUnitTester hudderTester = new HudderUnitTester(new HudderV2Compiler());
 	
+    
+    
 	public ConfigInfo(File f) {configFile = f;readConfig();}
 
 	public CompileResult compile(String text) throws CompileException {

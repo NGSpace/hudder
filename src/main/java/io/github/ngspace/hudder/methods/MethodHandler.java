@@ -1,10 +1,10 @@
-package io.github.ngspace.hudder.meta;
+package io.github.ngspace.hudder.methods;
 
-import static io.github.ngspace.hudder.meta.CompileState.BOTTOMLEFT;
-import static io.github.ngspace.hudder.meta.CompileState.BOTTOMRIGHT;
-import static io.github.ngspace.hudder.meta.CompileState.MUTE;
-import static io.github.ngspace.hudder.meta.CompileState.TOPLEFT;
-import static io.github.ngspace.hudder.meta.CompileState.TOPRIGHT;
+import static io.github.ngspace.hudder.methods.CompileState.BOTTOMLEFT;
+import static io.github.ngspace.hudder.methods.CompileState.BOTTOMRIGHT;
+import static io.github.ngspace.hudder.methods.CompileState.MUTE;
+import static io.github.ngspace.hudder.methods.CompileState.TOPLEFT;
+import static io.github.ngspace.hudder.methods.CompileState.TOPRIGHT;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,15 +14,15 @@ import java.util.function.Consumer;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
-import io.github.ngspace.hudder.meta.methods.DecimalMethods;
-import io.github.ngspace.hudder.meta.methods.GUIMethods;
-import io.github.ngspace.hudder.meta.methods.IMethod;
-import io.github.ngspace.hudder.meta.methods.InventoryInformationMethods;
-import io.github.ngspace.hudder.meta.methods.ItemStackMethods;
-import io.github.ngspace.hudder.meta.methods.LoadMethod;
-import io.github.ngspace.hudder.meta.methods.StringMethods;
-import io.github.ngspace.hudder.meta.methods.TextMethod;
-import io.github.ngspace.hudder.meta.methods.TexturesMethods;
+import io.github.ngspace.hudder.methods.methods.DecimalMethods;
+import io.github.ngspace.hudder.methods.methods.GUIMethods;
+import io.github.ngspace.hudder.methods.methods.IMethod;
+import io.github.ngspace.hudder.methods.methods.InventoryInformationMethods;
+import io.github.ngspace.hudder.methods.methods.ItemStackMethods;
+import io.github.ngspace.hudder.methods.methods.LoadMethod;
+import io.github.ngspace.hudder.methods.methods.StringMethods;
+import io.github.ngspace.hudder.methods.methods.TextMethod;
+import io.github.ngspace.hudder.methods.methods.TexturesMethods;
 import io.github.ngspace.hudder.util.HudFileUtils;
 import net.minecraft.text.Text;
 

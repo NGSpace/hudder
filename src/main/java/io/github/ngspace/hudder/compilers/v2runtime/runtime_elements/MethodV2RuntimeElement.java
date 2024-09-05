@@ -7,8 +7,8 @@ import io.github.ngspace.hudder.compilers.v2runtime.AV2Compiler;
 import io.github.ngspace.hudder.compilers.v2runtime.V2Runtime;
 import io.github.ngspace.hudder.compilers.v2runtime.values.V2Value;
 import io.github.ngspace.hudder.config.ConfigInfo;
-import io.github.ngspace.hudder.meta.CompileState;
-import io.github.ngspace.hudder.meta.methods.IMethod;
+import io.github.ngspace.hudder.methods.CompileState;
+import io.github.ngspace.hudder.methods.methods.IMethod;
 
 public class MethodV2RuntimeElement extends AV2RuntimeElement {
 

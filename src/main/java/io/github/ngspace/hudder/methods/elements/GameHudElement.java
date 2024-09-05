@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.meta.elements;
+package io.github.ngspace.hudder.methods.elements;
 
 import static io.github.ngspace.hudder.Hudder.ins;
 

@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.meta.elements;
+package io.github.ngspace.hudder.methods.elements;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 

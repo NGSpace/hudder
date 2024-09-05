@@ -1,13 +1,13 @@
-package io.github.ngspace.hudder.meta.methods;
+package io.github.ngspace.hudder.methods.methods;
 
 import java.io.IOException;
 
 import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.config.ConfigInfo;
-import io.github.ngspace.hudder.meta.CompileState;
-import io.github.ngspace.hudder.meta.MethodValue;
-import io.github.ngspace.hudder.meta.elements.TextureElement;
+import io.github.ngspace.hudder.methods.CompileState;
+import io.github.ngspace.hudder.methods.MethodValue;
+import io.github.ngspace.hudder.methods.elements.TextureElement;
 import io.github.ngspace.hudder.util.HudFileUtils;
 import net.minecraft.util.Identifier;
 

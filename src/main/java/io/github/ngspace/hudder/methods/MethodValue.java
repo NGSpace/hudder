@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.meta;
+package io.github.ngspace.hudder.methods;
 
 import io.github.ngspace.hudder.compilers.AVarTextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;

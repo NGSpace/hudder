@@ -1,12 +1,12 @@
-package io.github.ngspace.hudder.meta.methods;
+package io.github.ngspace.hudder.methods.methods;
 
 import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.config.ConfigInfo;
-import io.github.ngspace.hudder.meta.CompileState;
-import io.github.ngspace.hudder.meta.MethodValue;
-import io.github.ngspace.hudder.meta.elements.GameHudElement;
-import io.github.ngspace.hudder.meta.elements.GameHudElement.GuiType;
+import io.github.ngspace.hudder.methods.CompileState;
+import io.github.ngspace.hudder.methods.MethodValue;
+import io.github.ngspace.hudder.methods.elements.GameHudElement;
+import io.github.ngspace.hudder.methods.elements.GameHudElement.GuiType;
 
 public class GUIMethods implements IMethod {
 	@Override
