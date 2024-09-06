@@ -44,11 +44,21 @@ public class HudderUnitTest {
 			Hudder.log("Success: "+isSucessful);
 			Hudder.log("");
 			if (!isSucessful) {
-				message.append(Text.literal("\n  Expected:\n").withColor(0x000cff));
-				message.append(Text.literal("    " + expectation.replace("\n", "    \n")).withColor(0xffffff));
-				message.append(Text.literal("\n  Got:\n").withColor(0x000cff));
-				message.append(Text.literal("    " + result.replace("\n", "    \n")).withColor(0xffffff));
+				message.append(getFailureMessage());
+//				message.append(Text.literal("\n  Expected:\n").withColor(0x000cff));
+//				message.append(Text.literal("    " + expectation.replace("\n", "    \n")).withColor(0xffffff));
+//				message.append(Text.literal("\n  Got:\n").withColor(0x000cff));
+//				message.append(Text.literal("    " + result.replace("\n", "    \n")).withColor(0xffffff));
 			}
+			return message;
+		}
+		
+		public MutableText getFailureMessage() {
+			var message = Text.literal("");
+			message.append(Text.literal("\n  Expected:\n").withColor(0x000cff));
+			message.append(Text.literal("    " + expectation.replace("\n", "    \n")).withColor(0xffffff));
+			message.append(Text.literal("\n  Got:\n").withColor(0x000cff));
+			message.append(Text.literal("    " + result.replace("\n", "    \n")).withColor(0xffffff));
 			return message;
 		}
 	}

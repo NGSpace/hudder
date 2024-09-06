@@ -49,10 +49,14 @@ public class HudderUnitTester {
 			}
 		}
 		if (failed) {
+			result.append(Text.literal("\n\nFailed the following tests: ").withColor(0xff0000));
 			for (var failedtest : failedtests.entrySet()) {
-				//TODO finish this shi-
+				result.append("\n\n");
+				result.append(Text.literal(failedtest.getValue()).withColor(0xff0000));
+				result.append(":");
+				result.append(failedtest.getKey().getFailureMessage());
 			}
-		} else result.append(Text.literal("\n\nSUCCESSFUL"));
+		} else result.append(Text.literal("\n\nSuccessful"));
 		return result;
 	}
 }
