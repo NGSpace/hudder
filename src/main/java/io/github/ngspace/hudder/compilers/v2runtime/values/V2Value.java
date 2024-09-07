@@ -33,15 +33,8 @@ public class V2Value extends MethodValue {
 		
 		String value = valuee.trim();
 		
-		//TODO Fix setting a value to a string will make the String lowercase, I've got bigger issues rn.
-		isStatic = compiler.isStaticVariable(value.toLowerCase());
-		if (isStatic) return; else value = value.toLowerCase();
-		
-		isDynamic = compiler.isDynamicVariable(value.toLowerCase());
-		if (isDynamic) return; else value = value.toLowerCase();
-		
 		String[] conditionValues = value.split("=",2);
-		isSet = conditionValues.length==2&&!compiler.isFirstEqualsCondition(value);
+		isSet = conditionValues.length==2&&!compiler.isCondition(value);
 		if (isSet) {
 			setKey = conditionValues[0];
 			setValue = compiler.getV2Value(conditionValues[1]);
@@ -102,12 +95,22 @@ public class V2Value extends MethodValue {
 	public boolean compare(V2Value other, String comparisonOperator) throws CompileException {
 		Object val1 = get();
 		Object val2 = other.get();
-		boolean areNums = val1 instanceof Number && val2 instanceof Number;
+		boolean areNums = val1 instanceof Number && val2 instanceof Number;//TODO fix this:
 		double dou1 = 0;
 		double dou2 = 0;
-		if (areNums) {
-			dou1 = ((Number) val1).doubleValue();
-			dou2 = ((Number) val2).doubleValue();
+		if (val1 instanceof Number num) {
+			dou1 = num.doubleValue();
+			if (!(val2 instanceof Number)) {
+				dou2 = other.asDoubleSafe();
+			}
+			areNums = true;
+		}
+		if (val2 instanceof Number num) {
+			dou1 = num.doubleValue();
+			if (!(val1 instanceof Number)) {
+				dou2 = other.asDoubleSafe();
+			}
+			areNums = true;
 		}
 		return switch (comparisonOperator) {
 			case "==" -> areNums ? dou1==dou2 :  Objects.equals(val1, val2);
@@ -209,5 +212,9 @@ public class V2Value extends MethodValue {
 		char[] newarr = Arrays.copyOf(arr, arr.length+1);
 		newarr[arr.length] = t;
 		return newarr;
+	}
+	
+	public boolean hasValue() {
+		return true;
 	}
 }

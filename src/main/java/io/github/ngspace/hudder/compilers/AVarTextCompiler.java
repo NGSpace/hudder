@@ -9,7 +9,7 @@ import io.github.ngspace.hudder.config.ConfigManager;
 
 public abstract class AVarTextCompiler extends ATextCompiler {
 	
-	public boolean isFirstEqualsCondition(String key) {
+	public boolean isCondition(String key) {
 		int i = key.indexOf('=');
 		if (i==-1&&!key.contains(">")&&!key.contains("<")) return false;
 		if (i==key.length()) return false;

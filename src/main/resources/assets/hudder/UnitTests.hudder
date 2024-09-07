@@ -24,6 +24,13 @@ FAIL
 ||EXPECT||
 OKAY
 
+||INPUT||Advanced if
+#if testif==0
+	{testif=1}
+{testif}
+||EXPECT||
+1
+
 ||INPUT||Newlines
 
 

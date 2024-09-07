@@ -7,12 +7,24 @@ public class V2Values {private V2Values() {}
 	//lower the burden but as you can see it's too late, the damage has already been done... maybe in a later update...
 	public static V2Value of(String valuee, AV2Compiler compiler) {
 		String value = valuee.trim();
+		V2Value temp = null;
 		
 		//Maybe Double :3
-		try {return new V2Number(Double.parseDouble(value.trim()), compiler);} catch (Exception e) {/*Do Nothin*/}
+		try {return new V2Number(Double.parseDouble(value), compiler);} catch (Exception e) {/*Do Nothin*/}
 		
+		if ((temp = string(value, compiler))!=null) return temp;
+		
+		if (compiler.isStaticVariable(value.toLowerCase())) return new V2StaticVar(value.toLowerCase(), compiler);
+		
+		if (compiler.isDynamicVariable(value.toLowerCase())) return new V2DynamicVar(value.toLowerCase(), compiler);
+		
+		return new V2Value(valuee, compiler);
+	}
+
+	//TODO Fix setting a value to a string will make the String lowercase, I've got bigger issues rn.
+	private static V2String string(String value, AV2Compiler compiler) {
 		//Maybe String :)
-		if (!value.startsWith("\"")||!value.endsWith("\"")) return new V2Value(valuee, compiler);
+		if (!value.startsWith("\"")||!value.endsWith("\"")) return null;
 		
 		//Probably String :D
 		value = value.substring(1,value.length()-1);
@@ -22,7 +34,7 @@ public class V2Values {private V2Values() {}
 		for (int i = 0;i<value.length();i++) {
 			c = value.charAt(i);
 			if (c=='\\'&&!safe) safe = true; else {
-				if (c=='"'&&!safe) return new V2Value(valuee, compiler); //Not String ;_;
+				if (c=='"'&&!safe) return null; //Not String ;_;
 				safe = false;
 				string.append(c);
 			}
