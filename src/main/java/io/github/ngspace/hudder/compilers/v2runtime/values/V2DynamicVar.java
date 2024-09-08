@@ -7,11 +7,8 @@ public class V2DynamicVar extends V2Value {
 	public V2DynamicVar(String value, AVarTextCompiler compiler) {this.value=value;this.compiler=compiler;}
 	
 	@Override public Object get() throws CompileException {
-		return hasValue();
+		return compiler.getDynamicVariable(value);
 	}
 	
-	@Override
-	public boolean hasValue() {
-		return compiler.get(value)!=null;
-	}
+	@Override public boolean hasValue() {return compiler.get(value)!=null;}
 }

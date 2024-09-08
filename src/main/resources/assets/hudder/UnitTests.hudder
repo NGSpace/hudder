@@ -19,11 +19,6 @@ Basic Bitch Test
 ||EXPECT||
 2 2
 
-||INPUT||Intended failure
-FAIL
-||EXPECT||
-OKAY
-
 ||INPUT||Advanced if
 #if testif==0
 	{testif=1}

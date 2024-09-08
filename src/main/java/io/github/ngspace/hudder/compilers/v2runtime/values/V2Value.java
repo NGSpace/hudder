@@ -91,27 +91,30 @@ public class V2Value extends MethodValue {
 			isComparison = true;
 		}
 	}
-
+	//TODO fix this:
 	public boolean compare(V2Value other, String comparisonOperator) throws CompileException {
 		Object val1 = get();
 		Object val2 = other.get();
-		boolean areNums = val1 instanceof Number && val2 instanceof Number;//TODO fix this:
+		boolean areNums = false;//val1 instanceof Number && val2 instanceof Number;
 		double dou1 = 0;
 		double dou2 = 0;
 		if (val1 instanceof Number num) {
 			dou1 = num.doubleValue();
-			if (!(val2 instanceof Number)) {
+			boolean otherhasval = other.hasValue();
+			if (!otherhasval) {
 				dou2 = other.asDoubleSafe();
 			}
-			areNums = true;
+			if (val2 instanceof Number||!otherhasval) areNums = true;
 		}
 		if (val2 instanceof Number num) {
-			dou1 = num.doubleValue();
-			if (!(val1 instanceof Number)) {
-				dou2 = other.asDoubleSafe();
+			dou2 = num.doubleValue();
+			boolean otherhasval = hasValue();
+			if (!otherhasval) {
+				dou1 = asDoubleSafe();
 			}
-			areNums = true;
+			if (val1 instanceof Number||!otherhasval) areNums = true;
 		}
+//		System.out.println(areNums + "  " + dou1 + "  " + dou2 + "  " + value + "  " + hasValue());
 		return switch (comparisonOperator) {
 			case "==" -> areNums ? dou1==dou2 :  Objects.equals(val1, val2);
 			case "!=" -> areNums ? dou1!=dou2 : !Objects.equals(val1, val2);
