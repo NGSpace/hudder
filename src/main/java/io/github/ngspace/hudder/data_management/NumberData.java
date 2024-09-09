@@ -15,6 +15,7 @@ import io.github.ngspace.hudder.mixin.ParticleManagerAccessor;
 import io.github.ngspace.hudder.mixin.WorldRendererAccess;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -100,7 +101,7 @@ public class NumberData {private NumberData() {}
 				// I know, I am soooo funny.
 				Entity veachol = p.getVehicle() == null ? p : p.getVehicle();
 				//IDK how acurate this number is, I just wanted to reach the official 
-				yield veachol.getVelocity().length() * 36.65;
+				yield veachol.getVelocity().horizontalLength() * 36.65;
 			}
 			
 			
