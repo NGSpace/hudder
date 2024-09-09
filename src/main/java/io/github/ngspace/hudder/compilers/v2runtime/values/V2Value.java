@@ -108,7 +108,7 @@ public class V2Value extends MethodValue {
 			double dou2 = num2.doubleValue();
 			return switch (comparisonOperator) {
 				case "==" -> dou1==dou2;
-				case "!=" -> dou1==dou2;
+				case "!=" -> dou1!=dou2;
 				case ">=" -> dou1>=dou2;
 				case "<=" -> dou1<=dou2;
 				case ">"  -> dou1> dou2;
