@@ -104,6 +104,19 @@ public class NumberData {private NumberData() {}
 				yield veachol.getVelocity().horizontalLength() * 36.65;
 			}
 			
+			case "playerspeed": {
+				// I know, I am soooo funny.
+				Entity veachol = p.getVehicle() == null ? p : p.getVehicle();
+				//IDK how acurate this number is, I just wanted to reach the official 
+				yield veachol.getVelocity().length() * 36.65;
+			}
+			case "horizontal_playerspeed": {
+				// I know, I am soooo funny.
+				Entity veachol = p.getVehicle() == null ? p : p.getVehicle();
+				//IDK how acurate this number is, I just wanted to reach the official 
+				yield veachol.getVelocity().horizontalLength() * 36.65;
+			}
+			
 			
 			
 			/* Player roation*/

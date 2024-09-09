@@ -216,7 +216,6 @@ public class V2Value extends MethodValue {
 		newarr[arr.length] = t;
 		return newarr;
 	}
-	
 	public boolean hasValue() {
 		return true;
 	}
