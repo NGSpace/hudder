@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.compilers.v2runtime;
+package io.github.ngspace.hudder.v2runtime;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,9 +6,9 @@ import java.util.Map;
 import io.github.ngspace.hudder.compilers.AVarTextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileResult;
-import io.github.ngspace.hudder.compilers.v2runtime.values.V2Value;
-import io.github.ngspace.hudder.compilers.v2runtime.values.V2Values;
 import io.github.ngspace.hudder.config.ConfigInfo;
+import io.github.ngspace.hudder.v2runtime.values.V2Value;
+import io.github.ngspace.hudder.v2runtime.values.V2Values;
 
 public abstract class AV2Compiler extends AVarTextCompiler {
 	

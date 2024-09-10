@@ -26,10 +26,15 @@ Basic Bitch Test
 ||EXPECT||
 1
 
-||INPUT||Strings
+||INPUT||String with quotes
 {"1 \"2\" 3"}
 ||EXPECT||
 1 "2" 3
+
+||INPUT||String case sensitivity
+{"CaSE SenSitive"} {r="CaSE SenSitive"} {r}
+||EXPECT||
+CaSE SenSitive CaSE SenSitive CaSE SenSitive
 
 ||INPUT||Nested conditions
 {testping=20}

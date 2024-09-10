@@ -4,9 +4,9 @@ import java.util.HashMap;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.ATextCompiler;
-import io.github.ngspace.hudder.compilers.v2runtime.AV2Compiler;
-import io.github.ngspace.hudder.compilers.v2runtime.V2Runtime;
 import io.github.ngspace.hudder.config.ConfigInfo;
+import io.github.ngspace.hudder.v2runtime.AV2Compiler;
+import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 

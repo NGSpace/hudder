@@ -1,7 +1,7 @@
-package io.github.ngspace.hudder.compilers.v2runtime.values;
+package io.github.ngspace.hudder.v2runtime.values;
 
 import io.github.ngspace.hudder.compilers.utils.CompileException;
-import io.github.ngspace.hudder.compilers.v2runtime.AV2Compiler;
+import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 
 public class V2SetValue extends V2Value {
 	public String key;

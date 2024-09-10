@@ -168,7 +168,7 @@ public class Hudder implements ModInitializer {
 			e.printStackTrace();
 		}
 		
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess)-> {
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
 			dispatcher.register(literal("huddertesting")
 				.then(literal("test_all").executes(context -> {
 					context.getSource().sendFeedback(config.hudderTester.testAll(config));
@@ -192,8 +192,8 @@ public class Hudder implements ModInitializer {
 					}
 					return 1;
 				}))
-			);
-		});
+			)
+		);
 	}
 	
 	public static void showToast(MinecraftClient CLIENT, Text title, Text content) {

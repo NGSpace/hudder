@@ -1,11 +1,11 @@
-package io.github.ngspace.hudder.compilers.v2runtime.values;
+package io.github.ngspace.hudder.v2runtime.values;
 
 import java.util.Arrays;
 import java.util.Objects;
 
 import io.github.ngspace.hudder.compilers.utils.CompileException;
-import io.github.ngspace.hudder.compilers.v2runtime.AV2Compiler;
 import io.github.ngspace.hudder.methods.MethodValue;
+import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 
 public class V2Value extends MethodValue {
 	protected V2Value() {}
@@ -18,6 +18,8 @@ public class V2Value extends MethodValue {
 	public V2Value comparison1;
 	public String operator;
 	public V2Value comparison2;
+
+	//TODO finish moving this shit to V2Values.ofd
 	
 	/**
 	 * Use {@code V2Values.of(value, compiler)} instead.
@@ -78,7 +80,7 @@ public class V2Value extends MethodValue {
 			isComparison = true;
 		}
 	}
-	//TODO fix this:
+	
 	public boolean compare(V2Value other, String comparisonOperator) throws CompileException {
 		Object val1 = get();
 		Object val2 = other.get();
