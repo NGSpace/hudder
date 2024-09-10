@@ -103,11 +103,12 @@ public class HudderV2Compiler extends AV2Compiler {
 				}
 				case CONDITION_STATE: {
 					if (c=='\\') {
-						if (condSafe) elemBuilder.append('\\');
+						if (condSafe) {elemBuilder.append('\\');condSafe = false;}
 						else condSafe = true;
 						continue;
 					}
 					if (quotesafe&&c!='"') {elemBuilder.append(c);continue;}
+					if (condSafe&&c=='"') {elemBuilder.append('\\');elemBuilder.append(c);condSafe=false;continue;}
 					if (condSafe) {elemBuilder.append(c);condSafe=false;continue;}
 					switch (c) {
 						case '%':

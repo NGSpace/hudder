@@ -1,7 +1,11 @@
 package io.github.ngspace.hudder.util.testing;
 
+import java.util.HashMap;
+
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.ATextCompiler;
+import io.github.ngspace.hudder.compilers.v2runtime.AV2Compiler;
+import io.github.ngspace.hudder.compilers.v2runtime.V2Runtime;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -13,10 +17,11 @@ public class HudderUnitTest {
 	public HudderUnitTest(String texttocompile, ATextCompiler compiler, String topleftexpectation) {
 		this.compiler = compiler;
 		this.texttocompile = texttocompile;
-		this.expectation = topleftexpectation;
+		this.expectation = topleftexpectation.replace('&', '\u00A7');
 	}
 	public HudderUnitTestResult test(ConfigInfo info) {
 		try {
+			if (compiler instanceof AV2Compiler v2comp) v2comp.runtimes = new HashMap<String, V2Runtime>();
 			String text = compiler.compile(info, texttocompile).TopLeftText;
 			boolean res = expectation.equals(text);
 			return new HudderUnitTestResult(res, expectation, text.replaceAll("(^ )|( $)", "~"));

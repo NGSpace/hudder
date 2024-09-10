@@ -26,6 +26,7 @@ public class BasicConditionV2RuntimeElement extends AV2RuntimeElement {
 		try {
 		for (int i = 0;i<condArgs.length;i++) {
 			String str = condArgs[i];
+			System.out.println(str);
 			if (hasFinalElse&&i==condArgs.length-1) {
 				results = addToArray(results, compiler.getV2Value(str));
 				break;

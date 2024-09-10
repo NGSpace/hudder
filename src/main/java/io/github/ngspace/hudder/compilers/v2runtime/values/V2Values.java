@@ -18,11 +18,17 @@ public class V2Values {private V2Values() {}
 		
 		if (compiler.isDynamicVariable(value.toLowerCase())) return new V2DynamicVar(value.toLowerCase(), compiler);
 		
+
+		String[] setValues = value.split("=",2);
+		if (setValues.length==2&&!compiler.isCondition(value)) 
+			return new V2SetValue(setValues[0], compiler.getV2Value(setValues[1]), compiler);
+		
 		return new V2Value(valuee, compiler);
 	}
 
 	//TODO Fix setting a value to a string will make the String lowercase, I've got bigger issues rn.
 	private static V2String string(String value, AV2Compiler compiler) {
+		System.out.println("St: "+value);
 		//Maybe String :)
 		if (!value.startsWith("\"")||!value.endsWith("\"")) return null;
 		
@@ -33,7 +39,10 @@ public class V2Values {private V2Values() {}
 		boolean safe = false;
 		for (int i = 0;i<value.length();i++) {
 			c = value.charAt(i);
-			if (c=='\\'&&!safe) safe = true; else {
+			if (c=='\\'&&!safe) {
+				safe = true;
+				continue;
+			} else {
 				if (c=='"'&&!safe) return null; //Not String ;_;
 				safe = false;
 				string.append(c);

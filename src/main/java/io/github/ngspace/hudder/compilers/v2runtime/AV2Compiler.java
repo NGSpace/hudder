@@ -12,7 +12,7 @@ import io.github.ngspace.hudder.config.ConfigInfo;
 
 public abstract class AV2Compiler extends AVarTextCompiler {
 	
-	Map<String, V2Runtime> runtimes = new HashMap<String, V2Runtime>();
+	public Map<String, V2Runtime> runtimes = new HashMap<String, V2Runtime>();
 	
 	public V2Value getV2Value(String string) {
 		return V2Values.of(string, this);

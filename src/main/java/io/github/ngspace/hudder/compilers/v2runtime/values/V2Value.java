@@ -9,12 +9,6 @@ import io.github.ngspace.hudder.methods.MethodValue;
 
 public class V2Value extends MethodValue {
 	protected V2Value() {}
-	public boolean isStatic = false;
-	public boolean isDynamic = false;
-	
-	public boolean isSet = false;
-	public String setKey;
-	public V2Value setValue;
 	
 	public boolean isMath = false;
 	public V2Value[] values = new V2Value[0];
@@ -32,14 +26,6 @@ public class V2Value extends MethodValue {
 		super(valuee.trim(), compiler);
 		
 		String value = valuee.trim();
-		
-		String[] conditionValues = value.split("=",2);
-		isSet = conditionValues.length==2&&!compiler.isCondition(value);
-		if (isSet) {
-			setKey = conditionValues[0];
-			setValue = compiler.getV2Value(conditionValues[1]);
-			return;
-		}
 		
 		String[] tempValues = new String[0];
 		char c;
@@ -85,6 +71,7 @@ public class V2Value extends MethodValue {
 			for (String tempVal : tempValues) values = addToArray(values, compiler.getV2Value(tempVal));
 		} else {
 			operator = compiler.getOperator(value);
+			System.out.println(value);
 			var v = value.split(operator,2);
 			comparison1 = compiler.getV2Value(v[0]);
 			comparison2 = compiler.getV2Value(v[1]);
@@ -114,7 +101,6 @@ public class V2Value extends MethodValue {
 			}
 			if (val1 instanceof Number||!otherhasval) areNums = true;
 		}
-//		System.out.println(areNums + "  " + dou1 + "  " + dou2 + "  " + value + "  " + hasValue());
 		return switch (comparisonOperator) {
 			case "==" -> areNums ? dou1==dou2 :  Objects.equals(val1, val2);
 			case "!=" -> areNums ? dou1!=dou2 : !Objects.equals(val1, val2);
@@ -133,13 +119,6 @@ public class V2Value extends MethodValue {
 	 * @throws CompileException
 	 */
 	public Object get() throws CompileException {
-		if (isStatic) return compiler.getStaticVariable(value);
-		if (isDynamic) return compiler.getDynamicVariable(value);
-		if (isSet) {
-			Object ohsaycanyousee = setValue.get();//I'm not American, I'm just sleep deprived.
-			compiler.put(setKey, ohsaycanyousee);
-			return ohsaycanyousee;
-		}
 		if (isComparison) return comparison1.compare(comparison2, operator);
 		if (isMath) {
 			

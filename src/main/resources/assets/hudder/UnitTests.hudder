@@ -26,6 +26,18 @@ Basic Bitch Test
 ||EXPECT||
 1
 
+||INPUT||Strings
+{"1 \"2\" 3"}
+||EXPECT||
+1 "2" 3
+
+||INPUT||Nested conditions
+{testping=20}
+%testping>5, "&6PING: &%testping>=400,\"4\",testping>=100,\"e\",\"2\"%{testping}"%
+||EXPECT||
+20
+&6PING: &220
+
 ||INPUT||Newlines
 
 
