@@ -63,8 +63,19 @@ public class Compilers {private Compilers() {}
 		ConfigManager.getConfig().readConfig();
 	}
 
-	public static String get(String str) {
-		return Comps.get(str);
+	
+	/**
+	 * Incase someone wants to add their own compiler without editing source.
+	 * @param name - The name of the compiler, used to save which compiler is selected.
+	 * @param classname - The class leading to the compiler.
+	 */
+	public static void registerLoadedCompiler(String name, ATextCompiler compiler) {
+		loadedcomps.put(name.toLowerCase(), compiler);
+		ConfigManager.getConfig().readConfig();
+	}
+	
+	public static boolean has(String name) {
+		return loadedcomps.get(name.toLowerCase())!=null;
 	}
 	
 	

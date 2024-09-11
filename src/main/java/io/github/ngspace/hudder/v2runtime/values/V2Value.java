@@ -19,7 +19,7 @@ public class V2Value extends MethodValue {
 	public String operator;
 	public V2Value comparison2;
 
-	//TODO finish moving this shit to V2Values.ofd
+	//TODO finish moving this shit to V2Values.of
 	
 	/**
 	 * Use {@code V2Values.of(value, compiler)} instead.

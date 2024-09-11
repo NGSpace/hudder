@@ -24,4 +24,7 @@ public abstract class AV2Compiler extends AVarTextCompiler {
 		return runtime.execute().toResult();
 	}
 	public abstract V2Runtime buildRuntime(ConfigInfo info, String text) throws CompileException;
+	
+	@Override
+	public void reset() {runtimes.clear();variables.clear();}
 }

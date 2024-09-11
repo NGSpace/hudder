@@ -150,7 +150,7 @@ public class ConfigMenu implements ConfigScreenFactory<Screen> {
 	    		.setTooltip(Text.translatable("hudder.advanced.compilertype.tooltip"))
 	    		.setDefaultValue("hudder")
 	    		.setSaveConsumer(b->config.compilertype=b.toLowerCase())
-	    		.setErrorSupplier(e->Compilers.get(e.toLowerCase())==null?
+	    		.setErrorSupplier(e->Compilers.has(e.toLowerCase())?
 	    				Optional.of(Text.translatable("hudder.advanced.compilertype.error")):Optional.empty())
 	    		.build());
 		advanced.addEntry(

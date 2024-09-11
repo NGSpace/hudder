@@ -180,7 +180,7 @@ public class Hudder implements ModInitializer {
 					context.getSource().sendFeedback(config.hudderTester.test(config,testname).toText(testname));
 					return 1;
 				})))
-				.then(literal("reloadTests").executes(context -> {
+				.then(literal("reload_tests").executes(context -> {
 					try {
 						config.hudderTester.UnitTests = new HashMap<String, HudderUnitTest>();
 						config.hudderTester.load(getClass().getResourceAsStream(ASSETS + "UnitTests.hudder"));
