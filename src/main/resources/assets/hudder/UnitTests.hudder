@@ -19,6 +19,11 @@ Basic Bitch Test
 ||EXPECT||
 2 2
 
+||INPUT||Comparing unset values
+{unsetval==10} {unsetval==0} {unsetval>0} {unsetval<0} {unsetval!=0} {unsetval>=0} {unsetval<=0}
+||EXPECT||
+false true false false false true true
+
 ||INPUT||Advanced if
 #if testif==0
 	{testif=1}

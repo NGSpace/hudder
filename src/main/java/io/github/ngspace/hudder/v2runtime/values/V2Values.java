@@ -1,5 +1,7 @@
 package io.github.ngspace.hudder.v2runtime.values;
 
+import java.util.Arrays;
+
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 
 public class V2Values {private V2Values() {}
@@ -9,21 +11,80 @@ public class V2Values {private V2Values() {}
 		String value = valuee.trim();
 		V2Value temp = null;
 		
-		//Maybe Double :3
+		
+		//Double constant
 		try {return new V2Number(Double.parseDouble(value), compiler);} catch (Exception e) {/*Do Nothin*/}
 		
+		
+		//String constant
 		if ((temp = string(value, compiler))!=null) return temp;
 		
+		
+		//Static variable
 		if (compiler.isStaticVariable(value.toLowerCase())) return new V2StaticVar(value.toLowerCase(), compiler);
 		
+		
+		//Dynamic variable
 		if (compiler.isDynamicVariable(value.toLowerCase())) return new V2DynamicVar(value.toLowerCase(), compiler);
 		
-
+		
+		//Set variable
 		String[] setValues = value.split("=",2);
 		if (setValues.length==2&&!compiler.isCondition(value)) 
 			return new V2SetValue(setValues[0], compiler.getV2Value(setValues[1]), compiler);
 		
-		return new V2Value(valuee, compiler);
+		
+		//Math operation
+		V2Value[] values = new V2Value[0];
+		char c;
+		StringBuilder mathvalue = new StringBuilder();
+		char[] operations = new char[0];
+		for (int i = 0;i<value.length();i++) {
+			c = value.charAt(i);
+			if (c=='"'&&mathvalue.isEmpty()) {
+				boolean safe = false;
+				i++;
+				mathvalue.append(c);
+				for (;i<value.length();i++) {
+					c = value.charAt(i);
+					if (c=='\\'&&!safe) safe = true; else {
+						safe = false;
+						mathvalue.append(c);
+						if (c=='"'&&!safe) break;
+					}
+				}
+				continue;
+			}
+			if (c=='('&&mathvalue.isEmpty()) {
+				int parentheses = 0;
+				i++;
+				for (;i<value.length();i++) {
+					c = value.charAt(i);
+					if (c=='(') parentheses++;
+					if (c==')') {parentheses--;if (parentheses==-1) break;}
+					mathvalue.append(c);
+				}
+				continue;
+			}
+			if (c=='+'||c=='-'||c=='*'||c=='/'||c=='%'||c=='^') {
+				values = addToArray(values, compiler.getV2Value(mathvalue.toString()));
+				operations = addToArray(operations, c);
+				mathvalue.setLength(0);
+				continue;
+			}
+			mathvalue.append(c);
+		}
+		if (values.length>0) {
+			values = addToArray(values, compiler.getV2Value(mathvalue.toString()));
+			return new V2MathOperation(values,operations);
+		}
+		
+		//Comparing values
+		var operator = compiler.getOperator(value);
+		var v = value.split(operator,2);
+		return new V2Comparison(compiler.getV2Value(v[0]), compiler.getV2Value(v[1]), operator);
+		
+		// Fallback
 	}
 	
 	private static V2String string(String value, AV2Compiler compiler) {
@@ -46,5 +107,16 @@ public class V2Values {private V2Values() {}
 		}
 		//String! :D
 		return new V2String(string.toString(), compiler);
+	}
+	
+	private static <T> T[] addToArray(T[] arr, T t) {
+		T[] newarr = Arrays.copyOf(arr, arr.length+1);
+		newarr[arr.length] = t;
+		return newarr;
+	}
+	private static char[] addToArray(char[] arr, char t) {
+		char[] newarr = Arrays.copyOf(arr, arr.length+1);
+		newarr[arr.length] = t;
+		return newarr;
 	}
 }

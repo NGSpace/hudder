@@ -14,6 +14,8 @@ public abstract class MethodValue {
 	public String getAbsoluteValue() {return value;}
 	public AVarTextCompiler getCompiler() {return compiler;}
 	
+	public abstract Object get() throws CompileException;
+	
 	public abstract String asString() throws CompileException;
 	public abstract int asInt() throws CompileException;
 	public abstract double asDouble() throws CompileException;

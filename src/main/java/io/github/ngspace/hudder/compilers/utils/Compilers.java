@@ -66,9 +66,11 @@ public class Compilers {private Compilers() {}
 	
 	/**
 	 * Incase someone wants to add their own compiler without editing source.
+	 * @deprecated use registerCompiler()
 	 * @param name - The name of the compiler, used to save which compiler is selected.
 	 * @param classname - The class leading to the compiler.
 	 */
+	@Deprecated(since = "4.0.0", forRemoval = false)
 	public static void registerLoadedCompiler(String name, ATextCompiler compiler) {
 		loadedcomps.put(name.toLowerCase(), compiler);
 		ConfigManager.getConfig().readConfig();
