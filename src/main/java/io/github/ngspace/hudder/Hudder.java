@@ -4,6 +4,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.arg
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -41,6 +42,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.logging.LoggerPrintStream;
 /**
@@ -184,15 +186,30 @@ public class Hudder implements ModInitializer {
 					try {
 						config.hudderTester.UnitTests = new HashMap<String, HudderUnitTest>();
 						config.hudderTester.load(getClass().getResourceAsStream(ASSETS + "UnitTests.hudder"));
-						context.getSource().sendFeedback(Text.literal("Succesfully loaded tests"));
+						context.getSource().sendFeedback(
+								Text.literal("Succesfully reloaded tests").withColor(Colors.GREEN));
 					} catch (Exception e) {
 						error("Could not load unit tests");
 						e.printStackTrace();
-						context.getSource().sendFeedback(Text.literal("Could not load unit tests"));
+						context.getSource().sendFeedback(
+								Text.literal("Could not reload unit tests").withColor(Colors.RED));
 					}
 					return 1;
 				}))
-			)
+				.then(literal("load_tests").then(argument("path",StringArgumentType.string()).executes(context -> {
+					try {
+						config.hudderTester.load(new FileInputStream(StringArgumentType.getString(context, "path")));
+						context.getSource().sendFeedback(
+								Text.literal("Succesfully loaded tests").withColor(Colors.GREEN));
+					} catch (Exception e) {
+						error("Could not load unit tests");
+						e.printStackTrace();
+						context.getSource().sendFeedback(
+								Text.literal("Could not load unit tests").withColor(Colors.RED));
+					}
+					return 1;
+				}))
+			))
 		);
 	}
 	
