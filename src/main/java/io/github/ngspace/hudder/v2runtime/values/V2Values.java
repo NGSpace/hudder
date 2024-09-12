@@ -20,8 +20,8 @@ public class V2Values {private V2Values() {}
 		if ((temp = string(value, compiler))!=null) return temp;
 		
 		
-		//Static variable
-		if (compiler.isStaticVariable(value.toLowerCase())) return new V2StaticVar(value.toLowerCase(), compiler);
+		//System variable
+		if (compiler.isSystemVariable(value.toLowerCase())) return new V2SystemVar(value.toLowerCase(), compiler);
 		
 		
 		//Dynamic variable

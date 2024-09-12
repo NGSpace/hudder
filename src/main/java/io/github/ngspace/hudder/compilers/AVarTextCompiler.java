@@ -18,7 +18,7 @@ public abstract class AVarTextCompiler extends ATextCompiler {
 	}
 	
 	@Override public Object getVariable(String key) throws CompileException {
-		Object obj = getStaticVariable(key);
+		Object obj = getSystemVariable(key);
 		if (obj==null&&(obj=getDynamicVariable(key))!=null) return obj;
 		if (obj!=null) return obj;
 		return key;
@@ -26,10 +26,10 @@ public abstract class AVarTextCompiler extends ATextCompiler {
 	
 	
 	//I now realize the name "static variable" might be a little confusing, it means a variable that can't be modified
-	public boolean isStaticVariable(String key) {
-		return getStaticVariable(key)!=null||"null".equals(key);
+	public boolean isSystemVariable(String key) {
+		return getSystemVariable(key)!=null||"null".equals(key);
 	}
-	public Object getStaticVariable(String key) {
+	public Object getSystemVariable(String key) {
 		Object obj = NumberData.getNumber(key);
 		if (obj!=null) return obj;
 		if ((obj=BooleanData.getBoolean(key))!=null) return obj;
@@ -41,7 +41,7 @@ public abstract class AVarTextCompiler extends ATextCompiler {
 		return null;
 	}
 	public boolean isDynamicVariable(String key) {
-		return getStaticVariable(key)==null&&getOperator(key)==null&&!key.contains("+")&&!key.contains("-")
+		return getSystemVariable(key)==null&&getOperator(key)==null&&!key.contains("+")&&!key.contains("-")
 				&&!key.contains("/")&&!key.contains("*")&&!key.contains("%")&&!key.contains("=");
 	}
 	public Object getDynamicVariable(String key) {
