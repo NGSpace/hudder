@@ -1,8 +1,8 @@
 package io.github.ngspace.hudder.v2runtime.runtime_elements;
 
 import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.compilers.utils.CompileState;
 import io.github.ngspace.hudder.config.ConfigManager;
-import io.github.ngspace.hudder.methods.CompileState;
 
 public class StringV2RuntimeElement extends AV2RuntimeElement {
 	final String string;

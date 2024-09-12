@@ -3,8 +3,8 @@ package io.github.ngspace.hudder.methods.methods;
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.compilers.utils.CompileState;
 import io.github.ngspace.hudder.config.ConfigInfo;
-import io.github.ngspace.hudder.methods.CompileState;
 import io.github.ngspace.hudder.methods.MethodValue;
 
 public class StringMethods implements IMethod {

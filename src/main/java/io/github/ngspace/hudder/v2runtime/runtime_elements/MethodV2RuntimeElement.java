@@ -3,8 +3,8 @@ package io.github.ngspace.hudder.v2runtime.runtime_elements;
 import java.util.Arrays;
 
 import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.compilers.utils.CompileState;
 import io.github.ngspace.hudder.config.ConfigInfo;
-import io.github.ngspace.hudder.methods.CompileState;
 import io.github.ngspace.hudder.methods.methods.IMethod;
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;

@@ -17,8 +17,8 @@ public abstract class AV2Compiler extends AVarTextCompiler {
 	public V2Value getV2Value(String string) {
 		return V2Values.of(string, this);
 	}
-	@Override
-	public CompileResult compile(ConfigInfo info, String text) throws CompileException {
+	
+	@Override public CompileResult compile(ConfigInfo info, String text) throws CompileException {
 		V2Runtime runtime = runtimes.get(text);
 		if (runtime==null) runtimes.put(text, (runtime=buildRuntime(info,text)));
 		return runtime.execute().toResult();

@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.compilers.utils.CompileState;
 import io.github.ngspace.hudder.config.ConfigInfo;
-import io.github.ngspace.hudder.methods.CompileState;
 import io.github.ngspace.hudder.methods.MethodValue;
 import io.github.ngspace.hudder.methods.elements.TextureElement;
 import io.github.ngspace.hudder.util.HudFileUtils;

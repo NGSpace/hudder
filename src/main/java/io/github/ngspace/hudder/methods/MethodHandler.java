@@ -1,10 +1,10 @@
 package io.github.ngspace.hudder.methods;
 
-import static io.github.ngspace.hudder.methods.CompileState.BOTTOMLEFT;
-import static io.github.ngspace.hudder.methods.CompileState.BOTTOMRIGHT;
-import static io.github.ngspace.hudder.methods.CompileState.MUTE;
-import static io.github.ngspace.hudder.methods.CompileState.TOPLEFT;
-import static io.github.ngspace.hudder.methods.CompileState.TOPRIGHT;
+import static io.github.ngspace.hudder.compilers.utils.CompileState.BOTTOMLEFT;
+import static io.github.ngspace.hudder.compilers.utils.CompileState.BOTTOMRIGHT;
+import static io.github.ngspace.hudder.compilers.utils.CompileState.MUTE;
+import static io.github.ngspace.hudder.compilers.utils.CompileState.TOPLEFT;
+import static io.github.ngspace.hudder.compilers.utils.CompileState.TOPRIGHT;
 
 import java.util.ArrayList;
 import java.util.HashMap;
