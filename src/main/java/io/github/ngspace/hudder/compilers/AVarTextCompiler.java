@@ -35,11 +35,10 @@ public abstract class AVarTextCompiler extends ATextCompiler {
 		if ((obj=BooleanData.getBoolean(key))!=null) return obj;
 		if ((obj=StringData.getString(key))!=null) return obj;
 		if ((obj=ConfigManager.getConfig().globalVariables.get(key))!=null) return obj;
-		if ("true".equals(key)) return true;
-		if ("false".equals(key)) return false;
 		if ("null".equals(key)) return null;
 		return null;
 	}
+
 	public boolean isDynamicVariable(String key) {
 		return getSystemVariable(key)==null&&getOperator(key)==null&&!key.contains("+")&&!key.contains("-")
 				&&!key.contains("/")&&!key.contains("*")&&!key.contains("%")&&!key.contains("=");
@@ -54,11 +53,11 @@ public abstract class AVarTextCompiler extends ATextCompiler {
 	 */
 	public String getOperator(String condString) {
 		if (condString.contains("==")) return "==";
+		if (condString.contains("!=")) return "!=";
 		if (condString.contains(">=")) return ">=";
 		if (condString.contains("<=")) return "<=";
 		if (condString.contains(">" )) return ">" ;
 		if (condString.contains("<" )) return "<" ;
-		if (condString.contains("!=")) return "!=";
 		return null;
 	}
 }

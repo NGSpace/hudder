@@ -77,7 +77,7 @@ public class Compilers {private Compilers() {}
 	}
 	
 	public static boolean has(String name) {
-		return loadedcomps.get(name.toLowerCase())!=null;
+		return loadedcomps.get(name.toLowerCase())!=null||Comps.get(name.toLowerCase())!=null;
 	}
 	
 	

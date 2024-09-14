@@ -8,7 +8,6 @@ public class V2Number extends V2Value {
 	public V2Number(double value, AVarTextCompiler compiler) {
 		this.value=Double.toString(value);
 		this.doubleVal = value;
-		this.compiler=compiler;
 	}
 	
 	@Override public Double get() throws CompileException {return doubleVal;}

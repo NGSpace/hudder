@@ -15,9 +15,9 @@ public class V2Values {private V2Values() {}
 		//Double constant
 		try {return new V2Number(Double.parseDouble(value), compiler);} catch (Exception e) {/*Do Nothin*/}
 		
-		
-		//String constant
-		if ((temp = string(value, compiler))!=null) return temp;
+
+		if (value.equalsIgnoreCase("false")) return new V2Boolean(false, compiler);
+		if (value.equalsIgnoreCase("true")) return new V2Boolean(true, compiler);
 		
 		
 		//System variable
@@ -26,6 +26,10 @@ public class V2Values {private V2Values() {}
 		
 		//Dynamic variable
 		if (compiler.isDynamicVariable(value.toLowerCase())) return new V2DynamicVar(value.toLowerCase(), compiler);
+		
+		
+		//String constant
+		if ((temp = string(value, compiler))!=null) return temp;
 		
 		
 		//Set variable
