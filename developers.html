@@ -26,10 +26,10 @@
 <body>
 	<h1>Extending Hudder!</h1>
 	<hr>
-	<warning><p>You <i><b>will</b></i> need to know Basic Java for this</p></warning>
-	<warning><p>This is an explanation for version 3.5.0 but a lot is planned for version 4.0.0 and some things will break!</p></warning>
-	<note><p>The ability for third party compilers was only added in version 3.5.0</p></note>
-	<note><p>As of version 3.5.0 the state of the included JavaDocs is... not well... so if you ever fact ambiguity feel free to ask on Hudder's discord.</p></note>
+	<warning>You will need to know Basic Java for this</warning>
+	<note>A sample Hudder extenstion is available on <a href="https://github.com/NGSpace/hudder-sample-mod">GitHub</a></note>
+	<note>The ability for third party compilers was only added in version 3.5.0 and V2 compilers on 4.0.0</p></note>
+	<note>If you ever fact ambiguity feel free to ask on Hudder's discord.</note>
 	So, you're a big smarty-pants and want to improve hudder without directly modifying it? No worries! I am here to help!
 	<h2>Preparations</h2>
 	<hr><h4>Here's a list of what you will need to have prepared:</h4>
@@ -62,20 +62,105 @@
 <br>
 ...And done! You are now ready to start improving hudder!<br><br>
 
-<h1>Writing your own compiler</h1>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h1>Writing your own compiler using the V2 Runtime</h1>
 <hr>
 <note>The compiler needs to be created in it's own class/file, no lambdas or nested classes.</note>
 First thing: we'll need a class:
+
+<code>public class CustomCompiler extends AV2Compiler {
+	@Override
+	public CompileResult buildRuntime(ConfigInfo info, String text) throws CompileException {
+		V2Runtime runtime = new V2Runtime(); //Init the runtime
+		runtime.addRuntimeElement(new StringV2RuntimeElement(text, false, true)); //Add all the text
+		return runtime;
+	}
+}</code>
+<br>
+The "info" variable contains all of hudder's settings in the forms of variables, this may be useful if you need to read hudder's settings however you still lack the ability to add/read your own.
+<br>The "text" variables contains the text we want to compile (ex. "FPS: {fps}").
+<br><br>
+If you used this compiler it will just echo back whatever you put in the mainfile which will be useless so...
+
+<h3>Adding variable support</h3>
+Don't want to code your own variable system? No worries! The V2Runtime has you covered,
+all you need to do is write the syntax parse te text, create a VariableV2RuntimeElement and add it to the runtime!
+<br><br>
+Here is a quick example of a simple variable parser:
+
+
+<code>V2Runtime runtime = new V2Runtime(); //Init the runtime
+StringBuilder textBuilder = new StringBuilder();
+
+for (int ind = 0;ind&#60;text.length();ind++) { //Loop through every character in the file
+	char c = text.charAt(ind);
+	if (c=='%') {
+		StringBuilder variableBuilder = new StringBuilder();
+		runtime.addRuntimeElement(new StringV2RuntimeElement(textBuilder.toString(), false, true));
+		textBuilder.setLength(0); //Reset the text builder
+		while (ind&#60;text.length()) {
+			ind++;
+			c = text.charAt(ind);
+			if (c=='%') {
+			runtime.addRuntimeElement(new VariableV2RuntimeElement(variableBuilder.toString(), this)); // Add whatever text is left in the text builder
+				break;
+			}	
+			variableBuilder.append(c);
+		}
+	} else textBuilder.append(c);
+}
+runtime.addRuntimeElement(new StringV2RuntimeElement(textBuilder.toString(), false, true)); // Add whatever text is left in the text builder
+return runtime;
+</code>
+
+<br>
+	
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h1>Writing your own Compiler from scratch</h1>
+<hr>
+<note>You better have a good reason to not use the V2 Runtime cause making your own compiler leaves to you all the work of managing performance, making a variable system, managing UIElement(s) by yourself, etc.</note>
+<note>Extending AVarTextCompiler instead of ATextCompiler will help you with the basics of a variable system which might be helpful if you let variables be handled by a third party library (ex. the JavaScript compiler uses the JavaScript variable system but still has access to basic variables with the get() function)</note>
+
 <code>public class CustomCompiler extends AVarTextCompiler {
 	@Override
 	public CompileResult compile(ConfigInfo info, String text) throws CompileException {
 		return new CompileResult(text, 0, "", 0, "", 0, "", 0, new AUIElement[0]);
 	}
 }</code>
-
-The "info" variable contains all of hudder's settings in the forms of variables, this may be useful if you need to read hudder's settings however you still lack the ability to add/read your own.
-<br>The "text" variables contains the text we want to compile (ex. "FPS: {fps}").
-
+<br>
+Same variables as before but beyond that you're kinda on your own so unless you're dedicated you should use the help of third parties for some stuff...
 
 <br><br><br>
 </body>

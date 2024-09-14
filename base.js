@@ -187,6 +187,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
 				<a href="methodlist.html">Method list</a>
 			</summary>
 		</details>
+		<details open>
+			<summary>
+				<a href="developers.html">Developers</a>
+			</summary>
+		</details>
 		<br>
 		<details open>
 			<summary>
@@ -204,12 +209,12 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	var notes = document.getElementsByTagName('note');
 	for (var i = 0; i < notes.length; i++) {
 		let content = notes[i].innerHTML;
-		notes[i].innerHTML = "<img src=\"/Images/Info.png\" alt=\"INFO\" width=\"24px\">" + content;
+		notes[i].innerHTML = "<img src=\"Images/Info.png\" alt=\"INFO\" width=\"24px\">" + content;
 	}
 	var notes = document.getElementsByTagName('warning');
 	for (var i = 0; i < notes.length; i++) {
 		let content = notes[i].innerHTML;
-		notes[i].innerHTML = "<img src=\"/Images/Warning.png\" alt=\"INFO\" width=\"24px\">" + content;
+		notes[i].innerHTML = "<img src=\"Images/Warning.png\" alt=\"INFO\" width=\"24px\">" + content;
 	}
 	var codes = Array.from(document.getElementsByTagName('code')).concat(Array.from(
 		document.getElementsByTagName("inline-code")));
