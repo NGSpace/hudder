@@ -25,6 +25,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.brigadier.arguments.StringArgumentType;
 
 import io.github.ngspace.hudder.compilers.ATextCompiler;
+import io.github.ngspace.hudder.compilers.UnaccessableTestCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileResult;
 import io.github.ngspace.hudder.compilers.utils.Compilers;
@@ -161,7 +162,7 @@ public class Hudder implements ModInitializer {
         });
 		log(MOD_ID+" has been loaded!");
 		
-		Compilers.registerCompiler("This is a lie", "io.github.ngspace.hudder.compilers.UnaccessableTestCompiler");
+		Compilers.registerLoadedCompiler("Starset best band", new UnaccessableTestCompiler());
 		
 		try {
 			config.hudderTester.load(getClass().getResourceAsStream(ASSETS + "UnitTests.hudder"));

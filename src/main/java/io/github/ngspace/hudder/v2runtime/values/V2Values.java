@@ -20,16 +20,16 @@ public class V2Values {private V2Values() {}
 		if (value.equalsIgnoreCase("true")) return new V2Boolean(true, compiler);
 		
 		
+		//String constant
+		if ((temp = string(value, compiler))!=null) return temp;
+		
+		
 		//System variable
 		if (compiler.isSystemVariable(value.toLowerCase())) return new V2SystemVar(value.toLowerCase(), compiler);
 		
 		
 		//Dynamic variable
 		if (compiler.isDynamicVariable(value.toLowerCase())) return new V2DynamicVar(value.toLowerCase(), compiler);
-		
-		
-		//String constant
-		if ((temp = string(value, compiler))!=null) return temp;
 		
 		
 		//Set variable

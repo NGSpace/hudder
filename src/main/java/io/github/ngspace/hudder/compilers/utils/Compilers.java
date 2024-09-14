@@ -40,10 +40,10 @@ public class Compilers {private Compilers() {}
 		IllegalArgumentException, SecurityException {
 		
 		String comp = name.toLowerCase();
-		if (Comps.get(comp)==null) return getCompilerFromName("default");
-		if (!loadedcomps.containsKey(comp)) 
+		if (loadedcomps.containsKey(comp)) return loadedcomps.get(comp);
+		else if (Comps.containsKey(comp)) 
 			loadedcomps.put(comp,(ATextCompiler) Class.forName(Comps.get(comp)).getConstructor().newInstance());
-		return loadedcomps.get(comp);
+		return getCompilerFromName("default");// Fallback to default compiler
 	}
 	
 	/**

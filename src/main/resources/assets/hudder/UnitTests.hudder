@@ -48,15 +48,18 @@ CaSE SenSitive CaSE SenSitive CaSE SenSitive
 20
 &6PING: &220
 
+||INPUT||Nested conditions
+#def putall, string, number, boolean
+	{str=arg1}
+	{num=arg2}
+	{bool=arg3}
+;putall, "text", 10, false;
+{str} {num} {bool}
+||EXPECT||
+text 10 false
+
 ||INPUT||Newlines
 
 
 ||EXPECT||
 
-
-
-||INPUT||Te
-
-||EXPECT||
-t
-r

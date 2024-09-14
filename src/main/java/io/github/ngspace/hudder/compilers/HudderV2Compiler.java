@@ -19,7 +19,7 @@ public class HudderV2Compiler extends AV2Compiler {
 	public static final int TEXT_STATE = 0;
 	public static final int VARIABLE_STATE = 1;
 	public static final int CONDITION_STATE = 2;
-	public static final int META_STATE = 3;
+	public static final int METHOD_STATE = 3;
 	public static final int HASHTAG_STATE = 4;
 
 	@Override public V2Runtime buildRuntime(ConfigInfo info, String text) throws CompileException {
@@ -68,7 +68,7 @@ public class HudderV2Compiler extends AV2Compiler {
 							bracketscount = 1;
 							break;
 						case ';':
-							compileState = META_STATE;
+							compileState = METHOD_STATE;
 							runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), true));
 							elemBuilder.setLength(0);
 							builder = new String[] {};
@@ -130,7 +130,7 @@ public class HudderV2Compiler extends AV2Compiler {
 					
 					break;
 				}
-				case META_STATE: {
+				case METHOD_STATE: {
 					switch (c) {
 						case ';':
 							compileState = TEXT_STATE;
@@ -141,7 +141,7 @@ public class HudderV2Compiler extends AV2Compiler {
 							break;
 						default: elemBuilder.append(c);break;
 					}
-					if (compileState!=META_STATE) {
+					if (compileState!=METHOD_STATE) {
 						builder = addToArray(builder,elemBuilder.toString().trim());
 						runtime.addRuntimeElement(new MethodV2RuntimeElement(builder, this, info, runtime));
 						elemBuilder.setLength(0);
@@ -223,7 +223,7 @@ public class HudderV2Compiler extends AV2Compiler {
 		strb.append(switch(compileState) {
 			case VARIABLE_STATE -> "Expected '}'";
 			case CONDITION_STATE -> "Expected '%'";
-			case META_STATE -> "Expected ';'";
+			case METHOD_STATE -> "Expected ';'";
 			case HASHTAG_STATE -> "Expected end of ADVANCED_CONDITION_STATE";
 			default -> "An unknown error has occurred";
 		});
