@@ -48,7 +48,7 @@ CaSE SenSitive CaSE SenSitive CaSE SenSitive
 20
 &6PING: &220
 
-||INPUT||Nested conditions
+||INPUT||Putall method
 #def putall, string, number, boolean
 	{str=arg1}
 	{num=arg2}
@@ -57,6 +57,14 @@ CaSE SenSitive CaSE SenSitive CaSE SenSitive
 {str} {num} {bool}
 ||EXPECT||
 text 10 false
+
+||INPUT||Divide method
+#def divide, number, number
+	{result = arg1 / arg2}
+;divide, 4, 2;
+{result}
+||EXPECT||
+2
 
 ||INPUT||Newlines
 
