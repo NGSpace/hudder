@@ -148,49 +148,49 @@ document.addEventListener("DOMContentLoaded", function (event) {
 		table {border-collapse: collapse;border: 3px solid gray;max-width: 96%;}
 	</style>
 	<div id="topbar">
-		<img src="/Images/Hudder.webp" alt="Back to main wiki page" />
+		<img src="/Images/Hudder.webp" alt="Back to main hudder wiki page" />
 		<div id="title">Hudder Wiki</div>
 	</div>
 	<div id="sidebar">
 	<h1>Explore</h1>
 		<details open>
 			<summary>
-				<a href="/wiki/index.html">Home</a>
+				<a href="index.html">Home</a>
 			</summary>
 		</details>
 		<details open>
-			<summary><a href="/wiki/howto.html">Basic Tutorial</a></summary>
+			<summary><a href="howto.html">Basic Tutorial</a></summary>
 			<ul>
-				<li><a href="/wiki/howto.html#text">Normal text</a></li>
-				<li><a href="/wiki/howto.html#color">Character escaping and Color Codes</a></li>
-				<li><a href="/wiki/howto.html#sections">Text sections</a></li>
-				<li><a href="/wiki/howto.html#variables">Basic variables</a></li>
-				<li><a href="/wiki/howto.html#conditions">Basic conditions</a></li>
-				<li><a href="/wiki/howto.html#adv_variables">Advanced Variables</a></li>
-				<li><a href="/wiki/howto.html#methods">Inventory management and methods</a></li>
+				<li><a href="howto.html#text">Normal text</a></li>
+				<li><a href="howto.html#color">Character escaping and Color Codes</a></li>
+				<li><a href="howto.html#sections">Text sections</a></li>
+				<li><a href="howto.html#variables">Basic variables</a></li>
+				<li><a href="howto.html#conditions">Basic conditions</a></li>
+				<li><a href="howto.html#adv_variables">Advanced Variables</a></li>
+				<li><a href="howto.html#methods">Inventory management and methods</a></li>
 			</ul>
 		</details>
 		<details open>
-			<summary><a href="/wiki/javascript.html">JavaScript</a></summary>
+			<summary><a href="javascript.html">JavaScript</a></summary>
 			<ul>
-				<li><a href="/wiki/javascript.html#sections">Sections? Functions!</a></li>
-				<li><a href="/wiki/javascript.html#functions">List of functions and their descriptions</a></li>
+				<li><a href="javascript.html#sections">Sections? Functions!</a></li>
+				<li><a href="javascript.html#functions">List of functions and their descriptions</a></li>
 			</ul>
 		</details>
 		<details open>
 			<summary>
-				<a href="/wiki/varlist.html">Variable list</a>
+				<a href="varlist.html">Variable list</a>
 			</summary>
 		</details>
 		<details open>
 			<summary>
-				<a href="/wiki/methodlist.html">Method list</a>
+				<a href="methodlist.html">Method list</a>
 			</summary>
 		</details>
 		<br>
 		<details open>
 			<summary>
-				<a href="/wiki/russian.html">Русский</a>
+				<a href="russian.html">Русский</a>
 			</summary>
 		</details>
 	</div>
