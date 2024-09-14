@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<head>
+	<title>Hudder wiki - Developers</title>
+	<script src="base.js"></script>
+	<meta charset="UTF-8">
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-M0SCB1X0YP"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		gtag('config', 'G-M0SCB1X0YP');
+		gtag('consent', 'update', {
+			'ad_user_data': 'granted',
+			'ad_personalization': 'granted',
+			'ad_storage': 'granted',
+			'analytics_storage': 'granted'
+		});
+	</script>
+	<style>
+		#preplist li{
+			margin-top: 0px;margin-bottom: 10px;
+		}
+	</style>
+</head>
+<body>
+	<h1>Extending Hudder!</h1>
+	<hr>
+	<warning><p>You <i><b>will</b></i> need to know Basic Java for this</p></warning>
+	<warning><p>This is an explanation for version 3.5.0 but a lot is planned for version 4.0.0 and some things will break!</p></warning>
+	<note><p>The ability for third party compilers was only added in version 3.5.0</p></note>
+	<note><p>As of version 3.5.0 the state of the included JavaDocs is... not well... so if you ever fact ambiguity feel free to ask on Hudder's discord.</p></note>
+	So, you're a big smarty-pants and want to improve hudder without directly modifying it? No worries! I am here to help!
+	<h2>Preparations</h2>
+	<hr><h4>Here's a list of what you will need to have prepared:</h4>
+	<ul id="preplist">
+		<li>JDK 21 or above (<a href="https://www.openlogic.com/openjdk-downloads?field_java_parent_version_target_id=828&field_operating_system_target_id=All&field_architecture_target_id=391&field_java_package_target_id=396">Download here</a>)</li>
+		<li>A code editor/IDE (ex. Eclipse, Intellij, Zed, VSCode, Windows notepad, vim, emacs)</li>
+		<li>A fabric mod (<a href="https://fabricmc.net/develop/">How to make one</a>)</li>
+		<li>A warm blanket</li>
+	</ul>
+	<h3>Adding Hudder as a Gradle dependency</h3>
+	<note>You will need the Fabric API dependency for hudder to function and ModMenu and Cloth-Config to edit hudder's config</note>
+	First you will need to add modrinth's maven repository in the <inline-code>build.gradle</inline-code> file:
+	<br><br><code>repositories {
+	...
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = "Modrinth"
+				url = "https://api.modrinth.com/maven"
+			}
+		}
+		filter {
+			includeGroup "maven.modrinth"
+		}
+	}
+}</code><br>After that you'll need to add Hudder's dependency:
+<code>dependencies {
+	modImplementation "maven.modrinth:hudder:[Hudder Version]-[Minecraft version]"
+}</code>
+<br>
+...And done! You are now ready to start improving hudder!<br><br>
+
+<h1>Writing your own compiler</h1>
+<hr>
+<note>The compiler needs to be created in it's own class/file, no lambdas or nested classes.</note>
+First thing: we'll need a class:
+<code>public class CustomCompiler extends AVarTextCompiler {
+	@Override
+	public CompileResult compile(ConfigInfo info, String text) throws CompileException {
+		return new CompileResult(text, 0, "", 0, "", 0, "", 0, new AUIElement[0]);
+	}
+}</code>
+
+The "info" variable contains all of hudder's settings in the forms of variables, this may be useful if you need to read hudder's settings however you still lack the ability to add/read your own.
+<br>The "text" variables contains the text we want to compile (ex. "FPS: {fps}").
+
+
+<br><br><br>
+</body>

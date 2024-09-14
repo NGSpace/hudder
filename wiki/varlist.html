@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<head>
+	<title>Hudder wiki - Variable list</title>
+	<script src="base.js"></script>
+	<meta charset="UTF-8">
+
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-M0SCB1X0YP"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', 'G-M0SCB1X0YP');
+
+		gtag('consent', 'update', {
+			'ad_user_data': 'granted',
+			'ad_personalization': 'granted',
+			'ad_storage': 'granted',
+			'analytics_storage': 'granted'
+		});
+
+	</script>
+</head>
+<body>
+<note>Variables are NOT case sensitive</note>
+<h1>Booleans (true/false)</h1>
+<hr><br>
+<code>key_[key on keyboard] - Is key is held
+
+isslime / is_slime - Is the current chunk (the one the player is in) is a slime chunk
+hudhidden - Is the HUD hidden (F1)
+showdebug - Is the F3 debug menu showing
+
+issurvival / is_survival - Is the player in survial mode
+iscreative / is_creative - Is the player in creative mode
+isadventure / is_adventure - Is the player in adventure mode
+isspectator / is_spectator - Is the player in spectator mode
+</code>
+
+<h3>Hudder</h3>
+
+<code>enabled - Yes (Hudder is enabled)
+shadow - Is Hudder's shadow option selected
+showinf3 - Is Hudder's show in f3 option selected
+javascriptenabled - Is Hudder's javascript enabled option selected
+globalvariablesenabled - Is Hudder's global variables enabled option selected
+background - Is Hudder's background option selected
+removegui - Is Hudder's remove gui option selected
+limitrate - Is Hudder's limit rate option selected
+</code>
+<br>
+
+<h1>Integers (Numbers)</h1>
+<hr><br>
+<h3>Performance</h3>
+
+<code>fps - The current frame rate
+avgfps / avg_fps - The average frame rate in the last few seconds
+minfps / min_fps - The lowest frame rate in the last few seconds
+maxfps / max_fps - The highest frame rate in the last few seconds
+ping - The current ping
+tps - The current Ticks per second (Client only)
+gpu_d - GPU usage (with decimal point)
+gpu - GPU usage (without decimal point)
+delta - The previous frame's frame rate delta
+
+totalmemory / maxmemory / totalram / maxram - Maximum RAM (In MB)
+usedmemory / usedram - Used RAM (In MB)
+freememory / freeram - Unused RAM (In MB)
+usedmemory_percentage / usedram_percentage - The percentage of memory that is being used (out of the Maximum RAM supplied to Minecraft)
+freememory_percentage / freeram_percentage - The percentage of memory that is being NOT used (out of the Maximum RAM supplied to Minecraft)
+</code>
+
+<h3>Computer</h3>
+
+<code>time - Current time (In milliseconds) as supplied by the Operating System (Ex Windows, Linux, MacOS, etc.)
+random /rng - Random number
+</code>
+
+<h3>Food and health</h3>
+
+<code>saturation - The saturation of the player (not to be confused with the hunger value)
+hunger - The hunger of the player
+previoushunger - I have no idea TBH... Why did I add this?... Maybe the previous hunger value?
+exhaustion - The exhaustion of the player
+health / hp - The health of the player
+maxhealth / maxhp - The maximum health of the player
+</code>
+
+
+<h3>Player position</h3>
+
+<code>dxpos / dx - The X position of the player (with decimal point)
+dypos / dy - The Y position of the player (with decimal point)
+dzpos / dz - The Z position of the player (with decimal point)
+xpos / x - The X position of the player (Without decimal point)
+ypos / y - The X position of the player (Without decimal point)
+zpos / z - The X position of the player (Without decimal point)
+</code>
+
+<h3>Player rotation</h3>
+
+<code>dpitch - The pitch (with decimal point)
+dyaw - The yaw (with decimal point)
+pitch - The pitch (without decimal point)
+yaw - The yaw (without decimal point)
+</code>
+
+<h3>Inventory</h3>
+
+<code>selectedslot - The selected hotbar slot
+held_item_durability / helmet_durability / chestplate_durability / leggings_durability / boots_durability / offhand_durability - The durability of the specified Item
+held_item_max_durability / helmet_max_durability / chestplate_max_durability / leggings_max_durability / boots_max_durability / offhand_max_durability - The maximum durability of the specified Item
+</code>
+
+<h3>World rendering</h3>
+
+<code>entites - The number of entites drawn (As shown in the debug screen)
+particles - The number of particles drawn (As shown in the debug screen)
+chunks - The number of chunks loaded
+</code>
+
+<h3>World</h3>
+
+<code>light - The current light level
+blocklight / block_light - The current block light level
+skylight / sky_light - The current sky light level
+world_time / worldtime - The current time of day
+</code>
+
+<h3>Hudder</h3>
+
+<code>width - The (adjusted) width of the screen
+height - The (adjusted) height of the screen
+guiscale - The scale of the screen (as set in the video settings)
+
+scale - The default scale Hudder option
+color - The default color Hudder option
+yoffset - The y offset Hudder option
+xoffset - The x offset Hudder option
+lineheight - The line height Hudder option
+metabuffer - The meta buffer Hudder option
+backgroundcolor - The background color Hudder option
+</code>
+
+
+<br>
+<h1>Strings (Text)</h1>
+<hr><br>
+
+<code>cpu_info - Information about the CPU (Model, Generation, etc)
+operating_system - Which operating system is used
+helditem_name - The name of the held Item
+biome - The biome the player is currently inside
+
+compilertype - The type of Hudder compiler selected
+mainfile - The name of the main Hudder file
+</code>
+<br><br><br>
+</body>

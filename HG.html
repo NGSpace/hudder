@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html>
+<head>
+	
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-M0SCB1X0YP"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		
+		gtag('config', 'G-M0SCB1X0YP');
+	</script>
+
+<link rel="scoresfxx" href="score.mp3">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<style>
+	canvas {
+		border:none;/*1px solid #a1a1a1;*/
+		background-color: #a1a1a1;
+		cursor: default;
+	}
+	.button {
+		border: none;
+		color: white;
+		padding: 15px 32px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 16px;
+		margin: 4px 2px;
+		cursor: pointer;
+	}
+	
+	.button3 {
+		display: none;
+	}
+	
+	.button1 {background-color: #32a2a8; width:fit-content;padding:8px 10px;}/*#4CAF50;} /* Green */
+	.button2 {background-color: #008CBA;} /* Blue */
+	.switch {
+		position: relative;
+		display: inline-block;
+		width: 60px;
+		height: 34px;
+	}
+	
+	/* Hide default HTML checkbox */
+	.switch input {
+		opacity: 0;
+		width: 0;
+		weight: 0;
+	}
+	
+	/* The slider */
+	.slider {
+		position: absolute;
+		cursor: pointer;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: #ccc;
+		-webkit-transition: .4s;
+		transition: .4s;
+	}
+	
+	.slider:before {
+		position: absolute;
+		content: "";
+		height: 26px;
+		width: 26px;
+		left: 4px;
+		bottom: 4px;
+		background-color: white;
+		-webkit-transition: .4s;
+		transition: .4s;
+	}
+	
+	input:checked + .slider {
+		background-color: #2196F3;
+	}
+	
+	input:focus + .slider {
+	  	box-shadow: 0 0 1px #2196F3;
+	}
+	
+	input:checked + .slider:before {
+	  	-webkit-transform: translateX(26px);
+	  	-ms-transform: translateX(26px);
+	  	transform: translateX(26px);
+	}
+	
+	/* Rounded sliders */
+	.slider.round {
+	  	border-radius: 34px;
+	}
+	
+	.slider.round:before {
+	  	border-radius: 50%;
+	}
+	body {
+		background-color: #101010;
+		zoom: 400%;
+	}
+</style>
+<title>Hello</title>
+</head>
+<body onload="startGame()" onmousedown="mouseDown()" onmouseup="accelerate(0.05)">
+  <audio id="dea">
+  <source src="HG-audio/death.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+<audio id="sco">
+<source src="HG-audio/score.mp3" type="audio/mpeg">
+Your browser does not support the audio element.
+</audio>
+<center><canvas style="display: block;" id="canvas" width="480" height="270"></canvas>
+<input id="INP" type="hidden"></input>
+<button id="INP2" type="button" class="button3" onclick="exeusefun(document.getElementById('INP').value)">Execute</input>
+<script>
+
+//window.
+
+var deathSFX = document.getElementById("dea");
+var scoreSFX = document.getElementById("sco");
+
+function exeusefun(func) {
+
+    executeFunctionByName(func, null, null);
+
+}
+
+var myStorage = sessionStorage;
+
+var HS = parseInt(myStorage.getItem('HS'));
+
+var PHS = HS;
+
+var crashed = false;
+
+function mouseDown() {
+
+    res();
+
+    accelerate(-0.20);
+
+}
+
+function handleStart(evt) {
+
+  if (crashed==true) {res();return;}
+
+  accelerate(-0.20);
+}
+
+function handleEnd(evt) {
+
+  if (crashed==true) {res();return;}
+
+  accelerate(0.05);
+}
+
+function touchClick() {
+  var el = document.getElementById("canvas");
+  if(el){
+    el.addEventListener("touchstart", handleStart, false);
+    el.addEventListener("touchend", handleEnd, false);
+    document.addEventListener("visibilitychange", togPau);
+    //el.addEventListener("touchcancel", handleCancel, false);
+    //el.addEventListener("touchmove", handleMove, false);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", touchClick);
+
+var code = "";
+
+addEvent(document, "keypress", function (e) {
+    	e = e || window.event;
+    	var charcode = e.charCode;
+
+    	var char = String.fromCharCode(charcode);
+    	if (char==" "||char=="w") {
+		if (crashed==true) {res();}
+			accelerate(-0.2);
+    	}
+    	code+=char;
+    	if (code.includes("wdhfs")) {
+	    	code="";
+	    	console.log("RESETING GAME KEY \'HS\'");
+	    	myStorage.setItem('HS', '0');
+	    	location.reload();
+	}
+    if (code.includes("hsloy")) {
+        code="";
+        var myDiv = document.getElementById("INP");
+        myDiv.type = "text";
+        var myDiv2 = document.getElementById("INP2");
+        myDiv2.style.display = "block";
+    }
+    if (code.includes("fdsat")) {
+        code="";
+        myGamePiece.inv = !myGamePiece.inv;
+    }
+    if (code.includes("osdag")) {
+        code="";
+        Crash();
+    }
+    //executeFunctionByName("click", window, null);
+    /* else {
+      console.info("There is no valid input function for \"" + char + "\"");
+    }*/
+});
+
+addEvent(document, "keyup", function (e) {
+    e = e || window.event;
+    var charcode = e.charCode;
+    var char = String.fromCharCode(charcode);
+    //console.info(e.key);
+
+    if (e.key==" "||e.key=="w") {
+      if (crashed==true) {res();}
+      accelerate(0.05);
+    }/* else {
+      console.info("There is no valid input function for \"" + char + "\"");
+    }*/
+});
+
+function addEvent(element, eventName, callback) {
+    if (element.addEventListener) {
+        element.addEventListener(eventName, callback, false);
+    } else if (element.attachEvent) {
+        element.attachEvent("on" + eventName, callback);
+    } else {
+        element["on" + eventName] = callback;
+    }
+}
+
+(function(){
+    //s
+    setTimeout(arguments.callee, 250);
+})();
+
+var myGamePiece;
+var myObstacles = [];
+var myScore;
+var NHS;
+var HST;
+var S = 0;
+
+function click() {
+    //document.getElementById("myP").style.color = "red";
+    S+=1;
+    console.log("Hi" + S)
+}
+
+function startGame() {
+
+    var el = document.getElementById("canvas");
+    el.addEventListener("onmouseup", click, false);
+    if (typeof(Storage) !== "undefined") {
+        if (Number.isNaN(HS)) {myStorage.setItem('HS', '0');HS=0;}
+    } else {
+        console.error('No localStorage Found');
+        return;
+    }
+    
+    //var myDiv = document.getElementById("GFG");
+    //myDiv.style.display = "none";
+    //console.log(HS);
+
+    myGamePiece = new component(30, 30, "red", 10, 120);
+    myGamePiece.gravity = 0.05;
+    myScore = new component("30px", "Consolas", "black", 280, 40, "text");
+    HST = new component("16px", "Consolas", "black", 290, 60, "text");
+    myGameArea.start();
+}
+
+var myGameArea = {
+    canvas : document.getElementById("canvas"),
+    start : function() {
+        //if (window.innerWidth>479) {this.canvas.width = 480;} else {this.canvas.width = window.innerWidth;}
+        //this.canvas.width = 480;
+        //this.canvas.height = 270;
+        this.context = this.canvas.getContext("2d");
+        //document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+        this.frameNo = 0;
+        this.frameSc = 0;//1;
+        this.interval = setInterval(updateGameArea, 20);
+        },
+    restart : function() {
+        //if (window.innerWidth>479) {this.canvas.width = 480;} else {this.canvas.width = window.innerWidth;}
+        //this.canvas.height = 270;
+        this.context = this.canvas.getContext("2d");
+        //document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+        this.frameNo = 0;
+        this.frameSc =0;// 1;
+        },
+    clear : function() {
+        this.canvas.getContext("2d").clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+}
+
+function GameOver() {
+  //var myDiv = document.getElementById("GFG");
+
+  //myDiv.style.display = "block";
+}
+
+var U = false;
+
+function component(width, height, color, x, y, type) {
+    this.type = type;
+    this.score = 0;
+    this.width = width;
+    this.height = height;
+    this.speedX = 0;
+    this.speedY = 0;
+    this.x = x;
+    this.y = y;
+    this.gravity = 0;
+    this.gravitySpeed = 0;
+    this.inv = false;
+    this.update = function() {
+        ctx = document.getElementById("canvas").getContext("2d");//myGameArea.context;
+        if (this.type == "text") {
+            ctx.font = this.width + " " + this.height;
+            ctx.fillStyle = color;
+            ctx.fillText(this.text, this.x, this.y);
+        } else {
+            ctx.fillStyle = color;
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+        }
+    }
+    this.newPos = function() {
+        this.gravitySpeed += this.gravity;
+        this.x += this.speedX;
+        this.y += this.speedY + this.gravitySpeed;
+        this.hitBottom();
+    }
+    this.rePos = function() {
+        this.gravitySpeed += this.gravity;
+        //this.x += this.speedX;
+        this.y += this.speedY + this.gravitySpeed;
+        this.hitBottom();
+        if (this.y < 0) {
+            this.y -= this.speedY + this.gravitySpeed;//-1) {
+            //while (this.y<-1) {this.y -= 1;}
+            //this.y -= this.y;//this.speedY + this.gravitySpeed;//(-(this.y - this.speedY));// * this.speedY;
+            this.speedY = 0.0;
+            this.gravitySpeed = -0.05;
+            //this.gravitySpeed += this.gravity;
+            //console.log(this.y);
+            this.y -= this.speedY + this.gravitySpeed;
+            //console.log(this.y);
+            //console.log(this.speedY + this.gravitySpeed);
+            //accelerate(0.05);
+            //this.y = 0;
+        }
+    }
+    this.hitBottom = function() {
+        var rockbottom = myGameArea.canvas.height - this.height;
+        if (this.y > rockbottom) {
+            this.y = rockbottom;
+            this.gravitySpeed = 0;
+        }
+    }
+    this.crashWith = function(otherobj) {
+        if (this.inv==false) {
+          var myleft = this.x;
+          var myright = this.x + (this.width);
+          var mytop = this.y;
+          var mybottom = this.y + (this.height);
+          var otherleft = otherobj.x;
+          var otherright = otherobj.x + (otherobj.width);
+          var othertop = otherobj.y;
+          var otherbottom = otherobj.y + (otherobj.height);
+          var crash = true;
+          if ((mybottom < othertop) || (mytop > otherbottom) || (myright < otherleft) || (myleft > otherright)) {
+              crash = false;
+          } else {
+            if (U==false) {GameOver();}
+            U=true;
+          }
+          return crash;
+        } else {return false;}
+    }
+}
+
+var fs = -1;
+
+var HOL = true;
+
+function togPau() {
+
+    //console.info("CS: " + HOL);
+
+    HOL = !HOL;
+
+}
+
+//135
+//myGameArea.canvas.width/10
+var myGv = new component("75px", "Consolas", "black", myGameArea.canvas.width/6, 270/2, "text");
+NHS = new component("30px", "Consolas", "black", (myGameArea.canvas.width/6) + 30, (270/2) + 30, "text");
+var SM_TE = new component("20px", "Consolas", "black", (myGameArea.canvas.width/6) + 45, (270/2) + 30, "text");
+
+function updateGameArea() {
+
+    if (HOL==false) {return;}
+
+    var x, height, gap, minHeight, maxHeight, minGap, maxGap;
+    for (i = 0; i < myObstacles.length; i += 1) {
+        if (myGamePiece.crashWith(myObstacles[i])) {
+            Crash();
+            //myGv.text="Game Over";
+            //myGv.update();
+            return;
+        } else {
+            myGv.text="";
+            NHS.text="";
+            SM_TE.text="";
+            SM_TE.update();
+            NHS.update();
+            myGv.update();
+        }
+    }
+
+    var x, height, gap, minHeight, maxHeight, minGap, maxGap;
+    for (i = 0; i < myObstacles.length; i += 1) {
+      if (i!=0) {
+        if (myObstacles[i-1].x!=myObstacles[i].x) {
+            if (UpdateScore(myObstacles[i])) {
+                Score();
+            }
+        }
+      } else {
+        if (UpdateScore(myObstacles[i])) {
+            Score();
+        }
+      }
+    }
+
+    myGameArea.clear();
+
+    myGameArea.frameNo += 1;
+
+    if (myGameArea.frameNo == 1 || everyinterval(150)) {
+        x = myGameArea.canvas.width;// + myGamePiece.speedX;
+        minHeight = 20;
+        maxHeight = 200;
+        height = Math.floor(Math.random()*(maxHeight-minHeight+1)+minHeight);
+        minGap = 50;
+        maxGap = 200;
+        gap = Math.floor(Math.random()*(maxGap-minGap+1)+minGap);
+        myObstacles.push(new component(10, height, "green", x, 0));
+        myObstacles.push(new component(10, x - height - gap, "green", x, height + gap));
+    }
+
+    //fs += -0.001;
+
+    for (i = 0; i < myObstacles.length; i += 1) {
+        //if (myGamePiece>0) {myObstacles[i].x += -(myGamePiece.speedX);} else {}
+        //myObstacles[i].speedX =
+        //myObstacles[i].x += -1;
+
+        myObstacles[i].x += -1;//-(myGamePiece.speedX + 1);fs;
+
+        myObstacles[i].update();
+    }
+
+    myScore.text="SCORE: " + (myGameArea.frameSc);// + "\nHIGH SCORE: " + HS;
+    myScore.update();
+
+    HST.text="HIGH SCORE: 0";
+
+    if (!(Number.isNaN(HS))) {
+        HST.text="HIGH SCORE: " + HS;
+    }
+
+    HST.update();
+
+    myGamePiece.rePos();
+    myGamePiece.update();
+}
+
+function Score() {
+    myGameArea.frameSc+=1;
+    scoreSFX.currentTime = 0;
+    scoreSFX.play();
+    if (myGameArea.frameSc>HS) {
+        //console.log(HS);
+        myStorage.setItem('HS', String(myGameArea.frameSc));
+        HS = parseInt(myStorage.getItem('HS'));
+        HST.text="HIGH SCORE: " + HS;
+        HST.update();
+        //console.info(myStorage.getItem('HS'));
+    }
+}
+
+function Crash() {
+    myGv.text="Game Over";
+    if (myGameArea.frameSc>PHS) {
+        NHS.text="New High Score: " + myGameArea.frameSc;
+        NHS.update();
+        SM_TE.y=(270/2) + 60;
+    }
+    SM_TE.text="Click Again to restart";
+    SM_TE.update();
+    myGv.update();//click();
+    if (crashed!=true) {deathSFX.play();}
+    crashed = true;
+}
+
+function everyinterval(n) {
+    if ((myGameArea.frameNo / n) % 1 == 0) {return true;}
+    return false;
+}
+
+function accelerate(n) {
+    myGamePiece.gravity = n;
+}
+
+document.onkeypress = function (e) {
+    e = e || window.event;
+};
+
+function UpdateScore(otherobj) {
+
+  var myleft = myGamePiece.x;
+  var myright = myGamePiece.x;// + (myGamePiece.width);
+  var mytop = myGamePiece.y;
+  var mybottom = myGamePiece.y + (1000);
+  var otherleft = otherobj.x;
+  var otherright = otherobj.x;// + (otherobj.width);
+  var othertop = otherobj.y;
+  var otherbottom = otherobj.y + (1000);
+  var crash = true;
+  if ((myright < otherleft) || (myleft > otherright)) {
+
+    crash = false;
+
+  }
+  return crash;
+
+  //(mybottom < othertop) || (mytop > otherbottom) ||
+  //<!--><button onmousedown="accelerate(-0.2)" onmouseup="accelerate(0.05)">ACCELERATE</button></!-->
+
+}
+
+function res() {
+
+    if (crashed==true) {
+
+        //var myDiv = document.getElementById("GFG");
+
+        //myDiv.style.display = "none";
+
+        U = false;
+
+        crashed = false;
+
+        myObstacles = [];
+
+        myGamePiece = new component(30, 30, "red", 10, 120);
+
+        myGamePiece.speedX = 0;
+
+        myGamePiece.speedY = 0;
+
+        myGamePiece.gravity = 0.05;
+
+        myScore = new component("30px", "Consolas", "black", 280, 40, "text");
+
+        HS = parseInt(myStorage.getItem('HS'));
+
+        PHS = HS;
+
+        HST.text="HIGH SCORE: " + HS;
+
+        SM_TE.y=(270/2) + 30;
+
+        SM_TE.update();
+
+        HST.update();
+
+        myGameArea.restart();
+
+        accelerate(0.05);
+
+    }
+
+}
+
+function Debug() {
+
+    myStorage.setItem('HS', '0');
+    HS = myStorage.getItem('HS');
+    PHS = HS;
+    HST.text="HIGH SCORE: " + HS;
+    HST.update();
+
+}
+
+var LA =  false;
+
+function toggleLog() {
+
+    LA = !LA;
+
+}
+
+function log() {console.log("test");}
+
+function executeFunctionByName(functionName, context) {executeFunctionByName(functionName, context , null);}
+
+function executeFunctionByName(functionName, context , args ) {
+  var args = Array.prototype.slice.call(arguments, 2);
+  var namespaces = functionName.split(".");
+  var func = namespaces.pop();
+  for(var i = 0; i < namespaces.length; i++) {
+    context = context[namespaces[i]];
+  }
+  if (context!=null) {
+      return context[func].apply(context, args);
+  } else {
+      context = window;
+      return context[func].apply(context, args);
+  }
+}
+
+</script>
+<div style="display:block;"><a href="index.html"><button class="button button1" id="Homebutton">
+Back to home</a></button></div>
+</center>
+<br>
+</body>
+</html>

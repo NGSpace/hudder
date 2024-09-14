@@ -1,0 +1,61 @@
+
+#NNUContentPane img {
+	width:66%;
+}
+
+#NNUEditImage {
+	width: 42px;
+	height: 42px;
+}
+#NNUEditTitle {
+	font-size:40px;
+ 	background: radial-gradient(#FF6A00, #db233c);
+	/*background-position: -px -45px;*/
+	background-clip: text;
+	-webkit-background-clip: text;
+  	-webkit-text-fill-color: transparent;
+	color: transparent;
+}
+#NNUEditLogo {
+	width: 40px;
+	height:40px;
+}
+#NNUContentPane {
+	margin: 0px;
+	padding: 0px;
+	font-size: 0px;
+}
+#NNUContentPane a:hover {
+     text-decoration-line: underline;
+	color: #FF6A00;
+}
+#NNUContentPane a {
+	color: #FF6A00;
+	text-decoration: none;
+}
+#NNUContentPane .ImageAndText {
+  	width: fit-content;
+  	text-wrap: nowrap;
+  	vertical-align: 5px;
+}
+#NNUContentPane .ImageAndText span {
+  	display: inline;
+  	text-wrap: nowrap;
+  	vertical-align: top;
+}
+#NNUContentPane .Text {
+	font-size: 0px;
+	display: grid;
+     align-items: center;
+     justify-content: center;
+}
+#NNUContentPane p {
+     align-items: center;
+     vertical-alignment: middle;
+	font-size:30px;
+	overflow: hidden;
+}
+#NNUContentPane h1 {
+     color: lightgray;
+	font: bold 40px monospace, Fira Mono, serif;
+}

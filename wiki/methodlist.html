@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<head>
+	<title>Hudder wiki - Method list</title>
+	<script src="base.js"></script>
+	<meta charset="UTF-8">
+
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-M0SCB1X0YP"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', 'G-M0SCB1X0YP');
+
+		gtag('consent', 'update', {
+			'ad_user_data': 'granted',
+			'ad_personalization': 'granted',
+			'ad_storage': 'granted',
+			'analytics_storage': 'granted'
+		});
+
+	</script>
+</head>
+<body>
+<h3>
+<note>Method names are NOT case sensitive</note>
+<note>Parameters in [] are required, parameters in <> are optional.</note>
+<note>[Number x] refers to the horizontal position on screen, [Number y] refers to the vertical position on screen.</note>
+<note>Booleans are either true or false (or conditions), Strings are pieces of text (Strings must be surrounded by quotes) and Number are... well... numbers...</note>
+</h3>
+<h1>Rendering</h1>
+<hr><br>
+<h3>Inventory management</h3>
+<code>;slot, [Number slot], [Number x], [Number y], &#60;Number scale&#62;, &#60;Boolean showcount&#62;; - draw the item in the provided slot on screen.
+;item, [String itemid], [Number x], [Number y], &#60;Number scale&#62;; - draw the item with the provided id on screen.
+;hand, [Number x], [Number y], &#60;Number scale&#62;, &#60;Boolean showcount&#62;; - draw the held item on screen.
+;helemet, [Number x], [Number y], &#60;Number scale&#62;, &#60;Boolean showcount&#62;; - draw the item in the helmet slot on screen.
+;chestplate, [Number x], [Number y], &#60;Number scale&#62;, &#60;Boolean showcount&#62;; - draw the item in the chestplate slot on screen.
+;leggings, [Number x], [Number y], &#60;Number scale&#62;, &#60;Boolean showcount&#62;; - draw the item in the leggings slot on screen.
+;boots, [Number x], [Number y], &#60;Number scale&#62;, &#60;Boolean showcount&#62;; - draw the item in the boots slot on screen.
+;offhand, [Number x], [Number y], &#60;Number scale&#62;, &#60;Boolean showcount&#62;; - draw the item in the offhand slot on screen.
+</code>
+
+<h3>Text Rendering</h3>
+<code>;text, [Number x], [Number y], [String text], &#60;Number scale&#62;, &#60;HexColor color&#62;, &#60;Boolean shadow&#62;, &#60;Boolean background&#62;, &#60;HexColor bgcolor&#62; - Compiler and then draw the provided text on screen.
+;strwidth, [String text], [String variable]; - Sets the provided variable's value to the width of the provided string.
+;topleft/topright/bottomleft/bottomright/mute, &#60;Number scale&#62;; - change which section to write to.
+</code>
+
+<h3>GUI</h3>
+<code>;health/xpbar/hotbar/helditemtooltip, [Number x], [Number y]; - Draw the provided Hud element on screen.
+;image, [String filename], [Number x], [Number y], [Number width], [Number height]; - Draws the provided Image on screen.
+;texture, [Number x], [Number y], [Number width], [Number height]; - Draws the provided Texture on screen.
+</code>
+
+<h1>Others</h1>
+<hr><br>
+<h3>Debugging</h3>
+
+<code>;log, [String message]; - Send the provided message in the game console.
+;warn, [String message]; - Send the provided message in the game console at warning level.
+;error, [String message]; - Send the provided message in the game console at error level.
+;alert, [String message]; - Send the provided message in the player's chat.
+;throw, [String message]; - Throws an CompileException with the provided message - Please do not use this if you don't know what this means.
+</code>
+
+<h3>File management</h3>
+
+<code>;run, [String filename], &#60;Boolean addText&#62;, &#60;String compiler&#62;; - Compile the provided file with the provided compiler, if "addText" is set to true then it will combine the result with the current file, UI Elements get combined whether addText is true or false.
+;exists, [String text], [String variable]; - Sets the provided variable's value to true or false depending on whether the provided file exists or not.
+</code>
+
+<h3>String and number manipulation</h3>
+
+<code>;decimalpoint, [String numbervariable], [Number maxdecimalpoint]; - Takes the value of the provided variable, cuts off the decimal point at the requested point and inserts it back into the variable. Inserting a number into the "Variable" parameter will do nothing.
+;int, [String numbervariable]; - Same as the above method except it removes the decimal point entirely.
+;concat, [String firstString], [String secondString], [String variable]; - Combines both strings and places the result into the provided variable.
+;substring, [String string], [Number start], [Number end], [String variable]; - Cuts the string at the provided start and end points and places the result into the provided variable.multiplystring
+</code>
+
+
+<h3>Inventory information</h3>
+
+<code>;name, [Number slot], [String variable]; - Sets the value of the provided variable to the name of the item in the provided slot.
+;durability, [Number slot], [String variable]; - Sets the value of the provided variable to the durability of the item in the provided slot.
+;maxdurability, [Number slot], [String variable]; - Sets the value of the provided variable to the max durability of the item in the provided slot.
+;count, [Number slot], [String variable]; - Sets the value of the provided variable to the item count of the item in the provided slot.
+;maxcount, [Number slot], [String variable]; - Sets the value of the provided variable to the max item count of the item in the provided slot.
+</code>
+<br><br><br>
+</body>

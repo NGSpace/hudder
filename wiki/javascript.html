@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<head>
+	<!--sections functions -->
+	<title>Hudder wiki - JavaScript</title>
+	<script src="base.js"></script>
+	<meta charset="UTF-8">
+
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-M0SCB1X0YP"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', 'G-M0SCB1X0YP');
+
+		gtag('consent', 'update', {
+			'ad_user_data': 'granted',
+			'ad_personalization': 'granted',
+			'ad_storage': 'granted',
+			'analytics_storage': 'granted'
+		});
+
+	</script>
+</head>
+<body>
+
+<h1>JavaScript</h1>
+<hr><br>
+	
+<note>You'll probably need a basic understanding of programming and JavaScript to understand the following.</note>
+
+<warning>Make sure to go into the advanced options tab, enabled javascript and change the compiler type to "js"!</warning>
+
+<warning>JavaScript gives you a lot of control! Use at your own risk, if you accidentally cause harm to your game, I will
+laugh at you.</warning>
+
+<br>
+
+<h2 id="sections"> Sections? Functions!</h2>
+<hr><br>
+
+<b>Each section has it's own function which must return a string! Example:</b>
+<code language="js">function topleft() {
+	return "this will appear in the top left section!";
+}
+function bottomleft() {
+	return "this in the bottom left!";
+}
+function topright() {
+	return "this in the top right!";
+}
+function bottomright() {
+	return "this in the bottom right!";
+}
+</code>
+<b>The functions will be executed in the following order:</b>
+<code language="js">topleft()
+bottomleft()
+topright()
+bottomright()
+createElements()
+</code>
+<b>to change the size of a section just make a global variable with the section's name + "scale". Example:</b>
+<code language="js">var topleftscale = 2;
+var bottomleftscale = 2;
+var toprightscale = 2;
+var bottomrightscale = 2;
+</code>
+<br>
+<h2 id="functions">List of functions and their descriptions:</h2>
+<hr>
+<warning>All parameters are non-optional, if they are optional for legacy reasons, it won't stay this way!</warning>
+<table>
+	<tr>
+		<th>Function</th>
+		<th>Description</th>
+		<th>Return type</th>
+		<th>Notes</th>
+	</tr>
+	<tr>
+		<td><inline-code language="js">log(Any object)</inline-code></td>
+		<td>Writes to the game console.</td>
+		<td>None</td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">warn(Any object)</inline-code></td>
+		<td>Writes to the game console.</td>
+		<td>None</td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">error(Any object)</inline-code></td>
+		<td>Writes to the game console.</td>
+		<td>None</td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">alert(Any object)</inline-code></td>
+		<td>Sends a message to the player.</td>
+		<td>None</td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">getVal(String variable)</inline-code></td>
+		<td>Returns the variable with the given name (ex. fps, key_h).</td>
+		<td>Any</td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">getVal(String variable)</inline-code></td>
+		<td>Returns the variable with the given name (ex. fps, key_h).</td>
+		<td>Any</td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">getNumber(String variable)</inline-code></td>
+		<td>Returns the Number variable with the given name.</td>
+		<td>Number</td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">getString(String variable)</inline-code></td>
+		<td>Returns the String variable with the given name.</td>
+		<td>String</td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">getBoolean(String variable)</inline-code></td>
+		<td>Returns the Boolean variable with the given name.</td>
+		<td>Boolean</td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">setVal(String variable, Any Object)</inline-code></td>
+		<td>Sets the variable with the given name to the given object.</td>
+		<td>None</td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">drawItem(String itemid, Number x, Number y, Number scale)</inline-code></td>
+		<td>Draws the item with the provided itemid on the provided X, Y positions on screen with the provided scale.</td>
+		<td>None</td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">drawSlot(Number slot, Number x, Number y, Number scale, Boolean showcount)
+		</inline-code></td>
+		<td>Draws the item from the slot provided on the provided X, Y positions on screen with the provided scale.
+			will also draw durability and item count if showcount is true.</td>
+		<td>None</td>
+		<td>Can be used alongside getVal("selectedslot") to draw the item the player is holding</td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">drawArmor(Number slot, Number x, Number y, Number scale, Boolean showcount)
+		</inline-code></td>
+		<td>Draws the armor from the slot provided on the provided X, Y positions on screen with the provided scale.
+			will also draw durability if showcount is true.</td>
+		<td>None</td>
+		<td>0 for boots, 1 for leggings, 2 for chestplate and 3 for helmet</td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">drawOffhand(Number x, Number y, Number scale, Boolean showcount)</inline-code></td>
+		<td>Draws the item held in the offhand on the provided X, Y positions on screen with the provided scale.
+			will also draw durability if showcount is true.</td>
+		<td>None</td>
+		<td>0 for boots, 1 for leggings, 2 for chestplate and 3 for helmet</td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">drawArmor(Number slot, Number x, Number y, Number scale, Boolean showcount)
+		</inline-code></td>
+		<td>Draws the armor from the slot provided on the provided X, Y positions on screen with the provided scale.
+			will also draw durability and item-count if showcount is true.</td>
+		<td>Number</td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">drawArmor(Number slot, Number x, Number y, Number scale, Boolean showcount)
+		</inline-code></td>
+		<td>Draws the armor from the slot provided on the provided X, Y positions on screen with the provided scale.
+			will also draw durability and item-count if showcount is true.</td>
+		<td>None</td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">strWidth(String text)</inline-code></td>
+		<td>Returns the length of the string.</td>
+		<td>Number</td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">drawText(Number x, Number y, String text, Number scale, Number color, Boolean shadow)
+		</inline-code></td>
+		<td>Draws text on the screen with the provided scale and color.
+			if shadow is provided then a shadow will also be drawn regardless of the option selected in hudder's settings.</td>
+		<td>None</td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">compile(String filename, String compilertype)</inline-code></td>
+		<td>Compiles the file with the specified compilertype (or the javascript compiler if none is specified),
+			returns the compile results and adds the elements created by the file.</td>
+		<td>CompileResult</td>
+		<td>CompileResult has the following properties {<br>String topleft, String bottomleft,<br>String topright, String bottomright,
+		<br>Number topleftscale, Number bottomleftscale,<br>Number toprightscale, Number bottomrightscale}</td>
+	</tr>
+</table>
+
+<br>
+<h2>Here is a simple Example:</h2>
+<br>
+<code language="js">function topleft() {
+	let fps = getVal("fps");
+	setVal("fpsbutbetter", fps+2);
+	return "thy fps+2 is " + getVal("fpsbutbetter");
+}
+</code>
+<br><br><br>
+</body>

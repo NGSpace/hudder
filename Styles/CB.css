@@ -1,0 +1,160 @@
+body {
+    background: none;
+    direction: ltr;
+}
+
+.background {
+    background-image: url("Images/HG_BG.png");
+    background-repeat: repeat-x;
+    background-attachment: fixed;
+    background-position-x: 1px;
+    background-size: cover;
+    margin: 0px;
+    padding: 0px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    direction: ltr;
+}
+
+.idk {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    right: 0;
+    direction: ltr;
+}
+
+canvas {
+    width: 100%;
+    height: 99%;
+    position: absolute;
+    top: 0px;
+    right: 0;
+    border: 1px solid #d3d3d3;
+    direction: ltr;
+    /*background-color: #f1f1f1;*/
+}
+
+.button {
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    direction: ltr;
+}
+
+.button3 {
+    display: none;
+    direction: ltr;
+}
+
+.button1 {
+    background-color: #32a2a8;
+    direction: ltr;
+}
+/* Green */
+.button2 {
+    background-color: #008CBA;
+    direction: ltr;
+}
+/* Blue */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    direction: ltr;
+}
+
+    /* Hide default HTML checkbox */
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+        direction: ltr;
+    }
+
+/* The slider */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    direction: ltr;
+}
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+        direction: ltr;
+    }
+
+input:checked + .slider {
+    background-color: #2196F3;
+    direction: ltr;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+    direction: ltr;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+    direction: ltr;
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 0px;
+    direction: ltr;
+}
+
+    .slider.round:before {
+        border-radius: 00%;
+        direction: ltr;
+    }
+
+a:link {
+    color: #ffffff;
+    direction: ltr;
+}
+
+a:visited {
+    color: #ffffff;
+    direction: ltr;
+}
+
+a:hover {
+    color: #ffffff;
+    direction: ltr;
+}
+
+a:active {
+    color: #ffffff;
+    direction: ltr;
+}

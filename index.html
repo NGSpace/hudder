@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>NGS's land</title>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M0SCB1X0YP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-M0SCB1X0YP');
+</script>
+
+     <link rel="stylesheet" href="Styles/index.css">
+     <link rel="stylesheet" href="Styles/projects.css">
+     <link rel="stylesheet" href="Styles/GamesList.css">
+	<script>
+		const Def = "Projects";
+		function openTab(evt, TabName) {
+			var i, tabcontent, tablinks;
+			tabcontent = document.getElementsByClassName("tabcontent");
+			for (i = 0; i < tabcontent.length; i++) {
+				tabcontent[i].style.display = "none";
+			}
+			tablinks = document.getElementsByClassName("tablinks");
+			for (i = 0; i < tablinks.length; i++) {
+				tablinks[i].className = tablinks[i].className.replace(" active", "");
+			}
+			document.getElementById(TabName).style.display = "block";
+			evt.className += " active";
+			if(history.pushState) {
+			    history.pushState(null, null, '?p=' + TabName);
+			}
+		}
+	</script>
+</head>
+<body onload="load()">
+<center>
+	<div id="ContentPane">
+		<span>
+		<span id="TitleNGS">NGS</span><span id="TitleS">'s</span>
+		<span id="TitleLAND"></br>land</span></span>
+		
+		</br>
+		
+		<div class="tab">
+		
+		<button id="ProjectsButton" class="tablinks"onclick="openTab(this, 'Projects')">
+		Projects</button>
+		<button id="GamesButton" class="tablinks"onclick="openTab(this, 'Games')">Games</button>
+		<button id="AboutMeButton" class="tablinks"onclick="openTab(this, 'AboutMe')">
+		About me</button>
+		
+		<div id="borderbottom"></div>
+		
+		</div>
+		<div id="Projects" class="tabcontent">
+			<div id="NNUContentPane" height="fit-content">
+				<center>
+				<a id="NNUTitle" class="ImageAndText"
+				   href="https://github.com/ngspace/NNUEdit">
+					<image id="NNUEditLogo" style="width:42px" src="Images/NNUEdit.png">
+					<span id="NNUEditTitle">The NNUEdit code Editor</span>
+				</a>
+				</br>
+				<div style="text-align:left" class="Text">
+					<p>
+					NNUEdit is a code editor I made with the goal of one day reviving this
+					website/project and help me rebuild it from scratch as well as add
+					some games and any future games/projects to this list.
+					</p>
+				</div>
+				<image src="Images/ThisScreenShot.png">
+				<div style="text-align:left" class="Text">
+					<p>
+					It is completely open source and available and deeply tested in both
+					windows and linux. It should work on MacOS too but it was never
+					tested there.
+
+					
+					</br></br>It is very well optimized to minimize 
+					cpu, gpu and memory usage, even when working with (extremely)
+					large files (on my pc it was able to read files up to 2GB big without lagging a bit!)
+
+					
+					</br></br>It supports more than 40 programming langauges!
+
+					</br></br>It is very compact and easy to use!
+					
+					</br></br>Execute shell scripts and html files with F5!
+					</p>
+				</div>
+				<image src="Images/ThisSC.png">
+				<div style="text-align:left" class="Text">
+					<p>
+					<a href="https://github.com/NGSpace/NNUEdit/releases">Download!</a>
+					<a href="https://github.com/NGSpace/NNUEdit">Source Code!</a>
+					</p>
+				</div>
+				</center>
+			</div>
+		</div>
+		<div id="Games" class="tabcontent">
+			<div id="GamesContentPane">
+				</br>
+				<div><a href="HG.html">
+					<image src="Images/HG_Old_SS.png">
+						<figcaption>Unnamed Game (HTML)</figcaption>
+				</a></div>
+				
+				<div><a href="https://www.roblox.com/games/6939867224/The-Roads">
+					<image src="Images/The roads.png">
+					<figcaption>The Roads (Roblox)</figcaption>
+				</a></div>
+				<div><a href="Numbers.html">
+					<image src="Images/Numbers.png">
+					<figcaption>Numbers! (HTML)</figcaption>
+				</a></div>
+			</div>
+		</div>
+		<div id="AboutMe" class="tabcontent">
+			<a style="text-decoration:none;"
+				href="https://github.com/NGSpace">
+			<span id="aboutmespan"style="font-size:50px;">
+			I make software and games lol
+			</span>
+			</a>
+			<div style="font-size:20px;"></br></div>
+		</div>
+		<div id="borderbottom" style="font:initial;">
+			<a href="https://github.com/NGSpace">Github</a>
+			<a href="https://www.roblox.com/users/153081423/profile#!/creations">Roblox</a>
+			<a href="https://ngspace.itch.io/">Itch.io(nothing there yet)</a>
+		</div>
+	</div>
+</center>
+<script>
+function load() {
+	const Loc2 = window.location.search;
+	const urlParams = new URLSearchParams(Loc2);
+	if (urlParams.has('p')){
+		var Loc = urlParams.get('p');
+		console.log(Loc);
+		console.log(document.getElementById(Loc));
+		if (Loc!="") {
+			openTab(document.getElementById(Loc+"Button"), Loc);
+		}
+	} else {
+		openTab(document.getElementById(Def+"Button"), Def);
+	}
+}
+</script>
+</body>
+</html>

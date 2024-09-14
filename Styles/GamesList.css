@@ -1,0 +1,59 @@
+:root {
+  --margin: 20px;
+}
+
+#GamesContentPane {
+	margin: 0px;
+	padding: 0px;
+	font-size: 0px;
+     overflow-x: auto;
+     overflow-y: hidden;
+}
+
+#GamesContentPane div {
+	font-size:20px;
+	display:inline-block;
+	background: #595959;
+  	text-wrap: nowrap;
+  	wrap: nowrap;
+     overflow: hidden;
+     list-style: none;
+     white-space: nowrap;
+     margin:calc(var(--margin) * 2);
+	border: Double 10px black;
+	border-radius: 10px;
+	width: 250px;
+  	transition: all .2s ease-in-out;
+	height: 250px;
+	padding: 0;
+}
+
+#GamesContentPane div img {
+	font-size:20px;
+	object-fit: contain;
+	width: 100%;
+	height: 100%;
+	padding: 0;
+}
+#GamesContentPane figcaption {
+  	background-color: black;
+  	color: white;
+  	font-style: italic;
+  	position:relative;
+  	transform: translateY(-120%);
+  	width: 100%;
+  	text-align: center;
+  	border: none;
+  	transition: opacity .2s ease-in-out;
+  	opacity: 0;
+}
+#GamesContentPane div:hover figcaption {
+  	opacity: 1;
+}
+#GamesContentPane div:hover {
+  	transform: scale(1.05);
+}
+
+#GamesContentPane a {
+	text-decoration: none;
+}
