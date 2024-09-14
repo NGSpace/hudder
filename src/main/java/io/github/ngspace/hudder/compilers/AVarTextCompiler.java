@@ -1,15 +1,14 @@
 package io.github.ngspace.hudder.compilers;
 
-import static io.github.ngspace.hudder.data_management.BooleanData.getBoolean;
-import static io.github.ngspace.hudder.data_management.NumberData.getNumber;
-import static io.github.ngspace.hudder.data_management.StringData.getString;
-
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.config.ConfigManager;
+import io.github.ngspace.hudder.data_management.BooleanData;
+import io.github.ngspace.hudder.data_management.NumberData;
+import io.github.ngspace.hudder.data_management.StringData;
 
 public abstract class AVarTextCompiler extends ATextCompiler {
 	
-	public boolean isFirstEqualsCondition(String key) {
+	public boolean isCondition(String key) {
 		int i = key.indexOf('=');
 		if (i==-1&&!key.contains(">")&&!key.contains("<")) return false;
 		if (i==key.length()) return false;
@@ -19,7 +18,7 @@ public abstract class AVarTextCompiler extends ATextCompiler {
 	}
 	
 	@Override public Object getVariable(String key) throws CompileException {
-		Object obj = getStaticVariable(key);
+		Object obj = getSystemVariable(key);
 		if (obj==null&&(obj=getDynamicVariable(key))!=null) return obj;
 		if (obj!=null) return obj;
 		return key;
@@ -27,21 +26,21 @@ public abstract class AVarTextCompiler extends ATextCompiler {
 	
 	
 	//I now realize the name "static variable" might be a little confusing, it means a variable that can't be modified
-	public boolean isStaticVariable(String key) {
-		return getStaticVariable(key)!=null;
+	public boolean isSystemVariable(String key) {
+		return getSystemVariable(key)!=null||"null".equals(key);
 	}
-	public Object getStaticVariable(String key) {
-		Object obj = getNumber(key);
+	public Object getSystemVariable(String key) {
+		Object obj = NumberData.getNumber(key);
 		if (obj!=null) return obj;
-		if ((obj=getBoolean(key))!=null) return obj;
-		if ((obj=getString(key))!=null) return obj;
+		if ((obj=BooleanData.getBoolean(key))!=null) return obj;
+		if ((obj=StringData.getString(key))!=null) return obj;
 		if ((obj=ConfigManager.getConfig().globalVariables.get(key))!=null) return obj;
-		if ("true".equals(key)) return true;
-		if ("false".equals(key)) return false;
+		if ("null".equals(key)) return null;
 		return null;
 	}
+
 	public boolean isDynamicVariable(String key) {
-		return getStaticVariable(key)==null&&getOperator(key)==null&&!key.contains("+")&&!key.contains("-")
+		return getSystemVariable(key)==null&&getOperator(key)==null&&!key.contains("+")&&!key.contains("-")
 				&&!key.contains("/")&&!key.contains("*")&&!key.contains("%")&&!key.contains("=");
 	}
 	public Object getDynamicVariable(String key) {
@@ -54,11 +53,11 @@ public abstract class AVarTextCompiler extends ATextCompiler {
 	 */
 	public String getOperator(String condString) {
 		if (condString.contains("==")) return "==";
+		if (condString.contains("!=")) return "!=";
 		if (condString.contains(">=")) return ">=";
 		if (condString.contains("<=")) return "<=";
 		if (condString.contains(">" )) return ">" ;
 		if (condString.contains("<" )) return "<" ;
-		if (condString.contains("!=")) return "!=";
 		return null;
 	}
 }

@@ -5,6 +5,7 @@ You can go into hudder's settings and change the main file to:
 - "hand"
 - "armor"
 - "basic"
+- "hand"
 - if you want to use javascript you can use:
 - "hud.js"
 - "hotbar.js"
@@ -12,4 +13,7 @@ You can go into hudder's settings and change the main file to:
 
 ;bottomleft;
 
-for a tutorial on how to make your own hud you can go to the mod's github
+for a tutorial on how to make your own hud you can go to Hudder's wiki
+
+
+

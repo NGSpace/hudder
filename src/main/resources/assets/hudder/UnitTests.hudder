@@ -1,0 +1,73 @@
+
+||INPUT||Order of operations
+{6/2*(1+2)}
+||EXPECT||
+9
+
+||INPUT||Basic text
+Basic Bitch Test
+||EXPECT||
+Basic Bitch Test
+
+||INPUT||Basic addition
+{1+1}
+||EXPECT||
+2
+
+||INPUT||Basic setting addition
+{r=1+1} {r}
+||EXPECT||
+2 2
+
+||INPUT||Comparing unset values
+{unsetval==10} {unsetval==0} {unsetval>0} {unsetval<0} {unsetval!=0} {unsetval>=0} {unsetval<=0}
+||EXPECT||
+false true false false false true true
+
+||INPUT||Advanced if
+#if testif==0
+	{testif=1}
+{testif}
+||EXPECT||
+1
+
+||INPUT||String with quotes
+{"1 \"2\" 3"}
+||EXPECT||
+1 "2" 3
+
+||INPUT||String case sensitivity
+{"CaSE SenSitive"} {r="CaSE SenSitive"} {r}
+||EXPECT||
+CaSE SenSitive CaSE SenSitive CaSE SenSitive
+
+||INPUT||Nested conditions
+{testping=20}
+%testping>5, "&6PING: &%testping>=400,\"4\",testping>=100,\"e\",\"2\"%{testping}"%
+||EXPECT||
+20
+&6PING: &220
+
+||INPUT||Putall method
+#def putall, string, number, boolean
+	{str=arg1}
+	{num=arg2}
+	{bool=arg3}
+;putall, "text", 10, false;
+{str} {num} {bool}
+||EXPECT||
+text 10 false
+
+||INPUT||Divide method
+#def divide, number, number
+	{result = arg1 / arg2}
+;divide, 4, 2;
+{result}
+||EXPECT||
+2
+
+||INPUT||Newlines
+
+
+||EXPECT||
+

@@ -9,4 +9,6 @@ public class EmptyCompiler extends ATextCompiler {
 	public CompileResult compile(ConfigInfo info, String text) throws CompileException {return CompileResult.of(text);}
 
 	@Override public Object getVariable(String key) throws CompileException {return null;}
+
+	@Override public void reset() {/*Do nothin*/}
 }

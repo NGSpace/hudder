@@ -11,6 +11,9 @@ public class UnaccessableTestCompiler extends ATextCompiler {
 	}
 
 	@Override public Object getVariable(String key) throws CompileException {
+		//I made a typo... I am keeping this here...
 		return "Advanchment unlocked: How did we get here?";
 	}
+
+	@Override public void reset() {/*Do nothin*/}
 }

@@ -90,7 +90,7 @@ public class NumberData {private NumberData() {}
 			case "xpos","x": yield (double) p.getBlockX();
 			case "ypos","y": yield (double) p.getBlockY();
 			case "zpos","z": yield (double) p.getBlockZ();
-			
+
 			case "playerspeed": {
 				// I know, I am soooo funny.
 				Entity veachol = p.getVehicle() == null ? p : p.getVehicle();

@@ -34,12 +34,12 @@ import io.github.ngspace.hudder.compilers.utils.CompileResult;
 import io.github.ngspace.hudder.compilers.utils.Compilers;
 import io.github.ngspace.hudder.compilers.utils.JavetObjConverter;
 import io.github.ngspace.hudder.config.ConfigInfo;
-import io.github.ngspace.hudder.meta.elements.AUIElement;
-import io.github.ngspace.hudder.meta.elements.GameHudElement;
-import io.github.ngspace.hudder.meta.elements.GameHudElement.GuiType;
-import io.github.ngspace.hudder.meta.elements.ItemElement;
-import io.github.ngspace.hudder.meta.elements.TextElement;
-import io.github.ngspace.hudder.meta.elements.TextureElement;
+import io.github.ngspace.hudder.methods.elements.AUIElement;
+import io.github.ngspace.hudder.methods.elements.GameHudElement;
+import io.github.ngspace.hudder.methods.elements.ItemElement;
+import io.github.ngspace.hudder.methods.elements.TextElement;
+import io.github.ngspace.hudder.methods.elements.TextureElement;
+import io.github.ngspace.hudder.methods.elements.GameHudElement.GuiType;
 import io.github.ngspace.hudder.util.HudFileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
@@ -301,4 +301,5 @@ public class JavaScriptCompiler extends AVarTextCompiler {
 	 * @param <E> any exception this consumer might throw.
 	 */
 	@FunctionalInterface public static interface Cons<E extends Exception> extends NoThisAndNoResult<E> {}
+	@Override public void reset() {cache.clear();variables.clear();}
 }

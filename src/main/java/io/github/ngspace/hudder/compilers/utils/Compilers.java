@@ -40,10 +40,10 @@ public class Compilers {private Compilers() {}
 		IllegalArgumentException, SecurityException {
 		
 		String comp = name.toLowerCase();
-		if (Comps.get(comp)==null) return getCompilerFromName("default");
-		if (!loadedcomps.containsKey(comp)) 
+		if (loadedcomps.containsKey(comp)) return loadedcomps.get(comp);
+		else if (Comps.containsKey(comp)) 
 			loadedcomps.put(comp,(ATextCompiler) Class.forName(Comps.get(comp)).getConstructor().newInstance());
-		return loadedcomps.get(comp);
+		return getCompilerFromName("default");// Fallback to default compiler
 	}
 	
 	/**
@@ -63,8 +63,21 @@ public class Compilers {private Compilers() {}
 		ConfigManager.getConfig().readConfig();
 	}
 
-	public static String get(String str) {
-		return Comps.get(str);
+	
+	/**
+	 * Incase someone wants to add their own compiler without editing source.
+	 * @deprecated use registerCompiler()
+	 * @param name - The name of the compiler, used to save which compiler is selected.
+	 * @param classname - The class leading to the compiler.
+	 */
+	@Deprecated(since = "4.0.0", forRemoval = false)
+	public static void registerLoadedCompiler(String name, ATextCompiler compiler) {
+		loadedcomps.put(name.toLowerCase(), compiler);
+		ConfigManager.getConfig().readConfig();
+	}
+	
+	public static boolean has(String name) {
+		return loadedcomps.get(name.toLowerCase())!=null||Comps.get(name.toLowerCase())!=null;
 	}
 	
 	
