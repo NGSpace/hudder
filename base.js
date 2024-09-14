@@ -148,7 +148,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 		table {border-collapse: collapse;border: 3px solid gray;max-width: 96%;}
 	</style>
 	<div id="topbar">
-		<img src="/Images/Hudder.webp" alt="Back to main hudder wiki page" />
+		<img src="Images/Hudder.webp" alt="Back to main hudder wiki page" />
 		<div id="title">Hudder Wiki</div>
 	</div>
 	<div id="sidebar">
