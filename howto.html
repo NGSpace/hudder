@@ -89,7 +89,7 @@ is no limit to the number of else I just put 2 cuz I am lazy, could be 1, 2, 3, 
 <code>%condition 1, "condition 1 is true", condition 2, "condition 2 is true", "neither condition is true"%</code>
 <br>Want some examples? well here ya go:
 <br><br>
-<inline-code>&%fps<30, "4", fps<60, "e", "a"%{fps}</inline-code> - This will show the fps meter in different colors depending if it's
+<inline-code>&%fps&#60;30, "4", fps&#60;60, "e", "a"%{fps}</inline-code> - This will show the fps meter in different colors depending if it's
 below 30 or 60 fps.
 <br><br>
 <inline-code>%ping>5, "{ping}", ""%</inline-code> - This will show your ping only if it is above 5!
@@ -155,5 +155,20 @@ Here is an example of both (Please do not use this, it will likely crash your ga
 </code>
 <br>
 Magnificent, isn't it? Looks like I peaked early when I came up with this piece of art.
+<br><br>
+	
+<h2 id="methods">Writing your own methods</h2>
+<hr><br>
+<note>Version 4.0.0 or above!</note>
+
+you can use <inline-code>#def</inline-code> to write your ow methods. here is an example:
+<code>#def divide, number, number
+	{result = arg1/arg2}
+;divide, 4, 2;
+{result==2}
+</code>
+
+Available types: string, number, boolean, string_safe, number_safe, boolean_safe.
+
 <br><br><br>
 </body>
