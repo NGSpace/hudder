@@ -207,7 +207,7 @@ public class JavaScriptCompiler extends AVarTextCompiler {
     		try {
     			boolean ex = HudFileUtils.exists(HudFileUtils.FOLDER + s[0].asString());
     			if (!ex) return false;
-        		Identifier id = new Identifier(s[0].asString().trim().toLowerCase());
+        		Identifier id = Identifier.of(s[0].asString().trim().toLowerCase());
         		HudFileUtils.getAndRegisterImage(s[0].asString(),id);
         		elms.add(new NativeTextureElement(id,s[1].asInt(),s[2].asInt(),s[3].asInt(),s[4].asInt()));
 			} catch (IOException e) {return false;}

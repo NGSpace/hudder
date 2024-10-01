@@ -10,9 +10,10 @@
 	"contact": {
 		"Modrinth": "https://modrinth.com/mod/hudder",
 		"CurseForge": "https://www.curseforge.com/minecraft/mc-mods/hudder",
-		"GitHub": "https://github.com/NGSpace/hudder"
+		"GitHub": "https://github.com/NGSpace/hudder",
+		"Wiki": "https://ngspace.github.io/hudder"
 	},
-	"license": "Apache-2.0 license ",
+	"license": "Apache-2.0 license",
 	"icon": "assets/hudder/icon.png",
 	"environment": "*",
 	"entrypoints": {
@@ -24,7 +25,7 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.15.0",
-		"minecraft": "~1.20.1",
+		"minecraft": ">=1.0",
 		"java": ">=17",
 		"fabric-api": "*"
 	},

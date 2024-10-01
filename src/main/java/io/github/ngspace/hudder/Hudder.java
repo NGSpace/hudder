@@ -140,12 +140,12 @@ public class Hudder implements ModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {if (config.limitrate) compile(3f);});
         
 		HudRenderCallback.EVENT.register((context,delta) -> {
-    		if (!config.limitrate) compile(delta);
+    		if (!config.limitrate) compile(delta.getLastDuration());
 			if (config.shouldDrawResult(ins)) {
             	RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
 	            try {
-	            	if (result!=null) drawCompileResult(context, ins.textRenderer, result, config, delta );
+	            	if (result!=null) drawCompileResult(context, ins.textRenderer, result, config, delta.getLastDuration());
 	            	else renderFail(context, LastFailMessage);
 				} catch (Exception e) {renderFail(context, e.getLocalizedMessage());}
             	RenderSystem.disableBlend();
@@ -260,22 +260,22 @@ public class Hudder implements ModInitializer {
         RenderSystem.disableBlend();
     }
 	public static void renderBlock(DrawContext context, float x, float y, float width, float height, int color) {
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-        BufferBuilder bgBuilder = Tessellator.getInstance().getBuffer();
-        bgBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-        Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
-        bgBuilder.vertex(matrix, x, y+height, 0f).color(color).next();
-        bgBuilder.vertex(matrix, x+width, y+height, 0f).color(color).next();
-        bgBuilder.vertex(matrix, x+width, y, 0f).color(color).next();
-        bgBuilder.vertex(matrix, x, y, 0f).color(color).next();
-        BufferRenderer.drawWithGlobalProgram(bgBuilder.end());
-        bgBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
-        matrix = context.getMatrices().peek().getPositionMatrix();
-        bgBuilder.texture(0, 0);
-        BufferRenderer.drawWithGlobalProgram(bgBuilder.end());
-        RenderSystem.disableBlend();
+//        RenderSystem.enableBlend();
+//        RenderSystem.defaultBlendFunc();
+//        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+//        BufferBuilder bgBuilder = Tessellator.getInstance().getBuffer();
+//        bgBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+//        Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
+//        bgBuilder.vertex(matrix, x, y+height, 0f).color(color).next();
+//        bgBuilder.vertex(matrix, x+width, y+height, 0f).color(color).next();
+//        bgBuilder.vertex(matrix, x+width, y, 0f).color(color).next();
+//        bgBuilder.vertex(matrix, x, y, 0f).color(color).next();
+//        BufferRenderer.drawWithGlobalProgram(bgBuilder.end());
+//        bgBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
+//        matrix = context.getMatrices().peek().getPositionMatrix();
+//        bgBuilder.texture(0, 0);
+//        BufferRenderer.drawWithGlobalProgram(bgBuilder.end());
+//        RenderSystem.disableBlend();
 	}
 
 	public static void addPreCompilerListener(Consumer<ATextCompiler> consumer) {precomplistners.add(consumer);}

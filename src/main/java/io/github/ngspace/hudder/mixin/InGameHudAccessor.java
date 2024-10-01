@@ -8,7 +8,7 @@ import net.minecraft.client.gui.hud.InGameHud;
 
 @Mixin(InGameHud.class)
 public interface InGameHudAccessor {
-    @Invoker void callRenderStatusBars(DrawContext context);
-    @Invoker void callRenderMountHealth(DrawContext context);
-    @Invoker void callRenderHotbar(float timeDelta, DrawContext context);
+//    @Invoker void callRenderStatusBars(DrawContext context);
+//    @Invoker void callRenderMountHealth(DrawContext context);
+//    @Invoker void callRenderHotbar(float timeDelta, DrawContext context);
 }

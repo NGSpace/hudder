@@ -25,7 +25,7 @@ public class BooleanData {private BooleanData(){}
 			case "isslime", "is_slime": yield ChunkRandom.getSlimeRandom(p.getBlockX() >> 4, p.getBlockZ() >> 4,
 					((StructureWorldAccess)betterworld).getSeed(), 987234911L).nextInt(10) == 0;
 			case "hudhidden": yield ins.options.hudHidden;
-			case "showdebug": yield ins.options.debugEnabled;
+//			case "showdebug": yield ins.options.debugEnabled;
 
 			/* Player */
 			case "issurvival","is_survival": yield ins.interactionManager.getCurrentGameMode()==GameMode.SURVIVAL;

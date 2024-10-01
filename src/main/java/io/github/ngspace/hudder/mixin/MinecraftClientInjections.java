@@ -20,12 +20,12 @@ import net.minecraft.client.option.GameOptions;
 public abstract class MinecraftClientInjections {
     @Shadow private double gpuUtilizationPercentage;
 
-    @Inject(method = "render", at = @At(value = "INVOKE",
-    		target = "Ljava/lang/String;format(Ljava/util/L"
-    				+ "ocale;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;"))
-    public void getGpuUsage(boolean tick, CallbackInfo ci) {
-    	Advanced.gpuUsage = gpuUtilizationPercentage > 100 ? 100 : gpuUtilizationPercentage;
-    }
-    @Redirect(method = "render", at = @At(value = "FIELD", target = "Lnet/minecraft/client/option/GameOptions;debugEnabled:Z"))
-    public boolean shouldGetGpuUsage(GameOptions hud){return Hudder.ins.options.hudHidden||ConfigManager.getConfig().enabled;}
+//    @Inject(method = "render", at = @At(value = "INVOKE",
+//    		target = "Ljava/lang/String;format(Ljava/util/L"
+//    				+ "ocale;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;"))
+//    public void getGpuUsage(boolean tick, CallbackInfo ci) {
+//    	Advanced.gpuUsage = gpuUtilizationPercentage > 100 ? 100 : gpuUtilizationPercentage;
+//    }
+//    @Redirect(method = "render", at = @At(value = "FIELD", target = "Lnet/minecraft/client/option/GameOptions;debugEnabled:Z"))
+//    public boolean shouldGetGpuUsage(GameOptions hud){return Hudder.ins.options.hudHidden||ConfigManager.getConfig().enabled;}
 }

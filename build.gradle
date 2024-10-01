@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.5-SNAPSHOT'
+	id 'fabric-loom' version '1.7-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -52,10 +52,10 @@ dependencies {
 	// https://mvnrepository.com/artifact/com.github.oshi/oshi-core
 	//provided group: 'com.github.oshi', name: 'oshi-core', version: '6.5.0'
 	
-    modImplementation("com.terraformersmc:modmenu:7.2.2")
-    modImplementation("me.shedaniel.cloth:cloth-config-fabric:11.1.106")
+    modImplementation("com.terraformersmc:modmenu:11.0.2")
+    modImplementation("me.shedaniel.cloth:cloth-config-fabric:15.0.140")
 	
-	modImplementation "dev.emi:trinkets:3.7.2"
+	modImplementation "dev.emi:trinkets:3.10.0"
 
 }
 

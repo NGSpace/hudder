@@ -11,6 +11,7 @@ import io.github.ngspace.hudder.meta.MetaCompiler.Value;
 import io.github.ngspace.hudder.meta.elements.ItemElement;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 
@@ -44,6 +45,7 @@ public class ItemStackMethods implements IMethod {
 					var op = TrinketsApi.getTrinketComponent(ins.player);
 					if (op.isEmpty()) throw new CompileException("Optional is empty");
 					var all = op.get().getAllEquipped();
+					if (all.size()==0) yield new ItemStack(Items.AIR, 1);
 					yield all.get(args[0].asInt()).getRight();
 				} catch (Exception e) {
 					e.printStackTrace();
