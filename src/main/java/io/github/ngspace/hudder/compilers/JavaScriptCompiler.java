@@ -195,9 +195,11 @@ public class JavaScriptCompiler extends AVarTextCompiler {
     	//Compile
     	
     	bindFunction(gb, s-> {
-			CompileResult result = (s.length>1?Compilers.getCompilerFromName(s[1].asString()):this)
-					.compile(config, HudFileUtils.getFile(s[0].asString()));
+    		var ecompiler = s.length>1?Compilers.getCompilerFromName(s[1].asString()):this;
+			for (var i : Hudder.precomplistners) i.accept(ecompiler);
+			CompileResult result = ecompiler.compile(config, HudFileUtils.getFile(s[0].asString()));
 			Collections.addAll(elms, result.elements);
+			for (var i : Hudder.postcomplistners) i.accept(ecompiler);
 			return result;
     	}, "compile", "run", "execute");
     	
