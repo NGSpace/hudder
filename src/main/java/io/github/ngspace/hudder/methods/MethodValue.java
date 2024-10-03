@@ -26,7 +26,7 @@ public abstract class MethodValue {
 			return asString();
 		} catch (Exception e) {
 			try {
-				return String.valueOf(asDouble());
+				return cleanDouble(asDouble());//String.valueOf(asDouble());
 			} catch (Exception ex) {
 				try {
 					return String.valueOf(asBoolean());
@@ -41,4 +41,13 @@ public abstract class MethodValue {
 	public boolean asBooleanSafe() {try {return asBoolean();} catch (Exception e) {return false;}}
 	
 	@Override public String toString() {return getAbsoluteValue();}
+	
+	public static String cleanDouble(double d)
+	{
+	    if(d == (long) d)
+	        return Long.toString((long)d);
+	    else
+	        return Double.toString((long)d);
+	}
+
 }
