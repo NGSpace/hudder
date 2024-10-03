@@ -9,6 +9,15 @@ Basic Bitch Test
 ||EXPECT||
 Basic Bitch Test
 
+||INPUT||Text and number concatination
+{num=10}
+;concat, "test", num, result;
+{result}
+;concat, num, "test", result;
+{result}
+||EXPECT||
+10test1010test
+
 ||INPUT||Basic addition
 {1+1}
 ||EXPECT||
