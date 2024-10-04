@@ -11,7 +11,7 @@ Want to do math to show icons on your screen? Want to use JavaScript and/or hudd
 - [x] Removal and complete replacement of the hotbar.
 - [x] Methods
 - [x] Console output
-- [ ] User defined methods
+- [x] User defined methods
 
 Hudder allows you to create a custom hud to appear on your screen in game using it's very simple language (Or JavaScript if you know how to use it)!
 
