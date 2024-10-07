@@ -86,7 +86,7 @@ public class V2Values {private V2Values() {}
 		//Comparing values
 		var operator = compiler.getOperator(value);
 		var v = value.split(operator,2);
-		return new V2Comparison(compiler.getV2Value(v[0].trim()), compiler.getV2Value(v[1].trim()), operator);
+		return new V2Comparison(compiler.getV2Value(v[0].trim().toLowerCase()), compiler.getV2Value(v[1].trim()), operator);
 		
 		// Fallback
 	}
