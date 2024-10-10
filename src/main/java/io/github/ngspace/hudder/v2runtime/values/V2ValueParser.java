@@ -2,14 +2,18 @@ package io.github.ngspace.hudder.v2runtime.values;
 
 import java.util.Arrays;
 
+import io.github.ngspace.hudder.Hudder;
+import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;
+import io.github.ngspace.hudder.v2runtime.V2Runtime;
 
-public class V2Values {private V2Values() {}
+public class V2ValueParser {private V2ValueParser() {}
+	
 	//Only after writing 80% of the values did I realize having one class that is all values is bad, I tried to
 	//lower the burden but as you can see it's too late, the damage has already been done... maybe in a later update...
-	public static V2Value of(String valuee, AV2Compiler compiler) {
+	public static AV2Value of(V2Runtime runtime, String valuee, AV2Compiler compiler) throws CompileException {
 		String value = valuee.trim();
-		V2Value temp = null;
+		AV2Value temp = null;
 		
 		
 		//Double constant
@@ -24,6 +28,12 @@ public class V2Values {private V2Values() {}
 		if ((temp = string(value, compiler))!=null) return temp;
 		
 		
+		//Set variable
+		String[] setValues = value.split("=",2);
+		if (setValues.length==2&&!compiler.isCondition(value)) 
+			return new V2SetValue(setValues[0], compiler.getV2Value(runtime, setValues[1]), compiler);
+		
+		
 		//System variable
 		if (compiler.isSystemVariable(value.toLowerCase())) return new V2SystemVar(value.toLowerCase(), compiler);
 		
@@ -31,15 +41,65 @@ public class V2Values {private V2Values() {}
 		//Dynamic variable
 		if (compiler.isDynamicVariable(value.toLowerCase())) return new V2DynamicVar(value.toLowerCase(), compiler);
 		
-		
-		//Set variable
-		String[] setValues = value.split("=",2);
-		if (setValues.length==2&&!compiler.isCondition(value)) 
-			return new V2SetValue(setValues[0], compiler.getV2Value(setValues[1]), compiler);
+		if (!value.startsWith("(")&&value.endsWith(")")) {
+			int argStart = value.indexOf("(");
+			if (argStart!=-1) {
+				String funcName = value.substring(0, argStart);
+				if (funcName.matches("^[a-zA-Z0-9_.-]*$")) {
+					// TODO I notice I keep rewriting functions to tokenize args, I need to do smt bout it.
+					// TODO uncomplicate this shit...
+					String parametersString = value.substring(argStart+1, value.length()-1);
+					String[] tokenizedArgs = new String[0];
+					for (int i = 0;i<parametersString.length();i++) {
+						char c = parametersString.charAt(i);
+						if (c=='"') {
+							StringBuilder stringParameter = new StringBuilder();
+							boolean safe = false;
+							for (;i<parametersString.length()&&c!='"'&&!safe;i++) {
+								c = parametersString.charAt(i);
+								if (!safe) {
+									if (c=='\\') {safe = true;continue;}
+								} else {
+									if (c=='n') stringParameter.append('\n');
+								}
+								stringParameter.append(c);
+							}
+							//Make sure it is actually the end of the variable
+							for (int j = i;j<parametersString.length();j++) {
+								if (parametersString.charAt(j)!=' ') {
+									if (parametersString.charAt(j)!=',') break;
+									else throw new CompileException("Unable to parse parameters: " + parametersString);
+								}
+							}
+							tokenizedArgs = addToArray(tokenizedArgs, stringParameter.toString());
+						} else if (c==','||c==' ') {/**/} else {
+//							Hudder.log(c + "r");
+//							if (c=='"') throw new CompileException("Something fucked up");
+							StringBuilder normalParameter = new StringBuilder();
+							for (;i<parametersString.length()&&c!=',';) {
+								c = parametersString.charAt(i);
+								if (c==',') break;
+								i++;
+								normalParameter.append(c);
+							}
+							Hudder.log(normalParameter.toString());
+	//						c = parametersString.charAt(i);
+	//						Hudder.log(parametersString + "  " + i + "   " + c);
+							tokenizedArgs = addToArray(tokenizedArgs, normalParameter.toString());
+						}
+					}
+
+					Hudder.log(Arrays.toString(tokenizedArgs));
+					Hudder.log(tokenizedArgs.length);
+					
+					return new V2FunctionVar(runtime, compiler, funcName, tokenizedArgs);
+				}
+			}
+		}
 		
 		
 		//Math operation
-		V2Value[] values = new V2Value[0];
+		AV2Value[] values = new AV2Value[0];
 		char c;
 		StringBuilder mathvalue = new StringBuilder();
 		char[] operations = new char[0];
@@ -71,7 +131,7 @@ public class V2Values {private V2Values() {}
 				continue;
 			}
 			if (c=='+'||c=='-'||c=='*'||c=='/'||c=='%'||c=='^') {
-				values = addToArray(values, compiler.getV2Value(mathvalue.toString()));
+				values = addToArray(values, compiler.getV2Value(runtime, mathvalue.toString()));
 				operations = addToArray(operations, c);
 				mathvalue.setLength(0);
 				continue;
@@ -79,14 +139,14 @@ public class V2Values {private V2Values() {}
 			mathvalue.append(c);
 		}
 		if (values.length>0) {
-			values = addToArray(values, compiler.getV2Value(mathvalue.toString()));
+			values = addToArray(values, compiler.getV2Value(runtime, mathvalue.toString()));
 			return new V2MathOperation(values,operations);
 		}
 		
 		//Comparing values
 		var operator = compiler.getOperator(value);
 		var v = value.split(operator,2);
-		return new V2Comparison(compiler.getV2Value(v[0].trim()), compiler.getV2Value(v[1].trim()), operator);
+		return new V2Comparison(compiler.getV2Value(runtime, v[0].trim()), compiler.getV2Value(runtime, v[1].trim()), operator);
 		
 		// Fallback
 	}

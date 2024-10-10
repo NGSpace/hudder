@@ -213,9 +213,12 @@ public class Hudder implements ModInitializer {
 			))
 		);
 	}
-	
+
 	public static void showToast(MinecraftClient CLIENT, Text title, Text content) {
 		CLIENT.getToastManager().add(new SystemToast(SystemToast.Type.PERIODIC_NOTIFICATION,title,content));
+	}
+	public static void showWarningToast(MinecraftClient CLIENT, Text title, Text content) {
+		CLIENT.getToastManager().add(new SystemToast(new SystemToast.Type(10000L),title,content));
 	}
 	public void showToast(MinecraftClient CLIENT, Text title) {showToast(CLIENT, title, Text.of(""));}
 	

@@ -3,7 +3,7 @@ package io.github.ngspace.hudder.v2runtime.values;
 import io.github.ngspace.hudder.compilers.AVarTextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 
-public class V2Boolean extends V2Value {
+public class V2Boolean extends AV2Value {
 	
 	boolean bvalue;
 	

@@ -5,7 +5,7 @@ import java.util.Objects;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.methods.MethodValue;
 
-public abstract class V2Value extends MethodValue { protected V2Value() {}
+public abstract class AV2Value extends MethodValue { protected AV2Value() {}
 	/**
 	 * Return the current value of the Object
 	 * @return an Object of any kind.
@@ -18,7 +18,7 @@ public abstract class V2Value extends MethodValue { protected V2Value() {}
 	 */
 	public boolean hasValue() {return true;}
 	
-	public boolean compare(V2Value other, String comparisonOperator) throws CompileException {
+	public boolean compare(AV2Value other, String comparisonOperator) throws CompileException {
 		Object val1 = get();
 		Object val2 = other.get();
 		boolean areNums = false;//val1 instanceof Number && val2 instanceof Number;

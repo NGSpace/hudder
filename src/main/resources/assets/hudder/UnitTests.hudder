@@ -9,6 +9,16 @@ Basic Bitch Test
 ||EXPECT||
 Basic Bitch Test
 
+||INPUT||Case insensitivity in variables
+{vAr=1} {VaR}
+||EXPECT||
+1 1
+
+||INPUT||Functions
+{res=test()}
+||EXPECT||
+RES
+
 ||INPUT||Text and number concatination
 {num=10}
 ;concat, "test", num, result;

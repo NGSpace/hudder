@@ -26,7 +26,7 @@ public abstract class MethodValue {
 			return asString();
 		} catch (Exception e) {
 			try {
-				return cleanDouble(asDouble());//String.valueOf(asDouble());
+				return cleanDouble(asDouble());
 			} catch (Exception ex) {
 				try {
 					return String.valueOf(asBoolean());

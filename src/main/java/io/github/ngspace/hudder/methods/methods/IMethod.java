@@ -8,6 +8,14 @@ import io.github.ngspace.hudder.methods.MethodValue;
 
 @FunctionalInterface
 public interface IMethod {
+
+	public default boolean isDeprecated(String name) {
+		return false;
+	}
+	public default String getDeprecationWarning(String name) {
+		return name + " is Deprecated";
+	}
+	
 	/**
 	 * Called when the first parameter passed to MetaCompiler has been a command registered with this object.
 	 * @param config - The config used

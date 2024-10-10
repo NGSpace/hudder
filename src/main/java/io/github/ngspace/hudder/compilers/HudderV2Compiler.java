@@ -94,7 +94,7 @@ public class HudderV2Compiler extends AV2Compiler {
 					} else if (c=='}') {
 						bracketscount--;
 						if (bracketscount==0) {
-							runtime.addRuntimeElement(new VariableV2RuntimeElement(elemBuilder.toString(), this));
+							runtime.addRuntimeElement(new VariableV2RuntimeElement(elemBuilder.toString(), this, runtime));
 							elemBuilder.setLength(0);
 							compileState = TEXT_STATE;
 						} else elemBuilder.append(c);
@@ -114,7 +114,7 @@ public class HudderV2Compiler extends AV2Compiler {
 						case '%':
 							compileState = TEXT_STATE;
 							builder = addToArray(builder,elemBuilder.toString().trim());
-							runtime.addRuntimeElement(new BasicConditionV2RuntimeElement(builder, this, info));
+							runtime.addRuntimeElement(new BasicConditionV2RuntimeElement(builder, this, info, runtime));
 							elemBuilder.setLength(0);
 							break;
 						case '"':
@@ -201,10 +201,10 @@ public class HudderV2Compiler extends AV2Compiler {
 						break;
 					}
 					if (isWhile) {
-						runtime.addRuntimeElement(new WhileV2RuntimeElement(info, cond, cmds, this));
+						runtime.addRuntimeElement(new WhileV2RuntimeElement(info, cond, cmds, this, runtime));
 						break;
 					}
-					runtime.addRuntimeElement(new IfV2RuntimeElement(info, cond, cmds, this));
+					runtime.addRuntimeElement(new IfV2RuntimeElement(info, cond, cmds, this, runtime));
 					break;
 				}
 				default: throw new CompileException("Unknown compile state: " + compileState);

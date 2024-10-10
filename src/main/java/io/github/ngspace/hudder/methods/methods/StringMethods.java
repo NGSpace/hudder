@@ -10,6 +10,15 @@ import io.github.ngspace.hudder.methods.MethodValue;
 public class StringMethods implements IMethod {
 
 	@Override
+	public boolean isDeprecated(String name) {
+		return true;
+	}
+	@Override
+	public String getDeprecationWarning(String name) {
+		return "Use \"" + name + "\" function";
+	}
+
+	@Override
 	public void invoke(ConfigInfo ci, CompileState meta, ATextCompiler comp, String type, MethodValue... args) throws CompileException {
 		try {
 			switch (type) {
@@ -43,7 +52,6 @@ public class StringMethods implements IMethod {
 			throw new CompileException("\""+type+"\" only accepts ;"+type
 					+(type.equals("concat")         ?",[string],[string],[result variable name]" :"")
 					+(type.equals("multiplystring") ?",[string],[amount],[result variable name]" :"")
-					+(type.equals("string")                  ?",[string],[result variable name]" :"")
 					+(type.equals("substring") ?",[string],[start],[end],[result variable name]" :"")
 					+ ";");
 		} catch (Exception e) {throw new CompileException(e.getLocalizedMessage());}
