@@ -13,7 +13,10 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import io.github.ngspace.hudder.Hudder;
+import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.compilers.utils.CompileState;
+import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.methods.methods.DecimalMethods;
 import io.github.ngspace.hudder.methods.methods.GUIMethods;
 import io.github.ngspace.hudder.methods.methods.IMethod;
@@ -23,7 +26,6 @@ import io.github.ngspace.hudder.methods.methods.LoadMethod;
 import io.github.ngspace.hudder.methods.methods.StringMethods;
 import io.github.ngspace.hudder.methods.methods.TextMethod;
 import io.github.ngspace.hudder.methods.methods.TexturesMethods;
-import io.github.ngspace.hudder.util.HudFileUtils;
 import net.minecraft.text.Text;
 
 public class MethodHandler {
@@ -42,8 +44,20 @@ public class MethodHandler {
 		register((i,m,c,type,args)->m.setTextLocation(type,(float) (args.length>0?args[0].asDouble():i.scale)),
 				BOTTOMRIGHT, TOPLEFT, TOPRIGHT, BOTTOMLEFT, MUTE);
 		register(new TextMethod(), "text");
-		register((c,m,a,t,s)->a.put(s[1].getAbsoluteValue(), Hudder.ins.textRenderer.getWidth(s[0].asString())),
-				2, new String[] {"[Text]",Var[0]}, "strwidth");
+		
+		// TODO remove this clusterfuck of a method (After 5.0.0)
+		
+		register(new IMethod() {
+			@Override public boolean isDeprecated(String name) {return true;}
+			@Override public void invoke(ConfigInfo info, CompileState m, ATextCompiler a, String t, MethodValue... s)
+					throws CompileException {
+				a.put(s[1].getAbsoluteValue(), Hudder.ins.textRenderer.getWidth(s[0].asString()));
+			}
+		}, 2, new String[] {"[Text]",Var[0]}, "strwidth");
+		
+		
+//		register((c,m,a,t,s)->a.put(s[1].getAbsoluteValue(), Hudder.ins.textRenderer.getWidth(s[0].asString())),
+//				2, new String[] {"[Text]",Var[0]}, "strwidth");
 		
 		
 		
@@ -59,11 +73,11 @@ public class MethodHandler {
 		
 		
 		//Logging and errors
-		register((c,m,a,t,s)->Hudder.ins.player.sendMessage(Text.of(s[0].asStringSafe())),1, TextArg, "alert");
-		register((c,m,a,t,s)->Hudder.log(s[0].asStringSafe()),1, TextArg, "log");
-		register((c,m,a,t,s)->Hudder.warn(s[0].asStringSafe()),1, TextArg, "warn");
-		register((c,m,a,t,s)->Hudder.error(s[0].asStringSafe()),1, TextArg, "error");
-		register((c,m,a,t,s)->{throw new CompileException(s[0].asStringSafe());},1, TextArg, "throw");
+		register((c,m,a,t,s)->Hudder.ins.player.sendMessage(Text.of(s[0].asString())),1, TextArg, "alert");
+		register((c,m,a,t,s)->Hudder.log(s[0].asString()),1, TextArg, "log");
+		register((c,m,a,t,s)->Hudder.warn(s[0].asString()),1, TextArg, "warn");
+		register((c,m,a,t,s)->Hudder.error(s[0].asString()),1, TextArg, "error");
+		register((c,m,a,t,s)->{throw new CompileException(s[0].asString());},1, TextArg, "throw");
 		
 		
 		
@@ -75,22 +89,11 @@ public class MethodHandler {
 		
 		//Mathematical operations
 		register(new DecimalMethods(), "decimalpoint", "float");
-		/**This looks kinda confusing so I'll explain:
-		 *   getAbsoluteValue() is the name the variable (aka the raw text supplied)
-		 *   asInt() is the value of the variable as an int (aka the result of getVariable() converted to int)
-		 */
-		register((ci,meta,comp,type,args)->comp.put(args[0].getAbsoluteValue(),args[0].asInt()),1,Var,"int","fullnumber");
 		
 		
 		
 		//String Manipulation
 		register(new StringMethods(), "concat", "multiplystring", "substring");
-		
-		
-
-		//File-IO(THIS IS ALL YOU'RE GETTING, NO MORE FILE-IO! YOU'RE NOT WRITING OR READING FILES ON MY WATCH FUCKERS!)
-		String[] ar = new String[] {"[Filename]",Var[0]};
-		register((c,m,a,t,s)->a.put(s[1].getAbsoluteValue(), HudFileUtils.exists(s[0].asStringSafe())), 2, ar, "exists");
 	}
 	
 	
@@ -110,6 +113,7 @@ public class MethodHandler {
 		for (String name : names) methods.put(name,newmethod);
 	}
 	
+	@SuppressWarnings("removal")
 	public void register(String method, String[] argtypes, String name) {
 		int[] parameters = new int[argtypes.length];
 		for (int i = 0;i<argtypes.length;i++) {

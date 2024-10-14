@@ -11,4 +11,15 @@ public class V2Boolean extends AV2Value {
 
 	@Override public Boolean get() throws CompileException {return bvalue;}
 	
+	@Override public boolean asBoolean() throws CompileException {return get();}
+	@Override public double asDouble() throws CompileException {
+		throw new CompileException(invalidTypeMessage("Double", value, false));
+	}
+	@Override public int asInt() throws CompileException {
+		throw new CompileException(invalidTypeMessage("Int", value, false));
+	}
+	@Override public String asString() throws CompileException {
+		throw new CompileException(invalidTypeMessage("String", value, false));
+	}
+	
 }

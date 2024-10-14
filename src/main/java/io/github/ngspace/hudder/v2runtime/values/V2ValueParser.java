@@ -2,8 +2,8 @@ package io.github.ngspace.hudder.v2runtime.values;
 
 import java.util.Arrays;
 
-import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.util.HudderUtils;
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
 
@@ -17,7 +17,7 @@ public class V2ValueParser {private V2ValueParser() {}
 		
 		
 		//Double constant
-		try {return new V2Number(Double.parseDouble(value), compiler);} catch (Exception e) {/*Do Nothin*/}
+		try {return new V2Number(Double.parseDouble(value));} catch (Exception e) {/*Do Nothin*/}
 		
 
 		if (value.equalsIgnoreCase("false")) return new V2Boolean(false, compiler);
@@ -31,7 +31,7 @@ public class V2ValueParser {private V2ValueParser() {}
 		//Set variable
 		String[] setValues = value.split("=",2);
 		if (setValues.length==2&&!compiler.isCondition(value)) 
-			return new V2SetValue(setValues[0], compiler.getV2Value(runtime, setValues[1]), compiler);
+			return new V2SetValue(setValues[0].toLowerCase(), compiler.getV2Value(runtime, setValues[1]), compiler);
 		
 		
 		//System variable
@@ -46,51 +46,8 @@ public class V2ValueParser {private V2ValueParser() {}
 			if (argStart!=-1) {
 				String funcName = value.substring(0, argStart);
 				if (funcName.matches("^[a-zA-Z0-9_.-]*$")) {
-					// TODO I notice I keep rewriting functions to tokenize args, I need to do smt bout it.
-					// TODO uncomplicate this shit...
 					String parametersString = value.substring(argStart+1, value.length()-1);
-					String[] tokenizedArgs = new String[0];
-					for (int i = 0;i<parametersString.length();i++) {
-						char c = parametersString.charAt(i);
-						if (c=='"') {
-							StringBuilder stringParameter = new StringBuilder();
-							boolean safe = false;
-							for (;i<parametersString.length()&&c!='"'&&!safe;i++) {
-								c = parametersString.charAt(i);
-								if (!safe) {
-									if (c=='\\') {safe = true;continue;}
-								} else {
-									if (c=='n') stringParameter.append('\n');
-								}
-								stringParameter.append(c);
-							}
-							//Make sure it is actually the end of the variable
-							for (int j = i;j<parametersString.length();j++) {
-								if (parametersString.charAt(j)!=' ') {
-									if (parametersString.charAt(j)!=',') break;
-									else throw new CompileException("Unable to parse parameters: " + parametersString);
-								}
-							}
-							tokenizedArgs = addToArray(tokenizedArgs, stringParameter.toString());
-						} else if (c==','||c==' ') {/**/} else {
-//							Hudder.log(c + "r");
-//							if (c=='"') throw new CompileException("Something fucked up");
-							StringBuilder normalParameter = new StringBuilder();
-							for (;i<parametersString.length()&&c!=',';) {
-								c = parametersString.charAt(i);
-								if (c==',') break;
-								i++;
-								normalParameter.append(c);
-							}
-							Hudder.log(normalParameter.toString());
-	//						c = parametersString.charAt(i);
-	//						Hudder.log(parametersString + "  " + i + "   " + c);
-							tokenizedArgs = addToArray(tokenizedArgs, normalParameter.toString());
-						}
-					}
-
-					Hudder.log(Arrays.toString(tokenizedArgs));
-					Hudder.log(tokenizedArgs.length);
+					String[] tokenizedArgs = HudderUtils.processParemeters(parametersString);
 					
 					return new V2FunctionVar(runtime, compiler, funcName, tokenizedArgs);
 				}
@@ -130,7 +87,7 @@ public class V2ValueParser {private V2ValueParser() {}
 				}
 				continue;
 			}
-			if (c=='+'||c=='-'||c=='*'||c=='/'||c=='%'||c=='^') {
+			if (c=='+'||c=='-'||c=='*'||c=='/'||c=='%') {
 				values = addToArray(values, compiler.getV2Value(runtime, mathvalue.toString()));
 				operations = addToArray(operations, c);
 				mathvalue.setLength(0);

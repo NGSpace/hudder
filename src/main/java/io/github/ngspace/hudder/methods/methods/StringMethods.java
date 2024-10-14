@@ -15,7 +15,7 @@ public class StringMethods implements IMethod {
 	}
 	@Override
 	public String getDeprecationWarning(String name) {
-		return "Use \"" + name + "\" function";
+		return "Use \"" + (name.equalsIgnoreCase("multiplystring") ? "repeat" : name) + "\" function";
 	}
 
 	@Override
@@ -23,19 +23,19 @@ public class StringMethods implements IMethod {
 		try {
 			switch (type) {
 				case "concat": {
-					String str1 = args[0].asStringSafe();
-					String str2 = args[1].asStringSafe();
+					String str1 = args[0].asString();
+					String str2 = args[1].asString();
 					comp.put(args[2].getAbsoluteValue(),str1+str2);
 					break;
 				}
 				case "multiplystring": {
-					String str1 = args[0].asStringSafe();
+					String str1 = args[0].asString();
 					int times = args[1].asInt();
 					comp.put(args[2].getAbsoluteValue(),str1.repeat(times));
 					break;
 				}
 				case "substring": {
-					String str1 = args[0].asStringSafe();
+					String str1 = args[0].asString();
 					int start = args[1].asInt();
 					int end = args[2].asInt();
 					try {

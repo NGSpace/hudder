@@ -15,9 +15,9 @@ Basic Bitch Test
 1 1
 
 ||INPUT||Functions
-{res=test()}
+{res=test("1", "rr,1")}
 ||EXPECT||
-RES
+1rr,1
 
 ||INPUT||Text and number concatination
 {num=10}
@@ -79,7 +79,7 @@ text 10 false
 
 ||INPUT||Divide method
 #def divide, number, number
-	{result = arg1 / arg2}
+	{result=arg1/arg2}
 ;divide, 4, 2;
 {result}
 ||EXPECT||

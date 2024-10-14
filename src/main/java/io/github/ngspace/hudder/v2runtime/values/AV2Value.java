@@ -21,14 +21,14 @@ public abstract class AV2Value extends MethodValue { protected AV2Value() {}
 	public boolean compare(AV2Value other, String comparisonOperator) throws CompileException {
 		Object val1 = get();
 		Object val2 = other.get();
-		boolean areNums = false;//val1 instanceof Number && val2 instanceof Number;
+		boolean areNums = false;
 		double dou1 = 0;
 		double dou2 = 0;
 		if (val1 instanceof Number num) {
 			dou1 = num.doubleValue();
 			boolean otherhasval = other.hasValue();
 			if (!otherhasval) {
-				dou2 = other.asDoubleSafe();
+				dou2 = other.asDouble();
 			}
 			if (val2 instanceof Number||!otherhasval) areNums = true;
 		}
@@ -36,7 +36,7 @@ public abstract class AV2Value extends MethodValue { protected AV2Value() {}
 			dou2 = num.doubleValue();
 			boolean otherhasval = hasValue();
 			if (!otherhasval) {
-				dou1 = asDoubleSafe();
+				dou1 = asDouble();
 			}
 			if (val1 instanceof Number||!otherhasval) areNums = true;
 		}
@@ -57,21 +57,25 @@ public abstract class AV2Value extends MethodValue { protected AV2Value() {}
 	@Override public boolean asBoolean() throws CompileException {
 		Object get = get();
 		if (get instanceof Boolean b) return b;
-		throw new CompileException("Incorrect type \"Boolean\" for value: \""+value+"\" of type "+get.getClass().getName());
+		throw new CompileException(invalidTypeMessage("Boolean", value, get));
 	}
 	@Override public double asDouble() throws CompileException {
 		Object get = get();
 		if (get instanceof Number b) return b.doubleValue();
-		throw new CompileException("Incorrect type \"Double\" for value: \""+value+"\" of type "+get.getClass().getName());
+		throw new CompileException(invalidTypeMessage("Double", value, get));
 	}
 	@Override public int asInt() throws CompileException {
 		Object get = get();
 		if (get instanceof Number b) return b.intValue();
-		throw new CompileException("Incorrect type \"Integer\" for value: \""+value+"\" of type "+get.getClass().getName());
+		throw new CompileException(invalidTypeMessage("Integer", value, get));
 	}
 	@Override public String asString() throws CompileException {
 		Object get = get();
 		if (get instanceof String b) return b;
-		throw new CompileException("Incorrect type \"String\" for value: \""+value+"\" of type "+get.getClass().getName());
+		throw new CompileException(invalidTypeMessage("String", value, get));
+	}
+	
+	public static String invalidTypeMessage(String type, String value, Object obj) {
+		return "Incorrect type \""+type+"\" for value: \""+value+"\" of type "+obj.getClass().getName();
 	}
 }

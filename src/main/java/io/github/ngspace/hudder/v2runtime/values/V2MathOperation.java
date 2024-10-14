@@ -18,18 +18,17 @@ public class V2MathOperation extends AV2Value {
 		int realSecondValuesLength = 0;
 		
 		//Multiply, Divide and Modulo (Sounds like either the slogan of a dictator...)
-		double result = values[0].asDoubleSafe();
+		double result = values[0].asDouble();
 		for (int i = 0;i<values.length;i++) {
 			if (i==operations.length) break;
-			var val2 = values[i+1].asDoubleSafe();
+			var val2 = values[i+1].asDouble();
 			if      (operations[i]=='*') result = result * val2;
 			else if (operations[i]=='/') result = result / val2;
 			else if (operations[i]=='%') result = result % val2;
-			else if (operations[i]=='^') result = Math.pow(result, val2);
 			else {
 				secondValues[realSecondValuesLength] = result;
 				secondsOperations[realSecondValuesLength] = operations[i];
-				result = values[i+1].asDoubleSafe();
+				result = values[i+1].asDouble();
 				realSecondValuesLength++;
 			}
 		}

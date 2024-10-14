@@ -9,13 +9,13 @@ public class V2String extends AV2Value {
 	@Override public String get() throws CompileException {return value;}
 	
 	@Override public boolean asBoolean() throws CompileException {
-		throw new CompileException("Can not convert String to Boolean");
+		throw new CompileException(invalidTypeMessage("Boolean", value, ""));
 	}
 	@Override public double asDouble() throws CompileException {
-		throw new CompileException("Can not convert String to Double");
+		throw new CompileException(invalidTypeMessage("Double", value, ""));
 	}
 	@Override public int asInt() throws CompileException {
-		throw new CompileException("Can not convert String to Integer");
+		throw new CompileException(invalidTypeMessage("Int", value, ""));
 	}
 	@Override public String asString() throws CompileException {return get();}
 }
