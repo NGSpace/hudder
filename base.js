@@ -154,7 +154,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	</style>
 	<div id="topbar">
 		<img src="Images/Hudder.webp" alt="Back to main hudder wiki page" />
-		<div id="title">Hudder Wiki</div>
+		<div id="title">Hudder 5.0.0 Wiki</div>
 	</div>
 	<div id="sidebar">
 	<h1>Explore</h1>
