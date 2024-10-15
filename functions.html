@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<head>
+	<title>Hudder wiki - Function list</title>
+	<script src="base.js"></script>
+	<meta charset="UTF-8">
+
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-M0SCB1X0YP"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', 'G-M0SCB1X0YP');
+
+		gtag('consent', 'update', {
+			'ad_user_data': 'granted',
+			'ad_personalization': 'granted',
+			'ad_storage': 'granted',
+			'analytics_storage': 'granted'
+		});
+
+	</script>
+</head>
+<body>
+<note>This page was created for Hudder version 5.0.0, information may vary in validity for prior versions</note>
+<note>Variables are NOT case sensitive</note>
+<warning>Functions enforce a strict type system, all strings/text must be surrounded by double quotes or it will be treated as the name of a variable.</warning>
+
+<note>Parameters in [] are required, parameters in <> are optional.</note>
+<note>Booleans are either true or false (or conditions), Strings are pieces of text (Strings must be surrounded by quotes) and Number are... well... numbers...</note>
+<h1>Type casting</h1>
+<hr><br>
+<code>int([Text]) - returns the number equavilent of the provided text (ex. "1" returns the number 1, "20" returns the number 20, etc.)
+str([Anything]) - returns the text equavilent of the provided value (ex. the number 1 returns "1", the boolean true returns "true", etc.)
+</code>
+
+<h1>Text manipulation</h1>
+<hr><br>
+
+<code>concat([Text], [Text]) - returns the combination of the provided texts (ex. concat("1","2") returns "12")
+substring([Text], [Number], [Number]) - returns the text between the 2 provided points (ex. substring("Long text", 1, 4) returns "ong")
+repeat([Text], [Number]) - returns the provided text repeated the requested amount (ex. repeat("Repeat", 2) returns "RepeatRepeat")
+length([Text]) - returns the length of the provided text (ex. length("Length") returns 6)
+</code>
+<br>
+
+<h1>Math helper functions</h1>
+<hr>
+<h3>Trigonometry</h3>
+<warning>Yeah, I have no idea how trigonometry works so this is just a list with no explanation.</warning>
+<code>sin([Number])
+cos([Number])
+tan([Number])
+asin([Number])
+acos([Number])
+atan([Number])
+</code>
+
+<h3>Misc</h3>
+
+<code>abs([Number]) - returns the positive value of the provided number (ex. abs(1) returns 1, abs(-1) returns 1, etc.)
+floor([Number]) - returns the closest round number that is either equal to or less than the provided number (ex. floor(7.25) returns 7, floor(8) returns 8, floor(6.9) returns 6, etc.)
+ceiling([Number]) - returns the closest round number that is either equal to or greater than the provided number (ex. ceiling(7.25) returns 8, floor(8) returns 8, floor(6.9) returns 7, etc.)
+sqrt([Number]) - returns the square root of the provided number (ex. sqrt(4) returns 2)
+pow([Number], [Number]) - returns the first number to the power of the second number (ex. pow(2,8) returns 256)
+min([Number], [Number]) - returns the lowest of the two provided numbers (ex. min(1,20) returns 1)
+max([Number], [Number]) - returns the highest of the two provided numbers (ex. max(1,20) returns 20)
+truncate([Number], [Number]) - returns the first number with the decimal cut off beyond the point provided in the second number (ex. truncate(1.69, 1) returns 1.6)
+rng([Number], [Number], &#60;Number&#62;) - returns a random number between the first two numbers, if a third number is provided it will be used as the seed
+</code>
+
+<br>
+<h1>Misc</h1>
+<hr><br>
+
+<code>exists([Text]) - returns true if a file named the provided text exists within Hudder's config folder otherwise it returns false (ex. exists("hud") will return true)
+strwidth([Text]) - returns the width of the provided text if drawn on screen with a scale of 1
+</code>
+<br><br><br>
+</body>

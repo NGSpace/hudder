@@ -98,17 +98,23 @@ below 30 or 60 fps.
 
 <br><br>
 
-<h2 id="adv_variables">Advanced Variables</h2>
-<hr><br>
+<h2 id="adv_variables">Advanced Variables and Functions</h2>
+<hr>
+<note>Functions are available at Hudder version 5.0.0 or above!</note>
 
 Let's do this one quickly:
 <br><br>
 Setting custom variable values - <inline-code>{variable=10}</inline-code> will set <inline-code>{variable}</inline-code> to 10.
 <inline-code>{var=fps}</inline-code> will set var to your fps count.
-<br><br>
+<br>
 Math - <inline-code>{math_result=fps+10+math_result}</inline-code> will do as you could've guessed, math.
-use * for multiplications, / for divisions, ^ for powers and % for remainder.
-
+use * for multiplications, / for divisions and % for remainder.
+<br>
+Functions - <inline-code>{math_result=length("text")+2}</inline-code> will set math_result to the length of the word "text" plus 2.
+<br><br>
+All of those could be used together if needed, you could pass a function to a function (ex. int(str(10)) which returns 10) until infinity, etc.
+<br>
+A full list of functions is provided <a href="functions.html">here!</a>
 <br><br>
 
 <h2 id="methods">Inventory management and methods</h2>
@@ -157,8 +163,8 @@ Here is an example of both (Please do not use this, it will likely crash your ga
 Magnificent, isn't it? Looks like I peaked early when I came up with this piece of art.
 <br><br>
 	
-<h2 id="methods">Writing your own methods</h2>
-<hr><br>
+<h2 id="adv_methods">Writing your own methods</h2>
+<hr>
 <note>Version 4.0.0 or above!</note>
 
 you can use <inline-code>#def</inline-code> to write your ow methods. here is an example:

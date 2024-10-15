@@ -24,6 +24,7 @@
 </head>
 <body>
 <h3>
+<note>This page was created for Hudder version 5.0.0, information may vary in validity for prior versions</note>
 <note>Method names are NOT case sensitive</note>
 <note>Parameters in [] are required, parameters in <> are optional.</note>
 <note>[Number x] refers to the horizontal position on screen, [Number y] refers to the vertical position on screen.</note>
@@ -44,7 +45,6 @@
 
 <h3>Text Rendering</h3>
 <code>;text, [Number x], [Number y], [String text], &#60;Number scale&#62;, &#60;HexColor color&#62;, &#60;Boolean shadow&#62;, &#60;Boolean background&#62;, &#60;HexColor bgcolor&#62; - Compiler and then draw the provided text on screen.
-;strwidth, [String text], [String variable]; - Sets the provided variable's value to the width of the provided string.
 ;topleft/topright/bottomleft/bottomright/mute, &#60;Number scale&#62;; - change which section to write to.
 </code>
 
@@ -68,17 +68,7 @@
 <h3>File management</h3>
 
 <code>;run, [String filename], &#60;Boolean addText&#62;, &#60;String compiler&#62;; - Compile the provided file with the provided compiler, if "addText" is set to true then it will combine the result with the current file, UI Elements get combined whether addText is true or false.
-;exists, [String text], [String variable]; - Sets the provided variable's value to true or false depending on whether the provided file exists or not.
 </code>
-
-<h3>String and number manipulation</h3>
-
-<code>;decimalpoint, [String numbervariable], [Number maxdecimalpoint]; - Takes the value of the provided variable, cuts off the decimal point at the requested point and inserts it back into the variable. Inserting a number into the "Variable" parameter will do nothing.
-;int, [String numbervariable]; - Same as the above method except it removes the decimal point entirely.
-;concat, [String firstString], [String secondString], [String variable]; - Combines both strings and places the result into the provided variable.
-;substring, [String string], [Number start], [Number end], [String variable]; - Cuts the string at the provided start and end points and places the result into the provided variable.multiplystring
-</code>
-
 
 <h3>Inventory information</h3>
 
@@ -87,6 +77,28 @@
 ;maxdurability, [Number slot], [String variable]; - Sets the value of the provided variable to the max durability of the item in the provided slot.
 ;count, [Number slot], [String variable]; - Sets the value of the provided variable to the item count of the item in the provided slot.
 ;maxcount, [Number slot], [String variable]; - Sets the value of the provided variable to the max item count of the item in the provided slot.
+</code>
+
+<h1>Deprecated methods</h1>
+<hr><br>
+<warning>All deprecated methods will be or have been removed (Solutions will be provided)</warning>
+<code>;strwidth, [String text], [String variable]; - Sets the provided variable's value to the width of the provided string.
+Deprecated in version 5.0.0, not yet removed (Use the strwidth Function)
+
+;exists, [String text], [String variable]; - Sets the provided variable's value to true or false depending on whether the provided file exists or not.
+Deprecated and removed in version 5.0.0 (Use the exists Function)
+
+;decimalpoint, [String numbervariable], [Number maxdecimalpoint]; - Takes the value of the provided variable, cuts off the decimal point at the requested point and inserts it back into the variable. Inserting a number into the "Variable" parameter will do nothing.
+Deprecated in version 5.0.0, not yet removed (Use the truncate Function)
+
+;int, [String numbervariable]; - Same as the above method except it removes the decimal point entirely.
+Deprecated and removed in version 5.0.0 (Use the floor, ceiling or truncate Function)
+
+;concat, [String firstString], [String secondString], [String variable]; - Combines both strings and places the result into the provided variable.
+Deprecated in version 5.0.0, not yet removed (Use the concat Function)
+
+;substring, [String string], [Number start], [Number end], [String variable]; - Cuts the string at the provided start and end points and places the result into the provided variable.multiplystring
+Deprecated in version 5.0.0, not yet removed (Use the substring Function)
 </code>
 <br><br><br>
 </body>

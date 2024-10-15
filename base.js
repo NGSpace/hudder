@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 		#sidebar details {
 			/* I know I could have used list but I decided to hide the button very late into dev and it was not worth it*/
 			pointer-events: none; /* prevents the hidden button from being clicked */
-			font-size: 0.9vw;
+			font-size: 1vw;
 		}
 		#sidebar details a {
 			pointer-events: all; /* prevents click events */
@@ -75,6 +75,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			margin-top: 0px;
 			margin-bottom: 0px;
 			margin-left: -5px;
+			font-size: 0.75vw;
 		}
 		#sidebar details ul a {
 			color: #4f8bd1;
@@ -99,6 +100,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			padding: 5px;
 			white-space: pre;
 			width: fit-content;
+			color: white;
 			tab-size: 4;
 		}
 		inline-code {
@@ -110,6 +112,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			background-color: rgb(59, 59, 59);
 			text-align: left;
 			padding: 0px;
+			color: white;
 			margin: 0px;
 		}
 		note {
@@ -122,6 +125,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			display: flex;
 			align-items: center; /* Align vertical */
 			margin-top: 10px;
+			color: white;
 			margin-bottom: 10px;
 		}
 		note img {
@@ -137,6 +141,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			display: flex;
 			align-items: center; /* Align vertical */
 			margin-top: 10px;
+			color: white;
 			margin-bottom: 10px;
 		}
 		warning img {
@@ -166,8 +171,10 @@ document.addEventListener("DOMContentLoaded", function (event) {
 				<li><a href="howto.html#sections">Text sections</a></li>
 				<li><a href="howto.html#variables">Basic variables</a></li>
 				<li><a href="howto.html#conditions">Basic conditions</a></li>
-				<li><a href="howto.html#adv_variables">Advanced Variables</a></li>
+				<li><a href="howto.html#adv_variables">Advanced Variables and Functions</a></li>
 				<li><a href="howto.html#methods">Inventory management and methods</a></li>
+				<li><a href="howto.html#adv_conds">Advanced conditions and while loops</a></li>
+				<li><a href="howto.html#adv_methods">Writing your own methods</a></li>
 			</ul>
 		</details>
 		<details open>
@@ -185,6 +192,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
 		<details open>
 			<summary>
 				<a href="methodlist.html">Method list</a>
+			</summary>
+		</details>
+		<details open>
+			<summary>
+				<a href="functions.html">Function list</a>
 			</summary>
 		</details>
 		<details open>
