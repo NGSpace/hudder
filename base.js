@@ -152,6 +152,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 		table th {border: 3px solid gray;}
 		table {border-collapse: collapse;border: 3px solid gray;max-width: 96%;}
 	</style>
+	<link rel="icon" type="image/x-icon" href="favicon.ico">
 	<div id="topbar">
 		<img src="Images/Hudder.webp" alt="Back to main hudder wiki page" />
 		<div id="title">Hudder 5.0.0 Wiki</div>
