@@ -5,6 +5,7 @@ import java.util.Arrays;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.config.ConfigManager;
+import io.github.ngspace.hudder.util.HudderUtils;
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import io.github.ngspace.hudder.v2runtime.runtime_elements.BasicConditionV2RuntimeElement;
@@ -30,8 +31,9 @@ public class HudderV2Compiler extends AV2Compiler {
 		int bracketscount = 0;
 
 		String[] builder = {};
-		
+
 		boolean quotesafe = false;
+		boolean backslashsafe = false;
 		boolean condSafe = false;
 		boolean safeappend = false;
 		
@@ -94,7 +96,7 @@ public class HudderV2Compiler extends AV2Compiler {
 					} else if (c=='}') {
 						bracketscount--;
 						if (bracketscount==0) {
-							runtime.addRuntimeElement(new VariableV2RuntimeElement(elemBuilder.toString(), this));
+							runtime.addRuntimeElement(new VariableV2RuntimeElement(elemBuilder.toString(), this, runtime));
 							elemBuilder.setLength(0);
 							compileState = TEXT_STATE;
 						} else elemBuilder.append(c);
@@ -114,7 +116,7 @@ public class HudderV2Compiler extends AV2Compiler {
 						case '%':
 							compileState = TEXT_STATE;
 							builder = addToArray(builder,elemBuilder.toString().trim());
-							runtime.addRuntimeElement(new BasicConditionV2RuntimeElement(builder, this, info));
+							runtime.addRuntimeElement(new BasicConditionV2RuntimeElement(builder, this, info, runtime));
 							elemBuilder.setLength(0);
 							break;
 						case '"':
@@ -131,18 +133,28 @@ public class HudderV2Compiler extends AV2Compiler {
 					break;
 				}
 				case METHOD_STATE: {
+					if (backslashsafe) {
+						backslashsafe = false;
+						elemBuilder.append(c);
+						continue;
+					}
 					switch (c) {
-						case ';':
-							compileState = TEXT_STATE;
+						case '\\':
+							backslashsafe = true;
+							elemBuilder.append(c);
 							break;
-						case ',':
-							builder = addToArray(builder,elemBuilder.toString().trim());
-							elemBuilder.setLength(0);
+						case '"':
+							quotesafe = !quotesafe;
+							elemBuilder.append(c);
+							break;
+						case ';':
+							if (!quotesafe) compileState = TEXT_STATE;
+							else elemBuilder.append(c);
 							break;
 						default: elemBuilder.append(c);break;
 					}
 					if (compileState!=METHOD_STATE) {
-						builder = addToArray(builder,elemBuilder.toString().trim());
+						builder = HudderUtils.processParemeters(elemBuilder.toString());
 						runtime.addRuntimeElement(new MethodV2RuntimeElement(builder, this, info, runtime));
 						elemBuilder.setLength(0);
 						builder = new String[0];
@@ -201,10 +213,10 @@ public class HudderV2Compiler extends AV2Compiler {
 						break;
 					}
 					if (isWhile) {
-						runtime.addRuntimeElement(new WhileV2RuntimeElement(info, cond, cmds, this));
+						runtime.addRuntimeElement(new WhileV2RuntimeElement(info, cond, cmds, this, runtime));
 						break;
 					}
-					runtime.addRuntimeElement(new IfV2RuntimeElement(info, cond, cmds, this));
+					runtime.addRuntimeElement(new IfV2RuntimeElement(info, cond, cmds, this, runtime));
 					break;
 				}
 				default: throw new CompileException("Unknown compile state: " + compileState);

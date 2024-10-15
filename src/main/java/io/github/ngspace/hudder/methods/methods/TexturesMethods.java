@@ -17,10 +17,10 @@ public class TexturesMethods implements IMethod {
 		switch (type) {
 			case "image","png":
         		try {
-        			boolean ex = HudFileUtils.exists(HudFileUtils.FOLDER + s[0].asStringSafe().trim());
+        			boolean ex = HudFileUtils.exists(HudFileUtils.FOLDER + s[0].asString().trim());
         			if (!ex) return;
-            		Identifier id = Identifier.of(s[0].asStringSafe().trim().toLowerCase());
-					HudFileUtils.getAndRegisterImage(s[0].asStringSafe(),id);
+            		Identifier id = Identifier.of(s[0].asString().trim().toLowerCase());
+					HudFileUtils.getAndRegisterImage(s[0].asString(),id);
 	        		m.elements.add(new TextureElement(id,s[1].asInt(),s[2].asInt(),s[3].asInt(),s[4].asInt()));
 				} catch (IOException e) {
 					throw new CompileException(e.getLocalizedMessage());

@@ -20,13 +20,17 @@ public abstract class MethodValue {
 	public abstract int asInt() throws CompileException;
 	public abstract double asDouble() throws CompileException;
 	public abstract boolean asBoolean() throws CompileException;
-
+	
+	/**
+	 * @deprecated to encourage type safety, will be removed in the future.
+	 */
+	@Deprecated(since = "5.0.0", forRemoval = true)
 	public String asStringSafe() {
 		try {
 			return asString();
 		} catch (Exception e) {
 			try {
-				return cleanDouble(asDouble());//String.valueOf(asDouble());
+				return cleanDouble(asDouble());
 			} catch (Exception ex) {
 				try {
 					return String.valueOf(asBoolean());
@@ -36,18 +40,22 @@ public abstract class MethodValue {
 			}
 		}
 	}
-	public int asIntSafe() {try {return asInt();} catch (Exception e) {return 0;}}
+	/**
+	 * @deprecated to encourage type safety, will be removed in the future.
+	 */
+	@Deprecated(since = "5.0.0", forRemoval = true)
 	public double asDoubleSafe() {try {return asDouble();} catch (Exception e) {return 0;}}
+	/**
+	 * @deprecated to encourage type safety, will be removed in the future.
+	 */
+	@Deprecated(since = "5.0.0", forRemoval = true)
 	public boolean asBooleanSafe() {try {return asBoolean();} catch (Exception e) {return false;}}
 	
 	@Override public String toString() {return getAbsoluteValue();}
 	
-	public static String cleanDouble(double d)
-	{
-	    if(d == (long) d)
-	        return Long.toString((long)d);
-	    else
-	        return Double.toString((long)d);
+	public static String cleanDouble(double d) {
+	    if(d == (long) d) return Long.toString((long)d);
+	    else return Double.toString((long)d);
 	}
 
 }

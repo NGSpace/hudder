@@ -2,15 +2,16 @@ package io.github.ngspace.hudder.v2runtime.values;
 
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 
-public class V2MathOperation extends V2Value {
-	public V2Value[] values = new V2Value[0];
+public class V2MathOperation extends AV2Value {
+	public AV2Value[] values = new AV2Value[0];
 	public char[] operations = new char[0];
 	
-	public V2MathOperation(V2Value[] values, char[] operations) {
+	public V2MathOperation(AV2Value[] values, char[] operations) {
 		this.values = values;
 		this.operations = operations;
 	}
 	
+	@SuppressWarnings("removal")
 	@Override public Double get() throws CompileException {
 		
 		double[] secondValues = new double[values.length];
@@ -25,7 +26,6 @@ public class V2MathOperation extends V2Value {
 			if      (operations[i]=='*') result = result * val2;
 			else if (operations[i]=='/') result = result / val2;
 			else if (operations[i]=='%') result = result % val2;
-			else if (operations[i]=='^') result = Math.pow(result, val2);
 			else {
 				secondValues[realSecondValuesLength] = result;
 				secondsOperations[realSecondValuesLength] = operations[i];

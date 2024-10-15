@@ -12,13 +12,14 @@ import io.github.ngspace.hudder.methods.MethodValue;
 import io.github.ngspace.hudder.util.HudFileUtils;
 
 public class LoadMethod implements IMethod {
+	@SuppressWarnings("removal")
 	@Override
 	public void invoke(ConfigInfo ci, CompileState meta, ATextCompiler comp, String type, MethodValue... args) throws CompileException {
 		if (args.length<1)
 			throw new CompileException("\""+type+"\" only accepts ;"+type+",[file],<text>,<compiler>;");
 		try {
 			boolean AddText = (args.length<2 || args[1].asBoolean()) || type.equals("add");
-			ATextCompiler ecompiler=(args.length>2?Compilers.getCompilerFromName(args[2].asStringSafe()):comp);
+			ATextCompiler ecompiler=(args.length>2?Compilers.getCompilerFromName(args[2].asString()):comp);
 			for (var i : Hudder.precomplistners) i.accept(ecompiler);
 			meta.combineWithResult(ecompiler.compile(ci, HudFileUtils.getFile(args[0].asStringSafe())), AddText);
 			for (var i : Hudder.postcomplistners) i.accept(ecompiler);

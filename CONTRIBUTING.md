@@ -11,3 +11,6 @@ If you do know here are some rules:
 3. Below 10k lines additions and deletions (combined)
 4. Do not add dependencies.
 5. Do not add any precompiled code.
+
+# License
+By contributing to this repository you agree to give me (NGSpace/NGS/NoGravitySpace/Tomer akiva) full control over your work.

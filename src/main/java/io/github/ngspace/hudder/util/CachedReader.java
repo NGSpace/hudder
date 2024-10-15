@@ -68,7 +68,7 @@ class CachedReader implements ERunnable<CompileException> {
 			char c = file.charAt(i);
 			if (c=='.') j++;
 			else if (c=='/'||c=='\\') {
-				if (j==2&&k==0) throw new FuckYouException("Fuck you, I ain't this stupid to accept this: " + file);
+				if (j==2&&k==0) throw new UnauthorizedFileIOException("Fuck you, I ain't this stupid to accept this: " + file);
 				k = 0;
 			} else {j = 0;k++;}
 		}

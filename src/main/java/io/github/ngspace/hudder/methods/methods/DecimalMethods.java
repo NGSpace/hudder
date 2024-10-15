@@ -7,6 +7,15 @@ import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.methods.MethodValue;
 
 public class DecimalMethods implements IMethod {
+
+	@Override
+	public boolean isDeprecated(String name) {
+		return true;
+	}
+	@Override
+	public String getDeprecationWarning(String name) {
+		return "Use truncate function";
+	}
 	@Override
 	public void invoke(ConfigInfo ci, CompileState meta, ATextCompiler comp, String type, MethodValue... args)
 			throws CompileException {

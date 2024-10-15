@@ -5,7 +5,7 @@ import java.util.Objects;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.methods.MethodValue;
 
-public abstract class V2Value extends MethodValue { protected V2Value() {}
+public abstract class AV2Value extends MethodValue { protected AV2Value() {}
 	/**
 	 * Return the current value of the Object
 	 * @return an Object of any kind.
@@ -18,10 +18,12 @@ public abstract class V2Value extends MethodValue { protected V2Value() {}
 	 */
 	public boolean hasValue() {return true;}
 	
-	public boolean compare(V2Value other, String comparisonOperator) throws CompileException {
+	@SuppressWarnings("removal")
+	public boolean compare(AV2Value other, String comparisonOperator) throws CompileException {
 		Object val1 = get();
 		Object val2 = other.get();
-		boolean areNums = false;//val1 instanceof Number && val2 instanceof Number;
+		if (other.getAbsoluteValue().equalsIgnoreCase("unset")) return !hasValue();
+		boolean areNums = false;
 		double dou1 = 0;
 		double dou2 = 0;
 		if (val1 instanceof Number num) {
@@ -57,21 +59,25 @@ public abstract class V2Value extends MethodValue { protected V2Value() {}
 	@Override public boolean asBoolean() throws CompileException {
 		Object get = get();
 		if (get instanceof Boolean b) return b;
-		throw new CompileException("Incorrect type \"Boolean\" for value: \""+value+"\" of type "+get.getClass().getName());
+		throw new CompileException(invalidTypeMessage("Boolean", value, get));
 	}
 	@Override public double asDouble() throws CompileException {
 		Object get = get();
 		if (get instanceof Number b) return b.doubleValue();
-		throw new CompileException("Incorrect type \"Double\" for value: \""+value+"\" of type "+get.getClass().getName());
+		throw new CompileException(invalidTypeMessage("Double", value, get));
 	}
 	@Override public int asInt() throws CompileException {
 		Object get = get();
 		if (get instanceof Number b) return b.intValue();
-		throw new CompileException("Incorrect type \"Integer\" for value: \""+value+"\" of type "+get.getClass().getName());
+		throw new CompileException(invalidTypeMessage("Integer", value, get));
 	}
 	@Override public String asString() throws CompileException {
 		Object get = get();
 		if (get instanceof String b) return b;
-		throw new CompileException("Incorrect type \"String\" for value: \""+value+"\" of type "+get.getClass().getName());
+		throw new CompileException(invalidTypeMessage("String", value, get));
+	}
+	
+	public static String invalidTypeMessage(String type, String value, Object obj) {
+		return "Incorrect type \""+type+"\" for value: \""+value+"\" of type "+obj.getClass().getName();
 	}
 }

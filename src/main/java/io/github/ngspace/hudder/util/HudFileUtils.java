@@ -35,12 +35,13 @@ public class HudFileUtils {private HudFileUtils() {}
 		for (int i = 0;i<f.length();i++) {
 			char c = f.charAt(i);
 			if (c=='.') j++; else if (c=='/'||c=='\\') {
-				if (j==2&&k==0) {throw new FuckYouException("Fuck you, I ain't this stupid to accept this: "+f);}k = 0;
+				if (j==2&&k==0) {throw new UnauthorizedFileIOException("Attempting to access protected path: "+f);}k = 0;
 			} else {j = 0;k++;}
 		}
 		return f;
 	}
 	public static boolean exists(String file) {
-		return new File(file).exists();
+		System.out.println(file);
+		return new File(FOLDER + sanitize(file)).exists();
 	}
 }
