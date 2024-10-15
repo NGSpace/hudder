@@ -14,19 +14,45 @@ Basic Bitch Test
 ||EXPECT||
 1 1
 
-||INPUT||Functions
-{res=test("1", "rr,1")}
+||INPUT||Type casting
+{str(int("10"),false)}
 ||EXPECT||
-1rr,1
+10.0
 
-||INPUT||Text and number concatination
-{num=10}
-;concat, "test", num, result;
-{result}
-;concat, num, "test", result;
-{result}
+||INPUT||Text concatination
+{concat(str(10,true), "test")}
 ||EXPECT||
-10test1010test
+10test
+
+||INPUT||Text substring
+{substring("Long text", 1, 4)}
+||EXPECT||
+ong
+
+||INPUT||Text repeat
+{repeat("Repeat", 2)}
+||EXPECT||
+RepeatRepeat
+
+||INPUT||Text length
+{length("Length")}
+||EXPECT||
+6
+
+||INPUT||Trigo Functions
+{sin(69)} {cos(69)} {tan(69)}
+||EXPECT||
+-0.11478481378318722 0.9933903797222716 -0.11554854579453279
+
+||INPUT||Math Functions
+{abs(-69)} {floor(69.7)} {ceiling(68.7)} {sqrt(4)} {pow(2,8)} {min(1,20)} {max(1,20)} {truncate(1.69, 1)} {rng(69,420,1)}
+||EXPECT||
+69 69 69 2 256 1 20 1.6 325.5382449368551
+
+||INPUT||Misc Functions
+{exists("hud")} {strwidth("hud")}
+||EXPECT||
+true 18
 
 ||INPUT||Basic addition
 {1+1}
@@ -39,9 +65,9 @@ Basic Bitch Test
 2 2
 
 ||INPUT||Comparing unset values
-{unsetval==10} {unsetval==0} {unsetval>0} {unsetval<0} {unsetval!=0} {unsetval>=0} {unsetval<=0}
+{unsetval==unset} {unsetval==10} {unsetval==0} {unsetval>0} {unsetval<0} {unsetval!=0} {unsetval>=0} {unsetval<=0}
 ||EXPECT||
-false true false false false true true
+true false true false false false true true
 
 ||INPUT||Advanced if
 #if testif==0

@@ -56,10 +56,6 @@ public class MethodHandler {
 		}, 2, new String[] {"[Text]",Var[0]}, "strwidth");
 		
 		
-//		register((c,m,a,t,s)->a.put(s[1].getAbsoluteValue(), Hudder.ins.textRenderer.getWidth(s[0].asString())),
-//				2, new String[] {"[Text]",Var[0]}, "strwidth");
-		
-		
 		
 		//UI
 		register(new GUIMethods(), "health", "xpbar", "hotbar", "helditemtooltip");

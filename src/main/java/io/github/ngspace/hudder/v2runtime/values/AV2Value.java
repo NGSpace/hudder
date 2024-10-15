@@ -18,9 +18,11 @@ public abstract class AV2Value extends MethodValue { protected AV2Value() {}
 	 */
 	public boolean hasValue() {return true;}
 	
+	@SuppressWarnings("removal")
 	public boolean compare(AV2Value other, String comparisonOperator) throws CompileException {
 		Object val1 = get();
 		Object val2 = other.get();
+		if (other.getAbsoluteValue().equalsIgnoreCase("unset")) return !hasValue();
 		boolean areNums = false;
 		double dou1 = 0;
 		double dou2 = 0;
@@ -28,7 +30,7 @@ public abstract class AV2Value extends MethodValue { protected AV2Value() {}
 			dou1 = num.doubleValue();
 			boolean otherhasval = other.hasValue();
 			if (!otherhasval) {
-				dou2 = other.asDouble();
+				dou2 = other.asDoubleSafe();
 			}
 			if (val2 instanceof Number||!otherhasval) areNums = true;
 		}
@@ -36,7 +38,7 @@ public abstract class AV2Value extends MethodValue { protected AV2Value() {}
 			dou2 = num.doubleValue();
 			boolean otherhasval = hasValue();
 			if (!otherhasval) {
-				dou1 = asDouble();
+				dou1 = asDoubleSafe();
 			}
 			if (val1 instanceof Number||!otherhasval) areNums = true;
 		}

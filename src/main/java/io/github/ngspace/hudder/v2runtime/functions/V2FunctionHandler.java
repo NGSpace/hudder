@@ -22,7 +22,7 @@ public class V2FunctionHandler {
 
 		register((r,n,args) -> args[0].asString() + args[1].asString(), 2, "concat");// Concat
 		register((r,n,args) -> args[0].asString().substring(args[1].asInt(),args[2].asInt()),3,"substring");// Substring
-		register((r,n,args) -> args[0].asString().repeat(args[1].asInt()),3, "multiplystring", "repeat");// Repeat string
+		register((r,n,args) -> args[0].asString().repeat(args[1].asInt()),2, "multiplystring", "repeat");// Repeat string
 		register((r,n,args) -> args[0].asString().length(), 1, "length");// Length
 		
 		//Math
@@ -47,7 +47,8 @@ public class V2FunctionHandler {
 		register((r,n,args) -> Math.min(args[0].asDouble(),args[1].asDouble()), 2, "min");// Min
 		register((r,n,args) -> Math.max(args[0].asDouble(),args[1].asDouble()), 2, "max");// Max
 		
-		register((r,n,args) -> Math.floor(args[1].asDouble()*args[1].asInt())/args[1].asInt(),2,"truncate");// Truncate
+		register((r,n,args) -> Math.floor(args[0].asDouble()*Math.pow(10, args[1].asInt()))
+				/Math.pow(10, args[1].asInt()),2,"truncate");// Truncate
 		
 		// Misc
 		
