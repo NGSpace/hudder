@@ -7,7 +7,11 @@ public class V2Boolean extends AV2Value {
 	
 	boolean bvalue;
 	
-	public V2Boolean(boolean value, AVarTextCompiler compiler) {this.bvalue = value;this.compiler = compiler;}
+	public V2Boolean(boolean value, AVarTextCompiler compiler, int line, int charpos) {
+		super(line,charpos);
+		this.bvalue = value;
+		this.compiler = compiler;
+	}
 
 	@Override public Boolean get() throws CompileException {return bvalue;}
 	
@@ -20,6 +24,10 @@ public class V2Boolean extends AV2Value {
 	}
 	@Override public String asString() throws CompileException {
 		throw new CompileException(invalidTypeMessage("String", value, false));
+	}
+	
+	@Override public void setValue(AVarTextCompiler compiler, Object value) throws CompileException {
+		throw new CompileException("Can't change the value of a boolean constant", line, charpos);
 	}
 	
 }

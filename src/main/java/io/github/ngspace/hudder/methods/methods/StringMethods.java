@@ -19,7 +19,7 @@ public class StringMethods implements IMethod {
 	}
 
 	@Override
-	public void invoke(ConfigInfo ci, CompileState meta, ATextCompiler comp, String type, MethodValue... args) throws CompileException {
+	public void invoke(ConfigInfo ci, CompileState meta, ATextCompiler comp, String type, int line, int charpos, MethodValue... args) throws CompileException {
 		try {
 			switch (type) {
 				case "concat": {
@@ -41,7 +41,7 @@ public class StringMethods implements IMethod {
 					try {
 						comp.put(args[3].getAbsoluteValue(),str1.substring(start,end));
 					} catch (IndexOutOfBoundsException e) {
-						throw new CompileException(e.getLocalizedMessage());
+						throw new CompileException(e.getLocalizedMessage(), line, charpos);
 					}
 					break;
 				}
@@ -53,8 +53,8 @@ public class StringMethods implements IMethod {
 					+(type.equals("concat")         ?",[string],[string],[result variable name]" :"")
 					+(type.equals("multiplystring") ?",[string],[amount],[result variable name]" :"")
 					+(type.equals("substring") ?",[string],[start],[end],[result variable name]" :"")
-					+ ";");
-		} catch (Exception e) {throw new CompileException(e.getLocalizedMessage());}
+					+ ";", line, charpos);
+		} catch (Exception e) {throw new CompileException(e.getLocalizedMessage(), line, charpos);}
 	}
 
 }

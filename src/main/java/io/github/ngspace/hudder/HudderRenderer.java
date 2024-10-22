@@ -27,7 +27,7 @@ public class HudderRenderer {
 		String[] lines = FailMessage.split(NL_REGEX);
 		int y = 1;
 		for (String line : lines) {
-			renderTextLine(context, line, 1, y, 0xFF5555, 1, false, true, 0xd6d6d6);
+			renderTextLine(context, line, 1, y, 0xFF5555, 1, true, true, 0xd6d6d6);
 			y+=9;
 		}
 	}
@@ -90,7 +90,7 @@ public class HudderRenderer {
     }
 
 	public void renderTextLine(DrawContext context, String text, int x, int y, int color, float scale, boolean shadow,
-			boolean background, int backgroundColor) {
+			boolean background, long backgroundColor) {
 		if (background&&!"".equals(text))
 			renderBlock(context,x-1f,y-1f,Hudder.ins.textRenderer.getWidth(text)+2f,9f+1f,backgroundColor);
         RenderSystem.enableBlend();
@@ -108,18 +108,26 @@ public class HudderRenderer {
         RenderSystem.disableBlend();
     }
 	
-	public void renderBlock(DrawContext context, float x, float y, float width, float height, int color) {
+	public void renderBlock(DrawContext context, float x, float y, float width, float height, long rgb) {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-        BufferBuilder bgBuilder = 
-        		Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+        int alpha = (int) ((rgb >> 24) & 0xFF);
+        int red =   (int) ((rgb >> 16) & 0xFF);
+        int green = (int) ((rgb >>  8) & 0xFF);
+        int blue =  (int) ((rgb      ) & 0xFF);
+
+        BufferBuilder bgBuilder =  Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
         Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
-        bgBuilder.vertex(matrix, x, y+height, 0f).color(color);
-        bgBuilder.vertex(matrix, x+width, y+height, 0f).color(color);
-        bgBuilder.vertex(matrix, x+width, y, 0f).color(color);
-        bgBuilder.vertex(matrix, x, y, 0f).color(color);
+        bgBuilder.vertex(matrix, x, y+height, 0f).color(red,green,blue,alpha);
+        bgBuilder.vertex(matrix, x+width, y+height, 0f).color(red,green,blue,alpha);
+        bgBuilder.vertex(matrix, x+width, y, 0f).color(red,green,blue,alpha);
+        bgBuilder.vertex(matrix, x, y, 0f).color(red,green,blue,alpha);
+        RenderSystem.resetTextureMatrix();
         BufferRenderer.drawWithGlobalProgram(bgBuilder.end());
+        BufferRenderer.reset();
         RenderSystem.disableBlend();
+//		System.out.println(color);
+//		System.out.println(0xff7e6da8);
 	}
 }

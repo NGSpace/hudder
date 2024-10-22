@@ -24,6 +24,6 @@ public interface IMethod {
 	 * @param args - the parameters supplied to this method
 	 * @throws CompileException - if the method is not called properly or is unable to execute.
 	 */
-	public void invoke(ConfigInfo config, CompileState meta, ATextCompiler compiler, String method, MethodValue... args)
-			throws CompileException;
+	public void invoke(ConfigInfo ci, CompileState meta, ATextCompiler comp, String type, int line, int charpos,
+			MethodValue... args) throws CompileException;
 }

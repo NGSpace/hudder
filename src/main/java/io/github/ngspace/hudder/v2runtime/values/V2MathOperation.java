@@ -1,12 +1,13 @@
 package io.github.ngspace.hudder.v2runtime.values;
 
+import io.github.ngspace.hudder.compilers.AVarTextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 
 public class V2MathOperation extends AV2Value {
 	public AV2Value[] values = new AV2Value[0];
 	public char[] operations = new char[0];
 	
-	public V2MathOperation(AV2Value[] values, char[] operations) {
+	public V2MathOperation(AV2Value[] values, char[] operations, int line, int charpos) {super(line, charpos);
 		this.values = values;
 		this.operations = operations;
 	}
@@ -47,6 +48,9 @@ public class V2MathOperation extends AV2Value {
 			else if (secondsOperations[i]=='-') result = result - val2;
 		}
 		return result;
+	}
 	
+	@Override public void setValue(AVarTextCompiler compiler, Object value) throws CompileException {
+		throw new CompileException("Can't change the value of a math operation", line, charpos);
 	}
 }

@@ -29,6 +29,22 @@ Basic Bitch Test
 ||EXPECT||
 ong
 
+||INPUT||Fibonacci
+;mute;
+{r=""}
+{N=0}
+{num1=0}{num2=1}
+#while N<20
+	{N=N+1}
+	{r=concat(r, concat(str(num1,true)," "))}
+	{num3=num2+num1}
+	{num1=num2}
+	{num2=num3}
+;topleft,1;
+{r}
+||EXPECT||
+0 1 1 2 3 5 8 13 21 34 55 89 144 233 377 610 987 1597 2584 4181 
+
 ||INPUT||Text repeat
 {repeat("Repeat", 2)}
 ||EXPECT||

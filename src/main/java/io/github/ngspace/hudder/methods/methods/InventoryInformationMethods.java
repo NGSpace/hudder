@@ -13,7 +13,7 @@ public class InventoryInformationMethods implements IMethod {
 	// TODO replace this with a proper function (after version 5.0.0)
 	
 	@Override
-	public void invoke(ConfigInfo config, CompileState m, ATextCompiler c, String type, MethodValue... s) throws CompileException {
+	public void invoke(ConfigInfo config, CompileState m, ATextCompiler c, String type, int line, int charpos, MethodValue... s) throws CompileException {
 		ItemStack stack = Hudder.ins.player.getInventory().getStack(s[0].asInt());
 		Object value = switch (type) {
 			case "name"         ->stack.getName().getString();

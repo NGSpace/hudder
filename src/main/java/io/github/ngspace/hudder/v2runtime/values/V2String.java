@@ -4,7 +4,11 @@ import io.github.ngspace.hudder.compilers.AVarTextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 
 public class V2String extends AV2Value {
-	public V2String(String value, AVarTextCompiler compiler) {this.value=value;this.compiler=compiler;}
+	public V2String(String value, AVarTextCompiler compiler, int line, int charpos) {
+		super(line, charpos);
+		this.value=value;
+		this.compiler=compiler;
+	}
 	
 	@Override public String get() throws CompileException {return value;}
 	
@@ -18,4 +22,8 @@ public class V2String extends AV2Value {
 		throw new CompileException(invalidTypeMessage("Int", value, ""));
 	}
 	@Override public String asString() throws CompileException {return get();}
+	
+	@Override public void setValue(AVarTextCompiler compiler, Object value) throws CompileException {
+		throw new CompileException("Can't change the value of a string constant", line, charpos);
+	}
 }

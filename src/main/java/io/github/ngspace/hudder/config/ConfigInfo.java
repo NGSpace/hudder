@@ -25,6 +25,7 @@ public class ConfigInfo {
 	
 	/* EXPOSED :flushed: */
 	@Expose public Map<String, Object> globalVariables = new HashMap<String, Object>();
+	@Expose public Map<String, Object> savedVariables = new HashMap<String, Object>();
     @Expose public String compilertype = "hudder";
 	@Expose public String mainfile = "tutorial";
     @Expose public boolean enabled = true;

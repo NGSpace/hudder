@@ -51,6 +51,11 @@ import net.minecraft.util.logging.LoggerPrintStream;
  * then you're gonna have a bad time.</h1>
  */
 public class Hudder implements ModInitializer {
+	/* 01 - setting a set to a value
+	 */
+	
+	
+	
     public static final String MOD_ID = "hudder";
 	
     private static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
@@ -91,7 +96,7 @@ public class Hudder implements ModInitializer {
 		
 		ins = MinecraftClient.getInstance();
 
-		String[] defaultfiles = {"tutorial","hand","armor","hud","basic","hud.js","hotbar.js"};
+		String[] defaultfiles = {"tutorial","hand","armor","hud","basic","hud.js","hotbar.js", "fibonacci"};
 		String[] defaulttextures = {"pointer.png","selection.png"};
 		for (String file : defaultfiles) {
 			File dest = new File(HudFileUtils.FOLDER, file);
@@ -231,7 +236,7 @@ public class Hudder implements ModInitializer {
     			for (Consumer<ATextCompiler> con : postcomplistners) con.accept(config.compiler);
     		}
 		} catch (CompileException e) {
-			LastFailMessage = e.getLocalizedMessage()+(e.line!=-1?" at line "+(e.line+1)+" col "+e.col:"");
+			LastFailMessage = e.getFailureMessage();
 			result = null;
 		} catch (Exception e) {
 			LastFailMessage = "E: " + e.getLocalizedMessage();

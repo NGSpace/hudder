@@ -11,9 +11,9 @@ public class VariableV2RuntimeElement extends AV2RuntimeElement {
 	final AV2Value value;
 	final AV2Compiler compiler;
 	
-	public VariableV2RuntimeElement(String value, AV2Compiler compiler, V2Runtime runtime) throws CompileException {
+	public VariableV2RuntimeElement(String value, AV2Compiler compiler, V2Runtime runtime, int line, int charpos) throws CompileException {
 		this.compiler = compiler;
-		this.value = compiler.getV2Value(runtime, value);
+		this.value = compiler.getV2Value(runtime, value, line, charpos);
 	}
 
 	@Override public void execute(CompileState meta, StringBuilder builder) throws CompileException {

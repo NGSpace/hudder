@@ -18,4 +18,45 @@ public abstract class ATextCompiler {
 	public Object get(String key) {return variables.get(key);}
 	
 	public abstract void reset();
+	
+	public CharPosition getPosition(int ind, String string) {
+		int line = 0;
+		int charpos = 0;
+		
+		for (int i = 0;i<ind;i++) {
+			if (string.charAt(i)=='\n') {
+				line++;
+				charpos = 0;
+				continue;
+			}
+			charpos++;
+		}
+		return new CharPosition(line, charpos);
+	}
+	public CharPosition getPosition(CharPosition charPosition, int ind, String j) {
+		int line = charPosition.line;
+		int charpos = charPosition.charpos;
+		if (line==-1||charpos==-1) {
+			line = 0;
+			charpos = 0;
+		}
+		
+		for (int i = 0;i<ind;i++) {
+			if (j.charAt(i)=='\n') {
+				line++;
+				charpos = 0;
+				continue;
+			}
+			charpos++;
+		}
+		return new CharPosition(line, charpos);
+	}
+	public static class CharPosition {
+		public final int line;
+		public final int charpos;
+		public CharPosition(int line, int charpos) {
+			this.line = line;
+			this.charpos = charpos;
+		}
+	}
 }
