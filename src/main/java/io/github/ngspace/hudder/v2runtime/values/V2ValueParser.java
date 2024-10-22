@@ -9,9 +9,10 @@ import io.github.ngspace.hudder.v2runtime.V2Runtime;
 
 public class V2ValueParser {private V2ValueParser() {}
 	
-	//Only after writing 80% of the values did I realize having one class that is all values is bad, I tried to
-	//lower the burden but as you can see it's too late, the damage has already been done... maybe in a later update...
-	public static AV2Value of(V2Runtime runtime, String valuee, AV2Compiler compiler, int line, int charpos) throws CompileException {
+	public static AV2Value of(V2Runtime runtime, String valuee, AV2Compiler compiler, int line, int charpos)
+			throws CompileException {
+		
+		
 		String value = valuee.trim();
 		AV2Value temp = null;
 		
@@ -19,7 +20,7 @@ public class V2ValueParser {private V2ValueParser() {}
 			return compiler.getV2Value(runtime, value.substring(1, value.length()-1), line, charpos);
 		
 		//Double constant
-		if (value.matches("((0x|#)[\\daAbBcCdDeEfF]+|[\\d]+(\\.?\\d?))"))
+		if (value.matches("((0x|#)[\\daAbBcCdDeEfF]+|[-+]*\\d+(\\.?(\\d+)?))"))
 			return new V2Number(value, line, charpos);
 
 		if (value.equalsIgnoreCase("false")) return new V2Boolean(false, compiler, line, charpos);
@@ -30,28 +31,34 @@ public class V2ValueParser {private V2ValueParser() {}
 		if ((temp = string(value, compiler, line, charpos))!=null) return temp;
 		
 		//Array constant
-		if (value.matches("\\[.*\\]"))
-			return new V2Array(HudderUtils.processParemeters(value.substring(1, value.length()-1)), compiler, runtime,
-					line, charpos);
+		if (value.matches("\\[[\\s\\S]*\\]"))
+			return new V2Array(HudderUtils.processParemeters(value.substring(1, value.length()-1).replace("\n", "")),
+					compiler, runtime, line, charpos);
 		
 		//Set variable
 		String[] setValues = value.split("=",2);
 		if (setValues.length==2&&!compiler.isCondition(value)) 
-			return new V2SetValue(compiler.getV2Value(runtime, setValues[0].toLowerCase(),line,charpos), compiler.getV2Value(runtime, setValues[1], line, charpos), compiler, line, charpos);
+			return new V2SetValue(compiler.getV2Value(runtime, setValues[0].toLowerCase(),line,charpos),
+					compiler.getV2Value(runtime, setValues[1], line, charpos), compiler, line, charpos);
 		
-		boolean matchesVariableRegex = value.matches("[A-Za-z\\d_]+");
+		
+		boolean matchesVariableRegex = value.matches("[A-Za-z\\d][A-Za-z\\d_]*");
 		
 		//System variable
 		if (matchesVariableRegex&&compiler.isSystemVariable(value.toLowerCase()))
-			return new V2SystemVar(value.toLowerCase(), compiler, line, charpos);
+			return new V2SystemVar(value, compiler, line, charpos);
 		
 		
 		//Dynamic variable
-		if (matchesVariableRegex) return new V2DynamicVar(value.toLowerCase(), compiler, line, charpos);
+		if (matchesVariableRegex) return new V2DynamicVar(value, compiler, line, charpos);
+		
+		
+		//Temp dynamic variable
+		if (value.matches("_[A-Za-z\\d_]*")) return new V2TempDynamicVar(value, compiler, line, charpos);
 		
 		
 		//Read Array
-		if (value.matches("[A-Za-z\\d_]+ *\\[.+\\]"))
+		if (value.matches(".+ *\\[.+\\]"))
 			return new V2ArrayRead(value, compiler, runtime, line, charpos);
 		
 		
@@ -73,7 +80,8 @@ public class V2ValueParser {private V2ValueParser() {}
 		var operator = compiler.getOperator(value);
 		if (operator!=null) {
 			var v = value.split(operator,2);
-			return new V2Comparison(compiler.getV2Value(runtime, v[0].trim(), line, charpos), compiler.getV2Value(runtime, v[1].trim(), line, charpos), operator, line, charpos);
+			return new V2Comparison(compiler.getV2Value(runtime, v[0].trim(), line, charpos),
+					compiler.getV2Value(runtime, v[1].trim(), line, charpos), operator, line, charpos);
 		}
 		
 		

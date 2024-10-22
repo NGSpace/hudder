@@ -1,5 +1,7 @@
 package io.github.ngspace.hudder.methods;
 
+import java.util.List;
+
 import io.github.ngspace.hudder.compilers.AVarTextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 
@@ -20,6 +22,7 @@ public abstract class MethodValue {
 	public abstract int asInt() throws CompileException;
 	public abstract double asDouble() throws CompileException;
 	public abstract boolean asBoolean() throws CompileException;
+	public abstract List<Object> asList() throws CompileException;
 	
 	/**
 	 * @deprecated to encourage type safety, will be removed in the future.

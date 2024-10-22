@@ -8,12 +8,13 @@ public class HudderUtils {private HudderUtils() {}
 		if (strtoprocess.isBlank()) return new String[0];
 		
 		int parentheses = 0;
+		int squareparentheses = 0;
 
 		StringBuilder parameterBuilder = new StringBuilder();
 		String[] tokenizedParemeters = new String[0];
 		for (int i = 0;i<strtoprocess.length();i++) {
 			char c = strtoprocess.charAt(i);
-			if (c==','&&parentheses==0) {
+			if (c==','&&parentheses==0&&squareparentheses==0) {
 				tokenizedParemeters = addToArray(tokenizedParemeters, parameterBuilder.toString());
 				parameterBuilder.setLength(0);
 				continue;
@@ -43,6 +44,8 @@ public class HudderUtils {private HudderUtils() {}
 			}
 			if (c=='(') parentheses++;
 			if (c==')') parentheses--;
+			if (c=='[') squareparentheses++;
+			if (c==']') squareparentheses--;
 			
 			parameterBuilder.append(c);
 		}

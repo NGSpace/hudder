@@ -29,6 +29,22 @@ Basic Bitch Test
 ||EXPECT||
 ong
 
+||INPUT||Array length
+{length([1,"4"])}
+||EXPECT||
+2
+
+||INPUT||2D Arrays
+{2darr=[[0,1],[2,3]]}
+{2darr[1][0]}
+{2darr[1][1]=4}
+{2darr}
+||EXPECT||
+[[0.0, 1.0], [2.0, 3.0]]
+2
+4
+[[0.0, 1.0], [2.0, 4.0]]
+
 ||INPUT||Fibonacci
 ;mute;
 {r=""}

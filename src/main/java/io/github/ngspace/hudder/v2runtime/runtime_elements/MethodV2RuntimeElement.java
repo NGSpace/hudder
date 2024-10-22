@@ -30,7 +30,7 @@ public class MethodV2RuntimeElement extends AV2RuntimeElement {
 		type = args[0];
 		for (int i = 1;i<args.length;i++) {
 			values = Arrays.copyOf(values, values.length+1);
-			values[values.length-1] = compiler.getV2Value(runtime, args[i]);
+			values[values.length-1] = compiler.getV2Value(runtime, args[i], line, charpos);
 		}
 		method = compiler.methodHandler.getMethodFromName(type);
 		if (method.isDeprecated(type)) {

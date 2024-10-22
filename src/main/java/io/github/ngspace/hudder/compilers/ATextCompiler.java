@@ -17,8 +17,6 @@ public abstract class ATextCompiler {
 	public void put(String key, Object value) {variables.put(key, value);}
 	public Object get(String key) {return variables.get(key);}
 	
-	public abstract void reset();
-	
 	public CharPosition getPosition(int ind, String string) {
 		int line = 0;
 		int charpos = 0;

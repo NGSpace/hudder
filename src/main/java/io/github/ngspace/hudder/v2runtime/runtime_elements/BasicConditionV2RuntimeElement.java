@@ -19,7 +19,8 @@ public class BasicConditionV2RuntimeElement extends AV2RuntimeElement {
 	AVarTextCompiler compiler;
 	ConfigInfo info;
 	boolean hasFinalElse;
-	public BasicConditionV2RuntimeElement(String[] condArgs, AV2Compiler compiler, ConfigInfo info, V2Runtime runtime) {
+	public BasicConditionV2RuntimeElement(String[] condArgs, AV2Compiler compiler, ConfigInfo info, V2Runtime runtime,
+			int line, int charpos) {
 		this.compiler = compiler;
 		this.info = info;
 		
@@ -28,11 +29,11 @@ public class BasicConditionV2RuntimeElement extends AV2RuntimeElement {
 		for (int i = 0;i<condArgs.length;i++) {
 			String str = condArgs[i];
 			if (hasFinalElse&&i==condArgs.length-1) {
-				results = addToArray(results, compiler.getV2Value(runtime, str));
+				results = addToArray(results, compiler.getV2Value(runtime, str,line,charpos));
 				break;
 			}
-			if (i%2==0) conditions = addToArray(conditions, compiler.getV2Value(runtime, str));
-			else results = addToArray(results, compiler.getV2Value(runtime, str));
+			if (i%2==0) conditions = addToArray(conditions, compiler.getV2Value(runtime, str,line,charpos));
+			else results = addToArray(results, compiler.getV2Value(runtime, str,line,charpos));
 		}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -6,8 +6,8 @@ import io.github.ngspace.hudder.v2runtime.values.AV2Value;
 
 public class TestFunction implements IV2Function {
 
-	@Override
-	public Object execute(V2Runtime runtime, String functionName, AV2Value[] args) throws CompileException {
+	@Override public Object execute(V2Runtime runtime, String functionName, AV2Value[] args, int line, int charpos)
+			throws CompileException {
 		return args[0].asString() + args[1].asString();
 	}
 	

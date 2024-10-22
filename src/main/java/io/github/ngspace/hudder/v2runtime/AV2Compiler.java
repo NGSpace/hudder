@@ -24,13 +24,10 @@ public abstract class AV2Compiler extends AVarTextCompiler {
 	protected Map<String, Object> tempVariables = new HashMap<String, Object>();
 	
 	public void setTempVariable(String key, Object value) {tempVariables.put(key, value);}
-	public Object getTempVariable(String key) {return tempVariables.get(key);}// TODO finish this shit.
+	public Object getTempVariable(String key) {return tempVariables.get(key);}
 	
 	public AV2Value getV2Value(V2Runtime runtime, String string, int line, int charpos) throws CompileException {
 		return V2ValueParser.of(runtime, string, this, line, charpos);
-	}
-	public AV2Value getV2Value(V2Runtime runtime, String string) throws CompileException {
-		return getV2Value(runtime, string, -1, -1);
 	}
 	
 	@Override public final CompileResult compile(ConfigInfo info, String text) throws CompileException {
@@ -40,6 +37,7 @@ public abstract class AV2Compiler extends AVarTextCompiler {
 	}
 	public abstract V2Runtime buildRuntime(ConfigInfo info, String text, CharPosition charPosition) throws CompileException;
 	
-	@Override
-	public void reset() {runtimes.clear();variables.clear();tempVariables.clear();}
+	public void putTemp(String key, Object value) {
+		tempVariables.put(key, value);
+	}
 }

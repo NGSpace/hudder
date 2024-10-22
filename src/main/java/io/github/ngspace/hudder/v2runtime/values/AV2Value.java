@@ -1,10 +1,11 @@
 package io.github.ngspace.hudder.v2runtime.values;
 
+import java.util.List;
 import java.util.Objects;
 
-import io.github.ngspace.hudder.compilers.AVarTextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.methods.MethodValue;
+import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 
 public abstract class AV2Value extends MethodValue {
 	/**
@@ -37,17 +38,13 @@ public abstract class AV2Value extends MethodValue {
 		if (val1 instanceof Number num) {
 			dou1 = num.doubleValue();
 			boolean otherhasval = other.hasValue();
-			if (!otherhasval) {
-				dou2 = other.asDoubleSafe();
-			}
+			if (!otherhasval) dou2 = other.asDoubleSafe();
 			if (val2 instanceof Number||!otherhasval) areNums = true;
 		}
 		if (val2 instanceof Number num) {
 			dou2 = num.doubleValue();
 			boolean otherhasval = hasValue();
-			if (!otherhasval) {
-				dou1 = asDoubleSafe();
-			}
+			if (!otherhasval)  dou1 = asDoubleSafe();
 			if (val1 instanceof Number||!otherhasval) areNums = true;
 		}
 		return switch (comparisonOperator) {
@@ -84,10 +81,18 @@ public abstract class AV2Value extends MethodValue {
 		if (get instanceof String b) return b;
 		throw new CompileException(invalidTypeMessage("String", value, get), line, charpos);
 	}
+	@SuppressWarnings("unchecked")
+	@Override public List<Object> asList() throws CompileException {
+		Object get = get();
+		if (get instanceof List<?> b) return (List<Object>) b;
+		throw new CompileException(invalidTypeMessage("Array", value, get), line, charpos);
+	}
 	
 	public static String invalidTypeMessage(String type, String value, Object obj) {
 		return "Incorrect type \""+type+"\" for value: \""+value+"\" of type "+obj.getClass().getName();
 	}
 
-	public abstract void setValue(AVarTextCompiler compiler, Object value) throws CompileException;
+	public abstract void setValue(AV2Compiler compiler, Object value) throws CompileException;
+
+	public abstract boolean isConstant() throws CompileException;
 }

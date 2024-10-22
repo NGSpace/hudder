@@ -23,7 +23,8 @@ public class HudderV2Compiler extends AV2Compiler {
 	public static final int METHOD_STATE = 3;
 	public static final int HASHTAG_STATE = 4;
 
-	@Override public V2Runtime buildRuntime(ConfigInfo info, String text, CharPosition charPosition) throws CompileException {
+	@Override public V2Runtime buildRuntime(ConfigInfo info, String text, CharPosition charPosition)
+			throws CompileException {
 		V2Runtime runtime = new V2Runtime();
 		
 		StringBuilder elemBuilder = new StringBuilder();
@@ -102,9 +103,8 @@ public class HudderV2Compiler extends AV2Compiler {
 						bracketscount--;
 						if (bracketscount==0) {
 							var pos = getPosition(charPosition, savedind, text);
-							int line = pos.line;
-							int charpos = pos.charpos;
-							runtime.addRuntimeElement(new VariableV2RuntimeElement(elemBuilder.toString(), this, runtime, line, charpos));
+							runtime.addRuntimeElement(new VariableV2RuntimeElement(elemBuilder.toString(), this,
+									runtime, pos.line, pos.charpos));
 							elemBuilder.setLength(0);
 							compileState = TEXT_STATE;
 						} else elemBuilder.append(c);
@@ -124,7 +124,9 @@ public class HudderV2Compiler extends AV2Compiler {
 						case '%':
 							compileState = TEXT_STATE;
 							builder = addToArray(builder,elemBuilder.toString().trim());
-							runtime.addRuntimeElement(new BasicConditionV2RuntimeElement(builder, this, info, runtime));
+							var pos = getPosition(charPosition, savedind, text);
+							runtime.addRuntimeElement(new BasicConditionV2RuntimeElement(builder, this, info, runtime,
+									pos.line, pos.charpos));
 							elemBuilder.setLength(0);
 							break;
 						case '"':
@@ -166,7 +168,7 @@ public class HudderV2Compiler extends AV2Compiler {
 						var pos = getPosition(charPosition, savedind, text);
 						int line = pos.line;
 						int charpos = pos.charpos;
-						runtime.addRuntimeElement(new MethodV2RuntimeElement(builder, this, info, runtime, line, charpos));
+						runtime.addRuntimeElement(new MethodV2RuntimeElement(builder,this,info,runtime,line,charpos));
 						elemBuilder.setLength(0);
 						builder = new String[0];
 						cleanup = true;
@@ -225,10 +227,12 @@ public class HudderV2Compiler extends AV2Compiler {
 						break;
 					}
 					if (isWhile) {
-						runtime.addRuntimeElement(new WhileV2RuntimeElement(info, cond, cmds, this, runtime, getPosition(charPosition, savedind+1, "\n"+text)));
+						runtime.addRuntimeElement(new WhileV2RuntimeElement(info, cond, cmds, this, runtime,
+								getPosition(charPosition, savedind+1, "\n"+text)));
 						break;
 					}
-					runtime.addRuntimeElement(new IfV2RuntimeElement(info, cond, cmds, this, runtime, getPosition(charPosition, savedind+1, "\n"+text)));
+					runtime.addRuntimeElement(new IfV2RuntimeElement(info, cond, cmds, this, runtime,
+							getPosition(charPosition, savedind+1, "\n"+text)));
 					break;
 				}
 				default: throw new CompileException("Unknown compile state: " + compileState);

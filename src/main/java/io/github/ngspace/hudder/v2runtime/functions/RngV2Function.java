@@ -11,12 +11,9 @@ public class RngV2Function implements IV2Function {
 	
 	Random random = new Random();
 	HashMap<Integer, Random> randoms = new HashMap<Integer, Random>();
-	
-	@Override
-	public Object execute(V2Runtime runtime, String functionName, AV2Value[] args) throws CompileException {
-		if (args.length<2) throw new CompileException("Too little parameters for "+functionName+"!");
-		if (args.length>3) throw new CompileException("Too many parameters for "+functionName+"!");
-		
+
+	@Override public Object execute(V2Runtime runtime, String functionName, AV2Value[] args, int line, int charpos)
+			throws CompileException {
 		return (args.length==3? new Random(args[2].asInt()) : random).nextDouble(args[0].asDouble(),args[1].asDouble());
 	}
 	

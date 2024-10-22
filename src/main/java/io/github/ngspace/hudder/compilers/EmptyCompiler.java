@@ -10,5 +10,5 @@ public class EmptyCompiler extends ATextCompiler {
 
 	@Override public Object getVariable(String key) throws CompileException {return null;}
 
-	@Override public void reset() {/*Do nothin*/}
+//	@Override public void reset() {/*Do nothin*/}
 }

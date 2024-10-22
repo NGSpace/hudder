@@ -59,7 +59,7 @@ public class MethodHandler {
 		register((c,m,a,t,l,ch,s)->Hudder.log(s[0].asString()),1, TextArg, "log");
 		register((c,m,a,t,l,ch,s)->Hudder.warn(s[0].asString()),1, TextArg, "warn");
 		register((c,m,a,t,l,ch,s)->Hudder.error(s[0].asString()),1, TextArg, "error");
-		register((c,m,a,t,l,ch,s)->{throw new CompileException(s[0].asString());},1, TextArg, "throw");
+		register((c,m,a,t,l,ch,s)->{throw new CompileException(s[0].asString(),l,ch);},1, TextArg, "throw");
 		
 		
 		
@@ -88,7 +88,7 @@ public class MethodHandler {
 				String err='"'+name+"\" only accepts ;"+name+"";
 				for(String str:args)err+=", "+ str;
 				err+=';';
-				throw new CompileException(err);
+				throw new CompileException(err,l,c);
 			}
 			method.invoke(config,meta,compiler,name,l,c,vals);
 		};

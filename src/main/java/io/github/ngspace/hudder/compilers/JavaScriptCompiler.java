@@ -303,5 +303,4 @@ public class JavaScriptCompiler extends AVarTextCompiler {
 	 * @param <E> any exception this consumer might throw.
 	 */
 	@FunctionalInterface public static interface Cons<E extends Exception> extends NoThisAndNoResult<E> {}
-	@Override public void reset() {cache.clear();variables.clear();}
 }
