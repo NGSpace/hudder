@@ -61,7 +61,7 @@ public class GameHudElement extends AUIElement {
 				        TextRenderer textRenderer = ins.textRenderer;
 			    		int jj = ins.player.experienceLevel;
 			    		if (ins.interactionManager.hasExperienceBar() && jj > 0) {
-			    			ins.getProfiler().push("expLevel");
+//			    			ins.getProfiler().push("expLevel");
 			    			String string = "" + jj;
 			    			int j = (context.getScaledWindowWidth() - textRenderer.getWidth(string)) / 2;
 			    			int k = context.getScaledWindowHeight() - 31 - 8;
@@ -70,7 +70,7 @@ public class GameHudElement extends AUIElement {
 			    			context.drawText(textRenderer, string, j, k + 1, 0, false);
 			    			context.drawText(textRenderer, string, j, k - 1, 0, false);
 			    			context.drawText(textRenderer, string, j, k, 8453920, false);
-			    			ins.getProfiler().pop();
+//			    			ins.getProfileKeys().pop();
 			    		}
 				        acchud.callRenderExperienceBar(context, i);
 		            }

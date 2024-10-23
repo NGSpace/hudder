@@ -149,7 +149,7 @@ public class JavaScriptCompiler extends AVarTextCompiler {
 		bindConsumer(gb, s->JavaScriptIO.log(s[0].asString()), "log");
 		bindConsumer(gb, s->JavaScriptIO.warn(s[0].asString()), "warn");
 		bindConsumer(gb, s->JavaScriptIO.error(s[0].asString()), "error");
-		bindConsumer(gb, s->JavaScriptIO.alert(Text.of(s[0].asString())), "alert");
+		bindConsumer(gb, s->JavaScriptIO.alert(s[0].asString()), "alert");
 		
 		//Getters
 		
@@ -210,7 +210,7 @@ public class JavaScriptCompiler extends AVarTextCompiler {
     	
     	bindFunction(gb, s-> {
     		try {
-    			boolean ex = HudFileUtils.exists(HudFileUtils.FOLDER + s[0].asString());
+    			boolean ex = HudFileUtils.exists(s[0].asString());
     			if (!ex) return false;
         		Identifier id = Identifier.of(s[0].asString().trim().toLowerCase());
         		HudFileUtils.getAndRegisterImage(s[0].asString(),id);
