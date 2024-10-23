@@ -1,2 +1,1 @@
-# web
-My little website.
+Hudder wiki

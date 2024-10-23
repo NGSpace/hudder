@@ -70,15 +70,6 @@
 <code>;run, [String filename], &#60;Boolean addText&#62;, &#60;String compiler&#62;; - Compile the provided file with the provided compiler, if "addText" is set to true then it will combine the result with the current file, UI Elements get combined whether addText is true or false.
 </code>
 
-<h3>Inventory information</h3>
-
-<code>;name, [Number slot], [String variable]; - Sets the value of the provided variable to the name of the item in the provided slot.
-;durability, [Number slot], [String variable]; - Sets the value of the provided variable to the durability of the item in the provided slot.
-;maxdurability, [Number slot], [String variable]; - Sets the value of the provided variable to the max durability of the item in the provided slot.
-;count, [Number slot], [String variable]; - Sets the value of the provided variable to the item count of the item in the provided slot.
-;maxcount, [Number slot], [String variable]; - Sets the value of the provided variable to the max item count of the item in the provided slot.
-</code>
-
 <h1>Deprecated methods</h1>
 <hr><br>
 <warning>All deprecated methods will be or have been removed (Solutions will be provided)</warning>
@@ -99,6 +90,21 @@ Deprecated in version 5.0.0, not yet removed (Use the concat Function)
 
 ;substring, [String string], [Number start], [Number end], [String variable]; - Cuts the string at the provided start and end points and places the result into the provided variable.multiplystring
 Deprecated in version 5.0.0, not yet removed (Use the substring Function)
+
+;name, [Number slot], [String variable]; - Sets the value of the provided variable to the name of the item in the provided slot.
+Deprecated in version 5.5.0, not yet removed (Use the itemname Function)
+
+;durability, [Number slot], [String variable]; - Sets the value of the provided variable to the durability of the item in the provided slot.
+Deprecated in version 5.5.0, not yet removed (Use the itemdurability Function)
+
+;maxdurability, [Number slot], [String variable]; - Sets the value of the provided variable to the max durability of the item in the provided slot.
+Deprecated in version 5.5.0, not yet removed (Use the itemmaxdurability Function)
+
+;count, [Number slot], [String variable]; - Sets the value of the provided variable to the item count of the item in the provided slot.
+Deprecated in version 5.5.0, not yet removed (Use the itemcount Function)
+
+;maxcount, [Number slot], [String variable]; - Sets the value of the provided variable to the max item count of the item in the provided slot.
+Deprecated in version 5.5.0, not yet removed (Use the itemmaxcount Function)
 </code>
 <br><br><br>
 </body>
