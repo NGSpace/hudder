@@ -210,7 +210,7 @@ public class JavaScriptCompiler extends AVarTextCompiler {
     	
     	bindFunction(gb, s-> {
     		try {
-    			boolean ex = HudFileUtils.exists(HudFileUtils.FOLDER + s[0].asString());
+    			boolean ex = HudFileUtils.exists(s[0].asString());
     			if (!ex) return false;
         		Identifier id = Identifier.of(s[0].asString().trim().toLowerCase());
         		HudFileUtils.getAndRegisterImage(s[0].asString(),id);
