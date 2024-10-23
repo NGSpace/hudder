@@ -1,6 +1,5 @@
 package io.github.ngspace.hudder.methods.elements;
 
-import io.github.ngspace.hudder.Hudder;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.util.math.MatrixStack;
@@ -30,11 +29,11 @@ public class ItemElement extends AUIElement {
             matrixStack.scale(scale, scale, scale);
             matrixStack.translate(-x, -y, 0);
         	context.drawItem(stack, (int)x, (int)y);
-        	if (showcount) context.drawItemInSlot(Hudder.ins.textRenderer,stack, (int)x, (int)y);
+        	if (showcount) context.drawItem(stack, (int)x, (int)y);
             matrixStack.pop();
         } else {
         	context.drawItem(stack, (int)x, (int)y);
-        	if (showcount) context.drawItemInSlot(Hudder.ins.textRenderer,stack, (int)x, (int)y);
+        	if (showcount) context.drawItem(stack, (int)x, (int)y);
         }
 	}
 }

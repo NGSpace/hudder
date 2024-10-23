@@ -41,7 +41,6 @@ public class HudFileUtils {private HudFileUtils() {}
 		return f;
 	}
 	public static boolean exists(String file) {
-		System.out.println(file);
 		return new File(FOLDER + sanitize(file)).exists();
 	}
 }

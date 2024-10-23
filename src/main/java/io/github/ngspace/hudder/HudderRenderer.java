@@ -8,10 +8,10 @@ import io.github.ngspace.hudder.compilers.utils.CompileResult;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.methods.elements.AUIElement;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
@@ -95,7 +95,6 @@ public class HudderRenderer {
 			renderBlock(context,x-1f,y-1f,Hudder.ins.textRenderer.getWidth(text)+2f,9f+1f,backgroundColor);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         if (scale != 1.0f) {
             MatrixStack matrixStack = context.getMatrices();
             matrixStack.push();
@@ -111,7 +110,8 @@ public class HudderRenderer {
 	public void renderBlock(DrawContext context, float x, float y, float width, float height, long rgb) {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+//        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+		RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
         int alpha = (int) ((rgb >> 24) & 0xFF);
         int red =   (int) ((rgb >> 16) & 0xFF);
         int green = (int) ((rgb >>  8) & 0xFF);
@@ -123,9 +123,7 @@ public class HudderRenderer {
         bgBuilder.vertex(matrix, x+width, y+height, 0f).color(red,green,blue,alpha);
         bgBuilder.vertex(matrix, x+width, y, 0f).color(red,green,blue,alpha);
         bgBuilder.vertex(matrix, x, y, 0f).color(red,green,blue,alpha);
-        RenderSystem.resetTextureMatrix();
         BufferRenderer.drawWithGlobalProgram(bgBuilder.end());
-        BufferRenderer.reset();
         RenderSystem.disableBlend();
 //		System.out.println(color);
 //		System.out.println(0xff7e6da8);

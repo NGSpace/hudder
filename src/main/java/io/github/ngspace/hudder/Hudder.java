@@ -260,5 +260,5 @@ public class Hudder implements ModInitializer {
 	public static void warn (Object str) {LOGGER.warn (String.valueOf(str));}
 	public static void error(Object str) {LOGGER.error(String.valueOf(str));}
 	public static void debug(Object str) {LOGGER.debug(String.valueOf(str));}
-	public static void alert(Object str) {ins.player.sendMessage(Text.of(String.valueOf(str)));}
+	public static void alert(Object str) {ins.player.sendMessage(Text.of(String.valueOf(str)),false);}
 }

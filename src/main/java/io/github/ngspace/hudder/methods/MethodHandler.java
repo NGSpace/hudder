@@ -55,7 +55,7 @@ public class MethodHandler {
 		
 		
 		//Logging and errors
-		register((c,m,a,t,l,ch,s)->Hudder.ins.player.sendMessage(Text.of(s[0].asString())),1, TextArg, "alert");
+		register((c,m,a,t,l,ch,s)->Hudder.ins.player.sendMessage(Text.of(s[0].asString()),false),1, TextArg, "alert");
 		register((c,m,a,t,l,ch,s)->Hudder.log(s[0].asString()),1, TextArg, "log");
 		register((c,m,a,t,l,ch,s)->Hudder.warn(s[0].asString()),1, TextArg, "warn");
 		register((c,m,a,t,l,ch,s)->Hudder.error(s[0].asString()),1, TextArg, "error");

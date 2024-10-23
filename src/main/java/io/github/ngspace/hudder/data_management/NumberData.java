@@ -19,6 +19,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.world.LightType;
 import net.minecraft.world.World;
@@ -69,8 +70,9 @@ public class NumberData {private NumberData() {}
 			/* Food and health */
 			case "saturation": yield (double) p.getHungerManager().getSaturationLevel();
 			case "hunger": yield (double) p.getHungerManager().getFoodLevel();
-			case "previoushunger": yield (double) p.getHungerManager().getPrevFoodLevel();
-			case "exhaustion": yield (double) p.getHungerManager().getExhaustion();
+			// TODO Find this
+//			case "previoushunger": yield (double) p.getHungerManager().getFoodLevel();
+//			case "exhaustion": yield (double) p.getHungerManager().writeNbt(new NbtCompound()); foodExhaustionLevel
 			
 			case "health", "hp": yield (double) p.getHealth();
 			case "maxhealth", "maxhp": yield (double) p.getMaxHealth();
@@ -115,7 +117,8 @@ public class NumberData {private NumberData() {}
 			
 
 			/* World Rendering */
-			case "entites": yield (double) ((WorldRendererAccess)wr).getRegularEntityCount();
+			//TODO Fix this
+//			case "entites": yield (double) ((WorldRendererAccess)wr).getRegularEntityCount();
 			case "particles": yield (double) ((ParticleManagerAccessor)ins.particleManager)
 				.getParticles().values().stream().mapToInt(Collection::size).sum();
 			case "chunks": yield wr.getChunkCount();
