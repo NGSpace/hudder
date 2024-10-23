@@ -29,6 +29,38 @@ Basic Bitch Test
 ||EXPECT||
 ong
 
+||INPUT||Array length
+{length([1,"4"])}
+||EXPECT||
+2
+
+||INPUT||2D Arrays
+{2darr=[[0,1],[2,3]]}
+{2darr[1][0]}
+{2darr[1][1]=4}
+{2darr}
+||EXPECT||
+[[0.0, 1.0], [2.0, 3.0]]
+2
+4
+[[0.0, 1.0], [2.0, 4.0]]
+
+||INPUT||Fibonacci
+;mute;
+{r=""}
+{N=0}
+{num1=0}{num2=1}
+#while N<20
+	{N=N+1}
+	{r=concat(r, concat(str(num1,true)," "))}
+	{num3=num2+num1}
+	{num1=num2}
+	{num2=num3}
+;topleft,1;
+{r}
+||EXPECT||
+0 1 1 2 3 5 8 13 21 34 55 89 144 233 377 610 987 1597 2584 4181 
+
 ||INPUT||Text repeat
 {repeat("Repeat", 2)}
 ||EXPECT||
@@ -94,14 +126,16 @@ CaSE SenSitive CaSE SenSitive CaSE SenSitive
 &6PING: &220
 
 ||INPUT||Putall method
-#def putall, string, number, boolean
-	{str=arg1}
-	{num=arg2}
-	{bool=arg3}
-;putall, "text", 10, false;
-{str} {num} {bool}
+#def putall, string, number, boolean, array, any
+	{str=int(arg1)}
+	{num=str(arg2)}
+	{bool=arg3==false}
+	{array=arg4[0]}
+	{any=arg5}
+;putall, "1", 10, true, ["yes","no"], "no";
+{str} {num} {bool} {array} {any}
 ||EXPECT||
-text 10 false
+1 10.0 false yes no
 
 ||INPUT||Divide method
 #def divide, number, number

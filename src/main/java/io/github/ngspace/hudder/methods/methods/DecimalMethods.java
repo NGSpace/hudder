@@ -17,10 +17,10 @@ public class DecimalMethods implements IMethod {
 		return "Use truncate function";
 	}
 	@Override
-	public void invoke(ConfigInfo ci, CompileState meta, ATextCompiler comp, String type, MethodValue... args)
+	public void invoke(ConfigInfo ci, CompileState meta, ATextCompiler comp, String type, int line, int charpos, MethodValue... args)
 			throws CompileException {
 		if (args.length!=2)
-			throw new CompileException("\""+type+"\" only accepts ;"+type+",[Variable],[max decimal point];");
+			throw new CompileException("\""+type+"\" only accepts ;"+type+",[Variable],[max decimal point];", line, charpos);
 		double point = args[1].asDouble();
 		double d /*hehe double d*/ = args[0].asDouble();
 		double pow = Math.pow(10, point);

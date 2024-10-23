@@ -5,5 +5,5 @@ import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import io.github.ngspace.hudder.v2runtime.values.AV2Value;
 
 public interface IV2Function {
-	public Object execute(V2Runtime runtime, String functionName, AV2Value[] args) throws CompileException;
+	public Object execute(V2Runtime runtime, String functionName, AV2Value[] args, int line, int charpos) throws CompileException;
 }

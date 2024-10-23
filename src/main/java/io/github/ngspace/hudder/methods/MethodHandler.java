@@ -13,10 +13,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import io.github.ngspace.hudder.Hudder;
-import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
-import io.github.ngspace.hudder.compilers.utils.CompileState;
-import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.methods.methods.DecimalMethods;
 import io.github.ngspace.hudder.methods.methods.GUIMethods;
 import io.github.ngspace.hudder.methods.methods.IMethod;
@@ -41,20 +38,9 @@ public class MethodHandler {
 		
 		
 		//Text and compiling
-		register((i,m,c,type,args)->m.setTextLocation(type,(float) (args.length>0?args[0].asDouble():i.scale)),
+		register((c,m,a,t,l,ch,s)->m.setTextLocation(t,(float) (s.length>0?s[0].asDouble():c.scale)),
 				BOTTOMRIGHT, TOPLEFT, TOPRIGHT, BOTTOMLEFT, MUTE);
 		register(new TextMethod(), "text");
-		
-		// TODO remove this clusterfuck of a method (After 5.0.0)
-		
-		register(new IMethod() {
-			@Override public boolean isDeprecated(String name) {return true;}
-			@Override public void invoke(ConfigInfo info, CompileState m, ATextCompiler a, String t, MethodValue... s)
-					throws CompileException {
-				a.put(s[1].getAbsoluteValue(), Hudder.ins.textRenderer.getWidth(s[0].asString()));
-			}
-		}, 2, new String[] {"[Text]",Var[0]}, "strwidth");
-		
 		
 		
 		//UI
@@ -69,11 +55,11 @@ public class MethodHandler {
 		
 		
 		//Logging and errors
-		register((c,m,a,t,s)->Hudder.ins.player.sendMessage(Text.of(s[0].asString())),1, TextArg, "alert");
-		register((c,m,a,t,s)->Hudder.log(s[0].asString()),1, TextArg, "log");
-		register((c,m,a,t,s)->Hudder.warn(s[0].asString()),1, TextArg, "warn");
-		register((c,m,a,t,s)->Hudder.error(s[0].asString()),1, TextArg, "error");
-		register((c,m,a,t,s)->{throw new CompileException(s[0].asString());},1, TextArg, "throw");
+		register((c,m,a,t,l,ch,s)->Hudder.ins.player.sendMessage(Text.of(s[0].asString())),1, TextArg, "alert");
+		register((c,m,a,t,l,ch,s)->Hudder.log(s[0].asString()),1, TextArg, "log");
+		register((c,m,a,t,l,ch,s)->Hudder.warn(s[0].asString()),1, TextArg, "warn");
+		register((c,m,a,t,l,ch,s)->Hudder.error(s[0].asString()),1, TextArg, "error");
+		register((c,m,a,t,l,ch,s)->{throw new CompileException(s[0].asString(),l,ch);},1, TextArg, "throw");
 		
 		
 		
@@ -96,47 +82,16 @@ public class MethodHandler {
 	public void register(IMethod method, String... names) {for(String name:names)methods.put(name,method);}
 	
 	public void register(IMethod method, int length, String[] args, String... names) {
-		IMethod newmethod = (config,meta,compiler,name,vals)->{
-			
+		IMethod newmethod = (config,meta,compiler,name,l,c,vals) -> {
 			if (vals.length<length) {
 				String err='"'+name+"\" only accepts ;"+name+"";
 				for(String str:args)err+=", "+ str;
 				err+=';';
-				throw new CompileException(err);
+				throw new CompileException(err,l,c);
 			}
-			method.invoke(config,meta,compiler,name,vals);
+			method.invoke(config,meta,compiler,name,l,c,vals);
 		};
 		for (String name : names) methods.put(name,newmethod);
-	}
-	
-	@SuppressWarnings("removal")
-	public void register(String method, String[] argtypes, String name) {
-		int[] parameters = new int[argtypes.length];
-		for (int i = 0;i<argtypes.length;i++) {
-			if ("string".equals(argtypes[i])) parameters[i] = 1;
-			else if ("number".equals(argtypes[i])) parameters[i] = 2;
-			else if ("boolean".equals(argtypes[i])) parameters[i] = 3;
-			else if ("string_safe".equals(argtypes[i])) parameters[i] = 4;
-			else if ("number_safe".equals(argtypes[i])) parameters[i] = 5;
-			else if ("boolean_safe".equals(argtypes[i])) parameters[i] = 6;
-		}
-		String errb = '"'+name+"\" only accepts ;"+name+"";
-		for (String arg : argtypes) errb += ", [" + arg + "]";
-		errb+=';';
-		String err = errb;
-		IMethod newmethod = (info,state,comp,type,vals) -> {
-			if (vals.length!=argtypes.length) throw new CompileException(err);
-			for (int i = 0;i<vals.length;i++) {
-				if      (parameters[i]==1) comp.put("arg"+(i+1), vals[i].asString());
-				else if (parameters[i]==2) comp.put("arg"+(i+1), vals[i].asDouble());
-				else if (parameters[i]==3) comp.put("arg"+(i+1), vals[i].asBoolean());
-				else if (parameters[i]==4) comp.put("arg"+(i+1), vals[i].asStringSafe());
-				else if (parameters[i]==5) comp.put("arg"+(i+1), vals[i].asDoubleSafe());
-				else if (parameters[i]==6) comp.put("arg"+(i+1), vals[i].asBooleanSafe());
-			}
-			state.combineWithResult(comp.compile(info, method), false);
-		};
-		methods.put(name,newmethod);
 	}
 	
 	
@@ -150,5 +105,44 @@ public class MethodHandler {
 		IMethod method = methods.get(name.toLowerCase());
 		if (method==null) throw new CompileException("Unknown method " + name);
 		return method;
+	}
+
+
+	@SuppressWarnings("removal")
+	public void register(String method, String[] argtypes, String name, int defline, int defcharpos) {
+		int[] parameters = new int[argtypes.length];
+		for (int i = 0;i<argtypes.length;i++) {
+			if ("string".equals(argtypes[i])) parameters[i] = 1;
+			else if ("number".equals(argtypes[i])) parameters[i] = 2;
+			else if ("boolean".equals(argtypes[i])) parameters[i] = 3;
+			else if ("string_safe".equals(argtypes[i])) parameters[i] = 4;
+			else if ("number_safe".equals(argtypes[i])) parameters[i] = 5;
+			else if ("boolean_safe".equals(argtypes[i])) parameters[i] = 6;
+			else if ("array".equals(argtypes[i])) parameters[i] = 7;
+			else if ("any".equals(argtypes[i])) parameters[i] = 8;
+		}
+		String errb = '"'+name+"\" only accepts ;"+name+"";
+		for (String arg : argtypes) errb += ", [" + arg + "]";
+		errb+=';';
+		String err = errb;
+		IMethod newmethod = (info,state,comp,type,line,charpos,vals) -> {
+			if (vals.length!=argtypes.length) throw new CompileException(err, defline, defcharpos);
+			for (int i = 0;i<vals.length;i++) {
+				if      (parameters[i]==1) comp.put("arg"+(i+1), vals[i].asString());
+				else if (parameters[i]==2) comp.put("arg"+(i+1), vals[i].asDouble());
+				else if (parameters[i]==3) comp.put("arg"+(i+1), vals[i].asBoolean());
+				else if (parameters[i]==4) comp.put("arg"+(i+1), vals[i].asStringSafe());
+				else if (parameters[i]==5) comp.put("arg"+(i+1), vals[i].asDoubleSafe());
+				else if (parameters[i]==6) comp.put("arg"+(i+1), vals[i].asBooleanSafe());
+				else if (parameters[i]==7) comp.put("arg"+(i+1), vals[i].asList());
+				else if (parameters[i]==8) comp.put("arg"+(i+1), vals[i].get());
+			}
+			try {
+				state.combineWithResult(comp.compile(info, method), false);
+			} catch (CompileException e) {
+				throw new CompileException(e.getFailureMessage() +"\nMethod threw an error " + type, line, charpos);
+			}
+		};
+		methods.put(name,newmethod);
 	}
 }

@@ -9,38 +9,60 @@ import io.github.ngspace.hudder.v2runtime.V2Runtime;
 
 public class V2ValueParser {private V2ValueParser() {}
 	
-	//Only after writing 80% of the values did I realize having one class that is all values is bad, I tried to
-	//lower the burden but as you can see it's too late, the damage has already been done... maybe in a later update...
-	public static AV2Value of(V2Runtime runtime, String valuee, AV2Compiler compiler) throws CompileException {
+	public static AV2Value of(V2Runtime runtime, String valuee, AV2Compiler compiler, int line, int charpos)
+			throws CompileException {
+		
+		
 		String value = valuee.trim();
 		AV2Value temp = null;
 		
+		if (value.startsWith("(")&&value.endsWith(")"))
+			return compiler.getV2Value(runtime, value.substring(1, value.length()-1), line, charpos);
 		
 		//Double constant
-		try {return new V2Number(Double.parseDouble(value));} catch (Exception e) {/*Do Nothin*/}
-		
+		if (value.matches("((0x|#)[\\daAbBcCdDeEfF]+|[-+]*\\d*(\\.?(\\d+)?))"))
+			return new V2Number(value, line, charpos);
 
-		if (value.equalsIgnoreCase("false")) return new V2Boolean(false, compiler);
-		if (value.equalsIgnoreCase("true")) return new V2Boolean(true, compiler);
+		if (value.equalsIgnoreCase("false")) return new V2Boolean(false, compiler, line, charpos);
+		if (value.equalsIgnoreCase("true")) return new V2Boolean(true, compiler, line, charpos);
 		
 		
 		//String constant
-		if ((temp = string(value, compiler))!=null) return temp;
+		if ((temp = string(value, compiler, line, charpos))!=null) return temp;
 		
+		//Array constant
+		if (value.matches("\\[[\\s\\S]*\\]"))
+			return new V2Array(HudderUtils.processParemeters(value.substring(1, value.length()-1).replace("\n", "")),
+					compiler, runtime, line, charpos);
 		
 		//Set variable
 		String[] setValues = value.split("=",2);
 		if (setValues.length==2&&!compiler.isCondition(value)) 
-			return new V2SetValue(setValues[0].toLowerCase(), compiler.getV2Value(runtime, setValues[1]), compiler);
+			return new V2SetValue(compiler.getV2Value(runtime, setValues[0].toLowerCase(),line,charpos),
+					compiler.getV2Value(runtime, setValues[1], line, charpos), compiler, line, charpos);
 		
+		
+		boolean matchesVariableRegex = value.matches("[A-Za-z\\d][A-Za-z\\d_]*");
 		
 		//System variable
-		if (compiler.isSystemVariable(value.toLowerCase())) return new V2SystemVar(value.toLowerCase(), compiler);
+		if (matchesVariableRegex&&compiler.isSystemVariable(value.toLowerCase()))
+			return new V2SystemVar(value, compiler, line, charpos);
 		
 		
 		//Dynamic variable
-		if (compiler.isDynamicVariable(value.toLowerCase())) return new V2DynamicVar(value.toLowerCase(), compiler);
+		if (matchesVariableRegex) return new V2DynamicVar(value, compiler, line, charpos);
 		
+		
+		//Temp dynamic variable
+		if (value.matches("_[A-Za-z\\d_]*")) return new V2TempDynamicVar(value, compiler, line, charpos);
+		
+		
+		//Read Array
+		if (value.matches(".+ *\\[.+\\]"))
+			return new V2ArrayRead(value, compiler, runtime, line, charpos);
+		
+		
+		//Function variable
 		if (!value.startsWith("(")&&value.endsWith(")")) {
 			int argStart = value.indexOf("(");
 			if (argStart!=-1) {
@@ -49,9 +71,17 @@ public class V2ValueParser {private V2ValueParser() {}
 					String parametersString = value.substring(argStart+1, value.length()-1);
 					String[] tokenizedArgs = HudderUtils.processParemeters(parametersString);
 					
-					return new V2FunctionVar(runtime, compiler, funcName, tokenizedArgs);
+					return new V2FunctionVar(runtime, compiler, funcName, tokenizedArgs, line, charpos);
 				}
 			}
+		}
+		
+		//Comparing values
+		var operator = compiler.getOperator(value);
+		if (operator!=null) {
+			var v = value.split(operator,2);
+			return new V2Comparison(compiler.getV2Value(runtime, v[0].trim(), line, charpos),
+					compiler.getV2Value(runtime, v[1].trim(), line, charpos), operator, line, charpos);
 		}
 		
 		
@@ -88,7 +118,7 @@ public class V2ValueParser {private V2ValueParser() {}
 				continue;
 			}
 			if (c=='+'||c=='-'||c=='*'||c=='/'||c=='%') {
-				values = addToArray(values, compiler.getV2Value(runtime, mathvalue.toString()));
+				values = addToArray(values, compiler.getV2Value(runtime, mathvalue.toString(), line, charpos));
 				operations = addToArray(operations, c);
 				mathvalue.setLength(0);
 				continue;
@@ -96,19 +126,15 @@ public class V2ValueParser {private V2ValueParser() {}
 			mathvalue.append(c);
 		}
 		if (values.length>0) {
-			values = addToArray(values, compiler.getV2Value(runtime, mathvalue.toString()));
-			return new V2MathOperation(values,operations);
+			values = addToArray(values, compiler.getV2Value(runtime, mathvalue.toString(), line, charpos));
+			return new V2MathOperation(values,operations, line, charpos);
 		}
 		
-		//Comparing values
-		var operator = compiler.getOperator(value);
-		var v = value.split(operator,2);
-		return new V2Comparison(compiler.getV2Value(runtime, v[0].trim()), compiler.getV2Value(runtime, v[1].trim()), operator);
-		
 		// Fallback
+		throw new CompileException("Unknown variable: " + value, line, charpos);
 	}
 	
-	private static V2String string(String value, AV2Compiler compiler) {
+	private static V2String string(String value, AV2Compiler compiler, int line, int charpos) {
 		//Maybe String :)
 		if (!value.startsWith("\"")||!value.endsWith("\"")) return null;
 		
@@ -119,6 +145,10 @@ public class V2ValueParser {private V2ValueParser() {}
 		boolean safe = false;
 		for (int i = 0;i<value.length();i++) {
 			c = value.charAt(i);
+			if (c=='n'&&safe) {
+				string.append('\n');
+				continue;
+			}
 			if (c=='\\'&&!safe) safe = true;
 			else {
 				if (c=='"'&&!safe) return null; //Not String ;_;
@@ -127,7 +157,7 @@ public class V2ValueParser {private V2ValueParser() {}
 			}
 		}
 		//String! :D
-		return new V2String(string.toString(), compiler);
+		return new V2String(string.toString(), compiler, line, charpos);
 	}
 	
 	private static <T> T[] addToArray(T[] arr, T t) {

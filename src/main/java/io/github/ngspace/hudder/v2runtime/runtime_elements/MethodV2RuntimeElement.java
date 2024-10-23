@@ -21,22 +21,26 @@ public class MethodV2RuntimeElement extends AV2RuntimeElement {
 	private AV2Compiler compiler;
 	private ConfigInfo info;
 	private IMethod method;
+	private int line;
+	private int charpos;
 
-	public MethodV2RuntimeElement(String[] args, AV2Compiler compiler, ConfigInfo info, V2Runtime runtime) throws CompileException {
+	public MethodV2RuntimeElement(String[] args, AV2Compiler compiler, ConfigInfo info, V2Runtime runtime, int line, int charpos) throws CompileException {
 		this.compiler = compiler;
 		this.info = info;
 		type = args[0];
 		for (int i = 1;i<args.length;i++) {
 			values = Arrays.copyOf(values, values.length+1);
-			values[values.length-1] = compiler.getV2Value(runtime, args[i]);
+			values[values.length-1] = compiler.getV2Value(runtime, args[i], line, charpos);
 		}
-		method = runtime.methodHandler.getMethodFromName(type);
+		method = compiler.methodHandler.getMethodFromName(type);
 		if (method.isDeprecated(type)) {
 			Hudder.showWarningToast(MinecraftClient.getInstance(), Text.literal(type+" method is Deprecated!")
 					.formatted(Formatting.BOLD), Text.literal("\u00A7a" + method.getDeprecationWarning(type)));
 		}
+		this.line = line;
+		this.charpos = charpos;
 	}
 	@Override public void execute(CompileState meta, StringBuilder builder) throws CompileException {
-		method.invoke(info, meta, compiler, type, values);
+		method.invoke(info, meta, compiler, type, line, charpos, values);
 	}
 }

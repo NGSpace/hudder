@@ -14,6 +14,4 @@ public class UnaccessableTestCompiler extends ATextCompiler {
 		//I made a typo... I am keeping this here...
 		return "Advanchment unlocked: How did we get here?";
 	}
-
-	@Override public void reset() {/*Do nothin*/}
 }

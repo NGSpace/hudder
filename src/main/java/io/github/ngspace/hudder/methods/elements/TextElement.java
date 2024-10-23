@@ -12,13 +12,13 @@ public class TextElement extends AUIElement {
 	public final int x;
 	public final int y;
 	public final int color;
-	public final int backgroundcolor;
+	public final long backgroundcolor;
 	public final float scale;
 	public final boolean shadow;
 	public final boolean background;
 
 	public TextElement(int x, int y, String text, float scale, int color, boolean shadow,boolean background,
-			int backgroundcolor) {
+			long backgroundcolor) {
 		this.text = text;
 		this.x = x;
 		this.y = y;

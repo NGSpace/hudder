@@ -39,11 +39,6 @@ public abstract class AVarTextCompiler extends ATextCompiler {
 		return null;
 	}
 
-	public boolean isDynamicVariable(String key) {
-		return getSystemVariable(key)==null&&getOperator(key)==null&&!key.contains("+")&&!key.contains("-")
-				&&!key.contains("/")&&!key.contains("*")&&!key.contains("%")&&!key.contains("=")&&!key.contains("(")
-				&&!key.contains(")");
-	}
 	public Object getDynamicVariable(String key) {
 		Object obj = get(key);
 		if (obj!=null) return obj;

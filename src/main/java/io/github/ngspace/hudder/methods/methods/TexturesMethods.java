@@ -13,7 +13,7 @@ import net.minecraft.util.Identifier;
 
 public class TexturesMethods implements IMethod {
 
-	@Override public void invoke(ConfigInfo i, CompileState m, ATextCompiler c, String type, MethodValue... s) throws CompileException {
+	@Override public void invoke(ConfigInfo i, CompileState m, ATextCompiler c, String type, int line, int charpos, MethodValue... s) throws CompileException {
 		switch (type) {
 			case "image","png":
         		try {
@@ -23,7 +23,7 @@ public class TexturesMethods implements IMethod {
 					HudFileUtils.getAndRegisterImage(s[0].asString(),id);
 	        		m.elements.add(new TextureElement(id,s[1].asInt(),s[2].asInt(),s[3].asInt(),s[4].asInt()));
 				} catch (IOException e) {
-					throw new CompileException(e.getLocalizedMessage());
+					throw new CompileException(e.getLocalizedMessage(), line, charpos);
 				}
 				break;	
 			case "texture":

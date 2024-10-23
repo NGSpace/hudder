@@ -10,8 +10,8 @@ import io.github.ngspace.hudder.methods.elements.GameHudElement.GuiType;
 
 public class GUIMethods implements IMethod {
 	@Override
-	public void invoke(ConfigInfo conf, CompileState meta, ATextCompiler comp, String type, MethodValue... s) throws CompileException {
-		if (s.length!=2) throw new CompileException("\""+type+"\" only accepts ;"+type+", [X], [Y];");
+	public void invoke(ConfigInfo conf, CompileState meta, ATextCompiler comp, String type, int line, int charpos, MethodValue... s) throws CompileException {
+		if (s.length!=2) throw new CompileException("\""+type+"\" only accepts ;"+type+", [X], [Y];", line, charpos);
 		int x = s[0].asInt();
 		int y = s[1].asInt();
 		GuiType guiType = switch (type) {

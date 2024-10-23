@@ -25,6 +25,7 @@ public class ConfigInfo {
 	
 	/* EXPOSED :flushed: */
 	@Expose public Map<String, Object> globalVariables = new HashMap<String, Object>();
+	@Expose public Map<String, Object> savedVariables = new HashMap<String, Object>();
     @Expose public String compilertype = "hudder";
 	@Expose public String mainfile = "tutorial";
     @Expose public boolean enabled = true;
@@ -40,7 +41,7 @@ public class ConfigInfo {
 	@Expose public int methodBuffer = 2;
 	//V3.0.0
 	@Expose public int backgroundcolor = 0x86353535;
-	@Expose public boolean background = false;
+	@Expose public boolean background = true;
 	@Expose public boolean removegui = false;
 	@Expose public boolean limitrate = true;
 	/**
