@@ -126,14 +126,16 @@ CaSE SenSitive CaSE SenSitive CaSE SenSitive
 &6PING: &220
 
 ||INPUT||Putall method
-#def putall, string, number, boolean
-	{str=arg1}
-	{num=arg2}
-	{bool=arg3}
-;putall, "text", 10, false;
-{str} {num} {bool}
+#def putall, string, number, boolean, array, any
+	{str=int(arg1)}
+	{num=str(arg2)}
+	{bool=arg3==false}
+	{array=arg4[0]}
+	{any=arg5}
+;putall, "1", 10, true, ["yes","no"], "no";
+{str} {num} {bool} {array} {any}
 ||EXPECT||
-text 10 false
+1 10.0 false yes no
 
 ||INPUT||Divide method
 #def divide, number, number

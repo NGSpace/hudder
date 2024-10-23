@@ -20,7 +20,7 @@ public class V2ValueParser {private V2ValueParser() {}
 			return compiler.getV2Value(runtime, value.substring(1, value.length()-1), line, charpos);
 		
 		//Double constant
-		if (value.matches("((0x|#)[\\daAbBcCdDeEfF]+|[-+]*\\d+(\\.?(\\d+)?))"))
+		if (value.matches("((0x|#)[\\daAbBcCdDeEfF]+|[-+]*\\d*(\\.?(\\d+)?))"))
 			return new V2Number(value, line, charpos);
 
 		if (value.equalsIgnoreCase("false")) return new V2Boolean(false, compiler, line, charpos);

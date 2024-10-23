@@ -41,7 +41,7 @@ public class ConfigInfo {
 	@Expose public int methodBuffer = 2;
 	//V3.0.0
 	@Expose public int backgroundcolor = 0x86353535;
-	@Expose public boolean background = false;
+	@Expose public boolean background = true;
 	@Expose public boolean removegui = false;
 	@Expose public boolean limitrate = true;
 	/**

@@ -109,7 +109,7 @@ public class ConfigMenu implements ConfigScreenFactory<Screen> {
 				.setTooltip(Text.translatable("hudder.text.background.tooltip"))
 				.setSaveConsumer(b->config.background=b)
 				.setYesNoTextSupplier(yesno)
-				.setDefaultValue(false)
+				.setDefaultValue(true)
 				.build());
 		text.addEntry(entryBuilder.startBooleanToggle(Text.translatable("hudder.text.shadow"), config.shadow)
 				.setTooltip(Text.translatable("hudder.text.shadow.tooltip"))

@@ -1,2 +1,2 @@
 &r{FPS} (max. {maxfps} avg. {avgfps} min. {minfps}) {usedram_percentage}\% of {maxram}MB
-X: {x}, Y: {y}, Z: {z}; run, hand;
+X: {x}, Y: {y}, Z: {z}; run, "hand";

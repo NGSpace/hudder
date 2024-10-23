@@ -82,8 +82,7 @@ public class MethodHandler {
 	public void register(IMethod method, String... names) {for(String name:names)methods.put(name,method);}
 	
 	public void register(IMethod method, int length, String[] args, String... names) {
-		IMethod newmethod = (config,meta,compiler,name,l,c,vals)->{
-			
+		IMethod newmethod = (config,meta,compiler,name,l,c,vals) -> {
 			if (vals.length<length) {
 				String err='"'+name+"\" only accepts ;"+name+"";
 				for(String str:args)err+=", "+ str;
@@ -93,36 +92,6 @@ public class MethodHandler {
 			method.invoke(config,meta,compiler,name,l,c,vals);
 		};
 		for (String name : names) methods.put(name,newmethod);
-	}
-	
-	@SuppressWarnings("removal")
-	public void register(String method, String[] argtypes, String name) {
-		int[] parameters = new int[argtypes.length];
-		for (int i = 0;i<argtypes.length;i++) {
-			if ("string".equals(argtypes[i])) parameters[i] = 1;
-			else if ("number".equals(argtypes[i])) parameters[i] = 2;
-			else if ("boolean".equals(argtypes[i])) parameters[i] = 3;
-			else if ("string_safe".equals(argtypes[i])) parameters[i] = 4;
-			else if ("number_safe".equals(argtypes[i])) parameters[i] = 5;
-			else if ("boolean_safe".equals(argtypes[i])) parameters[i] = 6;
-		}
-		String errb = '"'+name+"\" only accepts ;"+name+"";
-		for (String arg : argtypes) errb += ", [" + arg + "]";
-		errb+=';';
-		String err = errb;
-		IMethod newmethod = (info,state,comp,type,line,charpos,vals) -> {
-			if (vals.length!=argtypes.length) throw new CompileException(err);
-			for (int i = 0;i<vals.length;i++) {
-				if      (parameters[i]==1) comp.put("arg"+(i+1), vals[i].asString());
-				else if (parameters[i]==2) comp.put("arg"+(i+1), vals[i].asDouble());
-				else if (parameters[i]==3) comp.put("arg"+(i+1), vals[i].asBoolean());
-				else if (parameters[i]==4) comp.put("arg"+(i+1), vals[i].asStringSafe());
-				else if (parameters[i]==5) comp.put("arg"+(i+1), vals[i].asDoubleSafe());
-				else if (parameters[i]==6) comp.put("arg"+(i+1), vals[i].asBooleanSafe());
-			}
-			state.combineWithResult(comp.compile(info, method), false);
-		};
-		methods.put(name,newmethod);
 	}
 	
 	
@@ -149,6 +118,8 @@ public class MethodHandler {
 			else if ("string_safe".equals(argtypes[i])) parameters[i] = 4;
 			else if ("number_safe".equals(argtypes[i])) parameters[i] = 5;
 			else if ("boolean_safe".equals(argtypes[i])) parameters[i] = 6;
+			else if ("array".equals(argtypes[i])) parameters[i] = 7;
+			else if ("any".equals(argtypes[i])) parameters[i] = 8;
 		}
 		String errb = '"'+name+"\" only accepts ;"+name+"";
 		for (String arg : argtypes) errb += ", [" + arg + "]";
@@ -163,6 +134,8 @@ public class MethodHandler {
 				else if (parameters[i]==4) comp.put("arg"+(i+1), vals[i].asStringSafe());
 				else if (parameters[i]==5) comp.put("arg"+(i+1), vals[i].asDoubleSafe());
 				else if (parameters[i]==6) comp.put("arg"+(i+1), vals[i].asBooleanSafe());
+				else if (parameters[i]==7) comp.put("arg"+(i+1), vals[i].asList());
+				else if (parameters[i]==8) comp.put("arg"+(i+1), vals[i].get());
 			}
 			try {
 				state.combineWithResult(comp.compile(info, method), false);

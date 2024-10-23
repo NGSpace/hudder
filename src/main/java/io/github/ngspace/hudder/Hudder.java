@@ -96,7 +96,7 @@ public class Hudder implements ModInitializer {
 		
 		ins = MinecraftClient.getInstance();
 
-		String[] defaultfiles = {"tutorial","hand","armor","hud","basic","hud.js","hotbar.js", "fibonacci"};
+		String[] defaultfiles = {"tutorial","hand","armor","armorside","hud","basic","hud.js","hotbar.js", "fibonacci"};
 		String[] defaulttextures = {"pointer.png","selection.png"};
 		for (String file : defaultfiles) {
 			File dest = new File(HudFileUtils.FOLDER, file);
@@ -123,46 +123,54 @@ public class Hudder implements ModInitializer {
     	
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
         	if (!config.enabled) return;
-			if (wk!=null) {
-				for (WatchEvent<?> event : wk.pollEvents()) {
-				    final Path changed = (Path) event.context();
-				    if (changed.toString().equals("hud.json")) {
-				    	config.readConfig();
-						showToast(ins,Text.literal("Refreshed Config file!").formatted(Formatting.BOLD),
-								Text.literal("\u00A7aLoaded File"));
-				    } else {
-						log(changed.getFileName() + " has changed! Clearing cache!");
-						try {
-							HudFileUtils.clearCache();
-							showToast(ins, Text.literal("Refreshing "+changed.getFileName()+'!')
-									.formatted(Formatting.BOLD), Text.literal("\u00A7aLoaded File"));
-						} catch (CompileException e) {
-							showToast(ins, Text.literal("\\u00A74Error refreshing "+changed.getFileName()+'!')
-									.formatted(Formatting.BOLD),Text.literal(e.getMessage()));
-							e.printStackTrace();
-						}
-				    }
+        	try {
+				if (wk!=null) {
+					for (WatchEvent<?> event : wk.pollEvents()) {
+					    final Path changed = (Path) event.context();
+					    if (changed.toString().equals("hud.json")) {
+					    	config.readConfig();
+							showToast(ins,Text.literal("Refreshed Config file!").formatted(Formatting.BOLD),
+									Text.literal("\u00A7aLoaded File"));
+					    } else {
+							log(changed.getFileName() + " has changed! Clearing cache!");
+							try {
+								HudFileUtils.clearCache();
+								showToast(ins, Text.literal("Refreshing "+changed.getFileName()+'!')
+										.formatted(Formatting.BOLD), Text.literal("\u00A7aLoaded File"));
+							} catch (CompileException e) {
+								showToast(ins, Text.literal("\\u00A74Error refreshing "+changed.getFileName()+'!')
+										.formatted(Formatting.BOLD),Text.literal(e.getMessage()));
+								e.printStackTrace();
+							}
+					    }
+					}
+					if (!wk.reset()) {
+						wk = null;
+						error("Unable to watch for changes in File!");
+						showToast(ins,Text.literal("\u00A74Failed to reload files!").formatted(Formatting.BOLD));
+					}
 				}
-				if (!wk.reset()) {
-					wk = null;
-					error("Unable to watch for changes in File!");
-					showToast(ins,Text.literal("\u00A74Failed to reload files!").formatted(Formatting.BOLD));
-				}
+        	} catch (RuntimeException e) {
+				e.printStackTrace();
 			}
 		});
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {if (config.limitrate) compile(null);});
         
 		HudRenderCallback.EVENT.register((context,delta) -> {
-    		if (!config.limitrate) compile(delta);
-			if (config.shouldDrawResult(ins)) {
-            	RenderSystem.enableBlend();
-                RenderSystem.defaultBlendFunc();
-	            try {
-	            	if (result!=null) renderer.drawCompileResult(context, ins.textRenderer, result, config, delta);
-	            	else renderer.renderFail(context, LastFailMessage);
-				} catch (Exception e) {renderer.renderFail(context, e.getLocalizedMessage());}
-            	RenderSystem.disableBlend();
+			try {
+				if (!config.limitrate) compile(delta);
+				if (config.shouldDrawResult(ins)) {
+	            	RenderSystem.enableBlend();
+	                RenderSystem.defaultBlendFunc();
+		            try {
+		            	if (result!=null) renderer.drawCompileResult(context, ins.textRenderer, result, config, delta);
+		            	else renderer.renderFail(context, LastFailMessage);
+					} catch (Exception e) {renderer.renderFail(context, e.getLocalizedMessage());}
+	            	RenderSystem.disableBlend();
+				}
+	    	} catch (RuntimeException e) {
+				e.printStackTrace();
 			}
         });
 		log(MOD_ID+" has been loaded!");

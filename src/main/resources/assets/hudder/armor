@@ -10,7 +10,7 @@ Calculate how much we need to scale the item to make it fit a fixed a fixed widt
 
 8 pixels
 
-;helmet,width/2-tempscale-offset-guiscale,height/2-tempscale+.5,itemscale;
-;chestplate,width/2-tempscale-offset-guiscale,height/2+.1,itemscale;
-;pants,width/2-offset+guiscale+.5,height/2-tempscale+.5,itemscale;
-;boots,width/2-offset+guiscale+.5,height/2+.5,itemscale;
+;helmet,width/2-tempscale-offset-guiscale,height/2-tempscale+0.5,itemscale;
+;chestplate,width/2-tempscale-offset-guiscale,height/2+0.1,itemscale;
+;pants,width/2-offset+guiscale+0.5,height/2-tempscale+0.5,itemscale;
+;boots,width/2-offset+guiscale+0.5,height/2+0.5,itemscale;
