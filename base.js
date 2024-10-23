@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function (event) {
   basehtml = `
 	<style>
-	#topbar {
+		#topbar {
 			background-color: #101010;
 			position: fixed;
 			width: 100%;
@@ -27,16 +27,16 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			text-align: left;
 			color: lightgray;
 			font-family: "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
-			font-size: 20px;
+			font-size: 1.5em;
 			width: calc(84% - 3px);
 			left: 15%;
 			padding-top: 15vh;
 			padding-left: 1%;
 			text-wrap: wrap;
-			border-left: 3px solid gray;
 			min-height: 85vh;
 			z-index: -1;
 			top: 0px;
+			color:white;
 		}
 		#sidebar {
 			text-align: left;
@@ -48,8 +48,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			text-wrap: wrap;
 			border: none;
 			position: fixed;
-			top: 9vh;
+			top: 8vh;
 			left: 0%;
+			background-color: #101010;
+			border-right: 3px solid gray;
+			min-height: 100%;
 		}
 		#sidebar h1 {
 			margin: 0px;
@@ -102,6 +105,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			width: fit-content;
 			color: white;
 			tab-size: 4;
+			font-size: 1.3em;
 		}
 		inline-code {
 			font-family: monospace;
@@ -155,7 +159,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	<link rel="icon" type="image/x-icon" href="favicon.ico">
 	<div id="topbar">
 		<img src="Images/Hudder.webp" alt="Back to main hudder wiki page" />
-		<div id="title">Hudder 5.0.0 Wiki</div>
+		<div id="title">Hudder 5.5.0 Wiki</div>
 	</div>
 	<div id="sidebar">
 	<h1>Explore</h1>
@@ -173,9 +177,10 @@ document.addEventListener("DOMContentLoaded", function (event) {
 				<li><a href="howto.html#variables">Basic variables</a></li>
 				<li><a href="howto.html#conditions">Basic conditions</a></li>
 				<li><a href="howto.html#adv_variables">Advanced Variables and Functions</a></li>
-				<li><a href="howto.html#methods">Inventory management and methods</a></li>
+				<li><a href="howto.html#methods">Using methods</a></li>
 				<li><a href="howto.html#adv_conds">Advanced conditions and while loops</a></li>
 				<li><a href="howto.html#adv_methods">Writing your own methods</a></li>
+				<li><a href="howto.html#arrays">Arrays</a></li>
 			</ul>
 		</details>
 		<details open>
