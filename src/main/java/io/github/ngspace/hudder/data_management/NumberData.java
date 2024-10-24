@@ -19,7 +19,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.world.LightType;
 import net.minecraft.world.World;
@@ -118,7 +117,7 @@ public class NumberData {private NumberData() {}
 
 			/* World Rendering */
 			//TODO Fix this
-//			case "entites": yield (double) ((WorldRendererAccess)wr).getRegularEntityCount();
+			case "entites": yield (double) ((WorldRendererAccess)wr).getRenderedEntitiesCount();
 			case "particles": yield (double) ((ParticleManagerAccessor)ins.particleManager)
 				.getParticles().values().stream().mapToInt(Collection::size).sum();
 			case "chunks": yield wr.getChunkCount();
