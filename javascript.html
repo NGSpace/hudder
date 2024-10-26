@@ -22,6 +22,17 @@
 		});
 
 	</script>
+	<style>
+		td {
+			padding-top: 10px;
+			padding-bottom: 10px;
+		}
+		td inline-code{
+			padding: 0px;
+			margin: 0px;
+			line-height: 1px;
+		}
+	</style>
 </head>
 <body>
 
@@ -72,41 +83,46 @@ var bottomrightscale = 2;
 <hr>
 <warning>All parameters are non-optional, if they are optional for legacy reasons, it won't stay this way!</warning>
 <table>
+	<colgroup>
+       <col span="1" style="width: 15%;">
+       <col span="1" style="width: 60%;">
+       <col span="1" style="width: 5%;">
+       <col span="1" style="width: 10%;">
+    </colgroup>
 	<tr>
 		<th>Function</th>
-		<th>Description</th>
+		<th width="30%">Description</th>
 		<th>Return type</th>
 		<th>Notes</th>
 	</tr>
 	<tr>
-		<td><inline-code language="js">log(Any object)</inline-code></td>
-		<td>Writes to the game console.</td>
+		<td><inline-code language="js">log(Any message)</inline-code></td>
+		<td>Writes to the game console. (DEPRECATED)</td>
+		<td>None</td>
+		<td>DEPRECATED.<br>Use <inline-code>console.log(Any message)</inline-code></td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">warn(Any message)</inline-code></td>
+		<td>Writes to the game console. (DEPRECATED)</td>
+		<td>None</td>
+		<td>DEPRECATED.<br>Use <inline-code>console.warn(Any message)</inline-code></td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">error(Any message)</inline-code></td>
+		<td>Writes to the game console. (DEPRECATED)</td>
+		<td>None</td>
+		<td>DEPRECATED.<br>Use <inline-code>console.error(Any message)</inline-code></td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">alert(Any message)</inline-code></td>
+		<td>Sends a message in the chat.</td>
 		<td>None</td>
 	</tr>
 	<tr>
-		<td><inline-code language="js">warn(Any object)</inline-code></td>
-		<td>Writes to the game console.</td>
-		<td>None</td>
-	</tr>
-	<tr>
-		<td><inline-code language="js">error(Any object)</inline-code></td>
-		<td>Writes to the game console.</td>
-		<td>None</td>
-	</tr>
-	<tr>
-		<td><inline-code language="js">alert(Any object)</inline-code></td>
-		<td>Sends a message to the player.</td>
-		<td>None</td>
-	</tr>
-	<tr>
-		<td><inline-code language="js">getVal(String variable)</inline-code></td>
+		<td><inline-code language="js">getVar(String variable)</inline-code></td>
 		<td>Returns the variable with the given name (ex. fps, key_h).</td>
 		<td>Any</td>
-	</tr>
-	<tr>
-		<td><inline-code language="js">getVal(String variable)</inline-code></td>
-		<td>Returns the variable with the given name (ex. fps, key_h).</td>
-		<td>Any</td>
+		<td>Aliases: getVariable, get</td>
 	</tr>
 	<tr>
 		<td><inline-code language="js">getNumber(String variable)</inline-code></td>
@@ -122,6 +138,12 @@ var bottomrightscale = 2;
 		<td><inline-code language="js">getBoolean(String variable)</inline-code></td>
 		<td>Returns the Boolean variable with the given name.</td>
 		<td>Boolean</td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">getItem(Number slot)</inline-code></td>
+		<td>Returns the item in the given name.</td>
+		<td>ItemStack</td>
+		<td>ItemStack class has the following properties: {String name, Number count, Number maxcount, Number durability, Number maxdurability}</td>
 	</tr>
 	<tr>
 		<td><inline-code language="js">setVal(String variable, Any Object)</inline-code></td>
@@ -157,20 +179,6 @@ var bottomrightscale = 2;
 		<td>0 for boots, 1 for leggings, 2 for chestplate and 3 for helmet</td>
 	</tr>
 	<tr>
-		<td><inline-code language="js">drawArmor(Number slot, Number x, Number y, Number scale, Boolean showcount)
-		</inline-code></td>
-		<td>Draws the armor from the slot provided on the provided X, Y positions on screen with the provided scale.
-			will also draw durability and item-count if showcount is true.</td>
-		<td>Number</td>
-	</tr>
-	<tr>
-		<td><inline-code language="js">drawArmor(Number slot, Number x, Number y, Number scale, Boolean showcount)
-		</inline-code></td>
-		<td>Draws the armor from the slot provided on the provided X, Y positions on screen with the provided scale.
-			will also draw durability and item-count if showcount is true.</td>
-		<td>None</td>
-	</tr>
-	<tr>
 		<td><inline-code language="js">strWidth(String text)</inline-code></td>
 		<td>Returns the length of the string.</td>
 		<td>Number</td>
@@ -183,12 +191,55 @@ var bottomrightscale = 2;
 		<td>None</td>
 	</tr>
 	<tr>
+		<td><inline-code language="js">drawTexture(String id, Number x, Number y, Number width, Number height)
+		</inline-code></td>
+		<td>Draws a minecraft texture with the provided ID in the provided x and y positons with the provided width and height.</td>
+		<td>None</td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">drawLocalTexture(String filename, Number x, Number y, Number width, Number height)
+		</inline-code></td>
+		<td>Draws the image located in the provided path (relative to Hudder's config folder) in the provided x and y positons with the provided width and height.</td>
+		<td>None</td>
+		<td>Aliases: drawPNG, drawImage</td>
+	</tr>
+	<tr>
 		<td><inline-code language="js">compile(String filename, String compilertype)</inline-code></td>
 		<td>Compiles the file with the specified compilertype (or the javascript compiler if none is specified),
 			returns the compile results and adds the elements created by the file.</td>
 		<td>CompileResult</td>
-		<td>CompileResult has the following properties {<br>String topleft, String bottomleft,<br>String topright, String bottomright,
-		<br>Number topleftscale, Number bottomleftscale,<br>Number toprightscale, Number bottomrightscale}</td>
+		<td>CompileResult has the following properties {String topleft, String bottomleft, String topright, String bottomright,
+		Number topleftscale, Number bottomleftscale, Number toprightscale, Number bottomrightscale}</td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">drawStatusBars(String filename, Number x, Number y, Number width, Number height)
+		</inline-code></td>
+		<td>Draws the health and hunger bars in the provided x and y positon.</td>
+		<td>None</td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">drawExpAndMountBars(String filename, Number x, Number y, Number width, Number height)
+		</inline-code></td>
+		<td>Draws the Exp bar in the provided x and y positon.</td>
+		<td>None</td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">drawHotbar(String filename, Number x, Number y, Number width, Number height)
+		</inline-code></td>
+		<td>Draws the hotbar in the provided x and y positon.</td>
+		<td>None</td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">drawItemTooltip(String filename, Number x, Number y, Number width, Number height)
+		</inline-code></td>
+		<td>Draws the item tooltip in the provided x and y positon.</td>
+		<td>None</td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">exists(String filename)
+		</inline-code></td>
+		<td>Returns true if a file exists in the hudder config dir.</td>
+		<td>Boolean</td>
 	</tr>
 </table>
 
