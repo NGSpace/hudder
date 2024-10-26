@@ -15,8 +15,8 @@ import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.compilers.HudderV2Compiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
-import io.github.ngspace.hudder.compilers.utils.CompileResult;
 import io.github.ngspace.hudder.compilers.utils.Compilers;
+import io.github.ngspace.hudder.compilers.utils.HudInformation;
 import io.github.ngspace.hudder.util.HudFileUtils;
 import io.github.ngspace.hudder.util.testing.HudderUnitTester;
 import net.minecraft.client.MinecraftClient;
@@ -27,7 +27,7 @@ public class ConfigInfo {
 	@Expose public Map<String, Object> globalVariables = new HashMap<String, Object>();
 	@Expose public Map<String, Object> savedVariables = new HashMap<String, Object>();
     @Expose public String compilertype = "hudder";
-	@Expose public String mainfile = "tutorial";
+	@Expose public String mainfile = "tutorial";//Set "tutorial" as the default file selected
     @Expose public boolean enabled = true;
 	@Expose public boolean shadow = true;
 	@Expose public boolean showInF3 = false;
@@ -39,17 +39,10 @@ public class ConfigInfo {
 	@Expose public int xoffset = 1;
 	@Expose public int lineHeight = 10;
 	@Expose public int methodBuffer = 2;
-	//V3.0.0
 	@Expose public int backgroundcolor = 0x86353535;
 	@Expose public boolean background = true;
 	@Expose public boolean removegui = false;
 	@Expose public boolean limitrate = true;
-	/**
-	 * @deprecated
-	 * Please do not use this! use {@link io.github.ngspace.hudder.Hudder.IS_DEBUG}
-	 */
-	@Deprecated(forRemoval = false, since = "It's fucking creation")
-	@Expose public boolean debug = false;
 	
 	
 	
@@ -59,11 +52,12 @@ public class ConfigInfo {
 	
 	
     public HudderUnitTester hudderTester = new HudderUnitTester(new HudderV2Compiler());
+	protected static MinecraftClient mc = MinecraftClient.getInstance();
 	
     
     /**
-     * Initalize the config, 
-     * @param f
+     * Initalize the config. 
+     * @param f - the config file.
      */
 	ConfigInfo(File f) {
 		configFile = f;
@@ -73,17 +67,21 @@ public class ConfigInfo {
 	
 	/**
 	 * Compiles the main hud using the selected compiler
-	 * @return
+	 * @return The result of the execution
 	 * @throws CompileException
 	 * @throws IOException
 	 */
-	public CompileResult compileMainHud() throws CompileException, IOException {
+	public HudInformation compileMainHud() throws CompileException, IOException {
 		if (compiler!=null) return compiler.compile(this, HudFileUtils.getFile(mainfile), mainfile);
 		else throw new CompileException("There is no Compiler!");
 	}
 	
 	
 	
+	/**
+	 * Read the JSON values from the config file that was provided durinng the ConfigInfo's initalization and apply
+	 * them to this ConfigInfo Object.
+	 */
 	public void readConfig() {
 		try {
 			if (!configFile.exists()) save();
@@ -93,16 +91,19 @@ public class ConfigInfo {
 		}
 		try {
 			Hudder.log("Reading Hudder config!");
-			HudFileUtils.clearCache();
+			HudFileUtils.clearFileCache();
 			String config = HudFileUtils.getFile(configFile.getName());
 			Hudder.log("Loading Hudder Config File:\n" + config);
 			Map<?,?> newinfo = new GsonBuilder().create().fromJson(config,HashMap.class);
-			for(Field f : ConfigInfo.class.getFields())
+			
+			if (newinfo.containsKey("debug")) Hudder.IS_DEBUG = (boolean) newinfo.get("debug");
+			
+			for(Field f : ConfigInfo.class.getFields()) {
 				if (f.getAnnotation(Expose.class)!=null&&newinfo.get(f.getName())!=null) 
 					setField(f, newinfo.get(f.getName()));
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			Hudder.log(e.getLocalizedMessage());
 			Hudder.IS_DEBUG=true;//Failed to read config, turn on IS_DEBUG.
 		}
 		refreshCompiler();
@@ -110,6 +111,11 @@ public class ConfigInfo {
 	
 	
 	
+	/**
+	 * Sets the loaded compiler to match the name of the compiler set in {@code compilertype}
+	 * 
+	 * If unable to retrieve the compiler, switches to the {@code HudderV2Compiler} instead.
+	 */
 	public void refreshCompiler() {
 		try {
 			compiler = Compilers.getCompilerFromName(compilertype.toLowerCase());
@@ -120,7 +126,9 @@ public class ConfigInfo {
 	}
 	
 	
-	
+	/**
+	 * Sets the value of the provided field with type safety
+	 */
 	private void setField(Field f, Object object) throws ReflectiveOperationException {
 		if (object instanceof Number num) {
 			if (f.getType().isAssignableFrom(int.class)) f.set(this, num.intValue());
@@ -134,31 +142,53 @@ public class ConfigInfo {
 	}
 	
 	
-	
+	/**
+	 * Saves the information on this config to the file that was provided during the ConfigInfo Object's
+	 * initalizaiton.
+	 * @throws IOException When fails to write to the file
+	 */
 	public void save() throws IOException {
 		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
 		if (!configFile.exists()) {
 			configFile.getParentFile().mkdirs();
 			if (!configFile.createNewFile()) throw new IOException("Failed to create Hudder config file.");
 		}
-		try (FileWriter fw = new FileWriter(configFile)) {fw.append(gson.toJson(this));fw.flush();}
-		catch (IOException e) {e.printStackTrace();Hudder.IS_DEBUG=true;}//Failed to save config, turn on IS_DEBUG.
+		try (FileWriter fw = new FileWriter(configFile)) {
+			fw.append(gson.toJson(this));
+			fw.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+			Hudder.IS_DEBUG=true;
+			throw e;
+		}
 	}
 	
 	
 	
-	public boolean shouldDrawResult(MinecraftClient ins) {
-		return !ins.options.hudHidden&&(!ins.getDebugHud().shouldShowDebugHud()||showInF3)&&enabled;
+	/**
+	 * Whether Hudder should draw it's hud or not
+	 * @return true or false
+	 */
+	public boolean shouldDrawResult() {
+		return !mc.options.hudHidden&&(!mc.getDebugHud().shouldShowDebugHud()||showInF3)&&enabled;
 	}
 	
 	
-	
-	public boolean shouldCompile(MinecraftClient ins) {
-		return enabled&&ins.player!=null;
+
+	/**
+	 * Whether Hudder should compile the hudder file or not
+	 * @return true or false
+	 */
+	public boolean shouldCompile() {
+		return enabled&&mc.player!=null;
 	}
 	
 	
-	
+	/**
+	 * Sets the compilertype to the provided compiler name and refreshes the compiler
+	 * @param compilername - the name of the compiler
+	 * @return the provided name (for clothconfig)
+	 */
 	public Object setCompiler(String compilername) {
 		compilertype=compilername;
 		refreshCompiler();

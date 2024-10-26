@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.compilers;
+package io.github.ngspace.hudder.compilers.utils;
 
 import java.io.IOException;
 
@@ -13,11 +13,15 @@ import org.mozilla.javascript.Undefined;
 import org.mozilla.javascript.WrappedException;
 
 import io.github.ngspace.hudder.Hudder;
-import io.github.ngspace.hudder.compilers.utils.CompileException;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 public class JavaScriptEngineWrapper implements IScriptingLanguageEngine {
+	
+	protected static MinecraftClient mc = MinecraftClient.getInstance();
+	
+	
 	Context cx;
 	ScriptableObject scope;
 	public JavaScriptEngineWrapper() {
@@ -118,7 +122,7 @@ public class JavaScriptEngineWrapper implements IScriptingLanguageEngine {
 		public void debug(Object str) {Hudder.debug(str);}
 		public void alert(Object str) {Hudder.alert(str);}
 		public void showToast(String title, String content) {
-			Hudder.showToast(Hudder.ins,Text.literal(title).formatted(Formatting.BOLD), Text.literal(content));
+			Hudder.showToast(mc,Text.literal(title).formatted(Formatting.BOLD), Text.literal(content));
 		}
 	}
 

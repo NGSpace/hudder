@@ -1,12 +1,15 @@
-package io.github.ngspace.hudder;
+package io.github.ngspace.hudder.util;
 
 import org.joml.Matrix4f;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import io.github.ngspace.hudder.compilers.utils.CompileResult;
+import io.github.ngspace.hudder.Hudder;
+import io.github.ngspace.hudder.compilers.utils.HudInformation;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.methods.elements.AUIElement;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.gui.DrawContext;
@@ -21,7 +24,19 @@ import net.minecraft.client.util.math.MatrixStack;
 /**
  * Hudder.java was too messy so I moved all rendering functions into this one class
  */
-public class HudderRenderer {
+public class HudderRenderer implements HudRenderCallback {
+	
+	private HudCompilationManager compman;
+	protected static MinecraftClient mc = MinecraftClient.getInstance();
+	
+	
+	
+	public HudderRenderer(HudCompilationManager compilationManager) {
+		this.compman = compilationManager;
+	}
+	
+	
+	
     public static final String NL_REGEX = "\r?\n";
 	public void renderFail(DrawContext context, String FailMessage) {
 		String[] lines = FailMessage.split(NL_REGEX);
@@ -32,7 +47,9 @@ public class HudderRenderer {
 		}
 	}
 	
-	public void drawCompileResult(DrawContext context, TextRenderer renderer, CompileResult text, ConfigInfo info,
+	
+	
+	public void drawCompileResult(DrawContext context, TextRenderer renderer, HudInformation text, ConfigInfo info,
 			RenderTickCounter delta) {
         int color = info.color;
         int bgcolor = info.backgroundcolor;
@@ -63,7 +80,6 @@ public class HudderRenderer {
         /* Top Right */
         String[] TR = text.TopRightText.split(NL_REGEX);
         yoff = info.yoffset;
-//        xoff = 300 - info.xoffset;
         for (String txt : TR) {
         	xoff = (int) (context.getScaledWindowWidth() - renderer.getWidth(txt) * text.TRScale - info.xoffset);
         	renderTextLine(context, txt, xoff, yoff, color, text.TRScale, shadow, background, bgcolor);
@@ -74,7 +90,6 @@ public class HudderRenderer {
         String[] BR = text.BottomRightText.split(NL_REGEX);
         yoff = (int) (context.getScaledWindowHeight() - countLines(text.BottomRightText) *
         		info.lineHeight * text.BRScale - info.yoffset + 1);
-//        xoff = 300 - info.xoffset;
         for (String txt : BR) {
         	xoff = (int) (context.getScaledWindowWidth() - renderer.getWidth(txt) * text.BRScale - info.xoffset);
         	renderTextLine(context, txt, xoff, yoff, color, text.BRScale, shadow, background, bgcolor);
@@ -83,16 +98,19 @@ public class HudderRenderer {
         
         for (AUIElement e : text.elements) e.renderElement(context,delta);
     }
+	
+	
+	
     public int countLines(String what) {
         int count = 1;
         for (int i = 0; i<what.length();i++) if (what.charAt(i) == '\n') count++;
         return count;
     }
+    
+    
 
 	public void renderTextLine(DrawContext context, String text, int x, int y, int color, float scale, boolean shadow,
 			boolean background, long backgroundColor) {
-		if (background&&!"".equals(text))
-			renderBlock(context,x-1f,y-1f,Hudder.ins.textRenderer.getWidth(text)+2f,9f+1f,backgroundColor);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         if (scale != 1.0f) {
@@ -101,16 +119,23 @@ public class HudderRenderer {
             matrixStack.translate(x, y, 0);
             matrixStack.scale(scale, scale, scale);
             matrixStack.translate(-x, -y, 0);
-            context.drawText(Hudder.ins.textRenderer, text, x, y, color, shadow);
+    		if (background&&!"".equals(text))
+    			renderBlock(context,x-1f,y-1f,mc.textRenderer.getWidth(text)+2f,9f+1f,backgroundColor);
+            context.drawText(mc.textRenderer, text, x, y, color, shadow);
             matrixStack.pop();
-        } else context.drawText(Hudder.ins.textRenderer, text, x, y, color, shadow);
+        } else {
+    		if (background&&!"".equals(text))
+    			renderBlock(context,x-1f,y-1f,mc.textRenderer.getWidth(text)+2f,9f+1f,backgroundColor);
+        	context.drawText(mc.textRenderer, text, x, y, color, shadow);
+        }
         RenderSystem.disableBlend();
     }
+	
+	
 	
 	public void renderBlock(DrawContext context, float x, float y, float width, float height, long rgb) {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-//        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 		RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
         int alpha = (int) ((rgb >> 24) & 0xFF);
         int red =   (int) ((rgb >> 16) & 0xFF);
@@ -125,7 +150,26 @@ public class HudderRenderer {
         bgBuilder.vertex(matrix, x, y, 0f).color(red,green,blue,alpha);
         BufferRenderer.drawWithGlobalProgram(bgBuilder.end());
         RenderSystem.disableBlend();
-//		System.out.println(color);
-//		System.out.println(0xff7e6da8);
+	}
+	
+	
+
+	@Override
+	public void onHudRender(DrawContext context, RenderTickCounter delta) {
+		try {
+			if (!Hudder.config.limitrate) compman.compile(delta);
+			if (Hudder.config.shouldDrawResult()) {
+            	RenderSystem.enableBlend();
+                RenderSystem.defaultBlendFunc();
+	            try {
+	            	if (compman.result!=null) drawCompileResult(context, mc.textRenderer, compman.result, Hudder.config, delta);
+	            	else renderFail(context, HudCompilationManager.LastFailMessage);
+				} catch (Exception e) {renderFail(context, e.getLocalizedMessage());}
+            	RenderSystem.disableBlend();
+			}
+    	} catch (RuntimeException e) {
+			e.printStackTrace();
+		}
+		
 	}
 }

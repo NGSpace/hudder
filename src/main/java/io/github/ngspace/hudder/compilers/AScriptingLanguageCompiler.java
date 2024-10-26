@@ -10,8 +10,9 @@ import java.util.Map;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
-import io.github.ngspace.hudder.compilers.utils.CompileResult;
 import io.github.ngspace.hudder.compilers.utils.Compilers;
+import io.github.ngspace.hudder.compilers.utils.HudInformation;
+import io.github.ngspace.hudder.compilers.utils.IScriptingLanguageEngine;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.data_management.BooleanData;
 import io.github.ngspace.hudder.data_management.NumberData;
@@ -22,16 +23,20 @@ import io.github.ngspace.hudder.methods.elements.GameHudElement.GuiType;
 import io.github.ngspace.hudder.methods.elements.ItemElement;
 import io.github.ngspace.hudder.methods.elements.TextElement;
 import io.github.ngspace.hudder.methods.elements.TextureElement;
+import io.github.ngspace.hudder.util.HudCompilationManager;
 import io.github.ngspace.hudder.util.HudFileUtils;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 
-public abstract class ScriptingLanguageCompiler extends AVarTextCompiler {
+public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 	
-	protected ScriptingLanguageCompiler() {
-		Hudder.addPreCompilerListener(c->{if(c==this) elms.clear();});
-		HudFileUtils.addClearCacheListener(()->{
+	protected static MinecraftClient mc = MinecraftClient.getInstance();
+	
+	protected AScriptingLanguageCompiler() {
+		HudCompilationManager.addPreCompilerListener(c->{if(c==this) elms.clear();});
+		HudFileUtils.addClearFileCacheListener(()->{
 			try {
 				for(RuntimeCache c:cache.values())c.close();
 			} catch (IOException e) {
@@ -47,8 +52,8 @@ public abstract class ScriptingLanguageCompiler extends AVarTextCompiler {
 	
 	protected abstract IScriptingLanguageEngine createLangEngine() throws CompileException;
 
-	@Override public CompileResult compile(ConfigInfo info, String text, String filename) throws CompileException {
-    	if (Hudder.ins.player==null) return CompileResult.of("");
+	@Override public HudInformation compile(ConfigInfo info, String text, String filename) throws CompileException {
+    	if (mc.player==null) return HudInformation.of("");
     	RuntimeCache rtcache = cache.get(text);
     	IScriptingLanguageEngine wrapper = null;
 	    try {
@@ -80,7 +85,7 @@ public abstract class ScriptingLanguageCompiler extends AVarTextCompiler {
 	    	float TRscale = ((Number) wrapper.readVariableSafe("toprightscale",1f)).floatValue();
 	    	float BRscale = ((Number) wrapper.readVariableSafe("bottomrightscale",1f)).floatValue();
 	    	
-		    return new CompileResult(TL, TLscale, BL, BLscale, TR, TRscale, BR, BRscale,
+		    return new HudInformation(TL, TLscale, BL, BLscale, TR, TRscale, BR, BRscale,
 		    		elms.toArray(new AUIElement[elms.size()]));
 		} catch (CompileException e) {
 			throw e;
@@ -112,7 +117,7 @@ public abstract class ScriptingLanguageCompiler extends AVarTextCompiler {
     	engine.bindFunction(s->StringData.getString  (((String)s[0])), "getString" );
     	engine.bindFunction(s->BooleanData.getBoolean (((String)s[0])), "getBoolean");
     	
-    	engine.bindFunction(s->new TranslatedItemStack(Hudder.ins.player.getInventory().getStack(((Number)s[0]).intValue())), "getItem");
+    	engine.bindFunction(s->new TranslatedItemStack(mc.player.getInventory().getStack(((Number)s[0]).intValue())), "getItem");
     	
     	//Setters
     	
@@ -124,18 +129,18 @@ public abstract class ScriptingLanguageCompiler extends AVarTextCompiler {
     	engine.bindConsumer(s->elms.add(new ItemElement(((Number)s[1]).intValue(), ((Number)s[2]).intValue(),new ItemStack(Registries.ITEM.get(
     			Identifier.tryParse(((String)s[0])))),((Number)s[3]).floatValue(), false)),"drawItem");
     	//Slot
-    	engine.bindConsumer(s->elms.add(new ItemElement(((Number)s[1]).intValue(),((Number)s[2]).intValue(),Hudder.ins.player.getInventory()
+    	engine.bindConsumer(s->elms.add(new ItemElement(((Number)s[1]).intValue(),((Number)s[2]).intValue(),mc.player.getInventory()
     			.getStack(((Number)s[0]).intValue()),((Number)s[3]).floatValue(), (boolean)s[4])),"drawSlot");
     	//Armor
-    	engine.bindConsumer(s->elms.add(new ItemElement(((Number)s[1]).intValue(),((Number)s[2]).intValue(),Hudder.ins.player.getInventory()
+    	engine.bindConsumer(s->elms.add(new ItemElement(((Number)s[1]).intValue(),((Number)s[2]).intValue(),mc.player.getInventory()
     			.getArmorStack(((Number)s[0]).intValue()),((Number)s[3]).floatValue(), (boolean)s[4])),"drawArmor");
     	//Offhand
-    	engine.bindConsumer(s->elms.add(new ItemElement(((Number)s[1]).intValue(),((Number)s[2]).intValue(),Hudder.ins.player.getInventory()
+    	engine.bindConsumer(s->elms.add(new ItemElement(((Number)s[1]).intValue(),((Number)s[2]).intValue(),mc.player.getInventory()
     			.offHand.get(0),((Number)s[3]).floatValue(), (boolean)s[4])),"drawOffhand");
     	
     	//Text
     	
-    	engine.bindFunction(s->Hudder.ins.textRenderer.getWidth(((String)s[0])), "strWidth");
+    	engine.bindFunction(s->mc.textRenderer.getWidth(((String)s[0])), "strWidth");
     	engine.bindConsumer(s-> {
     		float scale = ((Number)s[3]).floatValue();
     		int color = ((Number)s[4]).intValue();
@@ -150,10 +155,10 @@ public abstract class ScriptingLanguageCompiler extends AVarTextCompiler {
     	engine.bindFunction(s-> {
 			try {
 				ATextCompiler ecompiler = s.length>1?Compilers.getCompilerFromName(((String)s[1])):this;
-				for (var i : Hudder.precomplistners) i.accept(ecompiler);
-				CompileResult result = ecompiler.compile(Hudder.config,HudFileUtils.getFile((String)s[0]),(String)s[0]);
+				for (var i : HudCompilationManager.precomplistners) i.accept(ecompiler);
+				HudInformation result = ecompiler.compile(Hudder.config,HudFileUtils.getFile((String)s[0]),(String)s[0]);
 				Collections.addAll(elms, result.elements);
-				for (var i : Hudder.postcomplistners) i.accept(ecompiler);
+				for (var i : HudCompilationManager.postcomplistners) i.accept(ecompiler);
 				return result;
 			} catch (ReflectiveOperationException | IOException e) {
 				e.printStackTrace();

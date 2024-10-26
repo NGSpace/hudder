@@ -64,12 +64,12 @@ public class CompileState {
 		}
 	}
 	
-	public CompileResult toResult() {
-		return new CompileResult(TLText, TLScale, BLText, BLScale, TRText, TRScale, BRText, BRScale,
+	public HudInformation toResult() {
+		return new HudInformation(TLText, TLScale, BLText, BLScale, TRText, TRScale, BRText, BRScale,
 				elements.toArray(new AUIElement[elements.size()]));
 	}
 
-	public void combineWithResult(CompileResult compile, boolean combineText) throws CompileException {
+	public void combineWithResult(HudInformation compile, boolean combineText) throws CompileException {
 		if (combineText) {
 			addString(compile.TopLeftText, TOPLEFT, false);        TLScale = compile.TLScale;
 			addString(compile.BottomLeftText, BOTTOMLEFT, false);  BLScale = compile.BLScale;

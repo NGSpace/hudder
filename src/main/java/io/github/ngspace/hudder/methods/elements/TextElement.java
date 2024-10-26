@@ -29,6 +29,6 @@ public class TextElement extends AUIElement {
 		this.background = background;
 	}
 	@Override public void renderElement(DrawContext context, RenderTickCounter delta) {
-		Hudder.renderer.renderTextLine(context, text, x, y, color, scale, shadow, background, backgroundcolor);
+		Hudder.instance.renderer.renderTextLine(context, text, x, y, color, scale, shadow, background, backgroundcolor);
 	}
 }

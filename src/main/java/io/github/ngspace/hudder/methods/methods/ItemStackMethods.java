@@ -1,19 +1,20 @@
 package io.github.ngspace.hudder.methods.methods;
 
-import static io.github.ngspace.hudder.Hudder.ins;
-
 import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileState;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.methods.MethodValue;
 import io.github.ngspace.hudder.methods.elements.ItemElement;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 
 public class ItemStackMethods implements IMethod {
+	
+	protected static MinecraftClient mc = MinecraftClient.getInstance();
 	@Override
 	public void invoke(ConfigInfo ci, CompileState meta, ATextCompiler comp, String type, int line, int charpos, MethodValue... args) throws CompileException {
 		int offset = "slot".equals(type)||"item".equals(type) ? 1:0;
@@ -29,7 +30,7 @@ public class ItemStackMethods implements IMethod {
 
 		boolean showcount = args.length<=3+offset || args[3+offset].asBoolean();
 		
-		PlayerInventory inv = ins.player.getInventory();
+		PlayerInventory inv = mc.player.getInventory();
 		ItemStack stack = switch (type) {
 			case "hand","selectedslot": yield inv.getStack(inv.selectedSlot);
 			case "helmet", "hat": yield inv.getArmorStack(3);

@@ -7,17 +7,31 @@ import io.github.ngspace.hudder.util.HudderUtils;
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
 
-public class V2ValueParser {private V2ValueParser() {}
+public class V2ValueParser {
+	
+	private V2ValueParser() {}
 	
 	public static AV2Value of(V2Runtime runtime, String valuee, AV2Compiler compiler, int line, int charpos)
 			throws CompileException {
 		
 		
 		String value = valuee.trim();
-		AV2Value temp = null;
 		
-		if (value.startsWith("(")&&value.endsWith(")"))
-			return compiler.getV2Value(runtime, value.substring(1, value.length()-1), line, charpos);
+		if (value.startsWith("(")&&value.endsWith(")")) {
+			boolean isSafe = true;
+			int parenthesses = 1;
+			for (char c : value.toCharArray()) {
+				if (c=='(')
+					parenthesses++;
+				if (c==')')
+					parenthesses--;
+				if (parenthesses==0) {
+					isSafe = false;
+					break;
+				}
+			}
+			if (isSafe) return compiler.getV2Value(runtime, value.substring(1, value.length()-1), line, charpos);
+		}
 		
 		//Double constant
 		if (value.matches("((0x|#)[\\daAbBcCdDeEfF]+|[-+]*\\d*(\\.?(\\d+)?))"))
@@ -26,7 +40,8 @@ public class V2ValueParser {private V2ValueParser() {}
 		if (value.equalsIgnoreCase("false")) return new V2Boolean(false, compiler, line, charpos);
 		if (value.equalsIgnoreCase("true")) return new V2Boolean(true, compiler, line, charpos);
 		
-		
+
+		AV2Value temp = null;
 		//String constant
 		if ((temp = string(value, compiler, line, charpos))!=null) return temp;
 		
@@ -107,12 +122,12 @@ public class V2ValueParser {private V2ValueParser() {}
 				continue;
 			}
 			if (c=='('&&mathvalue.isEmpty()) {
-				int parentheses = 0;
+				int parentheses = 1;
 				i++;
 				for (;i<value.length();i++) {
 					c = value.charAt(i);
 					if (c=='(') parentheses++;
-					if (c==')') {parentheses--;if (parentheses==-1) break;}
+					if (c==')') {parentheses--;if (parentheses==0) break;}
 					mathvalue.append(c);
 				}
 				continue;

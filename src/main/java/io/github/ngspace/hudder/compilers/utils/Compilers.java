@@ -11,8 +11,9 @@ public class Compilers {private Compilers() {}
 	private static Map<String, String> Comps = new HashMap<String, String>();
 	private static final Map<String, ATextCompiler> loadedcomps = new HashMap<String,ATextCompiler>();
 	
-	private static final String EMPTYCOM = "io.github.ngspace.hudder.compilers.EmptyCompiler";
+	private static final String EMPTY_COMPILER = "io.github.ngspace.hudder.compilers.EmptyCompiler";
 	private static final String DEFAULT_COMPILER = "io.github.ngspace.hudder.compilers.HudderV2Compiler";
+	private static final String JAVASCRIPT_COMPILER = "io.github.ngspace.hudder.compilers.HudderV2Compiler";
 	
 	
 	static {
@@ -21,19 +22,17 @@ public class Compilers {private Compilers() {}
 		putCompiler("default compiler", DEFAULT_COMPILER);
 		putCompiler("default", DEFAULT_COMPILER);
 		putCompiler("hudder", DEFAULT_COMPILER);
-		putCompiler("hudderv2", DEFAULT_COMPILER);
 		
 		
 		/* JavaScript */
-		putCompiler("js", "io.github.ngspace.hudder.compilers.JavaScriptCompiler");
-		putCompiler("javascript", "io.github.ngspace.hudder.compilers.JavaScriptCompiler");
-		putCompiler("javascriptcompiler", "io.github.ngspace.hudder.compilers.JavaScriptCompiler");
+		putCompiler("js", JAVASCRIPT_COMPILER);
+		putCompiler("javascript", JAVASCRIPT_COMPILER);
 		
-		
-		putCompiler("empty",EMPTYCOM);
-		putCompiler("none", EMPTYCOM);
-		putCompiler("null", EMPTYCOM);
-		putCompiler( null , EMPTYCOM);
+		/* Empty */
+		putCompiler("empty",EMPTY_COMPILER);
+		putCompiler("none", EMPTY_COMPILER);
+		putCompiler("null", EMPTY_COMPILER);
+		putCompiler( null , EMPTY_COMPILER);
 	}
 	
 	public static ATextCompiler getCompilerFromName(String name) throws ReflectiveOperationException,
@@ -70,7 +69,7 @@ public class Compilers {private Compilers() {}
 	 * @param name - The name of the compiler, used to save which compiler is selected.
 	 * @param classname - The class leading to the compiler.
 	 */
-	@Deprecated(since = "4.0.0", forRemoval = false)
+	@Deprecated(since = "4.0.0", forRemoval = true)
 	public static void registerLoadedCompiler(String name, ATextCompiler compiler) {
 		loadedcomps.put(name.toLowerCase(), compiler);
 		ConfigManager.getConfig().readConfig();

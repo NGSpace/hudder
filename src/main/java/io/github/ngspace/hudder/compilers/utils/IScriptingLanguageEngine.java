@@ -1,9 +1,7 @@
-package io.github.ngspace.hudder.compilers;
+package io.github.ngspace.hudder.compilers.utils;
 
 import java.io.Closeable;
 import java.io.IOException;
-
-import io.github.ngspace.hudder.compilers.utils.CompileException;
 
 public interface IScriptingLanguageEngine extends Closeable {
 	
