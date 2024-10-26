@@ -109,7 +109,7 @@ public class MethodHandler {
 
 
 	@SuppressWarnings("removal")
-	public void register(String method, String[] argtypes, String name, int defline, int defcharpos) {
+	public void register(String method, String[] argtypes, String name, int defline, int defcharpos, String filename) {
 		int[] parameters = new int[argtypes.length];
 		for (int i = 0;i<argtypes.length;i++) {
 			if ("string".equals(argtypes[i])) parameters[i] = 1;
@@ -138,7 +138,7 @@ public class MethodHandler {
 				else if (parameters[i]==8) comp.put("arg"+(i+1), vals[i].get());
 			}
 			try {
-				state.combineWithResult(comp.compile(info, method), false);
+				state.combineWithResult(comp.compile(info, method, filename), false);
 			} catch (CompileException e) {
 				throw new CompileException(e.getFailureMessage() +"\nMethod threw an error " + type, line, charpos);
 			}

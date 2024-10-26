@@ -30,12 +30,12 @@ public abstract class AV2Compiler extends AVarTextCompiler {
 		return V2ValueParser.of(runtime, string, this, line, charpos);
 	}
 	
-	@Override public final CompileResult compile(ConfigInfo info, String text) throws CompileException {
+	@Override public final CompileResult compile(ConfigInfo info, String text, String filename) throws CompileException {
 		V2Runtime runtime = runtimes.get(text);
-		if (runtime==null) runtimes.put(text, (runtime=buildRuntime(info,text, new CharPosition(-1, -1))));
+		if (runtime==null) runtimes.put(text, (runtime=buildRuntime(info,text, new CharPosition(-1, -1), filename)));
 		return runtime.execute().toResult();
 	}
-	public abstract V2Runtime buildRuntime(ConfigInfo info, String text, CharPosition charPosition) throws CompileException;
+	public abstract V2Runtime buildRuntime(ConfigInfo info, String text, CharPosition charPosition, String filename) throws CompileException;
 	
 	public void putTemp(String key, Object value) {
 		tempVariables.put(key, value);

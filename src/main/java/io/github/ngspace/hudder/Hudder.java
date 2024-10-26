@@ -240,7 +240,7 @@ public class Hudder implements ModInitializer {
     		Advanced.delta = f!=null?f.getLastFrameDuration():3;
     		if (config.shouldCompile(ins)) {
     			for (Consumer<ATextCompiler> con : precomplistners)  con.accept(config.compiler);
-    			result = config.compile(HudFileUtils.getFile(config.mainfile));
+    			result = config.compileMainHud();
     			for (Consumer<ATextCompiler> con : postcomplistners) con.accept(config.compiler);
     		}
 		} catch (CompileException e) {

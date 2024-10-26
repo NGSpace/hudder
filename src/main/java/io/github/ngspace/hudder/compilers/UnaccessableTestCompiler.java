@@ -6,7 +6,7 @@ import io.github.ngspace.hudder.config.ConfigInfo;
 
 public class UnaccessableTestCompiler extends ATextCompiler {
 
-	@Override public CompileResult compile(ConfigInfo info, String text) throws CompileException {
+	@Override public CompileResult compile(ConfigInfo info, String text, String filename) throws CompileException {
 		return CompileResult.of("HOW DID YOU FIND OUT I AM NOT INACCESSABLE?!?!");
 	}
 

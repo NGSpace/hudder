@@ -11,7 +11,7 @@ public abstract class ATextCompiler {
 
 	protected static Map<String, Object> variables = new HashMap<String, Object>();
 	
-	public abstract CompileResult compile(ConfigInfo info, String text) throws CompileException;
+	public abstract CompileResult compile(ConfigInfo info, String text, String filename) throws CompileException;
 	public abstract Object getVariable(String key) throws CompileException;
 	
 	public void put(String key, Object value) {variables.put(key, value);}

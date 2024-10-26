@@ -19,22 +19,24 @@ public class BasicConditionV2RuntimeElement extends AV2RuntimeElement {
 	AVarTextCompiler compiler;
 	ConfigInfo info;
 	boolean hasFinalElse;
+	private String filename;
 	public BasicConditionV2RuntimeElement(String[] condArgs, AV2Compiler compiler, ConfigInfo info, V2Runtime runtime,
-			int line, int charpos) {
+			int line, int charpos, String filename) {
 		this.compiler = compiler;
 		this.info = info;
+		this.filename = filename;
 		
 		hasFinalElse = condArgs.length%2==1;
 		try {
-		for (int i = 0;i<condArgs.length;i++) {
-			String str = condArgs[i];
-			if (hasFinalElse&&i==condArgs.length-1) {
-				results = addToArray(results, compiler.getV2Value(runtime, str,line,charpos));
-				break;
+			for (int i = 0;i<condArgs.length;i++) {
+				String str = condArgs[i];
+				if (hasFinalElse&&i==condArgs.length-1) {
+					results = addToArray(results, compiler.getV2Value(runtime, str,line,charpos));
+					break;
+				}
+				if (i%2==0) conditions = addToArray(conditions, compiler.getV2Value(runtime, str,line,charpos));
+				else results = addToArray(results, compiler.getV2Value(runtime, str,line,charpos));
 			}
-			if (i%2==0) conditions = addToArray(conditions, compiler.getV2Value(runtime, str,line,charpos));
-			else results = addToArray(results, compiler.getV2Value(runtime, str,line,charpos));
-		}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -44,10 +46,10 @@ public class BasicConditionV2RuntimeElement extends AV2RuntimeElement {
 		CompileResult res = null;
 		for (int i = 0;i<conditions.length;i++) {
 			if (conditions[i].asBoolean()) {
-				res = compiler.compile(info,results[i].asString());
+				res = compiler.compile(info,results[i].asString(),filename);
 			}
 		}
-		if (res==null&&hasFinalElse) res = compiler.compile(info,results[results.length-1].asString());
+		if (res==null&&hasFinalElse) res = compiler.compile(info,results[results.length-1].asString(),filename);
 		if (res==null) res = CompileResult.of("");
 		builder.append(res.TopLeftText);
 		for (var v : res.elements) meta.elements.add(v);

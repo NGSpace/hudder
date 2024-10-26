@@ -15,9 +15,10 @@ public class WhileV2RuntimeElement extends AV2RuntimeElement {
 	private int line;
 	private int charpos;
 
-	public WhileV2RuntimeElement(ConfigInfo info, String condition, String cmds, AV2Compiler compiler, V2Runtime runtime, CharPosition charPosition) throws CompileException {
+	public WhileV2RuntimeElement(ConfigInfo info, String condition, String cmds, AV2Compiler compiler, V2Runtime runtime,
+			CharPosition charPosition, String filename) throws CompileException {
 		this.condition = compiler.getV2Value(runtime, condition, charPosition.line, charPosition.charpos);
-		this.compiledRuntime = compiler.buildRuntime(info, cmds, new CharPosition(charPosition.line, 1));
+		this.compiledRuntime = compiler.buildRuntime(info, cmds, new CharPosition(charPosition.line, 1),filename);
 		this.line = charPosition.line;
 		this.charpos = charPosition.charpos;
 	}

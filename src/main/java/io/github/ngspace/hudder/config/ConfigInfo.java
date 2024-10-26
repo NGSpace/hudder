@@ -55,16 +55,35 @@ public class ConfigInfo {
 	
 	public ATextCompiler compiler = new HudderV2Compiler();
 	private File configFile = new File(HudFileUtils.FOLDER + "hud.json");
+	
+	
+	
     public HudderUnitTester hudderTester = new HudderUnitTester(new HudderV2Compiler());
 	
     
-    
-	public ConfigInfo(File f) {configFile = f;readConfig();}
-
-	public CompileResult compile(String text) throws CompileException {
-		if (compiler!=null) return compiler.compile(this, text);
+    /**
+     * Initalize the config, 
+     * @param f
+     */
+	ConfigInfo(File f) {
+		configFile = f;
+		readConfig();
+	}
+	
+	
+	/**
+	 * Compiles the main hud using the selected compiler
+	 * @return
+	 * @throws CompileException
+	 * @throws IOException
+	 */
+	public CompileResult compileMainHud() throws CompileException, IOException {
+		if (compiler!=null) return compiler.compile(this, HudFileUtils.getFile(mainfile), mainfile);
 		else throw new CompileException("There is no Compiler!");
 	}
+	
+	
+	
 	public void readConfig() {
 		try {
 			if (!configFile.exists()) save();
@@ -86,9 +105,22 @@ public class ConfigInfo {
 			Hudder.log(e.getLocalizedMessage());
 			Hudder.IS_DEBUG=true;//Failed to read config, turn on IS_DEBUG.
 		}
-		try {compiler = Compilers.getCompilerFromName(compilertype.toLowerCase());} 
-		catch (Exception e) {compiler = new HudderV2Compiler();e.printStackTrace();}
+		refreshCompiler();
 	}
+	
+	
+	
+	public void refreshCompiler() {
+		try {
+			compiler = Compilers.getCompilerFromName(compilertype.toLowerCase());
+		} catch (Exception e) {
+			compiler = new HudderV2Compiler();
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
 	private void setField(Field f, Object object) throws ReflectiveOperationException {
 		if (object instanceof Number num) {
 			if (f.getType().isAssignableFrom(int.class)) f.set(this, num.intValue());
@@ -100,6 +132,9 @@ public class ConfigInfo {
 			else f.set(this, object);
 		} else f.set(this, object);
 	}
+	
+	
+	
 	public void save() throws IOException {
 		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
 		if (!configFile.exists()) {
@@ -109,10 +144,24 @@ public class ConfigInfo {
 		try (FileWriter fw = new FileWriter(configFile)) {fw.append(gson.toJson(this));fw.flush();}
 		catch (IOException e) {e.printStackTrace();Hudder.IS_DEBUG=true;}//Failed to save config, turn on IS_DEBUG.
 	}
+	
+	
+	
 	public boolean shouldDrawResult(MinecraftClient ins) {
 		return !ins.options.hudHidden&&(!ins.getDebugHud().shouldShowDebugHud()||showInF3)&&enabled;
 	}
+	
+	
+	
 	public boolean shouldCompile(MinecraftClient ins) {
 		return enabled&&ins.player!=null;
+	}
+	
+	
+	
+	public Object setCompiler(String compilername) {
+		compilertype=compilername;
+		refreshCompiler();
+		return compilername;
 	}
 }
