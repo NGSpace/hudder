@@ -32,7 +32,6 @@ import net.minecraft.util.Identifier;
 public class JavaScriptCompiler extends AVarTextCompiler {
 	
 	public Map<String, RuntimeCache> cache = new HashMap<String, RuntimeCache>();
-//	public static JavetProxyConverter OBJECT_CONVERTER = new JavetObjConverter();
 	public List<AUIElement> elms = new ArrayList<AUIElement>();
 	
 	public JavaScriptCompiler() {
@@ -207,8 +206,16 @@ public class JavaScriptCompiler extends AVarTextCompiler {
 	
 	public static class TranslatedItemStack {
 		public String name;
+		public int count;
+		public int maxcount;
+		public int durability;
+		public int maxdurability;
 		public TranslatedItemStack(ItemStack stack) {
 			name = stack.getItemName().getString();
+			count = stack.getCount();
+			maxcount = stack.getMaxCount();
+			durability = stack.getMaxDamage()-stack.getDamage();
+			maxdurability = stack.getMaxDamage();
 		}
 	}
 
