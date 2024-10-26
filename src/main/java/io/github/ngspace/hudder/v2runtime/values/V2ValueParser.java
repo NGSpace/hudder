@@ -77,9 +77,9 @@ public class V2ValueParser {private V2ValueParser() {}
 		}
 		
 		//Comparing values
-		var operator = compiler.getOperator(value);
+		String operator = compiler.getOperator(value);
 		if (operator!=null) {
-			var v = value.split(operator,2);
+			String[] v = value.split(operator,2);
 			return new V2Comparison(compiler.getV2Value(runtime, v[0].trim(), line, charpos),
 					compiler.getV2Value(runtime, v[1].trim(), line, charpos), operator, line, charpos);
 		}

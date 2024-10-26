@@ -1,6 +1,5 @@
 package io.github.ngspace.hudder.compilers;
 
-import java.io.Closeable;
 import java.io.IOException;
 
 import org.mozilla.javascript.BaseFunction;
@@ -18,37 +17,35 @@ import io.github.ngspace.hudder.compilers.utils.CompileException;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-public class JavaScriptEngineWrapper implements Closeable {
+public class JavaScriptEngineWrapper implements IScriptingLanguageEngine {
 	Context cx;
-	boolean setClassShutter = true;
 	ScriptableObject scope;
 	public JavaScriptEngineWrapper() {
         cx = Context.enter();
-        try {
-//        	if (setClassShutter)
-//        		cx.getClassShutterSetter().setClassShutter(clazz->clazz.startsWith(
-//        				"io.github.ngspace.hudder.compilers.JavaScript"));
-        } finally {
-			setClassShutter = false;
-		}
-        scope = cx.initSafeStandardObjects();
+        cx.setLanguageVersion(Context.VERSION_ES6);//For some reason this is not the default
         
-        cx.setLanguageVersion(Context.VERSION_ES6);
+        scope = cx.initSafeStandardObjects();
         
 		insertObject(new JavaScriptIO(), "console");
 		insertObject(new JavaScriptIO(), "hudder" );
+		
+		var JavaScriptIO = new JavaScriptIO();
+		
+		bindConsumer( s->JavaScriptIO.log(s[0]), "log");
+		bindConsumer( s->JavaScriptIO.warn(s[0]), "warn");
+		bindConsumer( s->JavaScriptIO.error(s[0]), "error");
+		bindConsumer( s->JavaScriptIO.alert(s[0]), "alert");
 	}
-
+	
+	@Override
 	public void bindFunction(ScriptFunction function, String... names) {
         Function func = new BaseFunction() {
             private static final long serialVersionUID = 1L;
 			@Override public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
 				try {
-					for (int i = 0;i<args.length;i++) {
-						if (args[i] instanceof NativeJavaObject o) {
-							args[i] = o.unwrap();
-						}
-					}
+					for (int i = 0;i<args.length;i++)
+						if (args[i] instanceof NativeJavaObject o)
+							args[i] = o.unwrap();//Make sure the function gets the object and not a wrapper.
 					return function.exec(args);
 				} catch (Exception e) {
 					throw new WrappedException(e);
@@ -57,12 +54,13 @@ public class JavaScriptEngineWrapper implements Closeable {
         };
         for (String name : names) scope.put(name, scope, func);
 	}
-	public void bindConsumer(ScriptConsumer function, String... names) {
+	@Override
+	public void bindConsumer(ScriptConsumer consumer, String... names) {
         Function func = new BaseFunction() {
             private static final long serialVersionUID = 1L;
 			@Override public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
 				try {
-					function.exec(args);
+					consumer.exec(args);
 					return Undefined.instance;
 				} catch (Exception e) {
 					throw new WrappedException(e);
@@ -71,20 +69,22 @@ public class JavaScriptEngineWrapper implements Closeable {
         };
         for (String name : names) scope.put(name, scope, func);
 	}
-
+	
+	@Override
 	public Object readVariable(String name) {
 		Object val = scope.get(name, scope);
 		if (val==Scriptable.NOT_FOUND) return null;
 		return val;
 	}
-
+	@Override
 	public Object readVariableSafe(String name, Object t) {
 		Object val = scope.get(name, scope);
 		if (val==null||val==Scriptable.NOT_FOUND) return t;
 		return val;
 	}
 	
-	public void evaluateString(String code, String name) {
+	@Override
+	public void evaluateCode(String code, String name) {
 		cx.evaluateString(scope, code, name, 1, null);
 	}
 	
@@ -93,11 +93,14 @@ public class JavaScriptEngineWrapper implements Closeable {
 		ScriptableObject.putProperty(scope, name, wrappedObj);
 	}
 
+	@Override
 	public Object callFunction(String name, String... args) throws IOException {
 		Object func = scope.get(name, scope);
 		if (func instanceof Function f) return f.call(cx, scope, scope, args);
 		else throw new IOException(name + " is not a function or is not defined!");
 	}
+	
+	@Override
 	public Object callFunctionSafe(String name, Object defualt, String... args) throws IOException {
 		Object func = scope.get(name, scope);
 		if (func==null||func==Scriptable.NOT_FOUND) return defualt;
@@ -106,9 +109,6 @@ public class JavaScriptEngineWrapper implements Closeable {
 	}
 	
 	@Override public void close() throws IOException {cx.close();}
-	
-	public static interface ScriptFunction {public Object exec(Object... args) throws CompileException;}
-	public static interface ScriptConsumer {public void   exec(Object... args) throws CompileException;}
 	
 
 	public static class JavaScriptIO {
@@ -122,7 +122,7 @@ public class JavaScriptEngineWrapper implements Closeable {
 		}
 	}
 
-
+	@Override
 	public CompileException processException(Exception e) {
 		if (e instanceof RhinoException ex) {
 			String msg = "\u00A74"+ex.getMessage()
@@ -130,11 +130,9 @@ public class JavaScriptEngineWrapper implements Closeable {
 			return new CompileException(msg,-1,-1,ex);
 		}
 		if (e instanceof CompileException ex) return ex;
-//		return new CompileException(e.getMessage(),-1,-1,e);
 		var ex = new WrappedException(e);
 		String msg = "\u00A74"+e.getMessage()
 				+"\n\u00A7bat Line "+ex.lineNumber()+" at col "+ex.columnNumber();
 		return new CompileException(msg,-1,-1,ex);
-//		return processException();
 	}
 }

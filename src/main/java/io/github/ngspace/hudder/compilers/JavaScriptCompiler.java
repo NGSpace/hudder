@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import io.github.ngspace.hudder.Hudder;
-import io.github.ngspace.hudder.compilers.JavaScriptEngineWrapper.JavaScriptIO;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileResult;
 import io.github.ngspace.hudder.compilers.utils.Compilers;
@@ -61,17 +60,17 @@ public class JavaScriptCompiler extends AVarTextCompiler {
     	if (!info.javascript) throw new CompileException("JavaScript is disabled!",-1,-1);
     	if (Hudder.ins.player==null) return CompileResult.of("");
     	RuntimeCache rtcache = cache.get(text);
-    	JavaScriptEngineWrapper wrapper = null;
+    	IScriptingLanguageEngine wrapper = null;
 	    try {
 	    	if (rtcache!=null&&rtcache.exception!=null) throw rtcache.exception;
 			wrapper = rtcache==null?null:rtcache.engine;
 	    	if (wrapper==null) {
-	    		wrapper = new JavaScriptEngineWrapper();
+	    		wrapper = createLangEngine();
 	    		loadFunctions(wrapper);
 	    		
 	        	Exception exception = null;
 	        	try {
-	        		wrapper.evaluateString(text, "hud.js");
+	        		wrapper.evaluateCode(text, "hud.js");//TODO fix this
 	        	} catch (Exception e) {
 	        		exception = e;
 	        	}
@@ -104,14 +103,10 @@ public class JavaScriptCompiler extends AVarTextCompiler {
 			throw new CompileException(e.getMessage(),-1,-1,e);
 		}
 	}
-	public void loadFunctions(JavaScriptEngineWrapper engine) {
-		//System
-		var JavaScriptIO = new JavaScriptIO();
-		
-		engine.bindConsumer( s->JavaScriptIO.log(s[0]), "log");
-		engine.bindConsumer( s->JavaScriptIO.warn(s[0]), "warn");
-		engine.bindConsumer( s->JavaScriptIO.error(s[0]), "error");
-		engine.bindConsumer( s->JavaScriptIO.alert(s[0]), "alert");
+	private IScriptingLanguageEngine createLangEngine() {
+		return new JavaScriptEngineWrapper();
+	}
+	public void loadFunctions(IScriptingLanguageEngine engine) {
 		
 		//Getters
 		
@@ -120,7 +115,7 @@ public class JavaScriptCompiler extends AVarTextCompiler {
     	engine.bindFunction(s->StringData.getString  (((String)s[0])), "getString" );
     	engine.bindFunction(s->BooleanData.getBoolean (((String)s[0])), "getBoolean");
     	
-    	engine.bindFunction(s->translate(Hudder.ins.player.getInventory().getStack(((Number)s[0]).intValue())), "getItem");
+    	engine.bindFunction(s->new TranslatedItemStack(Hudder.ins.player.getInventory().getStack(((Number)s[0]).intValue())), "getItem");
     	
     	//Setters
     	
@@ -199,10 +194,6 @@ public class JavaScriptCompiler extends AVarTextCompiler {
     	
     	engine.bindFunction(s->HudFileUtils.exists(((String)s[0])),"exists");
 	}
-
-	private Object translate(ItemStack stack) {
-		return new TranslatedItemStack(stack);
-	}
 	
 	public static class TranslatedItemStack {
 		public String name;
@@ -223,9 +214,9 @@ public class JavaScriptCompiler extends AVarTextCompiler {
 	 * Saves the engine as well as any compiler exception that was thrown during compiliation.
 	 */
 	public static class RuntimeCache implements Closeable {
-		public JavaScriptEngineWrapper engine;
+		public IScriptingLanguageEngine engine;
 		public Exception exception;
-		public RuntimeCache(JavaScriptEngineWrapper engine, Exception exception) {
+		public RuntimeCache(IScriptingLanguageEngine engine, Exception exception) {
 			this.engine=engine;
 			this.exception=exception;
 		}

@@ -44,16 +44,4 @@ public abstract class AVarTextCompiler extends ATextCompiler {
 		if (obj!=null) return obj;
 		return key;
 	}
-	/**
-	 * Dumbest thing I ever wrote... but it works.
-	 */
-	public String getOperator(String condString) {
-		if (condString.contains("==")) return "==";
-		if (condString.contains("!=")) return "!=";
-		if (condString.contains(">=")) return ">=";
-		if (condString.contains("<=")) return "<=";
-		if (condString.contains(">" )) return ">" ;
-		if (condString.contains("<" )) return "<" ;
-		return null;
-	}
 }

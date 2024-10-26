@@ -17,7 +17,7 @@ public abstract class ATextCompiler {
 	public void put(String key, Object value) {variables.put(key, value);}
 	public Object get(String key) {return variables.get(key);}
 	
-	public CharPosition getPosition(int ind, String string) {
+	protected CharPosition getPosition(int ind, String string) {
 		int line = 0;
 		int charpos = 0;
 		
@@ -31,7 +31,7 @@ public abstract class ATextCompiler {
 		}
 		return new CharPosition(line, charpos);
 	}
-	public CharPosition getPosition(CharPosition charPosition, int ind, String j) {
+	protected CharPosition getPosition(CharPosition charPosition, int ind, String j) {
 		int line = charPosition.line;
 		int charpos = charPosition.charpos;
 		if (line==-1||charpos==-1) {

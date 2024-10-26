@@ -40,4 +40,14 @@ public abstract class AV2Compiler extends AVarTextCompiler {
 	public void putTemp(String key, Object value) {
 		tempVariables.put(key, value);
 	}
+	
+	public String getOperator(String condString) {
+		if (condString.contains("==")) return "==";
+		if (condString.contains("!=")) return "!=";
+		if (condString.contains(">=")) return ">=";
+		if (condString.contains("<=")) return "<=";
+		if (condString.contains(">" )) return ">" ;
+		if (condString.contains("<" )) return "<" ;
+		return null;
+	}
 }
