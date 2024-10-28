@@ -7,7 +7,6 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 
@@ -20,6 +19,7 @@ import io.github.ngspace.hudder.compilers.utils.HudInformation;
 import io.github.ngspace.hudder.util.HudFileUtils;
 import io.github.ngspace.hudder.util.testing.HudderUnitTester;
 import net.minecraft.client.MinecraftClient;
+import net.minidev.json.JSONObject;
 
 public class ConfigInfo {
 	
@@ -148,18 +148,27 @@ public class ConfigInfo {
 	 * @throws IOException When fails to write to the file
 	 */
 	public void save() throws IOException {
-		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
 		if (!configFile.exists()) {
 			configFile.getParentFile().mkdirs();
 			if (!configFile.createNewFile()) throw new IOException("Failed to create Hudder config file.");
 		}
 		try (FileWriter fw = new FileWriter(configFile)) {
-			fw.append(gson.toJson(this));
+			JSONObject js = new JSONObject();
+			for (Field f : ConfigInfo.class.getFields())
+				if (f.getAnnotation(Expose.class)!=null)
+					js.put(f.getName(), f.get(this));
+
+			js.put("debug", Hudder.IS_DEBUG);
+			
+			fw.append(new GsonBuilder().setPrettyPrinting().create().toJson(js));
 			fw.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 			Hudder.IS_DEBUG=true;
 			throw e;
+		} catch (ReflectiveOperationException e) {
+			e.printStackTrace();
+			Hudder.IS_DEBUG=true;
 		}
 	}
 	

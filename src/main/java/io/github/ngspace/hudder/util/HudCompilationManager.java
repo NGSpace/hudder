@@ -32,7 +32,9 @@ public class HudCompilationManager {
     		Advanced.delta = f!=null?f.getLastFrameDuration():3;
     		if (Hudder.config.shouldCompile()) {
     			for (Consumer<ATextCompiler> con : precomplistners)  con.accept(Hudder.config.compiler);
+//    			var l = Instant.now();
     			result = Hudder.config.compileMainHud();
+//    			Hudder.log(Duration.between(l, Instant.now()).getNano());
     			for (Consumer<ATextCompiler> con : postcomplistners) con.accept(Hudder.config.compiler);
     		}
 		} catch (CompileException e) {

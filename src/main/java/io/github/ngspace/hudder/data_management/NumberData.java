@@ -69,9 +69,6 @@ public class NumberData {private NumberData() {}
 			/* Food and health */
 			case "saturation": yield (double) p.getHungerManager().getSaturationLevel();
 			case "hunger": yield (double) p.getHungerManager().getFoodLevel();
-			// TODO Find this
-//			case "previoushunger": yield (double) p.getHungerManager().getFoodLevel();
-//			case "exhaustion": yield (double) p.getHungerManager().writeNbt(new NbtCompound()); foodExhaustionLevel
 			
 			case "health", "hp": yield (double) p.getHealth();
 			case "maxhealth", "maxhp": yield (double) p.getMaxHealth();
@@ -116,7 +113,6 @@ public class NumberData {private NumberData() {}
 			
 
 			/* World Rendering */
-			//TODO Fix this
 			case "entites": yield (double) ((WorldRendererAccess)wr).getRenderedEntitiesCount();
 			case "particles": yield (double) ((ParticleManagerAccessor)ins.particleManager)
 				.getParticles().values().stream().mapToInt(Collection::size).sum();

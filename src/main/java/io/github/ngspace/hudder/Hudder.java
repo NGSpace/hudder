@@ -28,19 +28,17 @@ public class Hudder implements ModInitializer {
 	 */
 	
     private static final Logger LOGGER = LoggerFactory.getLogger("hudder");
+	private static MinecraftClient mc = MinecraftClient.getInstance();
     
     
-    public static boolean IS_DEBUG = false;
-    public static ConfigInfo config = ConfigManager.getConfig();
     public HudderRenderer renderer = null;
-    
-    
-	public static Hudder instance;
-	
-	
     public HudCompilationManager compilationManager = new HudCompilationManager();
 	
-	private static MinecraftClient mc = MinecraftClient.getInstance();
+	
+    public static boolean IS_DEBUG = false;
+    public static ConfigInfo config = ConfigManager.getConfig();
+    
+	public static Hudder instance;
 
     
     

@@ -20,6 +20,8 @@ import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.OrderedText;
+import net.minecraft.text.StringVisitable;
 
 /**
  * Hudder.java was too messy so I moved all rendering functions into this one class
@@ -39,10 +41,10 @@ public class HudderRenderer implements HudRenderCallback {
 	
     public static final String NL_REGEX = "\r?\n";
 	public void renderFail(DrawContext context, String FailMessage) {
-		String[] lines = FailMessage.split(NL_REGEX);
+		var lines = mc.textRenderer.wrapLines(StringVisitable.plain(FailMessage), mc.getWindow().getScaledWidth());
 		int y = 1;
-		for (String line : lines) {
-			renderTextLine(context, line, 1, y, 0xFF5555, 1, true, true, 0xd6d6d6);
+		for (OrderedText line : lines) {
+        	context.drawText(mc.textRenderer, line, 1, y, 0xFF5555, true);
 			y+=9;
 		}
 	}

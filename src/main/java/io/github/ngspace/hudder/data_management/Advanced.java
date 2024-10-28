@@ -4,7 +4,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.lwjgl.glfw.GLFW;
@@ -19,7 +18,7 @@ public class Advanced {private Advanced() {}
 	
 	public static String OS = null; static{
 		if (OS == null) {
-			String OS = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
+			String OS = System.getProperty("os.name", "generic").toLowerCase();
 			if ((OS.indexOf("mac") >= 0) || (OS.indexOf("darwin") >= 0)) OS = "mac";
 			else if (OS.indexOf("win") >= 0) OS = "windows";
 			else if (OS.indexOf("nux") >= 0) OS = "linux";

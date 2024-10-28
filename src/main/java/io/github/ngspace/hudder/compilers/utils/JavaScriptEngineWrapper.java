@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.mozilla.javascript.BaseFunction;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
-import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
@@ -27,30 +26,30 @@ public class JavaScriptEngineWrapper implements IScriptingLanguageEngine {
 	public JavaScriptEngineWrapper() {
         cx = Context.enter();
         cx.setLanguageVersion(Context.VERSION_ES6);//For some reason this is not the default
+        cx.setOptimizationLevel(9);
         
         scope = cx.initSafeStandardObjects();
-        
-		insertObject(new JavaScriptIO(), "console");
-		insertObject(new JavaScriptIO(), "hudder" );
 		
 		var JavaScriptIO = new JavaScriptIO();
 		
-		bindConsumer( s->JavaScriptIO.log(s[0]), "log");
-		bindConsumer( s->JavaScriptIO.warn(s[0]), "warn");
-		bindConsumer( s->JavaScriptIO.error(s[0]), "error");
-		bindConsumer( s->JavaScriptIO.alert(s[0]), "alert");
+		insertObject(JavaScriptIO, "console");
+		insertObject(JavaScriptIO, "hudder" );
+		
+		bindConsumer(s->JavaScriptIO.log  (s[0]), "log");
+		bindConsumer(s->JavaScriptIO.warn (s[0]), "warn");
+		bindConsumer(s->JavaScriptIO.error(s[0]), "error");
+		bindConsumer(s->JavaScriptIO.alert(s[0]), "alert");
 	}
 	
-	@Override
-	public void bindFunction(ScriptFunction function, String... names) {
+	@Override public void bindFunction(ScriptFunction function, String... names) {
         Function func = new BaseFunction() {
             private static final long serialVersionUID = 1L;
 			@Override public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
 				try {
+					ScriptingValue[] vals = new ScriptingValue[args.length];
 					for (int i = 0;i<args.length;i++)
-						if (args[i] instanceof NativeJavaObject o)
-							args[i] = o.unwrap();//Make sure the function gets the object and not a wrapper.
-					return function.exec(args);
+						vals[i] = new JavaScriptValue(args[i]);
+					return function.exec(vals);
 				} catch (Exception e) {
 					throw new WrappedException(e);
 				}
@@ -58,33 +57,21 @@ public class JavaScriptEngineWrapper implements IScriptingLanguageEngine {
         };
         for (String name : names) scope.put(name, scope, func);
 	}
-	@Override
-	public void bindConsumer(ScriptConsumer consumer, String... names) {
-        Function func = new BaseFunction() {
-            private static final long serialVersionUID = 1L;
-			@Override public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
-				try {
-					consumer.exec(args);
-					return Undefined.instance;
-				} catch (Exception e) {
-					throw new WrappedException(e);
-				}
-            }
-        };
-        for (String name : names) scope.put(name, scope, func);
+	@Override public void bindConsumer(ScriptConsumer consumer, String... names) {
+		bindFunction(e->{consumer.exec(e);return Undefined.instance;},names);
 	}
 	
 	@Override
-	public Object readVariable(String name) {
+	public ScriptingValue readVariable(String name) {
 		Object val = scope.get(name, scope);
 		if (val==Scriptable.NOT_FOUND) return null;
-		return val;
+		return new JavaScriptValue(val);
 	}
 	@Override
-	public Object readVariableSafe(String name, Object t) {
+	public ScriptingValue readVariableSafe(String name, Object t) {
 		Object val = scope.get(name, scope);
-		if (val==null||val==Scriptable.NOT_FOUND) return t;
-		return val;
+		if (val==null||val==Scriptable.NOT_FOUND) return new JavaScriptValue(t);
+		return new JavaScriptValue(val);
 	}
 	
 	@Override
@@ -126,8 +113,7 @@ public class JavaScriptEngineWrapper implements IScriptingLanguageEngine {
 		}
 	}
 
-	@Override
-	public CompileException processException(Exception e) {
+	@Override public CompileException processException(Exception e) {
 		if (e instanceof RhinoException ex) {
 			String msg = "\u00A74"+ex.getMessage()
 					+"\n\u00A7bat Line "+ex.lineNumber()+" at col "+ex.columnNumber();
@@ -138,5 +124,24 @@ public class JavaScriptEngineWrapper implements IScriptingLanguageEngine {
 		String msg = "\u00A74"+e.getMessage()
 				+"\n\u00A7bat Line "+ex.lineNumber()+" at col "+ex.columnNumber();
 		return new CompileException(msg,-1,-1,ex);
+	}
+	
+	public class JavaScriptValue implements ScriptingValue {
+		
+		public Object value;
+		public JavaScriptValue(Object value) {this.value=value;}
+
+		@Override public String asString() {return Context.toString(value);}
+
+		@Override public int asInt() {return (int) Context.toNumber(value);}
+		@Override public long asLong() {return (long) Context.toNumber(value);}
+		@Override public float asFloat() {return (float) Context.toNumber(value);}
+		@Override public double asDouble() {return Context.toNumber(value);}
+		
+		@Override public boolean asBoolean() {return Context.toBoolean(value);}
+		
+		@Override public String toString() {
+			return asString();
+		}
 	}
 }

@@ -97,6 +97,16 @@ public class HudderV2Compiler extends AV2Compiler {
 					break;
 				}
 				case VARIABLE_STATE: {
+					if (c=='"') {
+						char prevchar = '\\';
+						for (;ind<text.length();ind++) {
+							c = text.charAt(ind);
+							if (prevchar!='\\'&&c=='"')
+								break;
+							elemBuilder.append(c);
+							prevchar = c;
+						}
+					}
 					if (c=='{') {
 						bracketscount++;elemBuilder.append(c);
 					} else if (c=='}') {

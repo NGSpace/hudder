@@ -34,7 +34,7 @@ public class HudFileUtils {private HudFileUtils() {}
      * @throws IOException
      */
 	public static String getFile(String file) throws IOException {
-		return reader.getFile(FOLDER + sanitize(file));
+		return reader.getFile(sanitize(FOLDER + file));
 	}
 	
 	
@@ -50,7 +50,7 @@ public class HudFileUtils {private HudFileUtils() {}
 	 * @throws IOException
 	 */
 	public static NativeImage getAndRegisterImage(String file, Identifier id) throws IOException {
-		return reader.getAndRegisterImage(FOLDER + sanitize(file), id);
+		return reader.getAndRegisterImage(sanitize(FOLDER + file), id);
 	}
 	
 	
@@ -65,23 +65,28 @@ public class HudFileUtils {private HudFileUtils() {}
 	
 	
 	public static String sanitize(String file) {
+		if (!new File(file).getAbsolutePath().startsWith(FOLDER)) throwError(file);
 		int j = 0;
 		int k = 0;
 		for (int i = 0;i<file.length();i++) {
 			char c = file.charAt(i);
 			if (c=='.') j++;
 			else if (c=='/'||c=='\\') {
-				if (j==2&&k==0) throw new SecurityException(file + " (No such file or directory)");
+				if (j==2&&k==0) throwError(file);
 				k = 0;
 			} else {j = 0;k++;}
 		}
 		return file;
 	}
 	
+	private static final void throwError(String file) {
+		throw new SecurityException(file + " (No such file or directory)");
+	}
+	
 	
 	
 	public static boolean exists(String file) {
-		return new File(FOLDER + sanitize(file)).exists();
+		return new File(sanitize(FOLDER + file)).exists();
 	}
 	
 	
@@ -90,18 +95,18 @@ public class HudFileUtils {private HudFileUtils() {}
 		String[] defaultfiles = {"tutorial","hand","armor","armorside","hud","basic","hud.js","hotbar.js", "fibonacci"};
 		
 		for (String file : defaultfiles) {
-			File dest = new File(HudFileUtils.FOLDER, file);
+			File dest = new File(FOLDER, file);
 			if (dest.exists()) continue;
 			try {FileUtils.copyURLToFile(HudFileUtils.class.getResource(ASSETS + file), dest);}
 			catch (IOException e) {e.printStackTrace();}
 		}
 		
-		if (!new File(HudFileUtils.FOLDER + "Textures").exists()) new File(HudFileUtils.FOLDER + "Textures").mkdir();
+		if (!new File(FOLDER + "Textures").exists()) new File(FOLDER + "Textures").mkdir();
 		
 		String[] defaulttextures = {"pointer.png","selection.png"};
 		
 		for (String file : defaulttextures) {
-			File dest = new File(HudFileUtils.FOLDER + "Textures", file);
+			File dest = new File(FOLDER + "Textures", file);
 			if (dest.exists()) continue;
 			try {FileUtils.copyURLToFile(HudFileUtils.class.getResource(ASSETS+"Textures/" + file), dest);}
 			catch (IOException e) {e.printStackTrace();}

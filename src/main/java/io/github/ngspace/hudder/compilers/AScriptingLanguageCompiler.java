@@ -53,40 +53,40 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 	protected abstract IScriptingLanguageEngine createLangEngine() throws CompileException;
 
 	@Override public HudInformation compile(ConfigInfo info, String text, String filename) throws CompileException {
-    	if (mc.player==null) return HudInformation.of("");
-    	RuntimeCache rtcache = cache.get(text);
-    	IScriptingLanguageEngine wrapper = null;
-	    try {
-	    	if (rtcache!=null&&rtcache.exception!=null) throw rtcache.exception;
+		if (mc.player==null) return HudInformation.of("");
+		RuntimeCache rtcache = cache.get(text);
+		IScriptingLanguageEngine wrapper = null;
+		try {
+			if (rtcache!=null&&rtcache.exception!=null) throw rtcache.exception;
 			wrapper = rtcache==null?null:rtcache.engine;
-	    	if (wrapper==null) {
-	    		wrapper = createLangEngine();
-	    		loadFunctions(wrapper);
-	    		
-	        	Exception exception = null;
-	        	try {
-	        		wrapper.evaluateCode(text, filename);
-	        	} catch (Exception e) {
-	        		exception = e;
-	        	}
-	        	cache.put(text, new RuntimeCache(wrapper,exception));
-	    	}
-	    	String TL = String.valueOf(wrapper.callFunctionSafe("topleft", ""));
-	    	String BL = String.valueOf(wrapper.callFunctionSafe("bottomleft", ""));
-	    	String TR = String.valueOf(wrapper.callFunctionSafe("topright", ""));
-	    	String BR = String.valueOf(wrapper.callFunctionSafe("bottomright", ""));
-	    	
-	    	wrapper.callFunctionSafe("createElements", null);
-	    	
-	    	/* Scale */
-	    	
-	    	float TLscale = ((Number) wrapper.readVariableSafe("topleftscale",1f)).floatValue();
-	    	float BLscale = ((Number) wrapper.readVariableSafe("bottomleftscale",1f)).floatValue();
-	    	float TRscale = ((Number) wrapper.readVariableSafe("toprightscale",1f)).floatValue();
-	    	float BRscale = ((Number) wrapper.readVariableSafe("bottomrightscale",1f)).floatValue();
-	    	
-		    return new HudInformation(TL, TLscale, BL, BLscale, TR, TRscale, BR, BRscale,
-		    		elms.toArray(new AUIElement[elms.size()]));
+			if (wrapper==null) {
+				wrapper = createLangEngine();
+				loadFunctions(wrapper);
+				
+				Exception exception = null;
+				try {
+					wrapper.evaluateCode(text, filename);
+				} catch (Exception e) {
+					exception = e;
+				}
+				cache.put(text, new RuntimeCache(wrapper,exception));
+			}
+			String TL = String.valueOf(wrapper.callFunctionSafe("topleft", ""));
+			String BL = String.valueOf(wrapper.callFunctionSafe("bottomleft", ""));
+			String TR = String.valueOf(wrapper.callFunctionSafe("topright", ""));
+			String BR = String.valueOf(wrapper.callFunctionSafe("bottomright", ""));
+			
+			wrapper.callFunctionSafe("createElements", null);
+			
+			/* Scale */
+			
+			float TLscale = wrapper.readVariableSafe("topleftscale",1f).asFloat();
+			float BLscale = wrapper.readVariableSafe("bottomleftscale",1f).asFloat();
+			float TRscale = wrapper.readVariableSafe("toprightscale",1f).asFloat();
+			float BRscale = wrapper.readVariableSafe("bottomrightscale",1f).asFloat();
+			
+			return new HudInformation(TL, TLscale, BL, BLscale, TR, TRscale, BR, BRscale,
+					elms.toArray(new AUIElement[elms.size()]));
 		} catch (CompileException e) {
 			throw e;
 		} catch (Exception e) {
@@ -112,51 +112,51 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 		
 		//Getters
 		
-    	engine.bindFunction(s->getVariable(((String)s[0])), "get", "getVal", "getVariable");
-    	engine.bindFunction(s->NumberData.getNumber  (((String)s[0])), "getNumber" );
-    	engine.bindFunction(s->StringData.getString  (((String)s[0])), "getString" );
-    	engine.bindFunction(s->BooleanData.getBoolean (((String)s[0])), "getBoolean");
-    	
-    	engine.bindFunction(s->new TranslatedItemStack(mc.player.getInventory().getStack(((Number)s[0]).intValue())), "getItem");
-    	
-    	//Setters
-    	
-    	engine.bindConsumer( s->put((String)s[0], s[1]), "set", "setVal", "setVariable");
-    	
-    	//ItemStacks
-    	
-    	//Item
-    	engine.bindConsumer(s->elms.add(new ItemElement(((Number)s[1]).intValue(), ((Number)s[2]).intValue(),new ItemStack(Registries.ITEM.get(
-    			Identifier.tryParse(((String)s[0])))),((Number)s[3]).floatValue(), false)),"drawItem");
-    	//Slot
-    	engine.bindConsumer(s->elms.add(new ItemElement(((Number)s[1]).intValue(),((Number)s[2]).intValue(),mc.player.getInventory()
-    			.getStack(((Number)s[0]).intValue()),((Number)s[3]).floatValue(), (boolean)s[4])),"drawSlot");
-    	//Armor
-    	engine.bindConsumer(s->elms.add(new ItemElement(((Number)s[1]).intValue(),((Number)s[2]).intValue(),mc.player.getInventory()
-    			.getArmorStack(((Number)s[0]).intValue()),((Number)s[3]).floatValue(), (boolean)s[4])),"drawArmor");
-    	//Offhand
-    	engine.bindConsumer(s->elms.add(new ItemElement(((Number)s[1]).intValue(),((Number)s[2]).intValue(),mc.player.getInventory()
-    			.offHand.get(0),((Number)s[3]).floatValue(), (boolean)s[4])),"drawOffhand");
-    	
-    	//Text
-    	
-    	engine.bindFunction(s->mc.textRenderer.getWidth(((String)s[0])), "strWidth");
-    	engine.bindConsumer(s-> {
-    		float scale = ((Number)s[3]).floatValue();
-    		int color = ((Number)s[4]).intValue();
-    		boolean shadow = (boolean)s[5];
-    		boolean bg = (boolean)s[6];
-    		int bgc = ((Number)s[7]).intValue();
-    		elms.add(new TextElement(((Number)s[0]).intValue(),((Number)s[1]).intValue(),((String)s[2]),scale,color,shadow,bg,bgc));
-    	}, "drawText");
-    	
-    	//Compile
-    	
-    	engine.bindFunction(s-> {
+		engine.bindFunction(s->getVariable(s[0].asString()), "get", "getVal", "getVariable");
+		engine.bindFunction(s->NumberData.getNumber(s[0].asString()), "getNumber" );
+		engine.bindFunction(s->StringData.getString(s[0].asString()), "getString" );
+		engine.bindFunction(s->BooleanData.getBoolean(s[0].asString()), "getBoolean");
+		
+		engine.bindFunction(s->new TranslatedItemStack(mc.player.getInventory().getStack(s[0].asInt())), "getItem");
+		
+		//Setters
+		
+		engine.bindConsumer(s->put(s[0].asString(), s[1]), "set", "setVal", "setVariable");
+		
+		//ItemStacks
+		
+		//Item
+		engine.bindConsumer(s->elms.add(new ItemElement(s[1].asInt(), s[2].asInt(),new ItemStack(Registries.ITEM.get(
+				Identifier.tryParse(s[0].asString()))),s[3].asFloat(), false)),"drawItem");
+		//Slot
+		engine.bindConsumer(s->elms.add(new ItemElement(s[1].asInt(),s[2].asInt(),mc.player.getInventory()
+				.getStack(s[0].asInt()),s[3].asFloat(), s[4].asBoolean())),"drawSlot");
+		//Armor
+		engine.bindConsumer(s->elms.add(new ItemElement(s[1].asInt(),s[2].asInt(),mc.player.getInventory()
+				.getArmorStack(s[0].asInt()),s[3].asFloat(), s[4].asBoolean())),"drawArmor");
+		//Offhand
+		engine.bindConsumer(s->elms.add(new ItemElement(s[1].asInt(),s[2].asInt(),mc.player.getInventory()
+				.offHand.get(0),s[3].asFloat(), s[4].asBoolean())),"drawOffhand");
+		
+		//Text
+		
+		engine.bindFunction(s->mc.textRenderer.getWidth(s[0].asString()), "strWidth");
+		engine.bindConsumer(s-> {
+			float scale = s[3].asFloat();
+			int color = s[4].asInt();
+			boolean shadow = s[5].asBoolean();
+			boolean bg = s[6].asBoolean();
+			int bgc = s[7].asInt();
+			elms.add(new TextElement(s[0].asInt(),s[1].asInt(),s[2].asString(),scale,color,shadow,bg,bgc));
+		}, "drawText");
+		
+		//Compile
+		
+		engine.bindFunction(s-> {
 			try {
-				ATextCompiler ecompiler = s.length>1?Compilers.getCompilerFromName(((String)s[1])):this;
+				ATextCompiler ecompiler = s.length>1?Compilers.getCompilerFromName(s[1].asString()):this;
 				for (var i : HudCompilationManager.precomplistners) i.accept(ecompiler);
-				HudInformation result = ecompiler.compile(Hudder.config,HudFileUtils.getFile((String)s[0]),(String)s[0]);
+				HudInformation result = ecompiler.compile(Hudder.config,HudFileUtils.getFile(s[0].asString()),s[0].asString());
 				Collections.addAll(elms, result.elements);
 				for (var i : HudCompilationManager.postcomplistners) i.accept(ecompiler);
 				return result;
@@ -164,37 +164,37 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 				e.printStackTrace();
 				throw new IllegalArgumentException("Unknown compiler");
 			}
-    	}, "compile", "run", "execute");
-    	
-    	//Texture
+		}, "compile", "run", "execute");
+		
+		//Texture
 
-    	engine.bindConsumer( s-> elms.add(new TextureElement(Identifier.tryParse(((String)s[0]).trim()),((Number)s[1]).intValue(),
-    			((Number)s[2]).intValue(), ((Number)s[3]).intValue(),((Number)s[4]).intValue())), "drawTexture");
-    	
+		engine.bindConsumer( s-> elms.add(new TextureElement(Identifier.tryParse(s[0].asString().trim()),s[1].asInt(),
+				s[2].asInt(), s[3].asInt(),s[4].asInt())), "drawTexture");
+		
 		engine.bindFunction(s-> {
-    		try {
-    			boolean ex = HudFileUtils.exists((String)s[0]);
-    			if (!ex) return false;
-        		Identifier id = Identifier.of(((String)s[0]).trim().toLowerCase());
-        		HudFileUtils.getAndRegisterImage(((String)s[0]),id);
-        		elms.add(new TextureElement(id,((Number)s[1]).intValue(),((Number)s[2]).intValue(),((Number)s[3]).intValue(),((Number)s[4]).intValue()));
+			try {
+				boolean ex = HudFileUtils.exists(s[0].asString());
+				if (!ex) return false;
+				Identifier id = Identifier.of(s[0].asString().trim().toLowerCase());
+				HudFileUtils.getAndRegisterImage(s[0].asString(),id);
+				elms.add(new TextureElement(id,s[1].asInt(),s[2].asInt(),s[3].asInt(),s[4].asInt()));
 			} catch (IOException e) {return false;}
-    		return true;
-    	}, "drawLocalTexture", "drawPNG", "drawImage");
-    	
-    	//Hotbar
+			return true;
+		}, "drawLocalTexture", "drawPNG", "drawImage");
+		
+		//Hotbar
 
-    	engine.bindConsumer(s->elms.add(new GameHudElement(((Number)s[0]).intValue(),((Number)s[1]).intValue(),GuiType.STATUS_BARS)),
-    			"drawStatusBars");
-    	engine.bindConsumer(s->elms.add(new GameHudElement(((Number)s[0]).intValue(),((Number)s[1]).intValue(),GuiType.EXP_AND_MOUNT_BAR)),
-    			"drawExpAndMountBars");
-    	engine.bindConsumer(s->elms.add(new GameHudElement(((Number)s[0]).intValue(),((Number)s[1]).intValue(),GuiType.HOTBAR)),
-    			"drawHotbar");
-    	engine.bindConsumer(s->elms.add(new GameHudElement(((Number)s[0]).intValue(),((Number)s[1]).intValue(),GuiType.ITEM_TOOLTIP)),
-    			"drawItemTooltip");
-    	
-    	
-    	engine.bindFunction(s->HudFileUtils.exists(((String)s[0])),"exists");
+		engine.bindConsumer(s->elms.add(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.STATUS_BARS)),
+				"drawStatusBars");
+		engine.bindConsumer(s->elms.add(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.EXP_AND_MOUNT_BAR)),
+				"drawExpAndMountBars");
+		engine.bindConsumer(s->elms.add(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.HOTBAR)),
+				"drawHotbar");
+		engine.bindConsumer(s->elms.add(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.ITEM_TOOLTIP)),
+				"drawItemTooltip");
+		
+		
+		engine.bindFunction(s->HudFileUtils.exists(s[0].asString()),"exists");
 	}
 	
 	

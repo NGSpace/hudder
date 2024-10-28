@@ -13,7 +13,7 @@ public class Compilers {private Compilers() {}
 	
 	private static final String EMPTY_COMPILER = "io.github.ngspace.hudder.compilers.EmptyCompiler";
 	private static final String DEFAULT_COMPILER = "io.github.ngspace.hudder.compilers.HudderV2Compiler";
-	private static final String JAVASCRIPT_COMPILER = "io.github.ngspace.hudder.compilers.HudderV2Compiler";
+	private static final String JAVASCRIPT_COMPILER = "io.github.ngspace.hudder.compilers.JavaScriptCompiler";
 	
 	
 	static {
@@ -40,8 +40,11 @@ public class Compilers {private Compilers() {}
 		
 		String comp = name.toLowerCase();
 		if (loadedcomps.containsKey(comp)) return loadedcomps.get(comp);
-		else if (Comps.containsKey(comp)) 
-			loadedcomps.put(comp,(ATextCompiler) Class.forName(Comps.get(comp)).getConstructor().newInstance());
+		if (Comps.containsKey(comp)) {
+			loadedcomps.put(comp, (ATextCompiler) Class.forName(Comps.get(comp)).getConstructor().newInstance());
+			return loadedcomps.get(comp);
+		}
+		
 		return getCompilerFromName("default");// Fallback to default compiler
 	}
 	
