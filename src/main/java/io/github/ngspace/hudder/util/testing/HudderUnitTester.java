@@ -23,6 +23,7 @@ public class HudderUnitTester {
 	public HudderUnitTester(ATextCompiler compiler) {this.compiler=compiler;}
 	
 	public void load(InputStream inputStream) throws IOException {load(IOUtils.toString(inputStream, UTF_8));}
+	
 	public void load(String contents) {
 	    String[] conds = ("\n"+contents).split("\\n\\n\\|\\|INPUT\\|\\|");
 	    for (String st : conds) {
@@ -31,11 +32,15 @@ public class HudderUnitTester {
 	    	String[] inputandExpectation = content[1].split("\\n\\|\\|EXPECT\\|\\|\\n");
 	    	UnitTests.put(content[0], new HudderUnitTest(inputandExpectation[0], compiler, inputandExpectation[1]));
 	    }
-	    HudderUnitTestsSuggestionProvider.suggestions = new ArrayList<String>(UnitTests.keySet());
+	    HudderUnitTestingCommand.UnitTestsSuggestionProvider.suggestions = new ArrayList<String>(UnitTests.keySet());
 	}
-	public HudderUnitTestResult test(ConfigInfo info, String name) {
-		return UnitTests.get(name).test(info);
-	}
+	
+	
+	
+	public HudderUnitTestResult test(ConfigInfo info, String name) {return UnitTests.get(name).test(info);}
+	
+	
+	
 	public Text testAll(ConfigInfo config) {
 		MutableText result = Text.literal("All tests:\n");
 		boolean failed = false;

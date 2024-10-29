@@ -23,9 +23,14 @@ import io.github.ngspace.hudder.methods.methods.LoadMethod;
 import io.github.ngspace.hudder.methods.methods.StringMethods;
 import io.github.ngspace.hudder.methods.methods.TextMethod;
 import io.github.ngspace.hudder.methods.methods.TexturesMethods;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
 public class MethodHandler {
+	
+	protected static MinecraftClient mc = MinecraftClient.getInstance();
+	
+	
 	public List<Consumer<MethodHandler>> customMethods = new ArrayList<Consumer<MethodHandler>>();
 	public Map<String, IMethod> methods = new HashMap<String,IMethod>();
 	public static final String[] Var = {"[Variable]"};
@@ -55,7 +60,7 @@ public class MethodHandler {
 		
 		
 		//Logging and errors
-		register((c,m,a,t,l,ch,s)->Hudder.ins.player.sendMessage(Text.of(s[0].asString()),false),1, TextArg, "alert");
+		register((c,m,a,t,l,ch,s)->mc.player.sendMessage(Text.of(s[0].asString()),false),1, TextArg, "alert");
 		register((c,m,a,t,l,ch,s)->Hudder.log(s[0].asString()),1, TextArg, "log");
 		register((c,m,a,t,l,ch,s)->Hudder.warn(s[0].asString()),1, TextArg, "warn");
 		register((c,m,a,t,l,ch,s)->Hudder.error(s[0].asString()),1, TextArg, "error");
@@ -109,7 +114,7 @@ public class MethodHandler {
 
 
 	@SuppressWarnings("removal")
-	public void register(String method, String[] argtypes, String name, int defline, int defcharpos) {
+	public void register(String method, String[] argtypes, String name, int defline, int defcharpos, String filename) {
 		int[] parameters = new int[argtypes.length];
 		for (int i = 0;i<argtypes.length;i++) {
 			if ("string".equals(argtypes[i])) parameters[i] = 1;
@@ -138,7 +143,7 @@ public class MethodHandler {
 				else if (parameters[i]==8) comp.put("arg"+(i+1), vals[i].get());
 			}
 			try {
-				state.combineWithResult(comp.compile(info, method), false);
+				state.combineWithResult(comp.compile(info, method, filename), false);
 			} catch (CompileException e) {
 				throw new CompileException(e.getFailureMessage() +"\nMethod threw an error " + type, line, charpos);
 			}

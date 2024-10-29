@@ -2,7 +2,7 @@ package io.github.ngspace.hudder.compilers.utils;
 
 import io.github.ngspace.hudder.methods.elements.AUIElement;
 
-public class CompileResult {
+public class HudInformation {
 	public String TopLeftText;
 	public String BottomLeftText;
 	public String TopRightText;
@@ -21,7 +21,7 @@ public class CompileResult {
 	 * Bottom Right, Scale
 	 * Elements
 	 */
-	public CompileResult(String TL, float TLScale,
+	public HudInformation(String TL, float TLScale,
 			String BL, float BLScale,
 			String TR, float TRScale,
 			String BR, float BRScale,
@@ -37,7 +37,7 @@ public class CompileResult {
 		this.BRScale = BRScale;
 	}
 	
-	public static CompileResult of(String s) {
-		return new CompileResult(s, 1, "", 1, "", 1, "", 1, new AUIElement[0]);
+	public static HudInformation of(String s) {
+		return new HudInformation(s, 1, "", 1, "", 1, "", 1, new AUIElement[0]);
 	}
 }

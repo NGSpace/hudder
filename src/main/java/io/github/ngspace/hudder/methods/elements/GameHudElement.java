@@ -1,9 +1,7 @@
 package io.github.ngspace.hudder.methods.elements;
 
-import static io.github.ngspace.hudder.Hudder.ins;
-
-import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.mixin.InGameHudAccessor;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
@@ -16,6 +14,8 @@ import net.minecraft.entity.JumpingMount;
  * game hud without forcing the user to reimplement every single UI Element themselves
  */
 public class GameHudElement extends AUIElement {
+	
+	protected static MinecraftClient mc = MinecraftClient.getInstance();
 	public enum GuiType {
 		STATUS_BARS,
 		EXP_AND_MOUNT_BAR,
@@ -37,14 +37,14 @@ public class GameHudElement extends AUIElement {
 
 	@Override public void renderElement(DrawContext context, RenderTickCounter delta) {
 		try {
-			InGameHudAccessor acchud = (InGameHudAccessor) (Hudder.ins.inGameHud);
+			InGameHudAccessor acchud = (InGameHudAccessor) (mc.inGameHud);
 			float scaledWidth = context.getScaledWindowWidth();
 	        float scaledHeight = context.getScaledWindowHeight();
 	        MatrixStack matrixStack = context.getMatrices();
 	        matrixStack.push();
 	        switch (type) {
 				case STATUS_BARS:
-			        if (Hudder.ins.interactionManager.hasStatusBars()) {
+			        if (mc.interactionManager.hasStatusBars()) {
 				        matrixStack.translate(x-scaledWidth/2, y-scaledHeight + 39, 0f);
 				        acchud.callRenderStatusBars(context);
 				        acchud.callRenderMountHealth(context);
@@ -52,15 +52,15 @@ public class GameHudElement extends AUIElement {
 			        break;
 				case EXP_AND_MOUNT_BAR:
 		            int i = (int) (scaledWidth / 2 - 91);
-			    	JumpingMount jumpingMount = Hudder.ins.player.getJumpingMount();
+			    	JumpingMount jumpingMount = mc.player.getJumpingMount();
 		            if (jumpingMount != null) {
 				        matrixStack.translate(x-scaledWidth/2, y-scaledHeight + 39, 0f);
 				        acchud.callRenderMountJumpBar(jumpingMount, context, i);
-		            } else if (Hudder.ins.interactionManager.hasExperienceBar()) {
+		            } else if (mc.interactionManager.hasExperienceBar()) {
 				        matrixStack.translate(x-scaledWidth/2, y-scaledHeight + 35, 0f);
-				        TextRenderer textRenderer = ins.textRenderer;
-			    		int jj = ins.player.experienceLevel;
-			    		if (ins.interactionManager.hasExperienceBar() && jj > 0) {
+				        TextRenderer textRenderer = mc.textRenderer;
+			    		int jj = mc.player.experienceLevel;
+			    		if (mc.interactionManager.hasExperienceBar() && jj > 0) {
 //			    			ins.getProfiler().push("expLevel");
 			    			String string = "" + jj;
 			    			int j = (context.getScaledWindowWidth() - textRenderer.getWidth(string)) / 2;
@@ -81,7 +81,7 @@ public class GameHudElement extends AUIElement {
 					break;
 				case ITEM_TOOLTIP:
 					int tooltipy =  59;
-					if (!ins.interactionManager.hasStatusBars()) tooltipy -= 14;
+					if (!mc.interactionManager.hasStatusBars()) tooltipy -= 14;
 			        matrixStack.translate(x-scaledWidth/2, tooltipy-scaledHeight+y, 0f);
 			        acchud.callRenderHeldItemTooltip(context);
 					break;

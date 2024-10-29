@@ -20,6 +20,7 @@ import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.gui.entries.MultiElementListEntry;
 import me.shedaniel.clothconfig2.gui.entries.NestedListListEntry;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
@@ -27,6 +28,9 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 public class ConfigMenu implements ConfigScreenFactory<Screen> {
+	
+	protected static MinecraftClient mc = MinecraftClient.getInstance();
+	
 	public static final String URL = "https://ngspace.github.io/hudder";
 	ConfigInfo config = ConfigManager.getConfig();
 	
@@ -39,8 +43,7 @@ public class ConfigMenu implements ConfigScreenFactory<Screen> {
 					config.save();
 				} catch (IOException e) {
 					e.printStackTrace();
-					Hudder.showToast(Hudder.ins, Text.literal("Failed to save hudder config"), 
-							Text.literal(e.getMessage()));
+					Hudder.showToast(mc, Text.literal("Failed to save hudder config"), Text.literal(e.getMessage()));
 				}
 			})
 			.setDefaultBackgroundTexture(Identifier.tryParse("textures/block/dark_oak_planks.png"))
@@ -149,7 +152,7 @@ public class ConfigMenu implements ConfigScreenFactory<Screen> {
 				config.compilertype)
 	    		.setTooltip(Text.translatable("hudder.advanced.compilertype.tooltip"))
 	    		.setDefaultValue("hudder")
-	    		.setSaveConsumer(b->config.compilertype=b.toLowerCase())
+	    		.setSaveConsumer(b->config.setCompiler(b.toLowerCase()))
 	    		.setErrorSupplier(e->!Compilers.has(e.toLowerCase())?
 	    				Optional.of(Text.translatable("hudder.advanced.compilertype.error")):Optional.empty())
 	    		.build());

@@ -15,6 +15,7 @@ public class HudderModMenuImpl implements ModMenuApi {
 	@Override public ConfigScreenFactory<?> getModConfigScreenFactory() {
 		return FabricLoader.getInstance().isModLoaded("cloth-config2") ? new ConfigMenu() : InstallClothConfig::new;
     }
+	
 	class InstallClothConfig extends Screen {
 	    private final Screen parent;
 	    public InstallClothConfig(Screen parent) {

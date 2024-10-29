@@ -5,7 +5,7 @@ function formatString(template, ...args) {
   });
 }
 function topleft() {
-	if (getBoolean("removegui")) compile("hotbar.js");
+	if (getBoolean("removegui")) compile("hotbar.js", "js");
 	
 	let itemsize = get("itemsize") !== null?parseInt(get("itemsize")):0.8;
 	let gui = getNumber("guiscale");

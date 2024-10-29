@@ -15,12 +15,13 @@ import net.minecraft.client.render.RenderTickCounter;
 @Environment(EnvType.CLIENT)
 @Mixin(InGameHud.class)
 public class InGameHudInjections {
-	public boolean shouldNotDraw() {return Hudder.config.removegui&&Hudder.config.shouldCompile(Hudder.ins);}
+	public boolean shouldNotDraw() {return Hudder.config.removegui&&Hudder.config.shouldCompile();}
 
 	@Inject(method = "renderMainHud", at = @At("HEAD"),cancellable=true)
     public void disableMainHud(DrawContext context, RenderTickCounter tickCounter, CallbackInfo i) {
 		if(shouldNotDraw()) i.cancel();
 	}
+	
 	@Inject(method = "renderExperienceLevel", at = @At("HEAD"),cancellable=true)
     public void disableExperienceLevel(DrawContext context, RenderTickCounter x, CallbackInfo i) {
 		if (shouldNotDraw()) i.cancel();

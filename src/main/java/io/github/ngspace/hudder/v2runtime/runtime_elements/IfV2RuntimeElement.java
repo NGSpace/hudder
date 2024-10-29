@@ -13,9 +13,9 @@ public class IfV2RuntimeElement extends AV2RuntimeElement {
 	private AV2Value condition;
 	private V2Runtime compiledRuntime;
 
-	public IfV2RuntimeElement(ConfigInfo info, String condition, String cmds, AV2Compiler compiler, V2Runtime runtime, CharPosition charPosition) throws CompileException {
+	public IfV2RuntimeElement(ConfigInfo info, String condition, String cmds, AV2Compiler compiler, V2Runtime runtime, CharPosition charPosition, String filename) throws CompileException {
 		this.condition = compiler.getV2Value(runtime, condition, charPosition.line, charPosition.charpos);
-		this.compiledRuntime = compiler.buildRuntime(info, cmds, new CharPosition(charPosition.line, 1));
+		this.compiledRuntime = compiler.buildRuntime(info, cmds, new CharPosition(charPosition.line, 1), filename);
 	}
 	
 	@Override

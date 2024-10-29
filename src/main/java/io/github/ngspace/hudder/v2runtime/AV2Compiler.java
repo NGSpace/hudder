@@ -3,19 +3,19 @@ package io.github.ngspace.hudder.v2runtime;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.AVarTextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
-import io.github.ngspace.hudder.compilers.utils.CompileResult;
+import io.github.ngspace.hudder.compilers.utils.HudInformation;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.methods.MethodHandler;
+import io.github.ngspace.hudder.util.HudCompilationManager;
 import io.github.ngspace.hudder.v2runtime.values.AV2Value;
 import io.github.ngspace.hudder.v2runtime.values.V2ValueParser;
 
 public abstract class AV2Compiler extends AVarTextCompiler {
 	
 	protected AV2Compiler() {
-		Hudder.addPreCompilerListener(c -> {if (this==c) tempVariables.clear();});
+		HudCompilationManager.addPreCompilerListener(c -> {if (this==c) tempVariables.clear();});
 	}
 	
 	public Map<String, V2Runtime> runtimes = new HashMap<String, V2Runtime>();
@@ -30,14 +30,22 @@ public abstract class AV2Compiler extends AVarTextCompiler {
 		return V2ValueParser.of(runtime, string, this, line, charpos);
 	}
 	
-	@Override public final CompileResult compile(ConfigInfo info, String text) throws CompileException {
+	@Override public final HudInformation compile(ConfigInfo info, String text, String filename) throws CompileException {
 		V2Runtime runtime = runtimes.get(text);
-		if (runtime==null) runtimes.put(text, (runtime=buildRuntime(info,text, new CharPosition(-1, -1))));
+		if (runtime==null) runtimes.put(text, (runtime=buildRuntime(info,text, new CharPosition(-1, -1), filename)));
 		return runtime.execute().toResult();
 	}
-	public abstract V2Runtime buildRuntime(ConfigInfo info, String text, CharPosition charPosition) throws CompileException;
+	public abstract V2Runtime buildRuntime(ConfigInfo info, String text, CharPosition charPosition, String filename) throws CompileException;
 	
-	public void putTemp(String key, Object value) {
-		tempVariables.put(key, value);
+	public void putTemp(String key, Object value) {tempVariables.put(key, value);}
+	
+	public String getOperator(String condString) {
+		if (condString.contains("==")) return "==";
+		if (condString.contains("!=")) return "!=";
+		if (condString.contains(">=")) return ">=";
+		if (condString.contains("<=")) return "<=";
+		if (condString.contains(">" )) return ">" ;
+		if (condString.contains("<" )) return "<" ;
+		return null;
 	}
 }

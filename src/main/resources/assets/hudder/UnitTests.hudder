@@ -9,6 +9,23 @@ Basic Bitch Test
 ||EXPECT||
 Basic Bitch Test
 
+||INPUT||String newlines
+{"r\nr"}
+||EXPECT||
+r
+r
+
+||INPUT||String brackets
+{"{}}"}
+||EXPECT||
+{}}
+
+||INPUT||Multi Line Arrays
+{[1,
+1]}
+||EXPECT||
+[1.0, 1.0]
+
 ||INPUT||Case insensitivity in variables
 {vAr=1} {VaR}
 ||EXPECT||

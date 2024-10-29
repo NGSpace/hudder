@@ -1,5 +1,7 @@
 package io.github.ngspace.hudder.methods.elements;
 
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.util.math.MatrixStack;
@@ -19,6 +21,7 @@ public class ItemElement extends AUIElement {
 		this.scale = scale;
 		this.showcount = showcount;
 	}
+	static TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 	
 	@Override
 	public void renderElement(DrawContext context, RenderTickCounter delta) {
@@ -29,11 +32,11 @@ public class ItemElement extends AUIElement {
             matrixStack.scale(scale, scale, scale);
             matrixStack.translate(-x, -y, 0);
         	context.drawItem(stack, (int)x, (int)y);
-        	if (showcount) context.drawItem(stack, (int)x, (int)y);
+        	if (showcount) context.drawStackOverlay(textRenderer, stack, (int)x, (int)y);
             matrixStack.pop();
         } else {
         	context.drawItem(stack, (int)x, (int)y);
-        	if (showcount) context.drawItem(stack, (int)x, (int)y);
+        	if (showcount) context.drawStackOverlay(textRenderer, stack, (int)x, (int)y);
         }
 	}
 }
