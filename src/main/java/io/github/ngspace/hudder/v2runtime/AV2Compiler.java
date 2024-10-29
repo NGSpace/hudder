@@ -37,9 +37,7 @@ public abstract class AV2Compiler extends AVarTextCompiler {
 	}
 	public abstract V2Runtime buildRuntime(ConfigInfo info, String text, CharPosition charPosition, String filename) throws CompileException;
 	
-	public void putTemp(String key, Object value) {
-		tempVariables.put(key, value);
-	}
+	public void putTemp(String key, Object value) {tempVariables.put(key, value);}
 	
 	public String getOperator(String condString) {
 		if (condString.contains("==")) return "==";

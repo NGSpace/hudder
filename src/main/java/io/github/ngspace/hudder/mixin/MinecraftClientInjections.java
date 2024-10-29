@@ -25,6 +25,7 @@ public abstract class MinecraftClientInjections {
     public void getGpuUsage(boolean tick, CallbackInfo ci) {
     	Advanced.gpuUsage = gpuUtilizationPercentage > 100 ? 100 : gpuUtilizationPercentage;
     }
+    
     @Redirect(method = "render", at = @At(value = "INVOKE",
     		target = "Lnet/minecraft/client/gui/hud/DebugHud;shouldShowDebugHud()Z"))
     public boolean shouldGetGpuUsage(DebugHud hud){return hud.shouldShowDebugHud()||ConfigManager.getConfig().enabled;}

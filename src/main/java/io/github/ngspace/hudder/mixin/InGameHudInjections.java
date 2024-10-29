@@ -21,6 +21,7 @@ public class InGameHudInjections {
     public void disableMainHud(DrawContext context, RenderTickCounter tickCounter, CallbackInfo i) {
 		if(shouldNotDraw()) i.cancel();
 	}
+	
 	@Inject(method = "renderExperienceLevel", at = @At("HEAD"),cancellable=true)
     public void disableExperienceLevel(DrawContext context, RenderTickCounter x, CallbackInfo i) {
 		if (shouldNotDraw()) i.cancel();

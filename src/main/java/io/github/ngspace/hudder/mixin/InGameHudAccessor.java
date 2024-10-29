@@ -16,6 +16,5 @@ public interface InGameHudAccessor {
     @Invoker public void callRenderExperienceBar(DrawContext context, int x);
     @Invoker public void callRenderExperienceLevel(DrawContext context, RenderTickCounter tickCounter);
     @Invoker public void callRenderHeldItemTooltip(DrawContext context);
-    /** Mfers switched the parameters in 1.20.5... */
     @Invoker public void callRenderHotbar(DrawContext context, RenderTickCounter timeDelta);
 }

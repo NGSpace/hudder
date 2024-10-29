@@ -25,10 +25,10 @@ public class WhileV2RuntimeElement extends AV2RuntimeElement {
 	
 	@Override
 	public void execute(CompileState meta, StringBuilder builder) throws CompileException {
-		short s = 32767;
+//		short s = 32767;
 		while(condition.asBoolean()) {
-			s--;
-			if (s==0) throw new CompileException("While loop limited to 32767",line,charpos);
+//			s--;
+//			if (s==0) throw new CompileException("While loop limited to 32767",line,charpos);
 			meta.combineWithResult(compiledRuntime.execute().toResult(), false);
 		}
 	}

@@ -4,9 +4,8 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.HashMap;
+import java.util.Scanner;
 
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import net.minecraft.client.MinecraftClient;
@@ -37,20 +36,32 @@ class CachedReader implements ERunnable<CompileException> {
 	
 	
 	public String getFile(String file) throws IOException {
-		if (!savedFiles.containsKey(file)) readFile(file);
+		if (!savedFiles.containsKey(file)) readFileAndSaveToCache(file);
 		return savedFiles.get(file);
 	}
 	
 	
 	
-	private boolean readFile(String file) throws IOException {
+	private boolean readFileAndSaveToCache(String file) throws IOException {
 		File f = new File(HudFileUtils.sanitize(file));
 		if (!f.exists()) {
 			f.getParentFile().mkdirs();
 			if (!f.createNewFile()) return false;
 		}
-		savedFiles.put(file,new String(Files.readAllBytes(f.toPath()), StandardCharsets.UTF_8));
+		savedFiles.put(file,readFileLineByLine(f));
 		return true;
+	}
+	
+	private String readFileLineByLine(File f) throws IOException {
+		Scanner reader = new Scanner(f);
+		String res = "";
+		while (reader.hasNextLine()) {
+			res += reader.nextLine();
+			res += '\n';
+		}
+		reader.close();
+		if (res.length()==0) return res;
+		return res.substring(0, res.length()-1);
 	}
 	
 	

@@ -19,6 +19,9 @@ public class HudderUnitTest {
 		this.texttocompile = texttocompile;
 		this.expectation = topleftexpectation.replace('&', '\u00A7');
 	}
+	
+	
+	
 	public HudderUnitTestResult test(ConfigInfo info) {
 		try {
 			if (compiler instanceof AV2Compiler v2comp) v2comp.runtimes = new HashMap<String, V2Runtime>();
@@ -30,6 +33,9 @@ public class HudderUnitTest {
 			return new HudderUnitTestResult(false, expectation, e.getMessage());
 		}
 	}
+	
+	
+	
 	public static class HudderUnitTestResult {
 		public final boolean isSucessful;
 		public final String expectation;
