@@ -6,27 +6,27 @@ import java.util.List;
 
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 
-public interface ObjectWrapper {
+public abstract class ObjectWrapper {
 	/**
 	 * Return the current value of the Object
 	 * @return an Object of any kind.
 	 * @throws CompileException - failed to get value of object
 	 */
-	public Object get() throws CompileException;
+	public abstract Object get() throws CompileException;
 	
 	
-	public String asString() throws CompileException;
-	public double asDouble() throws CompileException;
-	public Object[] asArray() throws CompileException;
-	public boolean asBoolean() throws CompileException;
+	public abstract String asString() throws CompileException;
+	public abstract double asDouble() throws CompileException;
+	public abstract Object[] asArray() throws CompileException;
+	public abstract boolean asBoolean() throws CompileException;
 	
-	public default float asFloat() throws CompileException {return (float) asDouble();}
-	public default int asInt() throws CompileException {return (int) asDouble();}
-	public default long asLong() throws CompileException {return (long) asDouble();}
+	public float asFloat() throws CompileException {return (float) asDouble();}
+	public int asInt() throws CompileException {return (int) asDouble();}
+	public long asLong() throws CompileException {return (long) asDouble();}
 	
 	
 	
-	public default float[] asFloatArray() throws CompileException {
+	public float[] asFloatArray() throws CompileException {
 		Object[] objarr = asArray();
 		float[] floatarr = new float[objarr.length];
 		for (int i = 0;i<objarr.length;i++)
@@ -34,13 +34,9 @@ public interface ObjectWrapper {
 		return floatarr;
 	}
 	
-	
-	
-	public default List<Object> asList() throws CompileException {
-		return new ArrayList<Object>(Arrays.asList(asArray()));
-	}
+	public List<Object> asList() throws CompileException {return new ArrayList<Object>(Arrays.asList(asArray()));}
 	
 	
 	
-	@Override public String toString();
+	public abstract String toString();
 }

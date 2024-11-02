@@ -15,6 +15,7 @@ import java.util.function.Consumer;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.methods.elements.ColorVerticesElement;
 import io.github.ngspace.hudder.methods.elements.TextureVerticesElement;
 import io.github.ngspace.hudder.methods.methods.GUIMethods;
 import io.github.ngspace.hudder.methods.methods.IMethod;
@@ -48,7 +49,7 @@ public class MethodHandler {
 		
 		
 		//UI
-		bindConsumer(new GUIMethods(), "health", "xpbar", "hotbar", "helditemtooltip");
+		bindConsumer(new GUIMethods(), "health", "statusbars", "xpbar", "hotbar", "helditemtooltip");
 		bindConsumer(new TexturesMethods(), "image", "png", "texture");
 		
 		bindConsumer((c,m,a,t,l,ch,s)-> {
@@ -57,7 +58,10 @@ public class MethodHandler {
 			} catch (IOException e) {
 				throw new CompileException(e.getMessage(), l, ch, e);
 			}
-		}, "textureVertices");
+		}, "texturevertices");
+		
+		bindConsumer((c,m,a,t,l,ch,s)->m.elements.add(new ColorVerticesElement(s[0].asFloatArray(),s[1].asLong())),
+				"colorvertices");
 		
 		
 		

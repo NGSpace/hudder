@@ -125,7 +125,7 @@ public class HudderRenderer implements HudRenderCallback {
 	        		0,1,
 	        		0,0
 	        };
-	        renderTexture(context,pos,texs, id);
+//	        renderTexture(context,pos,texs, id);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -165,14 +165,14 @@ public class HudderRenderer implements HudRenderCallback {
 	
 	
 	
-	public void renderBlock(DrawContext context, float x, float y, float width, float height, long rgb) {
+	public void renderBlock(DrawContext context, float x, float y, float width, float height, long argb) {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
 		RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
-        int alpha = (int) ((rgb >> 24) & 0xFF);
-        int red =   (int) ((rgb >> 16) & 0xFF);
-        int green = (int) ((rgb >>  8) & 0xFF);
-        int blue =  (int) ((rgb      ) & 0xFF);
+        int alpha = (int) ((argb >> 24) & 0xFF);
+        int red =   (int) ((argb >> 16) & 0xFF);
+        int green = (int) ((argb >>  8) & 0xFF);
+        int blue =  (int) ((argb      ) & 0xFF);
 
         BufferBuilder bgBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS,
         		VertexFormats.POSITION_COLOR);
@@ -195,12 +195,23 @@ public class HudderRenderer implements HudRenderCallback {
 	        for (int i = 0;i<vertices.length;i+=2) {
 	        	vertexConsumer.vertex(matrix,vertices[i],vertices[i+1],0f).texture(textures[i],textures[i+1]).color(-1);
 	        }
-//	        vertexConsumer.vertex(matrix, x, y+height, 0f)      .texture(1,0).color(-1);
-//	        vertexConsumer.vertex(matrix, x+width, y+height, 0f).texture(1,1).color(-1);
-//	        vertexConsumer.vertex(matrix, x+width, y, 0f)       .texture(0,1).color(-1);
-//	        vertexConsumer.vertex(matrix, x, y+height/2, 0f)    .texture(0,0).color(-1);
 	        RenderSystem.disableBlend();
 		});
+	}
+	public void renderColoredVertexArray(DrawContext context, float[] vertices, int r, int g, int b, int a) {
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+		RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
+		
+        BufferBuilder vertexBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS,
+        		VertexFormats.POSITION_COLOR);
+        Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
+
+        for (int i = 0;i<vertices.length;i+=2)
+        	vertexBuilder.vertex(matrix,vertices[i],vertices[i+1],0f).color(r, g, b, a);
+        
+        BufferRenderer.drawWithGlobalProgram(vertexBuilder.end());
+        RenderSystem.disableBlend();
 	}
 	
 	

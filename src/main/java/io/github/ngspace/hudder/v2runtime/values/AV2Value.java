@@ -7,7 +7,7 @@ import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.util.ObjectWrapper;
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 
-public abstract class AV2Value implements ObjectWrapper {
+public abstract class AV2Value extends ObjectWrapper {
 	
 	
 	protected final int line;
@@ -77,9 +77,13 @@ public abstract class AV2Value implements ObjectWrapper {
 		if (get instanceof List<?> b) return (List<Object>) b;
 		throw new CompileException(invalidTypeMessage("Array", value, get), line, charpos);
 	}
-	
-	
 	@Override public Object[] asArray() throws CompileException {return asList().toArray();}
+	
+	
+	
+	
+	
+	
 	
 	public static String invalidTypeMessage(String type, String value, Object obj) {
 		return "Incorrect type \""+type+"\" for value: \""+value+"\" of type "+obj.getClass().getName();

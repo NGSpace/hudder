@@ -2,6 +2,7 @@ package io.github.ngspace.hudder.methods.elements;
 
 import java.io.IOException;
 
+import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.util.HudFileUtils;
 import io.github.ngspace.hudder.util.HudderRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -12,18 +13,21 @@ public class TextureVerticesElement extends AUIElement {
 
 	private static final long serialVersionUID = -4934891927885170626L;
 	private Identifier id;
-	private float[] pos;
-	private float[] tex;
+	private float[] vertices;
+	private float[] textures;
 	
-	public TextureVerticesElement(String filename, float[] positionArray, float[] textureArray) throws IOException {
+	public TextureVerticesElement(String filename, float[] positionArray, float[] textureArray) throws IOException,
+		CompileException {
 		this.id = Identifier.of(filename.trim().toLowerCase());
 		HudFileUtils.getAndRegisterImage(filename,id);
-		this.pos = positionArray;
-		this.tex = textureArray;
+		this.vertices = positionArray;
+		this.textures = textureArray;
+		if (vertices.length!=textures.length)
+			throw new CompileException("Texture array and Vertex array are not of the same length!");
 	}
 	
 	@Override public void renderElement(DrawContext context, HudderRenderer renderer, RenderTickCounter delta) {
-		renderer.renderTexture(context, pos, tex, id);
+		renderer.renderTexture(context, vertices, textures, id);
 	}
 	
 }

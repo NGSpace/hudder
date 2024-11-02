@@ -18,6 +18,7 @@ import io.github.ngspace.hudder.data_management.BooleanData;
 import io.github.ngspace.hudder.data_management.NumberData;
 import io.github.ngspace.hudder.data_management.StringData;
 import io.github.ngspace.hudder.methods.elements.AUIElement;
+import io.github.ngspace.hudder.methods.elements.ColorVerticesElement;
 import io.github.ngspace.hudder.methods.elements.GameHudElement;
 import io.github.ngspace.hudder.methods.elements.GameHudElement.GuiType;
 import io.github.ngspace.hudder.methods.elements.ItemElement;
@@ -183,6 +184,18 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 			return true;
 		}, "drawLocalTexture", "drawPNG", "drawImage", "image", "png");
 		
+		//Hotbar
+
+		engine.bindConsumer(s->elms.add(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.STATUS_BARS)),
+				"drawStatusBars", "statusbars");
+		engine.bindConsumer(s->elms.add(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.EXP_AND_MOUNT_BAR)),
+				"drawExpAndMountBars", "xpbar");
+		engine.bindConsumer(s->elms.add(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.HOTBAR)),
+				"drawHotbar", "hotbar");
+		engine.bindConsumer(s->elms.add(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.ITEM_TOOLTIP)),
+				"drawItemTooltip", "helditemtooltip");
+		
+		//Vertex
 
 		engine.bindConsumer(s-> {
 			try {
@@ -192,17 +205,9 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 			}
 		}, "textureVertices");
 		
-		//Hotbar
-
-		engine.bindConsumer(s->elms.add(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.STATUS_BARS)),
-				"drawStatusBars", "statusBars");
-		engine.bindConsumer(s->elms.add(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.EXP_AND_MOUNT_BAR)),
-				"drawExpAndMountBars", "xpbar");
-		engine.bindConsumer(s->elms.add(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.HOTBAR)),
-				"drawHotbar", "hotbar");
-		engine.bindConsumer(s->elms.add(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.ITEM_TOOLTIP)),
-				"drawItemTooltip", "helditemtooltip");
+		engine.bindConsumer(s->elms.add(new ColorVerticesElement(s[0].asFloatArray(),s[1].asLong())),"colorvertices");
 		
+		//Misc
 		
 		engine.bindFunction(s->HudFileUtils.exists(s[0].asString()),"exists");
 	}

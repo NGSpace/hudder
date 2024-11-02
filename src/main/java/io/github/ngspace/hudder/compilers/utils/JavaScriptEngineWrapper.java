@@ -63,28 +63,33 @@ public class JavaScriptEngineWrapper implements IScriptingLanguageEngine {
 		bindFunction(e->{consumer.exec(e);return Undefined.instance;},names);
 	}
 	
-	@Override
-	public ObjectWrapper readVariable(String name) {
+	
+	
+	@Override public ObjectWrapper readVariable(String name) {
 		Object val = scope.get(name, scope);
 		if (val==Scriptable.NOT_FOUND) return null;
 		return new JavaScriptValue(val);
 	}
-	@Override
-	public ObjectWrapper readVariableSafe(String name, Object t) {
+	@Override public ObjectWrapper readVariableSafe(String name, Object t) {
 		Object val = scope.get(name, scope);
 		if (val==null||val==Scriptable.NOT_FOUND) return new JavaScriptValue(t);
 		return new JavaScriptValue(val);
 	}
 	
-	@Override
-	public void evaluateCode(String code, String name) {
+	
+	
+	@Override public void evaluateCode(String code, String name) {
 		cx.evaluateString(scope, code, name, 1, null);
 	}
+	
+	
 	
 	private void insertObject(Object obj, String name) {
 		Object wrappedObj = Context.javaToJS(obj, scope);
 		ScriptableObject.putProperty(scope, name, wrappedObj);
 	}
+	
+	
 
 	@Override
 	public Object callFunction(String name, String... args) throws IOException {
@@ -101,6 +106,8 @@ public class JavaScriptEngineWrapper implements IScriptingLanguageEngine {
 		else throw new IOException(name + " is not a function!");
 	}
 	
+	
+	
 	@Override public void close() throws IOException {cx.close();}
 	
 
@@ -114,6 +121,8 @@ public class JavaScriptEngineWrapper implements IScriptingLanguageEngine {
 			Hudder.showToast(mc,Text.literal(title).formatted(Formatting.BOLD), Text.literal(content));
 		}
 	}
+	
+	
 
 	@Override public CompileException processException(Exception e) {
 		if (e instanceof RhinoException ex) {
@@ -128,24 +137,19 @@ public class JavaScriptEngineWrapper implements IScriptingLanguageEngine {
 		return new CompileException(msg,-1,-1,ex);
 	}
 	
-	public class JavaScriptValue implements ObjectWrapper {
-		
+	
+	
+	public class JavaScriptValue extends ObjectWrapper {
 		public Object value;
 		public JavaScriptValue(Object value) {this.value=value;}
 
 		@Override public Object get() throws CompileException {return value;}
 		
 		@Override public String asString() {return Context.toString(value);}
+		@Override public double asDouble() {return Context.toNumber(value);}
 		@Override public boolean asBoolean() {return Context.toBoolean(value);}
 		@Override public Object[] asArray() {return ((NativeArray) value).toArray();}
-
-		@Override public int asInt() {return (int) Context.toNumber(value);}
-		@Override public long asLong() {return (long) Context.toNumber(value);}
-		@Override public float asFloat() {return (float) Context.toNumber(value);}
-		@Override public double asDouble() {return Context.toNumber(value);}
 		
 		@Override public String toString() {return asString();}
-
-
 	}
 }

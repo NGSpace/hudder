@@ -15,7 +15,7 @@ public class GUIMethods implements IMethod {
 		int x = s[0].asInt();
 		int y = s[1].asInt();
 		GuiType guiType = switch (type) {
-			case "health": yield GuiType.STATUS_BARS;
+			case "health", "statusbars": yield GuiType.STATUS_BARS;
 			case "xpbar": yield GuiType.EXP_AND_MOUNT_BAR;
 			case "hotbar": yield GuiType.HOTBAR;
 			case "helditemtooltip": yield GuiType.ITEM_TOOLTIP;
