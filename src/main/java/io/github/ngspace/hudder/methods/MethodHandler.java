@@ -6,6 +6,7 @@ import static io.github.ngspace.hudder.compilers.utils.CompileState.MUTE;
 import static io.github.ngspace.hudder.compilers.utils.CompileState.TOPLEFT;
 import static io.github.ngspace.hudder.compilers.utils.CompileState.TOPRIGHT;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,13 +15,11 @@ import java.util.function.Consumer;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
-import io.github.ngspace.hudder.methods.methods.DecimalMethods;
+import io.github.ngspace.hudder.methods.elements.TextureVerticesElement;
 import io.github.ngspace.hudder.methods.methods.GUIMethods;
 import io.github.ngspace.hudder.methods.methods.IMethod;
-import io.github.ngspace.hudder.methods.methods.InventoryInformationMethods;
 import io.github.ngspace.hudder.methods.methods.ItemStackMethods;
 import io.github.ngspace.hudder.methods.methods.LoadMethod;
-import io.github.ngspace.hudder.methods.methods.StringMethods;
 import io.github.ngspace.hudder.methods.methods.TextMethod;
 import io.github.ngspace.hudder.methods.methods.TexturesMethods;
 import net.minecraft.client.MinecraftClient;
@@ -37,25 +36,33 @@ public class MethodHandler {
 	public static final String[] TextArg = {"[Text]"};
 	public MethodHandler() {
 		//Inventory Rendering
-		register(new ItemStackMethods(),"slot","item","hand","selectedslot","hat", "helmet", "chestplate", "leggings",
+		bindConsumer(new ItemStackMethods(),"slot","item","hand","selectedslot","hat", "helmet", "chestplate", "leggings",
 				"pants", "boots", "offhand");
 		
 		
 		
 		//Text and compiling
-		register((c,m,a,t,l,ch,s)->m.setTextLocation(t,(float) (s.length>0?s[0].asDouble():c.scale)),
+		bindConsumer((c,m,a,t,l,ch,s)->m.setTextLocation(t,(float) (s.length>0?s[0].asDouble():c.scale)),
 				BOTTOMRIGHT, TOPLEFT, TOPRIGHT, BOTTOMLEFT, MUTE);
-		register(new TextMethod(), "text");
+		bindConsumer(new TextMethod(), "text");
 		
 		
 		//UI
-		register(new GUIMethods(), "health", "xpbar", "hotbar", "helditemtooltip");
-		register(new TexturesMethods(), "image", "png", "texture");
+		bindConsumer(new GUIMethods(), "health", "xpbar", "hotbar", "helditemtooltip");
+		bindConsumer(new TexturesMethods(), "image", "png", "texture");
+		
+		bindConsumer((c,m,a,t,l,ch,s)-> {
+			try {
+				m.elements.add(new TextureVerticesElement(s[0].asString(),s[1].asFloatArray(),s[2].asFloatArray()));
+			} catch (IOException e) {
+				throw new CompileException(e.getMessage(), l, ch, e);
+			}
+		}, "textureVertices");
 		
 		
 		
 		//Compiler
-		register(new LoadMethod(), "load", "execute", "compile", "run", "add");
+		bindConsumer(new LoadMethod(), "load", "execute", "compile", "run", "add");
 		
 		
 		
@@ -65,26 +72,10 @@ public class MethodHandler {
 		register((c,m,a,t,l,ch,s)->Hudder.warn(s[0].asString()),1, TextArg, "warn");
 		register((c,m,a,t,l,ch,s)->Hudder.error(s[0].asString()),1, TextArg, "error");
 		register((c,m,a,t,l,ch,s)->{throw new CompileException(s[0].asString(),l,ch);},1, TextArg, "throw");
-		
-		
-		
-		//Inventory Management
-		register(new InventoryInformationMethods(), 2, new String[] {"[Slot number]",Var[0]}, "name", "durability",
-				"maxdurability","count","maxcount");
-		
-		
-		
-		//Mathematical operations
-		register(new DecimalMethods(), "decimalpoint", "float");
-		
-		
-		
-		//String Manipulation
-		register(new StringMethods(), "concat", "multiplystring", "substring");
 	}
 	
 	
-	public void register(IMethod method, String... names) {for(String name:names)methods.put(name,method);}
+	public void bindConsumer(IMethod method, String... names) {for(String name:names)methods.put(name,method);}
 	
 	public void register(IMethod method, int length, String[] args, String... names) {
 		IMethod newmethod = (config,meta,compiler,name,l,c,vals) -> {
@@ -113,18 +104,14 @@ public class MethodHandler {
 	}
 
 
-	@SuppressWarnings("removal")
 	public void register(String method, String[] argtypes, String name, int defline, int defcharpos, String filename) {
 		int[] parameters = new int[argtypes.length];
 		for (int i = 0;i<argtypes.length;i++) {
 			if ("string".equals(argtypes[i])) parameters[i] = 1;
 			else if ("number".equals(argtypes[i])) parameters[i] = 2;
 			else if ("boolean".equals(argtypes[i])) parameters[i] = 3;
-			else if ("string_safe".equals(argtypes[i])) parameters[i] = 4;
-			else if ("number_safe".equals(argtypes[i])) parameters[i] = 5;
-			else if ("boolean_safe".equals(argtypes[i])) parameters[i] = 6;
-			else if ("array".equals(argtypes[i])) parameters[i] = 7;
-			else if ("any".equals(argtypes[i])) parameters[i] = 8;
+			else if ("array".equals(argtypes[i])) parameters[i] = 4;
+			else if ("any".equals(argtypes[i])) parameters[i] = 5;
 		}
 		String errb = '"'+name+"\" only accepts ;"+name+"";
 		for (String arg : argtypes) errb += ", [" + arg + "]";
@@ -136,11 +123,8 @@ public class MethodHandler {
 				if      (parameters[i]==1) comp.put("arg"+(i+1), vals[i].asString());
 				else if (parameters[i]==2) comp.put("arg"+(i+1), vals[i].asDouble());
 				else if (parameters[i]==3) comp.put("arg"+(i+1), vals[i].asBoolean());
-				else if (parameters[i]==4) comp.put("arg"+(i+1), vals[i].asStringSafe());
-				else if (parameters[i]==5) comp.put("arg"+(i+1), vals[i].asDoubleSafe());
-				else if (parameters[i]==6) comp.put("arg"+(i+1), vals[i].asBooleanSafe());
-				else if (parameters[i]==7) comp.put("arg"+(i+1), vals[i].asList());
-				else if (parameters[i]==8) comp.put("arg"+(i+1), vals[i].get());
+				else if (parameters[i]==4) comp.put("arg"+(i+1), vals[i].asList());
+				else if (parameters[i]==5) comp.put("arg"+(i+1), vals[i].get());
 			}
 			try {
 				state.combineWithResult(comp.compile(info, method, filename), false);

@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.mozilla.javascript.BaseFunction;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
+import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
@@ -12,6 +13,7 @@ import org.mozilla.javascript.Undefined;
 import org.mozilla.javascript.WrappedException;
 
 import io.github.ngspace.hudder.Hudder;
+import io.github.ngspace.hudder.util.ObjectWrapper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -46,7 +48,7 @@ public class JavaScriptEngineWrapper implements IScriptingLanguageEngine {
             private static final long serialVersionUID = 1L;
 			@Override public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
 				try {
-					ScriptingValue[] vals = new ScriptingValue[args.length];
+					ObjectWrapper[] vals = new ObjectWrapper[args.length];
 					for (int i = 0;i<args.length;i++)
 						vals[i] = new JavaScriptValue(args[i]);
 					return function.exec(vals);
@@ -62,13 +64,13 @@ public class JavaScriptEngineWrapper implements IScriptingLanguageEngine {
 	}
 	
 	@Override
-	public ScriptingValue readVariable(String name) {
+	public ObjectWrapper readVariable(String name) {
 		Object val = scope.get(name, scope);
 		if (val==Scriptable.NOT_FOUND) return null;
 		return new JavaScriptValue(val);
 	}
 	@Override
-	public ScriptingValue readVariableSafe(String name, Object t) {
+	public ObjectWrapper readVariableSafe(String name, Object t) {
 		Object val = scope.get(name, scope);
 		if (val==null||val==Scriptable.NOT_FOUND) return new JavaScriptValue(t);
 		return new JavaScriptValue(val);
@@ -126,22 +128,24 @@ public class JavaScriptEngineWrapper implements IScriptingLanguageEngine {
 		return new CompileException(msg,-1,-1,ex);
 	}
 	
-	public class JavaScriptValue implements ScriptingValue {
+	public class JavaScriptValue implements ObjectWrapper {
 		
 		public Object value;
 		public JavaScriptValue(Object value) {this.value=value;}
 
+		@Override public Object get() throws CompileException {return value;}
+		
 		@Override public String asString() {return Context.toString(value);}
+		@Override public boolean asBoolean() {return Context.toBoolean(value);}
+		@Override public Object[] asArray() {return ((NativeArray) value).toArray();}
 
 		@Override public int asInt() {return (int) Context.toNumber(value);}
 		@Override public long asLong() {return (long) Context.toNumber(value);}
 		@Override public float asFloat() {return (float) Context.toNumber(value);}
 		@Override public double asDouble() {return Context.toNumber(value);}
 		
-		@Override public boolean asBoolean() {return Context.toBoolean(value);}
-		
-		@Override public String toString() {
-			return asString();
-		}
+		@Override public String toString() {return asString();}
+
+
 	}
 }

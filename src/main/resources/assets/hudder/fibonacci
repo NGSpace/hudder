@@ -1,10 +1,10 @@
 ;mute;
 {fibonacci=""}
-{N=0}
+{_N=0}
 {num1=0}{num2=1}
 {expectedwidth=0}
-#while N<93
-	{N=N+1}
+#while _N<93
+	{_N++}
 	{numstr=str(num1,true)}
 	{expectedwidth=expectedwidth+(strwidth(concat(numstr," ")))}
 	#if expectedwidth>=width/2

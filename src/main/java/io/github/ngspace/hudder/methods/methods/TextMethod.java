@@ -4,13 +4,13 @@ import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileState;
 import io.github.ngspace.hudder.config.ConfigInfo;
-import io.github.ngspace.hudder.methods.MethodValue;
 import io.github.ngspace.hudder.methods.elements.TextElement;
+import io.github.ngspace.hudder.util.ObjectWrapper;
 
 public class TextMethod implements IMethod {
 
 	@Override
-	public void invoke(ConfigInfo ci, CompileState meta, ATextCompiler comp, String type, int line, int charpos, MethodValue... args) throws CompileException {
+	public void invoke(ConfigInfo ci, CompileState meta, ATextCompiler comp, String type, int line, int charpos, ObjectWrapper... args) throws CompileException {
 		if (args.length<3) throw new CompileException(
 				"\""+type+"\" only accepts ;"+type+",[x],[y],[text],<scale>,<color>,<shadow>,<bg>,<bgcolor>;", line, charpos);
 		try {

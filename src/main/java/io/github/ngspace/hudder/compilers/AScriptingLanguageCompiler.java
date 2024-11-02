@@ -23,6 +23,7 @@ import io.github.ngspace.hudder.methods.elements.GameHudElement.GuiType;
 import io.github.ngspace.hudder.methods.elements.ItemElement;
 import io.github.ngspace.hudder.methods.elements.TextElement;
 import io.github.ngspace.hudder.methods.elements.TextureElement;
+import io.github.ngspace.hudder.methods.elements.TextureVerticesElement;
 import io.github.ngspace.hudder.util.HudCompilationManager;
 import io.github.ngspace.hudder.util.HudFileUtils;
 import net.minecraft.client.MinecraftClient;
@@ -180,18 +181,27 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 				elms.add(new TextureElement(id,s[1].asInt(),s[2].asInt(),s[3].asInt(),s[4].asInt()));
 			} catch (IOException e) {return false;}
 			return true;
-		}, "drawLocalTexture", "drawPNG", "drawImage");
+		}, "drawLocalTexture", "drawPNG", "drawImage", "image", "png");
+		
+
+		engine.bindConsumer(s-> {
+			try {
+				elms.add(new TextureVerticesElement(s[0].asString(),s[1].asFloatArray(),s[2].asFloatArray()));
+			} catch (IOException e) {
+				throw new CompileException(e.getMessage(), 0, 0, e);
+			}
+		}, "textureVertices");
 		
 		//Hotbar
 
 		engine.bindConsumer(s->elms.add(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.STATUS_BARS)),
-				"drawStatusBars");
+				"drawStatusBars", "statusBars");
 		engine.bindConsumer(s->elms.add(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.EXP_AND_MOUNT_BAR)),
-				"drawExpAndMountBars");
+				"drawExpAndMountBars", "xpbar");
 		engine.bindConsumer(s->elms.add(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.HOTBAR)),
-				"drawHotbar");
+				"drawHotbar", "hotbar");
 		engine.bindConsumer(s->elms.add(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.ITEM_TOOLTIP)),
-				"drawItemTooltip");
+				"drawItemTooltip", "helditemtooltip");
 		
 		
 		engine.bindFunction(s->HudFileUtils.exists(s[0].asString()),"exists");

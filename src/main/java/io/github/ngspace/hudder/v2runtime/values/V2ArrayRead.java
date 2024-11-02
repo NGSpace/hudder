@@ -11,8 +11,8 @@ public class V2ArrayRead extends AV2Value {
 	AV2Value indexValue;
 	AV2Value array;
 	
-	protected V2ArrayRead(String value, AV2Compiler compiler, V2Runtime runtime, int line, int charpos) throws CompileException {
-		super(line, charpos);
+	protected V2ArrayRead(String value, AV2Compiler compiler, V2Runtime runtime, int line, int charpos, String debugvalue) throws CompileException {
+		super(line, charpos, debugvalue, compiler);
 		int indexstart = value.lastIndexOf('[');
 		String index = value.substring(indexstart+1,value.length()-1);
 		indexValue = compiler.getV2Value(runtime, index, line, charpos);

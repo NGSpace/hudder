@@ -3,6 +3,8 @@ package io.github.ngspace.hudder.compilers.utils;
 import java.io.Closeable;
 import java.io.IOException;
 
+import io.github.ngspace.hudder.util.ObjectWrapper;
+
 public interface IScriptingLanguageEngine extends Closeable {
 	
 	/**
@@ -37,8 +39,8 @@ public interface IScriptingLanguageEngine extends Closeable {
 	
 	
 	
-	public ScriptingValue readVariable(String name);
-	public ScriptingValue readVariableSafe(String name, Object t);
+	public ObjectWrapper readVariable(String name);
+	public ObjectWrapper readVariableSafe(String name, Object t);
 	
 	
 	
@@ -46,20 +48,6 @@ public interface IScriptingLanguageEngine extends Closeable {
 	
 	
 	
-	public static interface ScriptFunction {public Object exec(ScriptingValue... args) throws CompileException;}
-	public static interface ScriptConsumer {public void   exec(ScriptingValue... args) throws CompileException;}
-	
-	
-	
-	public interface ScriptingValue {
-		public String asString();
-		public int asInt();
-		public long asLong();
-		public float asFloat();
-		public double asDouble();
-		public boolean asBoolean();
-		
-		@Override
-		public String toString();
-	}
+	public static interface ScriptFunction {public Object exec(ObjectWrapper... args) throws CompileException;}
+	public static interface ScriptConsumer {public void   exec(ObjectWrapper... args) throws CompileException;}
 }

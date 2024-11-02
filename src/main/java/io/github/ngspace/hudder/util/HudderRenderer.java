@@ -1,5 +1,7 @@
 package io.github.ngspace.hudder.util;
 
+import java.io.IOException;
+
 import org.joml.Matrix4f;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -15,13 +17,16 @@ import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.StringVisitable;
+import net.minecraft.util.Identifier;
 
 /**
  * Hudder.java was too messy so I moved all rendering functions into this one class
@@ -58,7 +63,7 @@ public class HudderRenderer implements HudRenderCallback {
         boolean shadow = info.shadow;
         boolean background = info.background;
         
-        //This is too complicated, imma replace it with TextElements ~~eventually~~ soon.
+        //This is too complicated, imma replace it with TextElements ~~never~~ eventually.
         
         /* Top Left */
         String[] lines = text.TopLeftText.split(NL_REGEX);
@@ -98,7 +103,32 @@ public class HudderRenderer implements HudRenderCallback {
         	yoff+=info.lineHeight * text.BRScale;
         }
         
-        for (AUIElement e : text.elements) e.renderElement(context,delta);
+        for (AUIElement e : text.elements) e.renderElement(context, this,delta);
+        
+		try {
+	        String tex = "Textures/img.png";
+			Identifier id = Identifier.of(tex.trim().toLowerCase());
+			HudFileUtils.getAndRegisterImage(tex,id);
+	        float x = 10;
+	        float y = 10;
+	        float height = 10;
+	        float width = 10;
+	        float[] pos = {
+	        	x, y+height,
+	        	x+width, y+height,
+	        	x+width, y,
+	        	x, y+height
+	        };
+	        float[] texs = {
+	        		1,0,
+	        		1,1,
+	        		0,1,
+	        		0,0
+	        };
+	        renderTexture(context,pos,texs, id);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
     }
 	
 	
@@ -144,7 +174,8 @@ public class HudderRenderer implements HudRenderCallback {
         int green = (int) ((rgb >>  8) & 0xFF);
         int blue =  (int) ((rgb      ) & 0xFF);
 
-        BufferBuilder bgBuilder =  Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+        BufferBuilder bgBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS,
+        		VertexFormats.POSITION_COLOR);
         Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
         bgBuilder.vertex(matrix, x, y+height, 0f).color(red,green,blue,alpha);
         bgBuilder.vertex(matrix, x+width, y+height, 0f).color(red,green,blue,alpha);
@@ -154,8 +185,25 @@ public class HudderRenderer implements HudRenderCallback {
         RenderSystem.disableBlend();
 	}
 	
+	public void renderTexture(DrawContext context, float[] vertices, float[] textures, Identifier id) {
+		context.draw(vcp -> {
+	        RenderSystem.enableBlend();
+	        RenderSystem.defaultBlendFunc();
+	        VertexConsumer vertexConsumer = vcp.getBuffer(RenderLayer.getGuiTexturedOverlay(id));
+	        
+	        Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
+	        for (int i = 0;i<vertices.length;i+=2) {
+	        	vertexConsumer.vertex(matrix,vertices[i],vertices[i+1],0f).texture(textures[i],textures[i+1]).color(-1);
+	        }
+//	        vertexConsumer.vertex(matrix, x, y+height, 0f)      .texture(1,0).color(-1);
+//	        vertexConsumer.vertex(matrix, x+width, y+height, 0f).texture(1,1).color(-1);
+//	        vertexConsumer.vertex(matrix, x+width, y, 0f)       .texture(0,1).color(-1);
+//	        vertexConsumer.vertex(matrix, x, y+height/2, 0f)    .texture(0,0).color(-1);
+	        RenderSystem.disableBlend();
+		});
+	}
 	
-
+	
 	@Override
 	public void onHudRender(DrawContext context, RenderTickCounter delta) {
 		try {
@@ -164,9 +212,13 @@ public class HudderRenderer implements HudRenderCallback {
             	RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
 	            try {
-	            	if (compman.result!=null) drawCompileResult(context, mc.textRenderer, compman.result, Hudder.config, delta);
-	            	else renderFail(context, HudCompilationManager.LastFailMessage);
-				} catch (Exception e) {renderFail(context, e.getLocalizedMessage());}
+	            	if (compman.result!=null)
+	            		drawCompileResult(context, mc.textRenderer, compman.result, Hudder.config, delta);
+	            	else
+	            		renderFail(context, HudCompilationManager.LastFailMessage);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
             	RenderSystem.disableBlend();
 			}
     	} catch (RuntimeException e) {

@@ -4,47 +4,43 @@ import java.util.List;
 import java.util.Objects;
 
 import io.github.ngspace.hudder.compilers.utils.CompileException;
-import io.github.ngspace.hudder.methods.MethodValue;
+import io.github.ngspace.hudder.util.ObjectWrapper;
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 
-public abstract class AV2Value extends MethodValue {
-	/**
-	 * Return the current value of the Object
-	 * @return an Object of any kind.
-	 * @throws CompileException - failed to get value of object
-	 */
-	public abstract Object get() throws CompileException;
+public abstract class AV2Value implements ObjectWrapper {
+	
 	
 	protected final int line;
 	protected final int charpos;
-	protected AV2Value(int line, int charpos) {
+	public final String value;
+	protected final AV2Compiler compiler;
+	
+	protected AV2Value(int line, int charpos, String debugvalue, AV2Compiler compiler) {
 		this.line = line;
 		this.charpos = charpos;
+		this.value = debugvalue;
+		this.compiler = compiler;
 	}
+
 	
-	/**
-	 * Returns true if the variable has a value and false if it does not
-	 */
-	public boolean hasValue() {return true;}
-	
-	@SuppressWarnings("removal")
 	public boolean compare(AV2Value other, String comparisonOperator) throws CompileException {
 		Object val1 = get();
 		Object val2 = other.get();
-		if (other.getAbsoluteValue()!=null&&other.getAbsoluteValue().equalsIgnoreCase("unset")) return !hasValue();
+		if (!other.hasValue()&&!hasValue()) return true;
+		if (!other.hasValue()||!hasValue()) return false;
 		boolean areNums = false;
 		double dou1 = 0;
 		double dou2 = 0;
 		if (val1 instanceof Number num) {
 			dou1 = num.doubleValue();
 			boolean otherhasval = other.hasValue();
-			if (!otherhasval) dou2 = other.asDoubleSafe();
+			if (!otherhasval) dou2 = other.asDouble();
 			if (val2 instanceof Number||!otherhasval) areNums = true;
 		}
 		if (val2 instanceof Number num) {
 			dou2 = num.doubleValue();
 			boolean otherhasval = hasValue();
-			if (!otherhasval)  dou1 = asDoubleSafe();
+			if (!otherhasval)  dou1 = asDouble();
 			if (val1 instanceof Number||!otherhasval) areNums = true;
 		}
 		return switch (comparisonOperator) {
@@ -71,28 +67,30 @@ public abstract class AV2Value extends MethodValue {
 		if (get instanceof Number b) return b.doubleValue();
 		throw new CompileException(invalidTypeMessage("Double", value, get), line, charpos);
 	}
-	@Override public int asInt() throws CompileException {
-		Object get = get();
-		if (get instanceof Number b) return b.intValue();
-		throw new CompileException(invalidTypeMessage("Integer", value, get), line, charpos);
-	}
 	@Override public String asString() throws CompileException {
 		Object get = get();
 		if (get instanceof String b) return b;
 		throw new CompileException(invalidTypeMessage("String", value, get), line, charpos);
 	}
-	@SuppressWarnings("unchecked")
-	@Override public List<Object> asList() throws CompileException {
+	@Override @SuppressWarnings("unchecked") public List<Object> asList() throws CompileException {
 		Object get = get();
 		if (get instanceof List<?> b) return (List<Object>) b;
 		throw new CompileException(invalidTypeMessage("Array", value, get), line, charpos);
 	}
 	
+	
+	@Override public Object[] asArray() throws CompileException {return asList().toArray();}
+	
 	public static String invalidTypeMessage(String type, String value, Object obj) {
 		return "Incorrect type \""+type+"\" for value: \""+value+"\" of type "+obj.getClass().getName();
 	}
-
+	
 	public abstract void setValue(AV2Compiler compiler, Object value) throws CompileException;
 
+	/**
+	 * Returns true if the variable has a value and false if it does not
+	 */
+	public boolean hasValue() {return true;}
 	public abstract boolean isConstant() throws CompileException;
+	@Override public String toString() {return value;}
 }

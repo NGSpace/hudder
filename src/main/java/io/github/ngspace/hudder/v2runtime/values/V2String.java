@@ -1,15 +1,10 @@
 package io.github.ngspace.hudder.v2runtime.values;
 
-import io.github.ngspace.hudder.compilers.AVarTextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 
 public class V2String extends AV2Value {
-	public V2String(String value, AVarTextCompiler compiler, int line, int charpos) {
-		super(line, charpos);
-		this.value=value;
-		this.compiler=compiler;
-	}
+	public V2String(String value, AV2Compiler compiler, int line, int charpos) {super(line, charpos, value,compiler);}
 	
 	@Override public String get() throws CompileException {return value;}
 	

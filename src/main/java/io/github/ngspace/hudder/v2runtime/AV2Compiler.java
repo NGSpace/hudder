@@ -10,7 +10,7 @@ import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.methods.MethodHandler;
 import io.github.ngspace.hudder.util.HudCompilationManager;
 import io.github.ngspace.hudder.v2runtime.values.AV2Value;
-import io.github.ngspace.hudder.v2runtime.values.V2ValueParser;
+import io.github.ngspace.hudder.v2runtime.values.V2VariableParser;
 
 public abstract class AV2Compiler extends AVarTextCompiler {
 	
@@ -27,7 +27,7 @@ public abstract class AV2Compiler extends AVarTextCompiler {
 	public Object getTempVariable(String key) {return tempVariables.get(key);}
 	
 	public AV2Value getV2Value(V2Runtime runtime, String string, int line, int charpos) throws CompileException {
-		return V2ValueParser.of(runtime, string, this, line, charpos);
+		return V2VariableParser.of(runtime, string, this, line, charpos);
 	}
 	
 	@Override public final HudInformation compile(ConfigInfo info, String text, String filename) throws CompileException {

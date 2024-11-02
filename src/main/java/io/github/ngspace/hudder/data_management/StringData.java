@@ -28,6 +28,8 @@ public class StringData {private StringData() {}
 			case "helditem_name": yield ins.player.getInventory()
 				.getStack(ins.player.getInventory().selectedSlot).getName().getString();
 			
+			case "unset": yield "unset";
+			
 			case "biome":
 				Optional<RegistryKey<Biome>> i = ins.world.getBiome(ins.player.getBlockPos()).getKey();
 				if (i.isPresent())

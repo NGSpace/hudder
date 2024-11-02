@@ -20,6 +20,26 @@ r
 ||EXPECT||
 {}}
 
+||INPUT||Conditions and Math
+{100==10/2}
+||EXPECT||
+false
+
+||INPUT||Inc and Dec
+{res=0} {res--} {res++} {--res} {++res}
+||EXPECT||
+0 0 -1 -1 0
+
+||INPUT||Boolean invertion
+{!false} {res=true} {!res}
+||EXPECT||
+true true false
+
+||INPUT||Boolean invertion and conditions
+{res=1} {!(res!=1)} {true==!false}
+||EXPECT||
+1 true true
+
 ||INPUT||Multi Line Arrays
 {[1,
 1]}
@@ -114,12 +134,12 @@ true 18
 2 2
 
 ||INPUT||Comparing unset values
-{unsetval==unset} {unsetval==10} {unsetval==0} {unsetval>0} {unsetval<0} {unsetval!=0} {unsetval>=0} {unsetval<=0}
+{unsetval==unset} {unset==unsetval} {unset==0} {unsetval==0} {0==unset} {0==unsetval}
 ||EXPECT||
-true false true false false false true true
+true true false false false false
 
 ||INPUT||Advanced if
-#if testif==0
+#if testif==unset
 	{testif=1}
 {testif}
 ||EXPECT||
