@@ -1,7 +1,5 @@
 package io.github.ngspace.hudder.util;
 
-import java.io.IOException;
-
 import org.joml.Matrix4f;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -104,31 +102,6 @@ public class HudderRenderer implements HudRenderCallback {
         }
         
         for (AUIElement e : text.elements) e.renderElement(context, this,delta);
-        
-		try {
-	        String tex = "Textures/img.png";
-			Identifier id = Identifier.of(tex.trim().toLowerCase());
-			HudFileUtils.getAndRegisterImage(tex,id);
-	        float x = 10;
-	        float y = 10;
-	        float height = 10;
-	        float width = 10;
-	        float[] pos = {
-	        	x, y+height,
-	        	x+width, y+height,
-	        	x+width, y,
-	        	x, y+height
-	        };
-	        float[] texs = {
-	        		1,0,
-	        		1,1,
-	        		0,1,
-	        		0,0
-	        };
-//	        renderTexture(context,pos,texs, id);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
     }
 	
 	

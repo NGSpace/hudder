@@ -9,7 +9,7 @@ import io.github.ngspace.hudder.config.ConfigInfo;
 
 public abstract class ATextCompiler {
 
-	protected static Map<String, Object> variables = new HashMap<String, Object>();
+	public static Map<String, Object> variables = new HashMap<String, Object>();
 	
 	public abstract HudInformation compile(ConfigInfo info, String text, String filename) throws CompileException;
 	public abstract Object getVariable(String key) throws CompileException;

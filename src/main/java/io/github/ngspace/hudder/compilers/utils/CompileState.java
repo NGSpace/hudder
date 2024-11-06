@@ -24,6 +24,7 @@ public class CompileState {
 	public float BLScale = 1;
 	public float TRScale = 1;
 	public float BRScale = 1;
+	public boolean hasBroken = false;
 	public List<AUIElement> elements = new ArrayList<AUIElement>();
 
 	public CompileState(String string) {setTextLocation(string, ConfigManager.getConfig().scale);}

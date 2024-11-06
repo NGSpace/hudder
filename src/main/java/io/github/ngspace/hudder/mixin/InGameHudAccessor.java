@@ -14,7 +14,6 @@ public interface InGameHudAccessor {
     @Invoker public void callRenderMountHealth(DrawContext context);
     @Invoker public void callRenderMountJumpBar(JumpingMount mount, DrawContext context, int x);
     @Invoker public void callRenderExperienceBar(DrawContext context, int x);
-    @Invoker public void callRenderExperienceLevel(DrawContext context, RenderTickCounter tickCounter);
     @Invoker public void callRenderHeldItemTooltip(DrawContext context);
     @Invoker public void callRenderHotbar(DrawContext context, RenderTickCounter timeDelta);
 }

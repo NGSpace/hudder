@@ -20,10 +20,10 @@ public class WhileV2RuntimeElement extends AV2RuntimeElement {
 	}
 	
 	@Override
-	public void execute(CompileState meta, StringBuilder builder) throws CompileException {
-		while(condition.asBoolean()) {
+	public boolean execute(CompileState meta, StringBuilder builder) throws CompileException {
+		while(condition.asBoolean())
 			meta.combineWithResult(compiledRuntime.execute().toResult(), false);
-		}
+		return true;
 	}
 	
 }

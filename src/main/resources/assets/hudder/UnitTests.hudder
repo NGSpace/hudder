@@ -20,6 +20,14 @@ r
 ||EXPECT||
 {}}
 
+||INPUT||Break
+r
+{break}
+t
+||EXPECT||
+r
+
+
 ||INPUT||Conditions and Math
 {100==10/2}
 ||EXPECT||
@@ -138,12 +146,20 @@ true 18
 ||EXPECT||
 true true false false false false
 
-||INPUT||Advanced if
+||INPUT||Nested Advanced if spaces
 #if testif==unset
 	{testif=1}
+	#if testif!=unset
+	  {testif=2}
+{testif}
+#if testif!=unset
+  {testif=1}
+  #if true
+   {testif=2}
 {testif}
 ||EXPECT||
-1
+2
+2
 
 ||INPUT||String with quotes
 {"1 \"2\" 3"}
@@ -181,6 +197,30 @@ CaSE SenSitive CaSE SenSitive CaSE SenSitive
 {result}
 ||EXPECT||
 2
+
+||INPUT||Vertices
+r;mute;{vert=[10,10,
+	10, 200,
+	200, 200,
+	200, 10,
+	
+	100,100,
+	100, 300,
+	300, 300,
+	300, 100]}
+
+{tex=[0, 1,
+	1, 1,
+	1, 0,
+	0, 0,
+	
+	0, 1,
+	1, 1,
+	1, 0,
+	0, 0]}
+;textureVertices, "Textures/pointer.png", vert, tex;
+||EXPECT||
+r
 
 ||INPUT||Newlines
 

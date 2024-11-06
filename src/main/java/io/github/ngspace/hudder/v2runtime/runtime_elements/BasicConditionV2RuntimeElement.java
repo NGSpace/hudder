@@ -38,7 +38,7 @@ public class BasicConditionV2RuntimeElement extends AV2RuntimeElement {
 		}
 	}
 	
-	@Override public void execute(CompileState meta, StringBuilder builder) throws CompileException {
+	@Override public boolean execute(CompileState meta, StringBuilder builder) throws CompileException {
 		HudInformation res = null;
 		for (int i = 0;i<conditions.length;i++) {
 			if (conditions[i].asBoolean()) {
@@ -49,6 +49,7 @@ public class BasicConditionV2RuntimeElement extends AV2RuntimeElement {
 		if (res==null) res = HudInformation.of("");
 		builder.append(res.TopLeftText);
 		for (var v : res.elements) meta.elements.add(v);
+		return true;
 	}
 
 	private static <T> T[] addToArray(T[] arr, T t) {

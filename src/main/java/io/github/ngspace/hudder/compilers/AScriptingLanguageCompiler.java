@@ -129,20 +129,20 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 		
 		//Item
 		engine.bindConsumer(s->elms.add(new ItemElement(s[1].asInt(), s[2].asInt(),new ItemStack(Registries.ITEM.get(
-				Identifier.tryParse(s[0].asString()))),s[3].asFloat(), false)),"drawItem");
+				Identifier.tryParse(s[0].asString()))),s[3].asFloat(), false)),"drawItem", "item");
 		//Slot
 		engine.bindConsumer(s->elms.add(new ItemElement(s[1].asInt(),s[2].asInt(),mc.player.getInventory()
-				.getStack(s[0].asInt()),s[3].asFloat(), s[4].asBoolean())),"drawSlot");
+				.getStack(s[0].asInt()),s[3].asFloat(), s[4].asBoolean())),"drawSlot", "slot");
 		//Armor
 		engine.bindConsumer(s->elms.add(new ItemElement(s[1].asInt(),s[2].asInt(),mc.player.getInventory()
-				.getArmorStack(s[0].asInt()),s[3].asFloat(), s[4].asBoolean())),"drawArmor");
+				.getArmorStack(s[0].asInt()),s[3].asFloat(), s[4].asBoolean())),"drawArmor", "armor");
 		//Offhand
 		engine.bindConsumer(s->elms.add(new ItemElement(s[1].asInt(),s[2].asInt(),mc.player.getInventory()
-				.offHand.get(0),s[3].asFloat(), s[4].asBoolean())),"drawOffhand");
+				.offHand.get(0),s[3].asFloat(), s[4].asBoolean())),"drawOffhand", "offhand");
 		
 		//Text
 		
-		engine.bindFunction(s->mc.textRenderer.getWidth(s[0].asString()), "strWidth");
+		engine.bindFunction(s->mc.textRenderer.getWidth(s[0].asString()), "strWidth", "strwidth");
 		engine.bindConsumer(s-> {
 			float scale = s[3].asFloat();
 			int color = s[4].asInt();
@@ -150,7 +150,7 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 			boolean bg = s[6].asBoolean();
 			int bgc = s[7].asInt();
 			elms.add(new TextElement(s[0].asInt(),s[1].asInt(),s[2].asString(),scale,color,shadow,bg,bgc));
-		}, "drawText");
+		}, "drawText", "text");
 		
 		//Compile
 		
@@ -171,7 +171,7 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 		//Texture
 
 		engine.bindConsumer( s-> elms.add(new TextureElement(Identifier.tryParse(s[0].asString().trim()),s[1].asInt(),
-				s[2].asInt(), s[3].asInt(),s[4].asInt())), "drawTexture");
+				s[2].asInt(), s[3].asInt(),s[4].asInt())), "drawTexture", "texture");
 		
 		engine.bindFunction(s-> {
 			try {
@@ -203,7 +203,7 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 			} catch (IOException e) {
 				throw new CompileException(e.getMessage(), 0, 0, e);
 			}
-		}, "textureVertices");
+		}, "texturevertices");
 		
 		engine.bindConsumer(s->elms.add(new ColorVerticesElement(s[0].asFloatArray(),s[1].asLong())),"colorvertices");
 		

@@ -9,12 +9,12 @@ import io.github.ngspace.hudder.v2runtime.values.AV2Value;
 
 public class RngV2Function implements IV2Function {
 	
-	Random random = new Random();
-	HashMap<Integer, Random> randoms = new HashMap<Integer, Random>();
+	private Random random = new Random();
+	private HashMap<Integer, Random> randoms = new HashMap<Integer, Random>();
 
 	@Override public Object execute(V2Runtime runtime, String functionName, AV2Value[] args, int line, int charpos)
 			throws CompileException {
-		return (args.length==3? new Random(args[2].asInt()) : random).nextDouble(args[0].asDouble(),args[1].asDouble());
+		return (args.length==3? getRandom(args[2].asInt()) : random).nextDouble(args[0].asDouble(),args[1].asDouble());
 	}
 	
 	public Random getRandom(int Seed) {

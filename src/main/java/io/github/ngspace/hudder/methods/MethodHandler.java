@@ -65,16 +65,17 @@ public class MethodHandler {
 		
 		
 		
-		//Compiler
+		//Compiler and Variables
 		bindConsumer(new LoadMethod(), "load", "execute", "compile", "run", "add");
+		bindConsumer((c,m,a,t,l,ch,s)->a.put(s[0].asString(), s[1]), "set", "setVal", "setVariable");
 		
 		
 		
 		//Logging and errors
-		register((c,m,a,t,l,ch,s)->mc.player.sendMessage(Text.of(s[0].asString()),false),1, TextArg, "alert");
-		register((c,m,a,t,l,ch,s)->Hudder.log(s[0].asString()),1, TextArg, "log");
-		register((c,m,a,t,l,ch,s)->Hudder.warn(s[0].asString()),1, TextArg, "warn");
-		register((c,m,a,t,l,ch,s)->Hudder.error(s[0].asString()),1, TextArg, "error");
+		register((c,m,a,t,l,ch,s)->mc.player.sendMessage(Text.of(s[0].get().toString()),false),1, TextArg, "alert");
+		register((c,m,a,t,l,ch,s)->Hudder.log(s[0].get().toString()),1, TextArg, "log");
+		register((c,m,a,t,l,ch,s)->Hudder.warn(s[0].get().toString()),1, TextArg, "warn");
+		register((c,m,a,t,l,ch,s)->Hudder.error(s[0].get().toString()),1, TextArg, "error");
 		register((c,m,a,t,l,ch,s)->{throw new CompileException(s[0].asString(),l,ch);},1, TextArg, "throw");
 	}
 	
@@ -106,8 +107,8 @@ public class MethodHandler {
 		if (method==null) throw new CompileException("Unknown method " + name);
 		return method;
 	}
-
-
+	
+	
 	public void register(String method, String[] argtypes, String name, int defline, int defcharpos, String filename) {
 		int[] parameters = new int[argtypes.length];
 		for (int i = 0;i<argtypes.length;i++) {
@@ -133,7 +134,7 @@ public class MethodHandler {
 			try {
 				state.combineWithResult(comp.compile(info, method, filename), false);
 			} catch (CompileException e) {
-				throw new CompileException(e.getFailureMessage() +"\nMethod threw an error " + type, line, charpos);
+				throw new CompileException(e.getFailureMessage() +"\nMethod "+type+" threw an error ", line, charpos);
 			}
 		};
 		methods.put(name,newmethod);

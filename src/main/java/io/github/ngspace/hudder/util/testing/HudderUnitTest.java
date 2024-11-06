@@ -25,6 +25,7 @@ public class HudderUnitTest {
 	public HudderUnitTestResult test(ConfigInfo info) {
 		try {
 			if (compiler instanceof AV2Compiler v2comp) v2comp.runtimes = new HashMap<String, V2Runtime>();
+			ATextCompiler.variables.clear();
 			String text = compiler.compile(info, texttocompile, "Unit Tests").TopLeftText;
 			boolean res = expectation.equals(text);
 			return new HudderUnitTestResult(res, expectation, text.replaceAll("(^ )|( $)", "~"));

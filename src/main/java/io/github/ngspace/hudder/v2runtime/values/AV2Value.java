@@ -26,8 +26,13 @@ public abstract class AV2Value extends ObjectWrapper {
 	public boolean compare(AV2Value other, String comparisonOperator) throws CompileException {
 		Object val1 = get();
 		Object val2 = other.get();
-		if (!other.hasValue()&&!hasValue()) return true;
-		if (!other.hasValue()||!hasValue()) return false;
+		if (!other.hasValue()||!hasValue()) {
+			if (comparisonOperator.equals("=="))
+				return other.hasValue()==hasValue();
+			else if (comparisonOperator.equals("!="))
+				return other.hasValue()!=hasValue();
+			else throw new CompileException("Can not compare null values using the "+comparisonOperator+" operator.");
+		}
 		boolean areNums = false;
 		double dou1 = 0;
 		double dou2 = 0;

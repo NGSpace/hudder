@@ -5,6 +5,9 @@ import java.util.Map;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.data_management.BooleanData;
+import io.github.ngspace.hudder.data_management.NumberData;
+import io.github.ngspace.hudder.data_management.StringData;
 import io.github.ngspace.hudder.util.HudFileUtils;
 import net.minecraft.client.MinecraftClient;
 
@@ -19,8 +22,15 @@ public class V2FunctionHandler {
 		//Type casting
 		
 		bindFunction(new DoubleV2Function(), 1, "int", "num", "number", "double");
-		register(new StringV2Function(), 1, 2, "str", "string");
+		bindFunction(new StringV2Function(), 1, 2, "str", "string");
 		bindFunction(new ArrayV2Function(), 1, "array");
+		
+		//Variable manipulation
+		
+		bindFunction((r,n,args,l,c)->r.compiler.getVariable  (args[0].asString()), 1, "get", "getVal", "getVariable");
+		bindFunction((r,n,args,l,c)->NumberData.getNumber  (args[0].asString()), 1, "getNumber" );
+		bindFunction((r,n,args,l,c)->StringData.getString  (args[0].asString()), 1, "getString" );
+		bindFunction((r,n,args,l,c)->BooleanData.getBoolean(args[0].asString()), 1, "getBoolean");
 		
 		//String manipulation
 
@@ -30,21 +40,21 @@ public class V2FunctionHandler {
 		
 		//Math
 		
-		register(new RngV2Function(), 2, 3, "rng", "random"); // Rng
+		bindFunction(new RngV2Function(), 2, 3, "rng", "random");
 
-		bindFunction((r,n,args,l,c) -> Math.abs  (args[0].asDouble()) ,1, "abs"    );
-		bindFunction((r,n,args,l,c) -> Math.floor(args[0].asDouble()) ,1, "floor"  );
-		bindFunction((r,n,args,l,c) -> Math.ceil (args[0].asDouble()) ,1, "ceiling");
+		bindFunction((r,n,args,l,c) -> Math.abs  (args[0].asDouble()), 1, "abs"    );
+		bindFunction((r,n,args,l,c) -> Math.floor(args[0].asDouble()), 1, "floor"  );
+		bindFunction((r,n,args,l,c) -> Math.ceil (args[0].asDouble()), 1, "ceiling");
 		
-		bindFunction((r,n,args,l,c) -> Math.sin(args[0].asDouble()) ,1, "sin" );
-		bindFunction((r,n,args,l,c) -> Math.cos(args[0].asDouble()) ,1, "cos" );
-		bindFunction((r,n,args,l,c) -> Math.tan(args[0].asDouble()) ,1, "tan" );
+		bindFunction((r,n,args,l,c) -> Math.sin (args[0].asDouble()), 1, "sin" );
+		bindFunction((r,n,args,l,c) -> Math.cos (args[0].asDouble()), 1, "cos" );
+		bindFunction((r,n,args,l,c) -> Math.tan (args[0].asDouble()), 1, "tan" );
 		
-		bindFunction((r,n,args,l,c) -> Math.asin(args[0].asDouble()),1, "asin");
-		bindFunction((r,n,args,l,c) -> Math.acos(args[0].asDouble()),1, "acos");
-		bindFunction((r,n,args,l,c) -> Math.atan(args[0].asDouble()),1, "atan");
+		bindFunction((r,n,args,l,c) -> Math.asin(args[0].asDouble()), 1, "asin");
+		bindFunction((r,n,args,l,c) -> Math.acos(args[0].asDouble()), 1, "acos");
+		bindFunction((r,n,args,l,c) -> Math.atan(args[0].asDouble()), 1, "atan");
 		
-		bindFunction((r,n,args,l,c) -> Math.sqrt(args[0].asDouble()),1, "sqrt");
+		bindFunction((r,n,args,l,c) -> Math.sqrt(args[0].asDouble()), 1, "sqrt");
 		
 		bindFunction((r,n,args,l,c) -> Math.pow(args[0].asDouble(),args[1].asDouble()), 2, "pow");
 		bindFunction((r,n,args,l,c) -> Math.min(args[0].asDouble(),args[1].asDouble()), 2, "min");
@@ -83,9 +93,9 @@ public class V2FunctionHandler {
 	}
 
 	public void bindFunction(IV2Function function, int length, String... names) {
-		register(function,length,length, names);
+		bindFunction(function, length, length, names);
 	}
-	public void register(IV2Function function, int minlength, int maxlength, String... names) {
+	public void bindFunction(IV2Function function, int minlength, int maxlength, String... names) {
 		IV2Function expandedFunction = (runtime, name, args, line, charpos) -> {
 			if (args.length<minlength) throw new CompileException("Too little parameters for "+name+"!",line,charpos);
 			if (args.length>maxlength) throw new CompileException("Too many parameters for "+name+"!",line,charpos);
