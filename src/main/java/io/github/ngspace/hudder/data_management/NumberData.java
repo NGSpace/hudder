@@ -4,11 +4,8 @@ import static io.github.ngspace.hudder.data_management.Advanced.getAverageFPS;
 import static io.github.ngspace.hudder.data_management.Advanced.getFPS;
 import static io.github.ngspace.hudder.data_management.Advanced.getMaximumFPS;
 import static io.github.ngspace.hudder.data_management.Advanced.getMinimumFPS;
-import static java.lang.System.currentTimeMillis;
 
-import java.util.Collection;
-
-import org.joml.Random;
+import java.util.Queue;
 
 import io.github.ngspace.hudder.config.ConfigManager;
 import io.github.ngspace.hudder.mixin.ParticleManagerAccessor;
@@ -42,8 +39,11 @@ public class NumberData {private NumberData() {}
 			case "maxfps","max_fps": yield (double) getMaximumFPS();
 			case "ping": yield (double) ins.getNetworkHandler().getPlayerListEntry(p.getName().getString()).getLatency();
 			case "tps": yield (double) getTPS(ins);
+			
 			case "gpu_d", "dgpu": yield Advanced.gpuUsage;
 			case "gpu": yield (double) ((int)Advanced.gpuUsage);
+			case "cpu_d": yield Advanced.CPU.get()* 100d;
+			case "cpu": yield (double) (int) (Advanced.CPU.get()* 100d);
 			
 			case "delta": yield (double) Advanced.delta;
 			
@@ -61,8 +61,7 @@ public class NumberData {private NumberData() {}
 			
 			
 			/* Computer */
-			case "time": yield (double) currentTimeMillis();
-			case "random","rng": yield (double) new Random().nextFloat();
+			case "time": yield (double) System.currentTimeMillis();
 			
 			
 			
@@ -79,15 +78,6 @@ public class NumberData {private NumberData() {}
 			case "selectedslot": yield (double) p.getInventory().selectedSlot;
 			case "xplevel": yield (double) p.experienceLevel;
 			case "xp": yield (double) p.totalExperience;
-			
-			
-			/* Player position */
-			case "dxpos","dx": yield p.getX();
-			case "dypos","dy": yield p.getY();
-			case "dzpos","dz": yield p.getZ();
-			case "xpos","x": yield (double) p.getBlockX();
-			case "ypos","y": yield (double) p.getBlockY();
-			case "zpos","z": yield (double) p.getBlockZ();
 
 			case "playerspeed": {
 				// I know, I am soooo funny.
@@ -103,6 +93,18 @@ public class NumberData {private NumberData() {}
 			}
 			
 			
+			/* Player position */
+			case "dxpos","dx": yield p.getX();
+			case "dypos","dy": yield p.getY();
+			case "dzpos","dz": yield p.getZ();
+			case "xpos","x": yield (double) p.getBlockX();
+			case "ypos","y": yield (double) p.getBlockY();
+			case "zpos","z": yield (double) p.getBlockZ();
+			
+			case "chunkz": yield (double) p.getChunkPos().z;
+			case "chunkx": yield (double) p.getChunkPos().x;
+			
+			
 			
 			/* Player roation*/
 			case "dpitch": yield (double) p.getPitch();
@@ -113,9 +115,9 @@ public class NumberData {private NumberData() {}
 			
 
 			/* World Rendering */
-			case "entites": yield (double) ((WorldRendererAccess)wr).getRenderedEntitiesCount();
+			case "entites", "entities": yield (double) ((WorldRendererAccess)wr).getRenderedEntitiesCount();
 			case "particles": yield (double) ((ParticleManagerAccessor)ins.particleManager)
-				.getParticles().values().stream().mapToInt(Collection::size).sum();
+				.getParticles().values().stream().mapToInt(Queue::size).sum();
 			case "chunks": yield wr.getChunkCount();
 			
 			

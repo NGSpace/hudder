@@ -8,7 +8,8 @@ import io.github.ngspace.hudder.config.ConfigManager;
 import io.github.ngspace.hudder.util.HudderUtils;
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
-import io.github.ngspace.hudder.v2runtime.runtime_elements.BasicConditionV2RuntimeElement;
+import io.github.ngspace.hudder.v2runtime.runtime_elements.ConditionV2RuntimeElement;
+import io.github.ngspace.hudder.v2runtime.runtime_elements.BreakV2RuntimeElement;
 import io.github.ngspace.hudder.v2runtime.runtime_elements.IfV2RuntimeElement;
 import io.github.ngspace.hudder.v2runtime.runtime_elements.MethodV2RuntimeElement;
 import io.github.ngspace.hudder.v2runtime.runtime_elements.StringV2RuntimeElement;
@@ -25,10 +26,10 @@ public class HudderV2Compiler extends AV2Compiler {
 
 	@Override public V2Runtime buildRuntime(ConfigInfo info, String text, CharPosition charPosition, String filename)
 			throws CompileException {
-		V2Runtime runtime = new V2Runtime();
+		V2Runtime runtime = new V2Runtime(this);
 		
 		StringBuilder elemBuilder = new StringBuilder();
-
+		
 		int bracketscount = 0;
 
 		String[] builder = {};
@@ -113,8 +114,12 @@ public class HudderV2Compiler extends AV2Compiler {
 						bracketscount--;
 						if (bracketscount==0) {
 							var pos = getPosition(charPosition, savedind, text);
-							runtime.addRuntimeElement(new VariableV2RuntimeElement(elemBuilder.toString(), this,
+							if ("break".equalsIgnoreCase(elemBuilder.toString().trim())) {
+								runtime.addRuntimeElement(new BreakV2RuntimeElement());
+							} else {
+								runtime.addRuntimeElement(new VariableV2RuntimeElement(elemBuilder.toString(), this,
 									runtime, pos.line, pos.charpos));
+							}
 							elemBuilder.setLength(0);
 							compileState = TEXT_STATE;
 						} else elemBuilder.append(c);
@@ -135,7 +140,7 @@ public class HudderV2Compiler extends AV2Compiler {
 							compileState = TEXT_STATE;
 							builder = addToArray(builder,elemBuilder.toString().trim());
 							var pos = getPosition(charPosition, savedind, text);
-							runtime.addRuntimeElement(new BasicConditionV2RuntimeElement(builder, this, info, runtime,
+							runtime.addRuntimeElement(new ConditionV2RuntimeElement(builder, this, info, runtime,
 									pos.line, pos.charpos,filename));
 							elemBuilder.setLength(0);
 							break;
@@ -204,19 +209,32 @@ public class HudderV2Compiler extends AV2Compiler {
 					String cond = elemBuilder.toString();
 					elemBuilder.setLength(0);
 					StringBuilder instructions = new StringBuilder();
-					ind++;
-					if (ind<text.length()&&text.charAt(ind)=='\t') {
+					
+					if (ind+1<text.length()&&(text.charAt(ind+1)=='\t'||text.charAt(ind+1)==' ')) {
+						
 						ind++;
+						
+						String initalIndent = checkIndentation(text,ind);
+						
 						for (;ind<text.length();ind++) {
-							c = text.charAt(ind);
-							if ((c=='\n')&&ind+1<text.length()) {
-								if (text.charAt(ind+1)=='\t') {ind++;}
-								else {instructions.append('\n');break;}
-								
+							
+							if (ind+1<text.length()) {
+								String indent = checkIndentation(text,ind);
+								if (indent.startsWith(initalIndent)) {
+									ind+=initalIndent.length();
+									for (;ind<text.length();ind++) {
+										c = text.charAt(ind);
+										instructions.append(c);
+										if (c=='\n') break;
+									}
+								} else {
+									break;
+								}
 							}
-							instructions.append(c);
+							
 						}
-					} else ind--;
+						ind--;
+					}
 					String cmds = instructions.toString();
 					if (isDef) {
 						builder = new String[0];
@@ -254,6 +272,18 @@ public class HudderV2Compiler extends AV2Compiler {
 		if (compileState!=0) throw new CompileException(getCompilerErrorMessage(compileState));
 		
 		return runtime;
+	}
+
+	private String checkIndentation(String text, int index) {
+		StringBuilder b = new StringBuilder();
+		for (;index<text.length();index++) {
+			char c = text.charAt(index);
+			if (!(c==' '||c=='\t')) {
+				break;
+			}
+			b.append(c);
+		}
+		return b.toString();
 	}
 
 	protected String getCompilerErrorMessage(int compileState) {

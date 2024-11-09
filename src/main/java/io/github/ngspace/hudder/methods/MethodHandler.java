@@ -12,19 +12,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
-import io.github.ngspace.hudder.methods.methods.DecimalMethods;
-import io.github.ngspace.hudder.methods.methods.GUIMethods;
 import io.github.ngspace.hudder.methods.methods.IMethod;
-import io.github.ngspace.hudder.methods.methods.InventoryInformationMethods;
 import io.github.ngspace.hudder.methods.methods.ItemStackMethods;
 import io.github.ngspace.hudder.methods.methods.LoadMethod;
-import io.github.ngspace.hudder.methods.methods.StringMethods;
-import io.github.ngspace.hudder.methods.methods.TextMethod;
-import io.github.ngspace.hudder.methods.methods.TexturesMethods;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
 
 public class MethodHandler {
 	
@@ -37,56 +29,24 @@ public class MethodHandler {
 	public static final String[] TextArg = {"[Text]"};
 	public MethodHandler() {
 		//Inventory Rendering
-		register(new ItemStackMethods(),"slot","item","hand","selectedslot","hat", "helmet", "chestplate", "leggings",
+		bindConsumer(new ItemStackMethods(),"slot","item","hand","selectedslot","hat", "helmet", "chestplate", "leggings",
 				"pants", "boots", "offhand");
 		
-		
-		
 		//Text and compiling
-		register((c,m,a,t,l,ch,s)->m.setTextLocation(t,(float) (s.length>0?s[0].asDouble():c.scale)),
+		bindConsumer((c,m,a,t,l,ch,s)->m.setTextLocation(t,(float) (s.length>0?s[0].asDouble():c.scale)),
 				BOTTOMRIGHT, TOPLEFT, TOPRIGHT, BOTTOMLEFT, MUTE);
-		register(new TextMethod(), "text");
 		
-		
-		//UI
-		register(new GUIMethods(), "health", "xpbar", "hotbar", "helditemtooltip");
-		register(new TexturesMethods(), "image", "png", "texture");
-		
-		
-		
-		//Compiler
-		register(new LoadMethod(), "load", "execute", "compile", "run", "add");
-		
-		
+		//Compiler and Variables
+		bindConsumer(new LoadMethod(), "load", "execute", "compile", "run", "add");
 		
 		//Logging and errors
-		register((c,m,a,t,l,ch,s)->mc.player.sendMessage(Text.of(s[0].asString()),false),1, TextArg, "alert");
-		register((c,m,a,t,l,ch,s)->Hudder.log(s[0].asString()),1, TextArg, "log");
-		register((c,m,a,t,l,ch,s)->Hudder.warn(s[0].asString()),1, TextArg, "warn");
-		register((c,m,a,t,l,ch,s)->Hudder.error(s[0].asString()),1, TextArg, "error");
-		register((c,m,a,t,l,ch,s)->{throw new CompileException(s[0].asString(),l,ch);},1, TextArg, "throw");
-		
-		
-		
-		//Inventory Management
-		register(new InventoryInformationMethods(), 2, new String[] {"[Slot number]",Var[0]}, "name", "durability",
-				"maxdurability","count","maxcount");
-		
-		
-		
-		//Mathematical operations
-		register(new DecimalMethods(), "decimalpoint", "float");
-		
-		
-		
-		//String Manipulation
-		register(new StringMethods(), "concat", "multiplystring", "substring");
+		bindConsumer((c,m,a,t,l,ch,s)->{throw new CompileException(s[0].asString(),l,ch);},1, TextArg, "throw");
 	}
 	
 	
-	public void register(IMethod method, String... names) {for(String name:names)methods.put(name,method);}
+	public void bindConsumer(IMethod method, String... names) {for(String name:names)methods.put(name,method);}
 	
-	public void register(IMethod method, int length, String[] args, String... names) {
+	public void bindConsumer(IMethod method, int length, String[] args, String... names) {
 		IMethod newmethod = (config,meta,compiler,name,l,c,vals) -> {
 			if (vals.length<length) {
 				String err='"'+name+"\" only accepts ;"+name+"";
@@ -111,20 +71,16 @@ public class MethodHandler {
 		if (method==null) throw new CompileException("Unknown method " + name);
 		return method;
 	}
-
-
-	@SuppressWarnings("removal")
+	
+	
 	public void register(String method, String[] argtypes, String name, int defline, int defcharpos, String filename) {
 		int[] parameters = new int[argtypes.length];
 		for (int i = 0;i<argtypes.length;i++) {
 			if ("string".equals(argtypes[i])) parameters[i] = 1;
 			else if ("number".equals(argtypes[i])) parameters[i] = 2;
 			else if ("boolean".equals(argtypes[i])) parameters[i] = 3;
-			else if ("string_safe".equals(argtypes[i])) parameters[i] = 4;
-			else if ("number_safe".equals(argtypes[i])) parameters[i] = 5;
-			else if ("boolean_safe".equals(argtypes[i])) parameters[i] = 6;
-			else if ("array".equals(argtypes[i])) parameters[i] = 7;
-			else if ("any".equals(argtypes[i])) parameters[i] = 8;
+			else if ("array".equals(argtypes[i])) parameters[i] = 4;
+			else if ("any".equals(argtypes[i])) parameters[i] = 5;
 		}
 		String errb = '"'+name+"\" only accepts ;"+name+"";
 		for (String arg : argtypes) errb += ", [" + arg + "]";
@@ -136,16 +92,13 @@ public class MethodHandler {
 				if      (parameters[i]==1) comp.put("arg"+(i+1), vals[i].asString());
 				else if (parameters[i]==2) comp.put("arg"+(i+1), vals[i].asDouble());
 				else if (parameters[i]==3) comp.put("arg"+(i+1), vals[i].asBoolean());
-				else if (parameters[i]==4) comp.put("arg"+(i+1), vals[i].asStringSafe());
-				else if (parameters[i]==5) comp.put("arg"+(i+1), vals[i].asDoubleSafe());
-				else if (parameters[i]==6) comp.put("arg"+(i+1), vals[i].asBooleanSafe());
-				else if (parameters[i]==7) comp.put("arg"+(i+1), vals[i].asList());
-				else if (parameters[i]==8) comp.put("arg"+(i+1), vals[i].get());
+				else if (parameters[i]==4) comp.put("arg"+(i+1), vals[i].asList());
+				else if (parameters[i]==5) comp.put("arg"+(i+1), vals[i].get());
 			}
 			try {
 				state.combineWithResult(comp.compile(info, method, filename), false);
 			} catch (CompileException e) {
-				throw new CompileException(e.getFailureMessage() +"\nMethod threw an error " + type, line, charpos);
+				throw new CompileException(e.getFailureMessage() +"\nMethod "+type+" threw an error ", line, charpos);
 			}
 		};
 		methods.put(name,newmethod);

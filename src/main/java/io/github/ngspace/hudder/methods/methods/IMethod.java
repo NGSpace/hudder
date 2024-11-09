@@ -4,7 +4,7 @@ import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileState;
 import io.github.ngspace.hudder.config.ConfigInfo;
-import io.github.ngspace.hudder.methods.MethodValue;
+import io.github.ngspace.hudder.util.ObjectWrapper;
 
 @FunctionalInterface
 public interface IMethod {
@@ -25,5 +25,5 @@ public interface IMethod {
 	 * @throws CompileException - if the method is not called properly or is unable to execute.
 	 */
 	public void invoke(ConfigInfo ci, CompileState meta, ATextCompiler comp, String type, int line, int charpos,
-			MethodValue... args) throws CompileException;
+			ObjectWrapper... args) throws CompileException;
 }

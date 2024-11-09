@@ -1,5 +1,6 @@
 package io.github.ngspace.hudder.methods.elements;
 
+import io.github.ngspace.hudder.util.HudderRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -24,7 +25,7 @@ public class ItemElement extends AUIElement {
 	static TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 	
 	@Override
-	public void renderElement(DrawContext context, RenderTickCounter delta) {
+	public void renderElement(DrawContext context, HudderRenderer renderer, RenderTickCounter delta) {
         MatrixStack matrixStack = context.getMatrices();
         if (scale!=1f) {
             matrixStack.push();

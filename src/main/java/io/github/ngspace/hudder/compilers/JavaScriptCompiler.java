@@ -4,19 +4,21 @@ import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
 import io.github.ngspace.hudder.compilers.utils.IScriptingLanguageEngine;
-import io.github.ngspace.hudder.compilers.utils.JavaScriptEngineWrapper;
+import io.github.ngspace.hudder.compilers.utils.JavaScriptEngine;
+import io.github.ngspace.hudder.compilers.utils.UnifiedCompiler;
 import io.github.ngspace.hudder.config.ConfigInfo;
 
-
 public class JavaScriptCompiler extends AScriptingLanguageCompiler {
-	
-	@Override
-	public HudInformation compile(ConfigInfo info, String text, String filename) throws CompileException {
+
+	@Override public HudInformation compile(ConfigInfo info, String text, String filename) throws CompileException {
 		if (!Hudder.config.javascript) throw new CompileException("JavaScript is disabled!",-1,-1);
 		return super.compile(info, text, filename);
 	}
-	
-	protected IScriptingLanguageEngine createLangEngine() throws CompileException {
-		return new JavaScriptEngineWrapper();
+	@Override protected IScriptingLanguageEngine createLangEngine() throws CompileException {
+		JavaScriptEngine engine = new JavaScriptEngine();
+		UnifiedCompiler comp = UnifiedCompiler.instance;
+		comp.applyConsumers((c,n)->engine.bindConsumer(e->c.invoke(elms,this, -1, -1, e), n));
+		comp.applyFunctions((c,n)->engine.bindFunction(e->c.invoke(this, e), n));
+		return engine;
 	}
 }

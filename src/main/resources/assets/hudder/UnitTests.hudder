@@ -20,6 +20,44 @@ r
 ||EXPECT||
 {}}
 
+||INPUT||Conditions
+%401>400, "a", 399>100, "b", "c"%
+||EXPECT||
+a
+
+||INPUT||Conditions count
+%401>400, "{_i=_i+1}", 399>100, "{_i=_i+1}", "{_i=_i+1}"%
+||EXPECT||
+1
+
+||INPUT||Break
+r
+{break}
+t
+||EXPECT||
+r
+
+
+||INPUT||Conditions and Math
+{100==10/2}
+||EXPECT||
+false
+
+||INPUT||Inc and Dec
+{res=0} {res--} {res++} {--res} {++res}
+||EXPECT||
+0 0 -1 -1 0
+
+||INPUT||Boolean invertion
+{!false} {res=true} {!res}
+||EXPECT||
+true true false
+
+||INPUT||Boolean invertion and conditions
+{res=1} {!(res!=1)} {true==!false}
+||EXPECT||
+1 true true
+
 ||INPUT||Multi Line Arrays
 {[1,
 1]}
@@ -114,16 +152,24 @@ true 18
 2 2
 
 ||INPUT||Comparing unset values
-{unsetval==unset} {unsetval==10} {unsetval==0} {unsetval>0} {unsetval<0} {unsetval!=0} {unsetval>=0} {unsetval<=0}
+{unsetval==unset} {unset==unsetval} {unset==0} {unsetval==0} {0==unset} {0==unsetval}
 ||EXPECT||
-true false true false false false true true
+true true false false false false
 
-||INPUT||Advanced if
-#if testif==0
+||INPUT||Nested Advanced if spaces
+#if testif==unset
 	{testif=1}
+	#if testif!=unset
+	  {testif=2}
+{testif}
+#if testif!=unset
+  {testif=1}
+  #if true
+   {testif=2}
 {testif}
 ||EXPECT||
-1
+2
+2
 
 ||INPUT||String with quotes
 {"1 \"2\" 3"}
@@ -161,6 +207,30 @@ CaSE SenSitive CaSE SenSitive CaSE SenSitive
 {result}
 ||EXPECT||
 2
+
+||INPUT||Vertices
+r;mute;{vert=[10,10,
+	10, 200,
+	200, 200,
+	200, 10,
+	
+	100,100,
+	100, 300,
+	300, 300,
+	300, 100]}
+
+{tex=[0, 1,
+	1, 1,
+	1, 0,
+	0, 0,
+	
+	0, 1,
+	1, 1,
+	1, 0,
+	0, 0]}
+;textureVertices, "Textures/pointer.png", vert, tex;
+||EXPECT||
+r
 
 ||INPUT||Newlines
 

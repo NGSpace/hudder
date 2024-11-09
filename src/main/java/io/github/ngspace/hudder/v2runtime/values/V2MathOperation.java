@@ -8,14 +8,14 @@ public class V2MathOperation extends AV2Value {
 	public char[] operations = new char[0];
 	public Object constant = null;
 	
-	public V2MathOperation(AV2Value[] values, char[] operations, int line, int charpos) throws CompileException {
-		super(line, charpos);
+	public V2MathOperation(AV2Value[] values, char[] operations, int line, int charpos, String debugvalue,
+			AV2Compiler compiler) throws CompileException {
+		super(line, charpos, debugvalue, compiler);
 		this.values = values;
 		this.operations = operations;
 		if (isConstant()) constant = get();
 	}
 	
-	@SuppressWarnings("removal")
 	@Override public Object get() throws CompileException {
 		if (constant!=null) return constant;
 		
@@ -23,18 +23,18 @@ public class V2MathOperation extends AV2Value {
 		char[] secondsOperations = new char[operations.length];
 		int realSecondValuesLength = 0;
 		
-		//Multiply, Divide and Modulo (Sounds like either the slogan of a dictator...)
-		double result = values[0].asDoubleSafe();
+		//Multiply, Divide and Modulo
+		double result = values[0].asDouble();
 		for (int i = 0;i<values.length;i++) {
 			if (i==operations.length) break;
-			var val2 = values[i+1].asDoubleSafe();
+			var val2 = values[i+1].asDouble();
 			if      (operations[i]=='*') result = result * val2;
 			else if (operations[i]=='/') result = result / val2;
 			else if (operations[i]=='%') result = result % val2;
 			else {
 				secondValues[realSecondValuesLength] = result;
 				secondsOperations[realSecondValuesLength] = operations[i];
-				result = values[i+1].asDoubleSafe();
+				result = values[i+1].asDouble();
 				realSecondValuesLength++;
 			}
 		}

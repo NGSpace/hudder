@@ -19,9 +19,13 @@ public class IfV2RuntimeElement extends AV2RuntimeElement {
 	}
 	
 	@Override
-	public void execute(CompileState meta, StringBuilder builder) throws CompileException {
-		if(condition.asBoolean())
-			meta.combineWithResult(compiledRuntime.execute().toResult(), false);
+	public boolean execute(CompileState meta, StringBuilder builder) throws CompileException {
+		if(condition.asBoolean()) {
+			CompileState cs = compiledRuntime.execute();
+			meta.combineWithResult(cs.toResult(), false);
+			return !cs.hasBroken;
+		}
+		return true;
 	}
 	
 }

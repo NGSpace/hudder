@@ -4,6 +4,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,6 +46,7 @@ public class HudderUnitTester {
 	public Text testAll(ConfigInfo config) {
 		MutableText result = Text.literal("All tests:\n");
 		boolean failed = false;
+		Instant start = Instant.now();
 		Map<HudderUnitTestResult,String> failedtests = new HashMap<HudderUnitTestResult, String>();
 		for (String name : UnitTests.keySet()) {
 			var testresult = test(config, name);
@@ -53,6 +56,7 @@ public class HudderUnitTester {
 				failedtests.put(testresult, name);
 			}
 		}
+		Instant end = Instant.now();
 		if (failed) {
 			result.append(Text.literal("\n\nFailed the following tests: ").withColor(0xff0000));
 			for (var failedtest : failedtests.entrySet()) {
@@ -61,7 +65,16 @@ public class HudderUnitTester {
 				result.append(":");
 				result.append(failedtest.getKey().getFailureMessage());
 			}
-		} else result.append(Text.literal("\n\nSuccessful"));
+			result.append(Text.literal(milliseconds(false, start, end, failedtests.size(), UnitTests.size())));
+		} else result.append(Text.literal(milliseconds(true, start, end, failedtests.size(), UnitTests.size())));
 		return result;
+	}
+
+	private String milliseconds(boolean success, Instant start, Instant end, int failedcount, int testscount) {
+		double v = Duration.between(start, end).toNanos()/1000000d;
+		double res = (int) (v*1000);
+		res/=1000;
+		return "\n\n" + (success? "Successful, " : "") + "took "+ res + "ms. Passed "
+				+ (testscount-failedcount) + "/" + testscount + " tests.";
 	}
 }

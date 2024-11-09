@@ -15,7 +15,7 @@ public class StringV2RuntimeElement extends AV2RuntimeElement {
 		this.cleanUp = cleanUp;
 		this.addToMeta = add;
 	}
-	@Override public void execute(CompileState meta, StringBuilder builder) throws CompileException {
+	@Override public boolean execute(CompileState meta, StringBuilder builder) throws CompileException {
 		String str = string;
 		if (cleanUp&&(buffer = ConfigManager.getConfig().methodBuffer)<10)
 			for (int i = 0; i<buffer;i++) {
@@ -27,5 +27,6 @@ public class StringV2RuntimeElement extends AV2RuntimeElement {
 			meta.addString(builder.toString(), false);
 			builder.setLength(0);
 		} else builder.append(str);
+		return true;
 	}
 }

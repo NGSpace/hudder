@@ -1,6 +1,5 @@
 package io.github.ngspace.hudder.v2runtime.values;
 
-import io.github.ngspace.hudder.compilers.AVarTextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 
@@ -8,10 +7,9 @@ public class V2Boolean extends AV2Value {
 	
 	boolean bvalue;
 	
-	public V2Boolean(boolean value, AVarTextCompiler compiler, int line, int charpos) {
-		super(line,charpos);
+	public V2Boolean(boolean value, AV2Compiler compiler, int line, int charpos, String debugvalue) {
+		super(line, charpos, debugvalue, compiler);
 		this.bvalue = value;
-		this.compiler = compiler;
 	}
 
 	@Override public Boolean get() throws CompileException {return bvalue;}

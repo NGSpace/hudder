@@ -1,6 +1,7 @@
 package io.github.ngspace.hudder.methods.elements;
 
 import io.github.ngspace.hudder.mixin.InGameHudAccessor;
+import io.github.ngspace.hudder.util.HudderRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -35,7 +36,7 @@ public class GameHudElement extends AUIElement {
 		this.type = type;
 	}
 
-	@Override public void renderElement(DrawContext context, RenderTickCounter delta) {
+	@Override public void renderElement(DrawContext context, HudderRenderer renderer, RenderTickCounter delta) {
 		try {
 			InGameHudAccessor acchud = (InGameHudAccessor) (mc.inGameHud);
 			float scaledWidth = context.getScaledWindowWidth();

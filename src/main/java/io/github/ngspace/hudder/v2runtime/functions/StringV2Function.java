@@ -3,7 +3,6 @@ package io.github.ngspace.hudder.v2runtime.functions;
 import java.util.List;
 
 import io.github.ngspace.hudder.compilers.utils.CompileException;
-import io.github.ngspace.hudder.methods.MethodValue;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import io.github.ngspace.hudder.v2runtime.values.AV2Value;
 
@@ -15,16 +14,17 @@ public class StringV2Function implements IV2Function {
 		Object value = args[0].get();
 		
 		if (args.length==2&&(boolean) args[1].get()&&value instanceof Number num)
-			return MethodValue.cleanDouble(num.doubleValue());
+			return cleanDouble(num.doubleValue());
 		if (value instanceof List<?> s) {
 			StringBuilder b = new StringBuilder();
-			for (var v : s) {
-//				System.out.println(v.toString());
-				b.append(v);
-			}
+			for (var v : s) b.append(v);
 			return b.toString();
 		}
 		return value.toString();
 	}
 	
+	public static String cleanDouble(double d) {
+	    if(d == (long) d) return Long.toString((long)d);
+	    else return Double.toString((long)d);
+	}
 }

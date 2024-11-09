@@ -11,9 +11,9 @@ public class V2Array extends AV2Value {
 
 	private AV2Value[] values;
 
-	protected V2Array(String[] strings, AV2Compiler compiler, V2Runtime runtime, int line, int charpos)
+	protected V2Array(String[] strings, AV2Compiler compiler, V2Runtime runtime, int line, int charpos, String debugvalue)
 			throws CompileException {
-		super(line, charpos);
+		super(line, charpos, debugvalue, compiler);
 		values = new AV2Value[strings.length];
 		for (int i = 0;i<strings.length;i++)
 			values[i] = compiler.getV2Value(runtime, strings[i], line, charpos);

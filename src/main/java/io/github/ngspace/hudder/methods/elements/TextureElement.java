@@ -2,6 +2,7 @@ package io.github.ngspace.hudder.methods.elements;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import io.github.ngspace.hudder.util.HudderRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderTickCounter;
@@ -21,7 +22,7 @@ public class TextureElement extends AUIElement {
 		this.height=height;
 		this.id=id;
 	}
-	@Override public void renderElement(DrawContext context, RenderTickCounter delta) {
+	@Override public void renderElement(DrawContext context, HudderRenderer renderer, RenderTickCounter delta) {
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		context.drawTexture(RenderLayer::getGuiTexturedOverlay,id, x, y, 0, 0f, width, height, width, height);

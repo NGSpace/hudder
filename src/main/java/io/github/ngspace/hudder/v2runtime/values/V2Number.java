@@ -5,9 +5,8 @@ import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 
 public class V2Number extends AV2Value {
 	double doubleVal;
-	public V2Number(String value, int line, int charpos) {
-		super(line, charpos);
-		this.value=value;
+	public V2Number(String value, int line, int charpos, AV2Compiler compiler) {
+		super(line, charpos, value, compiler);
 		if (value.startsWith("0x")||value.startsWith("#"))
 			this.doubleVal = Long.decode(value);
 		else

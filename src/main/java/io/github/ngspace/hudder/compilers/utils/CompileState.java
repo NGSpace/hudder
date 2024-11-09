@@ -7,7 +7,7 @@ import java.util.List;
 import io.github.ngspace.hudder.config.ConfigManager;
 import io.github.ngspace.hudder.methods.elements.AUIElement;
 
-public class CompileState {
+public class CompileState implements IElementManager {
 
 	public static final String TOPLEFT = "topleft";
 	public static final String BOTTOMLEFT = "bottomleft";
@@ -24,6 +24,7 @@ public class CompileState {
 	public float BLScale = 1;
 	public float TRScale = 1;
 	public float BRScale = 1;
+	public boolean hasBroken = false;
 	public List<AUIElement> elements = new ArrayList<AUIElement>();
 
 	public CompileState(String string) {setTextLocation(string, ConfigManager.getConfig().scale);}
@@ -77,6 +78,10 @@ public class CompileState {
 			addString(compile.BottomRightText, BOTTOMRIGHT, false);BRScale = compile.BRScale;
 		}
 		Collections.addAll(elements, compile.elements);
+	}
+	@Override
+	public void addElem(AUIElement UIElement) {
+		elements.add(UIElement);
 	}
 	
 }

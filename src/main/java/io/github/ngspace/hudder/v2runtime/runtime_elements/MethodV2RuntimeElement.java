@@ -40,7 +40,8 @@ public class MethodV2RuntimeElement extends AV2RuntimeElement {
 		this.line = line;
 		this.charpos = charpos;
 	}
-	@Override public void execute(CompileState meta, StringBuilder builder) throws CompileException {
+	@Override public boolean execute(CompileState meta, StringBuilder builder) throws CompileException {
 		method.invoke(info, meta, compiler, type, line, charpos, values);
+		return true;
 	}
 }
