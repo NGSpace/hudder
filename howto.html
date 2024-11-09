@@ -98,7 +98,7 @@ below 30 or 60 fps.
 
 <br><br>
 
-<h2 id="adv_variables">Advanced Variables and Functions</h2>
+<h2 id="adv_variables">Advanced variables and Functions</h2>
 <hr>
 <note>Functions are available at Hudder version 5.0.0 or above!</note>
 <note>Arrayes are available at Hudder version 5.5.0 or above!</note>
@@ -126,86 +126,5 @@ except the parameters are not predefinied and can be variables (which can be cha
 
 <br><br>
 A full list of variables can be found <a href="methodlist.html">here!</a>
-
-<br><br>
-
-<h2 id="adv_conds">If statements and while loops</h2>
-<hr><br>
-
-Note that the indentation must be exclusively tabs, note that some editors will automatically replace tabs with
-spaces so be sure to disable that! If you didn't understand the previous statement use Notepad from this point.
-<br><br>
-You can use #if to do large if conditions (unlike "basic" conditions you can only have 1 condition without an else statement)
-<br><br>
-#if is a multi-lined condition (which means)
-<br><br>
-#while is similar except it repeats itself until the condition is false
-(or until it reached the limit of 16 bit integers [aka 32767] number of itterations)
-<br><br>
-
-
-Here is an example of both (Please do not use this, it will likely crash your game):
-
-<code>#if fps&#60;60
-	{math=10+20}
-	{crashmypc=true}
-{xx=0}
-{yy=0}
-#while crashmypc
-	#if yy&#62;height
-		{crashmypc=false}
-	;hand, xx,yy,1;
-	{xx=xx+16}
-	#if xx>width
-		{yy=yy+16}
-		{xx=0}
-</code>
-<br>
-Magnificent, isn't it? Looks like I peaked early when I came up with this piece of art.
-<br><br>
-	
-<h2 id="adv_methods">Writing your own methods</h2>
-<hr>
-<note>Version 4.0.0 or above!</note>
-
-you can use <inline-code>#def</inline-code> to write your own methods. here is an example:
-<code>#def divide, number, number
-		{result = arg1/arg2}
-;divide, 4, 2;
-{result==2}
-</code>
-
-Available types: string, number, boolean, array, any.
-<br><br>
-<h2 id="arrays">Arrays</h2>
-<hr>
-<note>Version 5.5.0 or above!</note>
-<note>The first item in an array starts at 0!</note>
-
-You can use <inline-code>[<i>values</i>]</inline-code> to create an array that stores a list of values of any type.
-<br>To read the value at a certain spot in an array you must use <inline-code><i>arrayname</i>[<i>position</i>]</inline-code>.
-<br>To set a value at a certain point you must do <inline-code><i>arrayname</i>[<i>position</i>]=<i>value</i></inline-code>.
-<br>Arrays have a fixed size which can be read using the <inline-code>length</inline-code> function.
-<br>Arrays can be expanded be inserting a value after the last point in the array (You can't skip points, if an array is of length 6 and you wish to expand it, you must set a value at point 7, before you set a value at point 8)
-<br><br>here is a simple example:
-<code>Define an array with 3 objects inside it (the number 4 and the number 2 and the word "Text"):
-{arr=[4,2,"Text"]}
-
-Get the number of objects within the array (3):
-{length(arr)}
-
-Replace the number 2 with the number 3:
-{arr[1]=3}
-
-Read the first value of the array:
-{arr[0]}
-
-Add an object in the 4th position of the array:
-{arr[3]="4th object"}
-
-Read the new length of the array (4):
-{length(arr)}
-</code>
-
 <br><br><br>
 </body>

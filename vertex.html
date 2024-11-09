@@ -25,7 +25,7 @@
 <body>
 	<note><span> I recommend you read the "Arrays" section of <a href="variables.html">[INSERT FINAL PAGE NAME]</a></span></note>
 	<note>In the examples given here I use the default "hudder" language/compiler however things will mostly act the same in JavaScript</note>
-	<h1>Vertex array</h1>
+	<h1 id="varray">Vertex array</h1>
 	<hr>
 	A vertex array specifies an unknown group of points on the screen that make up a full shape,<br>
 	a point can be defined as x (horizontal) position and y (horizontal) position.<br><br>
@@ -43,7 +43,7 @@
 	
 	you may add as many points as you wish, 4, 8, 12, 16, 20, etc.
 	<br><br>
-	<h1>Texture/UV points array</h1>
+	<h1 id="tarray">Texture/UV points array</h1>
 	<hr>
 	A texture array is similar to a vertex array but instead of defining the positions of the shapes,<br>
 	it defines the points of a texture you wish to be rendered.<br><br>
@@ -52,6 +52,42 @@
 	Example:
 	<code>;textureVertices, "Textures/selection.png", [0, 0, 0, 20, 20, 20, 20, 0],  [0, 0, 0, 1, 1, 1, 1, 0];</code>
 	Will draw the selection image built into Hudder in the top left:<br>
-	<img src="Images/squareselection.png" width="40%">
-	<br><br><br>
+	<img src="Images/squareselection.png" width="40%"><br>
+	
+	<br><br>
+	<h1 id="con">"Continous" rendering</h1>
+	<hr>
+	While the default methods render using "Quads" draw mode, when using the continous versions of those methods (Check the Lists) Hudder draws with the "Triangle strip" draw mode<br>
+	which allows for easier drawing of more complex shapes.<br><br>
+	
+	Unlike the Quads draw mode, this draw mode draws elements with 3 points instead of 4 ("TRIANGLE strip").<br>
+	The quirk of this mode is that for every point you add after the 3rd, the previous points will be used as the 2 other points.<br>
+	This means that you don't have to unnecessarily redefine the previous points, taking up more memory, complexity and compute time.<br><br>
+	An example of the continous rendering can be found in the next section:<br>
+	
+	<br><br>
+	<h1 id="circle">Drawing a circle</h1>
+	<hr>
+	Using continous rendring you can easily draw a circle by looping 360 times and defining a point at the perimeter of the circle<br>
+	And then defining another point in the center of the circle, eventually completing the circle:
+	<code>{radius=10}
+{circlex=10}
+{circley=10}
+{degrees=360}
+{circlecolor=0xFFFFFFFF}
+
+{arr=[]}
+{i=0}
+#while i&#60;degrees+1
+	{theta = 2* 3.141592653589793 * i / 360}
+	{xr=radius * cos(theta)}
+	{yr=radius * sin(theta)}
+	{arr[i*4]=xr + circlex}
+	{arr[i*4+1]=yr + circley}
+	{arr[i*4+2]=circlex}
+	{arr[i*4+3]=circley}
+	{i=i+1}
+;colorvertices_con, arr, circlecolor;
+</code>
+<br><br><br>
 </body>
