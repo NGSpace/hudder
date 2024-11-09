@@ -44,14 +44,21 @@
 </code>
 
 <h3>Text Rendering</h3>
-<code>;text, [Number x], [Number y], [String text], &#60;Number scale&#62;, &#60;HexColor color&#62;, &#60;Boolean shadow&#62;, &#60;Boolean background&#62;, &#60;HexColor bgcolor&#62; - Compiler and then draw the provided text on screen.
+<code>;text, [Number x], [Number y], [String text], &#60;Number scale&#62;, &#60;HexColor color&#62;, &#60;Boolean shadow&#62;, &#60;Boolean background&#62;, &#60;HexColor bgcolor&#62; - Compile and then draw the provided text on screen.
 ;topleft/topright/bottomleft/bottomright/mute, &#60;Number scale&#62;; - change which section to write to.
 </code>
 
 <h3>GUI</h3>
-<code>;health/xpbar/hotbar/helditemtooltip, [Number x], [Number y]; - Draw the provided Hud element on screen.
+<code>;statusbar/xpbar/hotbar/helditemtooltip, [Number x], [Number y]; - Draw the provided Hud element on screen.
 ;image, [String filename], [Number x], [Number y], [Number width], [Number height]; - Draws the provided Image on screen.
 ;texture, [Number x], [Number y], [Number width], [Number height]; - Draws the provided Texture on screen.
+</code>
+
+<h3>Vertex rendering (See //RENDER// for more info)</h3>
+<code>;texturevertices, [String filename], [Array vertecies], [Array textures]; - Draws the provided image with the provided vertex and texture array
+;colorvertices, [String filename], [Array vertecies], [HexColor color]; - Draws a shape with the provided vertex array and color
+;texturevertices_con, [String filename], [Array vertecies], [Array textures]; - Draws the provided image with the provided vertex and texture array (continous)
+;colorvertices_con, [String filename], [Array vertecies], [HexColor color]; - Draws a shape with the provided vertex array and color (continous)
 </code>
 
 <h1>Others</h1>
@@ -67,44 +74,46 @@
 
 <h3>File management</h3>
 
-<code>;run, [String filename], &#60;Boolean addText&#62;, &#60;String compiler&#62;; - Compile the provided file with the provided compiler, if "addText" is set to true then it will combine the result with the current file, UI Elements get combined whether addText is true or false.
+<code>;run, [String filename], &#60;Boolean addText&#62;, &#60;String compiler&#62;; - Compile the provided hud with the provided compiler, if "addText" is set to true then it will combine the text of the compiled hud with the current one , UI Elements get added whether addText is true or false.
 </code>
+
+<!-- Deprecated methods -->
 
 <h1>Deprecated methods</h1>
 <hr><br>
 <warning>All deprecated methods will be or have been removed (Solutions will be provided)</warning>
-<code>;strwidth, [String text], [String variable]; - Sets the provided variable's value to the width of the provided string.
+<code>;strwidth, [String text], [String variable];
 Deprecated in version 5.0.0, removed in version 5.5.0 (Use the strwidth Function)
 
-;exists, [String text], [String variable]; - Sets the provided variable's value to true or false depending on whether the provided file exists or not.
+;exists, [String text], [String variable];
 Deprecated and removed in version 5.0.0 (Use the exists Function)
 
-;decimalpoint, [String numbervariable], [Number maxdecimalpoint]; - Takes the value of the provided variable, cuts off the decimal point at the requested point and inserts it back into the variable. Inserting a number into the "Variable" parameter will do nothing.
-Deprecated in version 5.0.0, not yet removed (Use the truncate Function)
+;decimalpoint, [String numbervariable], [Number maxdecimalpoint];
+Deprecated in version 5.0.0, removed in version 6.0.0 (Use the truncate Function)
 
-;int, [String numbervariable]; - Same as the above method except it removes the decimal point entirely.
+;int, [String numbervariable];
 Deprecated and removed in version 5.0.0 (Use the floor, ceiling or truncate Function)
 
-;concat, [String firstString], [String secondString], [String variable]; - Combines both strings and places the result into the provided variable.
-Deprecated in version 5.0.0, not yet removed (Use the concat Function)
+;concat, [String firstString], [String secondString], [String variable];
+Deprecated in version 5.0.0, removed in version 6.0.0 (Use the concat Function)
 
-;substring, [String string], [Number start], [Number end], [String variable]; - Cuts the string at the provided start and end points and places the result into the provided variable.multiplystring
-Deprecated in version 5.0.0, not yet removed (Use the substring Function)
+;substring, [String string], [Number start], [Number end], [String variable];
+Deprecated in version 5.0.0, removed in version 6.0.0 (Use the substring Function)
 
-;name, [Number slot], [String variable]; - Sets the value of the provided variable to the name of the item in the provided slot.
-Deprecated in version 5.5.0, not yet removed (Use the itemname Function)
+;name, [Number slot], [String variable];
+Deprecated in version 5.5.0, removed in version 6.0.0 (Use the itemname Function)
 
-;durability, [Number slot], [String variable]; - Sets the value of the provided variable to the durability of the item in the provided slot.
-Deprecated in version 5.5.0, not yet removed (Use the itemdurability Function)
+;durability, [Number slot], [String variable];
+Deprecated in version 5.5.0, removed in version 6.0.0 (Use the itemdurability Function)
 
-;maxdurability, [Number slot], [String variable]; - Sets the value of the provided variable to the max durability of the item in the provided slot.
-Deprecated in version 5.5.0, not yet removed (Use the itemmaxdurability Function)
+;maxdurability, [Number slot], [String variable];
+Deprecated in version 5.5.0, removed in version 6.0.0 (Use the itemmaxdurability Function)
 
-;count, [Number slot], [String variable]; - Sets the value of the provided variable to the item count of the item in the provided slot.
-Deprecated in version 5.5.0, not yet removed (Use the itemcount Function)
+;count, [Number slot], [String variable];
+Deprecated in version 5.5.0, removed in version 6.0.0 (Use the itemcount Function)
 
-;maxcount, [Number slot], [String variable]; - Sets the value of the provided variable to the max item count of the item in the provided slot.
-Deprecated in version 5.5.0, not yet removed (Use the itemmaxcount Function)
+;maxcount, [Number slot], [String variable];
+Deprecated in version 5.5.0, removed in version 6.0.0 (Use the itemmaxcount Function)
 </code>
 <br><br><br>
 </body>

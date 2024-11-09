@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<head>
+	<title>Hudder wiki - Vertex rendering</title>
+	<script src="base.js"></script>
+	<meta charset="UTF-8">
+
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-M0SCB1X0YP"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', 'G-M0SCB1X0YP');
+
+		gtag('consent', 'update', {
+			'ad_user_data': 'granted',
+			'ad_personalization': 'granted',
+			'ad_storage': 'granted',
+			'analytics_storage': 'granted'
+		});
+
+	</script>
+</head>
+<body>
+	<note><span> I recommend you read the "Arrays" section of <a href="variables.html">[INSERT FINAL PAGE NAME]</a></span></note>
+	<note>In the examples given here I use the default "hudder" language/compiler however things will mostly act the same in JavaScript</note>
+	<h1>Vertex array</h1>
+	<hr>
+	A vertex array specifies an unknown group of points on the screen that make up a full shape,<br>
+	a point can be defined as x (horizontal) position and y (horizontal) position.<br><br>
+	A vertex array (in hudder) is structured as the following:<br>
+	<code>[x1, y1, x2, y2, x3, y3, x4, y4, x5, y5...]</code><br>
+	
+	<b>Example:</b>
+	<code>;colorvertices, [20, 20, 5, 40, 20, 60, 35, 40], 0xFFFFFFFF;</code>
+	Will draw a white diamond in the top left corner of the screen:<br>
+	<img src="Images/whitediamond.png" width="40%">
+	
+	<h3>More than four points?</h3>
+	Hudder draws in fours, each element on screen is made up of four points,<br>
+	if not enough points are provided or left in an array, the element will be discarded.
+	
+	you may add as many points as you wish, 4, 8, 12, 16, 20, etc.
+	<br><br>
+	<h1>Texture/UV points array</h1>
+	<hr>
+	A texture array is similar to a vertex array but instead of defining the positions of the shapes,<br>
+	it defines the points of a texture you wish to be rendered.<br><br>
+	
+	In a texture array points are defined from 0 to 1 rather than pixel positions, 0 being the top or the left, 1 being the bottom or the right.<br>
+	Example:
+	<code>;textureVertices, "Textures/selection.png", [0, 0, 0, 20, 20, 20, 20, 0],  [0, 0, 0, 1, 1, 1, 1, 0];</code>
+	Will draw the selection image built into Hudder in the top left:<br>
+	<img src="Images/squareselection.png" width="40%">
+	<br><br><br>
+</body>
