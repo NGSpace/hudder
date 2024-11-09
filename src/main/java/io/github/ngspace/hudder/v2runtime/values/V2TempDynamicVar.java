@@ -10,10 +10,10 @@ public class V2TempDynamicVar extends AV2Value {
 	}
 	
 	@Override public Object get() throws CompileException {
-		return compiler.getTempVariable(value);
+		Object o = compiler.getTempVariable(value);
+		if (o==null) return 0;
+		return o;
 	}
-	
-	@Override public boolean hasValue() {return compiler.get(value)!=null;}
 
 	@Override public void setValue(AV2Compiler compiler, Object value) throws CompileException {
 		compiler.putTemp(this.value, value);
