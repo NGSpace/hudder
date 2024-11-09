@@ -61,9 +61,13 @@ minfps / min_fps - The lowest frame rate in the last few seconds
 maxfps / max_fps - The highest frame rate in the last few seconds
 ping - The current ping
 tps - The current Ticks per second (Client only)
+
 gpu_d - GPU usage (with decimal point)
 gpu - GPU usage (without decimal point)
-delta - The previous frame's frame rate delta
+cpu_d - CPU usage (with decimal point)
+cpu - CPU usage (without decimal point)
+
+delta - The time between compiles
 
 totalmemory / maxmemory / totalram / maxram - Maximum RAM (In MB)
 usedmemory / usedram - Used RAM (In MB)
@@ -72,22 +76,26 @@ usedmemory_percentage / usedram_percentage - The percentage of memory that is be
 freememory_percentage / freeram_percentage - The percentage of memory that is being NOT used (out of the Maximum RAM supplied to Minecraft)
 </code>
 
-<h3>Computer</h3>
+<h3>Computer Information</h3>
 
 <code>time - Current time (In milliseconds) as supplied by the Operating System (Ex Windows, Linux, MacOS, etc.)
-random /rng - Random number
 </code>
 
 <h3>Food and health</h3>
 
 <code>saturation - The saturation of the player (not to be confused with the hunger value)
 hunger - The hunger of the player
-previoushunger - I have no idea TBH... Why did I add this?... Maybe the previous hunger value?
-exhaustion - The exhaustion of the player
-health / hp - The health of the player
-maxhealth / maxhp - The maximum health of the player
+health - The health of the player
+maxhealth - The maximum health of the player
 </code>
 
+<h3>Player Information</h3>
+
+<code>playerspeed - The speed at which the player is travelling
+horizontal_playerspeed - The speed at which the player is travelling horizontally
+xp - The current xp count of the player
+xplevel - The current xp level of the player
+</code>
 
 <h3>Player position</h3>
 
@@ -97,6 +105,8 @@ dzpos / dz - The Z position of the player (with decimal point)
 xpos / x - The X position of the player (Without decimal point)
 ypos / y - The X position of the player (Without decimal point)
 zpos / z - The X position of the player (Without decimal point)
+chunkx - The chunk X position of the player
+chunkz - The chunk Z position of the player
 </code>
 
 <h3>Player rotation</h3>
@@ -116,7 +126,7 @@ held_item_max_durability / helmet_max_durability / chestplate_max_durability / l
 
 <h3>World rendering</h3>
 
-<code>entites - The number of entites drawn (As shown in the debug screen)
+<code>entities - The number of entites drawn (As shown in the debug screen)
 particles - The number of particles drawn (As shown in the debug screen)
 chunks - The number of chunks loaded
 </code>

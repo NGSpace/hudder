@@ -23,6 +23,18 @@
 
 	</script>
 	<style>
+		table {
+			background-color: rgb(40, 40, 40);
+		}
+		tr:nth-child(2n-1) {
+			background-color: rgb(20, 20, 20);
+		}
+		.header {
+			font-size: 1.5em;
+			text-align: center;
+			background-color: rgb(180,180,180) !important;
+			color:black;
+		}
 		td {
 			padding-top: 10px;
 			padding-bottom: 10px;
@@ -89,12 +101,17 @@ var bottomrightscale = 2;
        <col span="1" style="width: 5%;">
        <col span="1" style="width: 10%;">
     </colgroup>
+    
 	<tr>
 		<th>Function</th>
 		<th width="30%">Description</th>
 		<th>Return type</th>
 		<th>Notes</th>
 	</tr>
+	
+	<!-- Logging -->
+	<tr class="header"><td colspan="4">Logging</td></tr>
+	
 	<tr>
 		<td><inline-code language="js">log(Any message)</inline-code></td>
 		<td>Writes to the game console. (DEPRECATED)</td>
@@ -118,6 +135,10 @@ var bottomrightscale = 2;
 		<td>Sends a message in the chat.</td>
 		<td>None</td>
 	</tr>
+	
+	<!-- Reading variables -->
+	<tr class="header"><td colspan="4">Reading variables</td></tr>
+	
 	<tr>
 		<td><inline-code language="js">getVar(String variable)</inline-code></td>
 		<td>Returns the variable with the given name (ex. fps, key_h).</td>
@@ -150,13 +171,17 @@ var bottomrightscale = 2;
 		<td>Sets the variable with the given name to the given object.</td>
 		<td>None</td>
 	</tr>
+	
+	<!-- Drawing inventory items -->
+	<tr class="header"><td colspan="4">Drawing inventory items</td></tr>
+	
 	<tr>
-		<td><inline-code language="js">drawItem(String itemid, Number x, Number y, Number scale)</inline-code></td>
+		<td><inline-code language="js">item(String itemid, Number x, Number y, Number scale)</inline-code></td>
 		<td>Draws the item with the provided itemid on the provided X, Y positions on screen with the provided scale.</td>
 		<td>None</td>
 	</tr>
 	<tr>
-		<td><inline-code language="js">drawSlot(Number slot, Number x, Number y, Number scale, Boolean showcount)
+		<td><inline-code language="js">slot(Number slot, Number x, Number y, Number scale, Boolean showcount)
 		</inline-code></td>
 		<td>Draws the item from the slot provided on the provided X, Y positions on screen with the provided scale.
 			will also draw durability and item count if showcount is true.</td>
@@ -164,7 +189,7 @@ var bottomrightscale = 2;
 		<td>Can be used alongside getVal("selectedslot") to draw the item the player is holding</td>
 	</tr>
 	<tr>
-		<td><inline-code language="js">drawArmor(Number slot, Number x, Number y, Number scale, Boolean showcount)
+		<td><inline-code language="js">armor(Number slot, Number x, Number y, Number scale, Boolean showcount)
 		</inline-code></td>
 		<td>Draws the armor from the slot provided on the provided X, Y positions on screen with the provided scale.
 			will also draw durability if showcount is true.</td>
@@ -172,36 +197,104 @@ var bottomrightscale = 2;
 		<td>0 for boots, 1 for leggings, 2 for chestplate and 3 for helmet</td>
 	</tr>
 	<tr>
-		<td><inline-code language="js">drawOffhand(Number x, Number y, Number scale, Boolean showcount)</inline-code></td>
+		<td><inline-code language="js">offhand(Number x, Number y, Number scale, Boolean showcount)</inline-code></td>
 		<td>Draws the item held in the offhand on the provided X, Y positions on screen with the provided scale.
 			will also draw durability if showcount is true.</td>
 		<td>None</td>
 		<td>0 for boots, 1 for leggings, 2 for chestplate and 3 for helmet</td>
 	</tr>
+	
+	<!-- Drawing custom elements -->
+	<tr class="header"><td colspan="4">Drawing custom elements</td></tr>
+	
 	<tr>
-		<td><inline-code language="js">strWidth(String text)</inline-code></td>
-		<td>Returns the length of the string.</td>
-		<td>Number</td>
-	</tr>
-	<tr>
-		<td><inline-code language="js">drawText(Number x, Number y, String text, Number scale, Number color, Boolean shadow, Boolean background, Number backgroundcolor)
+		<td><inline-code language="js">text(Number x, Number y, String text, Number scale, Number color, Boolean shadow, Boolean background, Number backgroundcolor)
 		</inline-code></td>
 		<td>Draws text on the screen with the provided scale and color.
 			if shadow is provided then a shadow will also be drawn regardless of the option selected in hudder's settings.</td>
 		<td>None</td>
 	</tr>
 	<tr>
-		<td><inline-code language="js">drawTexture(String id, Number x, Number y, Number width, Number height)
+		<td><inline-code language="js">texture(String id, Number x, Number y, Number width, Number height)
 		</inline-code></td>
 		<td>Draws a minecraft texture with the provided ID in the provided x and y positons with the provided width and height.</td>
 		<td>None</td>
 	</tr>
 	<tr>
-		<td><inline-code language="js">drawLocalTexture(String filename, Number x, Number y, Number width, Number height)
+		<td><inline-code language="js">image(String filename, Number x, Number y, Number width, Number height)
 		</inline-code></td>
 		<td>Draws the image located in the provided path (relative to Hudder's config folder) in the provided x and y positons with the provided width and height.</td>
 		<td>None</td>
 		<td>Aliases: drawPNG, drawImage</td>
+	</tr>
+	
+	<!-- Drawing builtin hud elements -->
+	<tr class="header"><td colspan="4">Drawing builtin hud elements</td></tr>
+	
+	<tr>
+		<td><inline-code language="js">statusbars(String filename, Number x, Number y, Number width, Number height)
+		</inline-code></td>
+		<td>Draws the health and hunger bars in the provided x and y positon.</td>
+		<td>None</td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">xpbar(String filename, Number x, Number y, Number width, Number height)
+		</inline-code></td>
+		<td>Draws the Exp bar in the provided x and y positon.</td>
+		<td>None</td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">hotbar(String filename, Number x, Number y, Number width, Number height)
+		</inline-code></td>
+		<td>Draws the hotbar in the provided x and y positon.</td>
+		<td>None</td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">helditemtooltip(String filename, Number x, Number y, Number width, Number height)
+		</inline-code></td>
+		<td>Draws the item tooltip in the provided x and y positon.</td>
+		<td>None</td>
+	</tr>
+	
+	<!-- Vertex rendering -->
+	<tr class="header"><td colspan="4">Vertex rendering</td></tr>
+	
+	<tr>
+		<td><inline-code language="js">texturevertices(String filename, Number[] vertexarray, Number[] texturearray)
+		</inline-code></td>
+		<td>Draws the image located in the provided path (relative to Hudder's config folder) with the provided texture and vertex array.</td>
+		<td>None</td>
+		<td><span>See <a href="vertex.html">Vertex rendering</a> for more information</span></td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">colorvertices(Number[] vertexarray, Number color)
+		</inline-code></td>
+		<td>Draws a shape with the provided color and vertex array.</td>
+		<td>None</td>
+		<td><span>See <a href="vertex.html">Vertex rendering</a> for more information</span></td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">texturevertices_con(String filename, Number[] vertexarray, Number[] texturearray)
+		</inline-code></td>
+		<td>Draws the image located in the provided path (relative to Hudder's config folder) with the provided texture and vertex array (Continous).</td>
+		<td>None</td>
+		<td><span>See <a href="vertex.html">Vertex rendering</a> for more information</span></td>
+	</tr>
+	<tr>
+		<td><inline-code language="js">texturevertices_con(Number[] vertexarray, Number color)
+		</inline-code></td>
+		<td>Draws a shape with the provided color and vertex array (Continous).</td>
+		<td>None</td>
+		<td><span>See <a href="vertex.html">Vertex rendering</a> for more information</span></td>
+	</tr>
+	
+	<!-- Misc -->
+	<tr class="header"><td colspan="4">Misc</td></tr>
+	
+	<tr>
+		<td><inline-code language="js">strWidth(String text)</inline-code></td>
+		<td>Returns the length of the string.</td>
+		<td>Number</td>
 	</tr>
 	<tr>
 		<td><inline-code language="js">compile(String filename, String compilertype)</inline-code></td>
@@ -210,30 +303,6 @@ var bottomrightscale = 2;
 		<td>CompileResult</td>
 		<td>CompileResult has the following properties {String topleft, String bottomleft, String topright, String bottomright,
 		Number topleftscale, Number bottomleftscale, Number toprightscale, Number bottomrightscale}</td>
-	</tr>
-	<tr>
-		<td><inline-code language="js">drawStatusBars(String filename, Number x, Number y, Number width, Number height)
-		</inline-code></td>
-		<td>Draws the health and hunger bars in the provided x and y positon.</td>
-		<td>None</td>
-	</tr>
-	<tr>
-		<td><inline-code language="js">drawExpAndMountBars(String filename, Number x, Number y, Number width, Number height)
-		</inline-code></td>
-		<td>Draws the Exp bar in the provided x and y positon.</td>
-		<td>None</td>
-	</tr>
-	<tr>
-		<td><inline-code language="js">drawHotbar(String filename, Number x, Number y, Number width, Number height)
-		</inline-code></td>
-		<td>Draws the hotbar in the provided x and y positon.</td>
-		<td>None</td>
-	</tr>
-	<tr>
-		<td><inline-code language="js">drawItemTooltip(String filename, Number x, Number y, Number width, Number height)
-		</inline-code></td>
-		<td>Draws the item tooltip in the provided x and y positon.</td>
-		<td>None</td>
 	</tr>
 	<tr>
 		<td><inline-code language="js">exists(String filename)

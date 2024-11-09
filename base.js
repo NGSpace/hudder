@@ -159,7 +159,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	<link rel="icon" type="image/x-icon" href="favicon.ico">
 	<div id="topbar">
 		<img src="Images/Hudder.webp" alt="Back to main hudder wiki page" />
-		<div id="title">Hudder 5.5.0 Wiki</div>
+		<div id="title">Hudder 6.0.0 Wiki</div>
 	</div>
 	<div id="sidebar">
 	<h1>Explore</h1>
@@ -168,19 +168,38 @@ document.addEventListener("DOMContentLoaded", function (event) {
 				<a href="index.html">Home</a>
 			</summary>
 		</details>
+		<br>
 		<details open>
-			<summary><a href="howto.html">Basic Tutorial</a></summary>
+			<summary><a href="howto.html">Basic hud</a></summary>
 			<ul>
 				<li><a href="howto.html#text">Normal text</a></li>
 				<li><a href="howto.html#color">Character escaping and Color Codes</a></li>
 				<li><a href="howto.html#sections">Text sections</a></li>
 				<li><a href="howto.html#variables">Basic variables</a></li>
 				<li><a href="howto.html#conditions">Basic conditions</a></li>
-				<li><a href="howto.html#adv_variables">Advanced Variables and Functions</a></li>
+				<li><a href="howto.html#adv_variables">Advanced variables and Functions</a></li>
 				<li><a href="howto.html#methods">Using methods</a></li>
-				<li><a href="howto.html#adv_conds">Advanced conditions and while loops</a></li>
-				<li><a href="howto.html#adv_methods">Writing your own methods</a></li>
-				<li><a href="howto.html#arrays">Arrays</a></li>
+			</ul>
+		</details>
+		<details open>
+			<summary>
+				<a href="adv.html">Advanced hud</a>
+			</summary>
+			<ul>
+				<li><a href="adv.html#arrays">Arrays</a></li>
+				<li><a href="adv.html#adv_conds">If statements and while loops</a></li>
+				<li><a href="adv.html#adv_methods">Writing your own methods</a></li>
+				<li><a href="adv.html#break">The Break variable</a></li>
+				<li><a href="adv.html#operators">Inc, Dec and Not operators</a></li>
+			</ul>
+		</details>
+		<details open>
+			<summary><a href="vertex.html">Vertex rendering</a></summary>
+			<ul>
+				<li><a href="vertex.html#varray">Vertex array</a></li>
+				<li><a href="vertex.html#tarray">Texture/UV points array</a></li>
+				<li><a href="vertex.html#con">"Continous" rendering</a></li>
+				<li><a href="vertex.html#circle">Drawing a circle</a></li>
 			</ul>
 		</details>
 		<details open>
@@ -190,6 +209,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 				<li><a href="javascript.html#functions">List of functions and their descriptions</a></li>
 			</ul>
 		</details>
+		<br>
 		<details open>
 			<summary>
 				<a href="varlist.html">Variable list</a>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<head>
+	<title>Hudder wiki - Arrays</title>
+	<script src="base.js"></script>
+	<meta charset="UTF-8">
+
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-M0SCB1X0YP"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', 'G-M0SCB1X0YP');
+
+		gtag('consent', 'update', {
+			'ad_user_data': 'granted',
+			'ad_personalization': 'granted',
+			'ad_storage': 'granted',
+			'analytics_storage': 'granted'
+		});
+
+	</script>
+</head>
+<body>
+<note>"Advanced" is a strong word, the content on this page was written to be understood by everyone but it may not be useful for everyone.</note>
+<h1>Advanced hud</h1>
+<hr>
+	
+<h2 id="adv_conds">If statements and while loops</h2>
+<hr><br>
+
+Note that the indentation must be exclusively tabs, note that some editors will automatically replace tabs with
+spaces so be sure to disable that! If you didn't understand the previous statement use Notepad from this point.
+<br><br>
+You can use <inline-code>#if</inline-code> to do large if conditions (unlike "basic" conditions you can only have 1 condition without an else statement)
+<br><br>
+<inline-code>#if</inline-code> is a multi-lined condition (which means)
+<br><br>
+<inline-code>#while</inline-code> is similar except it repeats itself until the condition is false<br>
+You can also use <inline-code>{break}</inline-code> to stop the execution of the while loop early without stopping the execution
+of the rest of the hud.
+<br><br>
+
+
+Here is an example of both (Please do not use this, it will likely crash your game):
+
+<code>#if fps&#60;60
+		{math=10+20}
+		{crashmypc=true}
+{xx=0}
+{yy=0}
+#while crashmypc
+		#if yy&#62;height
+			{crashmypc=false}
+		;hand, xx,yy,1;
+		{xx=xx+16}
+		#if xx>width
+			{yy=yy+16}
+			{xx=0}
+</code>
+<br>
+Magnificent, isn't it? Looks like I peaked early when I came up with this piece of art.
+<br><br>
+	
+<h2 id="arrays">Arrays</h2>
+<hr>
+<note>Version 5.5.0 or above!</note>
+<note>The first item in an array starts at 0!</note>
+An array is a list of values with that can be of any length (up to infinity [aka how much your computer can handle]).<br>
+<br>
+You can use <inline-code>[<i>values,seperated,by,commas</i>]</inline-code> to create an array that stores a list of values of any type.
+<br>To read the value at a certain spot in an array you must use <inline-code><i>arrayname</i>[<i>position</i>]</inline-code>.
+<br>To set a value at a certain point you must do <inline-code><i>arrayname</i>[<i>position</i>]=<i>value</i></inline-code>.
+<br>Arrays have a fixed size which can be read using the <inline-code>length</inline-code> function.
+<br>Arrays can be expanded be inserting a value after the last point in the array (You can't skip points, if an array is of length 6 and you wish to expand it, you must set a value at point 7, before you set a value at point 8)
+<br><br>here is a simple example:
+<code>Define an array with 3 objects inside it (the number 4 and the number 2 and the word "Text"):
+{arr=[4,2,"Text"]}
+
+Get the number of objects within the array (3):
+{length(arr)}
+
+Replace the number 2 with the number 3:
+{arr[1]=3}
+
+Read the first value of the array:
+{arr[0]}
+
+Add an object in the 4th position of the array:
+{arr[3]="4th object"}
+
+Read the new length of the array (4):
+{length(arr)}
+</code>
+
+<br><br>
+
+<h2 id="adv_methods">Writing your own methods</h2>
+<hr>
+
+You can use <inline-code>#def</inline-code> to write your own methods. here is an example:
+<code>#def divide, number, number
+		{result = arg1/arg2}
+;divide, 4, 2;
+{result==2}
+</code><br>
+You can also use <inline-code>{break}</inline-code> to stop the execution of the method early without stopping the execution
+of the rest of the hud.<br><br>
+
+Available types: string, number, boolean, array, any.
+
+<br><br>
+
+<h2 id="break">Break variable</h2>
+<hr>
+The <inline-code>{break}</inline-code> variable is special because it's not actually a variable, once it is used, execution of the hud will stop.<br><br>
+If used in <inline-code>#while</inline-code> loop or a <inline-code>#def</inline-code> method, then instead of stopping the execution of the hud it will just stop the execution of the while loop or def method.
+<note>The above statement is only true for #while and #def, not #if.</note>
+Example:
+<code>#while _i&#60;10
+	{_i++}
+	#if _i==5
+		{break}
+{_i}</code>
+Will set {_i} to 5
+
+<br><br>
+
+<h2 id="operators">Inc, Dec and Not operators</h2>
+<hr>
+You can use <inline-code>{_i++}</inline-code> to increase _i's value by 1 and then return the it's old value, <inline-code>{_i--}</inline-code> does the same but decreases by 1.
+<br><br>
+You can use <inline-code>{++_i}</inline-code> to increase _i's value by 1 and then return the it's new value, <inline-code>{--_i}</inline-code> does the same but decreases by 1.
+<br><br>
+You can use <inline-code>{!_i}</inline-code> to return the opposite value of _i, if it is true then it will return false, if it is false then it will return true.
+<br><br><br>
+</body>
