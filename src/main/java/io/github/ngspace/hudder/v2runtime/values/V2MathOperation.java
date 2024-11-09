@@ -24,12 +24,9 @@ public class V2MathOperation extends AV2Value {
 		int realSecondValuesLength = 0;
 		
 		//Multiply, Divide and Modulo
-		if (!values[0].hasValue()) throw new CompileException(values[0].value + " has no set value!",line,charpos);
 		double result = values[0].asDouble();
 		for (int i = 0;i<values.length;i++) {
 			if (i==operations.length) break;
-			if (!values[i+1].hasValue())
-				throw new CompileException(values[i+1].value + " has no set value!",line,charpos);
 			var val2 = values[i+1].asDouble();
 			if      (operations[i]=='*') result = result * val2;
 			else if (operations[i]=='/') result = result / val2;

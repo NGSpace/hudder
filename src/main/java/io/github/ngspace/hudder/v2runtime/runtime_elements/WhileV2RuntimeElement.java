@@ -21,8 +21,11 @@ public class WhileV2RuntimeElement extends AV2RuntimeElement {
 	
 	@Override
 	public boolean execute(CompileState meta, StringBuilder builder) throws CompileException {
-		while(condition.asBoolean())
-			meta.combineWithResult(compiledRuntime.execute().toResult(), false);
+		while(condition.asBoolean()) {
+			var res = compiledRuntime.execute();
+			meta.combineWithResult(res.toResult(), false);
+			if (res.hasBroken) return true;
+		}
 		return true;
 	}
 	

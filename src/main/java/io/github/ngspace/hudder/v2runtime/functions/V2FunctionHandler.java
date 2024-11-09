@@ -5,10 +5,6 @@ import java.util.Map;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
-import io.github.ngspace.hudder.data_management.BooleanData;
-import io.github.ngspace.hudder.data_management.NumberData;
-import io.github.ngspace.hudder.data_management.StringData;
-import io.github.ngspace.hudder.util.HudFileUtils;
 import net.minecraft.client.MinecraftClient;
 
 public class V2FunctionHandler {
@@ -24,13 +20,6 @@ public class V2FunctionHandler {
 		bindFunction(new DoubleV2Function(), 1, "int", "num", "number", "double");
 		bindFunction(new StringV2Function(), 1, 2, "str", "string");
 		bindFunction(new ArrayV2Function(), 1, "array");
-		
-		//Variable manipulation
-		
-		bindFunction((r,n,args,l,c)->r.compiler.getVariable  (args[0].asString()), 1, "get", "getVal", "getVariable");
-		bindFunction((r,n,args,l,c)->NumberData.getNumber  (args[0].asString()), 1, "getNumber" );
-		bindFunction((r,n,args,l,c)->StringData.getString  (args[0].asString()), 1, "getString" );
-		bindFunction((r,n,args,l,c)->BooleanData.getBoolean(args[0].asString()), 1, "getBoolean");
 		
 		//String manipulation
 
@@ -82,9 +71,7 @@ public class V2FunctionHandler {
 		
 		// Misc
 		
-		bindFunction((r,n,args,l,c) -> HudFileUtils.exists(args[0].asString()), 1, "exists");
-		bindFunction((r,n,args,l,c) -> mc.textRenderer.getWidth(args[0].asString()), 1, "strwidth");
-		bindFunction(new LengthV2Function(), 1, "length");// Length
+		bindFunction(new LengthV2Function(), 1, "length");
 		
 	}
 

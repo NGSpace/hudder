@@ -2,13 +2,11 @@ package io.github.ngspace.hudder.compilers;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import io.github.ngspace.hudder.Hudder;
+import io.github.ngspace.hudder.compilers.utils.ArrayElementManager;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.Compilers;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
@@ -18,13 +16,7 @@ import io.github.ngspace.hudder.data_management.BooleanData;
 import io.github.ngspace.hudder.data_management.NumberData;
 import io.github.ngspace.hudder.data_management.StringData;
 import io.github.ngspace.hudder.methods.elements.AUIElement;
-import io.github.ngspace.hudder.methods.elements.ColorVerticesElement;
-import io.github.ngspace.hudder.methods.elements.GameHudElement;
-import io.github.ngspace.hudder.methods.elements.GameHudElement.GuiType;
 import io.github.ngspace.hudder.methods.elements.ItemElement;
-import io.github.ngspace.hudder.methods.elements.TextElement;
-import io.github.ngspace.hudder.methods.elements.TextureElement;
-import io.github.ngspace.hudder.methods.elements.TextureVerticesElement;
 import io.github.ngspace.hudder.util.HudCompilationManager;
 import io.github.ngspace.hudder.util.HudFileUtils;
 import net.minecraft.client.MinecraftClient;
@@ -50,7 +42,7 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 	}
 	
 	public Map<String, RuntimeCache> cache = new HashMap<String, RuntimeCache>();
-	public List<AUIElement> elms = new ArrayList<AUIElement>();
+	public ArrayElementManager elms = new ArrayElementManager();
 	
 	protected abstract IScriptingLanguageEngine createLangEngine() throws CompileException;
 
@@ -70,6 +62,7 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 					wrapper.evaluateCode(text, filename);
 				} catch (Exception e) {
 					exception = e;
+					wrapper.close();
 				}
 				cache.put(text, new RuntimeCache(wrapper,exception));
 			}
@@ -114,102 +107,49 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 		
 		//Getters
 		
-		engine.bindFunction(s->getVariable(s[0].asString()), "get", "getVal", "getVariable");
-		engine.bindFunction(s->NumberData.getNumber(s[0].asString()), "getNumber" );
-		engine.bindFunction(s->StringData.getString(s[0].asString()), "getString" );
-		engine.bindFunction(s->BooleanData.getBoolean(s[0].asString()), "getBoolean");
-		
 		engine.bindFunction(s->new TranslatedItemStack(mc.player.getInventory().getStack(s[0].asInt())), "getItem");
 		
-		//Setters
-		
-		engine.bindConsumer(s->put(s[0].asString(), s[1]), "set", "setVal", "setVariable");
-		
-		//ItemStacks
-		
 		//Item
+		
 		engine.bindConsumer(s->elms.add(new ItemElement(s[1].asInt(), s[2].asInt(),new ItemStack(Registries.ITEM.get(
 				Identifier.tryParse(s[0].asString()))),s[3].asFloat(), false)),"drawItem", "item");
+		
 		//Slot
+		
 		engine.bindConsumer(s->elms.add(new ItemElement(s[1].asInt(),s[2].asInt(),mc.player.getInventory()
 				.getStack(s[0].asInt()),s[3].asFloat(), s[4].asBoolean())),"drawSlot", "slot");
+		
 		//Armor
+		
 		engine.bindConsumer(s->elms.add(new ItemElement(s[1].asInt(),s[2].asInt(),mc.player.getInventory()
 				.getArmorStack(s[0].asInt()),s[3].asFloat(), s[4].asBoolean())),"drawArmor", "armor");
+		
 		//Offhand
+		
 		engine.bindConsumer(s->elms.add(new ItemElement(s[1].asInt(),s[2].asInt(),mc.player.getInventory()
 				.offHand.get(0),s[3].asFloat(), s[4].asBoolean())),"drawOffhand", "offhand");
-		
-		//Text
-		
-		engine.bindFunction(s->mc.textRenderer.getWidth(s[0].asString()), "strWidth", "strwidth");
-		engine.bindConsumer(s-> {
-			float scale = s[3].asFloat();
-			int color = s[4].asInt();
-			boolean shadow = s[5].asBoolean();
-			boolean bg = s[6].asBoolean();
-			int bgc = s[7].asInt();
-			elms.add(new TextElement(s[0].asInt(),s[1].asInt(),s[2].asString(),scale,color,shadow,bg,bgc));
-		}, "drawText", "text");
 		
 		//Compile
 		
 		engine.bindFunction(s-> {
 			try {
+				var e = elms.toArray(new AUIElement[elms.size()]);
+				
 				ATextCompiler ecompiler = s.length>1?Compilers.getCompilerFromName(s[1].asString()):this;
 				for (var i : HudCompilationManager.precomplistners) i.accept(ecompiler);
+				
 				HudInformation result = ecompiler.compile(Hudder.config,HudFileUtils.getFile(s[0].asString()),s[0].asString());
-				Collections.addAll(elms, result.elements);
+
+				for (var v : result.elements) elms.addElem(v);
+				for (var v : e) elms.addElem(v);
+				
 				for (var i : HudCompilationManager.postcomplistners) i.accept(ecompiler);
 				return result;
 			} catch (ReflectiveOperationException | IOException e) {
-				e.printStackTrace();
+				if (Hudder.IS_DEBUG) e.printStackTrace();
 				throw new IllegalArgumentException("Unknown compiler");
 			}
 		}, "compile", "run", "execute");
-		
-		//Texture
-
-		engine.bindConsumer( s-> elms.add(new TextureElement(Identifier.tryParse(s[0].asString().trim()),s[1].asInt(),
-				s[2].asInt(), s[3].asInt(),s[4].asInt())), "drawTexture", "texture");
-		
-		engine.bindFunction(s-> {
-			try {
-				boolean ex = HudFileUtils.exists(s[0].asString());
-				if (!ex) return false;
-				Identifier id = Identifier.of(s[0].asString().trim().toLowerCase());
-				HudFileUtils.getAndRegisterImage(s[0].asString(),id);
-				elms.add(new TextureElement(id,s[1].asInt(),s[2].asInt(),s[3].asInt(),s[4].asInt()));
-			} catch (IOException e) {return false;}
-			return true;
-		}, "drawLocalTexture", "drawPNG", "drawImage", "image", "png");
-		
-		//Hotbar
-
-		engine.bindConsumer(s->elms.add(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.STATUS_BARS)),
-				"drawStatusBars", "statusbars");
-		engine.bindConsumer(s->elms.add(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.EXP_AND_MOUNT_BAR)),
-				"drawExpAndMountBars", "xpbar");
-		engine.bindConsumer(s->elms.add(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.HOTBAR)),
-				"drawHotbar", "hotbar");
-		engine.bindConsumer(s->elms.add(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.ITEM_TOOLTIP)),
-				"drawItemTooltip", "helditemtooltip");
-		
-		//Vertex
-
-		engine.bindConsumer(s-> {
-			try {
-				elms.add(new TextureVerticesElement(s[0].asString(),s[1].asFloatArray(),s[2].asFloatArray()));
-			} catch (IOException e) {
-				throw new CompileException(e.getMessage(), 0, 0, e);
-			}
-		}, "texturevertices");
-		
-		engine.bindConsumer(s->elms.add(new ColorVerticesElement(s[0].asFloatArray(),s[1].asLong())),"colorvertices");
-		
-		//Misc
-		
-		engine.bindFunction(s->HudFileUtils.exists(s[0].asString()),"exists");
 	}
 	
 	
@@ -243,5 +183,4 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 			engine.close();
 		}
 	}
-	
 }

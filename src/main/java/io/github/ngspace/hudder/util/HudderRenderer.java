@@ -1,5 +1,7 @@
 package io.github.ngspace.hudder.util;
 
+import java.util.function.Function;
+
 import org.joml.Matrix4f;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -16,15 +18,19 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderPhase;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.RenderLayer.MultiPhaseParameters;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.TriState;
+import net.minecraft.util.Util;
 
 /**
  * Hudder.java was too messy so I moved all rendering functions into this one class
@@ -157,12 +163,18 @@ public class HudderRenderer implements HudRenderCallback {
         BufferRenderer.drawWithGlobalProgram(bgBuilder.end());
         RenderSystem.disableBlend();
 	}
-	
-	public void renderTexture(DrawContext context, float[] vertices, float[] textures, Identifier id) {
+    private static final Function<Identifier, RenderLayer> hudder_gui_tr = Util.memoize(texture ->
+    	RenderLayer.of("hudder_gui_tr", VertexFormats.POSITION_TEXTURE_COLOR, VertexFormat.DrawMode.TRIANGLE_STRIP, 1536,
+    			MultiPhaseParameters.builder().texture(new RenderPhase.Texture(texture, TriState.DEFAULT, false))
+    			.program(RenderPhase.POSITION_TEXTURE_COLOR_PROGRAM).transparency(RenderPhase.TRANSLUCENT_TRANSPARENCY)
+    			.depthTest(RenderPhase.ALWAYS_DEPTH_TEST).writeMaskState(RenderPhase.COLOR_MASK).build(false)));
+
+	public void renderTexture(DrawContext context, float[] vertices, float[] textures, Identifier id, boolean triangles) {
 		context.draw(vcp -> {
 	        RenderSystem.enableBlend();
 	        RenderSystem.defaultBlendFunc();
-	        VertexConsumer vertexConsumer = vcp.getBuffer(RenderLayer.getGuiTexturedOverlay(id));
+	        
+	        VertexConsumer vertexConsumer = vcp.getBuffer(triangles ? hudder_gui_tr.apply(id) : RenderLayer.getGuiTextured(id));
 	        
 	        Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
 	        for (int i = 0;i<vertices.length;i+=2) {
@@ -171,12 +183,12 @@ public class HudderRenderer implements HudRenderCallback {
 	        RenderSystem.disableBlend();
 		});
 	}
-	public void renderColoredVertexArray(DrawContext context, float[] vertices, int r, int g, int b, int a) {
+	public void renderColoredVertexArray(DrawContext context, float[] vertices, int r, int g, int b, int a, VertexFormat.DrawMode mode) {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
 		RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
 		
-        BufferBuilder vertexBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS,
+        BufferBuilder vertexBuilder = Tessellator.getInstance().begin(mode,
         		VertexFormats.POSITION_COLOR);
         Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
 

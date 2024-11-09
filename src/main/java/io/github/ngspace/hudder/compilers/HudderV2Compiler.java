@@ -8,7 +8,7 @@ import io.github.ngspace.hudder.config.ConfigManager;
 import io.github.ngspace.hudder.util.HudderUtils;
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
-import io.github.ngspace.hudder.v2runtime.runtime_elements.BasicConditionV2RuntimeElement;
+import io.github.ngspace.hudder.v2runtime.runtime_elements.ConditionV2RuntimeElement;
 import io.github.ngspace.hudder.v2runtime.runtime_elements.BreakV2RuntimeElement;
 import io.github.ngspace.hudder.v2runtime.runtime_elements.IfV2RuntimeElement;
 import io.github.ngspace.hudder.v2runtime.runtime_elements.MethodV2RuntimeElement;
@@ -140,7 +140,7 @@ public class HudderV2Compiler extends AV2Compiler {
 							compileState = TEXT_STATE;
 							builder = addToArray(builder,elemBuilder.toString().trim());
 							var pos = getPosition(charPosition, savedind, text);
-							runtime.addRuntimeElement(new BasicConditionV2RuntimeElement(builder, this, info, runtime,
+							runtime.addRuntimeElement(new ConditionV2RuntimeElement(builder, this, info, runtime,
 									pos.line, pos.charpos,filename));
 							elemBuilder.setLength(0);
 							break;
@@ -279,7 +279,6 @@ public class HudderV2Compiler extends AV2Compiler {
 		for (;index<text.length();index++) {
 			char c = text.charAt(index);
 			if (!(c==' '||c=='\t')) {
-				System.out.println("\tr"+b.toString()+"r");
 				break;
 			}
 			b.append(c);

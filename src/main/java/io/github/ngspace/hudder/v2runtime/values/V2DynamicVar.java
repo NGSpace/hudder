@@ -19,4 +19,9 @@ public class V2DynamicVar extends AV2Value {
 	}
 	
 	@Override public boolean isConstant() throws CompileException {return false;}
+
+	@Override public double asDouble() throws CompileException {
+		if (!hasValue()) throw new CompileException('"' + value + "\" has no set value!",line,charpos);
+		return super.asDouble();
+	}
 }

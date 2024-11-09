@@ -12,7 +12,7 @@ import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import io.github.ngspace.hudder.v2runtime.values.AV2Value;
 
 //What a name...
-public class BasicConditionV2RuntimeElement extends AV2RuntimeElement {
+public class ConditionV2RuntimeElement extends AV2RuntimeElement {
 
 	AV2Value[] results = {};
 	AV2Value[] conditions = {};
@@ -20,7 +20,7 @@ public class BasicConditionV2RuntimeElement extends AV2RuntimeElement {
 	ConfigInfo info;
 	boolean hasElse;
 	private String filename;
-	public BasicConditionV2RuntimeElement(String[] condArgs, AV2Compiler compiler, ConfigInfo info, V2Runtime runtime,
+	public ConditionV2RuntimeElement(String[] condArgs, AV2Compiler compiler, ConfigInfo info, V2Runtime runtime,
 			int line, int charpos, String filename) throws CompileException {
 		this.compiler = compiler;
 		this.info = info;
@@ -43,6 +43,7 @@ public class BasicConditionV2RuntimeElement extends AV2RuntimeElement {
 		for (int i = 0;i<conditions.length;i++) {
 			if (conditions[i].asBoolean()) {
 				res = compiler.compile(info,results[i].asString(),filename);
+				break;
 			}
 		}
 		if (res==null&&hasElse) res = compiler.compile(info,results[results.length-1].asString(),filename);

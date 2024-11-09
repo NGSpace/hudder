@@ -4,14 +4,11 @@ import java.util.Arrays;
 
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileState;
-import io.github.ngspace.hudder.v2runtime.functions.V2FunctionHandler;
 import io.github.ngspace.hudder.v2runtime.runtime_elements.AV2RuntimeElement;
 
 public class V2Runtime {
 	public final AV2Compiler compiler;
 	public V2Runtime(AV2Compiler compiler) {this.compiler = compiler;}
-	
-	public final V2FunctionHandler functionHandler = new V2FunctionHandler();
 	
 	AV2RuntimeElement[] elements = new AV2RuntimeElement[0];
 	public CompileState execute() throws CompileException {

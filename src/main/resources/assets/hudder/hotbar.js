@@ -3,9 +3,7 @@
  */
 
 const spacing = 24;
-let selscale = 0;
 let prevslot = 0;
-let scalearr = [0,0,0,0,0,0,0,0,0,];
 let j = 0;
 let scrolly = 0;
 let animate = false;//felt annoying when testing with low framerates so I set it to false by default, should still work tho
@@ -18,8 +16,6 @@ function createElements() {
 	let x = width-20;
 	
 	if (slot!=prevslot) {
-		scalearr[prevslot] = selscale;
-		selscale = 0;
 		j = 6;
 	}
 	let y = height/2-(4.5*spacing)-4;
@@ -29,21 +25,31 @@ function createElements() {
 		let scale = 1;
 		let yoffset = 0;
 		let xoffset = 0;
-		if (!drawLocalTexture("Textures/pointer.png",x+14, y+i*spacing+5, 5, 6)) {
+		
+		if (!exists("Textures/pointer.png")) {
+			//Fallback
 			drawTexture("textures/gui/sprites/recipe_book/page_backward.png",x+15, y+i*spacing+5, 6, 6);
+		} else {
+			drawLocalTexture("Textures/pointer.png",x+14, y+i*spacing+5, 5, 6);
 		}
+		
 		if (slot==i) {
 			let sely = y+i*spacing+yoffset-4;
+			
 			if (animate) {
 				let sinc = sely>scrolly;
 				if (scrolly==0) scrolly = sely;
-				else if (scrolly!=sely) scrolly += (sinc?3:-3)*delta;//||(prevslot==0&&slot==8)
+				else if (scrolly!=sely) scrolly += (sinc?3:-3)*delta;
 				if ((sinc&&scrolly>sely)||(!sinc&&scrolly<sely)) scrolly = sely;
 			} else scrolly = sely; //Ye it's for the better...
-			if (!drawLocalTexture("Textures/selection.png",x-8, scrolly, 24, 24)) {
-				//Fallback to using the default hotbar selection texture.
+			
+			if (!exists("Textures/selection.png")) {
+				//Fallback
 				drawTexture("textures/gui/sprites/hud/hotbar_selection.png",x-8, scrolly, 24, 24);
+			} else {
+				drawLocalTexture("Textures/selection.png",x-8, scrolly, 24, 24);
 			}
+			
 			selectedsloty = scrolly+8;
 		}
 		xoffset = -5 * (scale/1.6);

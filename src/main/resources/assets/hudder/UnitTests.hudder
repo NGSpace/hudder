@@ -20,6 +20,16 @@ r
 ||EXPECT||
 {}}
 
+||INPUT||Conditions
+%401>400, "a", 399>100, "b", "c"%
+||EXPECT||
+a
+
+||INPUT||Conditions count
+%401>400, "{_i=_i+1}", 399>100, "{_i=_i+1}", "{_i=_i+1}"%
+||EXPECT||
+1
+
 ||INPUT||Break
 r
 {break}

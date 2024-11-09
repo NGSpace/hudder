@@ -15,19 +15,21 @@ public class TextureVerticesElement extends AUIElement {
 	private Identifier id;
 	private float[] vertices;
 	private float[] textures;
+	private boolean triangles;
 	
-	public TextureVerticesElement(String filename, float[] positionArray, float[] textureArray) throws IOException,
+	public TextureVerticesElement(String filename, float[] positionArray, float[] textureArray, boolean triangles) throws IOException,
 		CompileException {
 		this.id = Identifier.of(filename.trim().toLowerCase());
 		HudFileUtils.getAndRegisterImage(filename,id);
 		this.vertices = positionArray;
 		this.textures = textureArray;
+		this.triangles = triangles;
 		if (vertices.length!=textures.length)
 			throw new CompileException("Texture array and Vertex array are not of the same length!");
 	}
 	
 	@Override public void renderElement(DrawContext context, HudderRenderer renderer, RenderTickCounter delta) {
-		renderer.renderTexture(context, vertices, textures, id);
+		renderer.renderTexture(context, vertices, textures, id, triangles);
 	}
 	
 }

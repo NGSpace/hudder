@@ -14,7 +14,7 @@ public class V2FunctionVar extends AV2Value {
 	public V2FunctionVar(V2Runtime runtime, AV2Compiler compiler, String name, String[] nonprocessedargs, int line, int charpos, String debugvalue) throws CompileException {
 		super(line, charpos, debugvalue, compiler);
 		this.runtime = runtime;
-		this.func = runtime.functionHandler.getFunction(name);
+		this.func = compiler.functionHandler.getFunction(name);
 		if (func==null) throw new CompileException("Unknown function name: \""+name+'"', line, charpos);
 		this.funcname = name;
 		this.args = new AV2Value[nonprocessedargs.length];

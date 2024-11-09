@@ -11,8 +11,6 @@ public class TextMethod implements IMethod {
 
 	@Override
 	public void invoke(ConfigInfo ci, CompileState meta, ATextCompiler comp, String type, int line, int charpos, ObjectWrapper... args) throws CompileException {
-		if (args.length<3) throw new CompileException(
-				"\""+type+"\" only accepts ;"+type+",[x],[y],[text],<scale>,<color>,<shadow>,<bg>,<bgcolor>;", line, charpos);
 		try {
 			String text = args[2].asString();
 			float scale = (float) (args.length>3 ? args[3].asDouble() : ci.scale);

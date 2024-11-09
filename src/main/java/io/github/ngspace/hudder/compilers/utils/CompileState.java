@@ -7,7 +7,7 @@ import java.util.List;
 import io.github.ngspace.hudder.config.ConfigManager;
 import io.github.ngspace.hudder.methods.elements.AUIElement;
 
-public class CompileState {
+public class CompileState implements IElementManager {
 
 	public static final String TOPLEFT = "topleft";
 	public static final String BOTTOMLEFT = "bottomleft";
@@ -78,6 +78,10 @@ public class CompileState {
 			addString(compile.BottomRightText, BOTTOMRIGHT, false);BRScale = compile.BRScale;
 		}
 		Collections.addAll(elements, compile.elements);
+	}
+	@Override
+	public void addElem(AUIElement UIElement) {
+		elements.add(UIElement);
 	}
 	
 }

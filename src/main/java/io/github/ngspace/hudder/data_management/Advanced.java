@@ -1,5 +1,6 @@
 package io.github.ngspace.hudder.data_management;
 
+import java.lang.management.ManagementFactory;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,12 +9,15 @@ import java.util.Map;
 
 import org.lwjgl.glfw.GLFW;
 
+import com.sun.management.OperatingSystemMXBean;
+
 import net.minecraft.client.MinecraftClient;
 
 public class Advanced {private Advanced() {}
 	public static double gpuUsage = 0;
-    
 	public static float delta = 1;
+	public static LimitedRefreshSpeedData<Double> CPU = new LimitedRefreshSpeedData<Double>(
+			((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean())::getProcessCpuLoad, 2000);
 	
 	
 	public static String OS = null; static{
