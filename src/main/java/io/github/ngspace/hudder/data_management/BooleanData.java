@@ -34,6 +34,11 @@ public class BooleanData {private BooleanData(){}
 			case "isspectator","is_spectator": yield ins.interactionManager.getCurrentGameMode()==GameMode.SPECTATOR;
 			
 			
+			/* Mouse */
+			case "mouse_left": yield ins.mouse.wasLeftButtonClicked();
+			case "mouse_middle": yield ins.mouse.wasMiddleButtonClicked();
+			case "mouse_right": yield ins.mouse.wasRightButtonClicked();
+			
 			/* Hudder */
 			case "enabled": yield true; //Duh
 			case "shadow": yield ConfigManager.getConfig().shadow;
