@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<head>
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-M0SCB1X0YP"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		
+		gtag('config', 'G-M0SCB1X0YP');
+	</script>
+	<title>NGS's land</title>
+	<link rel="icon" href="Images/ngs.png">
+	<style>
+		#icon {
+			position: absolute;
+			top: 10%;
+			left: 5%;
+			width: 35%;
+			animation: rotation 50s infinite linear;
+		}
+		#message {
+			position: absolute;
+			display: block;
+			top: 14vh;
+			left: 42%;
+			width: 100%;
+		}
+		#whoops {
+			font-size: 2.6vw;
+			border: .2vw dashed #f69c55;
+		}
+		#error {
+			position: absolute;
+			font-size: 1vw;
+			top: 15vh;
+		}
+		#links {
+			position: absolute;
+			font-size: 1vw;
+			top: 20vh;
+		}
+		#links a {
+			text-decoration: none;
+			color: brown;
+		}
+		#links a:hover {
+			text-decoration: underline;
+		}
+		#page {
+			color: red;
+			font-weight: bold;
+		}
+		* {
+			font-family: monospace;
+		}
+		@keyframes rotation {
+			from {transform: rotate(0deg);}
+			to {transform: rotate(359deg);}
+		}
+	</style>
+</head>
+<body>
+	<img id="icon" src="/Images/ngs.png">
+	<div id="message">
+		<span id="whoops">Whoops! That page doesn't exist! <br></span>
+		<span id="error">
+			It appears that the page "<span id="page">PLACEHOLDER</span>" doesn't exist!
+		</span>
+		<span id="links">
+			<a href="/">Return to NGS's land!</a>
+			<br>
+			<a href="/hudder">Return to Hudder wiki!</a>
+		</span>
+	</div>
+	<script>
+		document.getElementById("page").innerText = window.location.pathname;
+	</script>
+</body>
