@@ -1,10 +1,6 @@
 package io.github.ngspace.hudder.data_management;
 
-import static io.github.ngspace.hudder.data_management.Advanced.getAverageFPS;
-import static io.github.ngspace.hudder.data_management.Advanced.getFPS;
-import static io.github.ngspace.hudder.data_management.Advanced.getMaximumFPS;
-import static io.github.ngspace.hudder.data_management.Advanced.getMinimumFPS;
-
+import java.util.Calendar;
 import java.util.Queue;
 
 import io.github.ngspace.hudder.config.ConfigManager;
@@ -29,14 +25,15 @@ public class NumberData {private NumberData() {}
 		PlayerEntity p = ins.player;
 		WorldRenderer wr = ins.worldRenderer;
 		World world = ins.world;
-		int fps = getFPS(ins);
+		int fps = Advanced.getFPS(ins);
+		
 		return switch(key) {
 			
 			/* Performance */
 			case "fps": yield (double) fps;
-			case "avgfps","avg_fps": yield (double) getAverageFPS();
-			case "minfps","min_fps": yield (double) getMinimumFPS();
-			case "maxfps","max_fps": yield (double) getMaximumFPS();
+			case "avgfps","avg_fps": yield (double) Advanced.getAverageFPS();
+			case "minfps","min_fps": yield (double) Advanced.getMinimumFPS();
+			case "maxfps","max_fps": yield (double) Advanced.getMaximumFPS();
 			case "ping": yield (double) ins.getNetworkHandler().getPlayerListEntry(p.getName().getString()).getLatency();
 			case "tps": yield (double) getTPS(ins);
 			
@@ -60,15 +57,21 @@ public class NumberData {private NumberData() {}
 			
 			
 			
-			/* Computer */
+			/* time */
 			case "time": yield (double) System.currentTimeMillis();
+			case "milliseconds": yield (double) Calendar.getInstance().get(Calendar.MILLISECOND);
+			case "seconds": yield (double) Calendar.getInstance().get(Calendar.SECOND);
+			case "minutes": yield (double) Calendar.getInstance().get(Calendar.MINUTE);
+			case "hour": yield (double) Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+			case "day": yield (double) Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+			case "month": yield (double) Calendar.getInstance().get(Calendar.MONTH);
+			case "year": yield (double) Calendar.getInstance().get(Calendar.YEAR);
 			
 			
 			
 			/* Food and health */
 			case "saturation": yield (double) p.getHungerManager().getSaturationLevel();
 			case "hunger": yield (double) p.getHungerManager().getFoodLevel();
-			
 			case "health", "hp": yield (double) p.getHealth();
 			case "maxhealth", "maxhp": yield (double) p.getMaxHealth();
 			
@@ -80,17 +83,20 @@ public class NumberData {private NumberData() {}
 			case "xp": yield (double) p.totalExperience;
 
 			case "playerspeed": {
-				// I know, I am soooo funny.
-				Entity veachol = p.getVehicle() == null ? p : p.getVehicle();
-				//IDK how acurate this number is, I just wanted to reach the official 
-				yield veachol.getVelocity().length() * 36.65;
+				Entity ent = p.getVehicle() == null ? p : p.getVehicle();
+
+			    double speed = (Math.sqrt(Math.pow(ent.getX() - ent.prevX, 2) +
+			    		Math.pow(ent.getY() - ent.prevY , 2) + Math.pow(ent.getZ() - ent.prevZ , 2)) * 20);
+			    yield speed;
 			}
 			case "horizontal_playerspeed": {
-				// I know, I am soooo funny.
-				Entity veachol = p.getVehicle() == null ? p : p.getVehicle();
-				//IDK how acurate this number is, I just wanted to reach the official 
-				yield veachol.getVelocity().horizontalLength() * 36.65;
+				Entity ent = p.getVehicle() == null ? p : p.getVehicle();
+
+			    double speed = (Math.sqrt(Math.pow(ent.getX() - ent.prevX, 2) + Math.pow(ent.getZ() - ent.prevZ , 2)) * 20);
+			    yield speed;
 			}
+			case "armor": yield (double) p.getArmor();
+			
 			
 			
 			/* Player position */
@@ -101,8 +107,14 @@ public class NumberData {private NumberData() {}
 			case "ypos","y": yield (double) p.getBlockY();
 			case "zpos","z": yield (double) p.getBlockZ();
 			
-			case "chunkz": yield (double) p.getChunkPos().z;
+			
+			
+			/* Chunk information */
+			case "subchunkx": yield (double) (p.getBlockX() & 0xF);
+			case "subchunky": yield (double) (p.getBlockY() & 0xF);
+			case "subchunkz": yield (double) (p.getBlockZ() & 0xF);
 			case "chunkx": yield (double) p.getChunkPos().x;
+			case "chunkz": yield (double) p.getChunkPos().z;
 			
 			
 			
