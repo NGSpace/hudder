@@ -58,7 +58,7 @@ public class BooleanData {private BooleanData(){}
 			case "isfreezing": yield p.isFrozen();
 			case "isglowing": yield p.isGlowing();
 			case "isfireimmune": yield p.isFireImmune();
-			case "isongire": yield p.isOnFire();
+			case "isonfire": yield p.isOnFire();
 			case "isonground": yield p.isOnGround();
 			case "isinvisible": yield p.isInvisible();
 			
