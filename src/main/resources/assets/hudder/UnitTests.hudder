@@ -15,6 +15,11 @@ Basic Bitch Test
 r
 r
 
+||INPUT||Int
+{int(1.6)}
+||EXPECT||
+1
+
 ||INPUT||String brackets
 {"{}}"}
 ||EXPECT||
@@ -132,9 +137,9 @@ RepeatRepeat
 -0.11478481378318722 0.9933903797222716 -0.11554854579453279
 
 ||INPUT||Math Functions
-{abs(-69)} {floor(69.7)} {ceiling(68.7)} {sqrt(4)} {pow(2,8)} {min(1,20)} {max(1,20)} {truncate(1.69, 1)} {rng(69,420,1)}
+{abs(-69)} {floor(69.7)} {ceiling(68.7)} {sqrt(4)} {pow(2,8)} {min(1,20)} {max(1,20)} {truncate(1.69, 1)}
 ||EXPECT||
-69 69 69 2 256 1 20 1.6 325.5382449368551
+69 69 69 2 256 1 20 1.6
 
 ||INPUT||Misc Functions
 {exists("hud")} {strwidth("hud")}

@@ -12,7 +12,7 @@ public class DoubleV2Function implements IV2Function {
 		
 		switch (value) {
 			case Number num:
-				return num.doubleValue();
+				return num.intValue();
 			case String str:
 				return Double.parseDouble(str);
 			case Boolean bool:
