@@ -18,7 +18,7 @@
 		});
 	</script>
 	<style>
-		#preplist li{
+		#preplist li {
 			margin-top: 0px;margin-bottom: 10px;
 		}
 	</style>
@@ -27,7 +27,7 @@
 	<h1>Extending Hudder!</h1>
 	<hr>
 	<warning>You will need to know Basic Java for this</warning>
-	<note>A sample Hudder extenstion is available on <a href="https://github.com/NGSpace/hudder-sample-mod">GitHub</a></note>
+	<note>A sample Hudder extenstion is available on <a href="https://github.com/NGSpace/hudder-sample-mod">&nbsp;GitHub&nbsp;</a> (Hudder 4.0.0-1.21)</note>
 	<note>The ability for third party compilers was only added in version 3.5.0 and V2 compilers on 4.0.0</p></note>
 	<note>If you ever fact ambiguity feel free to ask on Hudder's discord.</note>
 	So, you're a big smarty-pants and want to improve hudder without directly modifying it? No worries! I am here to help!
@@ -35,7 +35,7 @@
 	<hr><h4>Here's a list of what you will need to have prepared:</h4>
 	<ul id="preplist">
 		<li>JDK 21 or above (<a href="https://www.openlogic.com/openjdk-downloads?field_java_parent_version_target_id=828&field_operating_system_target_id=All&field_architecture_target_id=391&field_java_package_target_id=396">Download here</a>)</li>
-		<li>A code editor/IDE (ex. Eclipse, Intellij, Zed, VSCode, Windows notepad, vim, emacs)</li>
+		<li>A code editor/IDE (ex. Eclipse, Intellij, Zed, VSSpyware (AKA VSCode), Windows notepad, vim, emacs, NNUEdit, Notepad++)</li>
 		<li>A fabric mod (<a href="https://fabricmc.net/develop/">How to make one</a>)</li>
 		<li>A warm blanket</li>
 	</ul>
@@ -89,8 +89,8 @@ First thing: we'll need a class:
 
 <code>public class CustomCompiler extends AV2Compiler {
 	@Override
-	public CompileResult buildRuntime(ConfigInfo info, String text) throws CompileException {
-		V2Runtime runtime = new V2Runtime(); //Init the runtime
+	public V2Runtime buildRuntime(ConfigInfo info, String text, CharPosition charPosition, String filename) throws CompileException {
+		V2Runtime runtime = new V2Runtime(this); //Init the runtime
 		runtime.addRuntimeElement(new StringV2RuntimeElement(text, false, true)); //Add all the text
 		return runtime;
 	}
@@ -108,7 +108,7 @@ all you need to do is write the syntax parse te text, create a VariableV2Runtime
 Here is a quick example of a simple variable parser:
 
 
-<code>V2Runtime runtime = new V2Runtime(); //Init the runtime
+<code>V2Runtime runtime = new V2Runtime(this); //Init the runtime
 StringBuilder textBuilder = new StringBuilder();
 
 for (int ind = 0;ind&#60;text.length();ind++) { //Loop through every character in the file
@@ -121,7 +121,8 @@ for (int ind = 0;ind&#60;text.length();ind++) { //Loop through every character i
 			ind++;
 			c = text.charAt(ind);
 			if (c=='%') {
-			runtime.addRuntimeElement(new VariableV2RuntimeElement(variableBuilder.toString(), this)); // Add whatever text is left in the text builder
+				CharPosition position = getPosition(ind, text);
+				runtime.addRuntimeElement(new VariableV2RuntimeElement(variableBuilder.toString(), this, runtime, position.line, position.charpos)); // Add whatever text is left in the text builder
 				break;
 			}	
 			variableBuilder.append(c);
@@ -155,8 +156,8 @@ return runtime;
 
 <code>public class CustomCompiler extends AVarTextCompiler {
 	@Override
-	public CompileResult compile(ConfigInfo info, String text) throws CompileException {
-		return new CompileResult(text, 0, "", 0, "", 0, "", 0, new AUIElement[0]);
+	public HudInformation compile(ConfigInfo info, String text, String filename) throws CompileException {
+		return new HudInformation(text, 0, "", 0, "", 0, "", 0, new AUIElement[0]);
 	}
 }</code>
 <br>

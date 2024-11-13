@@ -159,7 +159,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	<link rel="icon" type="image/x-icon" href="favicon.ico">
 	<div id="topbar">
 		<img src="Images/Hudder.webp" alt="Back to main hudder wiki page" />
-		<div id="title">Hudder 6.0.0 Wiki</div>
+		<div id="title">Hudder 6.2.0 Wiki</div>
 	</div>
 	<div id="sidebar">
 	<h1>Explore</h1>
@@ -236,6 +236,18 @@ document.addEventListener("DOMContentLoaded", function (event) {
 				<a href="russian.html">Русский</a>
 			</summary>
 		</details>
+		<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7455801980495957"
+		     crossorigin="anonymous"></script>
+		<!-- Sidebar -->
+		<ins class="adsbygoogle"
+		     style="display:block"
+		     data-ad-client="ca-pub-7455801980495957"
+		     data-ad-slot="8917303233"
+		     data-ad-format="auto"
+		     data-full-width-responsive="true"></ins>
+		<script>
+		     (adsbygoogle = window.adsbygoogle || []).push({});
+		</script>
 	</div>
 	<div id="contents">
 	</div>`;
