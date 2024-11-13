@@ -26,20 +26,45 @@
 <note>Variables are NOT case sensitive</note>
 <h1>Booleans (true/false)</h1>
 <hr><br>
+	
+<h3>User input</h3>
+
 <code>key_[key on keyboard] - Is key is held
 
-{mouse_left} - Is the left mouse button held
-{mouse_middle} - Is the middle mouse button held
-{mouse_right} - Is the right mouse button held
+mouse_left - Is the left mouse button held
+mouse_middle - Is the middle mouse button held
+mouse_right - Is the right mouse button held
+</code>
 
-isslime / is_slime - Is the current chunk (the one the player is in) is a slime chunk
-hudhidden - Is the HUD hidden (F1)
-showdebug - Is the F3 debug menu showing
+<h3>Player gamemode</h3>
 
-issurvival / is_survival - Is the player in survial mode
+<code>issurvival / is_survival - Is the player in survial mode
 iscreative / is_creative - Is the player in creative mode
 isadventure / is_adventure - Is the player in adventure mode
 isspectator / is_spectator - Is the player in spectator mode
+</code>
+
+<h3>Player movement</h3>
+
+<code>isgliding - Is the player flying using an elytra
+isclimbing - Is the player climbing (ladder, vines, etc.)
+iscrawling - Is the player crawling
+isswimming - Is the player swimming
+issneaking - Is the player sneaking
+</code>
+
+<h3>Other player information</h3>
+
+<code>isalive - Is the player alive
+isblocking - Is the player blocking using a sheild
+isfreezing - Is the player freezing to death (powdered snow)
+isglowing - Is the player glowing
+isfireimmune - Is the player immune to fire (Fire resistance)
+isonfire - Is the player on fire
+isonground - Is the player on the ground
+isinvisible - Is the player invisible
+
+isslime / is_slime - Is the player in a slime chunk (Always returns false if the player lacks /seed permissions)
 </code>
 
 <h3>Hudder</h3>
@@ -52,6 +77,8 @@ globalvariablesenabled - Is Hudder's global variables enabled option selected
 background - Is Hudder's background option selected
 removegui - Is Hudder's remove gui option selected
 limitrate - Is Hudder's limit rate option selected
+hudhidden - Is the HUD hidden (F1)
+showdebug - Is the F3 debug menu showing
 </code>
 <br>
 
@@ -82,7 +109,14 @@ freememory_percentage / freeram_percentage - The percentage of memory that is be
 
 <h3>Computer Information</h3>
 
-<code>time - Current time (In milliseconds) as supplied by the Operating System (Ex Windows, Linux, MacOS, etc.)
+<code>time - The number of milliseconds passed since 1st of January 1970, as supplied by the Operating System (Ex Windows, Linux, MacOS, etc.)
+milliseconds - The current milliseconds time value
+seconds - The current seconds time value
+minutes - The current minutes time value
+hour - The current hour
+day - The current day of year
+month - The current month
+year - The current year
 </code>
 
 <h3>Food and health</h3>
@@ -99,6 +133,7 @@ maxhealth - The maximum health of the player
 horizontal_playerspeed - The speed at which the player is travelling horizontally
 xp - The current xp count of the player
 xplevel - The current xp level of the player
+selectedslot - The selected hotbar slot
 </code>
 
 <h3>Player position</h3>
@@ -109,8 +144,15 @@ dzpos / dz - The Z position of the player (with decimal point)
 xpos / x - The X position of the player (Without decimal point)
 ypos / y - The X position of the player (Without decimal point)
 zpos / z - The X position of the player (Without decimal point)
-chunkx - The chunk X position of the player
+</code>
+
+<h3>Chunk information</h3>
+
+<code>chunkx - The chunk X position of the player
 chunkz - The chunk Z position of the player
+subchunkx - The X position of the player in the subchunk
+subchunky - The Y position of the player in the subchunk
+subchunkz - The Z position of the player in the subchunk
 </code>
 
 <h3>Player rotation</h3>
@@ -119,13 +161,6 @@ chunkz - The chunk Z position of the player
 dyaw - The yaw (with decimal point)
 pitch - The pitch (without decimal point)
 yaw - The yaw (without decimal point)
-</code>
-
-<h3>Inventory</h3>
-
-<code>selectedslot - The selected hotbar slot
-held_item_durability / helmet_durability / chestplate_durability / leggings_durability / boots_durability / offhand_durability - The durability of the specified Item
-held_item_max_durability / helmet_max_durability / chestplate_max_durability / leggings_max_durability / boots_max_durability / offhand_max_durability - The maximum durability of the specified Item
 </code>
 
 <h3>World rendering</h3>
@@ -163,12 +198,26 @@ backgroundcolor - The background color Hudder option
 <h1>Strings (Text)</h1>
 <hr><br>
 
+<h3>Computer information</h3>
+
 <code>cpu_info - Information about the CPU (Model, Generation, etc)
 operating_system - Which operating system is used
-helditem_name - The name of the held Item
-biome - The biome the player is currently inside
+month_name - The name of the current month (WARNING: IT IS DEPENDENT ON LOCALE AND LANGUAGE, SHOULD ONLY BE USED FOR DISPLAY)
+locale - The locale of the system as defined by the JVM and provided by the JVM and Operating System
+language - The language of the system as provided by the JVM and Operating System (ISO 639)
+country - The country of the system as provided by the JVM and Operating System (ISO 3166 2-letter code)
+</code>
 
-compilertype - The type of Hudder compiler selected
+<h3>Player information</h3>
+
+<code>helditem_name - The name of the held Item
+biome - The biome the player is currently inside
+damagetype - The name of the most recent damage type done to the player
+</code>
+
+<h3>Hudder</h3>
+
+<code>compilertype - The type of Hudder compiler selected
 mainfile - The name of the main Hudder file
 </code>
 <br><br><br>
