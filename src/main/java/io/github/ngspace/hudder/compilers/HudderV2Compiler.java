@@ -8,8 +8,8 @@ import io.github.ngspace.hudder.config.ConfigManager;
 import io.github.ngspace.hudder.util.HudderUtils;
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
-import io.github.ngspace.hudder.v2runtime.runtime_elements.ConditionV2RuntimeElement;
 import io.github.ngspace.hudder.v2runtime.runtime_elements.BreakV2RuntimeElement;
+import io.github.ngspace.hudder.v2runtime.runtime_elements.ConditionV2RuntimeElement;
 import io.github.ngspace.hudder.v2runtime.runtime_elements.IfV2RuntimeElement;
 import io.github.ngspace.hudder.v2runtime.runtime_elements.MethodV2RuntimeElement;
 import io.github.ngspace.hudder.v2runtime.runtime_elements.StringV2RuntimeElement;
@@ -286,7 +286,7 @@ public class HudderV2Compiler extends AV2Compiler {
 		return b.toString();
 	}
 
-	protected String getCompilerErrorMessage(int compileState) {
+	public String getCompilerErrorMessage(int compileState) {
 		StringBuilder strb = new StringBuilder();
 		strb.append(switch(compileState) {
 			case VARIABLE_STATE -> "Expected '}'";

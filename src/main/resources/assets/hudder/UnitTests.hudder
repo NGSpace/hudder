@@ -15,6 +15,17 @@ Basic Bitch Test
 r
 r
 
+||INPUT||Logical And/Or operators
+{false||false||true}
+{true&&true}
+{ false || true && true || false}
+{true && false || false}
+||EXPECT||
+true
+true
+true
+false
+
 ||INPUT||Int
 {int(1.6)}
 ||EXPECT||
@@ -80,12 +91,12 @@ true true false
 10.0
 
 ||INPUT||Text concatination
-{concat(str(10,true), "test")}
+{str(10,true).concat("test")}
 ||EXPECT||
 10test
 
 ||INPUT||Text substring
-{substring("Long text", 1, 4)}
+{"Long text".substring(1, 4)}
 ||EXPECT||
 ong
 
@@ -112,7 +123,7 @@ ong
 {num1=0}{num2=1}
 #while N<20
 	{N=N+1}
-	{r=concat(r, concat(str(num1,true)," "))}
+	{r=r.concat(str(num1,true).concat(" "))}
 	{num3=num2+num1}
 	{num1=num2}
 	{num2=num3}
@@ -122,7 +133,7 @@ ong
 0 1 1 2 3 5 8 13 21 34 55 89 144 233 377 610 987 1597 2584 4181 
 
 ||INPUT||Text repeat
-{repeat("Repeat", 2)}
+{"Repeat".repeat(2)}
 ||EXPECT||
 RepeatRepeat
 

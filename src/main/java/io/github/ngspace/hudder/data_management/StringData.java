@@ -26,7 +26,7 @@ public class StringData {private StringData() {}
 		ClientPlayerEntity p = ins.player;
 		return switch (key) {
 			
-			case "damagetype": yield p.getRecentDamageSource().getName();
+			case "damagetype": yield p.getRecentDamageSource() == null ? "" : p.getRecentDamageSource().getName();
 			
 			/* Computer info */
 			case "cpu_info": yield GlDebugInfo.getCpuInfo();

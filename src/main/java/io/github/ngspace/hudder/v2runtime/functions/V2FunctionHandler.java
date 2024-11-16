@@ -5,6 +5,8 @@ import java.util.Map;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.v2runtime.V2Runtime;
+import io.github.ngspace.hudder.v2runtime.values.AV2Value;
 import net.minecraft.client.MinecraftClient;
 
 public class V2FunctionHandler {
@@ -23,9 +25,9 @@ public class V2FunctionHandler {
 		
 		//String manipulation
 
-		bindFunction((r,n,args,l,c) -> args[0].asString() + args[1].asString(), 2, "concat");
-		bindFunction((r,n,args,l,c) -> args[0].asString().substring(args[1].asInt(),args[2].asInt()),3,"substring");
-		bindFunction((r,n,args,l,c) -> args[0].asString().repeat(args[1].asInt()),2, "multiplystring", "repeat");
+		bindFunctionDep((r,n,args,l,c)->args[0].asString()+args[1].asString(),2,2,"Use \"[string].concat([string])\" function", "concat");
+		bindFunctionDep((r,n,args,l,c)->args[0].asString().substring(args[1].asInt(),args[2].asInt()),3,3,"Use \"[string].substring([number], [number])\" function","substring");
+		bindFunctionDep((r,n,args,l,c)->args[0].asString().repeat(args[1].asInt()),2,2,"Use \"[string].repeat([number])\" function", "multiplystring", "repeat");
 		
 		//Math
 		
@@ -54,19 +56,20 @@ public class V2FunctionHandler {
 		
 		//Inventory management
 
-		bindFunction((r,n,args,l,c)->mc.player.getInventory().getStack(args[0].asInt()).getName(),1,"itemname");
-		bindFunction((r,n,args,l,c)->mc.player.getInventory().getStack(args[0].asInt()).getCount(),1,"itemcount");
+		bindFunctionDep((r,n,args,l,c)->mc.player.getInventory().getStack(args[0].asInt()).getName(),1,1,
+				"Use \"getItem([number]).name\"","itemname");
+		bindFunctionDep((r,n,args,l,c)->mc.player.getInventory().getStack(args[0].asInt()).getCount(),1,1,"itemcount");
 		
 		
-		bindFunction((r,n,args,l,c)->{
+		bindFunctionDep((r,n,args,l,c)->{
 			var stack = mc.player.getInventory().getStack(args[0].asInt());
 			return stack.getMaxDamage()-stack.getDamage();
-		},1,"itemdurability");
+		},1,1,"itemdurability");
 		
 		
-		bindFunction((r,n,args,l,c)->mc.player.getInventory().getStack(args[0].asInt()).getMaxDamage(),1,
+		bindFunctionDep((r,n,args,l,c)->mc.player.getInventory().getStack(args[0].asInt()).getMaxDamage(),1,1,
 				"itemmaxdurability");
-		bindFunction((r,n,args,l,c)->mc.player.getInventory().getStack(args[0].asInt()).getMaxCount(),1,
+		bindFunctionDep((r,n,args,l,c)->mc.player.getInventory().getStack(args[0].asInt()).getMaxCount(),1,1,
 				"itemmaxcount");
 		
 		// Misc
@@ -75,7 +78,22 @@ public class V2FunctionHandler {
 		
 	}
 
-	public void register(IV2Function function, String... names) {
+	private void bindFunctionDep(IV2Function func, int minlength, int maxlength, String message, String... names) {
+		IV2Function expandedFunction = new IV2Function() {
+			@Override
+			public Object execute(V2Runtime runtime, String name, AV2Value[] args, int line, int charpos)
+					throws CompileException {
+				if (args.length<minlength) throw new CompileException("Too little parameters for "+name+" function!",line,charpos);
+				if (args.length>maxlength) throw new CompileException("Too many parameters for "+name+" function!",line,charpos);
+				return func.execute(runtime, name, args,line,charpos);
+			}
+			@Override public String getDeprecationWarning(String funcname) {return message;}
+			@Override public boolean isDeprecated(String funcname) {return true;}
+		};
+		bindFunction(expandedFunction, names);
+	}
+
+	public void bindFunction(IV2Function function, String... names) {
 		for(String name:names) functions.put(name,function);
 	}
 
@@ -84,11 +102,11 @@ public class V2FunctionHandler {
 	}
 	public void bindFunction(IV2Function function, int minlength, int maxlength, String... names) {
 		IV2Function expandedFunction = (runtime, name, args, line, charpos) -> {
-			if (args.length<minlength) throw new CompileException("Too little parameters for "+name+"!",line,charpos);
-			if (args.length>maxlength) throw new CompileException("Too many parameters for "+name+"!",line,charpos);
+			if (args.length<minlength) throw new CompileException("Too little parameters for "+name+" function!",line,charpos);
+			if (args.length>maxlength) throw new CompileException("Too many parameters for "+name+" function!",line,charpos);
 			return function.execute(runtime, name, args,line,charpos);
 		};
-		register(expandedFunction,names);
+		bindFunction(expandedFunction,names);
 	}
 	
 	public IV2Function getFunction(String name) {

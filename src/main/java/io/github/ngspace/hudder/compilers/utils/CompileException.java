@@ -6,7 +6,11 @@ public class CompileException extends Exception {
 	
 	public CompileException(String string) {this(string,-1,0);}
 	public CompileException(String string, int line, int col) {super(string);this.line = line;this.col = col;}
-	public CompileException(String string, int line, int col, Exception e) {super(string,e);this.line = line;this.col = col;}
+	public CompileException(String string, int line, int col, Throwable e) {
+		super(string,e);
+		this.line = line;
+		this.col = col;
+	}
 
 	private static final long serialVersionUID = -5301919978870515553L;
 

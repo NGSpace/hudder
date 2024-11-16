@@ -205,9 +205,7 @@ public class ConfigMenu implements ConfigScreenFactory<Screen> {
 				.setYesNoTextSupplier(yesno)
 				.setDefaultValue(true)
 				.build());
-		
-		
-		
+
 		return builder.build();
 	}
     private List<Variable> getVarList() {

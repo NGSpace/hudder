@@ -20,7 +20,10 @@ public class V2ArrayRead extends AV2Value {
 	}
 
 	@Override public Object get() throws CompileException {
-		return array.asList().get(indexValue.asInt());
+		Object get = array.get();
+		if (get instanceof List<?> b) return b.get(indexValue.asInt());
+		else if (get instanceof Object[] b) return b[indexValue.asInt()];
+		throw new CompileException(invalidTypeMessage("Array", value, get), line, charpos);
 	}
 
 	@Override public void setValue(AV2Compiler compiler, Object value) throws CompileException {

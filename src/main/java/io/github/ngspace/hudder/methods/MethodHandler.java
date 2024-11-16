@@ -6,11 +6,8 @@ import static io.github.ngspace.hudder.compilers.utils.CompileState.MUTE;
 import static io.github.ngspace.hudder.compilers.utils.CompileState.TOPLEFT;
 import static io.github.ngspace.hudder.compilers.utils.CompileState.TOPRIGHT;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.methods.methods.IMethod;
@@ -23,7 +20,6 @@ public class MethodHandler {
 	protected static MinecraftClient mc = MinecraftClient.getInstance();
 	
 	
-	public List<Consumer<MethodHandler>> customMethods = new ArrayList<Consumer<MethodHandler>>();
 	public Map<String, IMethod> methods = new HashMap<String,IMethod>();
 	public static final String[] Var = {"[Variable]"};
 	public static final String[] TextArg = {"[Text]"};

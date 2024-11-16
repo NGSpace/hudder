@@ -8,12 +8,12 @@ import java.util.Map;
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.ArrayElementManager;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
-import io.github.ngspace.hudder.compilers.utils.Compilers;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
 import io.github.ngspace.hudder.compilers.utils.IScriptingLanguageEngine;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.data_management.BooleanData;
 import io.github.ngspace.hudder.data_management.NumberData;
+import io.github.ngspace.hudder.data_management.ObjectData;
 import io.github.ngspace.hudder.data_management.StringData;
 import io.github.ngspace.hudder.methods.elements.AUIElement;
 import io.github.ngspace.hudder.methods.elements.ItemElement;
@@ -99,15 +99,12 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 		if ( obj!=null) return obj;
 		if ((obj=StringData.getString (key))!=null) return obj;
 		if ((obj=BooleanData.getBoolean(key))!=null) return obj;
+		if ((obj=ObjectData.getObject(key))!=null) return obj;
 		if ((obj=get(key))!=null) return obj;
 		if ((obj=Hudder.config.globalVariables.get(key))!=null) return obj;
 		return null;
 	}
 	public void loadFunctions(IScriptingLanguageEngine engine) {
-		
-		//Getters
-		
-		engine.bindFunction(s->new TranslatedItemStack(mc.player.getInventory().getStack(s[0].asInt())), "getItem");
 		
 		//Item
 		
@@ -128,45 +125,9 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 		
 		engine.bindConsumer(s->elms.add(new ItemElement(s[1].asInt(),s[2].asInt(),mc.player.getInventory()
 				.offHand.get(0),s[3].asFloat(), s[4].asBoolean())),"drawOffhand", "offhand");
-		
-		//Compile
-		
-		engine.bindFunction(s-> {
-			try {
-				var e = elms.toArray(new AUIElement[elms.size()]);
-				
-				ATextCompiler ecompiler = s.length>1?Compilers.getCompilerFromName(s[1].asString()):this;
-				for (var i : HudCompilationManager.precomplistners) i.accept(ecompiler);
-				
-				HudInformation result = ecompiler.compile(Hudder.config,HudFileUtils.getFile(s[0].asString()),s[0].asString());
-
-				for (var v : result.elements) elms.addElem(v);
-				for (var v : e) elms.addElem(v);
-				
-				for (var i : HudCompilationManager.postcomplistners) i.accept(ecompiler);
-				return result;
-			} catch (ReflectiveOperationException | IOException e) {
-				if (Hudder.IS_DEBUG) e.printStackTrace();
-				throw new IllegalArgumentException("Unknown compiler");
-			}
-		}, "compile", "run", "execute");
 	}
 	
 	
-	public static class TranslatedItemStack {
-		public String name;
-		public int count;
-		public int maxcount;
-		public int durability;
-		public int maxdurability;
-		public TranslatedItemStack(ItemStack stack) {
-			name = stack.getItemName().getString();
-			count = stack.getCount();
-			maxcount = stack.getMaxCount();
-			durability = stack.getMaxDamage()-stack.getDamage();
-			maxdurability = stack.getMaxDamage();
-		}
-	}
 
 	/**
 	 * Saves the engine as well as any compiler exception that was thrown during compiliation.
