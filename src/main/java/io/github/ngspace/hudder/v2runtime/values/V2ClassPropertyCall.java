@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Set;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
@@ -52,8 +53,16 @@ public class V2ClassPropertyCall extends AV2Value {
 			if (forbidden.equals(fieldName)) throw new CompileException("No property named \""+fieldName+'"',line,charpos);
 		}
 	}
+	@Override
+	public Object get() throws CompileException {
+		Object obj = smartGet();
+		if (obj instanceof Set<?> r) {
+			obj = r.toArray();
+		}
+		return obj;
+	}
 
-	@Override public Object get() throws CompileException {
+	public Object smartGet() throws CompileException {
 		
 		Object objValue = classobj.get();
 		if (objValue==null)
@@ -76,7 +85,6 @@ public class V2ClassPropertyCall extends AV2Value {
 			for (Method method : objClass.getMethods()) {
 				if (!funcName.equals(method.getName())||method.getParameterCount()!=classes.length
 						||!isAccessible(method)) continue;
-				method.setAccessible(true);
 				boolean isCompatible = true;
 				var v = method.getParameterTypes();
 				

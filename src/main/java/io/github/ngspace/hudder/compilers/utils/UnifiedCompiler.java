@@ -17,9 +17,11 @@ import io.github.ngspace.hudder.methods.elements.TextureVerticesElement;
 import io.github.ngspace.hudder.util.HudCompilationManager;
 import io.github.ngspace.hudder.util.HudFileUtils;
 import io.github.ngspace.hudder.util.ObjectWrapper;
+import io.github.ngspace.hudder.util.ValueGetter;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -152,6 +154,7 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 		
 		binder.bindFunction((m,c,s)->HudFileUtils.exists(s[0].asString()),"exists");
 		binder.bindFunction((m,c,s)->mc.textRenderer.getWidth(s[0].asString()), "strWidth", "strwidth");
+		binder.bindFunction((m,c,s)->s[0].get().toString(), "toString");
 	}
 	
 	
@@ -173,14 +176,13 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 	}
 	
 
-	public static class TranslatedItemStack {
+	public static class TranslatedItemStack implements ValueGetter {
 		public String name;
 		public int count;
 		public int maxcount;
 		public int durability;
 		public int maxdurability;
-		public Object[] enchantments;
-		public ComponentMap components;
+		private ComponentMap components;
 		public TranslatedItemStack(ItemStack stack) {
 			name = stack.getItemName().getString();
 			count = stack.getCount();
@@ -193,6 +195,9 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 		@Override public String toString() {
 			return "{name:\"" + name + "\", count:" + count + ", maxcount: " + maxcount + ", durability: " + durability
 					+ ", maxdurability: " + maxdurability + "}";
+		}
+		@Override public Object get(String Id) {
+			return components.get(Registries.DATA_COMPONENT_TYPE.get(Identifier.of(Id)));
 		}
 	}
 }

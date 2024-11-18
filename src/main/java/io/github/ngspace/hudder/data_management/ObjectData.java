@@ -8,7 +8,7 @@ public class ObjectData {private ObjectData() {}
 	
 	public static Object getObject(String key) {
 		return switch (key) {
-			
+
 			case "componenttypes": yield (ValueGetter) name->Registries.DATA_COMPONENT_TYPE.get(Identifier.of(name));
 			
 			default: yield null;

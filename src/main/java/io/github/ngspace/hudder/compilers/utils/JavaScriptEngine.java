@@ -6,6 +6,7 @@ import org.mozilla.javascript.BaseFunction;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.NativeArray;
+import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
@@ -14,6 +15,7 @@ import org.mozilla.javascript.WrappedException;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.util.ObjectWrapper;
+import io.github.ngspace.hudder.util.ValueGetter;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -49,9 +51,23 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 			@Override public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
 				try {
 					ObjectWrapper[] vals = new ObjectWrapper[args.length];
-					for (int i = 0;i<args.length;i++)
+					for (int i = 0;i<args.length;i++) {
 						vals[i] = new JavaScriptValue(args[i]);
-					return function.exec(vals);
+					}
+					var obje = function.exec(vals);
+					if (obje instanceof ValueGetter r) {
+						return new ScriptableObject() {
+							private static final long serialVersionUID = -6145385781375908982L;
+
+							@Override public String getClassName() {return r.getClass().getName();}
+						    @Override public Object get(String name, Scriptable start) {
+						    	var v = r.get(name);
+						    	if (v==null) return super.get(name, start);
+						        return v;
+						    }
+						};
+					}
+					return obje;
 				} catch (Exception e) {
 					throw new WrappedException(e);
 				}
@@ -92,17 +108,17 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 	
 
 	@Override
-	public Object callFunction(String name, String... args) throws IOException {
+	public ObjectWrapper callFunction(String name, String... args) throws IOException {
 		Object func = scope.get(name, scope);
-		if (func instanceof Function f) return f.call(cx, scope, scope, args);
+		if (func instanceof Function f) return new JavaScriptValue(f.call(cx, scope, scope, args));
 		else throw new IOException(name + " is not a function or is not defined!");
 	}
 	
 	@Override
-	public Object callFunctionSafe(String name, Object defualt, String... args) throws IOException {
+	public ObjectWrapper callFunctionSafe(String name, Object defualt, String... args) throws IOException {
 		Object func = scope.get(name, scope);
-		if (func==null||func==Scriptable.NOT_FOUND) return defualt;
-		else if (func instanceof Function f) return f.call(cx, scope, scope, args);
+		if (func==null||func==Scriptable.NOT_FOUND) return new JavaScriptValue(defualt);
+		else if (func instanceof Function f) return new JavaScriptValue(f.call(cx, scope, scope, args));
 		else throw new IOException(name + " is not a function!");
 	}
 	
@@ -141,7 +157,10 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 	
 	private class JavaScriptValue extends ObjectWrapper {
 		private Object value;
-		private JavaScriptValue(Object value) {this.value=value;}
+		private JavaScriptValue(Object value) {
+			this.value=value;
+			if (value instanceof NativeJavaObject o) {this.value = o.unwrap();}
+		}
 
 		@Override public Object get() throws CompileException {return value;}
 		
