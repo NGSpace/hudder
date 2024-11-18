@@ -11,6 +11,7 @@ import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.util.HudderUtils;
 import io.github.ngspace.hudder.util.NoAccess;
+import io.github.ngspace.hudder.util.ValueGetter;
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
 
@@ -46,7 +47,7 @@ public class V2ClassPropertyCall extends AV2Value {
 			}
 		}
 		if (!isFunctionCall) fieldName = prop;
-		for (String forbidden :forbiddenValuesAndFunctions) {
+		for (String forbidden : forbiddenValuesAndFunctions) {
 			if (forbidden.equals(funcName)) throw new CompileException("No function named \""+funcName+'"',line,charpos);
 			if (forbidden.equals(fieldName)) throw new CompileException("No property named \""+fieldName+'"',line,charpos);
 		}
@@ -107,6 +108,11 @@ public class V2ClassPropertyCall extends AV2Value {
 				throw new CompileException(e.getMessage(), line, charpos, e);
 			}
 		}
+		
+		if (objValue instanceof ValueGetter getter) {
+			return getter.get(fieldName);
+		}
+		
 		try {
 			Field f = objClass.getDeclaredField(fieldName);
 			if (!isAccessible(f)) throw new CompileException("No property named \""+fieldName+"\" in type \"" +objClass.getSimpleName()+'"',line,charpos);
