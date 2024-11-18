@@ -3,6 +3,7 @@ package io.github.ngspace.hudder.compilers;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
 import io.github.ngspace.hudder.config.ConfigInfo;
@@ -56,5 +57,8 @@ public abstract class ATextCompiler {
 			this.line = line;
 			this.charpos = charpos;
 		}
+	}
+	public ConfigInfo getConfig() {
+		return Hudder.config;
 	}
 }

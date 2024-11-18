@@ -6,6 +6,7 @@ import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.data_management.BooleanData;
 import io.github.ngspace.hudder.data_management.NumberData;
+import io.github.ngspace.hudder.data_management.ObjectData;
 import io.github.ngspace.hudder.data_management.StringData;
 import io.github.ngspace.hudder.methods.elements.ColorVerticesElement;
 import io.github.ngspace.hudder.methods.elements.GameHudElement;
@@ -18,6 +19,8 @@ import io.github.ngspace.hudder.util.HudFileUtils;
 import io.github.ngspace.hudder.util.ObjectWrapper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.ComponentMap;
+import net.minecraft.component.ComponentType;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -98,6 +101,7 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 		//Variables
 		
 		binder.bindConsumer((e,a,l,ch,s)->a.put(s[0].asString(), s[1]), "set", "setVal", "setVariable");
+		binder.bindConsumer((e,a,l,ch,s)->a.getConfig().savedVariables.put(s[0].asString(),s[1]),"saveVal");
 		
 		//Logging
 		
@@ -114,12 +118,14 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 		//Getters
 		
 		binder.bindFunction((m,c,s)->c.getVariable(s[0].asString()), "get", "getVal", "getVariable");
-		binder.bindFunction((m,c,s)->NumberData.getNumber(s[0].asString()), "getNumber" );
-		binder.bindFunction((m,c,s)->StringData.getString(s[0].asString()), "getString" );
+		binder.bindFunction((m,c,s)->NumberData.getNumber  (s[0].asString()), "getNumber" );
+		binder.bindFunction((m,c,s)->StringData.getString  (s[0].asString()), "getString" );
+		binder.bindFunction((m,c,s)->ObjectData.getObject  (s[0].asString()), "getObject" );
 		binder.bindFunction((m,c,s)->BooleanData.getBoolean(s[0].asString()), "getBoolean");
 		
 		binder.bindFunction((m,c,s)->new TranslatedItemStack(mc.player.getInventory().getStack(s[0].asInt())), "getItem");
-
+		
+		binder.bindFunction((m,c,s)->c.getConfig().savedVariables.get(s[0].asString()),"readVal");
 		
 		//Compile
 		
@@ -127,7 +133,7 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 			try {
 				var e = m.toElementArray();
 				
-				ATextCompiler ecompiler = s.length>1?Compilers.getCompilerFromName(s[1].asString()):c;
+				ATextCompiler ecompiler = Compilers.getCompilerFromName(s[1].asString());
 				for (var i : HudCompilationManager.precomplistners) i.accept(ecompiler);
 				
 				HudInformation result = ecompiler.compile(Hudder.config,HudFileUtils.getFile(s[0].asString()),s[0].asString());
@@ -183,7 +189,6 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 			maxcount = stack.getMaxCount();
 			durability = stack.getMaxDamage()-stack.getDamage();
 			maxdurability = stack.getMaxDamage();
-			enchantments = stack.getEnchantments().getEnchantments().toArray();
 			components = stack.getComponents();
 			
 		}

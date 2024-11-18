@@ -75,6 +75,7 @@ public class V2FunctionHandler {
 		// Misc
 		
 		bindFunction(new LengthV2Function(), 1, "length");
+		bindFunction((r,n,args,l,c)->new HashMap<Object, Object>(),0, "map");
 		
 	}
 

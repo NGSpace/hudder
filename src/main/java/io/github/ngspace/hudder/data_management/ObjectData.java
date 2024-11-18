@@ -11,6 +11,7 @@ public class ObjectData {private ObjectData() {}
 			
 			case "componenttypes": yield new Object() {
 				public Object get(String componentName) {
+//					System.out.println(Registries.DATA_COMPONENT_TYPE.getIds().getClass());
 					return Registries.DATA_COMPONENT_TYPE.get(Identifier.of(componentName));
 				}
 			};
