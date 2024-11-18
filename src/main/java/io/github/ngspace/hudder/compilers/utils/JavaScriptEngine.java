@@ -27,7 +27,7 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 	ScriptableObject scope;
 	public JavaScriptEngine() {
         cx = Context.enter();
-        cx.setLanguageVersion(Context.VERSION_ES6);//For some reason this is not the default
+        cx.setLanguageVersion(Context.VERSION_ES6);//Beta features
         cx.setOptimizationLevel(9);
         
         scope = cx.initSafeStandardObjects();

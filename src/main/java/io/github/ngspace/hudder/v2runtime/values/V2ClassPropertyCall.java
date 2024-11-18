@@ -56,12 +56,12 @@ public class V2ClassPropertyCall extends AV2Value {
 		
 		Object objValue = classobj.get();
 		if (objValue==null)
-			throw new CompileException("Can't read \""+funcName+fieldName+"\" because " + classobj.value
+			throw new CompileException("Can't read \"" + funcName+fieldName + "\" because " + classobj.value
 					+ " is null", line, charpos);
 		Class<?> objClass = objValue.getClass();
 		
 		if (objClass.isPrimitive())
-			throw new CompileException("Can not read properties of primitive types (Numbers, Booleans and Chars)",line,charpos);
+			throw new CompileException("Can not read properties of Numbers, Booleans and Chars : "+classobj.value,line,charpos);
 		
 		if (isFunctionCall) {
 			Object[] parameters = new Object[functionCallArgs.length];

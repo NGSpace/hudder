@@ -19,8 +19,6 @@ import io.github.ngspace.hudder.util.HudFileUtils;
 import io.github.ngspace.hudder.util.ObjectWrapper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.ComponentMap;
-import net.minecraft.component.ComponentType;
-import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
