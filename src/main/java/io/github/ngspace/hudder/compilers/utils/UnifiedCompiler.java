@@ -5,6 +5,7 @@ import java.io.IOException;
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.data_management.BooleanData;
+import io.github.ngspace.hudder.data_management.ComponentsData;
 import io.github.ngspace.hudder.data_management.NumberData;
 import io.github.ngspace.hudder.data_management.ObjectData;
 import io.github.ngspace.hudder.data_management.StringData;
@@ -21,7 +22,6 @@ import io.github.ngspace.hudder.util.ValueGetter;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -190,14 +190,13 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 			durability = stack.getMaxDamage()-stack.getDamage();
 			maxdurability = stack.getMaxDamage();
 			components = stack.getComponents();
-			
 		}
 		@Override public String toString() {
 			return "{name:\"" + name + "\", count:" + count + ", maxcount: " + maxcount + ", durability: " + durability
 					+ ", maxdurability: " + maxdurability + "}";
 		}
-		@Override public Object get(String Id) {
-			return components.get(Registries.DATA_COMPONENT_TYPE.get(Identifier.of(Id)));
+		@Override public Object get(String component) {
+			return ComponentsData.getObject(component, components);
 		}
 	}
 }
