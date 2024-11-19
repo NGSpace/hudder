@@ -61,8 +61,8 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 
 							@Override public String getClassName() {return r.getClass().getName();}
 						    @Override public Object get(String name, Scriptable start) {
-						    	var v = r.get(name);
-						    	if (v==null) return super.get(name, start);
+						    	var v = super.get(name, start);
+						    	if (v==null||v==NOT_FOUND) return r.get(name);
 						        return v;
 						    }
 						};

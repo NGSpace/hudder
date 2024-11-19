@@ -184,7 +184,7 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 		public int maxdurability;
 		private ComponentMap components;
 		public TranslatedItemStack(ItemStack stack) {
-			name = stack.getItemName().getString();
+			name = stack.getName().getString();
 			count = stack.getCount();
 			maxcount = stack.getMaxCount();
 			durability = stack.getMaxDamage()-stack.getDamage();
