@@ -166,6 +166,10 @@ public class NumberData {private NumberData() {}
 			case"held_item_max_durability","helmet_max_durability","chestplate_max_durability","leggings_max_durability",
 			"boots_max_durability","offhand_max_durability":yield (double)getStack(key, p.getInventory()).getMaxDamage();
 			
+			
+			
+			case "rebeccapurple": yield (double) 0xFF663399;
+			
 			default: yield null;
 		};
 	}
