@@ -1,3 +1,6 @@
 package io.github.ngspace.hudder.util;
 
-public interface ValueGetter {public Object get(String Id);}
+public interface ValueGetter {
+
+	public abstract Object get(String Id);
+}

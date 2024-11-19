@@ -10,6 +10,7 @@ import java.util.Set;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.data_management.ComponentsData.Enchantment;
 import io.github.ngspace.hudder.util.HudderUtils;
 import io.github.ngspace.hudder.util.NoAccess;
 import io.github.ngspace.hudder.util.ValueGetter;
@@ -57,7 +58,13 @@ public class V2ClassPropertyCall extends AV2Value {
 	public Object get() throws CompileException {
 		Object obj = smartGet();
 		if (obj instanceof Set<?> r) {
-			obj = r.toArray();
+			return r.toArray();
+		}
+		if (obj instanceof Enchantment en) {
+			return new ValueGetter() {
+				@Override public Object get(String n) {return en.get(n);}
+				@Override public String toString() {return en.toString();}
+			};
 		}
 		return obj;
 	}
