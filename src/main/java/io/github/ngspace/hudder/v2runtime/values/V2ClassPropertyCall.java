@@ -5,12 +5,14 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Set;
 
+import org.mozilla.javascript.ScriptableObject;
+
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
-import io.github.ngspace.hudder.data_management.ComponentsData.Enchantment;
 import io.github.ngspace.hudder.util.HudderUtils;
 import io.github.ngspace.hudder.util.NoAccess;
 import io.github.ngspace.hudder.util.ValueGetter;
@@ -54,13 +56,12 @@ public class V2ClassPropertyCall extends AV2Value {
 			if (forbidden.equals(fieldName)) throw new CompileException("No property named \""+fieldName+'"',line,charpos);
 		}
 	}
-	@Override
-	public Object get() throws CompileException {
+	@Override public Object get() throws CompileException {
 		Object obj = smartGet();
 		if (obj instanceof Set<?> r) {
 			return r.toArray();
 		}
-		if (obj instanceof Enchantment en) {
+		if (obj instanceof ScriptableObject en) {
 			return new ValueGetter() {
 				@Override public Object get(String n) {return en.get(n);}
 				@Override public String toString() {return en.toString();}
@@ -73,8 +74,8 @@ public class V2ClassPropertyCall extends AV2Value {
 		
 		Object objValue = classobj.get();
 		if (objValue==null)
-			throw new CompileException("Can't read \"" + funcName+fieldName + "\" because " + classobj.value
-					+ " is null", line, charpos);
+			throw new CompileException("Can't read \"" + funcName+fieldName + "\" because \"" + classobj.value
+					+ "\" is null", line, charpos);
 		Class<?> objClass = objValue.getClass();
 		
 		if (objClass.isPrimitive())

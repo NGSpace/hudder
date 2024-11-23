@@ -4,19 +4,17 @@ import java.util.HashMap;
 
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
-import org.mozilla.javascript.Undefined;
 
 import io.github.ngspace.hudder.util.ValueGetter;
-import net.minecraft.client.gui.screen.option.LanguageOptionsScreen;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ItemEnchantmentsComponent;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Language;
 
 @SuppressWarnings("unused")
 public class ComponentsData extends HashMap<String, Object> {
@@ -60,16 +58,16 @@ public class ComponentsData extends HashMap<String, Object> {
 			case "enchantments": {
 				var d = comp.get(DataComponentTypes.ENCHANTMENTS);
 				if (d==null) yield null;
-				yield new Enchantment(d);
+				yield new EnchantmentInfo(d);
 			}
 			
 			default: yield null;
 		};
 	}
-	public static class Enchantment extends ScriptableObject implements ValueGetter {
-		private static final long serialVersionUID = 8524367748428900008L;
+	
+	public static class EnchantmentInfo implements ValueGetter {
 		private ItemEnchantmentsComponent d;
-		public Enchantment(ItemEnchantmentsComponent r) {this.d=r;}
+		public EnchantmentInfo(ItemEnchantmentsComponent r) {this.d=r;}
 		@Override public Object get(String n) {
 			for (var e : d.getEnchantments())
 				if (getName(e.value().description()).equals(n))
@@ -90,21 +88,14 @@ public class ComponentsData extends HashMap<String, Object> {
 			String[] ss = s.split("\\.");
 			return ss[ss.length-1];
 		}
-		@Override public String getClassName() {return this.getClass().getName();}
-		@Override public Object getDefaultValue(Class<?> typeHint) {return toString();}
-	    @Override public Object get(String name, Scriptable start) {
-	    	var v = super.get(name, start);
-	    	if (v==null||v==NOT_FOUND) return get(name);
-	        return v;
-	    }
 	}
 	public static class LevelHolder {
 		public int level;
-		private net.minecraft.enchantment.Enchantment e;
-		public LevelHolder(ItemEnchantmentsComponent d, RegistryEntry<net.minecraft.enchantment.Enchantment> e) {
+		private Enchantment e;
+		public LevelHolder(ItemEnchantmentsComponent d, RegistryEntry<Enchantment> e) {
 			this.e = e.value();
 			this.level = d.getLevel(e);
 		}
-		@Override public String toString() {return Enchantment.getName(e.description()) + " " + level;}
+		@Override public String toString() {return EnchantmentInfo.getName(e.description()) + " " + level;}
 	}
 }

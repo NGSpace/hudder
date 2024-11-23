@@ -26,7 +26,7 @@ public class BooleanData {private BooleanData(){}
 				try {
 					yield (ChunkRandom.getSlimeRandom(p.getBlockX() >> 4, p.getBlockZ() >> 4,
 						((StructureWorldAccess)betterworld).getSeed(), 987234911L).nextInt(10) == 0);
-				} catch (Exception e) {}
+				} catch (Exception e) {/* For some reason adding a yield false; here causes runtime errors...*/}
 				yield false;
 			}
 			

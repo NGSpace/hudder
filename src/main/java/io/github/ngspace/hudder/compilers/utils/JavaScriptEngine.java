@@ -11,6 +11,7 @@ import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.Undefined;
+import org.mozilla.javascript.WrapFactory;
 import org.mozilla.javascript.WrappedException;
 
 import io.github.ngspace.hudder.Hudder;
@@ -29,6 +30,24 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 	ScriptableObject scope;
 	public JavaScriptEngine() {
         cx = Context.enter();
+        cx.setWrapFactory(new WrapFactory() {
+        	@Override
+        	public Scriptable wrapAsJavaObject(Context cx, Scriptable scope, Object javaObject, Class<?> staticType) {
+        		if (javaObject instanceof ValueGetter r) {
+					return new NativeJavaObject(scope,r,r.getClass(),true) {
+						private static final long serialVersionUID = -6145385781375908982L;
+
+						@Override public String getClassName() {return r.getClass().getName();}
+					    @Override public Object get(String name, Scriptable start) {
+					    	var v = r.get(name);
+					    	if (v==null||v==NOT_FOUND) return super.get(name, start);
+					        return v;
+					    }
+					};
+        		}
+        		return super.wrapAsJavaObject(cx, scope, javaObject, staticType);
+        	}
+        });
         cx.setLanguageVersion(Context.VERSION_ES6);//Beta features
         cx.setOptimizationLevel(9);
         
@@ -54,20 +73,7 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 					for (int i = 0;i<args.length;i++) {
 						vals[i] = new JavaScriptValue(args[i]);
 					}
-					var obje = function.exec(vals);
-					if (obje instanceof ValueGetter r) {
-						return new ScriptableObject() {
-							private static final long serialVersionUID = -6145385781375908982L;
-
-							@Override public String getClassName() {return r.getClass().getName();}
-						    @Override public Object get(String name, Scriptable start) {
-						    	var v = super.get(name, start);
-						    	if (v==null||v==NOT_FOUND) return r.get(name);
-						        return v;
-						    }
-						};
-					}
-					return obje;
+					return function.exec(vals);
 				} catch (Exception e) {
 					throw new WrappedException(e);
 				}
@@ -102,7 +108,8 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 	
 	private void insertObject(Object obj, String name) {
 		Object wrappedObj = Context.javaToJS(obj, scope);
-		ScriptableObject.putProperty(scope, name, wrappedObj);
+		ScriptableObject.defineProperty(scope, name, wrappedObj, 
+				ScriptableObject.READONLY | ScriptableObject.PERMANENT);
 	}
 	
 	
