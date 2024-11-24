@@ -159,7 +159,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	<link rel="icon" type="image/x-icon" href="favicon.ico">
 	<div id="topbar">
 		<img src="Images/Hudder.webp" alt="Back to main hudder wiki page" />
-		<div id="title">Hudder 6.2.0 Wiki</div>
+		<div id="title">Hudder 7.0.0 Wiki</div>
 	</div>
 	<div id="sidebar">
 	<h1>Explore</h1>
@@ -190,7 +190,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
 				<li><a href="adv.html#adv_conds">If statements and while loops</a></li>
 				<li><a href="adv.html#adv_methods">Writing your own methods</a></li>
 				<li><a href="adv.html#break">The Break variable</a></li>
-				<li><a href="adv.html#operators">Inc, Dec and Not operators</a></li>
+				<li><a href="adv.html#operators">Inc, Dec and Boolean operators</a></li>
+				<li><a href="adv.html#components">Item components</a></li>
 			</ul>
 		</details>
 		<details open>
