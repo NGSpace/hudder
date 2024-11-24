@@ -54,8 +54,8 @@ public class StringData {private StringData() {}
 			
 			
 			/* Looking at */
-			case "looking_at","block_in_front": {
-			    HitResult vec = ins.player.raycast(5,0,true);
+			case "block_in_front": {
+			    HitResult vec = ins.player.raycast(50,0,true);
 			    if (vec.getType()==Type.BLOCK) {
 			    	BlockHitResult res = (BlockHitResult) vec;
 			    	BlockState state = ins.player.getWorld().getBlockState(res.getBlockPos());
@@ -64,7 +64,7 @@ public class StringData {private StringData() {}
 			    yield "";
 			}
 			case "looking_at_pos": {
-				HitResult vec = ins.player.raycast(5,0,true);
+				HitResult vec = ins.player.raycast(50,0,true);
 			    if (vec.getType()==Type.BLOCK) {
 			    	BlockPos res = ((BlockHitResult) vec).getBlockPos();
 			    	yield "" + res.getX() + ' ' + res.getY() + ' ' + res.getZ();
