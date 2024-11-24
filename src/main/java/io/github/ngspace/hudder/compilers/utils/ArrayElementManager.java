@@ -8,8 +8,6 @@ public class ArrayElementManager extends ArrayList<AUIElement> implements IEleme
 
 	private static final long serialVersionUID = -504951216427576657L;
 
-	@Override public void addElem(AUIElement UIElement) {
-		add(UIElement);
-	}
-	
+	@Override public void addElem(AUIElement UIElement) {add(UIElement);}
+	@Override public AUIElement[] toElementArray() {return toArray(new AUIElement[size()]);}
 }

@@ -64,19 +64,10 @@ public abstract class AV2Compiler extends AVarTextCompiler implements ConsumerBi
 	
 	
 	
-	public String getOperator(String condString) {
-		if (condString.contains("==")) return "==";
-		if (condString.contains("!=")) return "!=";
-		if (condString.contains(">=")) return ">=";
-		if (condString.contains("<=")) return "<=";
-		if (condString.contains(">" )) return ">" ;
-		if (condString.contains("<" )) return "<" ;
-		return null;
-	}
 	@Override public void bindConsumer(BindableConsumer cons, String... names) {
 		methodHandler.bindConsumer((c,m,a,t,l,ch,s)->cons.invoke(m, this, l, ch, s), names);
 	}
 	@Override public void bindFunction(BindableFunction cons, String... names) {
-		functionHandler.register((c,a,s,l,ch)->cons.invoke(this, s), names);
+		functionHandler.bindFunction((c,a,s,l,ch)->cons.invoke(c.compileState, this, s), names);
 	}
 }

@@ -4,4 +4,6 @@ import io.github.ngspace.hudder.methods.elements.AUIElement;
 
 public interface IElementManager {
 	public void addElem(AUIElement UIElement);
+
+	public AUIElement[] toElementArray();
 }

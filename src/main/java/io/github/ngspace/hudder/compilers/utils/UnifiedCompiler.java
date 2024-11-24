@@ -5,17 +5,23 @@ import java.io.IOException;
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.data_management.BooleanData;
+import io.github.ngspace.hudder.data_management.ComponentsData;
 import io.github.ngspace.hudder.data_management.NumberData;
+import io.github.ngspace.hudder.data_management.ObjectData;
 import io.github.ngspace.hudder.data_management.StringData;
 import io.github.ngspace.hudder.methods.elements.ColorVerticesElement;
 import io.github.ngspace.hudder.methods.elements.GameHudElement;
-import io.github.ngspace.hudder.methods.elements.TextElement;
 import io.github.ngspace.hudder.methods.elements.GameHudElement.GuiType;
+import io.github.ngspace.hudder.methods.elements.TextElement;
 import io.github.ngspace.hudder.methods.elements.TextureElement;
 import io.github.ngspace.hudder.methods.elements.TextureVerticesElement;
+import io.github.ngspace.hudder.util.HudCompilationManager;
 import io.github.ngspace.hudder.util.HudFileUtils;
 import io.github.ngspace.hudder.util.ObjectWrapper;
+import io.github.ngspace.hudder.util.ValueGetter;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.component.ComponentMap;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -95,6 +101,7 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 		//Variables
 		
 		binder.bindConsumer((e,a,l,ch,s)->a.put(s[0].asString(), s[1]), "set", "setVal", "setVariable");
+		binder.bindConsumer((e,a,l,ch,s)->a.getConfig().savedVariables.put(s[0].asString(),s[1]),"saveVal");
 		
 		//Logging
 		
@@ -108,17 +115,46 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 	
 	public void applyFunctions(FunctionBinder binder) {
 		
-		//Variables
+		//Getters
 		
-		binder.bindFunction((c,s)->c.getVariable(s[0].asString()), "get", "getVal", "getVariable");
-		binder.bindFunction((c,s)->NumberData.getNumber(s[0].asString()), "getNumber" );
-		binder.bindFunction((c,s)->StringData.getString(s[0].asString()), "getString" );
-		binder.bindFunction((c,s)->BooleanData.getBoolean(s[0].asString()), "getBoolean");
+		binder.bindFunction((m,c,s)->c.getVariable(s[0].asString()), "get", "getVal", "getVariable");
+		binder.bindFunction((m,c,s)->NumberData.getNumber  (s[0].asString()), "getNumber" );
+		binder.bindFunction((m,c,s)->StringData.getString  (s[0].asString()), "getString" );
+		binder.bindFunction((m,c,s)->ObjectData.getObject  (s[0].asString()), "getObject" );
+		binder.bindFunction((m,c,s)->BooleanData.getBoolean(s[0].asString()), "getBoolean");
+		
+		binder.bindFunction((m,c,s)->new TranslatedItemStack(mc.player.getInventory().getStack(s[0].asInt())), "getItem");
+		
+		binder.bindFunction((m,c,s)->c.getConfig().savedVariables.get(s[0].asString()),"readVal");
+		
+		//Compile
+		
+		binder.bindFunction((m,c,s)-> {
+			try {
+				var e = m.toElementArray();
+				
+				ATextCompiler ecompiler = Compilers.getCompilerFromName(s[1].asString());
+				for (var i : HudCompilationManager.precomplistners) i.accept(ecompiler);
+				
+				HudInformation result = ecompiler.compile(Hudder.config,HudFileUtils.getFile(s[0].asString()),s[0].asString());
+
+				for (var v : result.elements) m.addElem(v);
+				for (var v : e) m.addElem(v);
+				
+				for (var i : HudCompilationManager.postcomplistners) i.accept(ecompiler);
+				return result;
+			} catch (ReflectiveOperationException | IOException e) {
+				if (Hudder.IS_DEBUG) e.printStackTrace();
+				throw new IllegalArgumentException("Unknown compiler");
+			}
+		}, "compile", "run", "execute");
+		
 		
 		//Misc
 		
-		binder.bindFunction((c,s)->HudFileUtils.exists(s[0].asString()),"exists");
-		binder.bindFunction((c,s)->mc.textRenderer.getWidth(s[0].asString()), "strWidth", "strwidth");
+		binder.bindFunction((m,c,s)->HudFileUtils.exists(s[0].asString()),"exists");
+		binder.bindFunction((m,c,s)->mc.textRenderer.getWidth(s[0].asString()), "strWidth", "strwidth");
+		binder.bindFunction((m,c,s)->s[0].get().toString(), "toString");
 	}
 	
 	
@@ -133,9 +169,34 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 	
 
 	@FunctionalInterface public interface BindableFunction {
-		public Object invoke(ATextCompiler comp, ObjectWrapper... args) throws CompileException;
+		public Object invoke(IElementManager man, ATextCompiler comp, ObjectWrapper... args) throws CompileException;
 	}
 	@FunctionalInterface public interface FunctionBinder {
 		public void bindFunction(BindableFunction cons, String... names);
+	}
+	
+
+	public static class TranslatedItemStack implements ValueGetter {
+		public String name;
+		public int count;
+		public int maxcount;
+		public int durability;
+		public int maxdurability;
+		private ComponentMap components;
+		public TranslatedItemStack(ItemStack stack) {
+			name = stack.getFormattedName().getString();
+			count = stack.getCount();
+			maxcount = stack.getMaxCount();
+			durability = stack.getMaxDamage()-stack.getDamage();
+			maxdurability = stack.getMaxDamage();
+			components = stack.getComponents();
+		}
+		@Override public String toString() {
+			return "{name:\"" + name + "\", count:" + count + ", maxcount: " + maxcount + ", durability: " + durability
+					+ ", maxdurability: " + maxdurability + "}";
+		}
+		@Override public Object get(String component) {
+			return ComponentsData.getObject(component, components);
+		}
 	}
 }

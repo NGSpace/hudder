@@ -92,7 +92,7 @@ public class HudFileUtils {private HudFileUtils() {}
 	
 	
 	public static void makeDefaultConfig() {
-		String[] defaultfiles = {"tutorial","hand","armor","armorside","hud","basic","hud.js","hotbar.js", "fibonacci"};
+		String[] defaultfiles = {"tutorial","hand","armor","armorside","hud","basic","hud.js","hotbar.js", "fibonacci", "worldtime.js"};
 		
 		for (String file : defaultfiles) {
 			File dest = new File(FOLDER, file);

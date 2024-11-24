@@ -17,8 +17,8 @@ public class JavaScriptCompiler extends AScriptingLanguageCompiler {
 	@Override protected IScriptingLanguageEngine createLangEngine() throws CompileException {
 		JavaScriptEngine engine = new JavaScriptEngine();
 		UnifiedCompiler comp = UnifiedCompiler.instance;
-		comp.applyConsumers((c,n)->engine.bindConsumer(e->c.invoke(elms,this, -1, -1, e), n));
-		comp.applyFunctions((c,n)->engine.bindFunction(e->c.invoke(this, e), n));
+		comp.applyConsumers((c,n)->engine.bindConsumer(e->c.invoke(elms, this, -1, -1, e), n));
+		comp.applyFunctions((c,n)->engine.bindFunction(e->c.invoke(elms, this, e), n));
 		return engine;
 	}
 }

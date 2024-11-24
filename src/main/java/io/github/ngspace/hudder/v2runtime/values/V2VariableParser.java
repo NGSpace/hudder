@@ -1,6 +1,7 @@
 package io.github.ngspace.hudder.v2runtime.values;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.util.HudderUtils;
@@ -11,109 +12,161 @@ public class V2VariableParser {
 	
 	private V2VariableParser() {}
 	
-	public static AV2Value of(V2Runtime runtime, String valuee, AV2Compiler compiler, int line, int charpos)
+	// Holy shit this is a lot for one person to handle without proper comments...
+	
+	public static AV2Value of(V2Runtime runtime, String valuee, AV2Compiler comp, int line, int charpos)
 			throws CompileException {
 		
 		String value = valuee.trim();
 		
+		// Empty variable
 		if (value.isBlank()) throw new CompileException("Unknown variable: empty variable", line, charpos);
-
+		
+		
+		
+		// Is wrapped in parenthesses? get rid of em!
 		if (value.startsWith("(")&&value.endsWith(")")) {
+			
+			// Assume that it's good
 			boolean isSafe = true;
-			int parenthesses = 1;
-			for (char c : value.toCharArray()) {
+			
+			// Count how deep the parenthesses
+			// NOTE it is initalized at 0 but since the first char is always going to be (, it will become one.
+			int layers = 0;
+			
+			for (int i=0;i<value.length();i++) {
+				char c = value.charAt(i);
+				
+				if (c=='(') layers++; // Layer up
+				if (c==')') layers--; // Layer down
+				
+				if (layers==0) { // We reached the closing parenthesses of the first (.
+					
+					// Is there more chars to read? if so then the string is not wrapped and therefore shouldn't be unwrapped.
+					isSafe = i+1==value.length();
+					break;
+				}
+			}
+			// if it is wrapped then remove the first and last chars to unwrap and reprocess them.
+			if (isSafe) return comp.getV2Value(runtime, value.substring(1, value.length()-1), line, charpos);
+		}
+		
+		
+		
+		// Double constant
+		// Accepts the following formats: "0x(0-F)+", "#(0-F)+", "(0-9)+", "(0-9)*.(0-9)+"
+		if (value.matches("((0x|#)[\\daAbBcCdDeEfF]+|[-+]*\\d*(\\.?(\\d+)?))"))
+			return new V2Number(value, line, charpos, comp);
+		
+		
+		
+		// Boolean constants
+		if (value.equalsIgnoreCase("false")) return new V2Boolean(false, comp, line, charpos, value);
+		if (value.equalsIgnoreCase("true")) return new V2Boolean(true, comp, line, charpos, value);
+		
+		
+		
+		// String constant
+		// I am too lazy to pull it out of the "string" method so it's stayin.
+		AV2Value temp = string(value, comp, line, charpos);
+		if (temp!=null) return temp;
+		
+		
+		
+		// Array constant
+		// Accepts the follow format: "[(any char)]"
+		if (value.matches("\\[[\\s\\S]*\\]")) {
+			
+			// Sends the text between the square brackets to HudderUtils.processParemeters to tokenize the values.
+			
+			return new V2Array(HudderUtils.processParemeters(value.substring(1, value.length()-1).replace("\n", "")),
+					comp, runtime, line, charpos, value);
+		}
+		
+		
+		
+		// Set variable
+		String[] setValues = value.split("=",2);// Split at the first '='
+		// Make sure it's not a condition!
+		if (setValues.length==2&&!comp.isCondition(value)) {
+			return new V2SetValue(comp.getV2Value(runtime, setValues[0].toLowerCase(),line,charpos),
+					comp.getV2Value(runtime, setValues[1], line, charpos), comp, line, charpos, value);
+		}
+		
+		
+		
+		// Is it a variable name that does not start with _?
+		boolean matchesVariableRegex = value.matches("[A-Za-z\\d][A-Za-z\\d_]*");
+		
+		// System variable
+		if (matchesVariableRegex&&comp.isSystemVariable(value.toLowerCase()))
+			return new V2SystemVar(value, comp, line, charpos);
+		
+		// Dynamic variable
+		// It is not a systemvariable and is therefore a user defined/dynamic variable!
+		if (matchesVariableRegex) return new V2DynamicVar(value, comp, line, charpos);
+		
+		
+		
+		// Temp dynamic variable
+		// Is it a variable name that starts with _?
+		if (value.matches("_[A-Za-z\\d_]*")) return new V2TempDynamicVar(value, comp, line, charpos);
+		
+		
+		
+		// Read Array
+		// Accepts the following format: "(any char)+(space)?[(any char)]".
+		if (value.matches(".+ *\\[.+\\]"))
+			return new V2ArrayRead(value, comp, runtime, line, charpos, value);
+		
+		
+		// Function variable
+		if (!value.startsWith("(")&&value.endsWith(")")) {
+			// Same thing as before except we start reading at the first instance of a '(' char instead of at index 0.
+			int argStart = value.indexOf("(");
+			boolean isSafe = true;
+			int parenthesses = 0;
+			for (int i = argStart;i<value.length();i++) {
+				char c = value.charAt(i);
 				if (c=='(')
 					parenthesses++;
 				if (c==')')
 					parenthesses--;
 				if (parenthesses==0) {
-					isSafe = false;
+					isSafe = i+1==value.length();
 					break;
 				}
 			}
-			if (isSafe) return compiler.getV2Value(runtime, value.substring(1, value.length()-1), line, charpos);
-		}
-		
-		//Double constant
-		if (value.matches("((0x|#)[\\daAbBcCdDeEfF]+|[-+]*\\d*(\\.?(\\d+)?))"))
-			return new V2Number(value, line, charpos, compiler);
-
-		if (value.equalsIgnoreCase("false")) return new V2Boolean(false, compiler, line, charpos, value);
-		if (value.equalsIgnoreCase("true")) return new V2Boolean(true, compiler, line, charpos, value);
-		
-
-		AV2Value temp = null;
-		//String constant
-		if ((temp = string(value, compiler, line, charpos))!=null) return temp;
-		
-		//Array constant
-		if (value.matches("\\[[\\s\\S]*\\]"))
-			return new V2Array(HudderUtils.processParemeters(value.substring(1, value.length()-1).replace("\n", "")),
-					compiler, runtime, line, charpos, value);
-		
-		//Set variable
-		String[] setValues = value.split("=",2);
-		if (setValues.length==2&&!compiler.isCondition(value)) 
-			return new V2SetValue(compiler.getV2Value(runtime, setValues[0].toLowerCase(),line,charpos),
-					compiler.getV2Value(runtime, setValues[1], line, charpos), compiler, line, charpos, value);
-		
-		
-		boolean matchesVariableRegex = value.matches("[A-Za-z\\d][A-Za-z\\d_]*");
-		
-		//System variable
-		if (matchesVariableRegex&&compiler.isSystemVariable(value.toLowerCase()))
-			return new V2SystemVar(value, compiler, line, charpos);
-		
-		
-		//Dynamic variable
-		if (matchesVariableRegex) return new V2DynamicVar(value, compiler, line, charpos);
-		
-		
-		//Temp dynamic variable
-		if (value.matches("_[A-Za-z\\d_]*")) return new V2TempDynamicVar(value, compiler, line, charpos);
-		
-		
-		//Read Array
-		if (value.matches(".+ *\\[.+\\]"))
-			return new V2ArrayRead(value, compiler, runtime, line, charpos, value);
-		
-		
-		//Function variable
-		if (!value.startsWith("(")&&value.endsWith(")")) {
-			int argStart = value.indexOf("(");
-			if (argStart!=-1) {
+			if (argStart!=-1&&isSafe) {
 				String funcName = value.substring(0, argStart);
-				if (funcName.matches("^[a-zA-Z0-9_.-]*$")) {
+				if (funcName.matches("^[a-zA-Z0-9_-]*$")) {
 					String parametersString = value.substring(argStart+1, value.length()-1);
 					String[] tokenizedArgs = HudderUtils.processParemeters(parametersString);
 					
-					return new V2FunctionVar(runtime, compiler, funcName, tokenizedArgs, line, charpos, value);
+					return new V2FunctionVar(runtime, comp, funcName, tokenizedArgs, line, charpos, value);
 				}
 			}
 		}
 		
 
 		//Comparing values
-		String operator = compiler.getOperator(value);
+		String operator = getOperator(value);
 		if (operator!=null) {
 			int parenthesses = 0;
 			String[] v = value.split(operator,2);
 			for (char c : v[0].trim().toCharArray()) {
-				if (c=='(')
-					parenthesses++;
-				if (c==')')
-					parenthesses--;
+				if (c=='(') parenthesses++;
+				if (c==')') parenthesses--;
 			}
 			if (parenthesses==0)
-				return new V2Comparison(compiler.getV2Value(runtime, v[0].trim(), line, charpos),
-					compiler.getV2Value(runtime, v[1].trim(), line, charpos), operator, line, charpos, value, compiler);
+				return new V2Comparison(comp.getV2Value(runtime, v[0].trim(), line, charpos),
+					comp.getV2Value(runtime, v[1].trim(), line, charpos), operator, line, charpos, value, comp);
 		}
 		
 		
 		
 		//Math operation
 		AV2Value[] values = new AV2Value[0];
-//		 c;
 		StringBuilder mathvalue = new StringBuilder();
 		char[] operations = new char[0];
 		for (int i = 0;i<value.length();i++) {
@@ -148,7 +201,7 @@ public class V2VariableParser {
 					values = new AV2Value[0];
 					break;
 				}
-				values = addToArray(values, compiler.getV2Value(runtime, mathvalue.toString(), line, charpos));
+				values = addToArray(values, comp.getV2Value(runtime, mathvalue.toString(), line, charpos));
 				operations = addToArray(operations, c);
 				mathvalue.setLength(0);
 				continue;
@@ -156,8 +209,8 @@ public class V2VariableParser {
 			mathvalue.append(c);
 		}
 		if (values.length>0) {
-			values = addToArray(values, compiler.getV2Value(runtime, mathvalue.toString(), line, charpos));
-			return new V2MathOperation(values, operations, line, charpos, value, compiler);
+			values = addToArray(values, comp.getV2Value(runtime, mathvalue.toString(), line, charpos));
+			return new V2MathOperation(values, operations, line, charpos, value, comp);
 		}
 		
 		
@@ -165,20 +218,75 @@ public class V2VariableParser {
 		
 		// ! Operator
 		if (value.matches("![\\s\\S]+"))
-			return new V2OppositeOperator(compiler.getV2Value(runtime, value.substring(1), line, charpos),
-					line, charpos, value, compiler);
+			return new V2OppositeOperator(comp.getV2Value(runtime, value.substring(1), line, charpos),
+					line, charpos, value, comp);
 		
 		// Post Increase and Decrease Operator
 		if (value.matches("[\\s\\S]+(\\+\\+|--)")) {
-			return new V2PostIncDecOperator(compiler.getV2Value(runtime, value.substring(0,value.length()-2),
-					line, charpos), compiler, line, charpos, "+".equals(value.substring(value.length()-1)), value);
+			return new V2PostIncDecOperator(comp.getV2Value(runtime, value.substring(0,value.length()-2),
+					line, charpos), comp, line, charpos, "+".equals(value.substring(value.length()-1)), value);
 		}
 
 		// Pre Increase and Decrease Operator
 		if (value.matches("(\\+\\+|--)[\\s\\S]+")) {
-			return new V2PreIncDecOperator(compiler.getV2Value(runtime, value.substring(2),
-					line, charpos), compiler, line, charpos, "+".equals(value.substring(0, 1)), value);
+			return new V2PreIncDecOperator(comp.getV2Value(runtime, value.substring(2),
+					line, charpos), comp, line, charpos, "+".equals(value.substring(0, 1)), value);
 		}
+		
+		
+		
+		// Class
+		String classyobjname = "";
+		String functionOrObject = "";
+		for (int i=1;i<value.length(); i++) {
+			char c = value.charAt(value.length()-i);
+			if (c==')') {
+				int parentheses = 0;
+				for (;i<value.length()+1; i++) {
+					c = value.charAt(value.length()-i);
+					if (c==')') parentheses++;
+					if (c=='(') parentheses--;
+					functionOrObject = c + functionOrObject;
+					if (parentheses==0) break;
+				}
+				continue;
+			}
+			
+			if (c=='"') {
+				boolean isnotescaped = false;
+				for (;i<value.length()+1; i++) {
+					c = value.charAt(value.length()-i);
+					functionOrObject = c + functionOrObject;
+					if (i+2<value.length()+1) isnotescaped = value.charAt(value.length()-i) == '\\';
+					if (c=='"'&&!(i+1<value.length()+1&&value.charAt(value.length()-i)=='\\')&&isnotescaped) break;
+				}
+				continue;
+			}
+			
+			if (c=='.') {
+				classyobjname = value.substring(0,value.length()-i);
+				break;
+			}
+			functionOrObject = c + functionOrObject;
+		}
+		
+		if (!Objects.equals(functionOrObject, value)&&!"".equals(classyobjname)) 
+			return new V2ClassPropertyCall(charpos, charpos, value, comp, runtime,
+					comp.getV2Value(runtime, classyobjname, line, charpos), functionOrObject);
+		
+		
+		
+		//Logical OR operator
+		values = logicalOperator('|', value, runtime, line, charpos);
+		if (values.length>0) return new V2LogicalOR(values, line, charpos, value, comp);
+		
+		
+		
+		//Logical AND operator
+		values = logicalOperator('&', value, runtime, line, charpos);
+		if (values.length>0) return new V2LogicalAND(values, line, charpos, value, comp);
+		
+		
 		
 		
 		// Fallback
@@ -192,10 +300,10 @@ public class V2VariableParser {
 		//Probably String :D
 		value = value.substring(1,value.length()-1);
 		StringBuilder string = new StringBuilder();
-		char c;
+		
 		boolean safe = false;
 		for (int i = 0;i<value.length();i++) {
-			c = value.charAt(i);
+			char c = value.charAt(i);
 			if (c=='n'&&safe) {
 				string.append('\n');
 				continue;
@@ -211,6 +319,55 @@ public class V2VariableParser {
 		return new V2String(string.toString(), compiler, line, charpos);
 	}
 	
+	
+	
+	private static AV2Value[] logicalOperator(char op, String value, V2Runtime runtime, int line, int charpos) throws CompileException {
+		AV2Value[] values = new AV2Value[0];
+		StringBuilder builder = new StringBuilder();
+		for (int i = 0;i<value.length();i++) {
+			char c = value.charAt(i);
+			if (c=='"'&&builder.isEmpty()) {
+				boolean safe = false;
+				i++;
+				builder.append(c);
+				for (;i<value.length();i++) {
+					c = value.charAt(i);
+					if (c=='\\'&&!safe) safe = true; else {
+						safe = false;
+						builder.append(c);
+						if (c=='"'&&!safe) break;
+					}
+				}
+				continue;
+			}
+			if (c=='('&&builder.isEmpty()) {
+				int parentheses = 1;
+				i++;
+				for (;i<value.length();i++) {
+					c = value.charAt(i);
+					if (c=='(') parentheses++;
+					if (c==')') parentheses--;
+					if (parentheses==0) break;
+					builder.append(c);
+				}
+				continue;
+			}
+			if (c==op&&i+1<value.length()&&value.charAt(i+1)==op) {
+				i++;
+				values = addToArray(values, runtime.compiler.getV2Value(runtime, builder.toString(), line, charpos));
+				builder.setLength(0);
+				continue;
+			}
+			
+			builder.append(c);
+		}
+		if (!Objects.equals(value, builder.toString()))
+			return addToArray(values, runtime.compiler.getV2Value(runtime, builder.toString(), line, charpos));
+		else return values;
+	}
+	
+	
+	
 	private static <T> T[] addToArray(T[] arr, T t) {
 		T[] newarr = Arrays.copyOf(arr, arr.length+1);
 		newarr[arr.length] = t;
@@ -220,5 +377,16 @@ public class V2VariableParser {
 		char[] newarr = Arrays.copyOf(arr, arr.length+1);
 		newarr[arr.length] = t;
 		return newarr;
+	}
+	
+
+	private static String getOperator(String condString) {
+		if (condString.contains("==")) return "==";
+		if (condString.contains("!=")) return "!=";
+		if (condString.contains(">=")) return ">=";
+		if (condString.contains("<=")) return "<=";
+		if (condString.contains(">" )) return ">" ;
+		if (condString.contains("<" )) return "<" ;
+		return null;
 	}
 }

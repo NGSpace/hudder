@@ -12,6 +12,7 @@ public class LengthV2Function implements IV2Function {
 			throws CompileException {
 		Object value = args[0].get();
 		if (value instanceof Collection<?> c) return c.size();
+		if (value instanceof Object[] c) return c.length;
 		return args[0].asString().length();
 	}
 	

@@ -4,6 +4,7 @@ import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.config.ConfigManager;
 import io.github.ngspace.hudder.data_management.BooleanData;
 import io.github.ngspace.hudder.data_management.NumberData;
+import io.github.ngspace.hudder.data_management.ObjectData;
 import io.github.ngspace.hudder.data_management.StringData;
 
 public abstract class AVarTextCompiler extends ATextCompiler {
@@ -34,8 +35,8 @@ public abstract class AVarTextCompiler extends ATextCompiler {
 		if (obj!=null) return obj;
 		if ((obj=BooleanData.getBoolean(key))!=null) return obj;
 		if ((obj=StringData.getString(key))!=null) return obj;
+		if ((obj=ObjectData.getObject(key))!=null) return obj;
 		if ((obj=ConfigManager.getConfig().globalVariables.get(key))!=null) return obj;
-		if ("null".equals(key)) return null;
 		return null;
 	}
 

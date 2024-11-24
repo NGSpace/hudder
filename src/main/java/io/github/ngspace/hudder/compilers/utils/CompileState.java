@@ -79,9 +79,7 @@ public class CompileState implements IElementManager {
 		}
 		Collections.addAll(elements, compile.elements);
 	}
-	@Override
-	public void addElem(AUIElement UIElement) {
-		elements.add(UIElement);
-	}
+	@Override public void addElem(AUIElement UIElement) {elements.add(UIElement);}
+	@Override public AUIElement[] toElementArray() {return elements.toArray(new AUIElement[elements.size()]);}
 	
 }

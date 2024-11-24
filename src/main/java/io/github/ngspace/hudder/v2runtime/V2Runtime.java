@@ -11,8 +11,9 @@ public class V2Runtime {
 	public V2Runtime(AV2Compiler compiler) {this.compiler = compiler;}
 	
 	AV2RuntimeElement[] elements = new AV2RuntimeElement[0];
+	public CompileState compileState;
 	public CompileState execute() throws CompileException {
-		CompileState compileState = new CompileState(CompileState.TOPLEFT);
+		compileState = new CompileState(CompileState.TOPLEFT);
 		StringBuilder builder = new StringBuilder();
 		for (AV2RuntimeElement element : elements) {
 			if (!element.execute(compileState, builder)) {
