@@ -127,12 +127,49 @@ Will set {_i} to 5
 
 <br><br>
 
-<h2 id="operators">Inc, Dec and Not operators</h2>
+<h2 id="operators">Inc, Dec and Boolean operators</h2>
 <hr>
 You can use <inline-code>{_i++}</inline-code> to increase _i's value by 1 and then return the it's old value, <inline-code>{_i--}</inline-code> does the same but decreases by 1.
 <br><br>
 You can use <inline-code>{++_i}</inline-code> to increase _i's value by 1 and then return the it's new value, <inline-code>{--_i}</inline-code> does the same but decreases by 1.
 <br><br>
 You can use <inline-code>{!_i}</inline-code> to return the opposite value of _i, if it is true then it will return false, if it is false then it will return true.
+<br><br>
+You can use <inline-code>{boolean2&&boolean1}</inline-code> to return true if both booleans are true
+<br><br>
+You can use <inline-code>{boolean2||boolean1}</inline-code> to return true if either booleans are true
+
+<h2 id="components">Item components</h2>
+
+<hr>
+The <inline-code>getItem([Number slot])</inline-code> function returns an object that contains the following properties:<br>
+<code>name - The name of the item
+item_name - The name of the item type (Even if name was modified with anvil/commands)
+repair_cost - The repair cost of the item
+damage - How much the item has been damaged
+max_damage - How much the item can bee damaged
+max_stack_size - The max stack size of the item
+enchantment_glint_override - Imma be honest idk what this one does, check the minecraft wiki if it's important.
+trim - An object containing the following 3 properties:
+  - material - The name of the material used on the armor piece's trim
+  - pattern - The name of the pattern used on the armor piece's trim
+  - showintooltip - Whether it should show the armor trim in the item's tooltip (idk how this would be useful but it was easy to add so I added it.)
+enchantable - If not null, items with the component can be enchanted in an enchanting table.
+lore - An array of "Text" objects (use their getString function if you need a string)
+rarity - Can be of the following values: common, uncommon, rare and epic.
+unbreakable - If it is not null then the tool is unbreakable.
+custom_data - Custom NBT data attached to the object... in the form of a string.
+enchantments - Contains every enchantment on the object, if the enchantment is null then it is not present:
+  - [Enchantment name] - The enchantment
+    - level - The level of the enchantment on the item.
+</code>
+
+Those properties can be navigated with the '.' character
+<br><br>
+
+Example:
+<code>Your selected item has {getItem(selectedslot).durability} durability left!
+</code>
+
 <br><br><br>
 </body>
