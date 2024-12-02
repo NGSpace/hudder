@@ -1,7 +1,8 @@
-package io.github.ngspace.hudder.v2runtime.values;
+package io.github.ngspace.hudder.v2runtime.values.operations.booloperations;
 
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;
+import io.github.ngspace.hudder.v2runtime.values.AV2Value;
 
 public class V2Comparison extends AV2Value {
 	public AV2Value value1;

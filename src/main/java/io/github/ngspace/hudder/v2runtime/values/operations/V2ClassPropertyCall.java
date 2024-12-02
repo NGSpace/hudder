@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.v2runtime.values;
+package io.github.ngspace.hudder.v2runtime.values.operations;
 
 import java.lang.reflect.AccessFlag;
 import java.lang.reflect.Field;
@@ -17,6 +17,7 @@ import io.github.ngspace.hudder.util.NoAccess;
 import io.github.ngspace.hudder.util.ValueGetter;
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
+import io.github.ngspace.hudder.v2runtime.values.AV2Value;
 
 public class V2ClassPropertyCall extends AV2Value {
 	
@@ -27,7 +28,7 @@ public class V2ClassPropertyCall extends AV2Value {
 	private String funcName = "";
 	private String fieldName = "";
 
-	protected V2ClassPropertyCall(int line, int charpos, String v, AV2Compiler c, V2Runtime runtime,
+	public V2ClassPropertyCall(int line, int charpos, String v, AV2Compiler c, V2Runtime runtime,
 			AV2Value classobj, String prop) throws CompileException {
 		super(line, charpos, v, c);
 		this.classobj = classobj;
@@ -98,12 +99,12 @@ public class V2ClassPropertyCall extends AV2Value {
 				for (int i=0;i<v.length;i++) {
 					if (v[i].isPrimitive()&&!v[i].isInstance(char.class)&&!v[i].isInstance(boolean.class)) {
 						if (parameters[i] instanceof Number num) {
-							if (v[i].isAssignableFrom(int.class)) finalParameters[i] = num.intValue();
-							else if (v[i].isAssignableFrom(float.class)) finalParameters[i] = num.floatValue();
+							if      (v[i].isAssignableFrom(int.class   )) finalParameters[i] = num.intValue   ();
+							else if (v[i].isAssignableFrom(float.class )) finalParameters[i] = num.floatValue ();
 							else if (v[i].isAssignableFrom(double.class)) finalParameters[i] = num.doubleValue();
-							else if (v[i].isAssignableFrom(long.class)) finalParameters[i] = num.longValue();
-							else if (v[i].isAssignableFrom(byte.class)) finalParameters[i] = num.byteValue();
-							else if (v[i].isAssignableFrom(short.class)) finalParameters[i] = num.shortValue();
+							else if (v[i].isAssignableFrom(long.class  )) finalParameters[i] = num.longValue  ();
+							else if (v[i].isAssignableFrom(byte.class  )) finalParameters[i] = num.byteValue  ();
+							else if (v[i].isAssignableFrom(short.class )) finalParameters[i] = num.shortValue ();
 							else isCompatible = false;
 						} else isCompatible = false;
 					} else if (!v[i].isAssignableFrom(classes[i])) isCompatible = false;
@@ -129,9 +130,7 @@ public class V2ClassPropertyCall extends AV2Value {
 			if (!isAccessible(f)) throw new CompileException("No property named \""+fieldName+"\" in type \"" +objClass.getSimpleName()+'"',line,charpos);
 			return f.get(objValue);
 		} catch (NoSuchFieldException e) {
-			if (objValue instanceof ValueGetter getter) {
-				return getter.get(fieldName);
-			}
+			if (objValue instanceof ValueGetter getter) return getter.get(fieldName);
 			if (Hudder.IS_DEBUG) e.printStackTrace();
 			throw new CompileException("No property named \""+fieldName+'"',line,charpos);
 		} catch (ReflectiveOperationException e) {
@@ -155,14 +154,12 @@ public class V2ClassPropertyCall extends AV2Value {
 		return isAccessible((Member) method)&&!method.isAnnotationPresent(NoAccess.class);
 	}
 	private boolean isAccessible(Member method) {
-		return method.accessFlags().contains(AccessFlag.PUBLIC)
-				&&!method.accessFlags().contains(AccessFlag.PRIVATE);
+		return method.accessFlags().contains(AccessFlag.PUBLIC)&&!method.accessFlags().contains(AccessFlag.PRIVATE);
 	}
 	
 	
 
-	@Override
-	public void setValue(AV2Compiler compiler, Object value) throws CompileException {
+	@Override public void setValue(AV2Compiler compiler, Object value) throws CompileException {
 		throw new CompileException("Can't change the value of a ClassPropertyCall", line, charpos);
 		
 	}

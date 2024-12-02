@@ -7,6 +7,22 @@ import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.util.HudderUtils;
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
+import io.github.ngspace.hudder.v2runtime.values.constants.V2Array;
+import io.github.ngspace.hudder.v2runtime.values.constants.V2Boolean;
+import io.github.ngspace.hudder.v2runtime.values.constants.V2Number;
+import io.github.ngspace.hudder.v2runtime.values.constants.V2String;
+import io.github.ngspace.hudder.v2runtime.values.modifiable.V2ArrayRead;
+import io.github.ngspace.hudder.v2runtime.values.modifiable.V2DynamicVar;
+import io.github.ngspace.hudder.v2runtime.values.modifiable.V2SetValue;
+import io.github.ngspace.hudder.v2runtime.values.modifiable.V2TempDynamicVar;
+import io.github.ngspace.hudder.v2runtime.values.operations.V2ClassPropertyCall;
+import io.github.ngspace.hudder.v2runtime.values.operations.V2MathOperation;
+import io.github.ngspace.hudder.v2runtime.values.operations.V2PostIncDecOperator;
+import io.github.ngspace.hudder.v2runtime.values.operations.V2PreIncDecOperator;
+import io.github.ngspace.hudder.v2runtime.values.operations.booloperations.V2Comparison;
+import io.github.ngspace.hudder.v2runtime.values.operations.booloperations.V2LogicalAND;
+import io.github.ngspace.hudder.v2runtime.values.operations.booloperations.V2LogicalOR;
+import io.github.ngspace.hudder.v2runtime.values.operations.booloperations.V2OppositeOperator;
 
 public class V2VariableParser {
 	

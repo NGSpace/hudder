@@ -1,7 +1,8 @@
-package io.github.ngspace.hudder.v2runtime.values;
+package io.github.ngspace.hudder.v2runtime.values.constants;
 
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;
+import io.github.ngspace.hudder.v2runtime.values.AV2Value;
 
 public class V2String extends AV2Value {
 	public V2String(String value, AV2Compiler compiler, int line, int charpos) {super(line, charpos, value,compiler);}

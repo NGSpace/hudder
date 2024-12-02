@@ -1,14 +1,15 @@
-package io.github.ngspace.hudder.v2runtime.values;
+package io.github.ngspace.hudder.v2runtime.values.operations.booloperations;
 
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;
+import io.github.ngspace.hudder.v2runtime.values.AV2Value;
 
 public class V2LogicalOR extends AV2Value {
 	
 	private AV2Value[] values;
 	private Boolean constant;
 
-	protected V2LogicalOR(AV2Value[] values, int line, int charpos, String debugvalue, AV2Compiler compiler) throws CompileException {
+	public V2LogicalOR(AV2Value[] values, int line, int charpos, String debugvalue, AV2Compiler compiler) throws CompileException {
 		super(line, charpos, debugvalue, compiler);
 		this.values = values;
 		if (isConstant()) constant = get();

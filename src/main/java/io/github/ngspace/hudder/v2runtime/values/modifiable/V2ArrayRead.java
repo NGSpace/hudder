@@ -1,17 +1,18 @@
-package io.github.ngspace.hudder.v2runtime.values;
+package io.github.ngspace.hudder.v2runtime.values.modifiable;
 
 import java.util.List;
 
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
+import io.github.ngspace.hudder.v2runtime.values.AV2Value;
 
 public class V2ArrayRead extends AV2Value {
 	
 	AV2Value indexValue;
 	AV2Value array;
 	
-	protected V2ArrayRead(String value, AV2Compiler compiler, V2Runtime runtime, int line, int charpos, String debugvalue) throws CompileException {
+	public V2ArrayRead(String value, AV2Compiler compiler, V2Runtime runtime, int line, int charpos, String debugvalue) throws CompileException {
 		super(line, charpos, debugvalue, compiler);
 		int indexstart = value.lastIndexOf('[');
 		String index = value.substring(indexstart+1,value.length()-1);

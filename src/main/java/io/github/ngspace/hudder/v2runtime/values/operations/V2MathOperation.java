@@ -1,7 +1,8 @@
-package io.github.ngspace.hudder.v2runtime.values;
+package io.github.ngspace.hudder.v2runtime.values.operations;
 
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;
+import io.github.ngspace.hudder.v2runtime.values.AV2Value;
 
 public class V2MathOperation extends AV2Value {
 	public AV2Value[] values = new AV2Value[0];
