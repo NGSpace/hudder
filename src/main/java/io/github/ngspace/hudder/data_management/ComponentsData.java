@@ -5,7 +5,7 @@ import java.util.HashMap;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
-import io.github.ngspace.hudder.util.ValueGetter;
+import io.github.ngspace.hudder.utils.ValueGetter;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ItemEnchantmentsComponent;

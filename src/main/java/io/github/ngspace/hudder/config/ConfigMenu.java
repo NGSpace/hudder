@@ -14,7 +14,7 @@ import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.Compilers;
-import io.github.ngspace.hudder.util.HudFileUtils;
+import io.github.ngspace.hudder.utils.HudFileUtils;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
@@ -43,7 +43,7 @@ public class ConfigMenu implements ConfigScreenFactory<Screen> {
 					config.save();
 				} catch (IOException e) {
 					e.printStackTrace();
-					Hudder.showToast(mc, Text.literal("Failed to save hudder config"), Text.literal(e.getMessage()));
+					Hudder.showToast(Text.literal("Failed to save hudder config"), Text.literal(e.getMessage()));
 				}
 			})
 			.setDefaultBackgroundTexture(Identifier.tryParse("textures/block/dark_oak_planks.png"))

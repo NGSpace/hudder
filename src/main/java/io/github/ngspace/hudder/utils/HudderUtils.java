@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.util;
+package io.github.ngspace.hudder.utils;
 
 import java.util.Arrays;
 

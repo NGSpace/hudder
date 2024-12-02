@@ -3,7 +3,7 @@ package io.github.ngspace.hudder.compilers.utils;
 import java.io.Closeable;
 import java.io.IOException;
 
-import io.github.ngspace.hudder.util.ObjectWrapper;
+import io.github.ngspace.hudder.utils.ObjectWrapper;
 
 public interface IScriptingLanguageEngine extends Closeable {
 	

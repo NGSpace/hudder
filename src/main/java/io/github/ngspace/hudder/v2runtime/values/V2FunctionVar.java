@@ -5,7 +5,6 @@ import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import io.github.ngspace.hudder.v2runtime.functions.IV2Function;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -27,8 +26,8 @@ public class V2FunctionVar extends AV2Value {
 			this.args[i] = compiler.getV2Value(runtime, nonprocessedargs[i], line, charpos);
 		
 		if (func.isDeprecated(funcname)) {
-			Hudder.showWarningToast(MinecraftClient.getInstance(), Text.literal(funcname+" function is Deprecated!")
-					.formatted(Formatting.BOLD), Text.literal("\u00A7a" + func.getDeprecationWarning(funcname)));
+			Hudder.showWarningToast(Text.literal(funcname+" function is Deprecated!").formatted(Formatting.BOLD),
+					Text.literal("\u00A7a" + func.getDeprecationWarning(funcname)));
 		}
 	}
 

@@ -2,7 +2,7 @@ package io.github.ngspace.hudder.methods.elements;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import io.github.ngspace.hudder.util.HudderRenderer;
+import io.github.ngspace.hudder.utils.HudderRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderTickCounter;

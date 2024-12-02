@@ -1,6 +1,6 @@
 package io.github.ngspace.hudder.methods.elements;
 
-import io.github.ngspace.hudder.util.HudderRenderer;
+import io.github.ngspace.hudder.utils.HudderRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;

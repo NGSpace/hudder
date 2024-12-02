@@ -16,8 +16,8 @@ import io.github.ngspace.hudder.compilers.HudderV2Compiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.Compilers;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
-import io.github.ngspace.hudder.util.HudFileUtils;
-import io.github.ngspace.hudder.util.testing.HudderUnitTester;
+import io.github.ngspace.hudder.utils.HudFileUtils;
+import io.github.ngspace.hudder.utils.testing.HudderUnitTester;
 import net.minecraft.client.MinecraftClient;
 import net.minidev.json.JSONObject;
 

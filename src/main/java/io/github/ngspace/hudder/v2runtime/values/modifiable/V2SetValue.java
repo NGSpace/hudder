@@ -6,23 +6,23 @@ import io.github.ngspace.hudder.v2runtime.values.AV2Value;
 
 public class V2SetValue extends AV2Value {
 	public AV2Value key;
-	public AV2Value valueToSet;
+	public AV2Value v2value;
 
-	public V2SetValue(AV2Value key, AV2Value valueToSet, AV2Compiler compiler, int line, int charpos, String debugvalue) {
+	public V2SetValue(AV2Value key, AV2Value v2value, AV2Compiler compiler, int line, int charpos, String debugvalue) {
 		super(line, charpos, debugvalue,compiler);
 		this.key = key;
-		this.valueToSet = valueToSet;
+		this.v2value = v2value;
 	}
-	@Override
-	public Object get() throws CompileException {
-		Object ohsaycanyousee = valueToSet.get();//I'm not American, I'm just sleep deprived.
-		key.setValue(compiler, ohsaycanyousee);
-		return ohsaycanyousee;
+	@Override public Object get() throws CompileException {
+		Object value = v2value.get();
+		key.setValue(compiler, value);
+		return value;
 	}
 	@Override public void setValue(AV2Compiler compiler, Object value) throws CompileException {
-		throw new CompileException("If you receive this message, it's a bug, report it to the creator of Hudder: 01",
-				line, charpos);
+		throw new CompileException(
+				"This error is a bug, please report it, \ndbg inf: \"V2SetValue.setValue(V2Comp,o)\", V2Comp:\""
+				+ compiler.getClass().getSimpleName() + "\", o:" + value, line, charpos);
 	}
-	@Override public boolean isConstant() throws CompileException {return valueToSet.isConstant();}
+	@Override public boolean isConstant() throws CompileException {return v2value.isConstant();}
 	
 }

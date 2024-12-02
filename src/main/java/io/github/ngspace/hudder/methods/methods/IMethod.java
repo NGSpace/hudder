@@ -4,7 +4,7 @@ import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileState;
 import io.github.ngspace.hudder.config.ConfigInfo;
-import io.github.ngspace.hudder.util.ObjectWrapper;
+import io.github.ngspace.hudder.utils.ObjectWrapper;
 
 @FunctionalInterface
 public interface IMethod {

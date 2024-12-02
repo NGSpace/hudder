@@ -3,8 +3,8 @@ package io.github.ngspace.hudder.methods.elements;
 import java.io.IOException;
 
 import io.github.ngspace.hudder.compilers.utils.CompileException;
-import io.github.ngspace.hudder.util.HudFileUtils;
-import io.github.ngspace.hudder.util.HudderRenderer;
+import io.github.ngspace.hudder.utils.HudFileUtils;
+import io.github.ngspace.hudder.utils.HudderRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.util.Identifier;

@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.util;
+package io.github.ngspace.hudder.utils;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -15,10 +15,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 public class HudderTickEvent implements StartTick {
-
-	protected static MinecraftClient mc = MinecraftClient.getInstance();
 	
-    WatchKey wk = null;
+    private WatchKey wk = null;
     
     public HudderTickEvent() {
 		try {
@@ -29,8 +27,7 @@ public class HudderTickEvent implements StartTick {
 		}
 	}
     
-	@Override
-	public void onStartTick(MinecraftClient client) {
+	@Override public void onStartTick(MinecraftClient client) {
     	if (!Hudder.config.enabled) return;
     	try {
 			if (wk!=null) {
@@ -38,17 +35,17 @@ public class HudderTickEvent implements StartTick {
 				    final Path changed = (Path) event.context();
 				    if (changed.toString().equals("hud.json")) {
 				    	Hudder.config.readConfig();
-				    	Hudder.showToast(mc,Text.literal("Refreshed Config file!").formatted(Formatting.BOLD),
+				    	Hudder.showToast(Text.literal("Refreshed Config file!").formatted(Formatting.BOLD),
 								Text.literal("\u00A7aLoaded File"));
 				    } else {
 				    	Hudder.log(changed.getFileName() + " has changed! Clearing cache!");
 						try {
 							HudFileUtils.clearFileCache();
-							Hudder.showToast(mc, Text.literal("Refreshing "+changed.getFileName()+'!')
+							Hudder.showToast(Text.literal("Refreshing "+changed.getFileName()+'!')
 								.formatted(Formatting.BOLD), Text.literal("\u00A7aLoaded File"));
 						} catch (CompileException e) {
-							Hudder.showToast(mc, Text.literal("\\u00A74Error refreshing "+changed.getFileName()
-								+'!').formatted(Formatting.BOLD),Text.literal(e.getMessage()));
+							Hudder.showToast( Text.literal("\\u00A74Error refreshing "+changed.getFileName()+'!')
+									.formatted(Formatting.BOLD),Text.literal(e.getMessage()));
 							e.printStackTrace();
 						}
 				    }
@@ -56,12 +53,10 @@ public class HudderTickEvent implements StartTick {
 				if (!wk.reset()) {
 					wk = null;
 					Hudder.error("Unable to watch for changes in File!");
-					Hudder.showToast(mc,Text.literal("\u00A74Failed to reload files!").formatted(Formatting.BOLD));
+					Hudder.showToast(Text.literal("\u00A74Failed to reload files!").formatted(Formatting.BOLD));
 				}
 			}
-    	} catch (RuntimeException e) {
-			e.printStackTrace();
-		}
+    	} catch (RuntimeException e) {e.printStackTrace();}
 	}
 	
 }

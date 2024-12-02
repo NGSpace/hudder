@@ -15,8 +15,8 @@ import org.mozilla.javascript.WrapFactory;
 import org.mozilla.javascript.WrappedException;
 
 import io.github.ngspace.hudder.Hudder;
-import io.github.ngspace.hudder.util.ObjectWrapper;
-import io.github.ngspace.hudder.util.ValueGetter;
+import io.github.ngspace.hudder.utils.ObjectWrapper;
+import io.github.ngspace.hudder.utils.ValueGetter;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -108,8 +108,7 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 	
 	private void insertObject(Object obj, String name) {
 		Object wrappedObj = Context.javaToJS(obj, scope);
-		ScriptableObject.defineProperty(scope, name, wrappedObj, 
-				ScriptableObject.READONLY | ScriptableObject.PERMANENT);
+		ScriptableObject.defineProperty(scope, name, wrappedObj, ScriptableObject.READONLY|ScriptableObject.PERMANENT);
 	}
 	
 	
@@ -141,7 +140,7 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 		public void debug(Object str) {Hudder.debug(str);}
 		public void alert(Object str) {Hudder.alert(str);}
 		public void showToast(String title, String content) {
-			Hudder.showToast(mc,Text.literal(title).formatted(Formatting.BOLD), Text.literal(content));
+			Hudder.showToast(Text.literal(title).formatted(Formatting.BOLD), Text.literal(content));
 		}
 	}
 	
@@ -162,7 +161,7 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 	
 	
 	
-	private class JavaScriptValue extends ObjectWrapper {
+	private class JavaScriptValue implements ObjectWrapper {
 		private Object value;
 		private JavaScriptValue(Object value) {
 			this.value=value;

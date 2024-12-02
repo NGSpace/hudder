@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.util;
+package io.github.ngspace.hudder.utils;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

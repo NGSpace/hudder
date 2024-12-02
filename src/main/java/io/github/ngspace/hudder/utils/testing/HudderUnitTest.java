@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.util.testing;
+package io.github.ngspace.hudder.utils.testing;
 
 import java.util.HashMap;
 

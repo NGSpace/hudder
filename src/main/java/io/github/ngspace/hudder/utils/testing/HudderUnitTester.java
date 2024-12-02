@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.util.testing;
+package io.github.ngspace.hudder.utils.testing;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -14,7 +14,7 @@ import org.apache.commons.io.IOUtils;
 
 import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.config.ConfigInfo;
-import io.github.ngspace.hudder.util.testing.HudderUnitTest.HudderUnitTestResult;
+import io.github.ngspace.hudder.utils.testing.HudderUnitTest.HudderUnitTestResult;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 

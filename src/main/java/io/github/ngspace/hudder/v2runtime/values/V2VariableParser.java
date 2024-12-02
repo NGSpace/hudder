@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import io.github.ngspace.hudder.compilers.utils.CompileException;
-import io.github.ngspace.hudder.util.HudderUtils;
+import io.github.ngspace.hudder.utils.HudderUtils;
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import io.github.ngspace.hudder.v2runtime.values.constants.V2Array;
@@ -105,7 +105,7 @@ public class V2VariableParser {
 		String[] setValues = value.split("=",2);// Split at the first '='
 		// Make sure it's not a condition!
 		if (setValues.length==2&&!comp.isCondition(value)) {
-			return new V2SetValue(comp.getV2Value(runtime, setValues[0].toLowerCase(),line,charpos),
+			return new V2SetValue(comp.getV2Value(runtime, setValues[0], line, charpos),
 					comp.getV2Value(runtime, setValues[1], line, charpos), comp, line, charpos, value);
 		}
 		
@@ -140,26 +140,29 @@ public class V2VariableParser {
 		if (!value.startsWith("(")&&value.endsWith(")")) {
 			// Same thing as before except we start reading at the first instance of a '(' char instead of at index 0.
 			int argStart = value.indexOf("(");
-			boolean isSafe = true;
+			boolean isSafe = false;
 			int parenthesses = 0;
-			for (int i = argStart;i<value.length();i++) {
-				char c = value.charAt(i);
-				if (c=='(')
-					parenthesses++;
-				if (c==')')
-					parenthesses--;
-				if (parenthesses==0) {
-					isSafe = i+1==value.length();
-					break;
+			if (argStart!=-1) {
+				isSafe = true;
+				for (int i = argStart;i<value.length();i++) {
+					char c = value.charAt(i);
+					if (c=='(')
+						parenthesses++;
+					if (c==')')
+						parenthesses--;
+					if (parenthesses==0) {
+						isSafe = i+1==value.length();
+						break;
+					}
 				}
-			}
-			if (argStart!=-1&&isSafe) {
-				String funcName = value.substring(0, argStart);
-				if (funcName.matches("^[a-zA-Z0-9_-]*$")) {
-					String parametersString = value.substring(argStart+1, value.length()-1);
-					String[] tokenizedArgs = HudderUtils.processParemeters(parametersString);
-					
-					return new V2FunctionVar(runtime, comp, funcName, tokenizedArgs, line, charpos, value);
+				if (isSafe) {
+					String funcName = value.substring(0, argStart);
+					if (funcName.matches("^[a-zA-Z0-9_-]*$")) {
+						String parametersString = value.substring(argStart+1, value.length()-1);
+						String[] tokenizedArgs = HudderUtils.processParemeters(parametersString);
+						
+						return new V2FunctionVar(runtime, comp, funcName, tokenizedArgs, line, charpos, value);
+					}
 				}
 			}
 		}

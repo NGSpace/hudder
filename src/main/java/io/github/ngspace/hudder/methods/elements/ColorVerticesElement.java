@@ -1,6 +1,6 @@
 package io.github.ngspace.hudder.methods.elements;
 
-import io.github.ngspace.hudder.util.HudderRenderer;
+import io.github.ngspace.hudder.utils.HudderRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.render.VertexFormat;

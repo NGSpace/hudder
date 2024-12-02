@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.util.testing;
+package io.github.ngspace.hudder.utils.testing;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
@@ -18,7 +18,7 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
 import io.github.ngspace.hudder.Hudder;
-import io.github.ngspace.hudder.util.HudFileUtils;
+import io.github.ngspace.hudder.utils.HudFileUtils;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
@@ -36,11 +36,9 @@ public class HudderUnitTestingCommand implements ClientCommandRegistrationCallba
 		}
 	}
 
-	@Override
-	public void register(CommandDispatcher<FabricClientCommandSource> dispatcher,
-			CommandRegistryAccess registryAccess) {
+	@Override public void register(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
 
-		dispatcher.register(literal("huddertesting")
+		dispatcher.register(literal("hudderunittesting")
 				
 				
 			.then(literal("test_all").executes(context -> {
@@ -49,9 +47,9 @@ public class HudderUnitTestingCommand implements ClientCommandRegistrationCallba
 			}))
 			
 			
-			.then(literal("test").then(argument("testname",StringArgumentType.greedyString())
+			.then(literal("test").then(argument("name",StringArgumentType.greedyString())
 			.suggests(new UnitTestsSuggestionProvider()).executes(context -> {
-				String testname = StringArgumentType.getString(context, "testname");
+				String testname = StringArgumentType.getString(context, "name");
 				context.getSource().sendFeedback(Hudder.config.hudderTester.test(Hudder.config,testname).toText(testname));
 				return 1;
 			})))

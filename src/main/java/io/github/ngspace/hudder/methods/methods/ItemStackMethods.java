@@ -5,7 +5,7 @@ import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileState;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.methods.elements.ItemElement;
-import io.github.ngspace.hudder.util.ObjectWrapper;
+import io.github.ngspace.hudder.utils.ObjectWrapper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
