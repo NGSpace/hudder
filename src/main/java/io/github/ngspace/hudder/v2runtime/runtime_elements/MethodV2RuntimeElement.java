@@ -10,8 +10,8 @@ import io.github.ngspace.hudder.methods.methods.IMethod;
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import io.github.ngspace.hudder.v2runtime.values.AV2Value;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 
 public class MethodV2RuntimeElement extends AV2RuntimeElement {
 
@@ -33,8 +33,8 @@ public class MethodV2RuntimeElement extends AV2RuntimeElement {
 		}
 		this.method = compiler.methodHandler.getMethodFromName(type);
 		if (method.isDeprecated(type)) {
-			Hudder.showWarningToast(Text.literal(type+" method is Deprecated!").formatted(Formatting.BOLD),
-					Text.literal("\u00A7a" + method.getDeprecationWarning(type)));
+			Hudder.showWarningToast(Component.literal(type+" method is Deprecated!").withStyle(ChatFormatting.BOLD),
+					Component.literal("\u00A7a" + method.getDeprecationWarning(type)));
 		}
 		this.line = line;
 		this.charpos = charpos;

@@ -13,11 +13,8 @@ import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.methods.methods.IMethod;
 import io.github.ngspace.hudder.methods.methods.ItemStackMethods;
 import io.github.ngspace.hudder.methods.methods.LoadMethod;
-import net.minecraft.client.MinecraftClient;
 
 public class MethodHandler {
-	
-	protected static MinecraftClient mc = MinecraftClient.getInstance();
 	
 	
 	public Map<String, IMethod> methods = new HashMap<String,IMethod>();

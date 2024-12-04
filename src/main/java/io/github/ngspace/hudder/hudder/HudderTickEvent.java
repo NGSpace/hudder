@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.utils;
+package io.github.ngspace.hudder.hudder;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -9,10 +9,11 @@ import java.nio.file.WatchKey;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.utils.HudFileUtils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.StartTick;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 
 public class HudderTickEvent implements StartTick {
 	
@@ -27,25 +28,25 @@ public class HudderTickEvent implements StartTick {
 		}
 	}
     
-	@Override public void onStartTick(MinecraftClient client) {
+	@Override public void onStartTick(Minecraft client) {
     	if (!Hudder.config.enabled) return;
     	try {
 			if (wk!=null) {
 				for (WatchEvent<?> event : wk.pollEvents()) {
-				    final Path changed = (Path) event.context();
+				    Path changed = (Path) event.context();
 				    if (changed.toString().equals("hud.json")) {
 				    	Hudder.config.readConfig();
-				    	Hudder.showToast(Text.literal("Refreshed Config file!").formatted(Formatting.BOLD),
-								Text.literal("\u00A7aLoaded File"));
+				    	Hudder.showToast(Component.literal("Refreshed Config file!").withStyle(ChatFormatting.BOLD),
+				    			Component.literal("\u00A7aLoaded File"));
 				    } else {
 				    	Hudder.log(changed.getFileName() + " has changed! Clearing cache!");
 						try {
 							HudFileUtils.clearFileCache();
-							Hudder.showToast(Text.literal("Refreshing "+changed.getFileName()+'!')
-								.formatted(Formatting.BOLD), Text.literal("\u00A7aLoaded File"));
+							Hudder.showToast(Component.literal("Refreshing "+changed.getFileName()+'!')
+								.withStyle(ChatFormatting.BOLD), Component.literal("\u00A7aLoaded File"));
 						} catch (CompileException e) {
-							Hudder.showToast( Text.literal("\\u00A74Error refreshing "+changed.getFileName()+'!')
-									.formatted(Formatting.BOLD),Text.literal(e.getMessage()));
+							Hudder.showToast( Component.literal("\\u00A74Error refreshing "+changed.getFileName()+'!')
+									.withStyle(ChatFormatting.BOLD),Component.literal(e.getMessage()));
 							e.printStackTrace();
 						}
 				    }
@@ -53,10 +54,9 @@ public class HudderTickEvent implements StartTick {
 				if (!wk.reset()) {
 					wk = null;
 					Hudder.error("Unable to watch for changes in File!");
-					Hudder.showToast(Text.literal("\u00A74Failed to reload files!").formatted(Formatting.BOLD));
+					Hudder.showToast(Component.literal("\u00A74Failed to reload files!").withStyle(ChatFormatting.BOLD));
 				}
 			}
     	} catch (RuntimeException e) {e.printStackTrace();}
 	}
-	
 }

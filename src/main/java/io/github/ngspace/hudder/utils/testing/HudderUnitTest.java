@@ -7,8 +7,8 @@ import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 public class HudderUnitTest {
 	public final ATextCompiler compiler;
@@ -50,9 +50,9 @@ public class HudderUnitTest {
 			this.expectation = expectation;
 			this.result = result;
 		}
-		public MutableText toText(String name) {
-			var message = Text.literal(name + ": ").withColor(0x0fa1fc)
-					.append(Text.literal((isSucessful?"Passed":"Failed")).withColor(isSucessful?0x0fff3f:0xff0000));
+		public MutableComponent toText(String name) {
+			var message = Component.literal(name + ": ").withColor(0x0fa1fc)
+					.append(Component.literal((isSucessful?"Passed":"Failed")).withColor(isSucessful?0x0fff3f:0xff0000));
 			Hudder.log("Test name: "+name);
 			Hudder.log("Expectation: "+expectation);
 			Hudder.log("Result: "+result);
@@ -62,12 +62,12 @@ public class HudderUnitTest {
 			return message;
 		}
 		
-		public MutableText getFailureMessage() {
-			var message = Text.literal("");
-			message.append(Text.literal("\n  Expected:\n").withColor(0x000cff));
-			message.append(Text.literal("    " + expectation.replace("\n", "\n    ")).withColor(0xffffff));
-			message.append(Text.literal("\n  Got:\n").withColor(0x000cff));
-			message.append(Text.literal("    " + result.replace("\n", "\n    ")).withColor(0xffffff));
+		public MutableComponent getFailureMessage() {
+			var message = Component.literal("");
+			message.append(Component.literal("\n  Expected:\n").withColor(0x000cff));
+			message.append(Component.literal("    " + expectation.replace("\n", "\n    ")).withColor(0xffffff));
+			message.append(Component.literal("\n  Got:\n").withColor(0x000cff));
+			message.append(Component.literal("    " + result.replace("\n", "\n    ")).withColor(0xffffff));
 			return message;
 		}
 	}

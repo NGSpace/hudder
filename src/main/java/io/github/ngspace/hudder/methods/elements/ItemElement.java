@@ -1,12 +1,13 @@
 package io.github.ngspace.hudder.methods.elements;
 
-import io.github.ngspace.hudder.utils.HudderRenderer;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+
+import io.github.ngspace.hudder.hudder.HudderRenderer;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.world.item.ItemStack;
 
 public class ItemElement extends AUIElement {
 	private static final long serialVersionUID = -4033666012277014500L;
@@ -22,22 +23,22 @@ public class ItemElement extends AUIElement {
 		this.scale = scale;
 		this.showcount = showcount;
 	}
-	static TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+	static Font textRenderer = Minecraft.getInstance().font;
 	
 	@Override
-	public void renderElement(DrawContext context, HudderRenderer renderer, RenderTickCounter delta) {
-        MatrixStack matrixStack = context.getMatrices();
+	public void renderElement(GuiGraphics context, HudderRenderer renderer, DeltaTracker delta) {
+        PoseStack matrixStack = context.pose();
         if (scale!=1f) {
-            matrixStack.push();
+            matrixStack.pushPose();
             matrixStack.translate(x, y, 0);
             matrixStack.scale(scale, scale, scale);
             matrixStack.translate(-x, -y, 0);
-        	context.drawItem(stack, (int)x, (int)y);
-        	if (showcount) context.drawStackOverlay(textRenderer, stack, (int)x, (int)y);
-            matrixStack.pop();
+        	context.renderItem(stack, (int)x, (int)y);
+        	if (showcount) context.renderItemDecorations(textRenderer, stack, (int)x, (int)y);
+            matrixStack.popPose();
         } else {
-        	context.drawItem(stack, (int)x, (int)y);
-        	if (showcount) context.drawStackOverlay(textRenderer, stack, (int)x, (int)y);
+        	context.renderItem(stack, (int)x, (int)y);
+        	if (showcount) context.renderItemDecorations(textRenderer, stack, (int)x, (int)y);
         }
 	}
 }

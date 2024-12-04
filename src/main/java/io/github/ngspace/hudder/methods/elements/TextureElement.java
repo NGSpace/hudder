@@ -2,11 +2,11 @@ package io.github.ngspace.hudder.methods.elements;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import io.github.ngspace.hudder.utils.HudderRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.util.Identifier;
+import io.github.ngspace.hudder.hudder.HudderRenderer;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 
 public class TextureElement extends AUIElement {
 	private static final long serialVersionUID = -3008870889825976036L;
@@ -14,18 +14,18 @@ public class TextureElement extends AUIElement {
 	public final int y;
 	public final int width;
 	public final int height;
-	public final Identifier id;
-	public TextureElement(Identifier id, int x, int y, int width, int height) {
+	public final ResourceLocation id;
+	public TextureElement(ResourceLocation id, int x, int y, int width, int height) {
 		this.x=x;
 		this.y=y;
 		this.width=width;
 		this.height=height;
 		this.id=id;
 	}
-	@Override public void renderElement(DrawContext context, HudderRenderer renderer, RenderTickCounter delta) {
+	@Override public void renderElement(GuiGraphics context, HudderRenderer renderer, DeltaTracker delta) {
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		context.drawTexture(RenderLayer::getGuiTexturedOverlay,id, x, y, 0, 0f, width, height, width, height);
+		context.blit(RenderType::guiTextured,id, x, y, 0, 0f, width, height, width, height);
 		RenderSystem.disableBlend();
 	}
 }

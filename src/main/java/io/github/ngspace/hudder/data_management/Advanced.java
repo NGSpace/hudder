@@ -11,7 +11,7 @@ import org.lwjgl.glfw.GLFW;
 
 import com.sun.management.OperatingSystemMXBean;
 
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 
 public class Advanced {private Advanced() {}
 	public static double gpuUsage = 0;
@@ -38,8 +38,8 @@ public class Advanced {private Advanced() {}
 	
     private static final List<Integer> fpshistory = new ArrayList<Integer>();
 
-    public static int getFPS(MinecraftClient ins) {
-    	int fps = ins.getCurrentFps();
+    public static int getFPS(Minecraft ins) {
+    	int fps = ins.getFps();
         fpshistory.add(fps);
         if (fpshistory.size()>800) fpshistory.remove(0);
         return fps;

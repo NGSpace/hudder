@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import io.github.ngspace.hudder.compilers.utils.CompileException;
-import io.github.ngspace.hudder.utils.HudderUtils;
+import io.github.ngspace.hudder.hudder.HudderUtils;
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import io.github.ngspace.hudder.v2runtime.values.constants.V2Array;

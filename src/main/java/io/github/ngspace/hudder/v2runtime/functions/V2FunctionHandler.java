@@ -7,12 +7,12 @@ import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import io.github.ngspace.hudder.v2runtime.values.AV2Value;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 
 public class V2FunctionHandler {
 	private Map<String, IV2Function> functions = new HashMap<String,IV2Function>();
 	
-	protected static MinecraftClient mc = MinecraftClient.getInstance();
+	protected static Minecraft mc = Minecraft.getInstance();
 	
 	public V2FunctionHandler() {
 		if (Hudder.IS_DEBUG) bindFunction(new TestFunction(), 2, "test");
@@ -56,20 +56,20 @@ public class V2FunctionHandler {
 		
 		//Inventory management
 
-		bindFunctionDep((r,n,args,l,c)->mc.player.getInventory().getStack(args[0].asInt()).getName(),1,1,
+		bindFunctionDep((r,n,args,l,c)->mc.player.getInventory().getItem(args[0].asInt()).getDisplayName(),1,1,
 				"Use \"getItem([number]).name\"","itemname");
-		bindFunctionDep((r,n,args,l,c)->mc.player.getInventory().getStack(args[0].asInt()).getCount(),1,1,"itemcount");
+		bindFunctionDep((r,n,args,l,c)->mc.player.getInventory().getItem(args[0].asInt()).getCount(),1,1,"itemcount");
 		
 		
 		bindFunctionDep((r,n,args,l,c)->{
-			var stack = mc.player.getInventory().getStack(args[0].asInt());
-			return stack.getMaxDamage()-stack.getDamage();
+			var stack = mc.player.getInventory().getItem(args[0].asInt());
+			return stack.getMaxDamage()-stack.getDamageValue();
 		},1,1,"itemdurability");
 		
 		
-		bindFunctionDep((r,n,args,l,c)->mc.player.getInventory().getStack(args[0].asInt()).getMaxDamage(),1,1,
+		bindFunctionDep((r,n,args,l,c)->mc.player.getInventory().getItem(args[0].asInt()).getMaxDamage(),1,1,
 				"itemmaxdurability");
-		bindFunctionDep((r,n,args,l,c)->mc.player.getInventory().getStack(args[0].asInt()).getMaxCount(),1,1,
+		bindFunctionDep((r,n,args,l,c)->mc.player.getInventory().getItem(args[0].asInt()).getMaxStackSize(),1,1,
 				"itemmaxcount");
 		
 		// Misc

@@ -1,13 +1,14 @@
 package io.github.ngspace.hudder.methods.elements;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+
+import io.github.ngspace.hudder.hudder.HudderRenderer;
 import io.github.ngspace.hudder.mixin.InGameHudAccessor;
-import io.github.ngspace.hudder.utils.HudderRenderer;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.JumpingMount;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.world.entity.PlayerRideableJumping;
 
 /**
  * This element is a merging of all builtin GUI elements (Status bars) 
@@ -16,7 +17,7 @@ import net.minecraft.entity.JumpingMount;
  */
 public class GameHudElement extends AUIElement {
 	
-	protected static MinecraftClient mc = MinecraftClient.getInstance();
+	protected static Minecraft mc = Minecraft.getInstance();
 	public enum GuiType {
 		STATUS_BARS,
 		EXP_AND_MOUNT_BAR,
@@ -36,60 +37,58 @@ public class GameHudElement extends AUIElement {
 		this.type = type;
 	}
 
-	@Override public void renderElement(DrawContext context, HudderRenderer renderer, RenderTickCounter delta) {
+	@Override public void renderElement(GuiGraphics context, HudderRenderer renderer, DeltaTracker delta) {
 		try {
-			InGameHudAccessor acchud = (InGameHudAccessor) (mc.inGameHud);
-			float scaledWidth = context.getScaledWindowWidth();
-	        float scaledHeight = context.getScaledWindowHeight();
-	        MatrixStack matrixStack = context.getMatrices();
-	        matrixStack.push();
+			InGameHudAccessor acchud = (InGameHudAccessor) (mc.gui);
+			float scaledWidth = context.guiWidth();
+	        float scaledHeight = context.guiHeight();
+	        PoseStack matrixStack = context.pose();
+	        matrixStack.pushPose();
 	        switch (type) {
 				case STATUS_BARS:
-			        if (mc.interactionManager.hasStatusBars()) {
+			        if (mc.gameMode.canHurtPlayer()) {
 				        matrixStack.translate(x-scaledWidth/2, y-scaledHeight + 39, 0f);
-				        acchud.callRenderStatusBars(context);
-				        acchud.callRenderMountHealth(context);
+				        acchud.callRenderPlayerHealth(context);
+				        acchud.callRenderVehicleHealth(context);
 			        }
 			        break;
 				case EXP_AND_MOUNT_BAR:
 		            int i = (int) (scaledWidth / 2 - 91);
-			    	JumpingMount jumpingMount = mc.player.getJumpingMount();
+			    	PlayerRideableJumping jumpingMount = mc.player.jumpableVehicle();
 		            if (jumpingMount != null) {
 				        matrixStack.translate(x-scaledWidth/2, y-scaledHeight + 39, 0f);
-				        acchud.callRenderMountJumpBar(jumpingMount, context, i);
-		            } else if (mc.interactionManager.hasExperienceBar()) {
+				        acchud.callRenderJumpMeter(jumpingMount, context, i);
+		            } else if (mc.gameMode.hasExperience()) {
 				        matrixStack.translate(x-scaledWidth/2, y-scaledHeight + 35, 0f);
-				        TextRenderer textRenderer = mc.textRenderer;
+				        Font font = mc.font;
 			    		int jj = mc.player.experienceLevel;
-			    		if (mc.interactionManager.hasExperienceBar() && jj > 0) {
-//			    			ins.getProfiler().push("expLevel");
+			    		if (mc.gameMode.hasExperience() && jj > 0) {
 			    			String string = "" + jj;
-			    			int j = (context.getScaledWindowWidth() - textRenderer.getWidth(string)) / 2;
-			    			int k = context.getScaledWindowHeight() - 31 - 8;
-			    			context.drawText(textRenderer, string, j + 1, k, 0, false);
-			    			context.drawText(textRenderer, string, j - 1, k, 0, false);
-			    			context.drawText(textRenderer, string, j, k + 1, 0, false);
-			    			context.drawText(textRenderer, string, j, k - 1, 0, false);
-			    			context.drawText(textRenderer, string, j, k, 8453920, false);
-//			    			ins.getProfileKeys().pop();
+			    			int j = (context.guiWidth() - font.width(string)) / 2;
+			    			int k = context.guiHeight() - 31 - 8;
+			    			context.drawString(font, string, j + 1, k, 0, false);
+			    			context.drawString(font, string, j - 1, k, 0, false);
+			    			context.drawString(font, string, j, k + 1, 0, false);
+			    			context.drawString(font, string, j, k - 1, 0, false);
+			    			context.drawString(font, string, j, k, 8453920, false);
 			    		}
 				        acchud.callRenderExperienceBar(context, i);
 		            }
 					break;
 				case HOTBAR:
 			        matrixStack.translate(x-scaledWidth/2, y-scaledHeight, 0f);
-			        acchud.callRenderHotbar(context, delta);
+			        acchud.callRenderHotbarAndDecorations(context, delta);
 					break;
 				case ITEM_TOOLTIP:
-					int tooltipy =  59;
-					if (!mc.interactionManager.hasStatusBars()) tooltipy -= 14;
+					int tooltipy = 44;
+					if (mc.gameMode.canHurtPlayer()) tooltipy -= 14;
 			        matrixStack.translate(x-scaledWidth/2, tooltipy-scaledHeight+y, 0f);
-			        acchud.callRenderHeldItemTooltip(context);
+			        acchud.callRenderSelectedItemName(context);
 					break;
 				default:
 					break;
 			}
-	        matrixStack.pop();
+	        matrixStack.popPose();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

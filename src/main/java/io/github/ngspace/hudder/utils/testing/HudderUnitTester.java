@@ -15,8 +15,8 @@ import org.apache.commons.io.IOUtils;
 import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.utils.testing.HudderUnitTest.HudderUnitTestResult;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 public class HudderUnitTester {
 	public ATextCompiler compiler;
@@ -43,8 +43,8 @@ public class HudderUnitTester {
 	
 	
 	
-	public Text testAll(ConfigInfo config) {
-		MutableText result = Text.literal("All tests:\n");
+	public MutableComponent testAll(ConfigInfo config) {
+		MutableComponent result = Component.literal("All tests:\n");
 		boolean failed = false;
 		Instant start = Instant.now();
 		Map<HudderUnitTestResult,String> failedtests = new HashMap<HudderUnitTestResult, String>();
@@ -58,15 +58,15 @@ public class HudderUnitTester {
 		}
 		Instant end = Instant.now();
 		if (failed) {
-			result.append(Text.literal("\n\nFailed the following tests: ").withColor(0xff0000));
+			result.append(Component.literal("\n\nFailed the following tests: ").withColor(0xff0000));
 			for (var failedtest : failedtests.entrySet()) {
 				result.append("\n\n");
-				result.append(Text.literal(failedtest.getValue()).withColor(0xff0000));
+				result.append(Component.literal(failedtest.getValue()).withColor(0xff0000));
 				result.append(":");
 				result.append(failedtest.getKey().getFailureMessage());
 			}
-			result.append(Text.literal(milliseconds(false, start, end, failedtests.size(), UnitTests.size())));
-		} else result.append(Text.literal(milliseconds(true, start, end, failedtests.size(), UnitTests.size())));
+			result.append(Component.literal(milliseconds(false, start, end, failedtests.size(), UnitTests.size())));
+		} else result.append(Component.literal(milliseconds(true, start, end, failedtests.size(), UnitTests.size())));
 		return result;
 	}
 

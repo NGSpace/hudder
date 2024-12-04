@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.utils;
+package io.github.ngspace.hudder.hudder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
 import io.github.ngspace.hudder.data_management.Advanced;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.client.DeltaTracker;
 
 public class HudCompilationManager {
     public static List<Consumer<ATextCompiler>> precomplistners = new ArrayList<Consumer<ATextCompiler>>();
@@ -27,9 +27,9 @@ public class HudCompilationManager {
     
     
 	
-	public void compile(RenderTickCounter f) {
+	public void compile(DeltaTracker f) {
 		try {
-    		Advanced.delta = f!=null?f.getLastFrameDuration():3;
+    		Advanced.delta = f!=null?f.getGameTimeDeltaTicks():3;
     		if (Hudder.config.shouldCompile()) {
     			for (Consumer<ATextCompiler> con : precomplistners)  con.accept(Hudder.config.compiler);
 //    			var l = Instant.now();

@@ -9,7 +9,7 @@ import io.github.ngspace.hudder.config.ConfigInfo;
 import io.github.ngspace.hudder.methods.elements.TextureElement;
 import io.github.ngspace.hudder.utils.HudFileUtils;
 import io.github.ngspace.hudder.utils.ObjectWrapper;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public class TexturesMethods implements IMethod {
 
@@ -19,7 +19,7 @@ public class TexturesMethods implements IMethod {
         		try {
         			boolean ex = HudFileUtils.exists(HudFileUtils.FOLDER + s[0].asString().trim());
         			if (!ex) return;
-            		Identifier id = Identifier.of(s[0].asString().trim().toLowerCase());
+        			ResourceLocation id = ResourceLocation.withDefaultNamespace(s[0].asString().trim().toLowerCase());
 					HudFileUtils.getAndRegisterImage(s[0].asString(),id);
 	        		m.elements.add(new TextureElement(id,s[1].asInt(),s[2].asInt(),s[3].asInt(),s[4].asInt()));
 				} catch (IOException e) {
@@ -27,7 +27,7 @@ public class TexturesMethods implements IMethod {
 				}
 				break;	
 			case "texture":
-				m.elements.add(new TextureElement(Identifier.tryParse(s[0].asString()),s[1].asInt(),
+				m.elements.add(new TextureElement(ResourceLocation.tryParse(s[0].asString()),s[1].asInt(),
 		    			s[2].asInt(), s[3].asInt(),s[4].asInt()));
 				break;
 			default: throw new IllegalArgumentException();

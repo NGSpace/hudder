@@ -15,18 +15,18 @@ import io.github.ngspace.hudder.data_management.BooleanData;
 import io.github.ngspace.hudder.data_management.NumberData;
 import io.github.ngspace.hudder.data_management.ObjectData;
 import io.github.ngspace.hudder.data_management.StringData;
+import io.github.ngspace.hudder.hudder.HudCompilationManager;
 import io.github.ngspace.hudder.methods.elements.AUIElement;
 import io.github.ngspace.hudder.methods.elements.ItemElement;
-import io.github.ngspace.hudder.utils.HudCompilationManager;
 import io.github.ngspace.hudder.utils.HudFileUtils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 	
-	protected static MinecraftClient mc = MinecraftClient.getInstance();
+	protected static Minecraft mc = Minecraft.getInstance();
 	
 	protected AScriptingLanguageCompiler() {
 		HudCompilationManager.addPreCompilerListener(c->{if(c==this) elms.clear();});
@@ -108,23 +108,23 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 		
 		//Item
 		
-		engine.bindConsumer(s->elms.add(new ItemElement(s[1].asInt(), s[2].asInt(),new ItemStack(Registries.ITEM.get(
-				Identifier.tryParse(s[0].asString()))),s[3].asFloat(), false)),"drawItem", "item");
+		engine.bindConsumer(s->elms.add(new ItemElement(s[1].asInt(), s[2].asInt(),new ItemStack(BuiltInRegistries.ITEM.getValue(
+				ResourceLocation.tryParse(s[0].asString()))),s[3].asFloat(), false)),"drawItem", "item");
 		
 		//Slot
 		
 		engine.bindConsumer(s->elms.add(new ItemElement(s[1].asInt(),s[2].asInt(),mc.player.getInventory()
-				.getStack(s[0].asInt()),s[3].asFloat(), s[4].asBoolean())),"drawSlot", "slot");
+				.getItem(s[0].asInt()),s[3].asFloat(), s[4].asBoolean())),"drawSlot", "slot");
 		
 		//Armor
 		
 		engine.bindConsumer(s->elms.add(new ItemElement(s[1].asInt(),s[2].asInt(),mc.player.getInventory()
-				.getArmorStack(s[0].asInt()),s[3].asFloat(), s[4].asBoolean())),"drawArmor", "armor");
+				.getArmor(s[0].asInt()),s[3].asFloat(), s[4].asBoolean())),"drawArmor", "armor");
 		
 		//Offhand
 		
 		engine.bindConsumer(s->elms.add(new ItemElement(s[1].asInt(),s[2].asInt(),mc.player.getInventory()
-				.offHand.get(0),s[3].asFloat(), s[4].asBoolean())),"drawOffhand", "offhand");
+				.offhand.get(0),s[3].asFloat(), s[4].asBoolean())),"drawOffhand", "offhand");
 	}
 	
 	

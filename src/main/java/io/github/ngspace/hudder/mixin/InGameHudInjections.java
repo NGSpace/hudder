@@ -8,22 +8,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import io.github.ngspace.hudder.Hudder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 
 @Environment(EnvType.CLIENT)
-@Mixin(InGameHud.class)
+@Mixin(Gui.class)
 public class InGameHudInjections {
 	public boolean shouldNotDraw() {return Hudder.config.removegui&&Hudder.config.shouldCompile();}
 
-	@Inject(method = "renderMainHud", at = @At("HEAD"),cancellable=true)
-    public void disableMainHud(DrawContext context, RenderTickCounter tickCounter, CallbackInfo i) {
+	@Inject(method = "renderHotbarAndDecorations", at = @At("HEAD"),cancellable=true)
+    public void disableMainHud(GuiGraphics context, DeltaTracker tickCounter, CallbackInfo i) {
 		if(shouldNotDraw()) i.cancel();
 	}
 	
 	@Inject(method = "renderExperienceLevel", at = @At("HEAD"),cancellable=true)
-    public void disableExperienceLevel(DrawContext context, RenderTickCounter x, CallbackInfo i) {
+    public void disableExperienceLevel(GuiGraphics context, DeltaTracker x, CallbackInfo i) {
 		if (shouldNotDraw()) i.cancel();
 	}
 }

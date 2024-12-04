@@ -18,7 +18,7 @@ import io.github.ngspace.hudder.compilers.utils.Compilers;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
 import io.github.ngspace.hudder.utils.HudFileUtils;
 import io.github.ngspace.hudder.utils.testing.HudderUnitTester;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minidev.json.JSONObject;
 
 public class ConfigInfo {
@@ -52,7 +52,7 @@ public class ConfigInfo {
 	
 	
     public HudderUnitTester hudderTester = new HudderUnitTester(new HudderV2Compiler());
-	protected static MinecraftClient mc = MinecraftClient.getInstance();
+	protected static Minecraft mc = Minecraft.getInstance();
 	
     
     /**
@@ -179,7 +179,7 @@ public class ConfigInfo {
 	 * @return true or false
 	 */
 	public boolean shouldDrawResult() {
-		return !mc.options.hudHidden&&(!mc.getDebugHud().shouldShowDebugHud()||showInF3)&&enabled;
+		return !mc.options.hideGui&&(!mc.getDebugOverlay().showDebugScreen()||showInF3)&&enabled;
 	}
 	
 	

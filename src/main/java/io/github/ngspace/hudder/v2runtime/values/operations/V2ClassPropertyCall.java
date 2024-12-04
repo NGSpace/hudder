@@ -12,7 +12,7 @@ import org.mozilla.javascript.ScriptableObject;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
-import io.github.ngspace.hudder.utils.HudderUtils;
+import io.github.ngspace.hudder.hudder.HudderUtils;
 import io.github.ngspace.hudder.utils.NoAccess;
 import io.github.ngspace.hudder.utils.ValueGetter;
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;

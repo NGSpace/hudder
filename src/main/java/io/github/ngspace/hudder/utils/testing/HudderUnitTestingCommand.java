@@ -21,9 +21,9 @@ import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.utils.HudFileUtils;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
 
 public class HudderUnitTestingCommand implements ClientCommandRegistrationCallback {
 	
@@ -36,7 +36,7 @@ public class HudderUnitTestingCommand implements ClientCommandRegistrationCallba
 		}
 	}
 
-	@Override public void register(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
+	@Override public void register(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
 
 		dispatcher.register(literal("hudderunittesting")
 				
@@ -59,11 +59,11 @@ public class HudderUnitTestingCommand implements ClientCommandRegistrationCallba
 				try {
 					Hudder.config.hudderTester.UnitTests = new HashMap<String, HudderUnitTest>();
 					Hudder.config.hudderTester.load(getClass().getResourceAsStream(HudFileUtils.ASSETS + "UnitTests.hudder"));
-					context.getSource().sendFeedback(Text.literal("Succesfully reloaded tests").withColor(Colors.GREEN));
+					context.getSource().sendFeedback(Component.literal("Succesfully reloaded tests").withColor(CommonColors.GREEN));
 				} catch (Exception e) {
 					Hudder.error("Could not load unit tests");
 					e.printStackTrace();
-					context.getSource().sendFeedback(Text.literal("Could not reload unit tests").withColor(Colors.RED));
+					context.getSource().sendFeedback(Component.literal("Could not reload unit tests").withColor(CommonColors.RED));
 				}
 				return 1;
 			}))
@@ -73,12 +73,12 @@ public class HudderUnitTestingCommand implements ClientCommandRegistrationCallba
 				try {
 					Hudder.config.hudderTester.UnitTests = new HashMap<String, HudderUnitTest>();
 					Hudder.config.hudderTester.load(getClass().getResourceAsStream(HudFileUtils.ASSETS + "UnitTests.hudder"));
-					context.getSource().sendFeedback(Text.literal("Succesfully reloaded tests").withColor(Colors.GREEN));
+					context.getSource().sendFeedback(Component.literal("Succesfully reloaded tests").withColor(CommonColors.GREEN));
 					context.getSource().sendFeedback(Hudder.config.hudderTester.testAll(Hudder.config));
 				} catch (Exception e) {
 					Hudder.error("Could not load unit tests");
 					e.printStackTrace();
-					context.getSource().sendFeedback(Text.literal("Could not reload unit tests").withColor(Colors.RED));
+					context.getSource().sendFeedback(Component.literal("Could not reload unit tests").withColor(CommonColors.RED));
 				}
 				return 1;
 			}))
@@ -89,11 +89,11 @@ public class HudderUnitTestingCommand implements ClientCommandRegistrationCallba
 				try {
 					Hudder.config.hudderTester.load(new FileInputStream(StringArgumentType.getString(context, "path")));
 					context.getSource().sendFeedback(
-							Text.literal("Succesfully loaded tests").withColor(Colors.GREEN));
+							Component.literal("Succesfully loaded tests").withColor(CommonColors.GREEN));
 				} catch (Exception e) {
 					Hudder.error("Could not load unit tests");
 					e.printStackTrace();
-					context.getSource().sendFeedback(Text.literal("Could not load unit tests").withColor(Colors.RED));
+					context.getSource().sendFeedback(Component.literal("Could not load unit tests").withColor(CommonColors.RED));
 				}
 				return 1;
 			}))

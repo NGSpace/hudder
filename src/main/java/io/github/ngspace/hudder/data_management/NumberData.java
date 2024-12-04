@@ -6,25 +6,23 @@ import java.util.Queue;
 import io.github.ngspace.hudder.config.ConfigManager;
 import io.github.ngspace.hudder.mixin.ParticleManagerAccessor;
 import io.github.ngspace.hudder.mixin.WorldRendererAccess;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.world.LightType;
-import net.minecraft.world.World;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.server.IntegratedServer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.LightLayer;
 
 public class NumberData {private NumberData() {}
 	static double MB = 1024d*1024d;
     static Runtime runtime = Runtime.getRuntime();
 	
 	public static Double getNumber(String key) {
-		MinecraftClient ins = MinecraftClient.getInstance();
-		PlayerEntity p = ins.player;
-		WorldRenderer wr = ins.worldRenderer;
-		World world = ins.world;
+		Minecraft ins = Minecraft.getInstance();
+		LocalPlayer p = ins.player;
+		LevelRenderer wr = ins.levelRenderer;
+		var world = ins.level;
 		int fps = Advanced.getFPS(ins);
 		
 		return switch(key) {
@@ -34,7 +32,7 @@ public class NumberData {private NumberData() {}
 			case "avgfps","avg_fps": yield (double) Advanced.getAverageFPS();
 			case "minfps","min_fps": yield (double) Advanced.getMinimumFPS();
 			case "maxfps","max_fps": yield (double) Advanced.getMaximumFPS();
-			case "ping": yield (double) ins.getNetworkHandler().getPlayerListEntry(p.getName().getString()).getLatency();
+			case "ping": yield (double) ins.getConnection().getPlayerInfo(p.getName().getString()).getLatency();
 			case "tps": yield (double) getTPS(ins);
 			
 			case "gpu_d", "dgpu": yield Advanced.gpuUsage;
@@ -70,32 +68,32 @@ public class NumberData {private NumberData() {}
 			
 			
 			/* Food and health */
-			case "saturation": yield (double) p.getHungerManager().getSaturationLevel();
-			case "hunger": yield (double) p.getHungerManager().getFoodLevel();
+			case "saturation": yield (double) p.getFoodData().getSaturationLevel();
+			case "hunger": yield (double) p.getFoodData().getFoodLevel();
 			case "health", "hp": yield (double) p.getHealth();
 			case "maxhealth", "maxhp": yield (double) p.getMaxHealth();
 			
 			
 			
 			/* Other Player related information */
-			case "selectedslot": yield (double) p.getInventory().selectedSlot;
+			case "selectedslot": yield (double) p.getInventory().selected;
 			case "xplevel": yield (double) p.experienceLevel;
 			case "xp": yield (double) p.totalExperience;
 
 			case "playerspeed": {
-				Entity ent = p.getVehicle() == null ? p : p.getVehicle();
+				var ent = p.getVehicle() == null ? p : p.getVehicle();
 
-			    double speed = (Math.sqrt(Math.pow(ent.getX() - ent.prevX, 2) +
-			    		Math.pow(ent.getY() - ent.prevY , 2) + Math.pow(ent.getZ() - ent.prevZ , 2)) * 20);
+			    double speed = (Math.sqrt(Math.pow(ent.getX() - ent.xOld, 2) +
+			    		Math.pow(ent.getY() - ent.yOld , 2) + Math.pow(ent.getZ() - ent.zOld , 2)) * 20);
 			    yield speed;
 			}
 			case "horizontal_playerspeed": {
-				Entity ent = p.getVehicle() == null ? p : p.getVehicle();
+				var ent = p.getVehicle() == null ? p : p.getVehicle();
 
-			    double speed = (Math.sqrt(Math.pow(ent.getX() - ent.prevX, 2) + Math.pow(ent.getZ() - ent.prevZ , 2)) * 20);
+			    double speed = (Math.sqrt(Math.pow(ent.getX() - ent.xOld, 2) + Math.pow(ent.getZ() - ent.zOld , 2)) * 20);
 			    yield speed;
 			}
-			case "armor": yield (double) p.getArmor();
+			case "armor": yield (double) p.getArmorValue();
 			
 			
 			
@@ -113,39 +111,39 @@ public class NumberData {private NumberData() {}
 			case "subchunkx": yield (double) (p.getBlockX() & 0xF);
 			case "subchunky": yield (double) (p.getBlockY() & 0xF);
 			case "subchunkz": yield (double) (p.getBlockZ() & 0xF);
-			case "chunkx": yield (double) p.getChunkPos().x;
-			case "chunkz": yield (double) p.getChunkPos().z;
+			case "chunkx": yield (double) p.chunkPosition().x;
+			case "chunkz": yield (double) p.chunkPosition().z;
 			
 			
 			
 			/* Player roation*/
-			case "dpitch": yield (double) p.getPitch();
-			case "dyaw": yield p.getYaw() % 360d;
-			case "pitch": yield (double) (int) p.getPitch();
-			case "yaw": yield (double) (int) p.getYaw() % 360;
+			case "dpitch": yield (double) p.getXRot();//TODO Maybe not same as before?
+			case "dyaw": yield p.getYHeadRot() % 360d;
+			case "pitch": yield (double) (int) p.getXRot();
+			case "yaw": yield (double) (int) p.getYHeadRot() % 360;
 			
 			
 
 			/* World Rendering */
-			case "entites", "entities": yield (double) ((WorldRendererAccess)wr).getRenderedEntitiesCount();
-			case "particles": yield (double) ((ParticleManagerAccessor)ins.particleManager)
+			case "entites", "entities": yield (double) ((WorldRendererAccess)wr).getVisibleEntityCount();
+			case "particles": yield (double) ((ParticleManagerAccessor)ins.particleEngine)
 				.getParticles().values().stream().mapToInt(Queue::size).sum();
-			case "chunks": yield wr.getChunkCount();
+			case "chunks": yield (double) wr.countRenderedSections();
 			
 			
 			
 			/* World */
-			case "light": yield (double) world.getLightLevel(p.getBlockPos());
-			case "blocklight", "block_light": yield (double) world.getLightLevel(LightType.BLOCK,p.getBlockPos());
-			case "skylight", "sky_light": yield (double) world.getLightLevel(LightType.SKY,p.getBlockPos());
-			case "worldtime", "world_time": yield (double) world.getTimeOfDay();
+			case "light": yield (double) world.getLightEmission(p.blockPosition());
+			case "blocklight", "block_light": yield (double) world.getBrightness(LightLayer.BLOCK,p.blockPosition());
+			case "skylight", "sky_light": yield (double) world.getBrightness(LightLayer.SKY,p.blockPosition());
+			case "worldtime", "world_time": yield (double) world.getGameTime();
 			
 			
 			
 			/* Hudder rendering */
-			case "width": yield (double) ins.getWindow().getScaledWidth();
-			case "height": yield (double) ins.getWindow().getScaledHeight();
-			case "guiscale": yield ins.getWindow().getScaleFactor();
+			case "width": yield (double) ins.getWindow().getGuiScaledWidth();
+			case "height": yield (double) ins.getWindow().getGuiScaledHeight();
+			case "guiscale": yield ins.getWindow().getGuiScale();
 
 			case "scale": yield (double) ConfigManager.getConfig().scale;
 			case "color": yield (double) ConfigManager.getConfig().color;
@@ -161,7 +159,7 @@ public class NumberData {private NumberData() {}
 			case "held_item_durability","helmet_durability","chestplate_durability","leggings_durability",
 			"boots_durability","offhand_durability": {
 				ItemStack stack = getStack(key, p.getInventory());
-				yield (double) stack.getMaxDamage() - stack.getDamage();
+				yield (double) stack.getMaxDamage() - stack.getDamageValue();
 			}
 			case"held_item_max_durability","helmet_max_durability","chestplate_max_durability","leggings_max_durability",
 			"boots_max_durability","offhand_max_durability":yield (double)getStack(key, p.getInventory()).getMaxDamage();
@@ -173,18 +171,18 @@ public class NumberData {private NumberData() {}
 			default: yield null;
 		};
 	}
-	public static float getTPS(MinecraftClient client) {
-        IntegratedServer server = client.getServer();
-        return server == null ? -1f : server.getTickManager().getTickRate();
+	public static float getTPS(Minecraft client) {
+        IntegratedServer server = client.getSingleplayerServer();
+        return server == null ? -1f : server.tickRateManager().tickrate();
 	}
-	public static ItemStack getStack(String type, PlayerInventory inv) {
+	public static ItemStack getStack(String type, Inventory inv) {
 		//I took some short cuts for a tiny performance increase. Probably not even calculatable.
-		if (type.startsWith("held")) return inv.getStack(inv.selectedSlot);//held_item
-		if (type.startsWith("helm")) return inv.getArmorStack(3);//helmet
-		if (type.startsWith("c")) return inv.getArmorStack(2);//chestplate
-		if (type.startsWith("l")) return inv.getArmorStack(1);//leggings
-		if (type.startsWith("b")) return inv.getArmorStack(0);//boots
-		if (type.startsWith("o")) return inv.offHand.get(0);//offhand
+		if (type.startsWith("held")) return inv.getItem(inv.selected);//held_item
+		if (type.startsWith("helm")) return inv.getArmor(3);//helmet
+		if (type.startsWith("c")) return inv.getArmor(2);//chestplate
+		if (type.startsWith("l")) return inv.getArmor(1);//leggings
+		if (type.startsWith("b")) return inv.getArmor(0);//boots
+		if (type.startsWith("o")) return inv.offhand.get(0);//offhand
 		throw new IllegalArgumentException("Unexpected value: " + type);
 	}
 }

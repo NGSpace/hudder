@@ -4,13 +4,14 @@ import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.util.NarratorManager;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.Text;
+import net.minecraft.client.GameNarrator;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 
+@SuppressWarnings("resource")
 public class HudderModMenuImpl implements ModMenuApi {
 	@Override public ConfigScreenFactory<?> getModConfigScreenFactory() {
 		return FabricLoader.getInstance().isModLoaded("cloth-config2") ? new ConfigMenu() : InstallClothConfig::new;
@@ -19,18 +20,18 @@ public class HudderModMenuImpl implements ModMenuApi {
 	class InstallClothConfig extends Screen {
 	    private final Screen parent;
 	    public InstallClothConfig(Screen parent) {
-	        super(NarratorManager.EMPTY);
+	        super(GameNarrator.NO_TITLE);
 	        this.parent = parent;
 	    }
 	    @Override protected void init() {
-	        addDrawableChild(ButtonWidget.builder(ScreenTexts.OK, buttonWidget -> client.setScreen(parent))
-	                .position(width/2-100, height-52).size(200, 20).build());
+	        addRenderableWidget(Button.builder(Component.keybind("OK"), buttonWidget -> Minecraft.getInstance().setScreen(parent))
+	                .pos(width/2-100, height-52).size(200, 20).build());
 	    }
-	    @Override public void render(DrawContext drawContext, int mouseX, int mouseY, float delta) {
-	    	Text INSTALLCLOTH = Text.translatable("hudder.noclothapi");
+		@Override public void render(GuiGraphics drawContext, int mouseX, int mouseY, float delta) {
+	    	Component INSTALLCLOTH = Component.translatable("hudder.noclothapi");
 	        super.render(drawContext, mouseX, mouseY, delta);
-	        drawContext.drawTextWithShadow(client.textRenderer, INSTALLCLOTH,
-	        		(width-client.textRenderer.getWidth(INSTALLCLOTH))/2, height/3, 0xAA0000);
+	        drawContext.drawString(Minecraft.getInstance().font, INSTALLCLOTH,
+	        		(width-Minecraft.getInstance().font.width(INSTALLCLOTH))/2, height/3, 0xAA0000);
 	        super.render(drawContext, mouseX, mouseY, delta);
 	    }
 	}
