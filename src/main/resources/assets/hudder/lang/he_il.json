@@ -60,14 +60,14 @@
 	"hudder.global_variables.value.tooltip": "הערך של המשתנה",
 	
 	"hudder.advanced.compilertype": "סוג קומפילר",
-	"hudder.advanced.compilertype.tooltip": "שנה את סוג הקומפילר (לדוגמה Default, JavaScript, None)",
+	"hudder.advanced.compilertype.tooltip": "שנה את סוג הקומפילר (לדוגמה Hudder, JavaScript, None)",
 	"hudder.advanced.compilertype.error": "סוג קומפילר לא תקין",
 	
 	"hudder.advanced.javascript": "Javascript מופעל",
 	"hudder.advanced.javascript.tooltip": "האם JavaScript מופעל",
 	
 	
-	"hudder.noclothapi": "עליך להתקין Cloth Config 13.0.121 ומעלה כדי להשתמש בתפריט זה.",
+	"hudder.noclothapi": "עליך להתקין Cloth Config כדי להשתמש בתפריט זה.",
 
 	"hudder.text.backgroundcolor": "צבע רקע",
 	"hudder.text.backgroundcolor.tooltip": "שנה את צבע ברירת המחדל של הרקע.",

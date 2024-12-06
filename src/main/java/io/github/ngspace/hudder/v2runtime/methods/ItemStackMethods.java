@@ -1,10 +1,10 @@
-package io.github.ngspace.hudder.methods.methods;
+package io.github.ngspace.hudder.v2runtime.methods;
 
 import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileState;
-import io.github.ngspace.hudder.config.ConfigInfo;
-import io.github.ngspace.hudder.methods.elements.ItemElement;
+import io.github.ngspace.hudder.config.HudderConfig;
+import io.github.ngspace.hudder.uielements.ItemElement;
 import io.github.ngspace.hudder.utils.ObjectWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -16,7 +16,7 @@ public class ItemStackMethods implements IMethod {
 	
 	protected static Minecraft mc = Minecraft.getInstance();
 	@Override
-	public void invoke(ConfigInfo ci, CompileState meta, ATextCompiler comp, String type, int line, int charpos, ObjectWrapper... args) throws CompileException {
+	public void invoke(HudderConfig ci, CompileState meta, ATextCompiler comp, String type, int line, int charpos, ObjectWrapper... args) throws CompileException {
 		int offset = "slot".equals(type)||"item".equals(type) ? 1:0;
 		if (args.length<2+offset) {
 			throw new CompileException("\""+type+"\" only accepts ;"+type

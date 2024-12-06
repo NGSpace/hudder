@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.methods;
+package io.github.ngspace.hudder.v2runtime.methods;
 
 import static io.github.ngspace.hudder.compilers.utils.CompileState.BOTTOMLEFT;
 import static io.github.ngspace.hudder.compilers.utils.CompileState.BOTTOMRIGHT;
@@ -10,9 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.github.ngspace.hudder.compilers.utils.CompileException;
-import io.github.ngspace.hudder.methods.methods.IMethod;
-import io.github.ngspace.hudder.methods.methods.ItemStackMethods;
-import io.github.ngspace.hudder.methods.methods.LoadMethod;
 
 public class MethodHandler {
 	

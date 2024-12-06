@@ -60,7 +60,7 @@
 	"hudder.global_variables.value.tooltip": "The value of the variable",
 	
 	"hudder.advanced.compilertype": "Compiler type",
-	"hudder.advanced.compilertype.tooltip": "Change the type of compiler (ex Default, JavaScript, None)",
+	"hudder.advanced.compilertype.tooltip": "Change the type of compiler (ex Hudder, JavaScript, None)",
 	"hudder.advanced.compilertype.error":"Invalid compiler type",
 	
 	"hudder.advanced.javascript": "Javascript enabled",
@@ -68,7 +68,7 @@
 	
 	
 	
-	"hudder.noclothapi": "You need to install Cloth Config 13.0.121 or above to use this menu.",
+	"hudder.noclothapi": "You need to install Cloth Config to use this menu.",
 	
 	"hudder.text.backgroundcolor": "Background color",
 	"hudder.text.backgroundcolor.tooltip": "Change the default color of the background.",

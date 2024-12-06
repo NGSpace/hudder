@@ -2,7 +2,7 @@ package io.github.ngspace.hudder.compilers.utils;
 
 import java.util.ArrayList;
 
-import io.github.ngspace.hudder.methods.elements.AUIElement;
+import io.github.ngspace.hudder.uielements.AUIElement;
 
 public class ArrayElementManager extends ArrayList<AUIElement> implements IElementManager {
 

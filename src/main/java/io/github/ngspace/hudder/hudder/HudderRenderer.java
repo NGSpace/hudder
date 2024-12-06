@@ -16,8 +16,8 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
-import io.github.ngspace.hudder.config.ConfigInfo;
-import io.github.ngspace.hudder.methods.elements.AUIElement;
+import io.github.ngspace.hudder.config.HudderConfig;
+import io.github.ngspace.hudder.uielements.AUIElement;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.Util;
 import net.minecraft.client.DeltaTracker;
@@ -61,7 +61,7 @@ public class HudderRenderer implements HudRenderCallback {
 	
 	
 	
-	public void drawCompileResult(GuiGraphics context, Font renderer, HudInformation text, ConfigInfo info,
+	public void drawCompileResult(GuiGraphics context, Font renderer, HudInformation text, HudderConfig info,
 			DeltaTracker delta) {
         int color = info.color;
         int bgcolor = info.backgroundcolor;

@@ -3,27 +3,26 @@ package io.github.ngspace.hudder.data_management;
 import java.util.Calendar;
 import java.util.Queue;
 
-import io.github.ngspace.hudder.config.ConfigManager;
+import io.github.ngspace.hudder.Hudder;
+import io.github.ngspace.hudder.config.HudderConfig;
 import io.github.ngspace.hudder.mixin.ParticleManagerAccessor;
 import io.github.ngspace.hudder.mixin.WorldRendererAccess;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LightLayer;
 
 public class NumberData {private NumberData() {}
-	static double MB = 1024d*1024d;
-    static Runtime runtime = Runtime.getRuntime();
+	static final double MB = 1024d*1024d;
+    static final Runtime runtime = Runtime.getRuntime();
 	
 	public static Double getNumber(String key) {
 		Minecraft ins = Minecraft.getInstance();
 		LocalPlayer p = ins.player;
-		LevelRenderer wr = ins.levelRenderer;
-		var world = ins.level;
 		int fps = Advanced.getFPS(ins);
+		HudderConfig config = Hudder.config;
 		
 		return switch(key) {
 			
@@ -79,6 +78,7 @@ public class NumberData {private NumberData() {}
 			case "selectedslot": yield (double) p.getInventory().selected;
 			case "xplevel": yield (double) p.experienceLevel;
 			case "xp": yield (double) p.totalExperience;
+			case "armor": yield (double) p.getArmorValue();
 
 			case "playerspeed": {
 				var ent = p.getVehicle() == null ? p : p.getVehicle();
@@ -93,7 +93,6 @@ public class NumberData {private NumberData() {}
 			    double speed = (Math.sqrt(Math.pow(ent.getX() - ent.xOld, 2) + Math.pow(ent.getZ() - ent.zOld , 2)) * 20);
 			    yield speed;
 			}
-			case "armor": yield (double) p.getArmorValue();
 			
 			
 			
@@ -117,7 +116,7 @@ public class NumberData {private NumberData() {}
 			
 			
 			/* Player roation*/
-			case "dpitch": yield (double) p.getXRot();//TODO Maybe not same as before?
+			case "dpitch": yield (double) p.getXRot();
 			case "dyaw": yield p.getYHeadRot() % 360d;
 			case "pitch": yield (double) (int) p.getXRot();
 			case "yaw": yield (double) (int) p.getYHeadRot() % 360;
@@ -125,18 +124,18 @@ public class NumberData {private NumberData() {}
 			
 
 			/* World Rendering */
-			case "entites", "entities": yield (double) ((WorldRendererAccess)wr).getVisibleEntityCount();
+			case "entites", "entities": yield (double) ((WorldRendererAccess)ins.levelRenderer).getVisibleEntityCount();
 			case "particles": yield (double) ((ParticleManagerAccessor)ins.particleEngine)
 				.getParticles().values().stream().mapToInt(Queue::size).sum();
-			case "chunks": yield (double) wr.countRenderedSections();
+			case "chunks": yield (double) ins.levelRenderer.countRenderedSections();
 			
 			
 			
 			/* World */
-			case "light": yield (double) world.getLightEmission(p.blockPosition());
-			case "blocklight", "block_light": yield (double) world.getBrightness(LightLayer.BLOCK,p.blockPosition());
-			case "skylight", "sky_light": yield (double) world.getBrightness(LightLayer.SKY,p.blockPosition());
-			case "worldtime", "world_time": yield (double) world.getGameTime();
+			case "light": yield (double) ins.level.getMaxLocalRawBrightness(p.blockPosition());
+			case "blocklight", "block_light": yield (double) ins.level.getBrightness(LightLayer.BLOCK,p.blockPosition());
+			case "skylight", "sky_light": yield (double) ins.level.getBrightness(LightLayer.SKY,p.blockPosition());
+			case "worldtime", "world_time": yield (double) ins.level.getGameTime();
 			
 			
 			
@@ -145,13 +144,13 @@ public class NumberData {private NumberData() {}
 			case "height": yield (double) ins.getWindow().getGuiScaledHeight();
 			case "guiscale": yield ins.getWindow().getGuiScale();
 
-			case "scale": yield (double) ConfigManager.getConfig().scale;
-			case "color": yield (double) ConfigManager.getConfig().color;
-			case "yoffset": yield (double) ConfigManager.getConfig().yoffset;
-			case "xoffset": yield (double) ConfigManager.getConfig().xoffset;
-			case "lineheight": yield (double) ConfigManager.getConfig().lineHeight;
-			case "methodbuffer": yield (double) ConfigManager.getConfig().methodBuffer;
-			case "backgroundcolor": yield (double) ConfigManager.getConfig().backgroundcolor;
+			case "scale": yield (double) config.scale;
+			case "color": yield (double) config.color;
+			case "yoffset": yield (double) config.yoffset;
+			case "xoffset": yield (double) config.xoffset;
+			case "lineheight": yield (double) config.lineHeight;
+			case "methodbuffer": yield (double) config.methodBuffer;
+			case "backgroundcolor": yield (double) config.backgroundcolor;
 			
 			
 			

@@ -3,8 +3,8 @@ package io.github.ngspace.hudder.compilers.utils;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.ATextCompiler;
-import io.github.ngspace.hudder.config.ConfigManager;
 
 public class Compilers {private Compilers() {}
 	
@@ -63,7 +63,7 @@ public class Compilers {private Compilers() {}
 	 */
 	public static void registerCompiler(String name, String classname) {
 		Comps.put(name.toLowerCase(), classname);
-		ConfigManager.getConfig().readConfig();
+		Hudder.config.readConfig();
 	}
 
 	
@@ -76,7 +76,7 @@ public class Compilers {private Compilers() {}
 	@Deprecated(since = "4.0.0", forRemoval = true)
 	public static void registerLoadedCompiler(String name, ATextCompiler compiler) {
 		loadedcomps.put(name.toLowerCase(), compiler);
-		ConfigManager.getConfig().readConfig();
+		Hudder.config.readConfig();
 	}
 	
 	public static boolean has(String name) {

@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import io.github.ngspace.hudder.config.ConfigManager;
+import static io.github.ngspace.hudder.Hudder.config;
 import io.github.ngspace.hudder.data_management.Advanced;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -28,7 +28,7 @@ public abstract class MinecraftClientInjections {
     @Redirect(method = "runTick", at = @At(value = "INVOKE",
     		target = "Lnet/minecraft/client/gui/components/DebugScreenOverlay;showDebugScreen()Z"))
     public boolean shouldGetGpuUsage(DebugScreenOverlay hud) {
-    	return hud.showDebugScreen()||ConfigManager.getConfig().enabled;
+    	return hud.showDebugScreen()||config.enabled;
     }
 }
   

@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.ATextCompiler;
-import io.github.ngspace.hudder.config.ConfigInfo;
+import io.github.ngspace.hudder.config.HudderConfig;
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import net.minecraft.network.chat.Component;
@@ -22,7 +22,7 @@ public class HudderUnitTest {
 	
 	
 	
-	public HudderUnitTestResult test(ConfigInfo info) {
+	public HudderUnitTestResult test(HudderConfig info) {
 		try {
 			if (compiler instanceof AV2Compiler v2comp) {
 				v2comp.runtimes = new HashMap<String, V2Runtime>();

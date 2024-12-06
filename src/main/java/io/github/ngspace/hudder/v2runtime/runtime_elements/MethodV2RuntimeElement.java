@@ -5,10 +5,10 @@ import java.util.Arrays;
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileState;
-import io.github.ngspace.hudder.config.ConfigInfo;
-import io.github.ngspace.hudder.methods.methods.IMethod;
+import io.github.ngspace.hudder.config.HudderConfig;
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
+import io.github.ngspace.hudder.v2runtime.methods.IMethod;
 import io.github.ngspace.hudder.v2runtime.values.AV2Value;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -18,12 +18,12 @@ public class MethodV2RuntimeElement extends AV2RuntimeElement {
 	private AV2Value[] values = {};
 	private String type;
 	private AV2Compiler compiler;
-	private ConfigInfo info;
+	private HudderConfig info;
 	private IMethod method;
 	private int line;
 	private int charpos;
 
-	public MethodV2RuntimeElement(String[] args, AV2Compiler compiler, ConfigInfo info, V2Runtime runtime, int line, int charpos) throws CompileException {
+	public MethodV2RuntimeElement(String[] args, AV2Compiler compiler, HudderConfig info, V2Runtime runtime, int line, int charpos) throws CompileException {
 		this.compiler = compiler;
 		this.info = info;
 		this.type = args[0];

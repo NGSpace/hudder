@@ -1,16 +1,16 @@
-package io.github.ngspace.hudder.methods.methods;
+package io.github.ngspace.hudder.v2runtime.methods;
 
 import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileState;
-import io.github.ngspace.hudder.config.ConfigInfo;
-import io.github.ngspace.hudder.methods.elements.TextElement;
+import io.github.ngspace.hudder.config.HudderConfig;
+import io.github.ngspace.hudder.uielements.TextElement;
 import io.github.ngspace.hudder.utils.ObjectWrapper;
 
 public class TextMethod implements IMethod {
 
 	@Override
-	public void invoke(ConfigInfo ci, CompileState meta, ATextCompiler comp, String type, int line, int charpos, ObjectWrapper... args) throws CompileException {
+	public void invoke(HudderConfig ci, CompileState meta, ATextCompiler comp, String type, int line, int charpos, ObjectWrapper... args) throws CompileException {
 		try {
 			String text = args[2].asString();
 			float scale = (float) (args.length>3 ? args[3].asDouble() : ci.scale);

@@ -32,7 +32,7 @@ public class ConfigMenu implements ConfigScreenFactory<Screen> {
 	protected static Minecraft mc = Minecraft.getInstance();
 	
 	public static final String URL = "https://ngspace.github.io/hudder";
-	ConfigInfo config = ConfigManager.getConfig();
+	HudderConfig config = Hudder.config;
 	
 	@Override public Screen create(Screen parent) {
 		

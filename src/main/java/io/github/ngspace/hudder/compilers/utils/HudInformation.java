@@ -1,6 +1,6 @@
 package io.github.ngspace.hudder.compilers.utils;
 
-import io.github.ngspace.hudder.methods.elements.AUIElement;
+import io.github.ngspace.hudder.uielements.AUIElement;
 
 public class HudInformation {
 	public String TopLeftText;

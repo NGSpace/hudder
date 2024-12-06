@@ -10,18 +10,17 @@ import io.github.ngspace.hudder.data_management.NumberData;
 import io.github.ngspace.hudder.data_management.ObjectData;
 import io.github.ngspace.hudder.data_management.StringData;
 import io.github.ngspace.hudder.hudder.HudCompilationManager;
-import io.github.ngspace.hudder.methods.elements.ColorVerticesElement;
-import io.github.ngspace.hudder.methods.elements.GameHudElement;
-import io.github.ngspace.hudder.methods.elements.GameHudElement.GuiType;
-import io.github.ngspace.hudder.methods.elements.TextElement;
-import io.github.ngspace.hudder.methods.elements.TextureElement;
-import io.github.ngspace.hudder.methods.elements.TextureVerticesElement;
+import io.github.ngspace.hudder.uielements.ColorVerticesElement;
+import io.github.ngspace.hudder.uielements.GameHudElement;
+import io.github.ngspace.hudder.uielements.GameHudElement.GuiType;
+import io.github.ngspace.hudder.uielements.TextElement;
+import io.github.ngspace.hudder.uielements.TextureElement;
+import io.github.ngspace.hudder.uielements.TextureVerticesElement;
 import io.github.ngspace.hudder.utils.HudFileUtils;
 import io.github.ngspace.hudder.utils.ObjectWrapper;
 import io.github.ngspace.hudder.utils.ValueGetter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -105,7 +104,7 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 		
 		//Logging
 		
-		binder.bindConsumer((e,a,l,ch,s)->mc.player.displayClientMessage(Component.keybind(s[0].get().toString()),false), "alert");
+		binder.bindConsumer((e,a,l,ch,s)->Hudder.alert(s[0].get().toString()), "alert");
 		binder.bindConsumer((e,a,l,ch,s)->Hudder.log(s[0].get().toString()), "log");
 		binder.bindConsumer((e,a,l,ch,s)->Hudder.warn(s[0].get().toString()), "warn");
 		binder.bindConsumer((e,a,l,ch,s)->Hudder.error(s[0].get().toString()), "error");

@@ -11,9 +11,8 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
-@SuppressWarnings("resource")
 public class HudderModMenuImpl implements ModMenuApi {
-	@Override public ConfigScreenFactory<?> getModConfigScreenFactory() {
+	@Override public ConfigScreenFactory<Screen> getModConfigScreenFactory() {
 		return FabricLoader.getInstance().isModLoaded("cloth-config2") ? new ConfigMenu() : InstallClothConfig::new;
     }
 	
@@ -27,6 +26,7 @@ public class HudderModMenuImpl implements ModMenuApi {
 	        addRenderableWidget(Button.builder(Component.keybind("OK"), buttonWidget -> Minecraft.getInstance().setScreen(parent))
 	                .pos(width/2-100, height-52).size(200, 20).build());
 	    }
+	    @SuppressWarnings("resource")
 		@Override public void render(GuiGraphics drawContext, int mouseX, int mouseY, float delta) {
 	    	Component INSTALLCLOTH = Component.translatable("hudder.noclothapi");
 	        super.render(drawContext, mouseX, mouseY, delta);

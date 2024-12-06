@@ -1,8 +1,8 @@
 package io.github.ngspace.hudder.v2runtime.runtime_elements;
 
+import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileState;
-import io.github.ngspace.hudder.config.ConfigManager;
 
 public class StringV2RuntimeElement extends AV2RuntimeElement {
 	final String string;
@@ -17,7 +17,7 @@ public class StringV2RuntimeElement extends AV2RuntimeElement {
 	}
 	@Override public boolean execute(CompileState meta, StringBuilder builder) throws CompileException {
 		String str = string;
-		if (cleanUp&&(buffer = ConfigManager.getConfig().methodBuffer)<10)
+		if (cleanUp&&(buffer = Hudder.config.methodBuffer)<10)
 			for (int i = 0; i<buffer;i++) {
 				if (str.endsWith("\n")||str.endsWith("\r")) str = str.substring(0, str.length()-1);
 			}

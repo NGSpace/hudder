@@ -13,7 +13,7 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 
 import io.github.ngspace.hudder.compilers.ATextCompiler;
-import io.github.ngspace.hudder.config.ConfigInfo;
+import io.github.ngspace.hudder.config.HudderConfig;
 import io.github.ngspace.hudder.utils.testing.HudderUnitTest.HudderUnitTestResult;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -39,11 +39,11 @@ public class HudderUnitTester {
 	
 	
 	
-	public HudderUnitTestResult test(ConfigInfo info, String name) {return UnitTests.get(name).test(info);}
+	public HudderUnitTestResult test(HudderConfig info, String name) {return UnitTests.get(name).test(info);}
 	
 	
 	
-	public MutableComponent testAll(ConfigInfo config) {
+	public MutableComponent testAll(HudderConfig config) {
 		MutableComponent result = Component.literal("All tests:\n");
 		boolean failed = false;
 		Instant start = Instant.now();

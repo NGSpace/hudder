@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import io.github.ngspace.hudder.config.ConfigManager;
-import io.github.ngspace.hudder.methods.elements.AUIElement;
+import io.github.ngspace.hudder.Hudder;
+import io.github.ngspace.hudder.uielements.AUIElement;
 
 public class CompileState implements IElementManager {
 
@@ -27,13 +27,13 @@ public class CompileState implements IElementManager {
 	public boolean hasBroken = false;
 	public List<AUIElement> elements = new ArrayList<AUIElement>();
 
-	public CompileState(String string) {setTextLocation(string, ConfigManager.getConfig().scale);}
+	public CompileState(String string) {setTextLocation(string, Hudder.config.scale);}
 	public void addString(String txt, boolean cleanup) throws CompileException {addString(txt,pos,cleanup);}
 	
 	protected void addString(String txt, String pos, boolean cleanup) throws CompileException {
 		String text = txt;
 		if (cleanup) {
-			int buffer = ConfigManager.getConfig().methodBuffer;
+			int buffer = Hudder.config.methodBuffer;
 			if (buffer<10)
 				for (int i = 0; i<buffer;i++)
 					try {

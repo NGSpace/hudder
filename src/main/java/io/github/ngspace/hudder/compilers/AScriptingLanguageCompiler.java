@@ -10,14 +10,14 @@ import io.github.ngspace.hudder.compilers.utils.ArrayElementManager;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
 import io.github.ngspace.hudder.compilers.utils.IScriptingLanguageEngine;
-import io.github.ngspace.hudder.config.ConfigInfo;
+import io.github.ngspace.hudder.config.HudderConfig;
 import io.github.ngspace.hudder.data_management.BooleanData;
 import io.github.ngspace.hudder.data_management.NumberData;
 import io.github.ngspace.hudder.data_management.ObjectData;
 import io.github.ngspace.hudder.data_management.StringData;
 import io.github.ngspace.hudder.hudder.HudCompilationManager;
-import io.github.ngspace.hudder.methods.elements.AUIElement;
-import io.github.ngspace.hudder.methods.elements.ItemElement;
+import io.github.ngspace.hudder.uielements.AUIElement;
+import io.github.ngspace.hudder.uielements.ItemElement;
 import io.github.ngspace.hudder.utils.HudFileUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -46,7 +46,7 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 	
 	protected abstract IScriptingLanguageEngine createLangEngine() throws CompileException;
 
-	@Override public HudInformation compile(ConfigInfo info, String text, String filename) throws CompileException {
+	@Override public HudInformation compile(HudderConfig info, String text, String filename) throws CompileException {
 		if (mc.player==null) return HudInformation.of("");
 		RuntimeCache rtcache = cache.get(text);
 		IScriptingLanguageEngine wrapper = null;

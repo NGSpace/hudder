@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.methods.elements;
+package io.github.ngspace.hudder.uielements;
 
 import java.io.Serializable;
 

@@ -6,7 +6,7 @@ import io.github.ngspace.hudder.compilers.AVarTextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
 import io.github.ngspace.hudder.compilers.utils.CompileState;
-import io.github.ngspace.hudder.config.ConfigInfo;
+import io.github.ngspace.hudder.config.HudderConfig;
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import io.github.ngspace.hudder.v2runtime.values.AV2Value;
@@ -17,10 +17,10 @@ public class ConditionV2RuntimeElement extends AV2RuntimeElement {
 	AV2Value[] results = {};
 	AV2Value[] conditions = {};
 	AVarTextCompiler compiler;
-	ConfigInfo info;
+	HudderConfig info;
 	boolean hasElse;
 	private String filename;
-	public ConditionV2RuntimeElement(String[] condArgs, AV2Compiler compiler, ConfigInfo info, V2Runtime runtime,
+	public ConditionV2RuntimeElement(String[] condArgs, AV2Compiler compiler, HudderConfig info, V2Runtime runtime,
 			int line, int charpos, String filename) throws CompileException {
 		this.compiler = compiler;
 		this.info = info;

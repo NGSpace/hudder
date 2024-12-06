@@ -1,19 +1,19 @@
-package io.github.ngspace.hudder.methods.methods;
+package io.github.ngspace.hudder.v2runtime.methods;
 
 import java.io.IOException;
 
 import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileState;
-import io.github.ngspace.hudder.config.ConfigInfo;
-import io.github.ngspace.hudder.methods.elements.TextureElement;
+import io.github.ngspace.hudder.config.HudderConfig;
+import io.github.ngspace.hudder.uielements.TextureElement;
 import io.github.ngspace.hudder.utils.HudFileUtils;
 import io.github.ngspace.hudder.utils.ObjectWrapper;
 import net.minecraft.resources.ResourceLocation;
 
 public class TexturesMethods implements IMethod {
 
-	@Override public void invoke(ConfigInfo i, CompileState m, ATextCompiler c, String type, int line, int charpos, ObjectWrapper... s) throws CompileException {
+	@Override public void invoke(HudderConfig i, CompileState m, ATextCompiler c, String type, int line, int charpos, ObjectWrapper... s) throws CompileException {
 		switch (type) {
 			case "image","png":
         		try {

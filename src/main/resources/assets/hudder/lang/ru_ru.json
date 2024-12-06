@@ -60,7 +60,7 @@
 	"hudder.global_variables.value.tooltip": "Значение переменной",
 	
 	"hudder.advanced.compilertype": "Тип компилятора",
-	"hudder.advanced.compilertype.tooltip": "Измените тип компилятора (например, Default, JavaScript, None)",
+	"hudder.advanced.compilertype.tooltip": "Измените тип компилятора (например, Hudder, JavaScript, None)",
 	"hudder.advanced.compilertype.error":"Неверный тип компилятора",
 	
 	"hudder.advanced.javascript": "Javascript включен",
@@ -68,7 +68,7 @@
 	
 	
 	
-	"hudder.noclothapi": "Чтобы использовать это меню, вам необходимо установить Cloth Config 13.0.121 или более позднюю версию.",
+	"hudder.noclothapi": "Для использования этого меню вам необходимо установить Cloth Config.",
 
 	"hudder.text.backgroundcolor": "Цвет фона",
 	"hudder.text.backgroundcolor.tooltip": "Изменить цвет фона по умолчанию.",

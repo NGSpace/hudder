@@ -6,13 +6,13 @@ import java.util.Map;
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
-import io.github.ngspace.hudder.config.ConfigInfo;
+import io.github.ngspace.hudder.config.HudderConfig;
 
 public abstract class ATextCompiler {
 
 	public static Map<String, Object> variables = new HashMap<String, Object>();
 	
-	public abstract HudInformation compile(ConfigInfo info, String text, String filename) throws CompileException;
+	public abstract HudInformation compile(HudderConfig info, String text, String filename) throws CompileException;
 	public abstract Object getVariable(String key) throws CompileException;
 	
 	public void put(String key, Object value) {variables.put(key, value);}
@@ -58,7 +58,7 @@ public abstract class ATextCompiler {
 			this.charpos = charpos;
 		}
 	}
-	public ConfigInfo getConfig() {
+	public HudderConfig getConfig() {
 		return Hudder.config;
 	}
 }

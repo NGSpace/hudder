@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.methods.elements;
+package io.github.ngspace.hudder.uielements;
 
 import io.github.ngspace.hudder.hudder.HudderRenderer;
 import net.minecraft.client.DeltaTracker;

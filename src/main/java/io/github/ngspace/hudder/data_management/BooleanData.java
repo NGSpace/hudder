@@ -2,28 +2,23 @@ package io.github.ngspace.hudder.data_management;
 
 import static io.github.ngspace.hudder.data_management.Advanced.isKeyHeld;
 
-import java.util.Optional;
-
-import com.mojang.datafixers.DataFixUtils;
-
-import io.github.ngspace.hudder.config.ConfigManager;
+import io.github.ngspace.hudder.Hudder;
+import io.github.ngspace.hudder.config.HudderConfig;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.level.GameType;
-import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 
 public class BooleanData {private BooleanData(){}
 	public static Boolean getBoolean(String key) {
 		Minecraft ins = Minecraft.getInstance();
-		var p = ins.player;
-		@SuppressWarnings("resource")
-		var betterworld = DataFixUtils.orElse(Optional.ofNullable(ins.getSingleplayerServer()).flatMap(integratedServer ->
-			Optional.ofNullable(integratedServer.getLevel(ins.level.dimension()))), ins.level);
+		HudderConfig config = Hudder.config;
+		LocalPlayer p = ins.player;
 		return switch (key) {
 			case "isslime", "is_slime": {
 				try {
-					yield (WorldgenRandom.seedSlimeChunk(p.getBlockX() >> 4, p.getBlockZ() >> 4,
-						((WorldGenLevel)betterworld).getSeed(), 987234911L).nextInt(10) == 0);
+					yield WorldgenRandom.seedSlimeChunk(p.getBlockX() >> 4, p.getBlockZ() >> 4, ins.getSingleplayerServer()
+							.getLevel(ins.level.dimension()).getSeed(), 987234911L).nextInt(10) == 0;
 				} catch (Exception e) {/* For some reason adding a yield false; here causes runtime errors...*/}
 				yield false;
 			}
@@ -71,13 +66,13 @@ public class BooleanData {private BooleanData(){}
 			
 			/* Hudder */
 			case "enabled": yield true; //Duh
-			case "shadow": yield ConfigManager.getConfig().shadow;
-			case "showinf3": yield ConfigManager.getConfig().showInF3;
-			case "javascriptenabled": yield ConfigManager.getConfig().javascript;
-			case "globalvariablesenabled": yield ConfigManager.getConfig().globalVariablesEnabled;
-			case "background": yield ConfigManager.getConfig().background;
-			case "removegui": yield ConfigManager.getConfig().removegui;
-			case "limitrate": yield ConfigManager.getConfig().limitrate;
+			case "shadow": yield config.shadow;
+			case "showinf3": yield config.showInF3;
+			case "javascriptenabled": yield config.javascript;
+			case "globalvariablesenabled": yield config.globalVariablesEnabled;
+			case "background": yield config.background;
+			case "removegui": yield config.removegui;
+			case "limitrate": yield config.limitrate;
 			default: int keyheld = isKeyHeld(key); yield keyheld==0 ? null : keyheld==2;
 		};
 	}

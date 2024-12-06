@@ -11,10 +11,10 @@ import io.github.ngspace.hudder.compilers.utils.UnifiedCompiler.BindableConsumer
 import io.github.ngspace.hudder.compilers.utils.UnifiedCompiler.BindableFunction;
 import io.github.ngspace.hudder.compilers.utils.UnifiedCompiler.ConsumerBinder;
 import io.github.ngspace.hudder.compilers.utils.UnifiedCompiler.FunctionBinder;
-import io.github.ngspace.hudder.config.ConfigInfo;
+import io.github.ngspace.hudder.config.HudderConfig;
 import io.github.ngspace.hudder.hudder.HudCompilationManager;
-import io.github.ngspace.hudder.methods.MethodHandler;
 import io.github.ngspace.hudder.v2runtime.functions.V2FunctionHandler;
+import io.github.ngspace.hudder.v2runtime.methods.MethodHandler;
 import io.github.ngspace.hudder.v2runtime.values.AV2Value;
 import io.github.ngspace.hudder.v2runtime.values.V2VariableParser;
 
@@ -52,7 +52,7 @@ public abstract class AV2Compiler extends AVarTextCompiler implements ConsumerBi
 		return V2VariableParser.of(runtime, string, this, line, col);
 	}
 	
-	@Override public final HudInformation compile(ConfigInfo info, String text, String filename) throws CompileException {
+	@Override public final HudInformation compile(HudderConfig info, String text, String filename) throws CompileException {
 		V2Runtime runtime = runtimes.get(text);
 		if (runtime==null) runtimes.put(text, (runtime=buildRuntime(info,text, new CharPosition(-1, -1), filename)));
 		return runtime.execute().toResult();
@@ -60,7 +60,7 @@ public abstract class AV2Compiler extends AVarTextCompiler implements ConsumerBi
 	
 	
 	
-	public abstract V2Runtime buildRuntime(ConfigInfo info, String text, CharPosition charPosition, String filename) throws CompileException;
+	public abstract V2Runtime buildRuntime(HudderConfig info, String text, CharPosition charPosition, String filename) throws CompileException;
 	
 	
 	

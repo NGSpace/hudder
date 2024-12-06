@@ -21,7 +21,7 @@ import io.github.ngspace.hudder.utils.testing.HudderUnitTester;
 import net.minecraft.client.Minecraft;
 import net.minidev.json.JSONObject;
 
-public class ConfigInfo {
+public class HudderConfig {
 	
 	/* EXPOSED :flushed: */
 	@Expose public Map<String, Object> globalVariables = new HashMap<String, Object>();
@@ -52,14 +52,14 @@ public class ConfigInfo {
 	
 	
     public HudderUnitTester hudderTester = new HudderUnitTester(new HudderV2Compiler());
-	protected static Minecraft mc = Minecraft.getInstance();
+    public Minecraft mc = Minecraft.getInstance();
 	
     
     /**
      * Initalize the config. 
      * @param f - the config file.
      */
-	ConfigInfo(File f) {
+	public HudderConfig(File f) {
 		configFile = f;
 		readConfig();
 	}
@@ -98,7 +98,7 @@ public class ConfigInfo {
 			
 			if (newinfo.containsKey("debug")) Hudder.IS_DEBUG = (boolean) newinfo.get("debug");
 			
-			for(Field f : ConfigInfo.class.getFields()) {
+			for(Field f : HudderConfig.class.getFields()) {
 				if (f.getAnnotation(Expose.class)!=null&&newinfo.get(f.getName())!=null) 
 					setField(f, newinfo.get(f.getName()));
 			}
@@ -154,7 +154,7 @@ public class ConfigInfo {
 		}
 		try (FileWriter fw = new FileWriter(configFile)) {
 			JSONObject js = new JSONObject();
-			for (Field f : ConfigInfo.class.getFields())
+			for (Field f : HudderConfig.class.getFields())
 				if (f.getAnnotation(Expose.class)!=null)
 					js.put(f.getName(), f.get(this));
 

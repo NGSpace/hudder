@@ -2,9 +2,9 @@ package io.github.ngspace.hudder.compilers;
 
 import java.util.Arrays;
 
+import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
-import io.github.ngspace.hudder.config.ConfigInfo;
-import io.github.ngspace.hudder.config.ConfigManager;
+import io.github.ngspace.hudder.config.HudderConfig;
 import io.github.ngspace.hudder.hudder.HudderUtils;
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
@@ -24,7 +24,7 @@ public class HudderV2Compiler extends AV2Compiler {
 	public static final int METHOD_STATE = 3;
 	public static final int HASHTAG_STATE = 4;
 
-	@Override public V2Runtime buildRuntime(ConfigInfo info, String text, CharPosition charPosition, String filename)
+	@Override public V2Runtime buildRuntime(HudderConfig info, String text, CharPosition charPosition, String filename)
 			throws CompileException {
 		V2Runtime runtime = new V2Runtime(this);
 		
@@ -41,7 +41,7 @@ public class HudderV2Compiler extends AV2Compiler {
 		int savedind = 0;
 		
 		boolean cleanup = false;
-		int cleanup_amount = ConfigManager.getConfig().methodBuffer;
+		int cleanup_amount = Hudder.config.methodBuffer;
 		
 		int compileState = TEXT_STATE;
 
@@ -187,7 +187,7 @@ public class HudderV2Compiler extends AV2Compiler {
 						elemBuilder.setLength(0);
 						builder = new String[0];
 						cleanup = true;
-						cleanup_amount = ConfigManager.getConfig().methodBuffer/2;
+						cleanup_amount = Hudder.config.methodBuffer/2;
 					}
 					break;
 				}

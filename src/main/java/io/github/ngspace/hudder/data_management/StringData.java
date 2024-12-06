@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import com.mojang.blaze3d.platform.GLX;
 
-import io.github.ngspace.hudder.config.ConfigManager;
+import io.github.ngspace.hudder.Hudder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
@@ -73,8 +73,8 @@ public class StringData {private StringData() {}
 			
 			
 			/* Hudder */
-			case "compilertype": yield ConfigManager.getConfig().compilertype;
-			case "mainfile": yield ConfigManager.getConfig().mainfile;
+			case "compilertype": yield Hudder.config.compilertype;
+			case "mainfile": yield Hudder.config.mainfile;
 			
 			case "unset": yield "unset";
 			

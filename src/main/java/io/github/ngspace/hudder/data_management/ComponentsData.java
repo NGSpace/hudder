@@ -4,11 +4,9 @@ import java.util.HashMap;
 
 import io.github.ngspace.hudder.utils.ValueGetter;
 import net.minecraft.core.Holder;
-import net.minecraft.core.RegistryAccess.RegistryEntry;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceLocation;

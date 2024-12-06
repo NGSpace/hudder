@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.methods.methods;
+package io.github.ngspace.hudder.v2runtime.methods;
 
 import java.io.IOException;
 
@@ -6,14 +6,14 @@ import io.github.ngspace.hudder.compilers.ATextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileState;
 import io.github.ngspace.hudder.compilers.utils.Compilers;
-import io.github.ngspace.hudder.config.ConfigInfo;
+import io.github.ngspace.hudder.config.HudderConfig;
 import io.github.ngspace.hudder.hudder.HudCompilationManager;
 import io.github.ngspace.hudder.utils.HudFileUtils;
 import io.github.ngspace.hudder.utils.ObjectWrapper;
 
 public class LoadMethod implements IMethod {
 	@Override
-	public void invoke(ConfigInfo ci, CompileState meta, ATextCompiler comp, String type, int line, int charpos, ObjectWrapper... args) throws CompileException {
+	public void invoke(HudderConfig ci, CompileState meta, ATextCompiler comp, String type, int line, int charpos, ObjectWrapper... args) throws CompileException {
 		if (args.length<1)
 			throw new CompileException("\""+type+"\" only accepts ;"+type+",[file],<text>,<compiler>;");
 		String file = null;
