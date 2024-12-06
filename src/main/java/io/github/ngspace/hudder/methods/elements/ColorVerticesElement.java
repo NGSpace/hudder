@@ -1,9 +1,10 @@
 package io.github.ngspace.hudder.methods.elements;
 
-import io.github.ngspace.hudder.util.HudderRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.client.render.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
+
+import io.github.ngspace.hudder.hudder.HudderRenderer;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.gui.GuiGraphics;
 
 public class ColorVerticesElement extends AUIElement {
 	
@@ -14,7 +15,7 @@ public class ColorVerticesElement extends AUIElement {
 	final int g;
 	final int b;
 	final int a;
-	final VertexFormat.DrawMode mode;
+	final VertexFormat.Mode mode;
 	
 	public ColorVerticesElement(float[] vertices, long argb, boolean triangles) {
         this.vertices = vertices;
@@ -22,9 +23,9 @@ public class ColorVerticesElement extends AUIElement {
         this.r = (int) ((argb >> 16) & 0xFF);
         this.g = (int) ((argb >>  8) & 0xFF);
         this.b = (int) ((argb      ) & 0xFF);
-        this.mode = triangles ? VertexFormat.DrawMode.TRIANGLE_STRIP : VertexFormat.DrawMode.QUADS;
+        this.mode = triangles ? VertexFormat.Mode.TRIANGLE_STRIP : VertexFormat.Mode.QUADS;
 	}
-	@Override public void renderElement(DrawContext context, HudderRenderer renderer, RenderTickCounter delta) {
+	@Override public void renderElement(GuiGraphics context, HudderRenderer renderer, DeltaTracker delta) {
 		renderer.renderColoredVertexArray(context,vertices,r,g,b,a, mode);
 	}
 	

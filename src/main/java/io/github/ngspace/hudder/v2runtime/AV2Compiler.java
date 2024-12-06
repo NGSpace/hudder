@@ -12,8 +12,8 @@ import io.github.ngspace.hudder.compilers.utils.UnifiedCompiler.BindableFunction
 import io.github.ngspace.hudder.compilers.utils.UnifiedCompiler.ConsumerBinder;
 import io.github.ngspace.hudder.compilers.utils.UnifiedCompiler.FunctionBinder;
 import io.github.ngspace.hudder.config.ConfigInfo;
+import io.github.ngspace.hudder.hudder.HudCompilationManager;
 import io.github.ngspace.hudder.methods.MethodHandler;
-import io.github.ngspace.hudder.util.HudCompilationManager;
 import io.github.ngspace.hudder.v2runtime.functions.V2FunctionHandler;
 import io.github.ngspace.hudder.v2runtime.values.AV2Value;
 import io.github.ngspace.hudder.v2runtime.values.V2VariableParser;

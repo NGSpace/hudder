@@ -15,15 +15,15 @@ import org.mozilla.javascript.WrapFactory;
 import org.mozilla.javascript.WrappedException;
 
 import io.github.ngspace.hudder.Hudder;
-import io.github.ngspace.hudder.util.ObjectWrapper;
-import io.github.ngspace.hudder.util.ValueGetter;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import io.github.ngspace.hudder.utils.ObjectWrapper;
+import io.github.ngspace.hudder.utils.ValueGetter;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 
 public class JavaScriptEngine implements IScriptingLanguageEngine {
 	
-	protected static MinecraftClient mc = MinecraftClient.getInstance();
+	protected static Minecraft mc = Minecraft.getInstance();
 	
 	
 	Context cx;
@@ -58,8 +58,8 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 		insertObject(JavaScriptIO, "console");
 		insertObject(JavaScriptIO, "hudder" );
 		
-		bindConsumer(s->JavaScriptIO.log  (s[0]), "log");
-		bindConsumer(s->JavaScriptIO.warn (s[0]), "warn");
+		bindConsumer(s->JavaScriptIO.log  (s[0]), "log"  );
+		bindConsumer(s->JavaScriptIO.warn (s[0]), "warn" );
 		bindConsumer(s->JavaScriptIO.error(s[0]), "error");
 		bindConsumer(s->JavaScriptIO.alert(s[0]), "alert");
 	}
@@ -108,8 +108,7 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 	
 	private void insertObject(Object obj, String name) {
 		Object wrappedObj = Context.javaToJS(obj, scope);
-		ScriptableObject.defineProperty(scope, name, wrappedObj, 
-				ScriptableObject.READONLY | ScriptableObject.PERMANENT);
+		ScriptableObject.defineProperty(scope, name, wrappedObj, ScriptableObject.READONLY|ScriptableObject.PERMANENT);
 	}
 	
 	
@@ -141,7 +140,7 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 		public void debug(Object str) {Hudder.debug(str);}
 		public void alert(Object str) {Hudder.alert(str);}
 		public void showToast(String title, String content) {
-			Hudder.showToast(mc,Text.literal(title).formatted(Formatting.BOLD), Text.literal(content));
+			Hudder.showToast(Component.literal(title).withStyle(ChatFormatting.BOLD), Component.literal(content));
 		}
 	}
 	
@@ -162,7 +161,7 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 	
 	
 	
-	private class JavaScriptValue extends ObjectWrapper {
+	private class JavaScriptValue implements ObjectWrapper {
 		private Object value;
 		private JavaScriptValue(Object value) {
 			this.value=value;

@@ -9,12 +9,12 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleManager;
-import net.minecraft.client.particle.ParticleTextureSheet;
+import net.minecraft.client.particle.ParticleEngine;
+import net.minecraft.client.particle.ParticleRenderType;
 
 @Environment(EnvType.CLIENT)
-@Mixin(ParticleManager.class)
+@Mixin(ParticleEngine.class)
 public interface ParticleManagerAccessor {
-	@Accessor("particles") public Map<ParticleTextureSheet, Queue<Particle>> getParticles();
+	@Accessor("particles") public Map<ParticleRenderType, Queue<Particle>> getParticles();
 	
 }

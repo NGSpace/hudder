@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.Objects;
 
 import io.github.ngspace.hudder.compilers.utils.CompileException;
-import io.github.ngspace.hudder.util.ObjectWrapper;
+import io.github.ngspace.hudder.utils.ObjectWrapper;
 import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 
-public abstract class AV2Value extends ObjectWrapper {
+public abstract class AV2Value implements ObjectWrapper {
 	
 	
 	protected final int line;

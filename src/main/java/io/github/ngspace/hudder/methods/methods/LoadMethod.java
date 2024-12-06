@@ -7,9 +7,9 @@ import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileState;
 import io.github.ngspace.hudder.compilers.utils.Compilers;
 import io.github.ngspace.hudder.config.ConfigInfo;
-import io.github.ngspace.hudder.util.HudCompilationManager;
-import io.github.ngspace.hudder.util.HudFileUtils;
-import io.github.ngspace.hudder.util.ObjectWrapper;
+import io.github.ngspace.hudder.hudder.HudCompilationManager;
+import io.github.ngspace.hudder.utils.HudFileUtils;
+import io.github.ngspace.hudder.utils.ObjectWrapper;
 
 public class LoadMethod implements IMethod {
 	@Override

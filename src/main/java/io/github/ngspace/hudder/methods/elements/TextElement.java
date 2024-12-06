@@ -1,8 +1,8 @@
 package io.github.ngspace.hudder.methods.elements;
 
-import io.github.ngspace.hudder.util.HudderRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderTickCounter;
+import io.github.ngspace.hudder.hudder.HudderRenderer;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.gui.GuiGraphics;
 
 public class TextElement extends AUIElement {
 	
@@ -28,7 +28,7 @@ public class TextElement extends AUIElement {
 		this.shadow = shadow;
 		this.background = background;
 	}
-	@Override public void renderElement(DrawContext context, HudderRenderer renderer, RenderTickCounter delta) {
+	@Override public void renderElement(GuiGraphics context, HudderRenderer renderer, DeltaTracker delta) {
 		renderer.renderTextLine(context, text, x, y, color, scale, shadow, background, backgroundcolor);
 	}
 }

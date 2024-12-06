@@ -3,7 +3,7 @@ package io.github.ngspace.hudder.config;
 import java.io.File;
 
 import io.github.ngspace.hudder.Hudder;
-import io.github.ngspace.hudder.util.HudFileUtils;
+import io.github.ngspace.hudder.utils.HudFileUtils;
 
 public class ConfigManager {private ConfigManager() {}
 	private static ConfigInfo config = null;

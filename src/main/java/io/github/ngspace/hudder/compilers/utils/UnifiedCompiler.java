@@ -9,21 +9,21 @@ import io.github.ngspace.hudder.data_management.ComponentsData;
 import io.github.ngspace.hudder.data_management.NumberData;
 import io.github.ngspace.hudder.data_management.ObjectData;
 import io.github.ngspace.hudder.data_management.StringData;
+import io.github.ngspace.hudder.hudder.HudCompilationManager;
 import io.github.ngspace.hudder.methods.elements.ColorVerticesElement;
 import io.github.ngspace.hudder.methods.elements.GameHudElement;
 import io.github.ngspace.hudder.methods.elements.GameHudElement.GuiType;
 import io.github.ngspace.hudder.methods.elements.TextElement;
 import io.github.ngspace.hudder.methods.elements.TextureElement;
 import io.github.ngspace.hudder.methods.elements.TextureVerticesElement;
-import io.github.ngspace.hudder.util.HudCompilationManager;
-import io.github.ngspace.hudder.util.HudFileUtils;
-import io.github.ngspace.hudder.util.ObjectWrapper;
-import io.github.ngspace.hudder.util.ValueGetter;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.component.ComponentMap;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import io.github.ngspace.hudder.utils.HudFileUtils;
+import io.github.ngspace.hudder.utils.ObjectWrapper;
+import io.github.ngspace.hudder.utils.ValueGetter;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * This is my attempt at unifying the Hudder and JavaScript compilers.<br>
@@ -33,7 +33,7 @@ import net.minecraft.util.Identifier;
 public class UnifiedCompiler {private UnifiedCompiler() {}
 	
 	public static UnifiedCompiler instance = new UnifiedCompiler();
-	public static MinecraftClient mc = MinecraftClient.getInstance();
+	public static Minecraft mc = Minecraft.getInstance();
 	
 	public void applyConsumers(ConsumerBinder binder) {
 		//Vertex
@@ -59,12 +59,12 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 		
 		//Textures
 		
-		binder.bindConsumer((e,a,l,ch,s)->e.addElem(new TextureElement(Identifier.tryParse(s[0].asString().trim()),
+		binder.bindConsumer((e,a,l,ch,s)->e.addElem(new TextureElement(ResourceLocation.tryParse(s[0].asString().trim()),
 				s[1].asInt(), s[2].asInt(), s[3].asInt(),s[4].asInt())), "drawTexture", "texture");
 		
 		binder.bindConsumer((e,a,l,ch,s)-> {
 			try {
-				Identifier id = Identifier.of(s[0].asString().trim().toLowerCase());
+				ResourceLocation id = ResourceLocation.withDefaultNamespace(s[0].asString().trim().toLowerCase());
 				HudFileUtils.getAndRegisterImage(s[0].asString(),id);
 				e.addElem(new TextureElement(id,s[1].asInt(),s[2].asInt(),s[3].asInt(),s[4].asInt()));
 			} catch (IOException ex) {throw new CompileException("File "+s[0].asString()+"does not exist");}
@@ -105,7 +105,7 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 		
 		//Logging
 		
-		binder.bindConsumer((e,a,l,ch,s)->mc.player.sendMessage(Text.of(s[0].get().toString()),false), "alert");
+		binder.bindConsumer((e,a,l,ch,s)->mc.player.displayClientMessage(Component.keybind(s[0].get().toString()),false), "alert");
 		binder.bindConsumer((e,a,l,ch,s)->Hudder.log(s[0].get().toString()), "log");
 		binder.bindConsumer((e,a,l,ch,s)->Hudder.warn(s[0].get().toString()), "warn");
 		binder.bindConsumer((e,a,l,ch,s)->Hudder.error(s[0].get().toString()), "error");
@@ -123,7 +123,7 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 		binder.bindFunction((m,c,s)->ObjectData.getObject  (s[0].asString()), "getObject" );
 		binder.bindFunction((m,c,s)->BooleanData.getBoolean(s[0].asString()), "getBoolean");
 		
-		binder.bindFunction((m,c,s)->new TranslatedItemStack(mc.player.getInventory().getStack(s[0].asInt())), "getItem");
+		binder.bindFunction((m,c,s)->new TranslatedItemStack(mc.player.getInventory().getItem(s[0].asInt())), "getItem");
 		
 		binder.bindFunction((m,c,s)->c.getConfig().savedVariables.get(s[0].asString()),"readVal");
 		
@@ -153,7 +153,7 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 		//Misc
 		
 		binder.bindFunction((m,c,s)->HudFileUtils.exists(s[0].asString()),"exists");
-		binder.bindFunction((m,c,s)->mc.textRenderer.getWidth(s[0].asString()), "strWidth", "strwidth");
+		binder.bindFunction((m,c,s)->mc.font.width(s[0].asString()), "strWidth", "strwidth");
 		binder.bindFunction((m,c,s)->s[0].get().toString(), "toString");
 	}
 	
@@ -182,12 +182,12 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 		public int maxcount;
 		public int durability;
 		public int maxdurability;
-		private ComponentMap components;
+		private DataComponentMap components;
 		public TranslatedItemStack(ItemStack stack) {
-			name = stack.getFormattedName().getString();
+			name = stack.getDisplayName().getString();
 			count = stack.getCount();
-			maxcount = stack.getMaxCount();
-			durability = stack.getMaxDamage()-stack.getDamage();
+			maxcount = stack.getMaxStackSize();
+			durability = stack.getMaxDamage()-stack.getDamageValue();
 			maxdurability = stack.getMaxDamage();
 			components = stack.getComponents();
 		}
