@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.compilers;
+package io.github.ngspace.hudder.compilers.abstractions;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.CompileException;

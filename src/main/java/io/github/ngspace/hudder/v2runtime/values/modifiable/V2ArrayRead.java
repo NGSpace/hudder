@@ -2,8 +2,8 @@ package io.github.ngspace.hudder.v2runtime.values.modifiable;
 
 import java.util.List;
 
+import io.github.ngspace.hudder.compilers.abstractions.AV2Compiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
-import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import io.github.ngspace.hudder.v2runtime.values.AV2Value;
 

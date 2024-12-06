@@ -17,7 +17,7 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": ["io.github.ngspace.hudder.Hudder"],
-    	"modmenu": [ "io.github.ngspace.hudder.config.HudderModMenuImpl" ]
+    	"modmenu": [ "io.github.ngspace.hudder.hudder.config.HudderModMenuImpl" ]
 	},
 	"mixins": [
 		"hudder.mixins.json"

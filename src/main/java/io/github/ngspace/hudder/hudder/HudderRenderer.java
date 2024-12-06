@@ -16,7 +16,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
-import io.github.ngspace.hudder.config.HudderConfig;
+import io.github.ngspace.hudder.hudder.config.HudderConfig;
 import io.github.ngspace.hudder.uielements.AUIElement;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.Util;

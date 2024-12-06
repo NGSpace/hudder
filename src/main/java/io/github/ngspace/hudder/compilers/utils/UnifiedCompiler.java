@@ -3,7 +3,7 @@ package io.github.ngspace.hudder.compilers.utils;
 import java.io.IOException;
 
 import io.github.ngspace.hudder.Hudder;
-import io.github.ngspace.hudder.compilers.ATextCompiler;
+import io.github.ngspace.hudder.compilers.abstractions.ATextCompiler;
 import io.github.ngspace.hudder.data_management.BooleanData;
 import io.github.ngspace.hudder.data_management.ComponentsData;
 import io.github.ngspace.hudder.data_management.NumberData;

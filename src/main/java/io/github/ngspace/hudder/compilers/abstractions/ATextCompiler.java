@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.compilers;
+package io.github.ngspace.hudder.compilers.abstractions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.Map;
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
-import io.github.ngspace.hudder.config.HudderConfig;
+import io.github.ngspace.hudder.hudder.config.HudderConfig;
 
 public abstract class ATextCompiler {
 

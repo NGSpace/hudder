@@ -1,7 +1,7 @@
 package io.github.ngspace.hudder.v2runtime.values;
 
+import io.github.ngspace.hudder.compilers.abstractions.AV2Compiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
-import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 
 public class V2SystemVar extends AV2Value {
 	public V2SystemVar(String value, AV2Compiler compiler, int line, int charpos) {

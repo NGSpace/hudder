@@ -1,9 +1,9 @@
 package io.github.ngspace.hudder.v2runtime.methods;
 
-import io.github.ngspace.hudder.compilers.ATextCompiler;
+import io.github.ngspace.hudder.compilers.abstractions.ATextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileState;
-import io.github.ngspace.hudder.config.HudderConfig;
+import io.github.ngspace.hudder.hudder.config.HudderConfig;
 import io.github.ngspace.hudder.uielements.GameHudElement;
 import io.github.ngspace.hudder.uielements.GameHudElement.GuiType;
 import io.github.ngspace.hudder.utils.ObjectWrapper;

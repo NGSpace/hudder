@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.compilers;
+package io.github.ngspace.hudder.compilers.abstractions;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -10,12 +10,12 @@ import io.github.ngspace.hudder.compilers.utils.ArrayElementManager;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
 import io.github.ngspace.hudder.compilers.utils.IScriptingLanguageEngine;
-import io.github.ngspace.hudder.config.HudderConfig;
 import io.github.ngspace.hudder.data_management.BooleanData;
 import io.github.ngspace.hudder.data_management.NumberData;
 import io.github.ngspace.hudder.data_management.ObjectData;
 import io.github.ngspace.hudder.data_management.StringData;
 import io.github.ngspace.hudder.hudder.HudCompilationManager;
+import io.github.ngspace.hudder.hudder.config.HudderConfig;
 import io.github.ngspace.hudder.uielements.AUIElement;
 import io.github.ngspace.hudder.uielements.ItemElement;
 import io.github.ngspace.hudder.utils.HudFileUtils;

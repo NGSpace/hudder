@@ -11,11 +11,11 @@ import java.util.Set;
 import org.mozilla.javascript.ScriptableObject;
 
 import io.github.ngspace.hudder.Hudder;
+import io.github.ngspace.hudder.compilers.abstractions.AV2Compiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.hudder.HudderUtils;
 import io.github.ngspace.hudder.utils.NoAccess;
 import io.github.ngspace.hudder.utils.ValueGetter;
-import io.github.ngspace.hudder.v2runtime.AV2Compiler;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import io.github.ngspace.hudder.v2runtime.values.AV2Value;
 

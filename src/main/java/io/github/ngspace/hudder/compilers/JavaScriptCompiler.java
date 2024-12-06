@@ -1,12 +1,13 @@
 package io.github.ngspace.hudder.compilers;
 
 import io.github.ngspace.hudder.Hudder;
+import io.github.ngspace.hudder.compilers.abstractions.AScriptingLanguageCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
 import io.github.ngspace.hudder.compilers.utils.IScriptingLanguageEngine;
 import io.github.ngspace.hudder.compilers.utils.JavaScriptEngine;
 import io.github.ngspace.hudder.compilers.utils.UnifiedCompiler;
-import io.github.ngspace.hudder.config.HudderConfig;
+import io.github.ngspace.hudder.hudder.config.HudderConfig;
 
 public class JavaScriptCompiler extends AScriptingLanguageCompiler {
 

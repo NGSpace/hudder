@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.github.ngspace.hudder.Hudder;
-import io.github.ngspace.hudder.compilers.ATextCompiler;
+import io.github.ngspace.hudder.compilers.abstractions.ATextCompiler;
 
 public class Compilers {private Compilers() {}
 	
