@@ -2,27 +2,31 @@ package io.github.ngspace.hudder.data_management;
 
 import static io.github.ngspace.hudder.data_management.Advanced.isKeyHeld;
 
+import java.util.Optional;
+
+import com.mojang.datafixers.DataFixUtils;
+
 import io.github.ngspace.hudder.config.ConfigManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.levelgen.WorldgenRandom;
 
 public class BooleanData {private BooleanData(){}
 	public static Boolean getBoolean(String key) {
 		Minecraft ins = Minecraft.getInstance();
 		var p = ins.player;
-//		@SuppressWarnings("resource")
-//		var betterworld = DataFixUtils.orElse(Optional.ofNullable(ins.getCurrentServer()).flatMap(integratedServer ->
-//			Optional.ofNullable(integratedServer.getWorld(ins.world.getRegistryKey()))), ins.world);
-//		betterworld.wait();
+		@SuppressWarnings("resource")
+		var betterworld = DataFixUtils.orElse(Optional.ofNullable(ins.getSingleplayerServer()).flatMap(integratedServer ->
+			Optional.ofNullable(integratedServer.getLevel(ins.level.dimension()))), ins.level);
 		return switch (key) {
-//			case "isslime", "is_slime": {
-//				try {
-//					yield (ChunkRandom.getSlimeRandom(p.getBlockX() >> 4, p.getBlockZ() >> 4,
-//						((StructureWorldAccess)betterworld).getSeed(), 987234911L).nextInt(10) == 0);
-//				} catch (Exception e) {/* For some reason adding a yield false; here causes runtime errors...*/}
-//				yield false;
-//			}
-			//TODO this
+			case "isslime", "is_slime": {
+				try {
+					yield (WorldgenRandom.seedSlimeChunk(p.getBlockX() >> 4, p.getBlockZ() >> 4,
+						((WorldGenLevel)betterworld).getSeed(), 987234911L).nextInt(10) == 0);
+				} catch (Exception e) {/* For some reason adding a yield false; here causes runtime errors...*/}
+				yield false;
+			}
 			
 			case "hudhidden": yield ins.options.hideGui;
 			case "showdebug": yield ins.getDebugOverlay().showDebugScreen();
