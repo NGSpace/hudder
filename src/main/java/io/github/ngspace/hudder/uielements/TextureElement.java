@@ -9,12 +9,13 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
 public class TextureElement extends AUIElement {
-	private static final long serialVersionUID = -3008870889825976036L;
+	
 	public final int x;
 	public final int y;
 	public final int width;
 	public final int height;
 	public final ResourceLocation id;
+	
 	public TextureElement(ResourceLocation id, int x, int y, int width, int height) {
 		this.x=x;
 		this.y=y;
@@ -22,6 +23,7 @@ public class TextureElement extends AUIElement {
 		this.height=height;
 		this.id=id;
 	}
+	
 	@Override public void renderElement(GuiGraphics context, HudderRenderer renderer, DeltaTracker delta) {
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();

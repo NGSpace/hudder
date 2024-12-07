@@ -1,9 +1,12 @@
-package io.github.ngspace.hudder.compilers.utils;
+package io.github.ngspace.hudder.compilers.utils.unifiedcomp;
 
 import java.io.IOException;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.abstractions.ATextCompiler;
+import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.compilers.utils.Compilers;
+import io.github.ngspace.hudder.compilers.utils.HudInformation;
 import io.github.ngspace.hudder.data_management.BooleanData;
 import io.github.ngspace.hudder.data_management.ComponentsData;
 import io.github.ngspace.hudder.data_management.NumberData;

@@ -6,8 +6,6 @@ import net.minecraft.client.gui.GuiGraphics;
 
 public class TextElement extends AUIElement {
 	
-	private static final long serialVersionUID = -7265671672610205526L;
-	
 	public final String text;
 	public final int x;
 	public final int y;

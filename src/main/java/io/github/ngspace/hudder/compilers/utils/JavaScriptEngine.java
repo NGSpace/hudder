@@ -25,7 +25,6 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 	
 	protected static Minecraft mc = Minecraft.getInstance();
 	
-	
 	Context cx;
 	ScriptableObject scope;
 	public JavaScriptEngine() {

@@ -1,7 +1,5 @@
 package io.github.ngspace.hudder.hudder;
 
-import java.util.Arrays;
-
 public class HudderUtils {private HudderUtils() {}
 	
 	public static String[] processParemeters(String strtoprocess) {
@@ -53,7 +51,7 @@ public class HudderUtils {private HudderUtils() {}
 		return tokenizedParemeters;
 	}
 	private static <T> T[] addToArray(T[] arr, T t) {
-		T[] newarr = Arrays.copyOf(arr, arr.length+1);
+		T[] newarr = java.util.Arrays.copyOf(arr, arr.length+1);
 		newarr[arr.length] = t;
 		return newarr;
 	}

@@ -25,8 +25,6 @@ public class GameHudElement extends AUIElement {
 		ITEM_TOOLTIP;
 	}
 	
-	private static final long serialVersionUID = 7928033432164989214L;
-	
 	public final int x;
 	public final int y;
 	public final GuiType type;

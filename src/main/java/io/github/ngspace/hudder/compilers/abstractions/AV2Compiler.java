@@ -5,11 +5,11 @@ import java.util.Map;
 
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
-import io.github.ngspace.hudder.compilers.utils.UnifiedCompiler;
-import io.github.ngspace.hudder.compilers.utils.UnifiedCompiler.BindableConsumer;
-import io.github.ngspace.hudder.compilers.utils.UnifiedCompiler.BindableFunction;
-import io.github.ngspace.hudder.compilers.utils.UnifiedCompiler.ConsumerBinder;
-import io.github.ngspace.hudder.compilers.utils.UnifiedCompiler.FunctionBinder;
+import io.github.ngspace.hudder.compilers.utils.unifiedcomp.UnifiedCompiler;
+import io.github.ngspace.hudder.compilers.utils.unifiedcomp.UnifiedCompiler.BindableConsumer;
+import io.github.ngspace.hudder.compilers.utils.unifiedcomp.UnifiedCompiler.BindableFunction;
+import io.github.ngspace.hudder.compilers.utils.unifiedcomp.UnifiedCompiler.ConsumerBinder;
+import io.github.ngspace.hudder.compilers.utils.unifiedcomp.UnifiedCompiler.FunctionBinder;
 import io.github.ngspace.hudder.hudder.HudCompilationManager;
 import io.github.ngspace.hudder.hudder.config.HudderConfig;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;

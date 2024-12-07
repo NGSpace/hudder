@@ -65,8 +65,9 @@ public class Hudder implements ModInitializer {
 		HudFileUtils.makeDefaultHud();
 		ClientTickEvents.START_CLIENT_TICK.register(new HudderTickEvent());
         
-        
-        HudRenderCallback.EVENT.register(new HudderRenderer(new HudCompilationManager()));
+		var compman = new HudCompilationManager();
+		ClientTickEvents.END_CLIENT_TICK.register(compman);
+        HudRenderCallback.EVENT.register(new HudderRenderer(compman));
 		
 		log("Hudder has finished loading!");
 	}

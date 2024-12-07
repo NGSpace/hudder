@@ -3,11 +3,14 @@ package io.github.ngspace.hudder.mixin;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.PlayerRideableJumping;
 
+@Environment(EnvType.CLIENT)
 @Mixin(Gui.class)
 public interface InGameHudAccessor {
     @Invoker public void callRenderPlayerHealth(GuiGraphics context);

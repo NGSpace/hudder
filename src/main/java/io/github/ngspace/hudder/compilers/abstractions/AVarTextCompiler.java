@@ -17,11 +17,17 @@ public abstract class AVarTextCompiler extends ATextCompiler {
 		return key;
 	}
 	
-	
-	//I now realize the name "static variable" might be a little confusing
-	public boolean isSystemVariable(String key) {
-		return getSystemVariable(key)!=null||"null".equals(key);
-	}
+	/**
+	 * If the variable exists within Hudder's predefined variables (ex. fps, x, y, z)
+	 * @param key - the name of the variable
+	 * @return true or false
+	 */
+	public boolean isSystemVariable(String key) {return getSystemVariable(key)!=null||"null".equals(key);}
+	/**
+	 * Returns the value of the variable
+	 * @param key - the name of the variable
+	 * @return The value of the variable or null if it doesn't exist.
+	 */
 	public Object getSystemVariable(String key) {
 		Object obj = NumberData.getNumber(key);
 		if (obj!=null) return obj;

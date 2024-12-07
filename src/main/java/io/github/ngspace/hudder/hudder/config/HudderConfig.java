@@ -46,7 +46,7 @@ public class HudderConfig {
 	
 	
 	
-	public ATextCompiler compiler = new HudderV2Compiler();
+	private ATextCompiler compiler = new HudderV2Compiler();
 	private File configFile = new File(HudFileUtils.FOLDER + "hud.json");
 	
 	
@@ -72,7 +72,7 @@ public class HudderConfig {
 	 * @throws IOException
 	 */
 	public HudInformation compileMainHud() throws CompileException, IOException {
-		if (compiler!=null) return compiler.compile(this, HudFileUtils.getFile(mainfile), mainfile);
+		if (getCompiler()!=null) return getCompiler().compile(this, HudFileUtils.getFile(mainfile), mainfile);
 		else throw new CompileException("There is no Compiler!");
 	}
 	
@@ -113,8 +113,8 @@ public class HudderConfig {
 	
 	/**
 	 * Sets the loaded compiler to match the name of the compiler set in {@code compilertype}
-	 * 
-	 * If unable to retrieve the compiler, switches to the {@code HudderV2Compiler} instead.
+	 * <br><br>
+	 * If unable to retrieve the compiler, switches to the default {@code HudderV2Compiler} instead.
 	 */
 	public void refreshCompiler() {
 		try {
@@ -198,9 +198,18 @@ public class HudderConfig {
 	 * @param compilername - the name of the compiler
 	 * @return the provided name (for clothconfig)
 	 */
-	public Object setCompiler(String compilername) {
+	public String setCompiler(String compilername) {
 		compilertype=compilername;
 		refreshCompiler();
 		return compilername;
+	}
+
+	
+	/**
+	 * Returns the compiler currently used to compile the main file.
+	 * @return The current compiler
+	 */
+	public ATextCompiler getCompiler() {
+		return compiler;
 	}
 }

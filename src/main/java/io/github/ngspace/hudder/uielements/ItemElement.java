@@ -10,12 +10,14 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
 
 public class ItemElement extends AUIElement {
-	private static final long serialVersionUID = -4033666012277014500L;
+	
 	public final ItemStack stack;
 	public final double x;
 	public final double y;
 	public final boolean showcount;
 	public final float scale;
+	static Font textRenderer = Minecraft.getInstance().font;
+	
 	public ItemElement(double x, double y, ItemStack stack, float scale, boolean showcount) {
 		this.stack = stack;
 		this.x = x;
@@ -23,7 +25,6 @@ public class ItemElement extends AUIElement {
 		this.scale = scale;
 		this.showcount = showcount;
 	}
-	static Font textRenderer = Minecraft.getInstance().font;
 	
 	@Override
 	public void renderElement(GuiGraphics context, HudderRenderer renderer, DeltaTracker delta) {

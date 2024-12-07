@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import io.github.ngspace.hudder.Hudder;
+import io.github.ngspace.hudder.compilers.utils.unifiedcomp.IElementManager;
 import io.github.ngspace.hudder.uielements.AUIElement;
 
 public class CompileState implements IElementManager {
