@@ -8,8 +8,6 @@ import net.minecraft.client.gui.GuiGraphics;
 
 public class ColorVerticesElement extends AUIElement {
 	
-	private static final long serialVersionUID = 5234887884582993410L;
-	
 	final float[] vertices;
 	final int r;
 	final int g;

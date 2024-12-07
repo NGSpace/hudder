@@ -1,9 +1,12 @@
-package io.github.ngspace.hudder.compilers.utils;
+package io.github.ngspace.hudder.compilers.utils.unifiedcomp;
 
 import java.io.IOException;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.abstractions.ATextCompiler;
+import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.compilers.utils.Compilers;
+import io.github.ngspace.hudder.compilers.utils.HudInformation;
 import io.github.ngspace.hudder.data_management.BooleanData;
 import io.github.ngspace.hudder.data_management.ComponentsData;
 import io.github.ngspace.hudder.data_management.NumberData;
@@ -100,7 +103,7 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 		//Variables
 		
 		binder.bindConsumer((e,a,l,ch,s)->a.put(s[0].asString(), s[1]), "set", "setVal", "setVariable");
-		binder.bindConsumer((e,a,l,ch,s)->a.getConfig().savedVariables.put(s[0].asString(),s[1]),"saveVal");
+//		binder.bindConsumer((e,a,l,ch,s)->a.getConfig().savedVariables.put(s[0].asString(),s[1]),"saveVal");
 		
 		//Logging
 		
@@ -124,7 +127,7 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 		
 		binder.bindFunction((m,c,s)->new TranslatedItemStack(mc.player.getInventory().getItem(s[0].asInt())), "getItem");
 		
-		binder.bindFunction((m,c,s)->c.getConfig().savedVariables.get(s[0].asString()),"readVal");
+//		binder.bindFunction((m,c,s)->c.getConfig().savedVariables.get(s[0].asString()),"readVal");
 		
 		//Compile
 		

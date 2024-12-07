@@ -11,7 +11,6 @@ import net.minecraft.resources.ResourceLocation;
 
 public class TextureVerticesElement extends AUIElement {
 
-	private static final long serialVersionUID = -4934891927885170626L;
 	private ResourceLocation id;
 	private float[] vertices;
 	private float[] textures;
@@ -29,7 +28,7 @@ public class TextureVerticesElement extends AUIElement {
 	}
 	
 	@Override public void renderElement(GuiGraphics context, HudderRenderer renderer, DeltaTracker delta) {
-		renderer.renderTexture(context, vertices, textures, id, triangles);
+		renderer.renderTexturedVertexArray(context, vertices, textures, id, triangles);
 	}
 	
 }

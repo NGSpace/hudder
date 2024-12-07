@@ -9,14 +9,6 @@ import io.github.ngspace.hudder.data_management.StringData;
 
 public abstract class AVarTextCompiler extends ATextCompiler {
 	
-	public boolean isCondition(String key) {
-		int i = key.indexOf('=');
-		if (i==-1&&!key.contains(">")&&!key.contains("<")) return false;
-		if (i==key.length()) return false;
-		if (i==0) return false;
-		char pre = key.charAt(i-1);
-		return pre=='<'||pre=='>'||pre=='!'||key.charAt(i+1)=='=';
-	}
 	
 	@Override public Object getVariable(String key) throws CompileException {
 		Object obj = getSystemVariable(key);
@@ -25,11 +17,17 @@ public abstract class AVarTextCompiler extends ATextCompiler {
 		return key;
 	}
 	
-	
-	//I now realize the name "static variable" might be a little confusing, it means a variable that can't be modified
-	public boolean isSystemVariable(String key) {
-		return getSystemVariable(key)!=null||"null".equals(key);
-	}
+	/**
+	 * If the variable exists within Hudder's predefined variables (ex. fps, x, y, z)
+	 * @param key - the name of the variable
+	 * @return true or false
+	 */
+	public boolean isSystemVariable(String key) {return getSystemVariable(key)!=null||"null".equals(key);}
+	/**
+	 * Returns the value of the variable
+	 * @param key - the name of the variable
+	 * @return The value of the variable or null if it doesn't exist.
+	 */
 	public Object getSystemVariable(String key) {
 		Object obj = NumberData.getNumber(key);
 		if (obj!=null) return obj;

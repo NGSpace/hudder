@@ -24,13 +24,9 @@ import io.github.ngspace.hudder.v2runtime.values.operations.booloperations.V2Log
 import io.github.ngspace.hudder.v2runtime.values.operations.booloperations.V2LogicalOR;
 import io.github.ngspace.hudder.v2runtime.values.operations.booloperations.V2OppositeOperator;
 
-public class V2VariableParser {
+public class DefaultV2VariableParser implements IV2VariableParser {
 	
-	private V2VariableParser() {}
-	
-	// Holy shit this is a lot for one person to handle without proper comments...
-	
-	public static AV2Value of(V2Runtime runtime, String valuee, AV2Compiler comp, int line, int charpos)
+	@Override public AV2Value parse(V2Runtime runtime, String valuee, AV2Compiler comp, int line, int charpos)
 			throws CompileException {
 		
 		String value = valuee.trim();
@@ -104,7 +100,7 @@ public class V2VariableParser {
 		// Set variable
 		String[] setValues = value.split("=",2);// Split at the first '='
 		// Make sure it's not a condition!
-		if (setValues.length==2&&!comp.isCondition(value)) {
+		if (setValues.length==2&&!isCondition(value)) {
 			return new V2SetValue(comp.getV2Value(runtime, setValues[0], line, charpos),
 					comp.getV2Value(runtime, setValues[1], line, charpos), comp, line, charpos, value);
 		}
@@ -312,7 +308,7 @@ public class V2VariableParser {
 		throw new CompileException("Untokenizable variable: " + value, line, charpos);
 	}
 	
-	private static V2String string(String value, AV2Compiler compiler, int line, int charpos) {
+	private V2String string(String value, AV2Compiler compiler, int line, int charpos) {
 		//Maybe String :)
 		if (!value.startsWith("\"")||!value.endsWith("\"")) return null;
 		
@@ -340,7 +336,7 @@ public class V2VariableParser {
 	
 	
 	
-	private static AV2Value[] logicalOperator(char op, String value, V2Runtime runtime, int line, int charpos) throws CompileException {
+	private AV2Value[] logicalOperator(char op, String value, V2Runtime runtime, int line, int charpos) throws CompileException {
 		AV2Value[] values = new AV2Value[0];
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0;i<value.length();i++) {
@@ -387,19 +383,19 @@ public class V2VariableParser {
 	
 	
 	
-	private static <T> T[] addToArray(T[] arr, T t) {
+	private <T> T[] addToArray(T[] arr, T t) {
 		T[] newarr = Arrays.copyOf(arr, arr.length+1);
 		newarr[arr.length] = t;
 		return newarr;
 	}
-	private static char[] addToArray(char[] arr, char t) {
+	private char[] addToArray(char[] arr, char t) {
 		char[] newarr = Arrays.copyOf(arr, arr.length+1);
 		newarr[arr.length] = t;
 		return newarr;
 	}
 	
 
-	private static String getOperator(String condString) {
+	private String getOperator(String condString) {
 		if (condString.contains("==")) return "==";
 		if (condString.contains("!=")) return "!=";
 		if (condString.contains(">=")) return ">=";
@@ -407,5 +403,14 @@ public class V2VariableParser {
 		if (condString.contains(">" )) return ">" ;
 		if (condString.contains("<" )) return "<" ;
 		return null;
+	}
+	
+	private boolean isCondition(String key) {
+		int i = key.indexOf('=');
+		if (i==-1&&!key.contains(">")&&!key.contains("<")) return false;
+		if (i==key.length()) return false;
+		if (i==0) return false;
+		char pre = key.charAt(i-1);
+		return pre=='<'||pre=='>'||pre=='!'||key.charAt(i+1)=='=';
 	}
 }

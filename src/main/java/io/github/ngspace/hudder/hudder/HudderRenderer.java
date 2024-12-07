@@ -68,8 +68,6 @@ public class HudderRenderer implements HudRenderCallback {
         boolean shadow = info.shadow;
         boolean background = info.background;
         
-        //This is too complicated, imma replace it with TextElements ~~never~~ eventually.
-        
         /* Top Left */
         String[] lines = text.TopLeftText.split(NL_REGEX);
         int yoff = info.yoffset;
@@ -113,9 +111,9 @@ public class HudderRenderer implements HudRenderCallback {
 	
 	
 	
-    public int countLines(String what) {
+    public int countLines(String str) {
         int count = 1;
-        for (int i = 0; i<what.length();i++) if (what.charAt(i) == '\n') count++;
+        for (int i = 0; i<str.length();i++) if (str.charAt(i) == '\n') count++;
         return count;
     }
     
@@ -165,13 +163,14 @@ public class HudderRenderer implements HudRenderCallback {
         RenderSystem.disableBlend();
 	}
     private static final Function<ResourceLocation, RenderType> hudder_gui_tr = Util.memoize(texture ->
-    RenderType.create("hudder_gui_tr", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.TRIANGLE_STRIP, 786432,
-    		RenderType.CompositeState.builder().setTextureState(new RenderStateShard.TextureStateShard(texture,
+    		RenderType.create("hudder_gui_tr", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.TRIANGLE_STRIP,
+    		786432, RenderType.CompositeState.builder().setTextureState(new RenderStateShard.TextureStateShard(texture,
     		TriState.FALSE, false)).setShaderState(RenderStateShard.POSITION_TEXTURE_COLOR_SHADER).setTransparencyState
     		(RenderStateShard.TRANSLUCENT_TRANSPARENCY).setDepthTestState(RenderStateShard.LEQUAL_DEPTH_TEST)
     		.createCompositeState(false)));
 
-	public void renderTexture(GuiGraphics context, float[] vertices, float[] textures, ResourceLocation id, boolean triangles) {
+	public void renderTexturedVertexArray(GuiGraphics context, float[] vertices, float[] textures,
+			ResourceLocation id, boolean triangles) {
 		context.drawSpecial((Consumer<MultiBufferSource>)(vcp -> {
 	        RenderSystem.enableBlend();
 	        RenderSystem.defaultBlendFunc();
@@ -185,7 +184,18 @@ public class HudderRenderer implements HudRenderCallback {
 	        RenderSystem.disableBlend();
 		}));
 	}
-	public void renderColoredVertexArray(GuiGraphics context, float[] vertices, int r, int g, int b, int a, VertexFormat.Mode mode) {
+	/**
+	 * Draws the provided vertices on screen with the provided color and render mode
+	 * @param context The render context
+	 * @param vertices The array holding all the vertices
+	 * @param r red
+	 * @param g green
+	 * @param b blue
+	 * @param a alpha
+	 * @param mode The rendering mode
+	 */
+	public void renderColoredVertexArray(GuiGraphics context, float[] vertices, int r, int g, int b, int a,
+			VertexFormat.Mode mode) {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
 		RenderSystem.setShader(CoreShaders.POSITION_COLOR);
@@ -202,16 +212,22 @@ public class HudderRenderer implements HudRenderCallback {
 	}
 	
 	
-	@Override
-	public void onHudRender(GuiGraphics context, DeltaTracker delta) {
+	
+	/**
+	 * If limitrate is disabled, execute the hud (done every frame).
+	 * <br><br>
+	 * Then, if not disabled, draw the result on screen.
+	 * <br>If compilation failed then render the error with word wrapping to allow for easier readablity.
+	 */
+	@Override public void onHudRender(GuiGraphics context, DeltaTracker delta) {
 		try {
 			if (!Hudder.config.limitrate) compman.compile(delta);
 			if (Hudder.config.shouldDrawResult()) {
             	RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
 	            try {
-	            	if (compman.result!=null)
-	            		drawCompileResult(context, mc.font, compman.result, Hudder.config, delta);
+	            	if (compman.getResult()!=null)
+	            		drawCompileResult(context, mc.font, compman.getResult(), Hudder.config, delta);
 	            	else
 	            		renderFail(context, HudCompilationManager.LastFailMessage);
 				} catch (Exception e) {
