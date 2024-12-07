@@ -23,9 +23,9 @@ public class Advanced {private Advanced() {}
 	public static String OS = null; static {
 		if (OS == null) {
 			String OS = System.getProperty("os.name", "generic").toLowerCase();
-			if ((OS.indexOf("mac") >= 0) || (OS.indexOf("darwin") >= 0)) OS = "mac";
-			else if (OS.indexOf("win") >= 0) OS = "windows";
-			else if (OS.indexOf("nux") >= 0) OS = "linux";
+			if ((OS.contains("mac")) || (OS.contains("darwin"))) OS = "mac";
+			else if (OS.contains("nux")) OS = "linux";
+			else if (OS.contains("win")) OS = "windows";
 			else OS = "other";
 		}
 	}

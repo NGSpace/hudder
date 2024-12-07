@@ -4,7 +4,6 @@ import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.GameNarrator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -19,7 +18,7 @@ public class HudderModMenuImpl implements ModMenuApi {
 	class InstallClothConfig extends Screen {
 	    private final Screen parent;
 	    public InstallClothConfig(Screen parent) {
-	        super(GameNarrator.NO_TITLE);
+	        super(Component.empty());
 	        this.parent = parent;
 	    }
 	    @Override protected void init() {

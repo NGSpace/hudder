@@ -25,7 +25,7 @@ public class HudderConfig {
 	
 	/* EXPOSED :flushed: */
 	@Expose public Map<String, Object> globalVariables = new HashMap<String, Object>();
-	@Expose public Map<String, Object> savedVariables = new HashMap<String, Object>();
+//	@Expose public Map<String, Object> savedVariables = new HashMap<String, Object>();
     @Expose public String compilertype = "hudder";
 	@Expose public String mainfile = "tutorial";//Set "tutorial" as the default file selected
     @Expose public boolean enabled = true;
