@@ -82,7 +82,7 @@ class CachedReader implements ERunnable<CompileException> {
 		}
 		NativeImage img = NativeImage.read(new FileInputStream(new File(HudFileUtils.sanitize(file))));
 		DynamicTexture tex = new DynamicTexture(img);
-		tex.reset(mc.getTextureManager(), mc.getResourceManager(), id, null);
+		mc.getTextureManager().register(id, tex);
 		
 		tex.bind();
 		
