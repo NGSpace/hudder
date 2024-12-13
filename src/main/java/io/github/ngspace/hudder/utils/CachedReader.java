@@ -61,7 +61,7 @@ class CachedReader implements ERunnable<CompileException> {
 			res += '\n';
 		}
 		reader.close();
-		if (res.length()==0) return res;
+		if (res.isEmpty()) return res;
 		return res.substring(0, res.length()-1);
 	}
 	
