@@ -65,7 +65,6 @@ public class V2ClassPropertyCall extends AV2Value {
 				@Override public String toString() {return en.toString();}
 			};
 		}
-//		if (obj==null) return V2Runtime.NULL;
 		return obj;
 	}
 

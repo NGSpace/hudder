@@ -14,10 +14,11 @@ import io.github.ngspace.hudder.hudder.HudCompilationManager;
 import io.github.ngspace.hudder.hudder.config.HudderConfig;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import io.github.ngspace.hudder.v2runtime.functions.V2FunctionHandler;
+import io.github.ngspace.hudder.v2runtime.methods.IMethod;
 import io.github.ngspace.hudder.v2runtime.methods.MethodHandler;
 import io.github.ngspace.hudder.v2runtime.values.AV2Value;
-import io.github.ngspace.hudder.v2runtime.values.IV2VariableParser;
 import io.github.ngspace.hudder.v2runtime.values.DefaultV2VariableParser;
+import io.github.ngspace.hudder.v2runtime.values.IV2VariableParser;
 
 public abstract class AV2Compiler extends AVarTextCompiler implements ConsumerBinder, FunctionBinder {
 	
@@ -87,7 +88,8 @@ public abstract class AV2Compiler extends AVarTextCompiler implements ConsumerBi
 	
 	
 
-	@Override public final HudInformation compile(HudderConfig info, String text, String filename) throws CompileException {
+	@Override public final HudInformation compile(HudderConfig info, String text, String filename)
+			throws CompileException {
 		V2Runtime runtime = runtimes.get(text);
 		if (runtime==null) runtimes.put(text, (runtime=buildRuntime(info,text, new CharPosition(-1, -1), filename)));
 		return runtime.execute().toResult();
@@ -95,7 +97,8 @@ public abstract class AV2Compiler extends AVarTextCompiler implements ConsumerBi
 	
 	
 	
-	public abstract V2Runtime buildRuntime(HudderConfig info, String text, CharPosition charPosition, String filename) throws CompileException;
+	public abstract V2Runtime buildRuntime(HudderConfig info, String text, CharPosition charPosition, String filename)
+			throws CompileException;
 	
 	
 	
@@ -104,5 +107,29 @@ public abstract class AV2Compiler extends AVarTextCompiler implements ConsumerBi
 	}
 	@Override public void bindFunction(BindableFunction cons, String... names) {
 		functionHandler.bindFunction((c,a,s,l,ch)->cons.invoke(c.compileState, this, s), names);
+	}
+	
+
+
+	public void defineFunctionOrMethod(String commands, String[] args, String name, CharPosition pos, String filename)
+			throws CompileException {
+		boolean isMethod = true;
+		
+		V2Runtime runtime = buildRuntime(getConfig(), commands, pos, filename);
+		
+		IMethod newmethod = (info,state,comp,type,line,charpos,vals) -> {
+			if (vals.length<args.length) throw new CompileException("Not enough arguments", pos.line, pos.charpos);
+			for (int i = 0;i<vals.length;i++) {
+				comp.put("arg"+(i+1), vals[i].get());
+			}
+			try {
+				state.combineWithResult(runtime.execute().toResult(), false);
+			} catch (CompileException e) {
+				throw new CompileException(e.getFailureMessage() +"\nMethod "+type+" threw an error ", line, charpos);
+			}
+		};
+		
+		if (isMethod)
+			methodHandler.methods.put(name, newmethod);
 	}
 }

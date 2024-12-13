@@ -245,8 +245,8 @@ public class HudderV2Compiler extends AV2Compiler {
 							builder = HudderUtils.processParemeters(cond);
 							String name = builder[0];
 							String[] args = Arrays.copyOfRange(builder, 1, builder.length);
-							var pos = getPosition(charPosition, savedind+1, "\n"+text);
-							methodHandler.register(cmds, args, name, pos.line, pos.charpos, filename);
+							CharPosition pos = getPosition(charPosition, savedind+1, "\n"+text);
+							defineFunctionOrMethod(cmds,args,name,pos,filename);
 							elemBuilder.setLength(0);
 							break;
 						}
