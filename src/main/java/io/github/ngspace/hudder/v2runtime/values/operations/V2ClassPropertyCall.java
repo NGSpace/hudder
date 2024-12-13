@@ -21,7 +21,7 @@ import io.github.ngspace.hudder.v2runtime.values.AV2Value;
 
 public class V2ClassPropertyCall extends AV2Value {
 	
-	private static final String[] forbiddenValuesAndFunctions = {"getClass","hashCode","wait","notify","notifyAll"};
+	private static final String[] forbiddenValuesAndFunctions = {"getClass","hashCode","wait","notify","notifyAll","clone","finalize"};
 	private AV2Value classobj;
 	private boolean isFunctionCall;
 	private AV2Value[] functionCallArgs;
@@ -58,22 +58,21 @@ public class V2ClassPropertyCall extends AV2Value {
 	}
 	@Override public Object get() throws CompileException {
 		Object obj = smartGet();
-		if (obj instanceof Set<?> r) {
-			return r.toArray();
-		}
+		if (obj instanceof Set<?> r) return r.toArray();
 		if (obj instanceof ScriptableObject en) {
 			return new ValueGetter() {
 				@Override public Object get(String n) {return en.get(n);}
 				@Override public String toString() {return en.toString();}
 			};
 		}
+//		if (obj==null) return V2Runtime.NULL;
 		return obj;
 	}
 
 	public Object smartGet() throws CompileException {
 		
 		Object objValue = classobj.get();
-		if (objValue==null)
+		if (V2Runtime.NULL.equals(objValue))
 			throw new CompileException("Can't read \"" + funcName+fieldName + "\" because \"" + classobj.value
 					+ "\" is null", line, charpos);
 		Class<?> objClass = objValue.getClass();
@@ -94,7 +93,7 @@ public class V2ClassPropertyCall extends AV2Value {
 				if (!funcName.equals(method.getName())||method.getParameterCount()!=classes.length
 						||!isAccessible(method)) continue;
 				boolean isCompatible = true;
-				var v = method.getParameterTypes();
+				Class<?>[] v = method.getParameterTypes();
 				
 				for (int i=0;i<v.length;i++) {
 					if (v[i].isPrimitive()&&!v[i].isInstance(char.class)&&!v[i].isInstance(boolean.class)) {

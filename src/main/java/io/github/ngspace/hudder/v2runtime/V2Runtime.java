@@ -9,6 +9,14 @@ import io.github.ngspace.hudder.v2runtime.runtime_elements.AV2RuntimeElement;
 
 public class V2Runtime {
 	public final AV2Compiler compiler;
+	/**
+	 * Should stay mostly unused for now.
+	 */
+	public static final Object NULL = new Object() {
+		@Override public boolean equals(Object obj) {return obj == this || obj == null;}
+		@Override public int hashCode() {return super.hashCode();}
+		@Override public String toString() {return "null";}
+	};
 	public V2Runtime(AV2Compiler compiler) {this.compiler = compiler;}
 	
 	AV2RuntimeElement[] elements = new AV2RuntimeElement[0];

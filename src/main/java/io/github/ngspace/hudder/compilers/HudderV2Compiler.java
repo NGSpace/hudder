@@ -43,7 +43,7 @@ public class HudderV2Compiler extends AV2Compiler {
 		boolean cleanup = false;
 		int cleanup_amount = Hudder.config.methodBuffer;
 		
-		int compileState = TEXT_STATE;
+		byte compileState = TEXT_STATE;
 
 		for (int ind = 0;ind<text.length();ind++) {
 			char c = text.charAt(ind);
@@ -192,17 +192,22 @@ public class HudderV2Compiler extends AV2Compiler {
 					break;
 				}
 				case HASHTAG_STATE: {
-					boolean isWhile = false;
-					boolean isDef = false;
+					/**
+					 * 0x0 - condition
+					 * 0x1 - if
+					 * 0x2 - while
+					 * 0x3 - def (functions and methods)
+					 * 0x5 - class //Not implemented
+					 */
+					byte command = 0x0;
 					compileState = TEXT_STATE;
-					boolean hasbeendefined = false;
 					for (;ind<text.length();ind++) {
 						if ((c = text.charAt(ind))=='\n') break;
-						if (!hasbeendefined) {
-							if(c==' '&&elemBuilder.toString().equals("while")) {hasbeendefined=true;isWhile=true;}
-							else if(c==' '&&elemBuilder.toString().equals("if")) {hasbeendefined=true;}
-							else if(c==' '&&elemBuilder.toString().equals("def")){isDef=true;hasbeendefined=true;}
-							if (hasbeendefined) {elemBuilder.setLength(0);continue;}
+						if (command==0) {
+							if(c==' '&&elemBuilder.toString().equals("while")) {command=0x2;}
+							else if(c==' '&&elemBuilder.toString().equals("if")) {command=0x1;}
+							else if(c==' '&&elemBuilder.toString().equals("def")){command=0x3;}
+							if (command!=0x0) {elemBuilder.setLength(0);continue;}
 						}
 						elemBuilder.append(c);
 					}
@@ -213,11 +218,9 @@ public class HudderV2Compiler extends AV2Compiler {
 					if (ind+1<text.length()&&(text.charAt(ind+1)=='\t'||text.charAt(ind+1)==' ')) {
 						
 						ind++;
-						
 						String initalIndent = checkIndentation(text,ind);
 						
 						for (;ind<text.length();ind++) {
-							
 							if (ind+1<text.length()) {
 								String indent = checkIndentation(text,ind);
 								if (indent.startsWith(initalIndent)) {
@@ -236,31 +239,27 @@ public class HudderV2Compiler extends AV2Compiler {
 						ind--;
 					}
 					String cmds = instructions.toString();
-					if (isDef) {
-						builder = new String[0];
-						for (int i = 0;i<cond.length();i++) {
-							char ch = cond.charAt(i);
-							if (ch==',') {
-								builder = addToArray(builder, elemBuilder.toString().trim().toLowerCase());
-								elemBuilder.setLength(0);
-							} else elemBuilder = elemBuilder.append(ch);
+					
+					switch (command) {
+						case 0x3: {
+							builder = HudderUtils.processParemeters(cond);
+							String name = builder[0];
+							String[] args = Arrays.copyOfRange(builder, 1, builder.length);
+							var pos = getPosition(charPosition, savedind+1, "\n"+text);
+							methodHandler.register(cmds, args, name, pos.line, pos.charpos, filename);
+							elemBuilder.setLength(0);
+							break;
 						}
-						if (!elemBuilder.toString().isBlank())
-							builder = addToArray(builder, elemBuilder.toString().trim().toLowerCase());
-						String name = builder[0];
-						String[] args = Arrays.copyOfRange(builder, 1, builder.length);
-						var pos = getPosition(charPosition, savedind+1, "\n"+text);
-						methodHandler.register(cmds, args, name, pos.line, pos.charpos, filename);
-						elemBuilder.setLength(0);
-						break;
+						case 0x2: {
+							runtime.addRuntimeElement(new WhileV2RuntimeElement(info, cond, cmds, this, runtime,
+									getPosition(charPosition, savedind+1, "\n"+text),filename));
+							break;
+						}
+						default://0x0 or 0x1
+							runtime.addRuntimeElement(new IfV2RuntimeElement(info, cond, cmds, this, runtime,
+									getPosition(charPosition, savedind+1, "\n"+text),filename));
+							break;
 					}
-					if (isWhile) {
-						runtime.addRuntimeElement(new WhileV2RuntimeElement(info, cond, cmds, this, runtime,
-								getPosition(charPosition, savedind+1, "\n"+text),filename));
-						break;
-					}
-					runtime.addRuntimeElement(new IfV2RuntimeElement(info, cond, cmds, this, runtime,
-							getPosition(charPosition, savedind+1, "\n"+text),filename));
 					break;
 				}
 				default: throw new CompileException("Unknown compile state: " + compileState);

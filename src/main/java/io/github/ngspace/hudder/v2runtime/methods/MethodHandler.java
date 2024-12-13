@@ -66,11 +66,12 @@ public class MethodHandler {
 	public void register(String method, String[] argtypes, String name, int defline, int defcharpos, String filename) {
 		int[] parameters = new int[argtypes.length];
 		for (int i = 0;i<argtypes.length;i++) {
-			if ("string".equals(argtypes[i])) parameters[i] = 1;
-			else if ("number".equals(argtypes[i])) parameters[i] = 2;
-			else if ("boolean".equals(argtypes[i])) parameters[i] = 3;
-			else if ("array".equals(argtypes[i])) parameters[i] = 4;
-			else if ("any".equals(argtypes[i])) parameters[i] = 5;
+			if ("string".equals(argtypes[i].trim())) parameters[i] = 1;
+			else if ("number".equals(argtypes[i].trim())) parameters[i] = 2;
+			else if ("boolean".equals(argtypes[i].trim())) parameters[i] = 3;
+			else if ("array".equals(argtypes[i].trim())) parameters[i] = 4;
+			else if ("any".equals(argtypes[i].trim())) parameters[i] = 0;
+			else throw new UnsupportedOperationException("Can't regocnize type: " + argtypes[i].trim());
 		}
 		String errb = '"'+name+"\" only accepts ;"+name+"";
 		for (String arg : argtypes) errb += ", [" + arg + "]";
@@ -83,7 +84,7 @@ public class MethodHandler {
 				else if (parameters[i]==2) comp.put("arg"+(i+1), vals[i].asDouble());
 				else if (parameters[i]==3) comp.put("arg"+(i+1), vals[i].asBoolean());
 				else if (parameters[i]==4) comp.put("arg"+(i+1), vals[i].asList());
-				else if (parameters[i]==5) comp.put("arg"+(i+1), vals[i].get());
+				else if (parameters[i]==0) comp.put("arg"+(i+1), vals[i].get());
 			}
 			try {
 				state.combineWithResult(comp.compile(info, method, filename), false);

@@ -2,3 +2,5 @@ autoEnabled=true
 bindingSuggestionsDisabled=false
 eclipse.preferences.version=1
 extraProperties=sonar.java.source\=21
+fileExclusions=FILE\:run/config/hudder/hud
+indexingBasedOnEclipsePlugIns=true
