@@ -14,7 +14,7 @@ import io.github.ngspace.hudder.compilers.utils.CompileException;
 public class MethodHandler {
 	
 	
-	public Map<String, IMethod> methods = new HashMap<String,IMethod>();
+	public static Map<String, IMethod> methods = new HashMap<String,IMethod>();
 	public static final String[] Var = {"[Variable]"};
 	public static final String[] TextArg = {"[Text]"};
 	public MethodHandler() {

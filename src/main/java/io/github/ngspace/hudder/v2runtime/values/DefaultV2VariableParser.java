@@ -26,8 +26,7 @@ import io.github.ngspace.hudder.v2runtime.values.operations.booloperations.V2Opp
 
 public class DefaultV2VariableParser implements IV2VariableParser {
 	
-	@Override public AV2Value parse(V2Runtime runtime, String valuee, AV2Compiler comp, int line, int charpos)
-			throws CompileException {
+	@Override public AV2Value parse(V2Runtime runtime, String valuee, AV2Compiler comp, int line, int charpos) throws CompileException {
 		
 		String value = valuee.trim();
 		

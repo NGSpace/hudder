@@ -15,6 +15,8 @@ public abstract class AV2RuntimeElement {
 	 */
 	public abstract boolean execute(CompileState compileState, StringBuilder builder) throws CompileException;
 	
-	protected V2Runtime runtime = null;
-	public V2Runtime getRuntime() {return runtime;}
+	public boolean returnsAValue() {return false;}
+	protected V2Runtime nestedRuntime;
+
+	public V2Runtime getNestedRuntime() {return nestedRuntime;}
 }

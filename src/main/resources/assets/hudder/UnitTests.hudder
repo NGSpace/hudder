@@ -217,12 +217,29 @@ CaSE SenSitive CaSE SenSitive CaSE SenSitive
 1 10.0 false yes no
 
 ||INPUT||Divide method
-#def divide, number, number
-	{result=arg1/arg2}
+#def divide, num1, num2
+	{result=num1/arg2}
 ;divide, 4, 2;
 {result}
 ||EXPECT||
 2
+
+||INPUT||Divide function
+#def divide, num1, num2
+	#if num2==0
+		;return, -1;
+	;return, arg1/arg2;
+{divide(4,2)} {divide(4,0)}
+||EXPECT||
+2 -1
+
+||INPUT||Uncertain function
+#def divide, num1, num2
+	#if num2==0
+		;return, -1;
+	oww no return value? too bad
+||EXPECT||
+Main path in function "divide" does not return a value!
 
 ||INPUT||Vertices
 r;mute;{vert=[10,10,

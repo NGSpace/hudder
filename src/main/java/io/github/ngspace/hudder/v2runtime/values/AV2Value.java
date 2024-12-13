@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import io.github.ngspace.hudder.compilers.abstractions.AV2Compiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.compilers.utils.CompileState;
 import io.github.ngspace.hudder.utils.ObjectWrapper;
 
 public abstract class AV2Value implements ObjectWrapper {
@@ -14,12 +15,17 @@ public abstract class AV2Value implements ObjectWrapper {
 	protected final int charpos;
 	public final String value;
 	protected final AV2Compiler compiler;
-	
-	protected AV2Value(int line, int charpos, String debugvalue, AV2Compiler compiler) {
+	protected CompileState state;
+
+	protected AV2Value(int line, int charpos, String debugvalue, AV2Compiler compiler, CompileState state) {
 		this.line = line;
 		this.charpos = charpos;
 		this.value = debugvalue;
 		this.compiler = compiler;
+		this.state = state;
+	}
+	protected AV2Value(int line, int charpos, String debugvalue, AV2Compiler compiler) {
+		this(line, charpos, debugvalue, compiler, null);
 	}
 
 	

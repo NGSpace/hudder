@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.compilers.utils.CompileState;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
 import io.github.ngspace.hudder.compilers.utils.unifiedcomp.UnifiedCompiler;
 import io.github.ngspace.hudder.compilers.utils.unifiedcomp.UnifiedCompiler.BindableConsumer;
@@ -13,9 +14,10 @@ import io.github.ngspace.hudder.compilers.utils.unifiedcomp.UnifiedCompiler.Func
 import io.github.ngspace.hudder.hudder.HudCompilationManager;
 import io.github.ngspace.hudder.hudder.config.HudderConfig;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
+import io.github.ngspace.hudder.v2runtime.functions.IV2Function;
 import io.github.ngspace.hudder.v2runtime.functions.V2FunctionHandler;
-import io.github.ngspace.hudder.v2runtime.methods.IMethod;
 import io.github.ngspace.hudder.v2runtime.methods.MethodHandler;
+import io.github.ngspace.hudder.v2runtime.runtime_elements.AV2RuntimeElement;
 import io.github.ngspace.hudder.v2runtime.values.AV2Value;
 import io.github.ngspace.hudder.v2runtime.values.DefaultV2VariableParser;
 import io.github.ngspace.hudder.v2runtime.values.IV2VariableParser;
@@ -30,9 +32,8 @@ public abstract class AV2Compiler extends AVarTextCompiler implements ConsumerBi
 	
 	protected AV2Compiler() {
 		HudCompilationManager.addPreCompilerListener(c -> {if (this==c) tempVariables.clear();});
-		UnifiedCompiler comp = UnifiedCompiler.instance;
-		comp.applyConsumers(this);
-		comp.applyFunctions(this);
+		UnifiedCompiler.instance.applyConsumers(this);
+		UnifiedCompiler.instance.applyFunctions(this);
 	}
 	
 	
@@ -113,23 +114,56 @@ public abstract class AV2Compiler extends AVarTextCompiler implements ConsumerBi
 
 	public void defineFunctionOrMethod(String commands, String[] args, String name, CharPosition pos, String filename)
 			throws CompileException {
-		boolean isMethod = true;
-		
 		V2Runtime runtime = buildRuntime(getConfig(), commands, pos, filename);
 		
-		IMethod newmethod = (info,state,comp,type,line,charpos,vals) -> {
-			if (vals.length<args.length) throw new CompileException("Not enough arguments", pos.line, pos.charpos);
-			for (int i = 0;i<vals.length;i++) {
-				comp.put("arg"+(i+1), vals[i].get());
-			}
-			try {
-				state.combineWithResult(runtime.execute().toResult(), false);
-			} catch (CompileException e) {
-				throw new CompileException(e.getFailureMessage() +"\nMethod "+type+" threw an error ", line, charpos);
-			}
-		};
+		boolean isMethod = !hasReturnValue(runtime);
 		
-		if (isMethod)
-			methodHandler.methods.put(name, newmethod);
+		if (isMethod) {
+			MethodHandler.methods.put(name, (info,state,comp,type,line,charpos,vals) -> {
+				if (vals.length<args.length) throw new CompileException("Not enough arguments", pos.line, pos.charpos);
+				for (int i = 0;i<vals.length;i++) {
+					Object v = vals[i].get();
+					put("arg"+(i+1), v);
+					put(args[i].trim(), v);
+				}
+				try {
+					state.combineWithResult(runtime.execute().toResult(), false);
+				} catch (CompileException e) {
+					throw new CompileException("Method "+type+" threw an error: \n"+e.getFailureMessage(),line,charpos);
+				}
+			});
+		} else {//Is function
+			//Make sure the main path actually returns a value
+			boolean temp = true;
+			for (AV2RuntimeElement element : runtime.getElements()) {
+				if (element.returnsAValue()) temp = false;
+			}
+			if (temp) throw new CompileException("Main path in function \""+name
+					+"\" does not return a value!",pos.line,pos.charpos);
+			functionHandler.bindFunction((IV2Function) (funcruntime,funcname,vals,line,charpos) -> {
+				if (vals.length<args.length) throw new CompileException("Not enough arguments", pos.line, pos.charpos);
+				for (int i = 0;i<vals.length;i++) {
+					Object v = vals[i].get();
+					put("arg"+(i+1), v);
+					put(args[i].trim(), v);
+				}
+				try {
+					CompileState exec = runtime.execute();
+					funcruntime.compileState.combineWithResult(exec.toResult(), false);
+					return exec.returnValue;
+				} catch (CompileException e) {
+					throw new CompileException("Method "+name+" threw an error: \n"+e.getFailureMessage(),line,charpos);
+				}
+			}, name);
+			
+		}
+	}
+
+	public boolean hasReturnValue(V2Runtime runtime) {
+		for (AV2RuntimeElement element : runtime.getElements()) {
+			if (element.returnsAValue()) return true;
+			if (element.getNestedRuntime()!=null&&hasReturnValue(element.getNestedRuntime())) return true;
+		}
+		return false;
 	}
 }

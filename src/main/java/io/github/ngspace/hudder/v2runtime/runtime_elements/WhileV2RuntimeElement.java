@@ -11,22 +11,20 @@ import io.github.ngspace.hudder.v2runtime.values.AV2Value;
 public class WhileV2RuntimeElement extends AV2RuntimeElement {
 	
 	private AV2Value condition;
-	private V2Runtime compiledRuntime;
 
 	public WhileV2RuntimeElement(HudderConfig info, String condition, String cmds, AV2Compiler compiler, V2Runtime runtime,
 			CharPosition charPosition, String filename) throws CompileException {
 		this.condition = compiler.getV2Value(runtime, condition, charPosition.line, charPosition.charpos);
-		this.compiledRuntime = compiler.buildRuntime(info, cmds, new CharPosition(charPosition.line, 1),filename);
+		this.nestedRuntime = compiler.buildRuntime(info, cmds, new CharPosition(charPosition.line, 1),filename);
 	}
 	
-	@Override
-	public boolean execute(CompileState meta, StringBuilder builder) throws CompileException {
-		while(condition.asBoolean()) {
-			var res = compiledRuntime.execute();
+	@Override public boolean execute(CompileState meta, StringBuilder builder) throws CompileException {
+		while (condition.asBoolean()) {
+			CompileState res = nestedRuntime.execute();
 			meta.combineWithResult(res.toResult(), false);
-			if (res.hasBroken) return true;
+			if (res.hasReturned) meta.setReturnValue(res.returnValue);
+			
 		}
 		return true;
 	}
-	
 }

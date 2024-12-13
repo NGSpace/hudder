@@ -30,11 +30,11 @@ public class ConditionV2RuntimeElement extends AV2RuntimeElement {
 		for (int i = 0;i<condArgs.length;i++) {
 			String str = condArgs[i];
 			if (hasElse&&i==condArgs.length-1) {
-				results = addToArray(results, compiler.getV2Value(runtime, str,line,charpos));
+				results = addToArray(results, compiler.getV2Value(runtime, str, line, charpos));
 				break;
 			}
-			if (i%2==0) conditions = addToArray(conditions, compiler.getV2Value(runtime, str,line,charpos));
-			else results = addToArray(results, compiler.getV2Value(runtime, str,line,charpos));
+			if (i%2==0) conditions = addToArray(conditions, compiler.getV2Value(runtime, str, line, charpos));
+			else results = addToArray(results, compiler.getV2Value(runtime, str, line, charpos));
 		}
 	}
 	

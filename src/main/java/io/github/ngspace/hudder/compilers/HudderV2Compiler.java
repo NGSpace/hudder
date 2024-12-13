@@ -12,6 +12,7 @@ import io.github.ngspace.hudder.v2runtime.runtime_elements.BreakV2RuntimeElement
 import io.github.ngspace.hudder.v2runtime.runtime_elements.ConditionV2RuntimeElement;
 import io.github.ngspace.hudder.v2runtime.runtime_elements.IfV2RuntimeElement;
 import io.github.ngspace.hudder.v2runtime.runtime_elements.MethodV2RuntimeElement;
+import io.github.ngspace.hudder.v2runtime.runtime_elements.ReturnV2RuntimeElement;
 import io.github.ngspace.hudder.v2runtime.runtime_elements.StringV2RuntimeElement;
 import io.github.ngspace.hudder.v2runtime.runtime_elements.VariableV2RuntimeElement;
 import io.github.ngspace.hudder.v2runtime.runtime_elements.WhileV2RuntimeElement;
@@ -183,6 +184,10 @@ public class HudderV2Compiler extends AV2Compiler {
 						var pos = getPosition(charPosition, savedind, text);
 						int line = pos.line;
 						int charpos = pos.charpos;
+						if (builder.length==2&&builder[0].toLowerCase().trim().equals("return")) {
+							runtime.addRuntimeElement(new ReturnV2RuntimeElement(builder[1],this,runtime,line,charpos));
+							break;
+						}
 						runtime.addRuntimeElement(new MethodV2RuntimeElement(builder,this,info,runtime,line,charpos));
 						elemBuilder.setLength(0);
 						builder = new String[0];
