@@ -47,9 +47,10 @@ public class ConditionV2RuntimeElement extends AV2RuntimeElement {
 			}
 		}
 		if (res==null&&hasElse) res = compiler.compile(info,results[results.length-1].asString(),filename);
-		if (res==null) res = HudInformation.of("");
-		builder.append(res.TopLeftText);
-		for (var v : res.elements) meta.elements.add(v);
+		if (res!=null) {
+			builder.append(res.TopLeftText);
+			for (var v : res.elements) meta.elements.add(v);
+		}
 		return true;
 	}
 
