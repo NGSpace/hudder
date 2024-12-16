@@ -3,7 +3,7 @@ package io.github.ngspace.hudder.data_management;
 import static io.github.ngspace.hudder.data_management.Advanced.isKeyHeld;
 
 import io.github.ngspace.hudder.Hudder;
-import io.github.ngspace.hudder.hudder.config.HudderConfig;
+import io.github.ngspace.hudder.main.config.HudderConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.level.GameType;

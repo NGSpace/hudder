@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.hudder;
+package io.github.ngspace.hudder.main;
 
 public class HudderUtils {private HudderUtils() {}
 	

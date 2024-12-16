@@ -4,7 +4,7 @@ import java.util.Calendar;
 import java.util.Queue;
 
 import io.github.ngspace.hudder.Hudder;
-import io.github.ngspace.hudder.hudder.config.HudderConfig;
+import io.github.ngspace.hudder.main.config.HudderConfig;
 import io.github.ngspace.hudder.mixin.ParticleManagerAccessor;
 import io.github.ngspace.hudder.mixin.WorldRendererAccess;
 import net.minecraft.client.Minecraft;

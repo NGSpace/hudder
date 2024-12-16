@@ -13,7 +13,7 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 
 import io.github.ngspace.hudder.compilers.abstractions.ATextCompiler;
-import io.github.ngspace.hudder.hudder.config.HudderConfig;
+import io.github.ngspace.hudder.main.config.HudderConfig;
 import io.github.ngspace.hudder.utils.testing.HudderUnitTest.HudderUnitTestResult;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
