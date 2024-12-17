@@ -176,6 +176,47 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 				return new V2Comparison(comp.getV2Value(runtime, v[0].trim(), line, charpos),
 					comp.getV2Value(runtime, v[1].trim(), line, charpos), operator, line, charpos, value, comp);
 		}
+
+
+
+		// Class
+		String classyobjname = "";
+		String functionOrObject = "";
+		for (int i=1;i<value.length(); i++) {
+			char c = value.charAt(value.length()-i);
+			if (c==')') {
+				int parentheses = 0;
+				for (;i<value.length()+1; i++) {
+					c = value.charAt(value.length()-i);
+					if (c==')') parentheses++;
+					if (c=='(') parentheses--;
+					functionOrObject = c + functionOrObject;
+					if (parentheses==0) break;
+				}
+				continue;
+			}
+
+			if (c=='"') {
+				boolean isnotescaped = false;
+				for (;i<value.length()+1; i++) {
+					c = value.charAt(value.length()-i);
+					functionOrObject = c + functionOrObject;
+					if (i+2<value.length()+1) isnotescaped = value.charAt(value.length()-i) == '\\';
+					if (c=='"'&&!(i+1<value.length()+1&&value.charAt(value.length()-i)=='\\')&&isnotescaped) break;
+				}
+				continue;
+			}
+
+			if (c=='.') {
+				classyobjname = value.substring(0,value.length()-i);
+				break;
+			}
+			functionOrObject = c + functionOrObject;
+		}
+
+		if (!Objects.equals(functionOrObject, value)&&!"".equals(classyobjname))
+			return new V2ClassPropertyCall(charpos, charpos, value, comp, runtime,
+					comp.getV2Value(runtime, classyobjname, line, charpos), functionOrObject);
 		
 		
 		
