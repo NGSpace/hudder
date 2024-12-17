@@ -29,6 +29,7 @@ public abstract class AV2Compiler extends AVarTextCompiler implements ConsumerBi
 	public MethodHandler methodHandler = new MethodHandler();
 	public V2FunctionHandler functionHandler = new V2FunctionHandler();
 	protected IV2VariableParser variableParser = new DefaultV2VariableParser();
+	public boolean SYSTEM_VARIABLES_ENABLED = true;
 	
 	protected AV2Compiler() {
 		HudCompilationManager.addPreCompilerListener(c -> {if (this==c) tempVariables.clear();});

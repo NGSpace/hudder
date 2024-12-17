@@ -31,6 +31,34 @@ false
 ||EXPECT||
 1
 
+||INPUT||Char
+{char(int(97))}
+||EXPECT||
+a
+
+||INPUT||Char Int
+{int(char(int(97.1)))}
+||EXPECT||
+97
+
+||INPUT||Predefined array creation
+{array(3)}
+{array(3,1)}
+{r=array(2,"r")}
+{r[1]="t"}
+{r}
+||EXPECT||
+[0, 0, 0]
+[1.0, 1.0, 1.0]
+[r, r]
+t
+[r, t]
+
+||INPUT||Class access and math
+{"Days: ".concat(string(int(1/2),true))}
+||EXPECT||
+Days: 0
+
 ||INPUT||String brackets
 {"{}}"}
 ||EXPECT||

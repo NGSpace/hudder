@@ -12,7 +12,17 @@ public class ArrayV2Function implements IV2Function {
 	public Object execute(V2Runtime runtime, String functionName, AV2Value[] args, int line, int charpos)
 			throws CompileException {
 		var lst = new ArrayList<Object>();
-		for (char c : args[0].asString().toCharArray()) lst.add(c);
+		Object o = args[0].get();
+		if (o instanceof String str) {
+			for (char c : str.toCharArray()) lst.add(c);
+		} else if (o instanceof Number b) {
+			Object value = 0;
+			if (args.length>1) value = args[1].get();
+			for (int i = 0;i<b.intValue();i++) {
+				lst.add(value);
+			}
+		}
+		//TODO create array of predefined size
 		return lst;
 	}
 	

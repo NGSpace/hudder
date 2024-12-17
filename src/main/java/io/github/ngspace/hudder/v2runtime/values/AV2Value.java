@@ -78,17 +78,20 @@ public abstract class AV2Value implements ObjectWrapper {
 		if (get instanceof Number b) return b.doubleValue();
 		throw new CompileException(invalidTypeMessage("Double", value, get), line, charpos);
 	}
-	@Override public String asString() throws CompileException {
-		Object get = get();
-		if (get instanceof String b) return b;
-		throw new CompileException(invalidTypeMessage("String", value, get), line, charpos);
-	}
+	
+	
 	@Override @SuppressWarnings("unchecked") public List<Object> asList() throws CompileException {
-		Object get = get();
-		if (get instanceof List<?> b) return (List<Object>) b;
-		throw new CompileException(invalidTypeMessage("Array", value, get), line, charpos);
+		return asType(List.class);
 	}
 	@Override public Object[] asArray() throws CompileException {return asList().toArray();}
+	@Override public String asString() throws CompileException {return asType(String.class);}
+	
+	
+	public <T> T asType(Class<T> clazz) throws CompileException {
+		Object get = get();
+		if (clazz.isInstance(get)) return clazz.cast(get);
+		throw new CompileException(invalidTypeMessage("String", value, get), line, charpos);
+	}
 	
 	
 	

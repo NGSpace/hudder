@@ -184,11 +184,15 @@ public class HudderV2Compiler extends AV2Compiler {
 						var pos = getPosition(charPosition, savedind, text);
 						int line = pos.line;
 						int charpos = pos.charpos;
-						if (builder.length==2&&builder[0].toLowerCase().trim().equals("return")) {
+						if (builder[0].toLowerCase().trim().equals("no_sys_var")) {
+							SYSTEM_VARIABLES_ENABLED = false;
+						} else if (builder[0].toLowerCase().trim().equals("sys_var")) {
+							SYSTEM_VARIABLES_ENABLED = true;
+						} else if (builder.length==2&&builder[0].toLowerCase().trim().equals("return")) {
 							runtime.addRuntimeElement(new ReturnV2RuntimeElement(builder[1],this,runtime,line,charpos));
-							break;
+						} else {
+							runtime.addRuntimeElement(new MethodV2RuntimeElement(builder,this,info,runtime,line,charpos));
 						}
-						runtime.addRuntimeElement(new MethodV2RuntimeElement(builder,this,info,runtime,line,charpos));
 						elemBuilder.setLength(0);
 						builder = new String[0];
 						cleanup = true;

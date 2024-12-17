@@ -15,13 +15,20 @@ public class V2FunctionHandler {
 	protected static Minecraft mc = Minecraft.getInstance();
 	
 	public V2FunctionHandler() {
+		bindAllAPIFunctions();
+	}
+
+	public void bindAllAPIFunctions() {
 		if (Hudder.IS_DEBUG) bindFunction(new TestFunction(), 2, "test");
 		
 		//Type casting
 		
 		bindFunction(new DoubleV2Function(), 1, "int", "num", "number", "double");
 		bindFunction(new StringV2Function(), 1, 2, "str", "string");
-		bindFunction(new ArrayV2Function(), 1, "array");
+		bindFunction(new ArrayV2Function(), 1, 2, "array");
+		bindFunction((r,n,args,l,c) -> (char)(args[0].asDouble()), 1, "char");
+		bindFunction((r,n,args,l,c) -> Integer.toBinaryString((int) args[0].asDouble()), 1, "toBinaryString");
+		
 		
 		//String manipulation
 
@@ -76,7 +83,6 @@ public class V2FunctionHandler {
 		
 		bindFunction(new LengthV2Function(), 1, "length");
 		bindFunction((r,n,args,l,c)->new HashMap<Object, Object>(),0, "map");
-		
 	}
 
 	private void bindFunctionDep(IV2Function func, int minlength, int maxlength, String message, String... names) {
