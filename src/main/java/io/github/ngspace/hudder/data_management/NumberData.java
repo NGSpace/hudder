@@ -135,7 +135,7 @@ public class NumberData {private NumberData() {}
 			case "light": yield (double) ins.level.getMaxLocalRawBrightness(p.blockPosition());
 			case "blocklight", "block_light": yield (double) ins.level.getBrightness(LightLayer.BLOCK,p.blockPosition());
 			case "skylight", "sky_light": yield (double) ins.level.getBrightness(LightLayer.SKY,p.blockPosition());
-			case "worldtime", "world_time": yield (double) ins.level.getGameTime();
+			case "worldtime", "world_time": yield (double) ins.level.getDayTime();
 			
 			
 			
