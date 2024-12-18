@@ -22,7 +22,6 @@ public class ArrayV2Function implements IV2Function {
 				lst.add(value);
 			}
 		}
-		//TODO create array of predefined size
 		return lst;
 	}
 	
