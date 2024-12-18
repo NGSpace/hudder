@@ -26,6 +26,16 @@ true
 true
 false
 
+||INPUT||Math and string
+{1+2+"r"}
+||EXPECT||
+12r
+
+||INPUT||Concatination using plus
+{"X: " + 1 + " Y: " + 60 + " Z: " + 0}
+||EXPECT||
+X: 1 Y: 60 Z: 0
+
 ||INPUT||Int
 {int(1.6)}
 ||EXPECT||
