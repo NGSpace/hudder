@@ -15,7 +15,7 @@ public class WhileV2RuntimeElement extends AV2RuntimeElement {
 	public WhileV2RuntimeElement(HudderConfig info, String condition, String cmds, AV2Compiler compiler, V2Runtime runtime,
 			CharPosition charPosition, String filename) throws CompileException {
 		this.condition = compiler.getV2Value(runtime, condition, charPosition.line, charPosition.charpos);
-		this.nestedRuntime = compiler.buildRuntime(info, cmds, new CharPosition(charPosition.line, 1),filename);
+		this.nestedRuntime = compiler.buildRuntime(info, cmds, new CharPosition(charPosition.line, 1), filename, runtime);
 	}
 	
 	@Override public boolean execute(CompileState meta, StringBuilder builder) throws CompileException {

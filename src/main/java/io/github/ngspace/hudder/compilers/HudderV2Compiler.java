@@ -25,9 +25,9 @@ public class HudderV2Compiler extends AV2Compiler {
 	public static final int METHOD_STATE = 3;
 	public static final int HASHTAG_STATE = 4;
 
-	@Override public V2Runtime buildRuntime(HudderConfig info, String text, CharPosition charPosition, String filename)
-			throws CompileException {
-		V2Runtime runtime = new V2Runtime(this);
+	@Override public V2Runtime buildRuntime(HudderConfig info, String text, CharPosition charPosition, String filename,
+			V2Runtime scope) throws CompileException {
+		V2Runtime runtime = new V2Runtime(this, scope);
 		
 		StringBuilder elemBuilder = new StringBuilder();
 		
@@ -286,9 +286,7 @@ public class HudderV2Compiler extends AV2Compiler {
 		StringBuilder b = new StringBuilder();
 		for (;index<text.length();index++) {
 			char c = text.charAt(index);
-			if (!(c==' '||c=='\t')) {
-				break;
-			}
+			if (!(c==' '||c=='\t')) break;
 			b.append(c);
 		}
 		return b.toString();

@@ -115,7 +115,7 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 		
 		// Dynamic variable
 		// It is not a systemvariable and is therefore a user defined/dynamic variable!
-		if (matchesVariableRegex) return new V2DynamicVar(value, comp, line, charpos);
+		if (matchesVariableRegex) return new V2DynamicVar(value, runtime, line, charpos);
 		
 		
 		

@@ -3,6 +3,7 @@ package io.github.ngspace.hudder.v2runtime.values;
 import java.util.List;
 import java.util.Objects;
 
+import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.abstractions.AV2Compiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileState;
@@ -107,8 +108,9 @@ public abstract class AV2Value implements ObjectWrapper {
 
 	/**
 	 * Returns true if the variable has a value and false if it does not
+	 * @throws CompileException 
 	 */
-	public boolean hasValue() {return true;}
+	public boolean hasValue() throws CompileException {return true;}
 	public abstract boolean isConstant() throws CompileException;
 	@Override public String toString() {return value;}
 }

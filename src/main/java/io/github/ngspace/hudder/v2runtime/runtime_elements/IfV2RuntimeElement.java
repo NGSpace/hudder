@@ -14,8 +14,8 @@ public class IfV2RuntimeElement extends AV2RuntimeElement {
 
 	public IfV2RuntimeElement(HudderConfig info, String condition, String cmds, AV2Compiler compiler, V2Runtime runtime,
 			CharPosition charPosition, String filename) throws CompileException {
-		this.condition = compiler.getV2Value(runtime, condition, charPosition.line, charPosition.charpos);
-		this.nestedRuntime = compiler.buildRuntime(info, cmds, new CharPosition(charPosition.line, 1), filename);
+		this.nestedRuntime = compiler.buildRuntime(info, cmds, new CharPosition(charPosition.line, 1), filename, runtime);
+		this.condition = compiler.getV2Value(nestedRuntime, condition, charPosition.line, charPosition.charpos);
 	}
 	
 	@Override public boolean execute(CompileState meta, StringBuilder builder) throws CompileException {

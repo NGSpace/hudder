@@ -3,6 +3,7 @@ package io.github.ngspace.hudder.compilers.abstractions;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileState;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
@@ -30,9 +31,10 @@ public abstract class AV2Compiler extends AVarTextCompiler implements ConsumerBi
 	public V2FunctionHandler functionHandler = new V2FunctionHandler();
 	protected IV2VariableParser variableParser = new DefaultV2VariableParser();
 	public boolean SYSTEM_VARIABLES_ENABLED = true;
+	public V2Runtime globalRuntime = null;
 	
 	protected AV2Compiler() {
-		HudCompilationManager.addPreCompilerListener(c -> {if (this==c) tempVariables.clear();});
+		HudCompilationManager.addPreCompilerListener(c -> {globalRuntime=null;if (this==c) tempVariables.clear();});
 		UnifiedCompiler.instance.applyConsumers(this);
 		UnifiedCompiler.instance.applyFunctions(this);
 	}
@@ -93,14 +95,15 @@ public abstract class AV2Compiler extends AVarTextCompiler implements ConsumerBi
 	@Override public final HudInformation compile(HudderConfig info, String text, String filename)
 			throws CompileException {
 		V2Runtime runtime = runtimes.get(text);
-		if (runtime==null) runtimes.put(text, (runtime=buildRuntime(info,text, new CharPosition(-1, -1), filename)));
+		if (runtime==null) runtimes.put(text, (runtime=buildRuntime(info, text, new CharPosition(-1, -1), filename, null)));
+		if (globalRuntime==null) globalRuntime = runtime;
 		return runtime.execute().toResult();
 	}
 	
 	
 	
-	public abstract V2Runtime buildRuntime(HudderConfig info, String text, CharPosition charPosition, String filename)
-			throws CompileException;
+	public abstract V2Runtime buildRuntime(HudderConfig info, String text, CharPosition charPosition, String filename,
+			V2Runtime scope) throws CompileException;
 	
 	
 	
@@ -115,7 +118,7 @@ public abstract class AV2Compiler extends AVarTextCompiler implements ConsumerBi
 
 	public void defineFunctionOrMethod(String commands, String[] args, String name, CharPosition pos, String filename)
 			throws CompileException {
-		V2Runtime runtime = buildRuntime(getConfig(), commands, pos, filename);
+		V2Runtime runtime = buildRuntime(getConfig(), commands, pos, filename, null);
 		
 		boolean isMethod = !hasReturnValue(runtime);
 		
@@ -124,8 +127,8 @@ public abstract class AV2Compiler extends AVarTextCompiler implements ConsumerBi
 				if (vals.length<args.length) throw new CompileException("Not enough arguments", pos.line, pos.charpos);
 				for (int i = 0;i<vals.length;i++) {
 					Object v = vals[i].get();
-					put("arg"+(i+1), v);
-					put(args[i].trim(), v);
+					runtime.putScoped("arg"+(i+1), v);
+					runtime.putScoped(args[i].trim(), v);
 				}
 				try {
 					state.combineWithResult(runtime.execute().toResult(), false);
@@ -134,6 +137,7 @@ public abstract class AV2Compiler extends AVarTextCompiler implements ConsumerBi
 				}
 			});
 		} else {//Is function
+			Hudder.log(name);
 			//Make sure the main path actually returns a value
 			boolean temp = true;
 			for (AV2RuntimeElement element : runtime.getElements()) {
@@ -145,8 +149,8 @@ public abstract class AV2Compiler extends AVarTextCompiler implements ConsumerBi
 				if (vals.length<args.length) throw new CompileException("Not enough arguments", pos.line, pos.charpos);
 				for (int i = 0;i<vals.length;i++) {
 					Object v = vals[i].get();
-					put("arg"+(i+1), v);
-					put(args[i].trim(), v);
+					runtime.putScoped("arg"+(i+1), v);
+					runtime.putScoped(args[i].trim(), v);
 				}
 				try {
 					CompileState exec = runtime.execute();
