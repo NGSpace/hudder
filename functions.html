@@ -32,7 +32,9 @@
 <h1>Type casting</h1>
 <hr><br>
 <code>int([Text]) - returns the number equavilent of the provided text (ex. "1" returns the number 1, "20" returns the number 20, etc.)
+int([Character]) - returns the ascii of the provided Character
 str([Anything]) - returns the text equavilent of the provided value (ex. the number 1 returns "1", the boolean true returns "true", etc.)
+char([Number]) - returns the Character located at the provided index in the ascii Character table.
 </code>
 
 <h1>Text manipulation (Deprecated)</h1>
@@ -45,7 +47,7 @@ length([Text]) - returns the length of the provided text (ex. length("Length") r
 </code>
 <br>
 
-<h1>Reading variables</h1>
+<h1 id="variables">Reading variables</h1>
 <hr><br>
 
 <code>getVar([String variable]) - returns the variable with the given name (ex. fps, key_h).
@@ -98,6 +100,8 @@ rng([Number], [Number], &#60;Number&#62;) - returns a random number between the 
 <code>exists([Text]) - returns true if a file named the provided text exists within Hudder's config folder otherwise it returns false (ex. exists("hud") will return true)
 strwidth([Text]) - returns the width of the provided text if drawn on screen with a scale of 1
 map() - returns a Java HashMap (If you don't know what that means then it has no use for you)
+array([Number], [Any]) - creates an array of the provided size filled with the provided value.
+toBinaryString([Number]) - returns the binary value of the provided Number in string form (ex. toBinaryString(5) will return 101)
 </code>
 <br><br><br>
 </body>

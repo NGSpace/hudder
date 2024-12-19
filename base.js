@@ -52,7 +52,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			left: 0%;
 			background-color: #101010;
 			border-right: 3px solid gray;
-			min-height: 100%;
+			min-height: 92%;
+			overflow-y: scroll;
+			max-height: 80%;
 		}
 		#sidebar h1 {
 			margin: 0px;
@@ -155,11 +157,15 @@ document.addEventListener("DOMContentLoaded", function (event) {
 		table td {border: 3px solid gray;}
 		table th {border: 3px solid gray;}
 		table {border-collapse: collapse;border: 3px solid gray;max-width: 96%;}
+		
+		#preplist li {
+			margin-top: 0px;margin-bottom: 10px;
+		}
 	</style>
 	<link rel="icon" type="image/x-icon" href="favicon.ico">
 	<div id="topbar">
 		<img src="Images/Hudder.webp" alt="Back to main hudder wiki page" />
-		<div id="title">Hudder 7.0.0 Wiki</div>
+		<div id="title">Hudder 7.2.0 Wiki</div>
 	</div>
 	<div id="sidebar">
 	<h1>Explore</h1>
@@ -186,12 +192,14 @@ document.addEventListener("DOMContentLoaded", function (event) {
 				<a href="adv.html">Advanced hud</a>
 			</summary>
 			<ul>
-				<li><a href="adv.html#arrays">Arrays</a></li>
 				<li><a href="adv.html#adv_conds">If statements and while loops</a></li>
-				<li><a href="adv.html#adv_methods">Writing your own methods</a></li>
+				<li><a href="adv.html#arrays">Arrays</a></li>
+				<li><a href="adv.html#strings">String concatination and manipulation</a></li>
+				<li><a href="adv.html#adv_hashdef">Creating your own methods/functions</a></li>
 				<li><a href="adv.html#break">The Break variable</a></li>
 				<li><a href="adv.html#operators">Inc, Dec and Boolean operators</a></li>
 				<li><a href="adv.html#components">Item components</a></li>
+				<li><a href="adv.html#sys_var">;no_sys_var; and ;sys_var; methods</a></li>
 			</ul>
 		</details>
 		<details open>
@@ -234,9 +242,14 @@ document.addEventListener("DOMContentLoaded", function (event) {
 		<br>
 		<details open>
 			<summary>
-				<a href="russian.html">Русский</a>
+				<a href="developers.html">Discord<img src="Images/discord.png" width="40px" style="position: relative;top:13px;"></a>
 			</summary>
 		</details>
+		<!--details open>
+			<summary>
+				<a href="russian.html">Русский</a>
+			</summary>
+		</details-->
 		<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7455801980495957"
 		     crossorigin="anonymous"></script>
 		<!-- Sidebar -->
