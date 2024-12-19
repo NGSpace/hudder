@@ -9,12 +9,14 @@ import static io.github.ngspace.hudder.compilers.utils.CompileState.TOPRIGHT;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.mojang.datafixers.types.templates.List;
+
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 
 public class MethodHandler {
 	
 	
-	public Map<String, IMethod> methods = new HashMap<String,IMethod>();
+	public static Map<String, IMethod> methods = new HashMap<String,IMethod>();
 	public static final String[] Var = {"[Variable]"};
 	public static final String[] TextArg = {"[Text]"};
 	public MethodHandler() {
@@ -57,20 +59,26 @@ public class MethodHandler {
 	 * @throws CompileException - if there is no method with that name.
 	 */
 	public IMethod getMethodFromName(String name) throws CompileException {
-		IMethod method = methods.get(name.toLowerCase());
+		IMethod method = methods.get(name.toLowerCase().trim());
 		if (method==null) throw new CompileException("Unknown method " + name);
 		return method;
 	}
 	
-	
+	/**
+	 * @deprecated Make yo own damn method bitch.
+	 * <br><br>
+	 * Just extend IMethod and compile.
+	 */
+	@Deprecated(since = "7.2.0", forRemoval = true)
 	public void register(String method, String[] argtypes, String name, int defline, int defcharpos, String filename) {
 		int[] parameters = new int[argtypes.length];
 		for (int i = 0;i<argtypes.length;i++) {
-			if ("string".equals(argtypes[i])) parameters[i] = 1;
-			else if ("number".equals(argtypes[i])) parameters[i] = 2;
-			else if ("boolean".equals(argtypes[i])) parameters[i] = 3;
-			else if ("array".equals(argtypes[i])) parameters[i] = 4;
-			else if ("any".equals(argtypes[i])) parameters[i] = 5;
+			if ("string".equals(argtypes[i].trim())) parameters[i] = 1;
+			else if ("number".equals(argtypes[i].trim())) parameters[i] = 2;
+			else if ("boolean".equals(argtypes[i].trim())) parameters[i] = 3;
+			else if ("array".equals(argtypes[i].trim())) parameters[i] = 4;
+			else if ("any".equals(argtypes[i].trim())) parameters[i] = 0;
+			else throw new UnsupportedOperationException("Can't recognize type: " + argtypes[i].trim());
 		}
 		String errb = '"'+name+"\" only accepts ;"+name+"";
 		for (String arg : argtypes) errb += ", [" + arg + "]";
@@ -82,8 +90,8 @@ public class MethodHandler {
 				if      (parameters[i]==1) comp.put("arg"+(i+1), vals[i].asString());
 				else if (parameters[i]==2) comp.put("arg"+(i+1), vals[i].asDouble());
 				else if (parameters[i]==3) comp.put("arg"+(i+1), vals[i].asBoolean());
-				else if (parameters[i]==4) comp.put("arg"+(i+1), vals[i].asList());
-				else if (parameters[i]==5) comp.put("arg"+(i+1), vals[i].get());
+				else if (parameters[i]==4) comp.put("arg"+(i+1), vals[i].asType(List.class));
+				else if (parameters[i]==0) comp.put("arg"+(i+1), vals[i].get());
 			}
 			try {
 				state.combineWithResult(comp.compile(info, method, filename), false);

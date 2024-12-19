@@ -19,23 +19,38 @@ public class V2MathOperation extends AV2Value {
 	
 	@Override public Object get() throws CompileException {
 		if (constant!=null) return constant;
-		
+
+		Object[] processedValues = new Object[values.length];
+		boolean should_concat = false;
+		for (int i = 0;i<values.length;i++) {
+			processedValues[i] = values[i].get();
+			if (!(processedValues[i] instanceof Number)) should_concat = true;
+		}
+		if (should_concat) {
+			String result = toString(processedValues[0]);
+			for (int i = 0;i<operations.length;i++) {
+				if (operations[i]=='+') {
+					result += toString(processedValues[i+1]);
+				} else throw new CompileException("Unknown operator for str concatination: "+operations[i],line,charpos);
+			}
+			return result;
+		}
 		double[] secondValues = new double[values.length];
 		char[] secondsOperations = new char[operations.length];
 		int realSecondValuesLength = 0;
 		
 		//Multiply, Divide and Modulo
-		double result = values[0].asDouble();
+		double result = getDouble(processedValues[0]);
 		for (int i = 0;i<values.length;i++) {
 			if (i==operations.length) break;
-			var val2 = values[i+1].asDouble();
+			var val2 = getDouble(processedValues[i+1]);
 			if      (operations[i]=='*') result = result * val2;
 			else if (operations[i]=='/') result = result / val2;
 			else if (operations[i]=='%') result = result % val2;
 			else {
 				secondValues[realSecondValuesLength] = result;
 				secondsOperations[realSecondValuesLength] = operations[i];
-				result = values[i+1].asDouble();
+				result = getDouble(processedValues[i+1]);
 				realSecondValuesLength++;
 			}
 		}
@@ -55,6 +70,15 @@ public class V2MathOperation extends AV2Value {
 		return result;
 	}
 	
+	private String toString(Object object) {
+		if (object instanceof Number num&&num.doubleValue()%1==0d) return String.valueOf(num.intValue());
+		return String.valueOf(object);
+	}
+
+	private double getDouble(Object object) {
+		return ((Number) object).doubleValue();
+	}
+
 	@Override public void setValue(AV2Compiler compiler, Object value) throws CompileException {
 		throw new CompileException("Can't change the value of a math operation", line, charpos);
 	}

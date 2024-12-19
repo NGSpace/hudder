@@ -4,6 +4,17 @@
 ||EXPECT||
 9
 
+||INPUT||Math operations
+{truncate(3*2.1,1)}
+||EXPECT||
+6.3
+
+||INPUT||New line concatination
+{"r" + "\n" + "o"}
+||EXPECT||
+r
+o
+
 ||INPUT||Basic text
 Basic Bitch Test
 ||EXPECT||
@@ -26,10 +37,48 @@ true
 true
 false
 
+||INPUT||Math and string
+{1+2+"r"}
+||EXPECT||
+12r
+
+||INPUT||Concatination using plus
+{"X: " + 1 + " Y: " + 60 + " Z: " + 0}
+||EXPECT||
+X: 1 Y: 60 Z: 0
+
 ||INPUT||Int
 {int(1.6)}
 ||EXPECT||
 1
+
+||INPUT||Char
+{char(int(97))}
+||EXPECT||
+a
+
+||INPUT||Char Int
+{int(char(int(97.1)))}
+||EXPECT||
+97
+
+||INPUT||Predefined array creation
+{array(3)}
+{array(3,1)}
+{r=array(2,"r")}
+{r[1]="t"}
+{r}
+||EXPECT||
+[0, 0, 0]
+[1.0, 1.0, 1.0]
+[r, r]
+t
+[r, t]
+
+||INPUT||Class access and math
+{"Days: ".concat(string(int(1/2),true))}
+||EXPECT||
+Days: 0
 
 ||INPUT||String brackets
 {"{}}"}
@@ -217,12 +266,37 @@ CaSE SenSitive CaSE SenSitive CaSE SenSitive
 1 10.0 false yes no
 
 ||INPUT||Divide method
-#def divide, number, number
-	{result=arg1/arg2}
+#def divide, num1, num2
+	{result=num1/arg2}
 ;divide, 4, 2;
 {result}
 ||EXPECT||
 2
+
+||INPUT||Spaced divide method
+#def divide, num1, num2
+	{result=num1/arg2}
+; divide, 4, 2;
+{result}
+||EXPECT||
+2
+
+||INPUT||Divide function
+#def divide, num1, num2
+	#if num2==0
+		;return, -1;
+	;return, arg1/arg2;
+{divide(4,2)} {divide(4,0)}
+||EXPECT||
+2 -1
+
+||INPUT||Uncertain function
+#def divide, num1, num2
+	#if num2==0
+		;return, -1;
+	oww no return value? too bad
+||EXPECT||
+Main path in function "divide" does not return a value!
 
 ||INPUT||Vertices
 r;mute;{vert=[10,10,

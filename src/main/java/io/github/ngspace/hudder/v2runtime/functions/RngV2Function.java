@@ -12,7 +12,7 @@ public class RngV2Function implements IV2Function {
 	private Random random = new Random();
 	private HashMap<Integer, Random> randoms = new HashMap<Integer, Random>();
 
-	@Override public Object execute(V2Runtime runtime, String functionName, AV2Value[] args, int line, int charpos)
+	@Override public Object execute(V2Runtime runtime, String functionName, AV2Value[] args, int line, int charpos) 
 			throws CompileException {
 		return (args.length==3? getRandom(args[2].asInt()) : random).nextDouble(args[0].asDouble(),args[1].asDouble());
 	}

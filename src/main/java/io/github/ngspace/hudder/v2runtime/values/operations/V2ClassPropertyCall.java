@@ -13,7 +13,7 @@ import org.mozilla.javascript.ScriptableObject;
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.abstractions.AV2Compiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
-import io.github.ngspace.hudder.hudder.HudderUtils;
+import io.github.ngspace.hudder.main.HudderUtils;
 import io.github.ngspace.hudder.utils.NoAccess;
 import io.github.ngspace.hudder.utils.ValueGetter;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
@@ -21,16 +21,16 @@ import io.github.ngspace.hudder.v2runtime.values.AV2Value;
 
 public class V2ClassPropertyCall extends AV2Value {
 	
-	private static final String[] forbiddenValuesAndFunctions = {"getClass","hashCode","wait","notify","notifyAll"};
+	private static final String[] forbiddenValuesAndFunctions = {"getClass","hashCode","wait","notify","notifyAll","clone","finalize"};
 	private AV2Value classobj;
 	private boolean isFunctionCall;
 	private AV2Value[] functionCallArgs;
 	private String funcName = "";
 	private String fieldName = "";
 
-	public V2ClassPropertyCall(int line, int charpos, String v, AV2Compiler c, V2Runtime runtime,
+	public V2ClassPropertyCall(int line, int charpos, String value, AV2Compiler c, V2Runtime runtime,
 			AV2Value classobj, String prop) throws CompileException {
-		super(line, charpos, v, c);
+		super(line, charpos, value, c);
 		this.classobj = classobj;
 		if (!prop.startsWith("(")&&prop.endsWith(")")) {
 			int argStart = prop.indexOf("(");
@@ -58,9 +58,7 @@ public class V2ClassPropertyCall extends AV2Value {
 	}
 	@Override public Object get() throws CompileException {
 		Object obj = smartGet();
-		if (obj instanceof Set<?> r) {
-			return r.toArray();
-		}
+		if (obj instanceof Set<?> r) return r.toArray();
 		if (obj instanceof ScriptableObject en) {
 			return new ValueGetter() {
 				@Override public Object get(String n) {return en.get(n);}
@@ -73,7 +71,7 @@ public class V2ClassPropertyCall extends AV2Value {
 	public Object smartGet() throws CompileException {
 		
 		Object objValue = classobj.get();
-		if (objValue==null)
+		if (V2Runtime.NULL.equals(objValue))
 			throw new CompileException("Can't read \"" + funcName+fieldName + "\" because \"" + classobj.value
 					+ "\" is null", line, charpos);
 		Class<?> objClass = objValue.getClass();
@@ -94,7 +92,7 @@ public class V2ClassPropertyCall extends AV2Value {
 				if (!funcName.equals(method.getName())||method.getParameterCount()!=classes.length
 						||!isAccessible(method)) continue;
 				boolean isCompatible = true;
-				var v = method.getParameterTypes();
+				Class<?>[] v = method.getParameterTypes();
 				
 				for (int i=0;i<v.length;i++) {
 					if (v[i].isPrimitive()&&!v[i].isInstance(char.class)&&!v[i].isInstance(boolean.class)) {

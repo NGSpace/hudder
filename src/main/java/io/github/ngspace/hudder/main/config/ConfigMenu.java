@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.hudder.config;
+package io.github.ngspace.hudder.main.config;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +36,40 @@ public class ConfigMenu implements ConfigScreenFactory<Screen> {
 	
 	@Override public Screen create(Screen parent) {
 		
+//		ConfigBuilder builder = new ConfigBuilderImpl() {
+//		    @Override
+//		    @SuppressWarnings("unchecked")
+//			public Screen build() {
+//				try {
+//					var f = ConfigBuilderImpl.class.getDeclaredField("fallbackCategory");
+//					
+//					f.setAccessible(true);
+//			    	String fallbackCategory = (String) f.get(this);
+//			    	
+//			    	f = ConfigBuilderImpl.class.getDeclaredField("categoryMap");
+//					f.setAccessible(true);
+//			    	Map<String, ConfigCategory> categoryMap = (Map<String, ConfigCategory>) f.get(this);
+//			    	
+//			        
+//			        AbstractConfigScreen screen;
+//		            screen = new ClothConfigScreen(parent, getTitle(), categoryMap, getDefaultBackgroundTexture()) {
+//		            	
+//		            };
+//			        screen.setSavingRunnable(getSavingRunnable());
+//			        screen.setEditable(isEditable());
+//			        screen.setFallbackCategory(fallbackCategory == null ? null : Component.literal(fallbackCategory));
+//			        screen.setTransparentBackground(hasTransparentBackground());
+//			        screen.setAlwaysShowTabs(isAlwaysShowTabs());
+//			        screen.setConfirmSave(doesConfirmSave());
+//			        screen.setAfterInitConsumer(getAfterInitConsumer());
+//			        return screen;
+//				} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException
+//						| SecurityException e) {
+//					e.printStackTrace();
+//					return null;
+//				}
+//		    }
+//		}
 		ConfigBuilder builder = ConfigBuilder.create()
 			.setTitle(Component.literal("Hudder"))
 			.setSavingRunnable(() -> {
@@ -61,6 +95,47 @@ public class ConfigMenu implements ConfigScreenFactory<Screen> {
 		
 		
 		/* General */
+		//Why am I doing this to myself?
+//		AbstractConfigListEntry<String> abstractConfigEntry = new AbstractConfigListEntry<String>(Component.literal("r"), false) {
+//
+//			@Override public String getValue() {return "r";}
+//			@Override public List<? extends GuiEventListener> children() {return new ArrayList<GuiEventListener>();}
+//			@Override public Optional<String> getDefaultValue() {return Optional.of("r");}
+//			
+//			ResourceLocation highlighted = ResourceLocation.withDefaultNamespace("widget/button_highlighted");
+//			ResourceLocation not_highlighted = ResourceLocation.withDefaultNamespace("widget/button");
+//			
+//			@SuppressWarnings("unchecked") @Override public List narratables() {return new ArrayList<>();}
+//			public void render(GuiGraphics context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered, float delta) {
+//				super.render(context, index, y, x, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
+////				context.blit(RenderType::guiTextured,ResourceLocation.withDefaultNamespace("widget/button"),
+////						x, y, 0, 0f, 100, 7, entryWidth, entryHeight);
+////				var b = new Button.Builder(getFieldName(), bu->{});
+////				b.build().renderWidget(context, mouseX, mouseY, delta);
+//				context.blitSprite(
+//						RenderType::guiTextured,
+//						isHovered ? highlighted : not_highlighted,
+//						x,
+//						y,
+//						entryWidth,
+//						entryHeight
+//					);
+//			}
+//			public boolean mouseClicked(double d, double e, int i) {
+//				boolean clicked = super.mouseClicked(d, e, i);
+//				Hudder.log(d);
+//				Hudder.log(e);
+//				Hudder.log(i);
+//				Hudder.log(this.isMouseOver(d, e));
+//				return clicked;
+//			}
+//		};
+//		general.addEntry(abstractConfigEntry);
+		general.addEntry(entryBuilder
+				.startTextDescription(Component.translatable("hudder.general.folder").withStyle(s -> s
+				.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, 
+						Component.translatable("hudder.general.folder.tooltip")))
+				.withClickEvent(new ClickEvent(ClickEvent.Action.CHANGE_PAGE, HudFileUtils.FOLDER)))).build());
 		general.addEntry(entryBuilder
 				.startTextDescription(Component.translatable("hudder.general.wiki").withStyle(s -> s
 				.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, 
@@ -205,7 +280,7 @@ public class ConfigMenu implements ConfigScreenFactory<Screen> {
 				.setYesNoTextSupplier(yesno)
 				.setDefaultValue(true)
 				.build());
-
+		
 		return builder.build();
 	}
     private List<Variable> getVarList() {

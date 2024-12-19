@@ -5,7 +5,7 @@ import java.util.Objects;
 
 import io.github.ngspace.hudder.compilers.abstractions.AV2Compiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
-import io.github.ngspace.hudder.hudder.HudderUtils;
+import io.github.ngspace.hudder.main.HudderUtils;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import io.github.ngspace.hudder.v2runtime.values.constants.V2Array;
 import io.github.ngspace.hudder.v2runtime.values.constants.V2Boolean;
@@ -26,8 +26,7 @@ import io.github.ngspace.hudder.v2runtime.values.operations.booloperations.V2Opp
 
 public class DefaultV2VariableParser implements IV2VariableParser {
 	
-	@Override public AV2Value parse(V2Runtime runtime, String valuee, AV2Compiler comp, int line, int charpos)
-			throws CompileException {
+	@Override public AV2Value parse(V2Runtime runtime, String valuee, AV2Compiler comp, int line, int charpos) throws CompileException {
 		
 		String value = valuee.trim();
 		
@@ -111,12 +110,12 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 		boolean matchesVariableRegex = value.matches("[A-Za-z\\d][A-Za-z\\d_]*");
 		
 		// System variable
-		if (matchesVariableRegex&&comp.isSystemVariable(value.toLowerCase()))
+		if (matchesVariableRegex&&comp.isSystemVariable(value.toLowerCase())&&comp.SYSTEM_VARIABLES_ENABLED)
 			return new V2SystemVar(value, comp, line, charpos);
 		
 		// Dynamic variable
 		// It is not a systemvariable and is therefore a user defined/dynamic variable!
-		if (matchesVariableRegex) return new V2DynamicVar(value, comp, line, charpos);
+		if (matchesVariableRegex) return new V2DynamicVar(value, runtime, line, charpos);
 		
 		
 		
@@ -210,14 +209,26 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 
 			if (c=='.') {
 				classyobjname = value.substring(0,value.length()-i);
+				for (int j=1;j<classyobjname.length(); j++) {
+					char cc = classyobjname.charAt(classyobjname.length()-j);
+					if (Character.isDigit(cc)) continue;
+					if (cc=='*'||cc=='+'||cc=='-'||cc=='/'||cc=='%') {
+						classyobjname = "";
+						functionOrObject = "";
+						break;
+					} else {
+						break;
+					}
+				}
 				break;
 			}
 			functionOrObject = c + functionOrObject;
 		}
 
-		if (!Objects.equals(functionOrObject, value)&&!"".equals(classyobjname))
+		if (!Objects.equals(functionOrObject, value)&&!"".equals(classyobjname)) {
 			return new V2ClassPropertyCall(charpos, charpos, value, comp, runtime,
 					comp.getV2Value(runtime, classyobjname, line, charpos), functionOrObject);
+		}
 		
 		
 		
@@ -233,7 +244,7 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 				mathvalue.append(c);
 				for (;i<value.length();i++) {
 					c = value.charAt(i);
-					if (c=='\\'&&!safe) safe = true; else {
+					if (c=='\\'&&!safe) {safe = true;mathvalue.append(c);} else {
 						safe = false;
 						mathvalue.append(c);
 						if (c=='"'&&!safe) break;

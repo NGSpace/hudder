@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.hudder;
+package io.github.ngspace.hudder.main;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;

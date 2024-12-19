@@ -28,7 +28,8 @@ public class V2ArrayRead extends AV2Value {
 	}
 
 	@Override public void setValue(AV2Compiler compiler, Object value) throws CompileException {
-		List<Object> list = array.asList();
+		@SuppressWarnings("unchecked")
+		List<Object> list = array.asType(List.class);
 		int index = indexValue.asInt();
 		if (index==list.size()) {
 			list.add(value);

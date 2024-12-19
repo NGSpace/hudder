@@ -6,11 +6,11 @@
 #while _N<93
 	{_N++}
 	{numstr=str(num1,true)}
-	{expectedwidth=expectedwidth+(strwidth(concat(numstr," ")))}
+	{expectedwidth=expectedwidth+(strwidth(numstr + " "))}
 	#if expectedwidth>=width/2
-		{numstr=concat("\n", numstr)}
+		{numstr="\n" + numstr}
 		{expectedwidth=0}
-	{fibonacci=concat(fibonacci, concat(numstr," "))}
+	{fibonacci=fibonacci + numstr + " "}
 	{num3=num2+num1}
 	{num1=num2}
 	{num2=num3}
