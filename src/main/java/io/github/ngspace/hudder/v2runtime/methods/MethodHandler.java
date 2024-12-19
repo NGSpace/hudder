@@ -59,7 +59,7 @@ public class MethodHandler {
 	 * @throws CompileException - if there is no method with that name.
 	 */
 	public IMethod getMethodFromName(String name) throws CompileException {
-		IMethod method = methods.get(name.toLowerCase());
+		IMethod method = methods.get(name.toLowerCase().trim());
 		if (method==null) throw new CompileException("Unknown method " + name);
 		return method;
 	}

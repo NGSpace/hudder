@@ -273,6 +273,14 @@ CaSE SenSitive CaSE SenSitive CaSE SenSitive
 ||EXPECT||
 2
 
+||INPUT||Spaced divide method
+#def divide, num1, num2
+	{result=num1/arg2}
+; divide, 4, 2;
+{result}
+||EXPECT||
+2
+
 ||INPUT||Divide function
 #def divide, num1, num2
 	#if num2==0
