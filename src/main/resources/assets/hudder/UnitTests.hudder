@@ -10,7 +10,7 @@
 6.3
 
 ||INPUT||New line concatination
-{'r' + "\n" + 'o'}
+{"r" + "\n" + "o"}
 ||EXPECT||
 r
 o
