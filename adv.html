@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <head>
-	<title>Hudder wiki - Arrays</title>
+	<title>Hudder wiki - Advanced hud</title>
 	<script src="base.js"></script>
 	<meta charset="UTF-8">
 
@@ -23,7 +23,7 @@
 	</script>
 </head>
 <body>
-<note>"Advanced" is a strong word, the content on this page was written to be understood by everyone but it may not be useful for everyone.</note>
+<note>"Advanced" is a strong word, the contents of this page was written to be understood by everyone, but it may not be useful to everyone therfore I deemed it "advanced".</note>
 <h1>Advanced hud</h1>
 <hr>
 	
@@ -62,7 +62,38 @@ Here is an example of both (Please do not use this, it will likely crash your ga
 <br>
 Magnificent, isn't it? Looks like I peaked early when I came up with this piece of art.
 <br><br>
-	
+
+<h2 id="strings">String concatination and manipulation</h2>
+<hr>
+You can use the '+' operator to combine strings, ex: <inline-code>"X: " + x</inline-code> will return a string that is "X: [the x position of the player]"
+
+<br>
+Strings also have plenty of functions in them that allow you to do all sorts of things, among those functions are:
+<code>[String].charAt(Number) - Returns the char at the specified index.
+[String].contains(String) - Returns true if and only if this string contains the specified sequence of char values.
+[String].endsWith(String) - If this string ends with the specified suffix.
+[String].equals(String) - Compares this string to the specified string.
+[String].equalsIgnoreCase(String) - Compares this String to another String, ignoring case considerations.
+[String].indexOf(String) - Returns the index within this string of the first occurrence of the specified substring.
+[String].lastIndexOf(String) - Returns the index within this string of the last occurrence of the specified substring.
+[String].length() - Returns the length of this string.
+[String].matches(RegexString) - Tells whether or not this string matches the given regular expression.
+[String].repeat(Number) - Returns a string whose value is the concatenation of this string repeated requested amount of times.
+[String].replace(String, String) - Replaces each substring of this string that matches the literal target sequence with the specified literal replacement sequence.
+[String].replaceAll(RegexString, String) - Replaces each substring of this string that matches the given regular expression with the given replacement.
+[String].replaceFirst(RegexString, String) - Replaces the first substring of this string that matches the given regular expression with the given replacement.
+[String].split(RegexString) - Splits this string around matches of the given regular expression.
+[String].split(RegexString, Number) - Splits this string around matches of the given regular expression.
+[String].startsWith(String) - Tests if this string starts with the specified prefix.
+[String].substring(Number) - Returns a string that is a substring of this string.
+[String].substring(Number, Number) - Returns a string that is a substring of this string.
+[String].toCharArray() - Converts this string to a new character array.
+[String].toLowerCase() - Converts all of the characters in this String to lower case
+[String].toUpperCase() - Converts all of the characters in this String to upper case
+[String].trim() - Returns a string whose value is this string, with all leading and trailing space removed
+</code>
+<br><br>
+
 <h2 id="arrays">Arrays</h2>
 <hr>
 <note>Version 5.5.0 or above!</note>
@@ -96,23 +127,27 @@ Read the new length of the array (4):
 
 <br><br>
 
-<h2 id="adv_methods">Writing your own methods</h2>
+<h2 id="adv_hashdef">Creating your own methods/functions</h2>
 <hr>
 
 You can use <inline-code>#def</inline-code> to write your own methods. here is an example:
-<code>#def divide, number, number
-		{result = arg1/arg2}
+<code>#def divide, num1, num2
+		{result = num1/num2}
 ;divide, 4, 2;
-{result==2}
+{result}
 </code><br>
 You can also use <inline-code>{break}</inline-code> to stop the execution of the method early without stopping the execution
 of the rest of the hud.<br><br>
 
-Available types: string, number, boolean, array, any.
+if you add a <inline-code>;return, [value];</inline-code>, it will become a function instead:
+<code>#def divide, num1, num2
+		;return, num1/num2;
+{divide(4,2)}
+</code>
 
 <br><br>
 
-<h2 id="break">Break variable</h2>
+<h2 id="break">The Break variable</h2>
 <hr>
 The <inline-code>{break}</inline-code> variable is special because it's not actually a variable, once it is used, execution of the hud will stop.<br><br>
 If used in <inline-code>#while</inline-code> loop or a <inline-code>#def</inline-code> method, then instead of stopping the execution of the hud it will just stop the execution of the while loop or def method.
@@ -138,6 +173,8 @@ You can use <inline-code>{!_i}</inline-code> to return the opposite value of _i,
 You can use <inline-code>{boolean2&&boolean1}</inline-code> to return true if both booleans are true
 <br><br>
 You can use <inline-code>{boolean2||boolean1}</inline-code> to return true if either booleans are true
+
+<br><br>
 
 <h2 id="components">Item components</h2>
 
@@ -170,6 +207,22 @@ Those properties can be navigated with the '.' character
 Example:
 <code>Your selected item has {getItem(selectedslot).durability} durability left!
 </code>
+
+<br><br>
+
+<h2 id="sys_var">;no_sys_var; and ;sys_var; methods</h2>
+<hr>
+By default if you tried to do <inline-code>{x=10}</inline-code> you'll get an error saying you can't modify system variables.
+<br>
+Or you might make a function/method where the names of one of the parameters is "x" or "y",
+at which point accessing the value becomes impossible since it will always return the x or y position of the player.
+<br><br>
+If you know how, you can use JavaScript to bypass the issue but if you wanna stick with Hudder you can use <inline-code>;no_sys_var;</inline-code> (and it's inverse <inline-code>;sys_var;</inline-code>)
+<br><br>
+<inline-code>;no_sys_var;</inline-code> will disable implicit access of system variables allowing you to define whatever variables you'd like and you'll always know the variables you are accessing are defined by you and not Hudder.
+<br><br>
+Of course, this also means you'll have to access system variables explicitly using the <a href="functions.html#variables">Variable reading functions</a>.
+<br><br>
 
 <br><br><br>
 </body>
