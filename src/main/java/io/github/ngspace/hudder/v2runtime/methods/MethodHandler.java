@@ -78,7 +78,7 @@ public class MethodHandler {
 			else if ("boolean".equals(argtypes[i].trim())) parameters[i] = 3;
 			else if ("array".equals(argtypes[i].trim())) parameters[i] = 4;
 			else if ("any".equals(argtypes[i].trim())) parameters[i] = 0;
-			else throw new UnsupportedOperationException("Can't regocnize type: " + argtypes[i].trim());
+			else throw new UnsupportedOperationException("Can't recognize type: " + argtypes[i].trim());
 		}
 		String errb = '"'+name+"\" only accepts ;"+name+"";
 		for (String arg : argtypes) errb += ", [" + arg + "]";

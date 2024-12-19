@@ -4,6 +4,11 @@
 ||EXPECT||
 9
 
+||INPUT||Math operations
+{truncate(3*2.1,1)}
+||EXPECT||
+6.3
+
 ||INPUT||Basic text
 Basic Bitch Test
 ||EXPECT||

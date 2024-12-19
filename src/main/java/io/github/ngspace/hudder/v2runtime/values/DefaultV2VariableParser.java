@@ -209,14 +209,26 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 
 			if (c=='.') {
 				classyobjname = value.substring(0,value.length()-i);
+				for (int j=1;j<classyobjname.length(); j++) {
+					char cc = classyobjname.charAt(classyobjname.length()-j);
+					if (Character.isDigit(cc)) continue;
+					if (cc=='*'||cc=='+'||cc=='-'||cc=='/'||cc=='%') {
+						classyobjname = "";
+						functionOrObject = "";
+						break;
+					} else {
+						break;
+					}
+				}
 				break;
 			}
 			functionOrObject = c + functionOrObject;
 		}
 
-		if (!Objects.equals(functionOrObject, value)&&!"".equals(classyobjname))
+		if (!Objects.equals(functionOrObject, value)&&!"".equals(classyobjname)) {
 			return new V2ClassPropertyCall(charpos, charpos, value, comp, runtime,
 					comp.getV2Value(runtime, classyobjname, line, charpos), functionOrObject);
+		}
 		
 		
 		
