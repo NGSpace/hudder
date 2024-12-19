@@ -9,6 +9,8 @@ import static io.github.ngspace.hudder.compilers.utils.CompileState.TOPRIGHT;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.mojang.datafixers.types.templates.List;
+
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 
 public class MethodHandler {
@@ -62,7 +64,12 @@ public class MethodHandler {
 		return method;
 	}
 	
-	
+	/**
+	 * @deprecated Make yo own damn method bitch.
+	 * <br><br>
+	 * Just extend IMethod and compile.
+	 */
+	@Deprecated(since = "7.2.0", forRemoval = true)
 	public void register(String method, String[] argtypes, String name, int defline, int defcharpos, String filename) {
 		int[] parameters = new int[argtypes.length];
 		for (int i = 0;i<argtypes.length;i++) {
@@ -83,7 +90,7 @@ public class MethodHandler {
 				if      (parameters[i]==1) comp.put("arg"+(i+1), vals[i].asString());
 				else if (parameters[i]==2) comp.put("arg"+(i+1), vals[i].asDouble());
 				else if (parameters[i]==3) comp.put("arg"+(i+1), vals[i].asBoolean());
-				else if (parameters[i]==4) comp.put("arg"+(i+1), vals[i].asList());
+				else if (parameters[i]==4) comp.put("arg"+(i+1), vals[i].asType(List.class));
 				else if (parameters[i]==0) comp.put("arg"+(i+1), vals[i].get());
 			}
 			try {

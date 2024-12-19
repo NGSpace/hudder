@@ -1,9 +1,5 @@
 package io.github.ngspace.hudder.utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 
 /**
@@ -15,7 +11,7 @@ public interface ObjectWrapper {
 	 * @return an Object of any kind.
 	 * @throws CompileException - failed to get value of object
 	 */
-	public abstract Object get() throws CompileException;
+	public Object get() throws CompileException;
 	
 	
 	
@@ -24,7 +20,7 @@ public interface ObjectWrapper {
 	 * @return The object as a String.
 	 * @throws CompileException - if failed to get value or convert it to string.
 	 */
-	public abstract String asString() throws CompileException;
+	public String asString() throws CompileException;
 	
 	
 	/**
@@ -32,7 +28,7 @@ public interface ObjectWrapper {
 	 * @return The Object as a Double.
 	 * @throws CompileException - if failed to get value or convert it to Double.
 	 */
-	public abstract double asDouble() throws CompileException;
+	public double asDouble() throws CompileException;
 	
 	
 	/**
@@ -40,7 +36,7 @@ public interface ObjectWrapper {
 	 * @return The Object as an Object array.
 	 * @throws CompileException - if failed to get value or convert it to an Object array.
 	 */
-	public abstract Object[] asArray() throws CompileException;
+	public Object[] asArray() throws CompileException;
 	
 	
 	/**
@@ -48,7 +44,9 @@ public interface ObjectWrapper {
 	 * @return The Object as a Boolean.
 	 * @throws CompileException - if failed to get value or convert it to Boolean.
 	 */
-	public abstract boolean asBoolean() throws CompileException;
+	public boolean asBoolean() throws CompileException;
+	
+	public <T> T asType(Class<T> clazz) throws CompileException;
 	
 	
 	
@@ -93,8 +91,6 @@ public interface ObjectWrapper {
 			floatarr[i] = ((Number)objarr[i]).floatValue();//Unchecked casting but idc
 		return floatarr;
 	}
-	
-	public default List<Object> asList() throws CompileException {return new ArrayList<Object>(Arrays.asList(asArray()));}
 	
 	
 	

@@ -1,9 +1,8 @@
 package io.github.ngspace.hudder.v2runtime.values;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Objects;
 
-import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.abstractions.AV2Compiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileState;
@@ -69,29 +68,22 @@ public abstract class AV2Value implements ObjectWrapper {
 	
 	
 	
-	@Override public boolean asBoolean() throws CompileException {
-		Object get = get();
-		if (get instanceof Boolean b) return b;
-		throw new CompileException(invalidTypeMessage("Boolean", value, get), line, charpos);
-	}
-	@Override public double asDouble() throws CompileException {
-		Object get = get();
-		if (get instanceof Number b) return b.doubleValue();
-		throw new CompileException(invalidTypeMessage("Double", value, get), line, charpos);
-	}
-	
-	
-	@Override @SuppressWarnings("unchecked") public List<Object> asList() throws CompileException {
-		return asType(List.class);
-	}
-	@Override public Object[] asArray() throws CompileException {return asList().toArray();}
+	@Override public boolean asBoolean() throws CompileException {return asType(Boolean.class);}
+	@Override public double asDouble() throws CompileException {return asType(Number.class).doubleValue();}
 	@Override public String asString() throws CompileException {return asType(String.class);}
+	
+	
+	@Override public Object[] asArray() throws CompileException {
+		Object get = get();
+		if (get instanceof Collection<?> c) return c.toArray();
+		return (Object[]) get;
+	}
 	
 	
 	public <T> T asType(Class<T> clazz) throws CompileException {
 		Object get = get();
 		if (clazz.isInstance(get)) return clazz.cast(get);
-		throw new CompileException(invalidTypeMessage("String", value, get), line, charpos);
+		throw new CompileException(invalidTypeMessage(clazz.getSimpleName(), value, get), line, charpos);
 	}
 	
 	
@@ -104,7 +96,8 @@ public abstract class AV2Value implements ObjectWrapper {
 		return "Incorrect type \""+type+"\" for value: \""+value+"\" of type "+obj.getClass().getName();
 	}
 	
-	public abstract void setValue(AV2Compiler compiler, Object value) throws CompileException;
+	public abstract void setValue(AV2Compiler compiler, Object value)
+			throws CompileException, UnsupportedOperationException;
 
 	/**
 	 * Returns true if the variable has a value and false if it does not
