@@ -57,9 +57,8 @@ public class Hudder implements ModInitializer {
 				private static final Logger wk = LoggerFactory.getLogger("Minecraft");
 		    	@Override protected void logLine(@Nullable String string) {wk.error("[{}]: {}", name, string);}
 		    });
-			// Enable unit testing.
-			ClientCommandRegistrationCallback.EVENT.register(new HudderUnitTestingCommand());
 		}
+		ClientCommandRegistrationCallback.EVENT.register(new HudderUnitTestingCommand());
 
 		
 		HudFileUtils.makeDefaultHud();
