@@ -131,18 +131,6 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 	
 	@Override public void close() throws IOException {cx.close();}
 	
-
-	public static class JavaScriptIO {
-		public void log  (Object str) {Hudder.log  (str);}
-		public void warn (Object str) {Hudder.warn (str);}
-		public void error(Object str) {Hudder.error(str);}
-		public void debug(Object str) {Hudder.debug(str);}
-		public void alert(Object str) {Hudder.alert(str);}
-		public void showToast(String title, String content) {
-			Hudder.showToast(Component.literal(title).withStyle(ChatFormatting.BOLD), Component.literal(content));
-		}
-	}
-	
 	
 
 	@Override public CompileException processException(Exception e) {
@@ -156,6 +144,18 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 		String msg = "\u00A74"+e.getMessage()
 				+"\n\u00A7bat Line "+ex.lineNumber()+" at col "+ex.columnNumber();
 		return new CompileException(msg,-1,-1,ex);
+	}
+	
+
+	public static class JavaScriptIO {
+		public void log  (Object str) {Hudder.log  (str);}
+		public void warn (Object str) {Hudder.warn (str);}
+		public void error(Object str) {Hudder.error(str);}
+		public void debug(Object str) {Hudder.debug(str);}
+		public void alert(Object str) {Hudder.alert(str);}
+		public void showToast(String title, String content) {
+			Hudder.showToast(Component.literal(title).withStyle(ChatFormatting.BOLD), Component.literal(content));
+		}
 	}
 	
 	
@@ -175,6 +175,8 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 		@Override public Object[] asArray() {return ((NativeArray) value).toArray();}
 		
 		@Override public String toString() {return asString();}
+
+		@Override public <T> T asType(Class<T> clazz) throws CompileException {return clazz.cast(get());}
 	}
 	
 }

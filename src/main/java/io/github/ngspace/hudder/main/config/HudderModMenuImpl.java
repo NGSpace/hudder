@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.hudder.config;
+package io.github.ngspace.hudder.main.config;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;

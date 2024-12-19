@@ -6,10 +6,10 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.github.ngspace.hudder.hudder.HudCompilationManager;
-import io.github.ngspace.hudder.hudder.HudderRenderer;
-import io.github.ngspace.hudder.hudder.HudderTickEvent;
-import io.github.ngspace.hudder.hudder.config.HudderConfig;
+import io.github.ngspace.hudder.main.HudCompilationManager;
+import io.github.ngspace.hudder.main.HudderRenderer;
+import io.github.ngspace.hudder.main.HudderTickEvent;
+import io.github.ngspace.hudder.main.config.HudderConfig;
 import io.github.ngspace.hudder.utils.HudFileUtils;
 import io.github.ngspace.hudder.utils.testing.HudderUnitTestingCommand;
 import net.fabricmc.api.ModInitializer;
@@ -65,7 +65,7 @@ public class Hudder implements ModInitializer {
 		HudFileUtils.makeDefaultHud();
 		ClientTickEvents.START_CLIENT_TICK.register(new HudderTickEvent());
         
-		var compman = new HudCompilationManager();
+		HudCompilationManager compman = new HudCompilationManager();
 		ClientTickEvents.END_CLIENT_TICK.register(compman);
         HudRenderCallback.EVENT.register(new HudderRenderer(compman));
 		

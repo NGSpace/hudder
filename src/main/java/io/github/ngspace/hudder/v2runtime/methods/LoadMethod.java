@@ -6,8 +6,8 @@ import io.github.ngspace.hudder.compilers.abstractions.ATextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileState;
 import io.github.ngspace.hudder.compilers.utils.Compilers;
-import io.github.ngspace.hudder.hudder.HudCompilationManager;
-import io.github.ngspace.hudder.hudder.config.HudderConfig;
+import io.github.ngspace.hudder.main.HudCompilationManager;
+import io.github.ngspace.hudder.main.config.HudderConfig;
 import io.github.ngspace.hudder.utils.HudFileUtils;
 import io.github.ngspace.hudder.utils.ObjectWrapper;
 

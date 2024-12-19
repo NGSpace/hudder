@@ -12,7 +12,7 @@ import io.github.ngspace.hudder.data_management.ComponentsData;
 import io.github.ngspace.hudder.data_management.NumberData;
 import io.github.ngspace.hudder.data_management.ObjectData;
 import io.github.ngspace.hudder.data_management.StringData;
-import io.github.ngspace.hudder.hudder.HudCompilationManager;
+import io.github.ngspace.hudder.main.HudCompilationManager;
 import io.github.ngspace.hudder.uielements.ColorVerticesElement;
 import io.github.ngspace.hudder.uielements.GameHudElement;
 import io.github.ngspace.hudder.uielements.GameHudElement.GuiType;

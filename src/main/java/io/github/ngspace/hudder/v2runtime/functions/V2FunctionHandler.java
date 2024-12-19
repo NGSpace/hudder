@@ -10,18 +10,25 @@ import io.github.ngspace.hudder.v2runtime.values.AV2Value;
 import net.minecraft.client.Minecraft;
 
 public class V2FunctionHandler {
-	private Map<String, IV2Function> functions = new HashMap<String,IV2Function>();
+	private static Map<String, IV2Function> functions = new HashMap<String,IV2Function>();
 	
 	protected static Minecraft mc = Minecraft.getInstance();
 	
 	public V2FunctionHandler() {
+		bindAllAPIFunctions();
+	}
+
+	public void bindAllAPIFunctions() {
 		if (Hudder.IS_DEBUG) bindFunction(new TestFunction(), 2, "test");
 		
 		//Type casting
 		
 		bindFunction(new DoubleV2Function(), 1, "int", "num", "number", "double");
 		bindFunction(new StringV2Function(), 1, 2, "str", "string");
-		bindFunction(new ArrayV2Function(), 1, "array");
+		bindFunction(new ArrayV2Function(), 1, 2, "array");
+		bindFunction((r,n,args,l,c) -> (char)(args[0].asDouble()), 1, "char");
+		bindFunction((r,n,args,l,c) -> Integer.toBinaryString((int) args[0].asDouble()), 1, "toBinaryString");
+		
 		
 		//String manipulation
 
@@ -76,7 +83,6 @@ public class V2FunctionHandler {
 		
 		bindFunction(new LengthV2Function(), 1, "length");
 		bindFunction((r,n,args,l,c)->new HashMap<Object, Object>(),0, "map");
-		
 	}
 
 	private void bindFunctionDep(IV2Function func, int minlength, int maxlength, String message, String... names) {
@@ -86,7 +92,7 @@ public class V2FunctionHandler {
 					throws CompileException {
 				if (args.length<minlength) throw new CompileException("Too little parameters for "+name+" function!",line,charpos);
 				if (args.length>maxlength) throw new CompileException("Too many parameters for "+name+" function!",line,charpos);
-				return func.execute(runtime, name, args,line,charpos);
+				return func.execute(runtime, name, args, line, charpos);
 			}
 			@Override public String getDeprecationWarning(String funcname) {return message;}
 			@Override public boolean isDeprecated(String funcname) {return true;}
@@ -105,7 +111,7 @@ public class V2FunctionHandler {
 		IV2Function expandedFunction = (runtime, name, args, line, charpos) -> {
 			if (args.length<minlength) throw new CompileException("Too little parameters for "+name+" function!",line,charpos);
 			if (args.length>maxlength) throw new CompileException("Too many parameters for "+name+" function!",line,charpos);
-			return function.execute(runtime, name, args,line,charpos);
+			return function.execute(runtime, name, args, line, charpos);
 		};
 		bindFunction(expandedFunction,names);
 	}

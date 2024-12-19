@@ -2,7 +2,7 @@ package io.github.ngspace.hudder.uielements;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import io.github.ngspace.hudder.hudder.HudderRenderer;
+import io.github.ngspace.hudder.main.HudderRenderer;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;

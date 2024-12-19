@@ -1,10 +1,11 @@
 package io.github.ngspace.hudder.v2runtime.values;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Objects;
 
 import io.github.ngspace.hudder.compilers.abstractions.AV2Compiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.compilers.utils.CompileState;
 import io.github.ngspace.hudder.utils.ObjectWrapper;
 
 public abstract class AV2Value implements ObjectWrapper {
@@ -14,12 +15,17 @@ public abstract class AV2Value implements ObjectWrapper {
 	protected final int charpos;
 	public final String value;
 	protected final AV2Compiler compiler;
-	
-	protected AV2Value(int line, int charpos, String debugvalue, AV2Compiler compiler) {
+	protected CompileState state;
+
+	protected AV2Value(int line, int charpos, String debugvalue, AV2Compiler compiler, CompileState state) {
 		this.line = line;
 		this.charpos = charpos;
 		this.value = debugvalue;
 		this.compiler = compiler;
+		this.state = state;
+	}
+	protected AV2Value(int line, int charpos, String debugvalue, AV2Compiler compiler) {
+		this(line, charpos, debugvalue, compiler, null);
 	}
 
 	
@@ -62,27 +68,23 @@ public abstract class AV2Value implements ObjectWrapper {
 	
 	
 	
-	@Override public boolean asBoolean() throws CompileException {
+	@Override public boolean asBoolean() throws CompileException {return asType(Boolean.class);}
+	@Override public double asDouble() throws CompileException {return asType(Number.class).doubleValue();}
+	@Override public String asString() throws CompileException {return asType(String.class);}
+	
+	
+	@Override public Object[] asArray() throws CompileException {
 		Object get = get();
-		if (get instanceof Boolean b) return b;
-		throw new CompileException(invalidTypeMessage("Boolean", value, get), line, charpos);
+		if (get instanceof Collection<?> c) return c.toArray();
+		return (Object[]) get;
 	}
-	@Override public double asDouble() throws CompileException {
+	
+	
+	public <T> T asType(Class<T> clazz) throws CompileException {
 		Object get = get();
-		if (get instanceof Number b) return b.doubleValue();
-		throw new CompileException(invalidTypeMessage("Double", value, get), line, charpos);
+		if (clazz.isInstance(get)) return clazz.cast(get);
+		throw new CompileException(invalidTypeMessage(clazz.getSimpleName(), value, get), line, charpos);
 	}
-	@Override public String asString() throws CompileException {
-		Object get = get();
-		if (get instanceof String b) return b;
-		throw new CompileException(invalidTypeMessage("String", value, get), line, charpos);
-	}
-	@Override @SuppressWarnings("unchecked") public List<Object> asList() throws CompileException {
-		Object get = get();
-		if (get instanceof List<?> b) return (List<Object>) b;
-		throw new CompileException(invalidTypeMessage("Array", value, get), line, charpos);
-	}
-	@Override public Object[] asArray() throws CompileException {return asList().toArray();}
 	
 	
 	
@@ -94,12 +96,14 @@ public abstract class AV2Value implements ObjectWrapper {
 		return "Incorrect type \""+type+"\" for value: \""+value+"\" of type "+obj.getClass().getName();
 	}
 	
-	public abstract void setValue(AV2Compiler compiler, Object value) throws CompileException;
+	public abstract void setValue(AV2Compiler compiler, Object value)
+			throws CompileException, UnsupportedOperationException;
 
 	/**
 	 * Returns true if the variable has a value and false if it does not
+	 * @throws CompileException 
 	 */
-	public boolean hasValue() {return true;}
+	public boolean hasValue() throws CompileException {return true;}
 	public abstract boolean isConstant() throws CompileException;
 	@Override public String toString() {return value;}
 }

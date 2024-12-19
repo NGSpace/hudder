@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.hudder;
+package io.github.ngspace.hudder.main;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -16,7 +16,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
-import io.github.ngspace.hudder.hudder.config.HudderConfig;
+import io.github.ngspace.hudder.main.config.HudderConfig;
 import io.github.ngspace.hudder.uielements.AUIElement;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.Util;

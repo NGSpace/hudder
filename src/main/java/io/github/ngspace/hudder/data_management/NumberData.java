@@ -4,7 +4,7 @@ import java.util.Calendar;
 import java.util.Queue;
 
 import io.github.ngspace.hudder.Hudder;
-import io.github.ngspace.hudder.hudder.config.HudderConfig;
+import io.github.ngspace.hudder.main.config.HudderConfig;
 import io.github.ngspace.hudder.mixin.ParticleManagerAccessor;
 import io.github.ngspace.hudder.mixin.WorldRendererAccess;
 import net.minecraft.client.Minecraft;
@@ -136,6 +136,7 @@ public class NumberData {private NumberData() {}
 			case "blocklight", "block_light": yield (double) ins.level.getBrightness(LightLayer.BLOCK,p.blockPosition());
 			case "skylight", "sky_light": yield (double) ins.level.getBrightness(LightLayer.SKY,p.blockPosition());
 			case "worldtime", "world_time": yield (double) ins.level.getDayTime();
+			case "daytime", "day_time": yield ins.level.getDayTime()/24000d;
 			
 			
 			

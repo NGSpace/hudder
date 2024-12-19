@@ -5,7 +5,7 @@ import java.util.HashMap;
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.abstractions.ATextCompiler;
 import io.github.ngspace.hudder.compilers.abstractions.AV2Compiler;
-import io.github.ngspace.hudder.hudder.config.HudderConfig;
+import io.github.ngspace.hudder.main.config.HudderConfig;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -23,19 +23,20 @@ public class HudderUnitTest {
 	
 	
 	public HudderUnitTestResult test(HudderConfig info) {
+		String text = null;
 		try {
 			if (compiler instanceof AV2Compiler v2comp) {
 				v2comp.runtimes = new HashMap<String, V2Runtime>();
 				v2comp.tempVariables = new HashMap<String, Object>();
 			}
 			ATextCompiler.variables.clear();
-			String text = compiler.compile(info, texttocompile, "Unit Tests").TopLeftText;
-			boolean res = expectation.equals(text);
-			return new HudderUnitTestResult(res, expectation, text.replaceAll("(^ )|( $)", "~"));
+			text = compiler.compile(info, texttocompile, "Unit Tests").TopLeftText;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new HudderUnitTestResult(false, expectation, e.getMessage());
+			text = e.getMessage();
 		}
+		return new HudderUnitTestResult(expectation.equals(text), expectation.replaceAll("(^ )|( $)", "~"),
+				text.replaceAll("(^ )|( $)", "~"));
 	}
 	
 	

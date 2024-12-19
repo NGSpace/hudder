@@ -27,6 +27,8 @@ public class CompileState implements IElementManager {
 	public float BRScale = 1;
 	public boolean hasBroken = false;
 	public List<AUIElement> elements = new ArrayList<AUIElement>();
+	public Object returnValue;
+	public boolean hasReturned;
 
 	public CompileState(String string) {setTextLocation(string, Hudder.config.scale);}
 	public void addString(String txt, boolean cleanup) throws CompileException {addString(txt,pos,cleanup);}
@@ -82,5 +84,7 @@ public class CompileState implements IElementManager {
 	}
 	@Override public void addElem(AUIElement UIElement) {elements.add(UIElement);}
 	@Override public AUIElement[] toElementArray() {return elements.toArray(new AUIElement[elements.size()]);}
+	
+	public void setReturnValue(Object value) {hasReturned = true;returnValue = value;}
 	
 }
