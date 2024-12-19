@@ -3,7 +3,6 @@ package io.github.ngspace.hudder.compilers.abstractions;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileState;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
@@ -137,7 +136,6 @@ public abstract class AV2Compiler extends AVarTextCompiler implements ConsumerBi
 				}
 			});
 		} else {//Is function
-			Hudder.log(name);
 			//Make sure the main path actually returns a value
 			boolean temp = true;
 			for (AV2RuntimeElement element : runtime.getElements()) {
