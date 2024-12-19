@@ -57,7 +57,6 @@ public class V2ClassPropertyCall extends AV2Value {
 		}
 	}
 	@Override public Object get() throws CompileException {
-		Hudder.log(value);
 		Object obj = smartGet();
 		if (obj instanceof Set<?> r) return r.toArray();
 		if (obj instanceof ScriptableObject en) {
