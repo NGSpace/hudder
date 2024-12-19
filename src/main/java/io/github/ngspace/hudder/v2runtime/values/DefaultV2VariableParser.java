@@ -244,7 +244,7 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 				mathvalue.append(c);
 				for (;i<value.length();i++) {
 					c = value.charAt(i);
-					if (c=='\\'&&!safe) safe = true; else {
+					if (c=='\\'&&!safe) {safe = true;mathvalue.append(c);} else {
 						safe = false;
 						mathvalue.append(c);
 						if (c=='"'&&!safe) break;

@@ -9,6 +9,12 @@
 ||EXPECT||
 6.3
 
+||INPUT||New line concatination
+{'r' + "\n" + 'o'}
+||EXPECT||
+r
+o
+
 ||INPUT||Basic text
 Basic Bitch Test
 ||EXPECT||
