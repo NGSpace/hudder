@@ -28,9 +28,9 @@ public class V2ClassPropertyCall extends AV2Value {
 	private String funcName = "";
 	private String fieldName = "";
 
-	public V2ClassPropertyCall(int line, int charpos, String v, AV2Compiler c, V2Runtime runtime,
+	public V2ClassPropertyCall(int line, int charpos, String value, AV2Compiler c, V2Runtime runtime,
 			AV2Value classobj, String prop) throws CompileException {
-		super(line, charpos, v, c);
+		super(line, charpos, value, c);
 		this.classobj = classobj;
 		if (!prop.startsWith("(")&&prop.endsWith(")")) {
 			int argStart = prop.indexOf("(");
