@@ -22,18 +22,54 @@ public class BooleanData {private BooleanData(){}
 		World betterworld = DataFixUtils.orElse(Optional.ofNullable(ins.getServer()).flatMap(integratedServer ->
 			Optional.ofNullable(integratedServer.getWorld(ins.world.getRegistryKey()))), ins.world);
 		return switch (key) {
-			case "isslime", "is_slime": yield ChunkRandom.getSlimeRandom(p.getBlockX() >> 4, p.getBlockZ() >> 4,
+			case "isslime", "is_slime":  {
+				try {
+					yield ChunkRandom.getSlimeRandom(p.getBlockX() >> 4, p.getBlockZ() >> 4,
 					((StructureWorldAccess)betterworld).getSeed(), 987234911L).nextInt(10) == 0;
+				} catch (Exception e) {/* For some reason adding a yield false; here causes runtime errors...*/}
+				yield false;
+			}
 			case "hudhidden": yield ins.options.hudHidden;
 			case "showdebug": yield ins.options.debugEnabled;
-
-			/* Player */
+			
+			
+			
+			/* Player gamemode */
 			case "issurvival","is_survival": yield ins.interactionManager.getCurrentGameMode()==GameMode.SURVIVAL;
 			case "iscreative","is_creative": yield ins.interactionManager.getCurrentGameMode()==GameMode.CREATIVE;
 			case "isadventure","is_adventure": yield ins.interactionManager.getCurrentGameMode()==GameMode.ADVENTURE;
 			case "isspectator","is_spectator": yield ins.interactionManager.getCurrentGameMode()==GameMode.SPECTATOR;
-
-
+			
+			
+			
+			/* Player movement */
+			case "isgliding": yield p.isFallFlying();
+			case "isclimbing": yield p.isClimbing();
+			case "iscrawling": yield p.isCrawling();
+			case "isswimming": yield p.isSwimming();
+			case "issneaking": yield p.isSneaking();
+			
+			
+			
+			/* Player information */
+			case "isalive": yield p.isAlive();
+			case "isblocking": yield p.isBlocking();
+			case "isfreezing": yield p.isFrozen();
+			case "isglowing": yield p.isGlowing();
+			case "isfireimmune": yield p.isFireImmune();
+			case "isonfire": yield p.isOnFire();
+			case "isonground": yield p.isOnGround();
+			case "isinvisible": yield p.isInvisible();
+			
+			
+			
+			/* Mouse */
+			case "mouse_left": yield ins.mouse.wasLeftButtonClicked();
+			case "mouse_middle": yield ins.mouse.wasMiddleButtonClicked();
+			case "mouse_right": yield ins.mouse.wasRightButtonClicked();
+			
+			
+			
 			/* Hudder */
 			case "enabled": yield true; //Duh
 			case "shadow": yield ConfigManager.getConfig().shadow;

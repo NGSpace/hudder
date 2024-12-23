@@ -4,8 +4,8 @@ import static io.github.ngspace.hudder.data_management.Advanced.getAverageFPS;
 import static io.github.ngspace.hudder.data_management.Advanced.getFPS;
 import static io.github.ngspace.hudder.data_management.Advanced.getMaximumFPS;
 import static io.github.ngspace.hudder.data_management.Advanced.getMinimumFPS;
-import static java.lang.System.currentTimeMillis;
 
+import java.util.Calendar;
 import java.util.Collection;
 
 import org.joml.Random;
@@ -41,10 +41,15 @@ public class NumberData {private NumberData() {}
 			case "maxfps","max_fps": yield (double) getMaximumFPS();
 			case "ping": yield (double) ins.getNetworkHandler().getPlayerListEntry(p.getName().getString()).getLatency();
 			case "tps": yield (double) getTPS(ins);
+			
 			case "gpu_d", "dgpu": yield Advanced.gpuUsage;
 			case "gpu": yield (double) ((int)Advanced.gpuUsage);
+			case "cpu_d": yield Advanced.CPU.get()* 100d;
+			case "cpu": yield (double) (int) (Advanced.CPU.get()* 100d);
 
 			case "delta": yield (double) Advanced.delta;
+			
+			case "random","rng": yield (double) new Random().nextFloat();
 
 
 			/* Memory */
@@ -56,15 +61,21 @@ public class NumberData {private NumberData() {}
 				double totalmem = (runtime.maxMemory())/MB;
 				yield (double) ((int)(usedmem/totalmem*100));
 			case "freememory_percentage","freeram_percentage": yield (double) runtime.freeMemory() / runtime.maxMemory();
-
-
-
-			/* Computer */
-			case "time": yield (double) currentTimeMillis();
-			case "random","rng": yield (double) new Random().nextFloat();
-
-
-
+			
+			
+			
+			/* time */
+			case "time": yield (double) System.currentTimeMillis();
+			case "milliseconds": yield (double) Calendar.getInstance().get(Calendar.MILLISECOND);
+			case "seconds": yield (double) Calendar.getInstance().get(Calendar.SECOND);
+			case "minutes": yield (double) Calendar.getInstance().get(Calendar.MINUTE);
+			case "hour": yield (double) Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+			case "day": yield (double) Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+			case "month": yield (double) Calendar.getInstance().get(Calendar.MONTH);
+			case "year": yield (double) Calendar.getInstance().get(Calendar.YEAR);
+			
+			
+			
 			/* Food and health */
 			case "saturation": yield (double) p.getHungerManager().getSaturationLevel();
 			case "hunger": yield (double) p.getHungerManager().getFoodLevel();
@@ -81,6 +92,20 @@ public class NumberData {private NumberData() {}
 			case "xplevel": yield (double) p.experienceLevel;
 			case "xp": yield (double) p.totalExperience;
 
+			case "playerspeed": {
+				var ent = p.getVehicle() == null ? p : p.getVehicle();
+
+			    double speed = (Math.sqrt(Math.pow(ent.getX() - ent.prevX, 2) +
+			    		Math.pow(ent.getY() - ent.prevY , 2) + Math.pow(ent.getZ() - ent.prevZ , 2)) * 20);
+			    yield speed;
+			}
+			case "horizontal_playerspeed": {
+				var ent = p.getVehicle() == null ? p : p.getVehicle();
+
+			    double speed = (Math.sqrt(Math.pow(ent.getX() - ent.prevX, 2) + Math.pow(ent.getZ() - ent.prevZ , 2)) * 20);
+			    yield speed;
+			}
+
 
 			/* Player position */
 			case "dxpos","dx": yield p.getX();
@@ -89,6 +114,15 @@ public class NumberData {private NumberData() {}
 			case "xpos","x": yield (double) p.getBlockX();
 			case "ypos","y": yield (double) p.getBlockY();
 			case "zpos","z": yield (double) p.getBlockZ();
+			
+			
+			
+			/* Chunk information */
+			case "subchunkx": yield (double) (p.getBlockX() & 0xF);
+			case "subchunky": yield (double) (p.getBlockY() & 0xF);
+			case "subchunkz": yield (double) (p.getBlockZ() & 0xF);
+			case "chunkx": yield (double) p.getChunkPos().x;
+			case "chunkz": yield (double) p.getChunkPos().z;
 
 
 
@@ -101,7 +135,7 @@ public class NumberData {private NumberData() {}
 
 
 			/* World Rendering */
-			case "entites": yield (double) ((WorldRendererAccess)wr).getRegularEntityCount();
+			case "entites", "entities": yield (double) ((WorldRendererAccess)wr).getRegularEntityCount();
 			case "particles": yield (double) ((ParticleManagerAccessor)ins.particleManager)
 				.getParticles().values().stream().mapToInt(Collection::size).sum();
 			case "chunks": yield wr.getChunkCount();

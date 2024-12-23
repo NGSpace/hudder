@@ -9,7 +9,6 @@ import com.mojang.blaze3d.platform.GlDebugInfo;
 import io.github.ngspace.hudder.config.ConfigManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.hit.BlockHitResult;

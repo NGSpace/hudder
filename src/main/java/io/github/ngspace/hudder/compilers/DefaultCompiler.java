@@ -70,7 +70,7 @@ public class DefaultCompiler extends TextCompiler {
 							safeappend = true;
 							break;
 						case '&':
-							resultBuilder.append('\u00A7');//§ \u00A7
+							resultBuilder.append('\u00A7');
 							break;
 						case '#': compileState = ADVANCED_CONDITION_STATE;break;
 //						case '@': compileState = WHILE_STATE;break;
