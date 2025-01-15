@@ -7,6 +7,7 @@ import io.github.ngspace.hudder.compilers.abstractions.AV2Compiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileState;
 import io.github.ngspace.hudder.v2runtime.runtime_elements.AV2RuntimeElement;
+import io.github.ngspace.hudder.v2runtime.runtime_elements.StringV2RuntimeElement;
 
 public class V2Runtime {
 	public final AV2Compiler compiler;
@@ -27,12 +28,18 @@ public class V2Runtime {
 	public CompileState execute() throws CompileException {
 		compileState = new CompileState(CompileState.TOPLEFT);
 		StringBuilder builder = new StringBuilder();
-		for (AV2RuntimeElement element : elements) {
+		for (int i = 0;i<elements.length;i++) {
+			AV2RuntimeElement element = elements[i];
 			if (!element.execute(compileState, builder)||compileState.hasReturned) {
+//				System.out.println("r"+(compiler.globalRuntime==this));
 				compileState.hasBroken = true;
 				break;
 			}
+//			System.out.println(element.getClass().getSimpleName());
+//			if (element instanceof StringV2RuntimeElement e) System.out.println(e.string);
 		}
+//		System.out.println(builder.toString());
+		compileState.addString(builder.toString(), false);
 		return compileState;
 	}
 	

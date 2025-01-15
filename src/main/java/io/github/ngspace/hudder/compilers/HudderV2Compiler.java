@@ -239,14 +239,13 @@ public class HudderV2Compiler extends AV2Compiler {
 										instructions.append(c);
 										if (c=='\n') break;
 									}
-								} else {
-									break;
-								}
+								} else break;
 							}
 							
 						}
 						ind--;
 					}
+					if (ind!=text.length()&&text.charAt(ind)!='\n'&&text.charAt(ind)!='\r') ind--;
 					String cmds = instructions.toString();
 					
 					switch (command) {
@@ -275,7 +274,8 @@ public class HudderV2Compiler extends AV2Compiler {
 			}
 		}
 		
-		runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), false, true));
+//		Hudder.log(elemBuilder.toString());
+		runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), false));
 		
 		if (compileState!=0) throw new CompileException(getCompilerErrorMessage(compileState));
 		

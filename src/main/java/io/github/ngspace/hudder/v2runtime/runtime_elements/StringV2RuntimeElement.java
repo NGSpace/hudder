@@ -5,10 +5,10 @@ import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileState;
 
 public class StringV2RuntimeElement extends AV2RuntimeElement {
-	final String string;
-	final boolean cleanUp;
-	final boolean addToMeta;
-	int buffer;
+	public final String string;
+	public final boolean cleanUp;
+	public final boolean addToMeta;
+	public int buffer;
 	public StringV2RuntimeElement(String string, boolean cleanUp) {this(string,cleanUp,cleanUp);}
 	public StringV2RuntimeElement(String string, boolean cleanUp, boolean add) {
 		this.string = string;
@@ -17,16 +17,17 @@ public class StringV2RuntimeElement extends AV2RuntimeElement {
 	}
 	@Override public boolean execute(CompileState meta, StringBuilder builder) throws CompileException {
 		String str = string;
-		if (cleanUp&&(buffer = Hudder.config.methodBuffer)<10)
+		if (cleanUp&&(buffer = Hudder.config.methodBuffer)<10) {
 			for (int i = 0; i<buffer;i++) {
 				if (str.endsWith("\n")||str.endsWith("\r")) str = str.substring(0, str.length()-1);
 			}
-		
+		}
+		builder.append(str);
+//		System.out.println(str);
 		if (addToMeta) {
-			builder.append(str);
 			meta.addString(builder.toString(), false);
 			builder.setLength(0);
-		} else builder.append(str);
+		}
 		return true;
 	}
 }

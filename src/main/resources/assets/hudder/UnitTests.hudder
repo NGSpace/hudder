@@ -9,6 +9,34 @@
 ||EXPECT||
 6.3
 
+||INPUT||If and Break
+r#if true
+	{break}
+t
+||EXPECT||
+r
+
+||INPUT||While and Break
+r#while true
+	{break}
+t
+||EXPECT||
+rt
+
+||INPUT||Def and Break
+r#if true
+	{break}
+t
+||EXPECT||
+r
+
+||INPUT||Break and Break
+r#if true
+	{break}
+t
+||EXPECT||
+r
+
 ||INPUT||New line concatination
 {"r" + "\n" + "o"}
 ||EXPECT||
