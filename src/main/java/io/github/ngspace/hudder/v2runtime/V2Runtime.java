@@ -7,7 +7,6 @@ import io.github.ngspace.hudder.compilers.abstractions.AV2Compiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileState;
 import io.github.ngspace.hudder.v2runtime.runtime_elements.AV2RuntimeElement;
-import io.github.ngspace.hudder.v2runtime.runtime_elements.StringV2RuntimeElement;
 
 public class V2Runtime {
 	public final AV2Compiler compiler;
@@ -15,11 +14,12 @@ public class V2Runtime {
 	/**
 	 * Should stay mostly unused for now.
 	 */
-	public static final Object NULL = new Object() {
+	public static final Object VOID = new Void();
+	private static class Void {
 		@Override public boolean equals(Object obj) {return obj == this || obj == null;}
 		@Override public int hashCode() {return super.hashCode();}
 		@Override public String toString() {return "null";}
-	};
+	}
 	public V2Runtime(AV2Compiler compiler, V2Runtime scope) {this.compiler = compiler;this.scope = scope;}
 	
 	protected AV2RuntimeElement[] elements = new AV2RuntimeElement[0];
@@ -31,14 +31,10 @@ public class V2Runtime {
 		for (int i = 0;i<elements.length;i++) {
 			AV2RuntimeElement element = elements[i];
 			if (!element.execute(compileState, builder)||compileState.hasReturned) {
-//				System.out.println("r"+(compiler.globalRuntime==this));
 				compileState.hasBroken = true;
 				break;
 			}
-//			System.out.println(element.getClass().getSimpleName());
-//			if (element instanceof StringV2RuntimeElement e) System.out.println(e.string);
 		}
-//		System.out.println(builder.toString());
 		compileState.addString(builder.toString(), false);
 		return compileState;
 	}
