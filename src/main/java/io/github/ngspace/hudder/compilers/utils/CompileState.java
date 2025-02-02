@@ -7,6 +7,7 @@ import java.util.List;
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.unifiedcomp.IElementManager;
 import io.github.ngspace.hudder.uielements.AUIElement;
+import io.github.ngspace.hudder.v2runtime.V2Runtime;
 
 public class CompileState implements IElementManager {
 
@@ -27,7 +28,7 @@ public class CompileState implements IElementManager {
 	public float BRScale = 1;
 	public boolean hasBroken = false;
 	public List<AUIElement> elements = new ArrayList<AUIElement>();
-	public Object returnValue;
+	public Object returnValue = V2Runtime.VOID;
 	public boolean hasReturned;
 
 	public CompileState(String string) {setTextLocation(string, Hudder.config.scale);}

@@ -2,6 +2,7 @@ package io.github.ngspace.hudder.v2runtime.values.modifiable;
 
 import io.github.ngspace.hudder.compilers.abstractions.AV2Compiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import io.github.ngspace.hudder.v2runtime.values.AV2Value;
 
 public class V2SetValue extends AV2Value {
@@ -15,6 +16,8 @@ public class V2SetValue extends AV2Value {
 	}
 	@Override public Object get() throws CompileException {
 		Object value = v2value.get();
+		if (value==V2Runtime.VOID) throw new CompileException("Can't set value of \"" + key.value + "\" because \"" +
+				v2value.value + "\" returns void!", line, charpos);
 		key.setValue(compiler, value);
 		return value;
 	}

@@ -3,7 +3,6 @@ package io.github.ngspace.hudder.v2runtime.functions;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import io.github.ngspace.hudder.v2runtime.values.AV2Value;
@@ -19,7 +18,6 @@ public class V2FunctionHandler {
 	}
 
 	public void bindAllAPIFunctions() {
-		if (Hudder.IS_DEBUG) bindFunction(new TestFunction(), 2, "test");
 		
 		//Type casting
 		
