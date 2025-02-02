@@ -242,7 +242,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 		<br>
 		<details open>
 			<summary>
-				<a href="developers.html">Discord<img src="Images/discord.png" width="40px" style="position: relative;top:13px;"></a>
+				<a href="https://discord.gg/RRHBcWtK4b">Discord<img src="Images/discord.png" width="40px" style="position: relative;top:13px;"></a>
 			</summary>
 		</details>
 		<!--details open>
