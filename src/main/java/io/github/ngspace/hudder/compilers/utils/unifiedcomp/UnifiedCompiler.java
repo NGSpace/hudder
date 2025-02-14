@@ -13,10 +13,12 @@ import io.github.ngspace.hudder.data_management.NumberData;
 import io.github.ngspace.hudder.data_management.ObjectData;
 import io.github.ngspace.hudder.data_management.StringData;
 import io.github.ngspace.hudder.main.HudCompilationManager;
+import io.github.ngspace.hudder.main.HudderUtils;
 import io.github.ngspace.hudder.uielements.ColorVerticesElement;
 import io.github.ngspace.hudder.uielements.GameHudElement;
 import io.github.ngspace.hudder.uielements.GameHudElement.GuiType;
 import io.github.ngspace.hudder.uielements.TextElement;
+import io.github.ngspace.hudder.uielements.Texture9SliceElement;
 import io.github.ngspace.hudder.uielements.TextureElement;
 import io.github.ngspace.hudder.uielements.TextureVerticesElement;
 import io.github.ngspace.hudder.utils.HudFileUtils;
@@ -61,16 +63,24 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 		
 		//Textures
 		
-		binder.bindConsumer((e,a,l,ch,s)->e.addElem(new TextureElement(ResourceLocation.tryParse(s[0].asString().trim()),
+		binder.bindConsumer((e,a,l,ch,s)->e.addElem(new TextureElement(HudderUtils.parseResourceHudder(s[0].asString().trim()),
 				s[1].asInt(), s[2].asInt(), s[3].asInt(),s[4].asInt())), "drawTexture", "texture");
 		
 		binder.bindConsumer((e,a,l,ch,s)-> {
 			try {
-				ResourceLocation id = ResourceLocation.withDefaultNamespace(s[0].asString().trim().toLowerCase());
+				ResourceLocation id = ResourceLocation.fromNamespaceAndPath("hudder",s[0].asString().trim().toLowerCase());
 				HudFileUtils.getAndRegisterImage(s[0].asString(),id);
 				e.addElem(new TextureElement(id,s[1].asInt(),s[2].asInt(),s[3].asInt(),s[4].asInt()));
 			} catch (IOException ex) {throw new CompileException("File "+s[0].asString()+"does not exist");}
 		}, "drawLocalTexture", "drawPNG", "drawImage", "image", "png");
+		
+		binder.bindConsumer((e,a,l,ch,s)-> {
+			try {
+				ResourceLocation id = ResourceLocation.fromNamespaceAndPath("hudder",s[0].asString().trim().toLowerCase());
+				HudFileUtils.getAndRegisterImage(s[0].asString(),id);
+				e.addElem(new Texture9SliceElement(id,s[1].asInt(),s[2].asInt(),s[3].asInt(),s[4].asInt(),s[5].asFloatArray()));
+			} catch (IOException ex) {throw new CompileException("File "+s[0].asString()+"does not exist");}
+		}, "9slicetexture");
 		
 		//Text
 		
@@ -111,6 +121,7 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 		binder.bindConsumer((e,a,l,ch,s)->Hudder.log(s[0].get().toString()), "log");
 		binder.bindConsumer((e,a,l,ch,s)->Hudder.warn(s[0].get().toString()), "warn");
 		binder.bindConsumer((e,a,l,ch,s)->Hudder.error(s[0].get().toString()), "error");
+		
 	}
 	
 	
