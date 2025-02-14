@@ -189,7 +189,7 @@ public class HudderRenderer implements HudRenderCallback {
 	}
 	
 	public void renderTexture9Slice(GuiGraphics context, ResourceLocation id, float x, float y, float width,
-			float height, float[] scales) {
+			float height, float[] slices) {
 		context.drawSpecial((Consumer<MultiBufferSource>)(vcp -> {
 	        RenderSystem.enableBlend();
 	        RenderSystem.defaultBlendFunc();
@@ -200,34 +200,39 @@ public class HudderRenderer implements HudRenderCallback {
 	        NativeImage img = ((DynamicTexture)mc.getTextureManager().getTexture(id)).getPixels();
 	        int texwidth = img.getWidth();
 	        int texheight = img.getHeight();
+
+	        float left = Math.min(slices[0],texwidth/2f);
+	        float right = Math.min(slices[1],texwidth/2f);
+	        float top = Math.min(slices[2],texheight/2f);
+	        float bottom = Math.min(slices[3],texheight/2f);
 	        
-	        float middlestart_hor = x + scales[0];
-	        float middleend_hor = x + width - scales[1];
-	        float middleend_tex_hor = (texwidth-scales[1])/texwidth;
-	        float tls = scales[0]/texwidth;
+	        float middlestart_hor = x+left;
+	        float middleend_hor = x+width-right;
+	        float middleend_tex_hor = (texwidth-right)/texwidth;
+	        float tls = left/texwidth;
 	        
 	        
-	        float middlestart_ver = y+scales[2];
-	        float middleend_ver = y + height - scales[3];
-	        float middleend_tex_ver = (texheight-scales[3])/texheight;
-	        float lts = scales[2]/texheight;
+	        float middlestart_ver = y+top;
+	        float middleend_ver = y + height - bottom;
+	        float middleend_tex_ver = (texheight-bottom)/texheight;
+	        float lts = top/texheight;
 	        
 	        // Top-left
 	        vconsumer.addVertex(matrix,x,y,0f).setUv(0,0).setColor(-1);
-	        vconsumer.addVertex(matrix,x,y+scales[2],0f).setUv(0,lts).setColor(-1);
-	        vconsumer.addVertex(matrix,x+scales[0],y+scales[2],0f).setUv(tls,lts).setColor(-1);
-	        vconsumer.addVertex(matrix,x+scales[0],y,0f).setUv(tls,0).setColor(-1);
+	        vconsumer.addVertex(matrix,x,y+top,0f).setUv(0,lts).setColor(-1);
+	        vconsumer.addVertex(matrix,x+left,y+top,0f).setUv(tls,lts).setColor(-1);
+	        vconsumer.addVertex(matrix,x+left,y,0f).setUv(tls,0).setColor(-1);
 	        
 	        // Top-middle
 	        vconsumer.addVertex(matrix,middlestart_hor,y, 0f).setUv(tls, 0).setColor(-1);
-	        vconsumer.addVertex(matrix,middlestart_hor,y+scales[2],0f).setUv(tls,lts).setColor(-1);
-	        vconsumer.addVertex(matrix,middleend_hor,y+scales[2],0f).setUv(middleend_tex_hor,lts).setColor(-1);
+	        vconsumer.addVertex(matrix,middlestart_hor,y+top,0f).setUv(tls,lts).setColor(-1);
+	        vconsumer.addVertex(matrix,middleend_hor,y+top,0f).setUv(middleend_tex_hor,lts).setColor(-1);
 	        vconsumer.addVertex(matrix,middleend_hor,y,0f).setUv(middleend_tex_hor,0).setColor(-1);
 	        
 	        // Top-right
 	        vconsumer.addVertex(matrix,middleend_hor,y,0f).setUv(middleend_tex_hor,0).setColor(-1);
-	        vconsumer.addVertex(matrix,middleend_hor,y+scales[2],0f).setUv(middleend_tex_hor,lts).setColor(-1);
-	        vconsumer.addVertex(matrix,x+width,y+scales[2],0f).setUv(1,lts).setColor(-1);
+	        vconsumer.addVertex(matrix,middleend_hor,y+top,0f).setUv(middleend_tex_hor,lts).setColor(-1);
+	        vconsumer.addVertex(matrix,x+width,y+top,0f).setUv(1,lts).setColor(-1);
 	        vconsumer.addVertex(matrix,x+width,y,0f).setUv(1,0).setColor(-1);
 	        
 	        
@@ -235,8 +240,8 @@ public class HudderRenderer implements HudRenderCallback {
 	        // Middle-left
 	        vconsumer.addVertex(matrix,x,middlestart_ver,0f).setUv(0,lts).setColor(-1);
 	        vconsumer.addVertex(matrix,x,middleend_ver,0f).setUv(0,middleend_tex_ver).setColor(-1);
-	        vconsumer.addVertex(matrix,x+scales[0],middleend_ver,0f).setUv(tls,middleend_tex_ver).setColor(-1);
-	        vconsumer.addVertex(matrix,x+scales[0],middlestart_ver,0f).setUv(tls,lts).setColor(-1);
+	        vconsumer.addVertex(matrix,x+left,middleend_ver,0f).setUv(tls,middleend_tex_ver).setColor(-1);
+	        vconsumer.addVertex(matrix,x+left,middlestart_ver,0f).setUv(tls,lts).setColor(-1);
 	        
 	        // Middle-middle
 	        vconsumer.addVertex(matrix,middlestart_hor,middlestart_ver, 0f).setUv(tls, lts).setColor(-1);
@@ -255,8 +260,8 @@ public class HudderRenderer implements HudRenderCallback {
 	        // Bottom-left
 	        vconsumer.addVertex(matrix,x,middleend_ver,0f).setUv(0,middleend_tex_ver).setColor(-1);
 	        vconsumer.addVertex(matrix,x,y+height,0f).setUv(0,1).setColor(-1);
-	        vconsumer.addVertex(matrix,x+scales[0],y+height,0f).setUv(tls,1).setColor(-1);
-	        vconsumer.addVertex(matrix,x+scales[0],middleend_ver,0f).setUv(tls,middleend_tex_ver).setColor(-1);
+	        vconsumer.addVertex(matrix,x+left,y+height,0f).setUv(tls,1).setColor(-1);
+	        vconsumer.addVertex(matrix,x+left,middleend_ver,0f).setUv(tls,middleend_tex_ver).setColor(-1);
 	        
 	        // Bottom-middle
 	        vconsumer.addVertex(matrix,middlestart_hor,middleend_ver, 0f).setUv(tls, middleend_tex_ver).setColor(-1);

@@ -17,15 +17,15 @@ public class Texture9SliceElement extends AUIElement {
 	public final ResourceLocation id;
 	private float[] scales;
 	
-	public Texture9SliceElement(ResourceLocation id, int x, int y, int width, int height, float[] scales)
+	public Texture9SliceElement(ResourceLocation id, int x, int y, int width, int height, float[] slices)
 			throws CompileException {
 		this.x=x;
 		this.y=y;
 		this.width=width;
 		this.height=height;
 		this.id=id;
-		this.scales = scales;
-		if (scales.length!=4) throw new CompileException("Texture array and Vertex array are not of the same length!");
+		this.scales = slices;
+		if (slices.length!=4) throw new CompileException("Slices array must have 4 values: [left, right, top, bottom]!");
 	}
 
 	@Override public void renderElement(GuiGraphics context, HudderRenderer renderer, DeltaTracker delta) {
