@@ -11,10 +11,10 @@ import io.github.ngspace.hudder.data_management.NumberData;
 import io.github.ngspace.hudder.data_management.ObjectData;
 import io.github.ngspace.hudder.data_management.StringData;
 import io.github.ngspace.hudder.main.HudCompilationManager;
-import io.github.ngspace.hudder.main.HudderUtils;
 import io.github.ngspace.hudder.uielements.ColorVerticesElement;
 import io.github.ngspace.hudder.uielements.GameHudElement;
 import io.github.ngspace.hudder.uielements.GameHudElement.GuiType;
+import io.github.ngspace.hudder.uielements.NativeTextureElement;
 import io.github.ngspace.hudder.uielements.TextElement;
 import io.github.ngspace.hudder.uielements.Texture9SliceElement;
 import io.github.ngspace.hudder.uielements.TextureElement;
@@ -24,6 +24,7 @@ import io.github.ngspace.hudder.utils.ObjectWrapper;
 import io.github.ngspace.hudder.utils.ValueGetter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -50,14 +51,14 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 		
 		//Textures
 		
-		binder.bindConsumer((e,a,l,ch,s)->e.addElem(new TextureElement(HudderUtils.parseResourceHudder(s[0].asString().trim()),
-				s[1].asInt(), s[2].asInt(), s[3].asInt(),s[4].asInt())), "drawTexture", "texture");
+		binder.bindConsumer((e,a,l,ch,s)->e.addElem(new NativeTextureElement(ResourceLocation.withDefaultNamespace(
+				s[0].asString().trim()), s[1].asInt(), s[2].asInt(), s[3].asInt(),s[4].asInt())), "drawTexture", "texture");
 		
-		binder.bindConsumer((e,a,l,ch,s)-> e.addElem(new TextureElement(HudFileUtils.getTexture(s[0].asString()),
+		binder.bindConsumer((e,a,l,ch,s)-> e.addElem(new TextureElement(s[0].asString(),
 				s[1].asInt(),s[2].asInt(),s[3].asInt(),s[4].asInt())),
 				"drawLocalTexture","drawPNG","drawImage","image","png");
 		
-		binder.bindConsumer((e,a,l,ch,s)-> e.addElem(new Texture9SliceElement(HudFileUtils.getTexture(s[0].asString()),
+		binder.bindConsumer((e,a,l,ch,s)-> e.addElem(new Texture9SliceElement(s[0].asString(),
 				s[1].asInt(),s[2].asInt(),s[3].asInt(),s[4].asInt(),s[5].asFloatArray())), "9slicetexture");
 		
 		//Text

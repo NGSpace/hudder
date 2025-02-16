@@ -22,6 +22,8 @@ public class TextureVerticesElement extends AUIElement {
 		this.triangles = triangles;
 		if (vertices.length!=textures.length)
 			throw new CompileException("Texture array and Vertex array are not of the same length!");
+		if (!HudFileUtils.imageLoaded(id)) 
+			throw new CompileException("Image not loaded (Or file is not a valid image): " + filename);
 	}
 	
 	@Override public void renderElement(GuiGraphics context, HudderRenderer renderer, DeltaTracker delta) {

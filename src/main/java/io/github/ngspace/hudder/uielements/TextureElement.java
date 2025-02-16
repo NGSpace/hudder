@@ -2,8 +2,11 @@ package io.github.ngspace.hudder.uielements;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.main.HudderRenderer;
+import io.github.ngspace.hudder.utils.HudFileUtils;
 import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
@@ -15,13 +18,16 @@ public class TextureElement extends AUIElement {
 	public final int width;
 	public final int height;
 	public final ResourceLocation id;
+    public static Minecraft mc = Minecraft.getInstance();
 	
-	public TextureElement(ResourceLocation id, int x, int y, int width, int height) {
+	public TextureElement(String filename, int x, int y, int width, int height) throws CompileException {
 		this.x=x;
 		this.y=y;
 		this.width=width;
 		this.height=height;
-		this.id=id;
+		this.id=HudFileUtils.getTexture(filename);
+		if (!HudFileUtils.imageLoaded(id)) 
+			throw new CompileException("Image not loaded (Or file is not a valid image): " + filename);
 	}
 	
 	@Override public void renderElement(GuiGraphics context, HudderRenderer renderer, DeltaTracker delta) {

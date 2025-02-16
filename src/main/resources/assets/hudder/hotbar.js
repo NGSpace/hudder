@@ -25,7 +25,7 @@ function createElements() {
 		let yoffset = 0;
 		let xoffset = 0;
 		
-		drawPoint(x+15, y+i*spacing+5, 6, 6);
+		image("Textures/pointer.png", x+15, y+i*spacing+5, 6, 6);
 		
 		if (slotNum==i) {
 			let sely = y+i*spacing+yoffset-4;
@@ -42,7 +42,7 @@ function createElements() {
 				
 			} else scrolly = sely; //Ye it's for the better...
 			
-			drawSelection(x-8, scrolly, 24, 24);
+			image("Textures/selection.png", x-8, scrolly, 24, 24);
 			
 			selectedsloty = scrolly+8;
 		}
@@ -56,22 +56,4 @@ function createElements() {
 	if (j<=0) helditemtooltip(width-strwidth(getItem(prevslot).name)/2-32, selectedsloty); else j=j-1*delta;
 	
 	prevslot = slotNum;
-}
-
-
-function drawPoint(x,y,w,h) {
-	if (!exists("Textures/pointer.png")) {
-		//Fallback
-		texture("textures/gui/sprites/recipe_book/page_backward.png", x, y, w, h);
-	} else {
-		image("Textures/pointer.png", x, y, w, h);
-	}
-}
-function drawSelection(x,y,w,h) {
-	if (!exists("Textures/selection.png")) {
-		//Fallback
-		texture("textures/gui/sprites/hud/hotbar_selection.png", x, y, w, h);
-	} else {
-		image("Textures/selection.png", x, y, w, h);
-	}
 }

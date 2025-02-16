@@ -154,8 +154,9 @@ public class HudFileUtils {private HudFileUtils() {}
 
 	public static void loadResources(File folder, String prefix) throws IOException {
 		for (File resource : folder.listFiles()) {
+			String path = prefix + ("".equals(prefix)?"":"/") + resource.getName();
 			if (resource.isDirectory()) {
-				loadResources(resource, prefix + ("".equals(prefix)?"":"/") + resource.getName());
+				loadResources(resource, path);
 				continue;
 			}
 			try {
@@ -163,11 +164,23 @@ public class HudFileUtils {private HudFileUtils() {}
 				if (image!=null) {
 					ByteArrayOutputStream output = new ByteArrayOutputStream();
 					ImageIO.write(image, "PNG", output);
-					reader.registerAndCacheImage(new ByteArrayInputStream(output.toByteArray()), getTexture(prefix + ("".equals(prefix)?"":"/") + resource.getName()));
+					reader.registerAndCacheImage(new ByteArrayInputStream(output.toByteArray()),getTexture(path),path);
 					continue;
 				}
 			} catch (IOException e) {e.printStackTrace();}
 			reader.readFileAndSaveToCache(resource);
 		}
+	}
+
+
+
+	public static boolean imageLoaded(ResourceLocation id) {
+		return reader.savedImages.containsKey(id);
+	}
+
+
+
+	public static String getImageName(ResourceLocation id) {
+		return reader.getImageName(id);
 	}
 }
