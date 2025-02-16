@@ -19,7 +19,7 @@ public class CachedReader {
 	
 	
 	HashMap<String, String> savedFiles = new HashMap<String, String>();
-	HashMap<ResourceLocation, Image> savedImages = new HashMap<ResourceLocation, Image>();
+	HashMap<ResourceLocation, DynamicTexture> savedImages = new HashMap<ResourceLocation, DynamicTexture>();
 	
 	
 	
@@ -50,10 +50,10 @@ public class CachedReader {
 	
 	
 	
-	public boolean registerAndCacheImage(InputStream inputStream, ResourceLocation id, String path) throws IOException {
+	public boolean registerAndCacheImage(InputStream inputStream, ResourceLocation id) throws IOException {
 		if (savedImages.containsKey(id)) {
 			mc.getTextureManager().release(id);
-			savedImages.get(id).texture().close();
+			savedImages.get(id).close();
 			savedImages.remove(id);
 		}
 		NativeImage img = NativeImage.read(inputStream);
@@ -62,11 +62,8 @@ public class CachedReader {
 		
 		tex.bind();
 		
-		savedImages.put(id,new Image(tex, path));
+		savedImages.put(id,tex);
 		return true;
-	}
-	
-	record Image(DynamicTexture texture, String path) {
 	}
 	
 	
@@ -75,17 +72,11 @@ public class CachedReader {
 	 * Clears Cache
 	 */
 	public void clearCache() {
-		for (Entry<ResourceLocation, Image> v : savedImages.entrySet()) {
+		for (Entry<ResourceLocation, DynamicTexture> v : savedImages.entrySet()) {
 			mc.getTextureManager().release(v.getKey());
-			v.getValue().texture().close();
+			v.getValue().close();
 		}
 		savedImages.clear();
 		savedFiles.clear();
-	}
-
-
-
-	public String getImageName(ResourceLocation id) {
-		return savedImages.get(id).path();
 	}
 }

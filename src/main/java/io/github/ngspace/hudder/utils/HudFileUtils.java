@@ -164,7 +164,7 @@ public class HudFileUtils {private HudFileUtils() {}
 				if (image!=null) {
 					ByteArrayOutputStream output = new ByteArrayOutputStream();
 					ImageIO.write(image, "PNG", output);
-					reader.registerAndCacheImage(new ByteArrayInputStream(output.toByteArray()),getTexture(path),path);
+					reader.registerAndCacheImage(new ByteArrayInputStream(output.toByteArray()),getTexture(path));
 					continue;
 				}
 			} catch (IOException e) {e.printStackTrace();}
@@ -176,11 +176,5 @@ public class HudFileUtils {private HudFileUtils() {}
 
 	public static boolean imageLoaded(ResourceLocation id) {
 		return reader.savedImages.containsKey(id);
-	}
-
-
-
-	public static String getImageName(ResourceLocation id) {
-		return reader.getImageName(id);
 	}
 }
