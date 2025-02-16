@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.CRC32;
+import java.util.zip.Checksum;
 
 import javax.imageio.ImageIO;
 
@@ -35,7 +37,7 @@ public class HudFileUtils {private HudFileUtils() {}
      * @return The text in the file
      * @throws IOException
      */
-	public static String readFile(String file) throws IOException {
+	public static String readFile(String file) {
 		return reader.readFile(sanitize(FOLDER + file));
 	}
 	
@@ -133,11 +135,13 @@ public class HudFileUtils {private HudFileUtils() {}
 	
 	public static ResourceLocation getTexture(String filename) {
 		sanitize(FOLDER + filename);
-		StringBuilder res = new StringBuilder();
-		for (int i = 0;i<filename.length();i++) {
-			char c = filename.charAt(i);
-		}
-		return ResourceLocation.fromNamespaceAndPath("hudder",filename.trim().toLowerCase().replace(' ', '/'));
+		return ResourceLocation.fromNamespaceAndPath("hudder",""+getCRC32Checksum(filename.trim().toLowerCase()));
+	}
+	private static long getCRC32Checksum(String str) {return getCRC32Checksum(str.getBytes());}
+	private static long getCRC32Checksum(byte[] bytes) {
+	    Checksum crc32 = new CRC32();
+	    crc32.update(bytes, 0, bytes.length);
+	    return crc32.getValue();
 	}
 
 	public static void reloadResources() throws IOException {

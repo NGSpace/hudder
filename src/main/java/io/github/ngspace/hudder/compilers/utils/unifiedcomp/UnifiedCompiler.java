@@ -1,7 +1,5 @@
 package io.github.ngspace.hudder.compilers.utils.unifiedcomp;
 
-import java.io.IOException;
-
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.abstractions.ATextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
@@ -55,9 +53,9 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 		binder.bindConsumer((e,a,l,ch,s)->e.addElem(new TextureElement(HudderUtils.parseResourceHudder(s[0].asString().trim()),
 				s[1].asInt(), s[2].asInt(), s[3].asInt(),s[4].asInt())), "drawTexture", "texture");
 		
-		binder.bindConsumer((e,a,l,ch,s)-> e.addElem(
-			new TextureElement(HudFileUtils.getTexture(s[0].asString()),s[1].asInt(),s[2].asInt(),s[3].asInt(),s[4].asInt())
-		),"drawLocalTexture","drawPNG","drawImage","image","png");
+		binder.bindConsumer((e,a,l,ch,s)-> e.addElem(new TextureElement(HudFileUtils.getTexture(s[0].asString()),
+				s[1].asInt(),s[2].asInt(),s[3].asInt(),s[4].asInt())),
+				"drawLocalTexture","drawPNG","drawImage","image","png");
 		
 		binder.bindConsumer((e,a,l,ch,s)-> e.addElem(new Texture9SliceElement(HudFileUtils.getTexture(s[0].asString()),
 				s[1].asInt(),s[2].asInt(),s[3].asInt(),s[4].asInt(),s[5].asFloatArray())), "9slicetexture");
@@ -136,7 +134,7 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 				
 				for (var i : HudCompilationManager.postcomplistners) i.accept(ecompiler);
 				return result;
-			} catch (ReflectiveOperationException | IOException e) {
+			} catch (ReflectiveOperationException e) {
 				if (Hudder.IS_DEBUG) e.printStackTrace();
 				throw new IllegalArgumentException("Unknown compiler");
 			}

@@ -32,9 +32,9 @@ public class ConfigMenu implements ConfigScreenFactory<Screen> {
 	protected static Minecraft mc = Minecraft.getInstance();
 	
 	public static final String URL = "https://ngspace.github.io/hudder";
-	HudderConfig config = Hudder.config;
 	
 	@Override public Screen create(Screen parent) {
+		HudderConfig config = Hudder.config;
 		
 //		ConfigBuilder builder = new ConfigBuilderImpl() {
 //		    @Override
@@ -238,34 +238,6 @@ public class ConfigMenu implements ConfigScreenFactory<Screen> {
 				.setYesNoTextSupplier(yesno)
 				.setDefaultValue(false)
 				.build());
-		
-		
-		
-
-		variables.addEntry(entryBuilder
-				.startBooleanToggle(Component.translatable("hudder.global_variables"),
-						config.globalVariablesEnabled)
-				.setTooltip(Component.translatable("hudder.global_variables.enabled.tooltip"))
-				.setSaveConsumer(b->config.globalVariablesEnabled=b)
-				.setYesNoTextSupplier(yesno)
-				.setDefaultValue(true)
-				.build());
-		variables.addEntry(new NestedListListEntry<Variable, MultiElementListEntry<Variable>>(
-				Component.translatable("hudder.global_variables"),
-                getVarList(),
-                true, 
-                () -> Optional.of(new Component[]{Component.translatable("hudder.global_variables.tooltip")}),
-                this::makelist,
-                () -> new ArrayList<Variable>(),
-                entryBuilder.getResetButtonKey(),
-                true,
-                false,
-                (varia, listListEntry) -> createEntry(entryBuilder, (varia!=null?varia:new Variable("","")))));
-		
-		
-		//VER 3.0.0
-		
-
 		advanced.addEntry(
 				entryBuilder.startBooleanToggle(Component.translatable("hudder.advanced.removehotbar"),config.removegui)
 				.setTooltip(Component.translatable("hudder.advanced.removehotbar.tooltip"))
@@ -281,9 +253,32 @@ public class ConfigMenu implements ConfigScreenFactory<Screen> {
 				.setDefaultValue(true)
 				.build());
 		
+		
+		
+
+		variables.addEntry(entryBuilder
+				.startBooleanToggle(Component.translatable("hudder.global_variables"),
+						config.globalVariablesEnabled)
+				.setTooltip(Component.translatable("hudder.global_variables.enabled.tooltip"))
+				.setSaveConsumer(b->config.globalVariablesEnabled=b)
+				.setYesNoTextSupplier(yesno)
+				.setDefaultValue(true)
+				.build());
+		variables.addEntry(new NestedListListEntry<Variable, MultiElementListEntry<Variable>>(
+				Component.translatable("hudder.global_variables"),
+                getVarList(config),
+                true, 
+                () -> Optional.of(new Component[]{Component.translatable("hudder.global_variables.tooltip")}),
+                this::makelist,
+                () -> new ArrayList<Variable>(),
+                entryBuilder.getResetButtonKey(),
+                true,
+                false,
+                (varia, listListEntry) -> createEntry(entryBuilder, (varia!=null?varia:new Variable("","")))));
+		
 		return builder.build();
 	}
-    private List<Variable> getVarList() {
+    private List<Variable> getVarList(HudderConfig config) {
     	ArrayList<Variable> lst = new ArrayList<Variable>();
     	for (Map.Entry<String, Object> v : config.globalVariables.entrySet())
     		lst.add(new Variable(v.getKey(),v.getValue()));
@@ -317,7 +312,7 @@ public class ConfigMenu implements ConfigScreenFactory<Screen> {
     }
 
 	private void makelist(List<Variable> list) {
-		config.globalVariables = new HashMap<String,Object>();
-		for (Variable l : list) config.globalVariables.put(l.key, l.value);
+		Hudder.config.globalVariables = new HashMap<String,Object>();
+		for (Variable l : list) Hudder.config.globalVariables.put(l.key, l.value);
 	}
 }

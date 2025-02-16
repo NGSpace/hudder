@@ -1,7 +1,5 @@
 package io.github.ngspace.hudder.v2runtime.methods;
 
-import java.io.IOException;
-
 import io.github.ngspace.hudder.compilers.abstractions.ATextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileState;
@@ -28,7 +26,7 @@ public class LoadMethod implements IMethod {
 			for (var i : HudCompilationManager.precomplistners) i.accept(ecompiler);
 			meta.combineWithResult(ecompiler.compile(ci, HudFileUtils.readFile(file), file), AddText);
 			for (var i : HudCompilationManager.postcomplistners) i.accept(ecompiler);
-		} catch (ReflectiveOperationException | IOException e) {
+		} catch (ReflectiveOperationException e) {
 			throw new CompileException(e.getLocalizedMessage());
 		} catch (CompileException e) {
 			throw new CompileException(e.getFailureMessage() +"\nRun Failed for hud file " + file, line, charpos);
