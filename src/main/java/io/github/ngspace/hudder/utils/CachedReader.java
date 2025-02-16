@@ -60,8 +60,6 @@ public class CachedReader {
 		DynamicTexture tex = new DynamicTexture(img);
 		mc.getTextureManager().register(id, tex);
 		
-		tex.bind();
-		
 		savedImages.put(id,tex);
 		return true;
 	}

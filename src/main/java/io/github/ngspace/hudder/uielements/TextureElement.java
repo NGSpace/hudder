@@ -6,7 +6,6 @@ import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.main.HudderRenderer;
 import io.github.ngspace.hudder.utils.HudFileUtils;
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
@@ -18,7 +17,6 @@ public class TextureElement extends AUIElement {
 	public final int width;
 	public final int height;
 	public final ResourceLocation id;
-    public static Minecraft mc = Minecraft.getInstance();
 	
 	public TextureElement(String filename, int x, int y, int width, int height) throws CompileException {
 		this.x=x;
