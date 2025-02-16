@@ -26,7 +26,7 @@ public class LoadMethod implements IMethod {
 			boolean AddText = (args.length<2 || args[1].asBoolean()) || type.equals("add");
 			ATextCompiler ecompiler=(args.length>2?Compilers.getCompilerFromName(args[2].asString()):comp);
 			for (var i : HudCompilationManager.precomplistners) i.accept(ecompiler);
-			meta.combineWithResult(ecompiler.compile(ci, HudFileUtils.getFile(file), file), AddText);
+			meta.combineWithResult(ecompiler.compile(ci, HudFileUtils.readFile(file), file), AddText);
 			for (var i : HudCompilationManager.postcomplistners) i.accept(ecompiler);
 		} catch (ReflectiveOperationException | IOException e) {
 			throw new CompileException(e.getLocalizedMessage());

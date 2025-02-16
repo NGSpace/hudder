@@ -26,7 +26,6 @@ import io.github.ngspace.hudder.utils.ObjectWrapper;
 import io.github.ngspace.hudder.utils.ValueGetter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -45,20 +44,10 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 		binder.bindConsumer((e,a,l,ch,s)->e.addElem(new ColorVerticesElement(s[0].asFloatArray(),s[1].asLong(),false)),"colorvertices");
 		binder.bindConsumer((e,a,l,ch,s)->e.addElem(new ColorVerticesElement(s[0].asFloatArray(),s[1].asLong(),true)),"colorvertices_con");
 		
-		binder.bindConsumer((e,a,l,ch,s)->{
-			try {
-				e.addElem(new TextureVerticesElement(s[0].asString(),s[1].asFloatArray(),s[2].asFloatArray(), false));
-			} catch (IOException ex) {
-				throw new CompileException(ex.getMessage(), l, ch, ex);
-			}
-		}, "texturevertices");
-		binder.bindConsumer((e,a,l,ch,s)->{
-			try {
-				e.addElem(new TextureVerticesElement(s[0].asString(),s[1].asFloatArray(),s[2].asFloatArray(), true));
-			} catch (IOException ex) {
-				throw new CompileException(ex.getMessage(), l, ch, ex);
-			}
-		}, "texturevertices_con");
+		binder.bindConsumer((e,a,l,ch,s)->e.addElem(new TextureVerticesElement(
+				s[0].asString(),s[1].asFloatArray(),s[2].asFloatArray(), false)), "texturevertices");
+		binder.bindConsumer((e,a,l,ch,s)->e.addElem(new TextureVerticesElement(
+				s[0].asString(),s[1].asFloatArray(),s[2].asFloatArray(), true )), "texturevertices_con");
 		
 		
 		//Textures
@@ -66,21 +55,12 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 		binder.bindConsumer((e,a,l,ch,s)->e.addElem(new TextureElement(HudderUtils.parseResourceHudder(s[0].asString().trim()),
 				s[1].asInt(), s[2].asInt(), s[3].asInt(),s[4].asInt())), "drawTexture", "texture");
 		
-		binder.bindConsumer((e,a,l,ch,s)-> {
-			try {
-				ResourceLocation id = ResourceLocation.fromNamespaceAndPath("hudder",s[0].asString().trim().toLowerCase());
-				HudFileUtils.getAndRegisterImage(s[0].asString(),id);
-				e.addElem(new TextureElement(id,s[1].asInt(),s[2].asInt(),s[3].asInt(),s[4].asInt()));
-			} catch (IOException ex) {throw new CompileException("File "+s[0].asString()+"does not exist");}
-		}, "drawLocalTexture", "drawPNG", "drawImage", "image", "png");
+		binder.bindConsumer((e,a,l,ch,s)-> e.addElem(
+			new TextureElement(HudFileUtils.getTexture(s[0].asString()),s[1].asInt(),s[2].asInt(),s[3].asInt(),s[4].asInt())
+		),"drawLocalTexture","drawPNG","drawImage","image","png");
 		
-		binder.bindConsumer((e,a,l,ch,s)-> {
-			try {
-				ResourceLocation id = ResourceLocation.fromNamespaceAndPath("hudder",s[0].asString().trim().toLowerCase());
-				HudFileUtils.getAndRegisterImage(s[0].asString(),id);
-				e.addElem(new Texture9SliceElement(id,s[1].asInt(),s[2].asInt(),s[3].asInt(),s[4].asInt(),s[5].asFloatArray()));
-			} catch (IOException ex) {throw new CompileException("File "+s[0].asString()+"does not exist");}
-		}, "9slicetexture");
+		binder.bindConsumer((e,a,l,ch,s)-> e.addElem(new Texture9SliceElement(HudFileUtils.getTexture(s[0].asString()),
+				s[1].asInt(),s[2].asInt(),s[3].asInt(),s[4].asInt(),s[5].asFloatArray())), "9slicetexture");
 		
 		//Text
 		
@@ -149,7 +129,7 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 				ATextCompiler ecompiler = Compilers.getCompilerFromName(s[1].asString());
 				for (var i : HudCompilationManager.precomplistners) i.accept(ecompiler);
 				
-				HudInformation result = ecompiler.compile(Hudder.config,HudFileUtils.getFile(s[0].asString()),s[0].asString());
+				HudInformation result = ecompiler.compile(Hudder.config,HudFileUtils.readFile(s[0].asString()),s[0].asString());
 
 				for (var v : result.elements) m.addElem(v);
 				for (var v : e) m.addElem(v);

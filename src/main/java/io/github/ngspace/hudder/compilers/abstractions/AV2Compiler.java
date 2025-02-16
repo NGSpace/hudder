@@ -33,7 +33,7 @@ public abstract class AV2Compiler extends AVarTextCompiler implements ConsumerBi
 	public V2Runtime globalRuntime = null;
 	
 	protected AV2Compiler() {
-		HudCompilationManager.addPreCompilerListener(c -> {globalRuntime=null;if (this==c) tempVariables.clear();});
+		HudCompilationManager.addPreCompilerListener(c -> {globalRuntime=null;tempVariables.clear();});
 		UnifiedCompiler.instance.applyConsumers(this);
 		UnifiedCompiler.instance.applyFunctions(this);
 	}

@@ -30,13 +30,8 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 	
 	protected AScriptingLanguageCompiler() {
 		HudCompilationManager.addPreCompilerListener(c->{if(c==this) elms.clear();});
-		HudFileUtils.addClearFileCacheListener(()->{
-			try {
-				for(RuntimeCache c:cache.values())c.close();
-			} catch (IOException e) {
-				if (Hudder.IS_DEBUG) e.printStackTrace();
-				throw new CompileException(e.getLocalizedMessage());
-			}
+		HudFileUtils.addReloadResourcesListener(()->{
+			for(RuntimeCache c:cache.values()) c.close();
 			cache.clear();
 		});
 	}

@@ -1,6 +1,7 @@
 package io.github.ngspace.hudder;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -12,8 +13,9 @@ import io.github.ngspace.hudder.main.HudderTickEvent;
 import io.github.ngspace.hudder.main.config.HudderConfig;
 import io.github.ngspace.hudder.utils.HudFileUtils;
 import io.github.ngspace.hudder.utils.testing.HudderUnitTestingCommand;
-import net.fabricmc.api.ModInitializer;
+import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.Minecraft;
@@ -24,7 +26,7 @@ import net.minecraft.server.LoggedPrintStream;
  * <h1>If you expect any comments or JavaDocs explaining the bug-filled shithole I call "my code"
  * then you're gonna have a bad time.</h1>
  */
-public class Hudder implements ModInitializer {
+public class Hudder implements ClientModInitializer {
 	
     private static final Logger LOGGER = LoggerFactory.getLogger("hudder");
 	
@@ -45,7 +47,7 @@ public class Hudder implements ModInitializer {
      * Errors usually happen beyond this point
      * @throws Exception Because I fuck up a lot.
      */
-	@Override public void onInitialize() {
+	@Override public void onInitializeClient() {
 		config = new HudderConfig(new File(HudFileUtils.FOLDER + "hud.json"));
 
 		if (IS_DEBUG) {
@@ -67,6 +69,15 @@ public class Hudder implements ModInitializer {
 		HudCompilationManager compman = new HudCompilationManager();
 		ClientTickEvents.END_CLIENT_TICK.register(compman);
         HudRenderCallback.EVENT.register(new HudderRenderer(compman));
+        
+        
+        ClientLifecycleEvents.CLIENT_STARTED.register(c->{
+			try {
+				HudFileUtils.reloadResources();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
 		
 		log("Hudder has finished loading!");
 	}

@@ -1,7 +1,5 @@
 package io.github.ngspace.hudder.uielements;
 
-import java.io.IOException;
-
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.main.HudderRenderer;
 import io.github.ngspace.hudder.utils.HudFileUtils;
@@ -16,10 +14,9 @@ public class TextureVerticesElement extends AUIElement {
 	private float[] textures;
 	private boolean triangles;
 	
-	public TextureVerticesElement(String filename, float[] positionArray, float[] textureArray, boolean triangles) throws IOException,
+	public TextureVerticesElement(String filename, float[] positionArray, float[] textureArray, boolean triangles) throws
 		CompileException {
-		this.id = ResourceLocation.withDefaultNamespace(filename.trim().toLowerCase());
-		HudFileUtils.getAndRegisterImage(filename,id);
+		this.id = HudFileUtils.getTexture(filename);
 		this.vertices = positionArray;
 		this.textures = textureArray;
 		this.triangles = triangles;
