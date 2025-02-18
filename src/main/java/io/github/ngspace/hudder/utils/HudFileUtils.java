@@ -135,7 +135,8 @@ public class HudFileUtils {private HudFileUtils() {}
 	
 	public static ResourceLocation getTexture(String filename) {
 		sanitize(FOLDER + filename);
-		return ResourceLocation.fromNamespaceAndPath("hudder",""+getCRC32Checksum(filename.trim().toLowerCase()));
+		return ResourceLocation.fromNamespaceAndPath("hudder",
+				String.valueOf(getCRC32Checksum(filename.trim().toLowerCase())));
 	}
 	private static long getCRC32Checksum(String str) {return getCRC32Checksum(str.getBytes());}
 	private static long getCRC32Checksum(byte[] bytes) {
