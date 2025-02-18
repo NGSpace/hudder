@@ -1,7 +1,5 @@
 package io.github.ngspace.hudder.utils;
 
-import net.minecraft.resources.ResourceLocation;
-
 public class HudderUtils {private HudderUtils() {}
 	
 	public static String[] processParemeters(String strtoprocess) {
@@ -56,25 +54,5 @@ public class HudderUtils {private HudderUtils() {}
 		T[] newarr = java.util.Arrays.copyOf(arr, arr.length+1);
 		newarr[arr.length] = t;
 		return newarr;
-	}
-
-	public static ResourceLocation parseResourceHudder(String resource) {
-		return null;
-	}
-
-	public static ResourceLocation parseResourceMc(String resource) {
-        return ResourceLocation.withDefaultNamespace(resource);
-	}
-	public static ResourceLocation parseResource(String resource, String defaultNamespace) {
-        int split = resource.indexOf(':');
-        if (split >= 0) {
-            String path = resource.substring(split + 1);
-            if (split != 0) {
-                String namespace = resource.substring(0, split);
-                return ResourceLocation.fromNamespaceAndPath(namespace, path);
-            }
-            return ResourceLocation.fromNamespaceAndPath(defaultNamespace,path);
-        }
-        return ResourceLocation.fromNamespaceAndPath(defaultNamespace,resource);
 	}
 }
