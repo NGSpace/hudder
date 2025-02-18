@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.main;
+package io.github.ngspace.hudder.utils;
 
 import net.minecraft.resources.ResourceLocation;
 
