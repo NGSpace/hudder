@@ -1,5 +1,9 @@
 package io.github.ngspace.hudder.compilers.utils.unifiedcomp;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.abstractions.ATextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
@@ -36,6 +40,12 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 	
 	public static UnifiedCompiler instance = new UnifiedCompiler();
 	public static Minecraft mc = Minecraft.getInstance();
+	
+	HashMap<BindableFunction, String> functions = new HashMap<BindableFunction, String>();
+	HashMap<BindableConsumer, String> consumers = new HashMap<BindableConsumer, String>();
+	
+	List<FunctionBinder> functions_binders = new ArrayList<FunctionBinder>();
+	List<ConsumerBinder> consumers_binders = new ArrayList<ConsumerBinder>();
 	
 	public void applyConsumers(ConsumerBinder binder) {
 		//Vertex
@@ -101,6 +111,13 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 		binder.bindConsumer((e,a,l,ch,s)->Hudder.warn(s[0].get().toString()), "warn");
 		binder.bindConsumer((e,a,l,ch,s)->Hudder.error(s[0].get().toString()), "error");
 		
+		
+		//Consumers defined in registerConsumer()
+		
+		for (var cons : consumers.entrySet())
+			binder.bindConsumer(cons.getKey(), cons.getValue());
+		
+		consumers_binders.add(binder);
 	}
 	
 	
@@ -147,10 +164,38 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 		binder.bindFunction((m,c,s)->HudFileUtils.exists(s[0].asString()),"exists");
 		binder.bindFunction((m,c,s)->mc.font.width(s[0].asString()), "strWidth", "strwidth");
 		binder.bindFunction((m,c,s)->s[0].get().toString(), "toString");
+		
+		
+		//Functions defined in registerFunction()
+		
+		for (var func : functions.entrySet())
+			binder.bindFunction(func.getKey(), func.getValue());
+		
+		functions_binders.add(binder);
 	}
 	
 	
+	
+	public void registerFunction(BindableFunction func, String... names) {
+		for (String name : names) {
+			for (var binder : functions_binders)
+				binder.bindFunction(func, names);
+			functions.put(func, name);
+		}
+	}
 
+
+
+	public void registerConsumer(BindableConsumer func, String... names) {
+		for (String name : names) {
+			for (var binder : consumers_binders)
+				binder.bindConsumer(func, names);
+			consumers.put(func, name);
+		}
+	}
+
+	
+	
 	@FunctionalInterface public interface BindableConsumer {
 		public void invoke(IElementManager man, ATextCompiler comp, int line, int charpos, ObjectWrapper... args) throws CompileException;
 	}

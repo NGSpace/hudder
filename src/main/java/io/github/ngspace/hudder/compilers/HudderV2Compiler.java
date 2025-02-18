@@ -274,7 +274,6 @@ public class HudderV2Compiler extends AV2Compiler {
 			}
 		}
 		
-//		Hudder.log(elemBuilder.toString());
 		runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), false));
 		
 		if (compileState!=0) throw new CompileException(getCompilerErrorMessage(compileState));
