@@ -16,6 +16,16 @@ t
 ||EXPECT||
 r
 
+||INPUT||Function API test function
+{FunctionAPITestingFunction("1")=="1"}
+||EXPECT||
+true
+
+||INPUT||Method API test method
+;MethodAPITestingMethod, "1";
+||EXPECT||
+{methodvalue}
+
 ||INPUT||While and Break
 r#while true
 	{break}

@@ -6,7 +6,7 @@ import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
 import io.github.ngspace.hudder.compilers.utils.IScriptingLanguageEngine;
 import io.github.ngspace.hudder.compilers.utils.JavaScriptEngine;
-import io.github.ngspace.hudder.compilers.utils.unifiedcomp.UnifiedCompiler;
+import io.github.ngspace.hudder.compilers.utils.unifiedcomp.FunctionAndMethodAPI;
 import io.github.ngspace.hudder.main.config.HudderConfig;
 
 public class JavaScriptCompiler extends AScriptingLanguageCompiler {
@@ -17,9 +17,9 @@ public class JavaScriptCompiler extends AScriptingLanguageCompiler {
 	}
 	@Override protected IScriptingLanguageEngine createLangEngine() throws CompileException {
 		JavaScriptEngine engine = new JavaScriptEngine();
-		UnifiedCompiler comp = UnifiedCompiler.instance;
-		comp.applyConsumers((c,n)->engine.bindConsumer(e->c.invoke(elms, this, -1, -1, e), n));
-		comp.applyFunctions((c,n)->engine.bindFunction(e->c.invoke(elms, this, e), n));
+		FunctionAndMethodAPI api = FunctionAndMethodAPI.getInstance();
+		api.applyConsumers((c,n)->engine.bindConsumer(e->c.invoke(elms, this, e), n));
+		api.applyFunctions((c,n)->engine.bindFunction(e->c.invoke(elms, this, e), n));
 		return engine;
 	}
 }

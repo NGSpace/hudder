@@ -6,11 +6,11 @@ import java.util.Map;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileState;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
-import io.github.ngspace.hudder.compilers.utils.unifiedcomp.UnifiedCompiler;
-import io.github.ngspace.hudder.compilers.utils.unifiedcomp.UnifiedCompiler.BindableConsumer;
-import io.github.ngspace.hudder.compilers.utils.unifiedcomp.UnifiedCompiler.BindableFunction;
-import io.github.ngspace.hudder.compilers.utils.unifiedcomp.UnifiedCompiler.ConsumerBinder;
-import io.github.ngspace.hudder.compilers.utils.unifiedcomp.UnifiedCompiler.FunctionBinder;
+import io.github.ngspace.hudder.compilers.utils.unifiedcomp.FunctionAndMethodAPI;
+import io.github.ngspace.hudder.compilers.utils.unifiedcomp.FunctionAndMethodAPI.BindableConsumer;
+import io.github.ngspace.hudder.compilers.utils.unifiedcomp.FunctionAndMethodAPI.BindableFunction;
+import io.github.ngspace.hudder.compilers.utils.unifiedcomp.FunctionAndMethodAPI.ConsumerBinder;
+import io.github.ngspace.hudder.compilers.utils.unifiedcomp.FunctionAndMethodAPI.FunctionBinder;
 import io.github.ngspace.hudder.main.HudCompilationManager;
 import io.github.ngspace.hudder.main.config.HudderConfig;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
@@ -34,8 +34,8 @@ public abstract class AV2Compiler extends AVarTextCompiler implements ConsumerBi
 	
 	protected AV2Compiler() {
 		HudCompilationManager.addPreCompilerListener(c -> {globalRuntime=null;tempVariables.clear();});
-		UnifiedCompiler.instance.applyConsumers(this);
-		UnifiedCompiler.instance.applyFunctions(this);
+		FunctionAndMethodAPI.getInstance().applyConsumers(this);
+		FunctionAndMethodAPI.getInstance().applyFunctions(this);
 	}
 	
 	
@@ -107,7 +107,7 @@ public abstract class AV2Compiler extends AVarTextCompiler implements ConsumerBi
 	
 	
 	@Override public void bindConsumer(BindableConsumer cons, String... names) {
-		methodHandler.bindConsumer((c,m,a,t,l,ch,s)->cons.invoke(m, this, l, ch, s), names);
+		methodHandler.bindConsumer((c,m,a,t,l,ch,s)->cons.invoke(m, this, s), names);
 	}
 	@Override public void bindFunction(BindableFunction cons, String... names) {
 		functionHandler.bindFunction((c,a,s,l,ch)->cons.invoke(c.compileState, this, s), names);

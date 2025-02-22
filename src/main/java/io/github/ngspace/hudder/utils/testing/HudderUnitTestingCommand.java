@@ -18,6 +18,7 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
 import io.github.ngspace.hudder.Hudder;
+import io.github.ngspace.hudder.compilers.utils.unifiedcomp.FunctionAndMethodAPI;
 import io.github.ngspace.hudder.utils.HudFileUtils;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -38,6 +39,10 @@ public class HudderUnitTestingCommand implements ClientCommandRegistrationCallba
 
 	@Override public void register(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
 
+		FunctionAndMethodAPI.getInstance().registerFunction((m,co,a)-> a[0].get(), "FunctionAPITestingFunction");
+		FunctionAndMethodAPI.getInstance().registerConsumer((m,co,a)-> co.put("methodvalue",a[0].get()), "MethodAPITestingMethod");
+		
+		
 		dispatcher.register(literal("hudderunittesting")
 				
 				

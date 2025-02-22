@@ -36,9 +36,9 @@ import net.minecraft.world.item.ItemStack;
  * 
  * Don't use this unless you know what you are doing.
  */
-public class UnifiedCompiler {private UnifiedCompiler() {}
+public class FunctionAndMethodAPI {private FunctionAndMethodAPI() {}
 	
-	public static UnifiedCompiler instance = new UnifiedCompiler();
+	static FunctionAndMethodAPI instance = new FunctionAndMethodAPI();
 	public static Minecraft mc = Minecraft.getInstance();
 	
 	HashMap<BindableFunction, String> functions = new HashMap<BindableFunction, String>();
@@ -50,30 +50,30 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 	public void applyConsumers(ConsumerBinder binder) {
 		//Vertex
 
-		binder.bindConsumer((e,a,l,ch,s)->e.addElem(new ColorVerticesElement(s[0].asFloatArray(),s[1].asLong(),false)),"colorvertices");
-		binder.bindConsumer((e,a,l,ch,s)->e.addElem(new ColorVerticesElement(s[0].asFloatArray(),s[1].asLong(),true)),"colorvertices_con");
+		binder.bindConsumer((e,a,s)->e.addElem(new ColorVerticesElement(s[0].asFloatArray(),s[1].asLong(),false)),"colorvertices");
+		binder.bindConsumer((e,a,s)->e.addElem(new ColorVerticesElement(s[0].asFloatArray(),s[1].asLong(),true)),"colorvertices_con");
 		
-		binder.bindConsumer((e,a,l,ch,s)->e.addElem(new TextureVerticesElement(
+		binder.bindConsumer((e,a,s)->e.addElem(new TextureVerticesElement(
 				s[0].asString(),s[1].asFloatArray(),s[2].asFloatArray(), false)), "texturevertices");
-		binder.bindConsumer((e,a,l,ch,s)->e.addElem(new TextureVerticesElement(
+		binder.bindConsumer((e,a,s)->e.addElem(new TextureVerticesElement(
 				s[0].asString(),s[1].asFloatArray(),s[2].asFloatArray(), true )), "texturevertices_con");
 		
 		
 		//Textures
 		
-		binder.bindConsumer((e,a,l,ch,s)->e.addElem(new NativeTextureElement(ResourceLocation.withDefaultNamespace(
+		binder.bindConsumer((e,a,s)->e.addElem(new NativeTextureElement(ResourceLocation.withDefaultNamespace(
 				s[0].asString().trim()), s[1].asInt(), s[2].asInt(), s[3].asInt(),s[4].asInt())), "drawTexture", "texture");
 		
-		binder.bindConsumer((e,a,l,ch,s)-> e.addElem(new TextureElement(s[0].asString(),
+		binder.bindConsumer((e,a,s)-> e.addElem(new TextureElement(s[0].asString(),
 				s[1].asInt(),s[2].asInt(),s[3].asInt(),s[4].asInt())),
 				"drawLocalTexture","drawPNG","drawImage","image","png");
 		
-		binder.bindConsumer((e,a,l,ch,s)-> e.addElem(new Texture9SliceElement(s[0].asString(),
+		binder.bindConsumer((e,a,s)-> e.addElem(new Texture9SliceElement(s[0].asString(),
 				s[1].asInt(),s[2].asInt(),s[3].asInt(),s[4].asInt(),s[5].asFloatArray())), "9slicetexture");
 		
 		//Text
 		
-		binder.bindConsumer((e,a,l,ch,args) -> {
+		binder.bindConsumer((e,a,args) -> {
 			int x = args[0].asInt();
 			int y = args[1].asInt();
 
@@ -90,26 +90,26 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 		
 		//GUI
 		
-		binder.bindConsumer((e,a,l,ch,s)->e.addElem(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.STATUS_BARS)),
+		binder.bindConsumer((e,a,s)->e.addElem(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.STATUS_BARS)),
 				"drawStatusBars", "statusbars");
-		binder.bindConsumer((e,a,l,ch,s)->e.addElem(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.EXP_AND_MOUNT_BAR)),
+		binder.bindConsumer((e,a,s)->e.addElem(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.EXP_AND_MOUNT_BAR)),
 				"drawExpAndMountBars", "xpbar");
-		binder.bindConsumer((e,a,l,ch,s)->e.addElem(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.HOTBAR)),
+		binder.bindConsumer((e,a,s)->e.addElem(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.HOTBAR)),
 				"drawHotbar", "hotbar");
-		binder.bindConsumer((e,a,l,ch,s)->e.addElem(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.ITEM_TOOLTIP)),
+		binder.bindConsumer((e,a,s)->e.addElem(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.ITEM_TOOLTIP)),
 				"drawItemTooltip", "helditemtooltip");
 		
 		//Variables
 		
-		binder.bindConsumer((e,a,l,ch,s)->a.put(s[0].asString(), s[1]), "set", "setVal", "setVariable");
+		binder.bindConsumer((e,a,s)->a.put(s[0].asString(), s[1]), "set", "setVal", "setVariable");
 //		binder.bindConsumer((e,a,l,ch,s)->a.getConfig().savedVariables.put(s[0].asString(),s[1]),"saveVal");
 		
 		//Logging
 		
-		binder.bindConsumer((e,a,l,ch,s)->Hudder.alert(s[0].get().toString()), "alert");
-		binder.bindConsumer((e,a,l,ch,s)->Hudder.log(s[0].get().toString()), "log");
-		binder.bindConsumer((e,a,l,ch,s)->Hudder.warn(s[0].get().toString()), "warn");
-		binder.bindConsumer((e,a,l,ch,s)->Hudder.error(s[0].get().toString()), "error");
+		binder.bindConsumer((e,a,s)->Hudder.alert(s[0].get().toString()), "alert");
+		binder.bindConsumer((e,a,s)->Hudder.log(s[0].get().toString()), "log");
+		binder.bindConsumer((e,a,s)->Hudder.warn(s[0].get().toString()), "warn");
+		binder.bindConsumer((e,a,s)->Hudder.error(s[0].get().toString()), "error");
 		
 		
 		//Consumers defined in registerConsumer()
@@ -178,8 +178,11 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 	
 	public void registerFunction(BindableFunction func, String... names) {
 		for (String name : names) {
-			for (var binder : functions_binders)
+			System.out.println(name);
+			for (var binder : functions_binders) {
+				System.out.println("Found function");
 				binder.bindFunction(func, names);
+			}
 			functions.put(func, name);
 		}
 	}
@@ -188,8 +191,11 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 
 	public void registerConsumer(BindableConsumer func, String... names) {
 		for (String name : names) {
-			for (var binder : consumers_binders)
+			System.out.println(name);
+			for (var binder : consumers_binders) {
+				System.out.println("Found consumer");
 				binder.bindConsumer(func, names);
+			}
 			consumers.put(func, name);
 		}
 	}
@@ -197,7 +203,7 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 	
 	
 	@FunctionalInterface public interface BindableConsumer {
-		public void invoke(IElementManager man, ATextCompiler comp, int line, int charpos, ObjectWrapper... args) throws CompileException;
+		public void invoke(IElementManager man, ATextCompiler comp, ObjectWrapper... args) throws CompileException;
 	}
 	@FunctionalInterface public interface ConsumerBinder {
 		public void bindConsumer(BindableConsumer cons, String... names);
@@ -211,6 +217,8 @@ public class UnifiedCompiler {private UnifiedCompiler() {}
 	@FunctionalInterface public interface FunctionBinder {
 		public void bindFunction(BindableFunction cons, String... names);
 	}
+	
+	public static FunctionAndMethodAPI getInstance() {return instance;}
 	
 
 	public static class TranslatedItemStack implements ValueGetter {

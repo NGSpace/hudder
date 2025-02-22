@@ -167,7 +167,7 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 			if (value instanceof NativeJavaObject o) {this.value = o.unwrap();}
 		}
 
-		@Override public Object get() throws CompileException {return value;}
+		@Override public Object get() throws CompileException {return value==Undefined.instance?null:value;}
 		
 		@Override public String asString() {return Context.toString(value);}
 		@Override public double asDouble() {return Context.toNumber(value);}
