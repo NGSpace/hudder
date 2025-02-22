@@ -23,8 +23,9 @@ true
 
 ||INPUT||Method API test method
 ;MethodAPITestingMethod, "1";
-||EXPECT||
 {methodvalue}
+||EXPECT||
+1
 
 ||INPUT||While and Break
 r#while true

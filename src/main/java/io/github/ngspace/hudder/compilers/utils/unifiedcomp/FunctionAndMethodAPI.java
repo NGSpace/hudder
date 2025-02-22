@@ -106,10 +106,10 @@ public class FunctionAndMethodAPI {private FunctionAndMethodAPI() {}
 		
 		//Logging
 		
-		binder.bindConsumer((e,a,s)->Hudder.alert(s[0].get().toString()), "alert");
-		binder.bindConsumer((e,a,s)->Hudder.log(s[0].get().toString()), "log");
-		binder.bindConsumer((e,a,s)->Hudder.warn(s[0].get().toString()), "warn");
-		binder.bindConsumer((e,a,s)->Hudder.error(s[0].get().toString()), "error");
+		binder.bindConsumer((e,a,s)->Hudder.alert(String.valueOf(s[0].get())), "alert");
+		binder.bindConsumer((e,a,s)->Hudder.log(String.valueOf(s[0].get())), "log");
+		binder.bindConsumer((e,a,s)->Hudder.warn(String.valueOf(s[0].get())), "warn");
+		binder.bindConsumer((e,a,s)->Hudder.error(String.valueOf(s[0].get())), "error");
 		
 		
 		//Consumers defined in registerConsumer()

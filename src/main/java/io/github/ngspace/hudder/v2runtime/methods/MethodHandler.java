@@ -6,6 +6,7 @@ import static io.github.ngspace.hudder.compilers.utils.CompileState.MUTE;
 import static io.github.ngspace.hudder.compilers.utils.CompileState.TOPLEFT;
 import static io.github.ngspace.hudder.compilers.utils.CompileState.TOPRIGHT;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,7 +37,10 @@ public class MethodHandler {
 	}
 	
 	
-	public void bindConsumer(IMethod method, String... names) {for(String name:names)methods.put(name,method);}
+	public void bindConsumer(IMethod method, String... names) {
+		for(String name:names)
+			methods.put(name.toLowerCase(),method);
+	}
 	
 	public void bindConsumer(IMethod method, int length, String[] args, String... names) {
 		IMethod newmethod = (config,meta,compiler,name,l,c,vals) -> {

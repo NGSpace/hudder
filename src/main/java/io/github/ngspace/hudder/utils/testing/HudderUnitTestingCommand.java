@@ -38,15 +38,14 @@ public class HudderUnitTestingCommand implements ClientCommandRegistrationCallba
 	}
 
 	@Override public void register(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
-
-		FunctionAndMethodAPI.getInstance().registerFunction((m,co,a)-> a[0].get(), "FunctionAPITestingFunction");
-		FunctionAndMethodAPI.getInstance().registerConsumer((m,co,a)-> co.put("methodvalue",a[0].get()), "MethodAPITestingMethod");
 		
 		
 		dispatcher.register(literal("hudderunittesting")
 				
 				
 			.then(literal("test_all").executes(context -> {
+				FunctionAndMethodAPI.getInstance().registerFunction((m,co,a)-> a[0].get(), "FunctionAPITestingFunction");
+				FunctionAndMethodAPI.getInstance().registerConsumer((m,co,a)-> co.put("methodvalue",a[0].get()), "MethodAPITestingMethod");
 				context.getSource().sendFeedback(Hudder.config.hudderTester.testAll(Hudder.config));
 				return 1;
 			}))
