@@ -6,7 +6,7 @@ import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
 import io.github.ngspace.hudder.compilers.utils.IScriptingLanguageEngine;
 import io.github.ngspace.hudder.compilers.utils.JavaScriptEngine;
-import io.github.ngspace.hudder.compilers.utils.unifiedcomp.FunctionAndMethodAPI;
+import io.github.ngspace.hudder.compilers.utils.functionandmethodapi.FunctionAndMethodAPI;
 import io.github.ngspace.hudder.main.config.HudderConfig;
 
 public class JavaScriptCompiler extends AScriptingLanguageCompiler {

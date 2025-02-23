@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.compilers.utils.unifiedcomp;
+package io.github.ngspace.hudder.compilers.utils.functionandmethodapi;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +12,7 @@ import io.github.ngspace.hudder.compilers.utils.HudInformation;
 import io.github.ngspace.hudder.data_management.BooleanData;
 import io.github.ngspace.hudder.data_management.ComponentsData;
 import io.github.ngspace.hudder.data_management.NumberData;
-import io.github.ngspace.hudder.data_management.ObjectData;
+import io.github.ngspace.hudder.data_management.ObjectDataAPI;
 import io.github.ngspace.hudder.data_management.StringData;
 import io.github.ngspace.hudder.main.HudCompilationManager;
 import io.github.ngspace.hudder.uielements.ColorVerticesElement;
@@ -127,10 +127,10 @@ public class FunctionAndMethodAPI {private FunctionAndMethodAPI() {}
 		//Getters
 		
 		binder.bindFunction((m,c,s)->c.getVariable(s[0].asString()), "get", "getVal", "getVariable");
-		binder.bindFunction((m,c,s)->NumberData.getNumber  (s[0].asString()), "getNumber" );
-		binder.bindFunction((m,c,s)->StringData.getString  (s[0].asString()), "getString" );
-		binder.bindFunction((m,c,s)->ObjectData.getObject  (s[0].asString()), "getObject" );
-		binder.bindFunction((m,c,s)->BooleanData.getBoolean(s[0].asString()), "getBoolean");
+		binder.bindFunction((m,c,s)->NumberData.getNumber   (s[0].asString()), "getNumber" );
+		binder.bindFunction((m,c,s)->StringData.getString   (s[0].asString()), "getString" );
+		binder.bindFunction((m,c,s)->ObjectDataAPI.getObject(s[0].asString()), "getObject" );
+		binder.bindFunction((m,c,s)->BooleanData.getBoolean (s[0].asString()), "getBoolean");
 		
 		binder.bindFunction((m,c,s)->new TranslatedItemStack(mc.player.getInventory().getItem(s[0].asInt())), "getItem");
 		
@@ -178,11 +178,8 @@ public class FunctionAndMethodAPI {private FunctionAndMethodAPI() {}
 	
 	public void registerFunction(BindableFunction func, String... names) {
 		for (String name : names) {
-			System.out.println(name);
-			for (var binder : functions_binders) {
-				System.out.println("Found function");
+			for (var binder : functions_binders)
 				binder.bindFunction(func, names);
-			}
 			functions.put(func, name);
 		}
 	}
@@ -191,11 +188,8 @@ public class FunctionAndMethodAPI {private FunctionAndMethodAPI() {}
 
 	public void registerConsumer(BindableConsumer func, String... names) {
 		for (String name : names) {
-			System.out.println(name);
-			for (var binder : consumers_binders) {
-				System.out.println("Found consumer");
+			for (var binder : consumers_binders) 
 				binder.bindConsumer(func, names);
-			}
 			consumers.put(func, name);
 		}
 	}
