@@ -1,11 +1,11 @@
-package io.github.ngspace.hudder.api.functionsandmethods;
+package io.github.ngspace.hudder.api.functionsandconsumers;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.abstractions.ATextCompiler;
 import io.github.ngspace.hudder.compilers.utils.Compilers;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
-import io.github.ngspace.hudder.compilers.utils.functionandmethodapi.FunctionAndMethodAPI;
-import io.github.ngspace.hudder.compilers.utils.functionandmethodapi.FunctionAndMethodAPI.TranslatedItemStack;
+import io.github.ngspace.hudder.compilers.utils.functionandmethodapi.FunctionAndConsumerAPI;
+import io.github.ngspace.hudder.compilers.utils.functionandmethodapi.FunctionAndConsumerAPI.TranslatedItemStack;
 import io.github.ngspace.hudder.data_management.BooleanData;
 import io.github.ngspace.hudder.data_management.NumberData;
 import io.github.ngspace.hudder.data_management.ObjectDataAPI;
@@ -14,10 +14,10 @@ import io.github.ngspace.hudder.main.HudCompilationManager;
 import io.github.ngspace.hudder.utils.HudFileUtils;
 import net.minecraft.client.Minecraft;
 
-public class HudderBuiltInFunctions {
+public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 	public static Minecraft mc = Minecraft.getInstance();
 	
-	public static void registerFunction(FunctionAndMethodAPI binder) {
+	public static void registerFunction(FunctionAndConsumerAPI binder) {
 		
 		//Getters
 		

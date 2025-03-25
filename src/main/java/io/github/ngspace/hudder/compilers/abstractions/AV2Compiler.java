@@ -6,11 +6,10 @@ import java.util.Map;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileState;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
-import io.github.ngspace.hudder.compilers.utils.functionandmethodapi.FunctionAndMethodAPI;
-import io.github.ngspace.hudder.compilers.utils.functionandmethodapi.FunctionAndMethodAPI.BindableConsumer;
-import io.github.ngspace.hudder.compilers.utils.functionandmethodapi.FunctionAndMethodAPI.BindableFunction;
-import io.github.ngspace.hudder.compilers.utils.functionandmethodapi.FunctionAndMethodAPI.ConsumerBinder;
-import io.github.ngspace.hudder.compilers.utils.functionandmethodapi.FunctionAndMethodAPI.FunctionBinder;
+import io.github.ngspace.hudder.compilers.utils.functionandmethodapi.FunctionAndConsumerAPI;
+import io.github.ngspace.hudder.compilers.utils.functionandmethodapi.FunctionAndConsumerAPI.BindableConsumer;
+import io.github.ngspace.hudder.compilers.utils.functionandmethodapi.FunctionAndConsumerAPI.BindableFunction;
+import io.github.ngspace.hudder.compilers.utils.functionandmethodapi.FunctionAndConsumerAPI.Binder;
 import io.github.ngspace.hudder.main.HudCompilationManager;
 import io.github.ngspace.hudder.main.config.HudderConfig;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
@@ -22,7 +21,7 @@ import io.github.ngspace.hudder.v2runtime.values.AV2Value;
 import io.github.ngspace.hudder.v2runtime.values.DefaultV2VariableParser;
 import io.github.ngspace.hudder.v2runtime.values.IV2VariableParser;
 
-public abstract class AV2Compiler extends AVarTextCompiler implements ConsumerBinder, FunctionBinder {
+public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 	
 	public Map<String, V2Runtime> runtimes = new HashMap<String, V2Runtime>();
 	public Map<String, Object> tempVariables = new HashMap<String, Object>();
@@ -34,8 +33,7 @@ public abstract class AV2Compiler extends AVarTextCompiler implements ConsumerBi
 	
 	protected AV2Compiler() {
 		HudCompilationManager.addPreCompilerListener(c -> {globalRuntime=null;tempVariables.clear();});
-		FunctionAndMethodAPI.getInstance().applyConsumers(this);
-		FunctionAndMethodAPI.getInstance().applyFunctions(this);
+		FunctionAndConsumerAPI.getInstance().applyFunctionsAndConsumers(this);
 	}
 	
 	

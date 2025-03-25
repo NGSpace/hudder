@@ -27,6 +27,16 @@ true
 ||EXPECT||
 1
 
+||INPUT||For loops
+;mute;
+{j=""}
+#for i in range(0,11)
+	{j=j+i}
+;topleft;
+{j}
+||EXPECT||
+012345678910
+
 ||INPUT||Data API
 {ObjectDataAPITestVariable}
 ||EXPECT||
@@ -40,11 +50,16 @@ t
 rt
 
 ||INPUT||Def and Break
-r#if true
+;mute;
+#def breaktest
+	{r="y"}
 	{break}
-t
+	{r="t"}
+;breaktest;
+;topleft;
+{r}
 ||EXPECT||
-r
+y
 
 ||INPUT||Break and Break
 r#if true

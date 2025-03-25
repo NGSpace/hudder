@@ -6,7 +6,10 @@ import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
 import io.github.ngspace.hudder.compilers.utils.IScriptingLanguageEngine;
 import io.github.ngspace.hudder.compilers.utils.JavaScriptEngine;
-import io.github.ngspace.hudder.compilers.utils.functionandmethodapi.FunctionAndMethodAPI;
+import io.github.ngspace.hudder.compilers.utils.functionandmethodapi.FunctionAndConsumerAPI;
+import io.github.ngspace.hudder.compilers.utils.functionandmethodapi.FunctionAndConsumerAPI.BindableConsumer;
+import io.github.ngspace.hudder.compilers.utils.functionandmethodapi.FunctionAndConsumerAPI.BindableFunction;
+import io.github.ngspace.hudder.compilers.utils.functionandmethodapi.FunctionAndConsumerAPI.Binder;
 import io.github.ngspace.hudder.main.config.HudderConfig;
 
 public class JavaScriptCompiler extends AScriptingLanguageCompiler {
@@ -17,9 +20,20 @@ public class JavaScriptCompiler extends AScriptingLanguageCompiler {
 	}
 	@Override protected IScriptingLanguageEngine createLangEngine() throws CompileException {
 		JavaScriptEngine engine = new JavaScriptEngine();
-		FunctionAndMethodAPI api = FunctionAndMethodAPI.getInstance();
-		api.applyConsumers((c,n)->engine.bindConsumer(e->c.invoke(elms, this, e), n));
-		api.applyFunctions((c,n)->engine.bindFunction(e->c.invoke(elms, this, e), n));
+		FunctionAndConsumerAPI api = FunctionAndConsumerAPI.getInstance();
+		var compiler = this;
+		api.applyFunctionsAndConsumers(new Binder() {
+			
+			@Override
+			public void bindFunction(BindableFunction c, String... n) {
+				engine.bindFunction(e->c.invoke(elms, compiler, e), n);
+			}
+			
+			@Override
+			public void bindConsumer(BindableConsumer c, String... n) {
+				engine.bindConsumer(e->c.invoke(elms, compiler, e), n);
+			}
+		});
 		return engine;
 	}
 }

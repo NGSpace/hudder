@@ -1,7 +1,7 @@
-package io.github.ngspace.hudder.api.functionsandmethods;
+package io.github.ngspace.hudder.api.functionsandconsumers;
 
 import io.github.ngspace.hudder.Hudder;
-import io.github.ngspace.hudder.compilers.utils.functionandmethodapi.FunctionAndMethodAPI;
+import io.github.ngspace.hudder.compilers.utils.functionandmethodapi.FunctionAndConsumerAPI;
 import io.github.ngspace.hudder.uielements.ColorVerticesElement;
 import io.github.ngspace.hudder.uielements.GameHudElement;
 import io.github.ngspace.hudder.uielements.NativeTextureElement;
@@ -12,8 +12,8 @@ import io.github.ngspace.hudder.uielements.TextureVerticesElement;
 import io.github.ngspace.hudder.uielements.GameHudElement.GuiType;
 import net.minecraft.resources.ResourceLocation;
 
-public class HudderBuiltInMethods {
-	public static void registerMethods(FunctionAndMethodAPI api) {
+public class HudderBuiltInMethods {private HudderBuiltInMethods() {}
+	public static void registerMethods(FunctionAndConsumerAPI api) {
 		//Vertex
 
 		api.registerConsumer((e,a,s)->e.addElem(new ColorVerticesElement(s[0].asFloatArray(),s[1].asLong(),false)),"colorvertices");

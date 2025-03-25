@@ -4,21 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.abstractions.ATextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
-import io.github.ngspace.hudder.compilers.utils.Compilers;
-import io.github.ngspace.hudder.compilers.utils.HudInformation;
-import io.github.ngspace.hudder.data_management.BooleanData;
 import io.github.ngspace.hudder.data_management.ComponentsData;
-import io.github.ngspace.hudder.data_management.NumberData;
-import io.github.ngspace.hudder.data_management.ObjectDataAPI;
-import io.github.ngspace.hudder.data_management.StringData;
-import io.github.ngspace.hudder.main.HudCompilationManager;
-import io.github.ngspace.hudder.utils.HudFileUtils;
 import io.github.ngspace.hudder.utils.ObjectWrapper;
 import io.github.ngspace.hudder.utils.ValueGetter;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.world.item.ItemStack;
 
@@ -27,36 +17,34 @@ import net.minecraft.world.item.ItemStack;
  * 
  * Don't use this unless you know what you are doing.
  */
-public class FunctionAndMethodAPI {private FunctionAndMethodAPI() {}
+public class FunctionAndConsumerAPI {
 	
-	static FunctionAndMethodAPI instance = new FunctionAndMethodAPI();
+	static FunctionAndConsumerAPI instance = new FunctionAndConsumerAPI();
 	
 	HashMap<BindableFunction, String> functions = new HashMap<BindableFunction, String>();
 	HashMap<BindableConsumer, String> consumers = new HashMap<BindableConsumer, String>();
 	
-	List<FunctionBinder> functions_binders = new ArrayList<FunctionBinder>();
-	List<ConsumerBinder> consumers_binders = new ArrayList<ConsumerBinder>();
+	List<Binder> binders = new ArrayList<Binder>();
 	
-	public void applyConsumers(ConsumerBinder binder) {
+	
+	
+	/**
+	 * Applies registered consumers and functions to the provided binder as well as any that are added afterwards.
+	 * @param binder
+	 */
+	public void applyFunctionsAndConsumers(Binder binder) {
 		for (var cons : consumers.entrySet())
 			binder.bindConsumer(cons.getKey(), cons.getValue());
-		
-		consumers_binders.add(binder);
-	}
-	
-	
-	
-	public void applyFunctions(FunctionBinder binder) {
 		for (var func : functions.entrySet())
 			binder.bindFunction(func.getKey(), func.getValue());
-		functions_binders.add(binder);
+		binders.add(binder);
 	}
 	
 	
 	
 	public void registerFunction(BindableFunction func, String... names) {
 		for (String name : names) {
-			for (var binder : functions_binders)
+			for (var binder : binders)
 				binder.bindFunction(func, names);
 			functions.put(func, name);
 		}
@@ -66,19 +54,10 @@ public class FunctionAndMethodAPI {private FunctionAndMethodAPI() {}
 
 	public void registerConsumer(BindableConsumer func, String... names) {
 		for (String name : names) {
-			for (var binder : consumers_binders) 
+			for (var binder : binders) 
 				binder.bindConsumer(func, names);
 			consumers.put(func, name);
 		}
-	}
-
-	
-	
-	@FunctionalInterface public interface BindableConsumer {
-		public void invoke(IElementManager man, ATextCompiler comp, ObjectWrapper... args) throws CompileException;
-	}
-	@FunctionalInterface public interface ConsumerBinder {
-		public void bindConsumer(BindableConsumer cons, String... names);
 	}
 	
 	
@@ -86,11 +65,20 @@ public class FunctionAndMethodAPI {private FunctionAndMethodAPI() {}
 	@FunctionalInterface public interface BindableFunction {
 		public Object invoke(IElementManager man, ATextCompiler comp, ObjectWrapper... args) throws CompileException;
 	}
-	@FunctionalInterface public interface FunctionBinder {
+	@FunctionalInterface public interface BindableConsumer {
+		public void invoke(IElementManager man, ATextCompiler comp, ObjectWrapper... args) throws CompileException;
+	}
+
+	
+	
+	public interface Binder {
+		public void bindConsumer(BindableConsumer cons, String... names);
 		public void bindFunction(BindableFunction cons, String... names);
 	}
 	
-	public static FunctionAndMethodAPI getInstance() {return instance;}
+	
+	
+	public static FunctionAndConsumerAPI getInstance() {return instance;}
 	
 
 	public static class TranslatedItemStack implements ValueGetter {

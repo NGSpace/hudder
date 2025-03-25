@@ -7,9 +7,9 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.github.ngspace.hudder.api.functionsandmethods.HudderBuiltInFunctions;
-import io.github.ngspace.hudder.api.functionsandmethods.HudderBuiltInMethods;
-import io.github.ngspace.hudder.compilers.utils.functionandmethodapi.FunctionAndMethodAPI;
+import io.github.ngspace.hudder.api.functionsandconsumers.HudderBuiltInFunctions;
+import io.github.ngspace.hudder.api.functionsandconsumers.HudderBuiltInMethods;
+import io.github.ngspace.hudder.compilers.utils.functionandmethodapi.FunctionAndConsumerAPI;
 import io.github.ngspace.hudder.main.HudCompilationManager;
 import io.github.ngspace.hudder.main.HudderRenderer;
 import io.github.ngspace.hudder.main.HudderTickEvent;
@@ -67,8 +67,8 @@ public class Hudder implements ClientModInitializer {
 
 		
 		HudFileUtils.makeDefaultHud();
-		HudderBuiltInMethods.registerMethods(FunctionAndMethodAPI.getInstance());
-		HudderBuiltInFunctions.registerFunction(FunctionAndMethodAPI.getInstance());
+		HudderBuiltInMethods.registerMethods(FunctionAndConsumerAPI.getInstance());
+		HudderBuiltInFunctions.registerFunction(FunctionAndConsumerAPI.getInstance());
 		ClientTickEvents.START_CLIENT_TICK.register(new HudderTickEvent());
         
 		HudCompilationManager compman = new HudCompilationManager();

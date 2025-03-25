@@ -1,7 +1,9 @@
 package io.github.ngspace.hudder.v2runtime.functions;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
@@ -10,6 +12,7 @@ import io.github.ngspace.hudder.v2runtime.values.AV2Value;
 import net.minecraft.client.Minecraft;
 
 public class V2FunctionHandler {
+
 	private static Map<String, IV2Function> functions = new HashMap<String,IV2Function>();
 	
 	protected static Minecraft mc = Minecraft.getInstance();
@@ -83,8 +86,19 @@ public class V2FunctionHandler {
 		
 		bindFunction(new LengthV2Function(), 1, "length");
 		bindFunction((r,n,args,l,c)->new HashMap<Object, Object>(),0, "map");
+		bindFunction((r,n,args,l,c)->(Iterable<Integer>)() -> {
+			try {
+				if (args.length==1) return new RangedIterator(0, args[0].asInt());
+				return new RangedIterator(args[0].asInt(), args[1].asInt());
+			} catch (CompileException e) {
+				e.printStackTrace();
+				throw new IllegalArgumentException(e);
+			}
+		}, 1, 2, "range");
 	}
-
+	
+	
+	
 	private void bindFunctionDep(IV2Function func, int minlength, int maxlength, String message, String... names) {
 		IV2Function expandedFunction = new IV2Function() {
 			@Override
@@ -99,14 +113,17 @@ public class V2FunctionHandler {
 		};
 		bindFunction(expandedFunction, names);
 	}
-
+	
+	
+	
 	public void bindFunction(IV2Function function, String... names) {
 		for(String name:names) functions.put(name,function);
 	}
-
+	
 	public void bindFunction(IV2Function function, int length, String... names) {
 		bindFunction(function, length, length, names);
 	}
+	
 	public void bindFunction(IV2Function function, int minlength, int maxlength, String... names) {
 		IV2Function expandedFunction = (runtime, name, args, line, charpos) -> {
 			if (args.length<minlength) throw new CompileException("Too little parameters for "+name+" function!",line,charpos);
@@ -116,7 +133,37 @@ public class V2FunctionHandler {
 		bindFunction(expandedFunction,names);
 	}
 	
+	
+	
+	
 	public IV2Function getFunction(String name) {
 		return functions.get(name);
+	}
+	
+	
+	
+	public class RangedIterator implements Iterator<Integer> {
+		
+		private int index;
+		private int end;
+
+		public RangedIterator(int start, int end) {
+			if (start>end)
+				throw new IllegalArgumentException("Start (" + start + ") can not be greater than end (" + end + ")!");
+			this.index = start;
+			this.end = end;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return index<end;
+		}
+		
+		@Override
+		public Integer next() {
+			if (index>end) throw new NoSuchElementException("Went past end of iterable!");
+			return index++;
+		}
+		
 	}
 }
