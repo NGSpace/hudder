@@ -85,7 +85,6 @@ public class V2FunctionHandler {
 		// Misc
 		
 		bindFunction(new LengthV2Function(), 1, "length");
-		bindFunction((r,n,args,l,c)->new HashMap<Object, Object>(),0, "map");
 		bindFunction((r,n,args,l,c)->(Iterable<Integer>)() -> {
 			try {
 				if (args.length==1) return new RangedIterator(0, args[0].asInt());

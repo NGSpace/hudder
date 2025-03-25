@@ -1,5 +1,7 @@
 package io.github.ngspace.hudder.api.functionsandconsumers;
 
+import java.util.HashMap;
+
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.abstractions.ATextCompiler;
 import io.github.ngspace.hudder.compilers.utils.Compilers;
@@ -59,5 +61,6 @@ public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 		binder.registerFunction((m,c,s)->HudFileUtils.exists(s[0].asString()),"exists");
 		binder.registerFunction((m,c,s)->mc.font.width(s[0].asString()), "strWidth", "strwidth");
 		binder.registerFunction((m,c,s)->s[0].get().toString(), "toString");
+		binder.registerFunction((m,c,s)->new HashMap<Object, Object>(), "map");
 	}
 }

@@ -56,11 +56,6 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 		
 		insertObject(JavaScriptIO, "console");
 		insertObject(JavaScriptIO, "hudder" );
-		
-		bindConsumer(s->JavaScriptIO.log  (s[0]), "log"  );
-		bindConsumer(s->JavaScriptIO.warn (s[0]), "warn" );
-		bindConsumer(s->JavaScriptIO.error(s[0]), "error");
-		bindConsumer(s->JavaScriptIO.alert(s[0]), "alert");
 	}
 
 	@Override public void bindFunction(ScriptFunction function, String... names) {
