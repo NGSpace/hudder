@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.compilers.utils.functionandmethodapi;
+package io.github.ngspace.hudder.compilers.utils.functionandconsumerapi;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -9,7 +9,7 @@ import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
 import io.github.ngspace.hudder.compilers.utils.IScriptingLanguageEngine;
-import io.github.ngspace.hudder.compilers.utils.functionandmethodapi.ArrayElementManager;
+import io.github.ngspace.hudder.compilers.utils.functionandconsumerapi.ArrayElementManager;
 import io.github.ngspace.hudder.data_management.BooleanData;
 import io.github.ngspace.hudder.data_management.NumberData;
 import io.github.ngspace.hudder.data_management.ObjectDataAPI;

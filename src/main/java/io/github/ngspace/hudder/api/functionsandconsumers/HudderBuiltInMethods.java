@@ -1,7 +1,7 @@
 package io.github.ngspace.hudder.api.functionsandconsumers;
 
 import io.github.ngspace.hudder.Hudder;
-import io.github.ngspace.hudder.compilers.utils.functionandmethodapi.FunctionAndConsumerAPI;
+import io.github.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI;
 import io.github.ngspace.hudder.uielements.ColorVerticesElement;
 import io.github.ngspace.hudder.uielements.GameHudElement;
 import io.github.ngspace.hudder.uielements.NativeTextureElement;

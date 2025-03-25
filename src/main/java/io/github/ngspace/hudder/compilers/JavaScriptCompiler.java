@@ -6,10 +6,10 @@ import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
 import io.github.ngspace.hudder.compilers.utils.IScriptingLanguageEngine;
 import io.github.ngspace.hudder.compilers.utils.JavaScriptEngine;
-import io.github.ngspace.hudder.compilers.utils.functionandmethodapi.FunctionAndConsumerAPI;
-import io.github.ngspace.hudder.compilers.utils.functionandmethodapi.FunctionAndConsumerAPI.BindableConsumer;
-import io.github.ngspace.hudder.compilers.utils.functionandmethodapi.FunctionAndConsumerAPI.BindableFunction;
-import io.github.ngspace.hudder.compilers.utils.functionandmethodapi.FunctionAndConsumerAPI.Binder;
+import io.github.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI;
+import io.github.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI.BindableConsumer;
+import io.github.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI.BindableFunction;
+import io.github.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI.Binder;
 import io.github.ngspace.hudder.main.config.HudderConfig;
 
 public class JavaScriptCompiler extends AScriptingLanguageCompiler {

@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.compilers.utils.functionandmethodapi;
+package io.github.ngspace.hudder.compilers.utils.functionandconsumerapi;
 
 import io.github.ngspace.hudder.uielements.AUIElement;
 

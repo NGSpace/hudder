@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import io.github.ngspace.hudder.api.functionsandconsumers.HudderBuiltInFunctions;
 import io.github.ngspace.hudder.api.functionsandconsumers.HudderBuiltInMethods;
-import io.github.ngspace.hudder.compilers.utils.functionandmethodapi.FunctionAndConsumerAPI;
+import io.github.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI;
 import io.github.ngspace.hudder.main.HudCompilationManager;
 import io.github.ngspace.hudder.main.HudderRenderer;
 import io.github.ngspace.hudder.main.HudderTickEvent;
