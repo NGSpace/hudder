@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 
+import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.abstractions.ATextCompiler;
 import io.github.ngspace.hudder.main.config.HudderConfig;
 import io.github.ngspace.hudder.utils.testing.HudderUnitTest.HudderUnitTestResult;
@@ -32,6 +33,8 @@ public class HudderUnitTester {
 	    	if (st.isBlank()) continue;
 	    	String[] content = st.split("\n",2);
 	    	String[] inputandExpectation = content[1].split("\\n\\|\\|EXPECT\\|\\|\\n");
+	    	if (UnitTests.containsKey(content[0]))
+	    		Hudder.alert("Repeating key: " + content[0]);
 	    	UnitTests.put(content[0], new HudderUnitTest(inputandExpectation[0], compiler, inputandExpectation[1]));
 	    }
 	    HudderUnitTestingCommand.UnitTestsSuggestionProvider.suggestions = new ArrayList<String>(UnitTests.keySet());

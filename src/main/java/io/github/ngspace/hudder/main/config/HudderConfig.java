@@ -71,8 +71,8 @@ public class HudderConfig {
 	 * @throws CompileException
 	 * @throws IOException
 	 */
-	public HudInformation compileMainHud() throws CompileException, IOException {
-		if (getCompiler()!=null) return getCompiler().compile(this, HudFileUtils.getFile(mainfile), mainfile);
+	public HudInformation compileMainHud() throws CompileException {
+		if (getCompiler()!=null) return getCompiler().compile(this, HudFileUtils.readFile(mainfile), mainfile);
 		else throw new CompileException("There is no Compiler!");
 	}
 	
@@ -91,8 +91,7 @@ public class HudderConfig {
 		}
 		try {
 			Hudder.log("Reading Hudder config!");
-			HudFileUtils.clearFileCache();
-			String config = HudFileUtils.getFile(configFile.getName());
+			String config = HudFileUtils.readFileWithoutCache(configFile.getName());
 			Hudder.log("Loading Hudder Config File:\n" + config);
 			Map<?,?> newinfo = new GsonBuilder().create().fromJson(config,HashMap.class);
 			

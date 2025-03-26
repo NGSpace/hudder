@@ -5,10 +5,10 @@ import java.util.Collections;
 import java.util.List;
 
 import io.github.ngspace.hudder.Hudder;
-import io.github.ngspace.hudder.compilers.utils.unifiedcomp.IElementManager;
+import io.github.ngspace.hudder.compilers.utils.functionandconsumerapi.IUIElementManager;
 import io.github.ngspace.hudder.uielements.AUIElement;
 
-public class CompileState implements IElementManager {
+public class CompileState implements IUIElementManager {
 
 	public static final String TOPLEFT = "topleft";
 	public static final String BOTTOMLEFT = "bottomleft";
@@ -82,8 +82,8 @@ public class CompileState implements IElementManager {
 		}
 		Collections.addAll(elements, compile.elements);
 	}
-	@Override public void addElem(AUIElement UIElement) {elements.add(UIElement);}
-	@Override public AUIElement[] toElementArray() {return elements.toArray(new AUIElement[elements.size()]);}
+	@Override public void addUIElement(AUIElement UIElement) {elements.add(UIElement);}
+	@Override public AUIElement[] toUIElementArray() {return elements.toArray(new AUIElement[elements.size()]);}
 	
 	public void setReturnValue(Object value) {hasReturned = true;returnValue = value;}
 	

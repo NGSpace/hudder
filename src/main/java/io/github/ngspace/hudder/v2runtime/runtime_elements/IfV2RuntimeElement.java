@@ -23,7 +23,7 @@ public class IfV2RuntimeElement extends AV2RuntimeElement {
 			CompileState res = nestedRuntime.execute();
 			meta.combineWithResult(res.toResult(), false);
 			if (res.hasReturned) meta.setReturnValue(res.returnValue);
-			if (res.hasBroken) return true;
+			if (res.hasBroken) return false;
 		}
 		return true;
 	}

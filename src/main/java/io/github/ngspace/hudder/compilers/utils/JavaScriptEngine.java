@@ -56,11 +56,6 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 		
 		insertObject(JavaScriptIO, "console");
 		insertObject(JavaScriptIO, "hudder" );
-		
-		bindConsumer(s->JavaScriptIO.log  (s[0]), "log"  );
-		bindConsumer(s->JavaScriptIO.warn (s[0]), "warn" );
-		bindConsumer(s->JavaScriptIO.error(s[0]), "error");
-		bindConsumer(s->JavaScriptIO.alert(s[0]), "alert");
 	}
 
 	@Override public void bindFunction(ScriptFunction function, String... names) {
@@ -167,7 +162,7 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 			if (value instanceof NativeJavaObject o) {this.value = o.unwrap();}
 		}
 
-		@Override public Object get() throws CompileException {return value;}
+		@Override public Object get() throws CompileException {return value==Undefined.instance?null:value;}
 		
 		@Override public String asString() {return Context.toString(value);}
 		@Override public double asDouble() {return Context.toNumber(value);}

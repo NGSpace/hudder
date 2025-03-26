@@ -36,7 +36,10 @@ public class MethodHandler {
 	}
 	
 	
-	public void bindConsumer(IMethod method, String... names) {for(String name:names)methods.put(name,method);}
+	public void bindConsumer(IMethod method, String... names) {
+		for(String name:names)
+			methods.put(name.toLowerCase(),method);
+	}
 	
 	public void bindConsumer(IMethod method, int length, String[] args, String... names) {
 		IMethod newmethod = (config,meta,compiler,name,l,c,vals) -> {
@@ -48,7 +51,7 @@ public class MethodHandler {
 			}
 			method.invoke(config,meta,compiler,name,l,c,vals);
 		};
-		for (String name : names) methods.put(name,newmethod);
+		bindConsumer(newmethod, names);
 	}
 	
 	

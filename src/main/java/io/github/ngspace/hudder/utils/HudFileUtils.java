@@ -1,29 +1,29 @@
 package io.github.ngspace.hudder.utils;
 
-import static java.io.File.separator;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.CRC32;
+import java.util.zip.Checksum;
+
+import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
 
-import com.mojang.blaze3d.platform.NativeImage;
-
-import io.github.ngspace.hudder.compilers.utils.CompileException;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.ResourceLocation;
 
 public class HudFileUtils {private HudFileUtils() {}
 
 	private static CachedReader reader = new CachedReader();
-	private static List<ERunnable<CompileException>> chacheClearRunnables = new ArrayList<ERunnable<CompileException>>();
-	
-	static {addClearFileCacheListener(reader);}
+	private static List<ERunnable<IOException>> reloadResourcesListeners = new ArrayList<ERunnable<IOException>>();
 
 	public static final String FABRIC_CONFIG_FOLDER = FabricLoader.getInstance().getConfigDir().toString();
-	public static final String FOLDER = FABRIC_CONFIG_FOLDER + separator + "hudder" + separator;
+	public static final String FOLDER = FABRIC_CONFIG_FOLDER + File.separator + "hudder" + File.separator;
     public static final String ASSETS = "/assets/hudder/";
     public static final String[] DEFAULT_HUDS = {"tutorial", "hand", "armor", "armorside", "hud", "basic", "hud.js",
     		"hotbar.js", "fibonacci", "worldtime.js"};
@@ -37,41 +37,30 @@ public class HudFileUtils {private HudFileUtils() {}
      * @return The text in the file
      * @throws IOException
      */
-	public static String getFile(String file) throws IOException {
-		return reader.getFile(sanitize(FOLDER + file));
+	public static String readFile(String file) {
+		return reader.readFile(sanitize(FOLDER + file));
 	}
 	
 	
 	
-	/**
-	 * Reads the provided the image and loads it at the provided texture id
-	 * <br><br>
-	 * INPUT IS SANITIZED
-	 * 
-	 * @param file - The location of the image relative to the Hudder (SANITIZED)
-	 * @param id - The ID the image should be loaded into
-	 * @return the image that was loaded
-	 * @throws IOException
-	 */
-	public static NativeImage getAndRegisterImage(String file, ResourceLocation id) throws IOException {
-		return reader.getAndRegisterImage(sanitize(FOLDER + file), id);
+    /**
+     * Read file to String
+     * @param file - the file to read
+     * @return The text in the file
+     * @throws IOException
+     */
+	public static String readFileWithoutCache(String file) throws IOException {
+		return reader.readFileLineByLine(new File(sanitize(FOLDER + file)));
 	}
 	
 	
-
-	/**
-	 * Calls all filecache listners.
-	 * @throws CompileException - if failed to clear cache.
-	 */
-	public static void clearFileCache() throws CompileException {
-		for(ERunnable<CompileException> r : chacheClearRunnables) r.run();
-	}
+	
 	/**
 	 * Triggers when clearFileCache() is called (usually when the user modifies a hud)
 	 * @param listener - the Runnable to trigger
 	 */
-	public static void addClearFileCacheListener(ERunnable<CompileException> listener) {
-		chacheClearRunnables.add(listener);
+	public static void addReloadResourcesListener(ERunnable<IOException> listener) {
+		reloadResourcesListeners.add(listener);
 	}
 	
 	
@@ -142,5 +131,51 @@ public class HudFileUtils {private HudFileUtils() {}
 			try {FileUtils.copyURLToFile(HudFileUtils.class.getResource(ASSETS+"Textures/" + file), dest);}
 			catch (IOException e) {e.printStackTrace();}
 		}
+	}
+	
+	public static ResourceLocation getTexture(String filename) {
+		sanitize(FOLDER + filename);
+		return ResourceLocation.fromNamespaceAndPath("hudder",
+				String.valueOf(getCRC32Checksum(filename.trim().toLowerCase())));
+	}
+	private static long getCRC32Checksum(String str) {return getCRC32Checksum(str.getBytes());}
+	private static long getCRC32Checksum(byte[] bytes) {
+	    Checksum crc32 = new CRC32();
+	    crc32.update(bytes, 0, bytes.length);
+	    return crc32.getValue();
+	}
+
+	public static void reloadResources() throws IOException {
+		reader.clearCache();
+		loadResources(new File(FOLDER), "");
+		for (var listener : reloadResourcesListeners) listener.run();
+	}
+
+
+
+	public static void loadResources(File folder, String prefix) throws IOException {
+		for (File resource : folder.listFiles()) {
+			String path = prefix + ("".equals(prefix)?"":"/") + resource.getName();
+			if (resource.isDirectory()) {
+				loadResources(resource, path);
+				continue;
+			}
+			try {
+				var image = ImageIO.read(resource);
+				if (image!=null) {
+					ByteArrayOutputStream output = new ByteArrayOutputStream();
+					ImageIO.write(image, "PNG", output);
+					reader.registerAndCacheImage(new ByteArrayInputStream(output.toByteArray()),getTexture(path));
+					continue;
+				}
+			} catch (IOException e) {e.printStackTrace();}
+			reader.readFileAndSaveToCache(resource);
+		}
+	}
+
+
+
+	public static boolean imageLoaded(ResourceLocation id) {
+		return reader.savedImages.containsKey(id);
 	}
 }

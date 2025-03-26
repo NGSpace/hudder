@@ -9,10 +9,10 @@ import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
 import io.github.ngspace.hudder.compilers.utils.IScriptingLanguageEngine;
-import io.github.ngspace.hudder.compilers.utils.unifiedcomp.ArrayElementManager;
+import io.github.ngspace.hudder.compilers.utils.functionandconsumerapi.ArrayElementManager;
 import io.github.ngspace.hudder.data_management.BooleanData;
 import io.github.ngspace.hudder.data_management.NumberData;
-import io.github.ngspace.hudder.data_management.ObjectData;
+import io.github.ngspace.hudder.data_management.ObjectDataAPI;
 import io.github.ngspace.hudder.data_management.StringData;
 import io.github.ngspace.hudder.main.HudCompilationManager;
 import io.github.ngspace.hudder.main.config.HudderConfig;
@@ -30,13 +30,8 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 	
 	protected AScriptingLanguageCompiler() {
 		HudCompilationManager.addPreCompilerListener(c->{if(c==this) elms.clear();});
-		HudFileUtils.addClearFileCacheListener(()->{
-			try {
-				for(RuntimeCache c:cache.values())c.close();
-			} catch (IOException e) {
-				if (Hudder.IS_DEBUG) e.printStackTrace();
-				throw new CompileException(e.getLocalizedMessage());
-			}
+		HudFileUtils.addReloadResourcesListener(()->{
+			for(RuntimeCache c:cache.values()) c.close();
 			cache.clear();
 		});
 	}
@@ -99,7 +94,7 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 		if ( obj!=null) return obj;
 		if ((obj=StringData.getString (key))!=null) return obj;
 		if ((obj=BooleanData.getBoolean(key))!=null) return obj;
-		if ((obj=ObjectData.getObject(key))!=null) return obj;
+		if ((obj=ObjectDataAPI.getObject(key))!=null) return obj;
 		if ((obj=get(key))!=null) return obj;
 		if ((obj=Hudder.config.globalVariables.get(key))!=null) return obj;
 		return null;

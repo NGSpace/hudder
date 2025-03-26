@@ -25,7 +25,6 @@ public class HudderModMenuImpl implements ModMenuApi {
 	        addRenderableWidget(Button.builder(Component.keybind("OK"), buttonWidget -> Minecraft.getInstance().setScreen(parent))
 	                .pos(width/2-100, height-52).size(200, 20).build());
 	    }
-	    @SuppressWarnings("resource")
 		@Override public void render(GuiGraphics drawContext, int mouseX, int mouseY, float delta) {
 	    	Component INSTALLCLOTH = Component.translatable("hudder.noclothapi");
 	        super.render(drawContext, mouseX, mouseY, delta);

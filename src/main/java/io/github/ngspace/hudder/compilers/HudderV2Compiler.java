@@ -5,11 +5,12 @@ import java.util.Arrays;
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.abstractions.AV2Compiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
-import io.github.ngspace.hudder.main.HudderUtils;
 import io.github.ngspace.hudder.main.config.HudderConfig;
+import io.github.ngspace.hudder.utils.HudderUtils;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import io.github.ngspace.hudder.v2runtime.runtime_elements.BreakV2RuntimeElement;
 import io.github.ngspace.hudder.v2runtime.runtime_elements.ConditionV2RuntimeElement;
+import io.github.ngspace.hudder.v2runtime.runtime_elements.ForV2RuntimeElement;
 import io.github.ngspace.hudder.v2runtime.runtime_elements.IfV2RuntimeElement;
 import io.github.ngspace.hudder.v2runtime.runtime_elements.MethodV2RuntimeElement;
 import io.github.ngspace.hudder.v2runtime.runtime_elements.ReturnV2RuntimeElement;
@@ -216,6 +217,7 @@ public class HudderV2Compiler extends AV2Compiler {
 							if(c==' '&&elemBuilder.toString().equals("while")) {command=0x2;}
 							else if(c==' '&&elemBuilder.toString().equals("if")) {command=0x1;}
 							else if(c==' '&&elemBuilder.toString().equals("def")){command=0x3;}
+							else if(c==' '&&elemBuilder.toString().equals("for")){command=0x4;}
 							if (command!=0x0) {elemBuilder.setLength(0);continue;}
 						}
 						elemBuilder.append(c);
@@ -239,34 +241,42 @@ public class HudderV2Compiler extends AV2Compiler {
 										instructions.append(c);
 										if (c=='\n') break;
 									}
-								} else {
-									break;
-								}
+								} else break;
 							}
 							
 						}
 						ind--;
 					}
+					if (ind!=text.length()&&text.charAt(ind)!='\n'&&text.charAt(ind)!='\r') ind--;
 					String cmds = instructions.toString();
+					CharPosition pos = getPosition(charPosition, savedind+1, "\n"+text);
 					
 					switch (command) {
+						case 0x4: {
+							String[] split = cond.split(" in ", 2);
+							String variablename = split[0];
+							String value = split[1];
+							elemBuilder.setLength(0);
+							runtime.addRuntimeElement(new ForV2RuntimeElement(info,variablename,value,cmds,this,
+									runtime,pos,filename));
+							break;
+						}
 						case 0x3: {
 							builder = HudderUtils.processParemeters(cond);
 							String name = builder[0];
 							String[] args = Arrays.copyOfRange(builder, 1, builder.length);
-							CharPosition pos = getPosition(charPosition, savedind+1, "\n"+text);
 							defineFunctionOrMethod(cmds,args,name,pos,filename);
 							elemBuilder.setLength(0);
 							break;
 						}
 						case 0x2: {
-							runtime.addRuntimeElement(new WhileV2RuntimeElement(info, cond, cmds, this, runtime,
-									getPosition(charPosition, savedind+1, "\n"+text),filename));
+							runtime.addRuntimeElement(new WhileV2RuntimeElement(info,cond,cmds,this,runtime,pos,
+									filename));
 							break;
 						}
 						default://0x0 or 0x1
-							runtime.addRuntimeElement(new IfV2RuntimeElement(info, cond, cmds, this, runtime,
-									getPosition(charPosition, savedind+1, "\n"+text),filename));
+							runtime.addRuntimeElement(new IfV2RuntimeElement(info,cond,cmds,this,runtime,pos,
+									filename));
 							break;
 					}
 					break;
@@ -275,7 +285,7 @@ public class HudderV2Compiler extends AV2Compiler {
 			}
 		}
 		
-		runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), false, true));
+		runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), false));
 		
 		if (compileState!=0) throw new CompileException(getCompilerErrorMessage(compileState));
 		

@@ -1,4 +1,4 @@
-package io.github.ngspace.hudder.main;
+package io.github.ngspace.hudder.utils;
 
 public class HudderUtils {private HudderUtils() {}
 	
@@ -55,5 +55,4 @@ public class HudderUtils {private HudderUtils() {}
 		newarr[arr.length] = t;
 		return newarr;
 	}
-	
 }

@@ -1,59 +1,42 @@
 package io.github.ngspace.hudder.utils;
 
-import java.io.Closeable;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.Scanner;
 
 import com.mojang.blaze3d.platform.NativeImage;
 
-import io.github.ngspace.hudder.compilers.utils.CompileException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
 
-/**
- * I decided to hide this class in this package for safety.
- */
-class CachedReader implements ERunnable<CompileException> {
+public class CachedReader {
 	
 	protected static Minecraft mc = Minecraft.getInstance();
 	
 	
 	HashMap<String, String> savedFiles = new HashMap<String, String>();
-	HashMap<ResourceLocation, Images> savedImages = new HashMap<ResourceLocation, Images>();
+	HashMap<ResourceLocation, DynamicTexture> savedImages = new HashMap<ResourceLocation, DynamicTexture>();
 	
 	
 	
-	class Images implements Closeable {
-		final NativeImage img;
-		final DynamicTexture tex;
-		public Images(DynamicTexture tex, NativeImage img) {this.img = img;this.tex = tex;}
-		@Override public void close() {tex.close();img.close();mc.getTextureManager();}
-	}
+	public String readFile(String file) {return savedFiles.get(file);}
 	
 	
 	
-	public String getFile(String file) throws IOException {
-		if (!savedFiles.containsKey(file)) readFileAndSaveToCache(file);
-		return savedFiles.get(file);
-	}
-	
-	
-	
-	private boolean readFileAndSaveToCache(String file) throws IOException {
-		File f = new File(HudFileUtils.sanitize(file));
+	public boolean readFileAndSaveToCache(File f) throws IOException {
 		if (!f.exists()) {
 			f.getParentFile().mkdirs();
 			if (!f.createNewFile()) return false;
 		}
-		savedFiles.put(file,readFileLineByLine(f));
+		savedFiles.put(f.getAbsolutePath(),readFileLineByLine(f));
 		return true;
 	}
 	
-	private String readFileLineByLine(File f) throws IOException {
+	public String readFileLineByLine(File f) throws IOException {
 		Scanner reader = new Scanner(f);
 		String res = "";
 		while (reader.hasNextLine()) {
@@ -67,26 +50,17 @@ class CachedReader implements ERunnable<CompileException> {
 	
 	
 	
-	@SuppressWarnings("resource")
-	public NativeImage getAndRegisterImage(String file, ResourceLocation id) throws IOException {
-		if (!savedImages.containsKey(id)) readAndRegisterImage(file, id);
-		return savedImages.get(id).img;
-	}
-	
-	
-	
-	private boolean readAndRegisterImage(String file, ResourceLocation id) throws IOException {
+	public boolean registerAndCacheImage(InputStream inputStream, ResourceLocation id) throws IOException {
 		if (savedImages.containsKey(id)) {
+			mc.getTextureManager().release(id);
 			savedImages.get(id).close();
 			savedImages.remove(id);
 		}
-		NativeImage img = NativeImage.read(new FileInputStream(new File(HudFileUtils.sanitize(file))));
+		NativeImage img = NativeImage.read(inputStream);
 		DynamicTexture tex = new DynamicTexture(img);
 		mc.getTextureManager().register(id, tex);
 		
-		tex.bind();
-		
-		savedImages.put(id,new Images(tex,img));
+		savedImages.put(id,tex);
 		return true;
 	}
 	
@@ -95,8 +69,11 @@ class CachedReader implements ERunnable<CompileException> {
 	/**
 	 * Clears Cache
 	 */
-	@Override public void run() {
-		for (Images v : savedImages.values()) v.close();
+	public void clearCache() {
+		for (Entry<ResourceLocation, DynamicTexture> v : savedImages.entrySet()) {
+			mc.getTextureManager().release(v.getKey());
+			v.getValue().close();
+		}
 		savedImages.clear();
 		savedFiles.clear();
 	}

@@ -10,6 +10,8 @@ public class DoubleV2Function implements IV2Function {
 			throws CompileException {
 		Object value = args[0].get();
 		
+		if (value==null) throw new CompileException("Value of variable is null!", line, charpos);
+		
 		switch (value) {
 			case Number num:
 				return num.intValue();
@@ -20,7 +22,6 @@ public class DoubleV2Function implements IV2Function {
 			case Character c:
 				return ((int)c);
 			default:
-				if (value==null) throw new CompileException("Value of variable is null!", line, charpos);
 				return Double.parseDouble(value.toString());
 		}
 	}

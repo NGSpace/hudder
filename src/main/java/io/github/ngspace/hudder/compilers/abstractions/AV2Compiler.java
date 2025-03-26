@@ -6,11 +6,10 @@ import java.util.Map;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileState;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
-import io.github.ngspace.hudder.compilers.utils.unifiedcomp.UnifiedCompiler;
-import io.github.ngspace.hudder.compilers.utils.unifiedcomp.UnifiedCompiler.BindableConsumer;
-import io.github.ngspace.hudder.compilers.utils.unifiedcomp.UnifiedCompiler.BindableFunction;
-import io.github.ngspace.hudder.compilers.utils.unifiedcomp.UnifiedCompiler.ConsumerBinder;
-import io.github.ngspace.hudder.compilers.utils.unifiedcomp.UnifiedCompiler.FunctionBinder;
+import io.github.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI;
+import io.github.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI.BindableConsumer;
+import io.github.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI.BindableFunction;
+import io.github.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI.Binder;
 import io.github.ngspace.hudder.main.HudCompilationManager;
 import io.github.ngspace.hudder.main.config.HudderConfig;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
@@ -22,7 +21,7 @@ import io.github.ngspace.hudder.v2runtime.values.AV2Value;
 import io.github.ngspace.hudder.v2runtime.values.DefaultV2VariableParser;
 import io.github.ngspace.hudder.v2runtime.values.IV2VariableParser;
 
-public abstract class AV2Compiler extends AVarTextCompiler implements ConsumerBinder, FunctionBinder {
+public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 	
 	public Map<String, V2Runtime> runtimes = new HashMap<String, V2Runtime>();
 	public Map<String, Object> tempVariables = new HashMap<String, Object>();
@@ -33,9 +32,8 @@ public abstract class AV2Compiler extends AVarTextCompiler implements ConsumerBi
 	public V2Runtime globalRuntime = null;
 	
 	protected AV2Compiler() {
-		HudCompilationManager.addPreCompilerListener(c -> {globalRuntime=null;if (this==c) tempVariables.clear();});
-		UnifiedCompiler.instance.applyConsumers(this);
-		UnifiedCompiler.instance.applyFunctions(this);
+		HudCompilationManager.addPreCompilerListener(c -> {globalRuntime=null;tempVariables.clear();});
+		FunctionAndConsumerAPI.getInstance().applyFunctionsAndConsumers(this);
 	}
 	
 	
@@ -107,7 +105,7 @@ public abstract class AV2Compiler extends AVarTextCompiler implements ConsumerBi
 	
 	
 	@Override public void bindConsumer(BindableConsumer cons, String... names) {
-		methodHandler.bindConsumer((c,m,a,t,l,ch,s)->cons.invoke(m, this, l, ch, s), names);
+		methodHandler.bindConsumer((c,m,a,t,l,ch,s)->cons.invoke(m, this, s), names);
 	}
 	@Override public void bindFunction(BindableFunction cons, String... names) {
 		functionHandler.bindFunction((c,a,s,l,ch)->cons.invoke(c.compileState, this, s), names);

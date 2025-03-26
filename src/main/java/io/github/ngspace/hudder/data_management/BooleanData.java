@@ -23,6 +23,7 @@ public class BooleanData {private BooleanData(){}
 				yield false;
 			}
 			
+			
 			case "hudhidden": yield ins.options.hideGui;
 			case "showdebug": yield ins.getDebugOverlay().showDebugScreen();
 			
