@@ -114,7 +114,7 @@ public class HudderRenderer implements HudRenderCallback {
         	yoff+=info.lineHeight * text.BRScale;
         }
         
-        for (AUIElement e : text.elements) e.renderElement(context, this,delta);
+        for (AUIElement e : text.elements) e.renderElement(context, this, delta);
     }
 	
 	

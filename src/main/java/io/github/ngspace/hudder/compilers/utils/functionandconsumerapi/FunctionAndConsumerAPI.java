@@ -21,8 +21,8 @@ public class FunctionAndConsumerAPI {
 	
 	static FunctionAndConsumerAPI instance = new FunctionAndConsumerAPI();
 	
-	HashMap<BindableFunction, String> functions = new HashMap<BindableFunction, String>();
-	HashMap<BindableConsumer, String> consumers = new HashMap<BindableConsumer, String>();
+	HashMap<BindableFunction, String[]> functions = new HashMap<BindableFunction, String[]>();
+	HashMap<BindableConsumer, String[]> consumers = new HashMap<BindableConsumer, String[]>();
 	
 	List<Binder> binders = new ArrayList<Binder>();
 	
@@ -35,29 +35,27 @@ public class FunctionAndConsumerAPI {
 	public void applyFunctionsAndConsumers(Binder binder) {
 		for (var cons : consumers.entrySet())
 			binder.bindConsumer(cons.getKey(), cons.getValue());
-		for (var func : functions.entrySet())
+		for (var func : functions.entrySet()) {
+			System.out.println(func.getValue());
 			binder.bindFunction(func.getKey(), func.getValue());
+		}
 		binders.add(binder);
 	}
 	
 	
 	
 	public void registerFunction(BindableFunction func, String... names) {
-		for (String name : names) {
-			for (var binder : binders)
-				binder.bindFunction(func, names);
-			functions.put(func, name);
-		}
+		for (var binder : binders)
+			binder.bindFunction(func, names);
+		functions.put(func, names);
 	}
 
 
 
 	public void registerConsumer(BindableConsumer func, String... names) {
-		for (String name : names) {
-			for (var binder : binders) 
-				binder.bindConsumer(func, names);
-			consumers.put(func, name);
-		}
+		for (var binder : binders) 
+			binder.bindConsumer(func, names);
+		consumers.put(func, names);
 	}
 	
 	
