@@ -293,6 +293,59 @@ To create your own consumer do the following:
 
 
 
+
+
+<h1>Creating your own UIElements</h1>
+<hr>
+<note><p>You should see <a href="https://docs.fabricmc.net/develop/rendering/draw-context">the fabric wiki page for using the Drawing Context</a> for more information.</p></note>
+To create your own UIElement you simply need to create a class that extends AUIElement and override the renderElement method.
+<br><br>
+The <inline-code>AUIElement</inline-code> class is the base class for all UIElements. It provides the basic functionality for rendering and managing UIElements.
+It has only one method: <inline-code>renderElement(DrawContext context, HudderRenderer renderer, RenderTickCounter delta)</inline-code>.
+If you're using official mojang mappings for your mod, "DrawContext" will be called "GuiGraphics" and "RenderTickCounter" will be called "DeltaTracker".
+<br><br>
+Here is a quick description of the arguments in the renderElement method:
+<table>
+	<tr>
+		<th>Argument</th>
+		<th>Description</th>
+	</tr>
+	<tr>
+		<td><inline-code>DrawContext context</inline-code></td>
+		<td>The context in which the UIElement is being rendered.</td>
+	</tr>
+	<tr>
+		<td><inline-code>HudderRenderer renderer</inline-code></td>
+		<td>The HudderRenderer instance used to render this UIElement, it may have methods to assist you with rendering.</td>
+	</tr>
+	<tr>
+		<td><inline-code>RenderTickCounter delta</inline-code></td>
+		<td>The delta tracker used to track the changes in the UIElement.</td>
+	</tr>
+</table>
+//TODO: Add more information about the UIElement class and its methods.
+<br><br><br><br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <h1>Writing your own compiler using the V2 Runtime</h1>
 <hr>
 <note>The compiler needs to be created in it's own class/file, no lambdas or nested classes.</note>

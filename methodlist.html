@@ -23,16 +23,12 @@
 	</script>
 </head>
 <body>
-<h3>
-<note>This page was created for Hudder version 5.0.0, information may vary in validity for prior versions</note>
 <note>Method names are NOT case sensitive</note>
 <note>Parameters in [] are required, parameters in <> are optional.</note>
 <note>[Number x] refers to the horizontal position on screen, [Number y] refers to the vertical position on screen.</note>
 <note>Booleans are either true or false (or conditions), Strings are pieces of text (Strings must be surrounded by quotes) and Number are... well... numbers...</note>
-</h3>
-<h1>Rendering</h1>
-<hr><br>
-<h3>Inventory management</h3>
+
+<h1>Inventory management</h1>
 <code>;slot, [Number slot], [Number x], [Number y], &#60;Number scale&#62;, &#60;Boolean showcount&#62;; - draw the item in the provided slot on screen.
 ;item, [String itemid], [Number x], [Number y], &#60;Number scale&#62;; - draw the item with the provided id on screen.
 ;hand, [Number x], [Number y], &#60;Number scale&#62;, &#60;Boolean showcount&#62;; - draw the held item on screen.
@@ -43,25 +39,23 @@
 ;offhand, [Number x], [Number y], &#60;Number scale&#62;, &#60;Boolean showcount&#62;; - draw the item in the offhand slot on screen.
 </code>
 
-<h3>Text Rendering</h3>
+<h1>Text Rendering</h1>
 <code>;text, [Number x], [Number y], [String text], &#60;Number scale&#62;, &#60;HexColor color&#62;, &#60;Boolean shadow&#62;, &#60;Boolean background&#62;, &#60;HexColor bgcolor&#62; - Compile and then draw the provided text on screen.
 ;topleft/topright/bottomleft/bottomright/mute, &#60;Number scale&#62;; - change which section to write to.
 </code>
 
-<h3>Custom element rendering (See <a href="rendering.html">Custom rendering</a> for more info)</h3>
+<h1>Custom element rendering (See <a href="rendering.html">Custom rendering</a> for more info)</h1>
 <code>;statusbar/xpbar/hotbar/helditemtooltip, [Number x], [Number y]; - Draw the provided Hud element on screen.
 ;image, [String filename], [Number x], [Number y], [Number width], [Number height]; - Draws the provided Image on screen.
 ;texture, [String id], [Number x], [Number y], [Number width], [Number height]; - Draws the provided Texture on screen.
 ;9slicetexture [String filename], [Number x], [Number y], [Number width], [Number height], [Array slices]; - Draws a texture with 9slice scaling, The slices array is structured [left, right, top, bottom].
 ;texturevertices, [String filename], [Array vertecies], [Array textures]; - Draws the provided image with the provided vertex and texture array
-;colorvertices, [String filename], [Array vertecies], [HexColor color]; - Draws a shape with the provided vertex array and color
+;colorvertices, [Array vertecies], [HexColor color]; - Draws a shape with the provided vertex array and color
 ;texturevertices_con, [String filename], [Array vertecies], [Array textures]; - Draws the provided image with the provided vertex and texture array (continous)
-;colorvertices_con, [String filename], [Array vertecies], [HexColor color]; - Draws a shape with the provided vertex array and color (continous)
+;colorvertices_con, [Array vertecies], [HexColor color]; - Draws a shape with the provided vertex array and color (continous)
 </code>
 
-<h1>Others</h1>
-<hr><br>
-<h3>Debugging</h3>
+<h1>Debugging</h1>
 
 <code>;log, [String message]; - Send the provided message in the game console.
 ;warn, [String message]; - Send the provided message in the game console at warning level.
@@ -70,16 +64,17 @@
 ;throw, [String message]; - Throws an CompileException with the provided message - Please do not use this if you don't know what this means.
 </code>
 
-<h3>File management</h3>
+<h1>Hud management</h1>
 
 <code>;run, [String filename], &#60;Boolean addText&#62;, &#60;String compiler&#62;; - Compile the provided hud with the provided compiler, if "addText" is set to true then it will combine the text of the compiled hud with the current one , UI Elements get added whether addText is true or false.
 </code>
+<br><br>
 
 <!-- Deprecated methods -->
 
 <h1>Deprecated methods</h1>
-<hr><br>
-<warning>All deprecated methods will be or have been removed (Solutions will be provided)</warning>
+<hr>
+<deprecatedwarning>All deprecated methods will be or have been removed.</deprecatedwarning>
 <code>;strwidth, [String text], [String variable];
 Deprecated in version 5.0.0, removed in version 5.5.0 (Use the strwidth Function)
 
