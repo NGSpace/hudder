@@ -36,9 +36,8 @@ public class ComponentsData extends HashMap<String, Object> {
 //			case "mining_speed": yield comp.get(DataComponentTypes.TOOL).defaultMiningSpeed();
 
 			case "trim": yield comp.get(DataComponents.TRIM) !=null ? new Object() {
-				String material = comp.get(DataComponents.TRIM).material().value().assetName();
+				String material = comp.get(DataComponents.TRIM).material().value().assets().base().suffix();
 				String pattern = comp.get(DataComponents.TRIM).pattern().value().assetId().toString();
-				boolean showintooltip = comp.get(DataComponents.TRIM).showInTooltip();
 			} : null;
 
 			case "enchantable": yield comp.get(DataComponents.ENCHANTABLE) !=null ? 

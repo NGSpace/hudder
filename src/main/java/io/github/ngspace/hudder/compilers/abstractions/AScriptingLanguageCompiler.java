@@ -114,12 +114,7 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 		//Armor
 		
 		engine.bindConsumer(s->elms.add(new ItemElement(s[1].asInt(),s[2].asInt(),mc.player.getInventory()
-				.getArmor(s[0].asInt()),s[3].asFloat(), s[4].asBoolean())),"drawArmor", "armor");
-		
-		//Offhand
-		
-		engine.bindConsumer(s->elms.add(new ItemElement(s[1].asInt(),s[2].asInt(),mc.player.getInventory()
-				.offhand.get(0),s[3].asFloat(), s[4].asBoolean())),"drawOffhand", "offhand");
+				.getItem(36+s[0].asInt()),s[3].asFloat(), s[4].asBoolean())),"drawArmor", "armor");
 	}
 	
 	

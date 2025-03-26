@@ -38,7 +38,7 @@ public class StringData {private StringData() {}
 			
 			/* Inventory */
 			case "helditem_name": yield ins.player.getInventory()
-				.getItem(ins.player.getInventory().selected).getDisplayName().getString();
+				.getItem(ins.player.getInventory().getSelectedSlot()).getDisplayName().getString();
 			
 			
 			

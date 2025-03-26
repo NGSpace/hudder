@@ -1,13 +1,10 @@
 package io.github.ngspace.hudder.uielements;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.main.HudderRenderer;
 import io.github.ngspace.hudder.utils.HudFileUtils;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
 public class TextureElement extends AUIElement {
@@ -29,9 +26,10 @@ public class TextureElement extends AUIElement {
 	}
 	
 	@Override public void renderElement(GuiGraphics context, HudderRenderer renderer, DeltaTracker delta) {
-		RenderSystem.enableBlend();
-		RenderSystem.defaultBlendFunc();
-		context.blit(RenderType::guiTextured,id, x, y, 0, 0f, width, height, width, height);
-		RenderSystem.disableBlend();
+		//TODO this
+//		RenderSystem.enableBlend();
+//		RenderSystem.defaultBlendFunc();
+//		context.blit(RenderType::guiTextured,id, x, y, 0, 0f, width, height, width, height);
+//		RenderSystem.disableBlend();
 	}
 }

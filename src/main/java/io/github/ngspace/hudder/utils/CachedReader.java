@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.function.Supplier;
 import java.util.Scanner;
 
 import com.mojang.blaze3d.platform.NativeImage;
@@ -51,13 +52,14 @@ public class CachedReader {
 	
 	
 	public boolean registerAndCacheImage(InputStream inputStream, ResourceLocation id) throws IOException {
+		//TODO this
 		if (savedImages.containsKey(id)) {
 			mc.getTextureManager().release(id);
 			savedImages.get(id).close();
 			savedImages.remove(id);
 		}
 		NativeImage img = NativeImage.read(inputStream);
-		DynamicTexture tex = new DynamicTexture(img);
+		DynamicTexture tex = new DynamicTexture(()-> id.getPath(),img);
 		mc.getTextureManager().register(id, tex);
 		
 		savedImages.put(id,tex);
