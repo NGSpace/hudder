@@ -104,7 +104,6 @@ public class Hudder implements ClientModInitializer {
 	public static void warn (Object str) {LOGGER.warn (String.valueOf(str));}
 	public static void error(Object str) {LOGGER.error(String.valueOf(str));}
 	public static void debug(Object str) {LOGGER.debug(String.valueOf(str));}
-	@SuppressWarnings("resource")
 	public static void alert(Object str) {
 		Minecraft.getInstance().player.displayClientMessage(Component.keybind(String.valueOf(str)),false);
 	}
