@@ -27,21 +27,17 @@
 <h1>Advanced hud</h1>
 <hr>
 	
-<h2 id="adv_conds">If statements and while loops</h2>
+<h2 id="adv_conds">If statements and loops</h2>
 <hr><br>
-
-Note that the indentation must be exclusively tabs, note that some editors will automatically replace tabs with
-spaces so be sure to disable that! If you didn't understand the previous statement use Notepad from this point.
+<note>The indentation must be of a consistent type or unexpected issues may occur.</note>
+<note><inline-code>#for</inline-code> loops are only available in Hudder version 8.0.0 and above!</note>
+<br>
+You can use <inline-code>#if</inline-code> to do large if conditions (unlike inline-conditions you can only have 1 condition without an else statement)
 <br><br>
-You can use <inline-code>#if</inline-code> to do large if conditions (unlike "basic" conditions you can only have 1 condition without an else statement)
-<br><br>
-<inline-code>#if</inline-code> is a multi-lined condition (which means)
-<br><br>
-<inline-code>#while</inline-code> is similar except it repeats itself until the condition is false<br>
+<inline-code>#while</inline-code> is similar except it repeats itself until the condition is false.
 You can also use <inline-code>{break}</inline-code> to stop the execution of the while loop early without stopping the execution
 of the rest of the hud.
 <br><br>
-
 
 Here is an example of both (Please do not use this, it will likely crash your game):
 
@@ -63,40 +59,95 @@ Here is an example of both (Please do not use this, it will likely crash your ga
 Magnificent, isn't it? Looks like I peaked early when I came up with this piece of art.
 <br><br>
 
-<h2 id="strings">String concatination and manipulation</h2>
-<hr>
-You can use the '+' operator to combine strings, ex: <inline-code>"X: " + x</inline-code> will return a string that is "X: [the x position of the player]"
 
+<inline-code>#for</inline-code> loops work in 2 different ways, it can either:<br>
+Loop from a specific number to another:
+<code>#for num in range(0,10):
+	;alert, num;</code>
+Which will send the user all the numbers between 0 (inclusive) and 10 (exclusive) in order.<br>
 <br>
+Or it could loop through an array:
+<code>#for i in ["I want", "to", 0x6B696C6C, "myself"]:
+	;alert, num;</code>
+Which will send the user all the values in the array in order (from left to right).
+<br><br>
+<inline-code>{break}</inline-code> in a <inline-code>#for</inline-code> loop works in a similar way to <inline-code>#while</inline-code>.
+<br><br>
+
+
+
+<h2 id="strings">Strings</h2>
+<hr>
+<note>Strings are pieces of text.</note>
+Any variable surrounded by double quotes (ex. <inline-code>"String"</inline-code>) will be considered a string.
+<br><br>
+You can use the '+' operator to combine strings, ex: <inline-code>"X: " + x</inline-code> will return a string that is "X: [the x position of the player]"
+<br><br>
 Strings also have plenty of functions in them that allow you to do all sorts of things, among those functions are:
-<code>[String].charAt(Number) - Returns the char at the specified index.
-[String].contains(String) - Returns true if and only if this string contains the specified sequence of char values.
-[String].endsWith(String) - If this string ends with the specified suffix.
-[String].equals(String) - Compares this string to the specified string.
-[String].equalsIgnoreCase(String) - Compares this String to another String, ignoring case considerations.
-[String].indexOf(String) - Returns the index within this string of the first occurrence of the specified substring.
-[String].lastIndexOf(String) - Returns the index within this string of the last occurrence of the specified substring.
-[String].length() - Returns the length of this string.
-[String].matches(RegexString) - Tells whether or not this string matches the given regular expression.
-[String].repeat(Number) - Returns a string whose value is the concatenation of this string repeated requested amount of times.
-[String].replace(String, String) - Replaces each substring of this string that matches the literal target sequence with the specified literal replacement sequence.
-[String].replaceAll(RegexString, String) - Replaces each substring of this string that matches the given regular expression with the given replacement.
-[String].replaceFirst(RegexString, String) - Replaces the first substring of this string that matches the given regular expression with the given replacement.
-[String].split(RegexString) - Splits this string around matches of the given regular expression.
-[String].split(RegexString, Number) - Splits this string around matches of the given regular expression.
-[String].startsWith(String) - Tests if this string starts with the specified prefix.
-[String].substring(Number) - Returns a string that is a substring of this string.
-[String].substring(Number, Number) - Returns a string that is a substring of this string.
-[String].toCharArray() - Converts this string to a new character array.
-[String].toLowerCase() - Converts all of the characters in this String to lower case
-[String].toUpperCase() - Converts all of the characters in this String to upper case
-[String].trim() - Returns a string whose value is this string, with all leading and trailing space removed
+<table>
+	<tr>
+		<th>Function</th>
+		<th>Description</th>
+	</tr>
+	<tr>
+		<td><inline-code>[String].charAt(Number)</inline-code></td>
+		<td>Returns the char at the specified index.</td>
+	</tr>
+	<tr>
+		<td><inline-code>[String].contains(String)</inline-code></td>
+		<td>Returns true if and only if this string contains the specified sequence of char values.</td>
+	</tr>
+	<tr>
+		<td><inline-code>[String].endsWith(String)</inline-code></td>
+		<td>If this string ends with the specified suffix.</td>
+	</tr>
+	<tr>
+		<td><inline-code>[String].equalsIgnoreCase(String)</inline-code></td>
+		<td>Compares this String to another String, ignoring case considerations.</td>
+	</tr>
+	<tr>
+		<td><inline-code>[String].length()</inline-code></td>
+		<td>Returns the length of this string.</td>
+	</tr>
+	<tr>
+		<td><inline-code>[String].repeat(Number)</inline-code></td>
+		<td>Returns a string whose value is the concatenation of this string repeated requested amount of times.</td>
+	</tr>
+	<tr>
+		<td><inline-code>[String].startsWith(String)</inline-code></td>
+		<td>Tests if this string starts with the specified prefix.</td>
+	</tr>
+	<tr>
+		<td><inline-code>[String].substring(Number)</inline-code></td>
+		<td>Returns a string that is a substring of this string.</td>
+	</tr>
+	<tr>
+		<td><inline-code>[String].substring(Number, Number)</inline-code></td>
+		<td>Returns a string that is a substring of this string.</td>
+	</tr>
+	<tr>
+		<td><inline-code>[String].toCharArray()</inline-code></td>
+		<td>Converts this string to a new character array.</td>
+	</tr>
+	<tr>
+		<td><inline-code>[String].toLowerCase()</inline-code></td>
+		<td>Returns a new string where all of the characters in this String are lower case.</td>
+	</tr>
+	<tr>
+		<td><inline-code>[String].toUpperCase()</inline-code></td>
+		<td>Returns a new string where all of the characters in this String are upper case.</td>
+	</tr>
+	<tr>
+		<td><inline-code>[String].trim()</inline-code></td>
+		<td>Returns a string whose value is this string, with all leading and trailing space removed.</td>
+	</tr>
+</table>
 </code>
 <br><br>
 
 <h2 id="arrays">Arrays</h2>
 <hr>
-<note>Version 5.5.0 or above!</note>
+<note>Arrays are available at Hudder version 5.5.0 or above!</note>
 <note>The first item in an array starts at 0!</note>
 An array is a list of values with that can be of any length (up to infinity [aka how much your computer can handle]).<br>
 <br>
@@ -112,10 +163,10 @@ You can use <inline-code>[<i>values,seperated,by,commas</i>]</inline-code> to cr
 Get the number of objects within the array (3):
 {length(arr)}
 
-Replace the number 2 with the number 3:
+Replace the number 2 (at position 1) with the number 3:
 {arr[1]=3}
 
-Read the first value of the array:
+Read the first value (at position 0) of the array:
 {arr[0]}
 
 Add an object in the 4th position of the array:
@@ -177,7 +228,7 @@ You can use <inline-code>{boolean2||boolean1}</inline-code> to return true if ei
 <br><br>
 
 <h2 id="components">Item components</h2>
-
+<note>Works in JavaScript, the values are a property of the returned object.</note>
 <hr>
 The <inline-code>getItem([Number slot])</inline-code> function returns an object that contains the following properties:<br>
 <code>name - The name of the item
@@ -212,6 +263,7 @@ Example:
 
 <h2 id="sys_var">;no_sys_var; and ;sys_var; methods</h2>
 <hr>
+<warning>Probably broken, advised against using.</warning>
 By default if you tried to do <inline-code>{x=10}</inline-code> you'll get an error saying you can't modify system variables.
 <br>
 Or you might make a function/method where the names of one of the parameters is "x" or "y",

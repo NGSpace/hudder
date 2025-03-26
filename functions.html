@@ -23,27 +23,17 @@
 	</script>
 </head>
 <body>
-<note>This page was created for Hudder version 5.0.0, information may vary in validity for prior versions</note>
-<note>Variables are NOT case sensitive</note>
+<note>Functions are NOT case sensitive</note>
 <warning>Functions enforce a strict type system, all strings/text must be surrounded by double quotes or it will be treated as the name of a variable.</warning>
-
 <note>Parameters in [] are required, parameters in <> are optional.</note>
 <note>Booleans are either true or false (or conditions), Strings are pieces of text (Strings must be surrounded by quotes) and Number are... well... numbers...</note>
+
 <h1>Type casting</h1>
 <hr><br>
 <code>int([Text]) - returns the number equavilent of the provided text (ex. "1" returns the number 1, "20" returns the number 20, etc.)
 int([Character]) - returns the ascii of the provided Character
 str([Anything]) - returns the text equavilent of the provided value (ex. the number 1 returns "1", the boolean true returns "true", etc.)
 char([Number]) - returns the Character located at the provided index in the ascii Character table.
-</code>
-
-<h1>Text manipulation (Deprecated)</h1>
-<hr><br>
-
-<code>concat([Text], [Text]) - returns the combination of the provided texts (ex. concat("1","2") returns "12")
-substring([Text], [Number], [Number]) - returns the text between the 2 provided points (ex. substring("Long text", 1, 4) returns "ong")
-repeat([Text], [Number]) - returns the provided text repeated the requested amount (ex. repeat("Repeat", 2) returns "RepeatRepeat")
-length([Text]) - returns the length of the provided text (ex. length("Length") returns 6)
 </code>
 <br>
 
@@ -54,17 +44,6 @@ length([Text]) - returns the length of the provided text (ex. length("Length") r
 getNumber([String variable]) - returns the Number variable with the given name.
 getString([String variable]) - returns the String variable with the given name.
 getBoolean([String variable]) - returns the Boolean variable with the given name.
-</code>
-<br>
-
-<h1>Inventory information</h1>
-<hr><br>
-
-<code>itemname([Number]) - returns the name of the item in the provided slot
-itemdurability([Number]) - returns the durability of the item in the provided slot
-itemmaxdurability([Number]) - returns the maximum durability of the item in the provided slot
-itemcount([Number]) - returns the count of items in the provided slot
-itemmaxcount([Number]) - returns the maximum count of items in the provided slot (ex. if an enderpearl is in the slot it will return 16)
 </code>
 <br>
 
@@ -102,6 +81,29 @@ strwidth([Text]) - returns the width of the provided text if drawn on screen wit
 map() - returns a Java HashMap (If you don't know what that means then it has no use for you)
 array([Number], [Any]) - creates an array of the provided size filled with the provided value.
 toBinaryString([Number]) - returns the binary value of the provided Number in string form (ex. toBinaryString(5) will return 101)
+</code>
+<br><br>
+
+<deprecatedwarning>The following functions are deprecated. Please avoid using them as they may be removed in a future update.</deprecatedwarning>
+
+<h1>Inventory information (Deprecated, see <a href="adv.html#components">Item components</a>)</h1>
+<hr><br>
+
+<code>itemname([Number]) - returns the name of the item in the provided slot
+itemdurability([Number]) - returns the durability of the item in the provided slot
+itemmaxdurability([Number]) - returns the maximum durability of the item in the provided slot
+itemcount([Number]) - returns the count of items in the provided slot
+itemmaxcount([Number]) - returns the maximum count of items in the provided slot (ex. if an enderpearl is in the slot it will return 16)
+</code>
+<br>
+
+<h1>Text manipulation (Deprecated, see <a href="adv.html#strings">Strings</a>)</h1>
+<hr><br>
+
+<code>concat([Text], [Text]) - returns the combination of the provided texts (ex. concat("1","2") returns "12")
+substring([Text], [Number], [Number]) - returns the text between the 2 provided points (ex. substring("Long text", 1, 4) returns "ong")
+repeat([Text], [Number]) - returns the provided text repeated the requested amount (ex. repeat("Repeat", 2) returns "RepeatRepeat")
+length([Text]) - returns the length of the provided text (ex. length("Length") returns 6)
 </code>
 <br><br><br>
 </body>
