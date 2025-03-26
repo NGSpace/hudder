@@ -48,14 +48,12 @@
 ;topleft/topright/bottomleft/bottomright/mute, &#60;Number scale&#62;; - change which section to write to.
 </code>
 
-<h3>GUI</h3>
+<h3>Custom element rendering (See <a href="rendering.html">Custom rendering</a> for more info)</h3>
 <code>;statusbar/xpbar/hotbar/helditemtooltip, [Number x], [Number y]; - Draw the provided Hud element on screen.
 ;image, [String filename], [Number x], [Number y], [Number width], [Number height]; - Draws the provided Image on screen.
-;texture, [Number x], [Number y], [Number width], [Number height]; - Draws the provided Texture on screen.
-</code>
-
-<h3>Vertex rendering (See <a href="vertex.html">Vertex rendering</a> for more info)</h3>
-<code>;texturevertices, [String filename], [Array vertecies], [Array textures]; - Draws the provided image with the provided vertex and texture array
+;texture, [String id], [Number x], [Number y], [Number width], [Number height]; - Draws the provided Texture on screen.
+;9slicetexture [String filename], [Number x], [Number y], [Number width], [Number height], [Array slices]; - Draws a texture with 9slice scaling, The slices array is structured [left, right, top, bottom].
+;texturevertices, [String filename], [Array vertecies], [Array textures]; - Draws the provided image with the provided vertex and texture array
 ;colorvertices, [String filename], [Array vertecies], [HexColor color]; - Draws a shape with the provided vertex array and color
 ;texturevertices_con, [String filename], [Array vertecies], [Array textures]; - Draws the provided image with the provided vertex and texture array (continous)
 ;colorvertices_con, [String filename], [Array vertecies], [HexColor color]; - Draws a shape with the provided vertex array and color (continous)
@@ -95,10 +93,10 @@ Deprecated in version 5.0.0, removed in version 6.0.0 (Use the truncate Function
 Deprecated and removed in version 5.0.0 (Use the floor, ceiling or truncate Function)
 
 ;concat, [String firstString], [String secondString], [String variable];
-Deprecated in version 5.0.0, removed in version 6.0.0 (Use the concat Function)
+Deprecated in version 5.0.0, removed in version 6.0.0 (See <a href="adv.html#strings">Strings</a>)
 
 ;substring, [String string], [Number start], [Number end], [String variable];
-Deprecated in version 5.0.0, removed in version 6.0.0 (Use the substring Function)
+Deprecated in version 5.0.0, removed in version 6.0.0 (See <a href="adv.html#strings">Strings</a>)
 
 ;name, [Number slot], [String variable];
 Deprecated in version 5.5.0, removed in version 6.0.0 (Use the itemname Function)

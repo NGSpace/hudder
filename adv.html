@@ -27,21 +27,16 @@
 <h1>Advanced hud</h1>
 <hr>
 	
-<h2 id="adv_conds">If statements and while loops</h2>
+<h2 id="adv_conds">If statements and loops</h2>
 <hr><br>
-
-Note that the indentation must be exclusively tabs, note that some editors will automatically replace tabs with
-spaces so be sure to disable that! If you didn't understand the previous statement use Notepad from this point.
+<note>The indentation must be of a consistent type or unexpected issues may occur.</note>
+<br>
+You can use <inline-code>#if</inline-code> to do large if conditions (unlike inline-conditions you can only have 1 condition without an else statement)
 <br><br>
-You can use <inline-code>#if</inline-code> to do large if conditions (unlike "basic" conditions you can only have 1 condition without an else statement)
-<br><br>
-<inline-code>#if</inline-code> is a multi-lined condition (which means)
-<br><br>
-<inline-code>#while</inline-code> is similar except it repeats itself until the condition is false<br>
+<inline-code>#while</inline-code> is similar except it repeats itself until the condition is false.
 You can also use <inline-code>{break}</inline-code> to stop the execution of the while loop early without stopping the execution
 of the rest of the hud.
 <br><br>
-
 
 Here is an example of both (Please do not use this, it will likely crash your game):
 
@@ -63,11 +58,30 @@ Here is an example of both (Please do not use this, it will likely crash your ga
 Magnificent, isn't it? Looks like I peaked early when I came up with this piece of art.
 <br><br>
 
-<h2 id="strings">String concatination and manipulation</h2>
-<hr>
-You can use the '+' operator to combine strings, ex: <inline-code>"X: " + x</inline-code> will return a string that is "X: [the x position of the player]"
 
+<inline-code>#for</inline-code> loops work in 2 different ways, it can either:<br>
+Loop from a specific number to another:
+<code>#for num in range(0,10):
+	;alert, num;</code>
+Which will send the user all the numbers between 0 (inclusive) and 10 (exclusive) in order.<br>
 <br>
+Or it could loop through an array:
+<code>#for i in ["I want", "to", 0x6B696C6C, "myself"]:
+	;alert, num;</code>
+Which will send the user all the values in the array in order (from left to right).
+<br><br>
+<inline-code>{break}</inline-code>in a <inline-code>#for</inline-code> loop works in a similar way to <inline-code>#while</inline-code>.
+<br><br>
+
+
+
+<h2 id="strings">Strings</h2>
+<hr>
+<note>Strings are pieces of text.</note>
+Any variable surrounded by double quotes (ex. <inline-code>"String"</inline-code>) will be considered a string.
+<br><br>
+You can use the '+' operator to combine strings, ex: <inline-code>"X: " + x</inline-code> will return a string that is "X: [the x position of the player]"
+<br><br>
 Strings also have plenty of functions in them that allow you to do all sorts of things, among those functions are:
 <code>[String].charAt(Number) - Returns the char at the specified index.
 [String].contains(String) - Returns true if and only if this string contains the specified sequence of char values.
@@ -177,7 +191,7 @@ You can use <inline-code>{boolean2||boolean1}</inline-code> to return true if ei
 <br><br>
 
 <h2 id="components">Item components</h2>
-
+<note>Works in JavaScript, the values are a property of the returned object.</note>
 <hr>
 The <inline-code>getItem([Number slot])</inline-code> function returns an object that contains the following properties:<br>
 <code>name - The name of the item
@@ -212,6 +226,7 @@ Example:
 
 <h2 id="sys_var">;no_sys_var; and ;sys_var; methods</h2>
 <hr>
+<warning>Probably broken, advised against using.</warning>
 By default if you tried to do <inline-code>{x=10}</inline-code> you'll get an error saying you can't modify system variables.
 <br>
 Or you might make a function/method where the names of one of the parameters is "x" or "y",

@@ -17,22 +17,44 @@
 			'analytics_storage': 'granted'
 		});
 	</script>
+	<style>
+		table {
+			background-color: rgb(40, 40, 40);
+		}
+		tr:nth-child(2n-1) {
+			background-color: rgb(20, 20, 20);
+		}
+		.header {
+			font-size: 1.5em;
+			text-align: center;
+			background-color: rgb(180,180,180) !important;
+			color:black;
+		}
+		td {
+			padding-top: 10px;
+			padding-bottom: 10px;
+		}
+		td inline-code{
+			padding: 0px;
+			margin: 0px;
+			line-height: 1px;
+		}
+	</style>
 </head>
 <body>
 	<h1>Extending Hudder!</h1>
 	<hr>
 	<warning>You will need to know Basic Java for this</warning>
-	<note>A sample Hudder extenstion is available on <a href="https://github.com/NGSpace/hudder-sample-mod">&nbsp;GitHub&nbsp;</a> (Hudder 4.0.0-1.21)</note>
-	<note>The ability for third party compilers was only added in version 3.5.0 and V2 compilers on 4.0.0</p></note>
+	<note>This page is only guaranteed to work on the latest versions!</note>
 	<note>If you ever fact ambiguity feel free to ask on Hudder's discord.</note>
 	So, you're a big smarty-pants and want to improve hudder without directly modifying it? No worries! I am here to help!
 	<h2>Preparations</h2>
 	<hr><h4>Here's a list of what you will need to have prepared:</h4>
 	<ul id="preplist">
 		<li>JDK 21 or above (<a href="https://www.openlogic.com/openjdk-downloads?field_java_parent_version_target_id=828&field_operating_system_target_id=All&field_architecture_target_id=391&field_java_package_target_id=396">Download here</a>)</li>
-		<li>A code editor/IDE (ex. Eclipse, Intellij, Zed, VSSpyware (AKA VSCode), Windows notepad, vim, emacs, NNUEdit, Notepad++)</li>
-		<li>A fabric mod (<a href="https://fabricmc.net/develop/">How to make one</a>)</li>
-		<li>A warm blanket</li>
+		<li>A code editor/IDE (ex. <a href="https://eclipseide.org/">Eclipse</a>, <a href="https://www.jetbrains.com/idea/">Intellij</a>, <a href="https://zed.dev/">Zed</a>, <a href="https://code.visualstudio.com/">VSSpyware</a> Windows notepad, vim, emacs, NNUEdit [<i>It's dead, don't ask me to update it</i>], Notepad++)</li>
+		<li>A fabric mod (<a href="https://fabricmc.net/develop/">Follow the tutorial if you don't know how to make one</a>)</li>
+		<li>A warm blanket, hot chocolate and a loving hug (from me ❤️)</li>
 	</ul>
 	<h3>Adding Hudder as a Gradle dependency</h3>
 	<note>You will need the Fabric API dependency for hudder to function and ModMenu and Cloth-Config to edit hudder's config</note>
@@ -55,7 +77,201 @@
 	modImplementation "maven.modrinth:hudder:[Hudder Version]-[Minecraft version]"
 }</code>
 <br>
-...And done! You are now ready to start improving hudder!<br><br>
+...And done! You are now ready to start expanding hudder!
+<br><br><br><br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h1>Creating your own variables</h1>
+<hr>
+<note>In the Hudder compiler, all system variables must return always return a value.</note>
+Want to add your own custom values for existing compilers (Ex. Hudder or JavaScript)? For that you can use the ObjectDataAPI.
+<br>
+Example:
+<code>ObjectDataAPI.addObjectGetter(key -&gt; {
+		if (key.equals("isLovable"))
+			return true;
+		return null;// Pass it onto the next ObjectGetter
+});
+</code>
+<br><br>
+They are guranteed to be applied to all first party compilers included in Hudder as well as any third party compilers that use <inline-code>ObjectDataAPI.getObject(String)</inline-code>.
+<br><br>
+In the Hudder and JavaScript compilers, they are 2nd to last to be processed behind user defined variables.
+<br><br><br><br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h1>Creating your own Functions and Consumers (Methods)</h1>
+<hr>
+<note>Hudder calls "consumers" "method" but they behave the same</note>
+Want to add your own custom functions and consumers for existing compilers (Ex. Hudder or JavaScript)? For that you can use the FunctionAndConsumerAPI.
+<br><br>
+It allows you to add your own functions and consumers using the <inline-code>registerFunction(Function, FunctionNames...)</inline-code>
+and <inline-code>registerConsumer(Consumer, ConsumerNames...)</inline-code> respectively.
+<br><br><br>
+Both Consumers and Functions take the same arguments: <inline-code>AUIElementManager, ATextCompiler and ObjectWrapper[]</inline-code>.
+<br><br>
+AUIElementManager is the compiler's UI Element manager, use it to add UI Elements (Either ones custom made or one built into hudder).
+<br>
+AUIElementManager has the following Functions:
+<table>
+	<tr>
+		<th>Function</th>
+		<th>Description</th>
+	</tr>
+	<tr>
+		<td><inline-code>void addUIElement(AUIElement element)</inline-code></td>
+		<td>Adds the provided AUIElement to the UIElementManager.</td>
+	</tr>
+	<tr>
+		<td><inline-code>AUIElement[] toUIElementArray()</inline-code></td>
+		<td>Returns all the elements in the UIElementManager in the form of an array.</td>
+	</tr>
+</table>
+<br><br>
+ATextCompiler is the compiler that has called this function to be executed (ex. If the function was called using Hudder, then HudderV2Compiler will be provided, if it's JavaScript than JavaScriptCompiler will be provided, etc.)
+<br>ATextCompiler has the following functions:
+<table>
+	<tr>
+		<th>Function</th>
+		<th>Description</th>
+	</tr>
+	<tr>
+		<td><inline-code>HudInformation compile(HudderConfig info, String text, String filename)</inline-code></td>
+		<td>Compiles the provided string.</td>
+	</tr>
+	<tr>
+		<td><inline-code>Object getVariable(String key)</inline-code></td>
+		<td>Returns a variable with the key, could be a system or user defined variable.</td>
+	</tr>
+	<tr>
+		<td><inline-code>void put(String key, Object value)</inline-code></td>
+		<td>Set the value of a user-defined variable.</td>
+	</tr>
+	<tr>
+		<td><inline-code>Object get(String key)</inline-code></td>
+		<td>Get the value of a user defined variable.</td>
+	</tr>
+</table>
+<br><br>
+ObjectWrapper[] is an array containing all the values passed into the functions.<br>
+ObjectWrapper has the following functions:
+<table>
+	<tr>
+		<th>Function</th>
+		<th>Description</th>
+	</tr>
+	<tr>
+		<td><inline-code>Object get()</inline-code></td>
+		<td>Returns the value of the arguement.</td>
+	</tr>
+	<tr>
+		<td><inline-code>String asString()</inline-code></td>
+		<td>Returns the value of the arguement in the form of a String.</td>
+	</tr>
+	<tr>
+		<td><inline-code>double asDouble()</inline-code></td>
+		<td>Returns the value of the arguement in the form of a double.</td>
+	</tr>
+	<tr>
+		<td><inline-code>Object[] asArray()</inline-code></td>
+		<td>Returns the value of the arguement in the form of an array of Objects.</td>
+	</tr>
+	<tr>
+		<td><inline-code>boolean asBoolean()</inline-code></td>
+		<td>Returns the value of the arguement in the form of a boolean.</td>
+	</tr>
+	<tr>
+		<td><inline-code>T asType(Class&lt;T&gt; clazz)</inline-code></td>
+		<td>Returns the value of the arguement in the form of T.</td>
+	</tr>
+	<tr>
+		<td><inline-code>float asFloat()</inline-code></td>
+		<td>Returns the value of the arguement in the form of a float.</td>
+	</tr>
+	<tr>
+		<td><inline-code>int asInt()</inline-code></td>
+		<td>Returns the value of the arguement in the form of a int.</td>
+	</tr>
+	<tr>
+		<td><inline-code>long asLong()</inline-code></td>
+		<td>Returns the value of the arguement in the form of a long.</td>
+	</tr>
+	<tr>
+		<td><inline-code>float[] asFloatArray()</inline-code></td>
+		<td>Returns the value of the arguement in the form of an array of floats.</td>
+	</tr>
+</table>
+<br><br><br><br>
+To create your own function do the following:
+<code>FunctionAndConsumerAPI.getInstance().registerFunction((elementmanager,compiler,arg)-&gt; {
+	if (arg.length&lt;1)
+		throw new CompileException("sayhi function requires at least one arguement!");
+	String name = arg[0].asString();
+	return "Hi " + name + "!";
+}, "sayhi");
+</code>
+<br><br><br>
+To create your own consumer do the following:
+<code>FunctionAndConsumerAPI.getInstance().registerConsumer((elementmanager,compiler,arg)-&gt; {
+	if (arg.length&lt;1)
+		throw new CompileException("sayhi function requires at least one arguement!");
+	String name = arg[0].asString();
+	Hudder.alert("Hi " + name + "!");
+}, "sayhi");
+</code>
+<br><br><br><br>
 
 
 
@@ -82,55 +298,63 @@
 <note>The compiler needs to be created in it's own class/file, no lambdas or nested classes.</note>
 First thing: we'll need a class:
 
-<code>public class CustomCompiler extends AV2Compiler {
+<code>class CustomCompiler extends AV2Compiler {
 	@Override
-	public V2Runtime buildRuntime(ConfigInfo info, String text, CharPosition charPosition, String filename) throws CompileException {
-		V2Runtime runtime = new V2Runtime(this); //Init the runtime
-		runtime.addRuntimeElement(new StringV2RuntimeElement(text, false, true)); //Add all the text
+	public V2Runtime buildRuntime(HudderConfig info, String text, CharPosition charPosition, String filename, V2Runtime scope) throws CompileException {
+		//Init the runtime
+		V2Runtime runtime = new V2Runtime(this, scope);
+		//Add all the text
+		runtime.addRuntimeElement(new StringV2RuntimeElement(text, false, true));
 		return runtime;
 	}
 }</code>
 <br>
 The "info" variable contains all of hudder's settings in the forms of variables, this may be useful if you need to read hudder's settings however you still lack the ability to add/read your own.
-<br>The "text" variables contains the text we want to compile (ex. "FPS: {fps}").
+<br>The "text" variable contains the text we want to compile (ex. "FPS: {fps}").
+<br>The "charPosition" variable tells you where in the file you are (IMPORTANT: the text variable should already come cut to only the needed instructions, this is for debug purposes).
+<br>The "filename" variable tells you the name of the file you're currently processing.
+<br>The "scope" variable should be the parent runtime of the runtime you are building, all scoped values set in the parent runtime should apply to the runtime you are currently building.
 <br><br>
 If you used this compiler it will just echo back whatever you put in the mainfile which will be useless so...
 
-<h3>Adding variable support</h3>
-Don't want to code your own variable system? No worries! The V2Runtime has you covered,
+<h3>Adding variable and function support</h3>
+Don't want to code your own variable and function system? No worries! The V2Runtime has you covered,
 all you need to do is write the syntax parse te text, create a VariableV2RuntimeElement and add it to the runtime!
 <br><br>
 Here is a quick example of a simple variable parser:
 
 
-<code>V2Runtime runtime = new V2Runtime(this); //Init the runtime
+<code>//Init the runtime
+V2Runtime runtime = new V2Runtime(this, scope);
 StringBuilder textBuilder = new StringBuilder();
 
-for (int ind = 0;ind&#60;text.length();ind++) { //Loop through every character in the file
+//Loop through every character in the file
+for (int ind = 0;ind&#60;text.length();ind++) {
 	char c = text.charAt(ind);
 	if (c=='%') {
 		StringBuilder variableBuilder = new StringBuilder();
 		runtime.addRuntimeElement(new StringV2RuntimeElement(textBuilder.toString(), false, true));
-		textBuilder.setLength(0); //Reset the text builder
+		//Reset the text builder
+		textBuilder.setLength(0);
 		while (ind&#60;text.length()) {
 			ind++;
 			c = text.charAt(ind);
 			if (c=='%') {
 				CharPosition position = getPosition(ind, text);
-				runtime.addRuntimeElement(new VariableV2RuntimeElement(variableBuilder.toString(), this, runtime, position.line, position.charpos)); // Add whatever text is left in the text builder
+				//Add whatever text is left in the text builder
+				runtime.addRuntimeElement(new VariableV2RuntimeElement(variableBuilder.toString(), this, runtime, position.line, position.charpos));
 				break;
 			}	
 			variableBuilder.append(c);
 		}
 	} else textBuilder.append(c);
 }
-runtime.addRuntimeElement(new StringV2RuntimeElement(textBuilder.toString(), false, true)); // Add whatever text is left in the text builder
+//Add whatever text is left in the text builder
+runtime.addRuntimeElement(new StringV2RuntimeElement(textBuilder.toString(), false, true));
 return runtime;
 </code>
-
-<br>
-	
-<br>
+This will make it such that all text between 2 % are treated as variables: <inline-code>%fps%</inline-code>
+<br><br><br><br>
 
 
 
@@ -151,12 +375,12 @@ return runtime;
 
 <code>public class CustomCompiler extends AVarTextCompiler {
 	@Override
-	public HudInformation compile(ConfigInfo info, String text, String filename) throws CompileException {
+	public HudInformation compile(HudderConfig info, String text, String filename) throws CompileException {
 		return new HudInformation(text, 0, "", 0, "", 0, "", 0, new AUIElement[0]);
 	}
 }</code>
 <br>
 Same variables as before but beyond that you're kinda on your own so unless you're dedicated you should use the help of third parties for some stuff...
 
-<br><br><br>
+<br><br><br><br><br>
 </body>

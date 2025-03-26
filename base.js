@@ -73,17 +73,16 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			left: 20px;
 			text-decoration: underline;
 		}
-		#sidebar details summary a {left: 27px;}
+		#sidebar details summary a {left: .5vw;}
 		#sidebar details summary {list-style: none;}
 		#sidebar details ul {
-			list-style: none;
-			margin-top: 0px;
-			margin-bottom: 0px;
-			margin-left: -5px;
+			margin: 0px;
 			font-size: 0.75vw;
 		}
 		#sidebar details ul a {
 			color: #4f8bd1;
+			position: relative;
+			left: -2px;
 			text-decoration: none;
 		}
 		p {margin: 10px;}
@@ -153,6 +152,26 @@ document.addEventListener("DOMContentLoaded", function (event) {
 		warning img {
 			padding-right: 10px;
 		}
+		deprecatedwarning {
+			display: inline-block;
+			border-left: 0.25em solid;
+			border-color: #a20b0b;
+			padding: 10px;
+			padding-bottom: 10px;
+			border-collapse: collapse;
+			display: flex;
+			align-items: center; /* Align vertical */
+			margin-top: 10px;
+			color: white;
+			margin-bottom: 10px;
+			font-size: 2em;
+			font-weight: bold;
+			font-style: italic;
+		}
+		deprecatedwarning img {
+			padding-right: 10px;
+			width:1.2em;
+		}
 		
 		table td {border: 3px solid gray;}
 		table th {border: 3px solid gray;}
@@ -165,7 +184,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	<link rel="icon" type="image/x-icon" href="favicon.ico">
 	<div id="topbar">
 		<img src="Images/Hudder.webp" alt="Back to main hudder wiki page" />
-		<div id="title">Hudder 7.2.0 Wiki</div>
+		<div id="title">Hudder 8.0.0 Wiki</div>
 	</div>
 	<div id="sidebar">
 	<h1>Explore</h1>
@@ -192,9 +211,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
 				<a href="adv.html">Advanced hud</a>
 			</summary>
 			<ul>
-				<li><a href="adv.html#adv_conds">If statements and while loops</a></li>
+				<li><a href="adv.html#adv_conds">If statements and loops</a></li>
+				<li><a href="adv.html#strings">Strings</a></li>
 				<li><a href="adv.html#arrays">Arrays</a></li>
-				<li><a href="adv.html#strings">String concatination and manipulation</a></li>
 				<li><a href="adv.html#adv_hashdef">Creating your own methods/functions</a></li>
 				<li><a href="adv.html#break">The Break variable</a></li>
 				<li><a href="adv.html#operators">Inc, Dec and Boolean operators</a></li>
@@ -203,12 +222,12 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			</ul>
 		</details>
 		<details open>
-			<summary><a href="vertex.html">Vertex rendering</a></summary>
+			<summary><a href="rendering.html">Custom rendering</a></summary>
 			<ul>
-				<li><a href="vertex.html#varray">Vertex array</a></li>
-				<li><a href="vertex.html#tarray">Texture/UV points array</a></li>
-				<li><a href="vertex.html#con">"Continous" rendering</a></li>
-				<li><a href="vertex.html#circle">Drawing a circle</a></li>
+				<li><a href="rendering.html#varray">Using colorvertices</a></li>
+				<li><a href="rendering.html#tarray">Using texturevertices</a></li>
+				<li><a href="rendering.html#con">"Continous" rendering</a></li>
+				<li><a href="rendering.html#circle">Drawing a circle</a></li>
 			</ul>
 		</details>
 		<details open>
@@ -242,7 +261,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 		<br>
 		<details open>
 			<summary>
-				<a href="developers.html">Discord<img src="Images/discord.png" width="40px" style="position: relative;top:13px;"></a>
+				<a href="developers.html">Discord<img src="Images/discord.png" width="40vw" style="position: relative;top:13px;"></a>
 			</summary>
 		</details>
 		<!--details open>
@@ -279,6 +298,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	for (var i = 0; i < notes.length; i++) {
 		let content = notes[i].innerHTML;
 		notes[i].innerHTML = "<img src=\"Images/Warning.png\" alt=\"INFO\" width=\"24px\">" + content;
+	}
+	var notes = document.getElementsByTagName('deprecatedwarning');
+	for (var i = 0; i < notes.length; i++) {
+		let content = notes[i].innerHTML;
+		notes[i].innerHTML = "<img src=\"Images/Deprecated.png\" alt=\"INFO\" width=\"24px\">" + content;
 	}
 	var codes = Array.from(document.getElementsByTagName('code')).concat(Array.from(
 		document.getElementsByTagName("inline-code")));
