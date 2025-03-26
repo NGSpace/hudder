@@ -10,8 +10,6 @@ import io.github.ngspace.hudder.mixin.WorldRendererAccess;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.server.IntegratedServer;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LightLayer;
 
 public class NumberData {private NumberData() {}
@@ -75,7 +73,7 @@ public class NumberData {private NumberData() {}
 			
 			
 			/* Other Player related information */
-			case "selectedslot": yield (double) p.getInventory().selected;
+			case "selectedslot": yield (double) p.getInventory().getSelectedSlot();
 			case "xplevel": yield (double) p.experienceLevel;
 			case "xp": yield (double) p.totalExperience;
 			case "armor": yield (double) p.getArmorValue();
@@ -155,17 +153,6 @@ public class NumberData {private NumberData() {}
 			
 			
 			
-			/* Item Durabilities V3.0.0 */
-			case "held_item_durability","helmet_durability","chestplate_durability","leggings_durability",
-			"boots_durability","offhand_durability": {
-				ItemStack stack = getStack(key, p.getInventory());
-				yield (double) stack.getMaxDamage() - stack.getDamageValue();
-			}
-			case"held_item_max_durability","helmet_max_durability","chestplate_max_durability","leggings_max_durability",
-			"boots_max_durability","offhand_max_durability":yield (double)getStack(key, p.getInventory()).getMaxDamage();
-			
-			
-			
 			case "rebeccapurple": yield (double) 0xFF663399;
 			
 			default: yield null;
@@ -174,15 +161,5 @@ public class NumberData {private NumberData() {}
 	public static float getTPS(Minecraft client) {
         IntegratedServer server = client.getSingleplayerServer();
         return server == null ? -1f : server.tickRateManager().tickrate();
-	}
-	public static ItemStack getStack(String type, Inventory inv) {
-		//I took some short cuts for a tiny performance increase. Probably not even calculatable.
-		if (type.startsWith("held")) return inv.getItem(inv.selected);//held_item
-		if (type.startsWith("helm")) return inv.getArmor(3);//helmet
-		if (type.startsWith("c")) return inv.getArmor(2);//chestplate
-		if (type.startsWith("l")) return inv.getArmor(1);//leggings
-		if (type.startsWith("b")) return inv.getArmor(0);//boots
-		if (type.startsWith("o")) return inv.offhand.get(0);//offhand
-		throw new IllegalArgumentException("Unexpected value: " + type);
 	}
 }

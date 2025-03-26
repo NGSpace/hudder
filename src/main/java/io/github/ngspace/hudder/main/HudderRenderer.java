@@ -1,17 +1,11 @@
 package io.github.ngspace.hudder.main;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import org.joml.Matrix4f;
 
 import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 
@@ -20,21 +14,16 @@ import io.github.ngspace.hudder.compilers.utils.HudInformation;
 import io.github.ngspace.hudder.main.config.HudderConfig;
 import io.github.ngspace.hudder.uielements.AUIElement;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.minecraft.Util;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderStateShard.ShaderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.util.TriState;
 
 /**
  * Hudder.java was too messy so I moved all rendering functions into this one class
@@ -45,12 +34,12 @@ public class HudderRenderer implements HudRenderCallback {
 	protected static Minecraft mc = Minecraft.getInstance();
     public static final String NL_REGEX = "\r?\n";
     
-    private static final Function<ResourceLocation, RenderType> hudder_gui_tr = Util.memoize(texture ->
-		RenderType.create("hudder_gui_tr", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.TRIANGLE_STRIP,
-		786432, RenderType.CompositeState.builder().setTextureState(new RenderStateShard.TextureStateShard(texture,
-		TriState.FALSE, false)).setShaderState(new ShaderStateShard(CoreShaders.POSITION_TEX_COLOR)).setTransparencyState
-		(RenderStateShard.TRANSLUCENT_TRANSPARENCY).setDepthTestState(RenderStateShard.LEQUAL_DEPTH_TEST)
-		.createCompositeState(false)));
+//    private static final Function<ResourceLocation, RenderType> hudder_gui_tr = Util.memoize(texture ->
+//		RenderType.create("hudder_gui_tr", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.TRIANGLE_STRIP,
+//		786432, RenderType.CompositeState.builder().setTextureState(new RenderStateShard.TextureStateShard(texture,
+//		TriState.FALSE, false)).setShaderState(new ShaderStateShard(CoreShaders.POSITION_TEX_COLOR)).setTransparencyState
+//		(RenderStateShard.TRANSLUCENT_TRANSPARENCY).setDepthTestState(RenderStateShard.LEQUAL_DEPTH_TEST)
+//		.createCompositeState(false)));
 	
 	public HudderRenderer(HudCompilationManager compilationManager) {
 		this.compman = compilationManager;
@@ -129,8 +118,6 @@ public class HudderRenderer implements HudRenderCallback {
 
 	public void renderTextLine(GuiGraphics context, String text, int x, int y, int color, float scale, boolean shadow,
 			boolean background, long backgroundColor) {
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
         if (scale != 1.0f) {
             PoseStack matrixStack = context.pose();
             matrixStack.pushPose();
@@ -146,54 +133,53 @@ public class HudderRenderer implements HudRenderCallback {
     			renderBlock(context,x-1f,y-1f,mc.font.width(text)+2f,9f+1f,backgroundColor);
         	context.drawString(mc.font, text, x, y, color, shadow);
         }
-        RenderSystem.disableBlend();
     }
 	
 	
 	
 	public void renderBlock(GuiGraphics context, float x, float y, float width, float height, long argb) {
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-		RenderSystem.setShader(CoreShaders.POSITION_COLOR);
-        int alpha = (int) ((argb >> 24) & 0xFF);
-        int red =   (int) ((argb >> 16) & 0xFF);
-        int green = (int) ((argb >>  8) & 0xFF);
-        int blue =  (int) ((argb      ) & 0xFF);
-
-        BufferBuilder bgBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS,
-        		DefaultVertexFormat.POSITION_COLOR);
-        Matrix4f matrix = context.pose().last().pose();
-        bgBuilder.addVertex(matrix, x, y+height, 0f).setColor(red,green,blue,alpha);
-        bgBuilder.addVertex(matrix, x+width, y+height, 0f).setColor(red,green,blue,alpha);
-        bgBuilder.addVertex(matrix, x+width, y, 0f).setColor(red,green,blue,alpha);
-        bgBuilder.addVertex(matrix, x, y, 0f).setColor(red,green,blue,alpha);
-        BufferUploader.drawWithShader(bgBuilder.build());
-        RenderSystem.disableBlend();
+//        RenderSystem.enableBlend();
+//        RenderSystem.defaultBlendFunc();
+//		RenderSystem.setShader(CoreShaders.POSITION_COLOR);
+//        int alpha = (int) ((argb >> 24) & 0xFF);
+//        int red =   (int) ((argb >> 16) & 0xFF);
+//        int green = (int) ((argb >>  8) & 0xFF);
+//        int blue =  (int) ((argb      ) & 0xFF);
+//
+//        BufferBuilder bgBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS,
+//        		DefaultVertexFormat.POSITION_COLOR);
+//        Matrix4f matrix = context.pose().last().pose();
+//        bgBuilder.addVertex(matrix, x, y+height, 0f).setColor(red,green,blue,alpha);
+//        bgBuilder.addVertex(matrix, x+width, y+height, 0f).setColor(red,green,blue,alpha);
+//        bgBuilder.addVertex(matrix, x+width, y, 0f).setColor(red,green,blue,alpha);
+//        bgBuilder.addVertex(matrix, x, y, 0f).setColor(red,green,blue,alpha);
+//        BufferUploader.drawWithShader(bgBuilder.build());
+//        RenderSystem.disableBlend();
 	}
 
 	public void renderTexturedVertexArray(GuiGraphics context, float[] vertices, float[] textures,
 			ResourceLocation id, boolean triangles) {
-		context.drawSpecial((Consumer<MultiBufferSource>)(vcp -> {
-	        RenderSystem.enableBlend();
-	        RenderSystem.defaultBlendFunc();
-			RenderSystem.setShader(CoreShaders.POSITION_TEX_COLOR);
-	        
-	        VertexConsumer vertexConsumer = vcp.getBuffer(triangles ? hudder_gui_tr.apply(id) : RenderType.guiTextured(id));
-	        
-	        Matrix4f matrix = context.pose().last().pose();
-	        for (int i = 0;i<vertices.length;i+=2) {
-	        	vertexConsumer.addVertex(matrix,vertices[i],vertices[i+1],0f).setUv(textures[i],textures[i+1]).setColor(-1);
-	        }
-	        RenderSystem.disableBlend();
-		}));
+//		context.drawSpecial((Consumer<MultiBufferSource>)(vcp -> {
+//	        RenderSystem.enableBlend();
+//	        RenderSystem.defaultBlendFunc();
+//			RenderSystem.setShader(CoreShaders.POSITION_TEX_COLOR);
+//	        
+//	        VertexConsumer vertexConsumer = vcp.getBuffer(triangles ? hudder_gui_tr.apply(id) : RenderType.guiTextured(id));
+//	        
+//	        Matrix4f matrix = context.pose().last().pose();
+//	        for (int i = 0;i<vertices.length;i+=2) {
+//	        	vertexConsumer.addVertex(matrix,vertices[i],vertices[i+1],0f).setUv(textures[i],textures[i+1]).setColor(-1);
+//	        }
+//	        RenderSystem.disableBlend();
+//		}));
 	}
 	
 	public void renderTexture9Slice(GuiGraphics context, ResourceLocation id, float x, float y, float width,
 			float height, float[] slices) {
 		context.drawSpecial((Consumer<MultiBufferSource>)(vcp -> {
-	        RenderSystem.enableBlend();
-	        RenderSystem.defaultBlendFunc();
-			RenderSystem.setShader(CoreShaders.POSITION_TEX_COLOR);
+//	        RenderSystem.enableBlend();
+//	        RenderSystem.defaultBlendFunc();
+//			RenderSystem.setShader(CoreShaders.POSITION_TEX_COLOR);
 	        VertexConsumer vconsumer = vcp.getBuffer(RenderType.guiTextured(id));
 	        
 	        Matrix4f matrix = context.pose().last().pose();
@@ -288,19 +274,19 @@ public class HudderRenderer implements HudRenderCallback {
 	 */
 	public void renderColoredVertexArray(GuiGraphics context, float[] vertices, int r, int g, int b, int a,
 			VertexFormat.Mode mode) {
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-		RenderSystem.setShader(CoreShaders.POSITION_COLOR);
-		
-        BufferBuilder vertexBuilder = Tesselator.getInstance().begin(mode,
-        		DefaultVertexFormat.POSITION_COLOR);
-        Matrix4f matrix = context.pose().last().pose();
-
-        for (int i = 0;i<vertices.length;i+=2)
-        	vertexBuilder.addVertex(matrix,vertices[i],vertices[i+1],0f).setColor(r, g, b, a);
-        
-        BufferUploader.drawWithShader(vertexBuilder.build());
-        RenderSystem.disableBlend();
+//        RenderSystem.enableBlend();
+//        RenderSystem.defaultBlendFunc();
+//		RenderSystem.setShader(CoreShaders.POSITION_COLOR);
+//		
+//        BufferBuilder vertexBuilder = Tesselator.getInstance().begin(mode,
+//        		DefaultVertexFormat.POSITION_COLOR);
+//        Matrix4f matrix = context.pose().last().pose();
+//
+//        for (int i = 0;i<vertices.length;i+=2)
+//        	vertexBuilder.addVertex(matrix,vertices[i],vertices[i+1],0f).setColor(r, g, b, a);
+//        
+//        BufferUploader.drawWithShader(vertexBuilder.build());
+//        RenderSystem.disableBlend();
 	}
 	
 	
@@ -315,8 +301,6 @@ public class HudderRenderer implements HudRenderCallback {
 		try {
 			if (!Hudder.config.limitrate) compman.compile(delta);
 			if (Hudder.config.shouldDrawResult()) {
-            	RenderSystem.enableBlend();
-                RenderSystem.defaultBlendFunc();
 	            try {
 	            	if (compman.getResult()!=null)
 	            		drawCompileResult(context, mc.font, compman.getResult(), Hudder.config, delta);
@@ -325,7 +309,6 @@ public class HudderRenderer implements HudRenderCallback {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-            	RenderSystem.disableBlend();
 			}
     	} catch (RuntimeException e) {
 			e.printStackTrace();

@@ -31,9 +31,10 @@ public class NativeTextureElement extends AUIElement {
 	}
 	
 	@Override public void renderElement(GuiGraphics context, HudderRenderer renderer, DeltaTracker delta) {
-		RenderSystem.enableBlend();
-		RenderSystem.defaultBlendFunc();
+		//TODO this
+//		RenderSystem.enableBlend();
+//		RenderSystem.defaultBlendFunc();
 		context.blit(RenderType::guiTextured,id, x, y, 0, 0f, width, height, width, height);
-		RenderSystem.disableBlend();
+//		RenderSystem.disableBlend();
 	}
 }
