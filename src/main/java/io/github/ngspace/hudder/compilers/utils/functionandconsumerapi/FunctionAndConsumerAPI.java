@@ -63,10 +63,10 @@ public class FunctionAndConsumerAPI {
 	
 
 	@FunctionalInterface public interface BindableFunction {
-		public Object invoke(IElementManager man, ATextCompiler comp, ObjectWrapper... args) throws CompileException;
+		public Object invoke(IUIElementManager man, ATextCompiler comp, ObjectWrapper... args) throws CompileException;
 	}
 	@FunctionalInterface public interface BindableConsumer {
-		public void invoke(IElementManager man, ATextCompiler comp, ObjectWrapper... args) throws CompileException;
+		public void invoke(IUIElementManager man, ATextCompiler comp, ObjectWrapper... args) throws CompileException;
 	}
 
 	

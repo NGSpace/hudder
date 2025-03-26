@@ -16,25 +16,25 @@ public class HudderBuiltInMethods {private HudderBuiltInMethods() {}
 	public static void registerMethods(FunctionAndConsumerAPI api) {
 		//Vertex
 
-		api.registerConsumer((e,a,s)->e.addElem(new ColorVerticesElement(s[0].asFloatArray(),s[1].asLong(),false)),"colorvertices");
-		api.registerConsumer((e,a,s)->e.addElem(new ColorVerticesElement(s[0].asFloatArray(),s[1].asLong(),true)),"colorvertices_con");
+		api.registerConsumer((e,a,s)->e.addUIElement(new ColorVerticesElement(s[0].asFloatArray(),s[1].asLong(),false)),"colorvertices");
+		api.registerConsumer((e,a,s)->e.addUIElement(new ColorVerticesElement(s[0].asFloatArray(),s[1].asLong(),true)),"colorvertices_con");
 		
-		api.registerConsumer((e,a,s)->e.addElem(new TextureVerticesElement(
+		api.registerConsumer((e,a,s)->e.addUIElement(new TextureVerticesElement(
 				s[0].asString(),s[1].asFloatArray(),s[2].asFloatArray(), false)), "texturevertices");
-		api.registerConsumer((e,a,s)->e.addElem(new TextureVerticesElement(
+		api.registerConsumer((e,a,s)->e.addUIElement(new TextureVerticesElement(
 				s[0].asString(),s[1].asFloatArray(),s[2].asFloatArray(), true )), "texturevertices_con");
 		
 		
 		//Textures
 		
-		api.registerConsumer((e,a,s)->e.addElem(new NativeTextureElement(ResourceLocation.withDefaultNamespace(
+		api.registerConsumer((e,a,s)->e.addUIElement(new NativeTextureElement(ResourceLocation.withDefaultNamespace(
 				s[0].asString().trim()), s[1].asInt(), s[2].asInt(), s[3].asInt(),s[4].asInt())), "drawTexture", "texture");
 		
-		api.registerConsumer((e,a,s)-> e.addElem(new TextureElement(s[0].asString(),
+		api.registerConsumer((e,a,s)-> e.addUIElement(new TextureElement(s[0].asString(),
 				s[1].asInt(),s[2].asInt(),s[3].asInt(),s[4].asInt())),
 				"drawLocalTexture","drawPNG","drawImage","image","png");
 		
-		api.registerConsumer((e,a,s)-> e.addElem(new Texture9SliceElement(s[0].asString(),
+		api.registerConsumer((e,a,s)-> e.addUIElement(new Texture9SliceElement(s[0].asString(),
 				s[1].asInt(),s[2].asInt(),s[3].asInt(),s[4].asInt(),s[5].asFloatArray())), "9slicetexture");
 		
 		//Text
@@ -51,18 +51,18 @@ public class HudderBuiltInMethods {private HudderBuiltInMethods() {}
 			boolean bg = args.length>6 ? args[6].asBoolean(): Hudder.config.background;
 			double bgcolor = args.length>7 ? args[7].asDouble() : Hudder.config.backgroundcolor;
 			
-			e.addElem(new TextElement(x,y,text,scale,color,shadow,bg,(long) bgcolor));
+			e.addUIElement(new TextElement(x,y,text,scale,color,shadow,bg,(long) bgcolor));
 		}, "drawText", "text");
 		
 		//GUI
 		
-		api.registerConsumer((e,a,s)->e.addElem(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.STATUS_BARS)),
+		api.registerConsumer((e,a,s)->e.addUIElement(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.STATUS_BARS)),
 				"drawStatusBars", "statusbars");
-		api.registerConsumer((e,a,s)->e.addElem(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.EXP_AND_MOUNT_BAR)),
+		api.registerConsumer((e,a,s)->e.addUIElement(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.EXP_AND_MOUNT_BAR)),
 				"drawExpAndMountBars", "xpbar");
-		api.registerConsumer((e,a,s)->e.addElem(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.HOTBAR)),
+		api.registerConsumer((e,a,s)->e.addUIElement(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.HOTBAR)),
 				"drawHotbar", "hotbar");
-		api.registerConsumer((e,a,s)->e.addElem(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.ITEM_TOOLTIP)),
+		api.registerConsumer((e,a,s)->e.addUIElement(new GameHudElement(s[0].asInt(),s[1].asInt(),GuiType.ITEM_TOOLTIP)),
 				"drawItemTooltip", "helditemtooltip");
 		
 		//Variables

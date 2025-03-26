@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 import io.github.ngspace.hudder.uielements.AUIElement;
 
-public class ArrayElementManager extends ArrayList<AUIElement> implements IElementManager {
+public class ArrayElementManager extends ArrayList<AUIElement> implements IUIElementManager {
 
 	private static final long serialVersionUID = -504951216427576657L;
 
-	@Override public void addElem(AUIElement UIElement) {add(UIElement);}
-	@Override public AUIElement[] toElementArray() {return toArray(new AUIElement[size()]);}
+	@Override public void addUIElement(AUIElement UIElement) {add(UIElement);}
+	@Override public AUIElement[] toUIElementArray() {return toArray(new AUIElement[size()]);}
 }

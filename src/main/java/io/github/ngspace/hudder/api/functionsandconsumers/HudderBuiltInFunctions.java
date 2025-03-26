@@ -37,15 +37,15 @@ public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 		
 		binder.registerFunction((m,c,s)-> {
 			try {
-				var e = m.toElementArray();
+				var e = m.toUIElementArray();
 				
 				ATextCompiler ecompiler = Compilers.getCompilerFromName(s[1].asString());
 				for (var i : HudCompilationManager.precomplistners) i.accept(ecompiler);
 				
 				HudInformation result = ecompiler.compile(Hudder.config,HudFileUtils.readFile(s[0].asString()),s[0].asString());
 
-				for (var v : result.elements) m.addElem(v);
-				for (var v : e) m.addElem(v);
+				for (var v : result.elements) m.addUIElement(v);
+				for (var v : e) m.addUIElement(v);
 				
 				for (var i : HudCompilationManager.postcomplistners) i.accept(ecompiler);
 				return result;
