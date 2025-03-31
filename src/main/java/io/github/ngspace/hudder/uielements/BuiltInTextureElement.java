@@ -25,7 +25,7 @@ public class BuiltInTextureElement extends AUIElement {
 		this.height=height;
 		this.id=id;
 		if (mc.getTextureManager().getTexture(id) instanceof SimpleTexture)
-			throw new CompileException("Native texture not found: " + id.toString());
+			throw new CompileException("Builtin texture not found: " + id.toString());
 	}
 	
 	@Override public void renderElement(GuiGraphics context, HudderRenderer renderer, DeltaTracker delta) {
