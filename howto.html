@@ -54,7 +54,7 @@ You just write it, writing "words are beautiful" in the file will show "words ar
 <hr><br>
 
 Most of what you'll write will probably be normal text, variables, conditions etc. But in some cases you'll want to use reserved
-characters (';','%','#','&','{') as normal text (ex. you want to use '%' without Hudder considering it a condition). In those cases
+characters (';','%','#','&amp;','{') as normal text (ex. you want to use '%' without Hudder considering it a condition). In those cases
 you'll need to add a backslash before the character (ex. '\%').
 <br><br>
 Color codes work as minecraft intended.
@@ -65,7 +65,33 @@ Color codes work as minecraft intended.
 <hr><br>
 
 You want to put text in the bottom right corner instead of top left? no problemo! use sections like
-<inline-code>;bottomright;</inline-code> (note that only text after it will be affected)
+<inline-code>;bottomright;</inline-code> (note that only text after it will be affected).
+<br>
+The following example will display text in the top left corner, then in the bottom right corner, then in the top left corner again:
+<code>This will be displayed in the top left corner!
+;bottomright;
+This will be displayed in the bottom right corner!
+;topright;
+This will be displayed in the top left corner again!</code>
+<br>
+The following sections exist:
+<table>
+	<tr>
+		<td><inline-code>;topleft;</inline-code></td>
+	</tr>
+	<tr>
+		<td><inline-code>;topright;</inline-code></td>
+	</tr>
+	<tr>
+		<td><inline-code>;bottomleft;</inline-code></td>
+	</tr>
+	<tr>
+		<td><inline-code>;bottomright;</inline-code></td>
+	</tr>
+</table>
+
+<br>
+if you want to control the exact position of your text, you can use the <inline-code>;text;</inline-code> method, more information on it can be found in the method list.
 
 <br><br>
 
@@ -92,7 +118,7 @@ is no limit to the number of else I just put 2 cuz I am lazy, could be 1, 2, 3, 
 <inline-code>&%fps&#60;30, "4", fps&#60;60, "e", "a"%{fps}</inline-code> - This will show the fps meter in different colors depending if it's
 below 30 or 60 fps.
 <br><br>
-<inline-code>%ping>5, "{ping}", ""%</inline-code> - This will show your ping only if it is above 5!
+<inline-code>%ping&gt;5, "{ping}", ""%</inline-code> - This will show your ping only if it is above 5!
 <br><br>
 <inline-code>%is_slime, "Slime chunk!"%</inline-code> - This will show "Slime chunk!" if you are standing inside a slime chunk.
 
@@ -101,7 +127,6 @@ below 30 or 60 fps.
 <h2 id="adv_variables">Advanced variables and Functions</h2>
 <hr>
 <note>Functions are available at Hudder version 5.0.0 or above!</note>
-<note>Arrayes are available at Hudder version 5.5.0 or above!</note>
 
 Let's do this one quickly:
 <br><br>
@@ -111,7 +136,7 @@ Setting custom variable values - <inline-code>{variable=10}</inline-code> will s
 Math - <inline-code>{math_result=fps+10+math_result}</inline-code> will do as you could've guessed, math.
 use * for multiplications, / for divisions and % for remainder.
 <br>
-Functions - <inline-code>{math_result=length("text")+2}</inline-code> will set math_result to the length of the word "text" plus 2.
+Functions - <inline-code>{math_result="text".length()+2}</inline-code> will set math_result to the length of the word "text" plus 2.
 <br><br>
 All of those could be used together if needed, you could pass a function to a function (ex. int(str(10)) which returns 10) until infinity, etc.
 <br>
