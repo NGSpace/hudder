@@ -1,7 +1,5 @@
 package io.github.ngspace.hudder.uielements;
 
-import com.mojang.blaze3d.vertex.VertexFormat;
-
 import io.github.ngspace.hudder.main.HudderRenderer;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphics;
@@ -13,15 +11,15 @@ public class ColorVerticesElement extends AUIElement {
 	final int g;
 	final int b;
 	final int a;
-	final VertexFormat.Mode mode;
+	final boolean mode;
 	
-	public ColorVerticesElement(float[] vertices, long argb, boolean triangles) {
+	public ColorVerticesElement(float[] vertices, long argb, boolean triangle_strip) {
         this.vertices = vertices;
         this.a = (int) ((argb >> 24) & 0xFF);
         this.r = (int) ((argb >> 16) & 0xFF);
         this.g = (int) ((argb >>  8) & 0xFF);
         this.b = (int) ((argb      ) & 0xFF);
-        this.mode = triangles ? VertexFormat.Mode.TRIANGLE_STRIP : VertexFormat.Mode.QUADS;
+        this.mode = triangle_strip;
 	}
 	@Override public void renderElement(GuiGraphics context, HudderRenderer renderer, DeltaTracker delta) {
 		renderer.renderColoredVertexArray(context,vertices,r,g,b,a, mode);

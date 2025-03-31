@@ -1,10 +1,13 @@
 package io.github.ngspace.hudder.main;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.joml.Matrix4f;
 
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.NativeImage;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
@@ -14,16 +17,20 @@ import io.github.ngspace.hudder.compilers.utils.HudInformation;
 import io.github.ngspace.hudder.main.config.HudderConfig;
 import io.github.ngspace.hudder.uielements.AUIElement;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.minecraft.Util;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.TriState;
 
 /**
  * Hudder.java was too messy so I moved all rendering functions into this one class
@@ -34,15 +41,22 @@ public class HudderRenderer implements HudRenderCallback {
 	protected static Minecraft mc = Minecraft.getInstance();
     public static final String NL_REGEX = "\r?\n";
     
-//    private static final Function<ResourceLocation, RenderType> hudder_gui_tr = Util.memoize(texture ->
-//		RenderType.create("hudder_gui_tr", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.TRIANGLE_STRIP,
-//		786432, RenderType.CompositeState.builder().setTextureState(new RenderStateShard.TextureStateShard(texture,
-//		TriState.FALSE, false)).setShaderState(new ShaderStateShard(CoreShaders.POSITION_TEX_COLOR)).setTransparencyState
-//		(RenderStateShard.TRANSLUCENT_TRANSPARENCY).setDepthTestState(RenderStateShard.LEQUAL_DEPTH_TEST)
-//		.createCompositeState(false)));
+    public final RenderType TriangleColorRenderType;
+    public final Function<ResourceLocation, RenderType> TriangleTextureRenderType;
 	
 	public HudderRenderer(HudCompilationManager compilationManager) {
 		this.compman = compilationManager;
+		
+		// RenderType.gui() but TRIANGLE_STRIP
+		TriangleColorRenderType = RenderType.create("gui", 786432, RenderPipeline.builder(RenderPipelines.GUI_SNIPPET)
+				.withLocation("pipeline/gui").withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode
+				.TRIANGLE_STRIP).build(), RenderType.CompositeState.builder().createCompositeState(false));
+		// RenderType.guiTextured(...) but TRIANGLE_STRIP
+		TriangleTextureRenderType = Util.memoize(id -> RenderType.create("gui_textured", 786432, RenderPipeline
+				.builder(RenderPipelines.GUI_TEXTURED_SNIPPET).withLocation("pipeline/gui_textured")
+				.withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLE_STRIP).build(),
+				RenderType.CompositeState.builder().setTextureState(new RenderStateShard.TextureStateShard(id,
+				TriState.FALSE, false)).createCompositeState(false)));
 	}
 	
 	
@@ -138,48 +152,24 @@ public class HudderRenderer implements HudRenderCallback {
 	
 	
 	public void renderBlock(GuiGraphics context, float x, float y, float width, float height, long argb) {
-//        RenderSystem.enableBlend();
-//        RenderSystem.defaultBlendFunc();
-//		RenderSystem.setShader(CoreShaders.POSITION_COLOR);
-//        int alpha = (int) ((argb >> 24) & 0xFF);
-//        int red =   (int) ((argb >> 16) & 0xFF);
-//        int green = (int) ((argb >>  8) & 0xFF);
-//        int blue =  (int) ((argb      ) & 0xFF);
-//
-//        BufferBuilder bgBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS,
-//        		DefaultVertexFormat.POSITION_COLOR);
-//        Matrix4f matrix = context.pose().last().pose();
-//        bgBuilder.addVertex(matrix, x, y+height, 0f).setColor(red,green,blue,alpha);
-//        bgBuilder.addVertex(matrix, x+width, y+height, 0f).setColor(red,green,blue,alpha);
-//        bgBuilder.addVertex(matrix, x+width, y, 0f).setColor(red,green,blue,alpha);
-//        bgBuilder.addVertex(matrix, x, y, 0f).setColor(red,green,blue,alpha);
-//        BufferUploader.drawWithShader(bgBuilder.build());
-//        RenderSystem.disableBlend();
-	}
-
-	public void renderTexturedVertexArray(GuiGraphics context, float[] vertices, float[] textures,
-			ResourceLocation id, boolean triangles) {
-//		context.drawSpecial((Consumer<MultiBufferSource>)(vcp -> {
-//	        RenderSystem.enableBlend();
-//	        RenderSystem.defaultBlendFunc();
-//			RenderSystem.setShader(CoreShaders.POSITION_TEX_COLOR);
-//	        
-//	        VertexConsumer vertexConsumer = vcp.getBuffer(triangles ? hudder_gui_tr.apply(id) : RenderType.guiTextured(id));
-//	        
-//	        Matrix4f matrix = context.pose().last().pose();
-//	        for (int i = 0;i<vertices.length;i+=2) {
-//	        	vertexConsumer.addVertex(matrix,vertices[i],vertices[i+1],0f).setUv(textures[i],textures[i+1]).setColor(-1);
-//	        }
-//	        RenderSystem.disableBlend();
-//		}));
+		int alpha = (int) ((argb >> 24) & 0xFF);
+		int red =   (int) ((argb >> 16) & 0xFF);
+		int green = (int) ((argb >>  8) & 0xFF);
+		int blue =  (int) ((argb      ) & 0xFF);
+		context.drawSpecial(v->{
+	        VertexConsumer vconsumer = v.getBuffer(RenderType.gui());
+	        Matrix4f matrix = context.pose().last().pose();
+	        
+	        vconsumer.addVertex(matrix, x, y+height, 0f).setColor(red,green,blue,alpha).setUv2(green, blue);
+	        vconsumer.addVertex(matrix, x+width, y+height, 0f).setColor(red,green,blue,alpha);
+	        vconsumer.addVertex(matrix, x+width, y, 0f).setColor(red,green,blue,alpha);
+	        vconsumer.addVertex(matrix, x, y, 0f).setColor(red,green,blue,alpha);
+		});
 	}
 	
 	public void renderTexture9Slice(GuiGraphics context, ResourceLocation id, float x, float y, float width,
 			float height, float[] slices) {
 		context.drawSpecial((Consumer<MultiBufferSource>)(vcp -> {
-//	        RenderSystem.enableBlend();
-//	        RenderSystem.defaultBlendFunc();
-//			RenderSystem.setShader(CoreShaders.POSITION_TEX_COLOR);
 	        VertexConsumer vconsumer = vcp.getBuffer(RenderType.guiTextured(id));
 	        
 	        Matrix4f matrix = context.pose().last().pose();
@@ -262,6 +252,20 @@ public class HudderRenderer implements HudRenderCallback {
 	        vconsumer.addVertex(matrix,x+width,middleend_ver,0f).setUv(1,middleend_tex_ver).setColor(-1);
 		}));
 	}
+
+	public void renderTexturedVertexArray(GuiGraphics context, float[] vertices, float[] textures,
+			ResourceLocation id, boolean triangles) {
+		context.drawSpecial((Consumer<MultiBufferSource>)(vcp -> {
+	        VertexConsumer vertexConsumer =
+	        		vcp.getBuffer(triangles ? TriangleTextureRenderType.apply(id) : RenderType.guiTextured(id));
+	        
+	        Matrix4f matrix = context.pose().last().pose();
+	        for (int i = 0;i<vertices.length;i+=2) {
+	        	vertexConsumer.addVertex(matrix,vertices[i],vertices[i+1],0f).setUv(textures[i],textures[i+1]).setColor(-1);
+	        }
+		}));
+	}
+	
 	/**
 	 * Draws the provided vertices on screen with the provided color and render mode
 	 * @param context The render context
@@ -273,20 +277,14 @@ public class HudderRenderer implements HudRenderCallback {
 	 * @param mode The rendering mode
 	 */
 	public void renderColoredVertexArray(GuiGraphics context, float[] vertices, int r, int g, int b, int a,
-			VertexFormat.Mode mode) {
-//        RenderSystem.enableBlend();
-//        RenderSystem.defaultBlendFunc();
-//		RenderSystem.setShader(CoreShaders.POSITION_COLOR);
-//		
-//        BufferBuilder vertexBuilder = Tesselator.getInstance().begin(mode,
-//        		DefaultVertexFormat.POSITION_COLOR);
-//        Matrix4f matrix = context.pose().last().pose();
-//
-//        for (int i = 0;i<vertices.length;i+=2)
-//        	vertexBuilder.addVertex(matrix,vertices[i],vertices[i+1],0f).setColor(r, g, b, a);
-//        
-//        BufferUploader.drawWithShader(vertexBuilder.build());
-//        RenderSystem.disableBlend();
+			boolean triangle_strip) {
+		context.drawSpecial(v->{
+	        VertexConsumer vconsumer = v.getBuffer(triangle_strip ? TriangleColorRenderType : RenderType.gui());
+	        Matrix4f matrix = context.pose().last().pose();
+
+	        for (int i = 0;i<vertices.length;i+=2)
+	        	vconsumer.addVertex(matrix,vertices[i],vertices[i+1],0f).setColor(r, g, b, a);
+		});
 	}
 	
 	
