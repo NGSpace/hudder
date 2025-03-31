@@ -33,9 +33,10 @@ public class Texture9SliceElement extends AUIElement {
 	}
 
 	@Override public void renderElement(GuiGraphics context, HudderRenderer renderer, DeltaTracker delta) {
-		RenderSystem.enableBlend();
-		RenderSystem.defaultBlendFunc();
-		renderer.renderTexture9Slice(context, id, x, y, width, height, scales);
-		RenderSystem.disableBlend();
+		//TODO this
+//		RenderSystem.enableBlend();
+//		RenderSystem.defaultBlendFunc();
+//		renderer.renderTexture9Slice(context, id, x, y, width, height, scales);
+//		RenderSystem.disableBlend();
 	}
 }

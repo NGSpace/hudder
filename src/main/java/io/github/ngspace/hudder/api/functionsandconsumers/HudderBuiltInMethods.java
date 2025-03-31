@@ -4,7 +4,7 @@ import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI;
 import io.github.ngspace.hudder.uielements.ColorVerticesElement;
 import io.github.ngspace.hudder.uielements.GameHudElement;
-import io.github.ngspace.hudder.uielements.NativeTextureElement;
+import io.github.ngspace.hudder.uielements.BuiltInTextureElement;
 import io.github.ngspace.hudder.uielements.TextElement;
 import io.github.ngspace.hudder.uielements.Texture9SliceElement;
 import io.github.ngspace.hudder.uielements.TextureElement;
@@ -27,7 +27,7 @@ public class HudderBuiltInMethods {private HudderBuiltInMethods() {}
 		
 		//Textures
 		
-		api.registerConsumer((e,a,s)->e.addUIElement(new NativeTextureElement(ResourceLocation.withDefaultNamespace(
+		api.registerConsumer((e,a,s)->e.addUIElement(new BuiltInTextureElement(ResourceLocation.withDefaultNamespace(
 				s[0].asString().trim()), s[1].asInt(), s[2].asInt(), s[3].asInt(),s[4].asInt())), "drawTexture", "texture");
 		
 		api.registerConsumer((e,a,s)-> e.addUIElement(new TextureElement(s[0].asString(),
