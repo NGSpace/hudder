@@ -9,9 +9,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.resources.ResourceLocation;
 
-public class NativeTextureElement extends AUIElement {
-	
-	//TODO RENAME THIS, THIS IS NOT NATIVE.
+public class BuiltInTextureElement extends AUIElement {
 	
 	public final int x;
 	public final int y;
@@ -20,7 +18,7 @@ public class NativeTextureElement extends AUIElement {
 	public final ResourceLocation id;
     public static Minecraft mc = Minecraft.getInstance();
 	
-	public NativeTextureElement(ResourceLocation id, int x, int y, int width, int height) throws CompileException {
+	public BuiltInTextureElement(ResourceLocation id, int x, int y, int width, int height) throws CompileException {
 		this.x=x;
 		this.y=y;
 		this.width=width;
