@@ -10,6 +10,7 @@ import io.github.ngspace.hudder.mixin.WorldRendererAccess;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.server.IntegratedServer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.LightLayer;
 
 public class NumberData {private NumberData() {}
@@ -114,10 +115,27 @@ public class NumberData {private NumberData() {}
 			
 			
 			/* Player roation*/
+			// Pitch
 			case "dpitch": yield (double) p.getXRot();
-			case "dyaw": yield p.getYHeadRot() % 360d;
 			case "pitch": yield (double) (int) p.getXRot();
-			case "yaw": yield (double) (int) p.getYHeadRot() % 360;
+			// Yaw
+			case "dyaw": {
+				float yaw = p.getYHeadRot();
+				if (yaw<0) yield (double) (360d+(yaw % 360d));
+				yield yaw % 360d;
+			}
+			case "yaw":  {
+				int yaw = (int) p.getYHeadRot();
+				if (yaw<0) yield (double) (360+(yaw % 360));
+				yield yaw % 360d;
+			}
+			// F3 yaw
+			case "f3_dyaw":  {
+				yield (double) Mth.wrapDegrees(p.getYHeadRot());
+			}
+			case "f3_yaw":  {
+				yield (double) (int) Mth.wrapDegrees(p.getYHeadRot());
+			}
 			
 			
 

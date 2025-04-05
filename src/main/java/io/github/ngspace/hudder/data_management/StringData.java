@@ -2,7 +2,6 @@ package io.github.ngspace.hudder.data_management;
 
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.Optional;
 
 import com.mojang.blaze3d.platform.GLX;
 
@@ -11,8 +10,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -44,9 +41,7 @@ public class StringData {private StringData() {}
 			
 			/* World */
 			case "biome":
-				Optional<ResourceKey<Biome>> i = ins.level.getBiome(ins.player.blockPosition()).unwrapKey();
-				if (i.isPresent()) yield i.get().registry().toString();
-				yield null;
+				yield ins.level.getBiome(ins.player.blockPosition()).getRegisteredName();
 			case "dimension": yield ins.level.dimension().toString();
 			
 			
