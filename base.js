@@ -209,7 +209,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	<link rel="icon" type="image/x-icon" href="favicon.ico">
 	<div id="topbar">
 		<img src="Images/Hudder.webp" alt="Back to main hudder wiki page" />
-		<div id="title">Hudder 8.0.0 Wiki</div>
+		<div id="title">Hudder 8.1.0 Wiki</div>
 	</div>
 	<div id="sidebar">
 	<h1>Explore</h1>

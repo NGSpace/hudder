@@ -30,20 +30,21 @@
 
 <h1>Type casting</h1>
 <hr><br>
-<code>int([Text]) - returns the number equavilent of the provided text (ex. "1" returns the number 1, "20" returns the number 20, etc.)
+<code>int([String]) - returns the number equavilent of the provided text (ex. "1" returns the number 1, "20" returns the number 20, etc.)
 int([Character]) - returns the ascii of the provided Character
 str([Anything]) - returns the text equavilent of the provided value (ex. the number 1 returns "1", the boolean true returns "true", etc.)
 char([Number]) - returns the Character located at the provided index in the ascii Character table.
 </code>
 <br>
 
-<h1 id="variables">Reading variables</h1>
+<h1 id="variables">Variables</h1>
 <hr><br>
 
-<code>getVar([String variable]) - returns the variable with the given name (ex. fps, key_h).
-getNumber([String variable]) - returns the Number variable with the given name.
-getString([String variable]) - returns the String variable with the given name.
-getBoolean([String variable]) - returns the Boolean variable with the given name.
+<code>get([String]) - returns the variable with the given name (ex. fps, key_h) (Also accepts getVar).
+getNumber([String]) - returns the Number variable with the given name.
+getString([String]) - returns the String variable with the given name.
+getBoolean([String]) - returns the Boolean variable with the given name.
+set([String], [Any]) - sets the value of the given variable to the given value (Also accepts setVal).
 </code>
 <br>
 
