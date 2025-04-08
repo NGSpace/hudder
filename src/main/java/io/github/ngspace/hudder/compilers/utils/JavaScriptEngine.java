@@ -48,7 +48,7 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
         	}
         });
         cx.setLanguageVersion(Context.VERSION_ES6);//Beta features
-        cx.setOptimizationLevel(9);
+        cx.setInterpretedMode(false);
         
         scope = cx.initSafeStandardObjects();
 		
