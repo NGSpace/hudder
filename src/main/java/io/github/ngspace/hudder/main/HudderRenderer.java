@@ -290,12 +290,6 @@ public class HudderRenderer implements Layer {
 	
 	
 	
-	/**
-	 * If limitrate is disabled, execute the hud (done every frame).
-	 * <br><br>
-	 * Then, if not disabled, draw the result on screen.
-	 * <br>If compilation failed then render the error with word wrapping to allow for easier readablity.
-	 */
 	@Override public void render(GuiGraphics context, DeltaTracker delta) {
 		try {
 			if (!Hudder.config.limitrate) compman.compile(delta);
