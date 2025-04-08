@@ -38,12 +38,13 @@ public class BooleanData {private BooleanData(){}
 			
 			
 			/* Player movement */
+			case "isflying": yield p.getAbilities().flying;
 			case "isgliding": yield p.isFallFlying();
 			case "isclimbing": yield p.onClimbable();
 			case "iscrawling": yield p.isVisuallyCrawling();
 			case "isswimming": yield p.isSwimming();
 			case "issneaking": yield p.isShiftKeyDown();
-			
+				
 			
 			
 			/* Player information */
@@ -55,6 +56,7 @@ public class BooleanData {private BooleanData(){}
 			case "isonfire": yield p.isOnFire();
 			case "isonground": yield p.onGround();
 			case "isinvisible": yield p.isInvisible();
+			case "isdrowning": yield p.isInWater();
 			
 			
 			

@@ -53,7 +53,7 @@ public class HudderTickEvent implements StartTick {
 						Hudder.showToast(Component.literal("Refreshed files!").withStyle(ChatFormatting.BOLD), 
 							Component.literal("\u00A7a"+changed.getFileName()+" changed."));
 					} catch (IOException e) {
-						Hudder.showToast( Component.literal("\\u00A74Error refreshing files!")
+						Hudder.showToast(Component.literal("\\u00A74Error refreshing files!")
 								.withStyle(ChatFormatting.BOLD),Component.literal(e.getMessage()));
 						e.printStackTrace();
 					}

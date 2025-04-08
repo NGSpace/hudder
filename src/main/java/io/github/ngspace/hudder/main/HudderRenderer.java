@@ -16,12 +16,12 @@ import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
 import io.github.ngspace.hudder.main.config.HudderConfig;
 import io.github.ngspace.hudder.uielements.AUIElement;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.Util;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.LayeredDraw.Layer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderStateShard;
@@ -35,11 +35,12 @@ import net.minecraft.util.TriState;
 /**
  * Hudder.java was too messy so I moved all rendering functions into this one class
  */
-public class HudderRenderer implements HudRenderCallback {
+public class HudderRenderer implements Layer {
 	
 	private HudCompilationManager compman;
 	protected static Minecraft mc = Minecraft.getInstance();
     public static final String NL_REGEX = "\r?\n";
+	public static final ResourceLocation RENDER_LAYER = ResourceLocation.fromNamespaceAndPath("hudder", "hudder_render_layer");
     
     public final RenderType TriangleColorRenderType;
     public final Function<ResourceLocation, RenderType> TriangleTextureRenderType;
@@ -295,7 +296,7 @@ public class HudderRenderer implements HudRenderCallback {
 	 * Then, if not disabled, draw the result on screen.
 	 * <br>If compilation failed then render the error with word wrapping to allow for easier readablity.
 	 */
-	@Override public void onHudRender(GuiGraphics context, DeltaTracker delta) {
+	@Override public void render(GuiGraphics context, DeltaTracker delta) {
 		try {
 			if (!Hudder.config.limitrate) compman.compile(delta);
 			if (Hudder.config.shouldDrawResult()) {
