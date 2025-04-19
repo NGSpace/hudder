@@ -29,6 +29,7 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 	@Override public AV2Value parse(V2Runtime runtime, String valuee, AV2Compiler comp, int line, int charpos) throws CompileException {
 		
 		String value = valuee.trim();
+		AV2Value[] values;// Some variables need it
 		
 		// Empty variable
 		if (value.isBlank()) throw new CompileException("Unknown variable: empty variable", line, charpos);
@@ -162,6 +163,18 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 			}
 		}
 		
+		
+		
+		//Logical OR operator
+		values = logicalOperator('|', value, runtime, line, charpos);
+		if (values.length>0) return new V2LogicalOR(values, line, charpos, value, comp);
+		
+		
+		
+		//Logical AND operator
+		values = logicalOperator('&', value, runtime, line, charpos);
+		if (values.length>0) return new V2LogicalAND(values, line, charpos, value, comp);
+		
 
 		//Comparing values
 		String operator = getOperator(value);
@@ -233,7 +246,7 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 		
 		
 		//Math operation
-		AV2Value[] values = new AV2Value[0];
+		values = new AV2Value[0];
 		StringBuilder mathvalue = new StringBuilder();
 		char[] operations = new char[0];
 		for (int i = 0;i<value.length();i++) {
@@ -299,18 +312,6 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 			return new V2PreIncDecOperator(comp.getV2Value(runtime, value.substring(2),
 					line, charpos), comp, line, charpos, "+".equals(value.substring(0, 1)), value);
 		}
-		
-		
-		
-		//Logical OR operator
-		values = logicalOperator('|', value, runtime, line, charpos);
-		if (values.length>0) return new V2LogicalOR(values, line, charpos, value, comp);
-		
-		
-		
-		//Logical AND operator
-		values = logicalOperator('&', value, runtime, line, charpos);
-		if (values.length>0) return new V2LogicalAND(values, line, charpos, value, comp);
 		
 		
 		
