@@ -9,6 +9,13 @@
 ||EXPECT||
 6.3
 
+||INPUT||Logical operators in comparisions
+{5>6||6>6}
+{5>6&&6>6}
+||EXPECT||
+false
+false
+
 ||INPUT||If and Break
 r#if true
 	{break}
