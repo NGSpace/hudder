@@ -79,7 +79,7 @@ public class NumberData {private NumberData() {}
 			case "xplevel": yield (double) p.experienceLevel;
 			case "xp": yield (double) p.totalExperience;
 			case "armor": yield (double) p.getArmorValue();
-			case "falldistance": (double) yield p.fallDistance;
+			case "falldistance": yield (double) p.fallDistance;
 
 			case "playerspeed": {
 				var ent = p.getVehicle() == null ? p : p.getVehicle();
