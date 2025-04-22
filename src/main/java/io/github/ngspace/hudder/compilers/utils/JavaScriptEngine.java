@@ -44,6 +44,14 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 					    }
 					};
         		}
+        		if (javaObject instanceof ObjectWrapper r) {
+        			try {
+        				System.out.println("r");
+						return wrapAsJavaObject(cx, scope, r.get(), staticType);
+					} catch (CompileException e) {
+						e.printStackTrace();
+					}
+        		}
         		return super.wrapAsJavaObject(cx, scope, javaObject, staticType);
         	}
         });
@@ -169,7 +177,7 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 		@Override public boolean asBoolean() {return Context.toBoolean(value);}
 		@Override public Object[] asArray() {return ((NativeArray) value).toArray();}
 		
-		@Override public String toString() {return asString();}
+		@Override public String toString() {return value.toString();}
 
 		@Override public <T> T asType(Class<T> clazz) throws CompileException {return clazz.cast(get());}
 	}
