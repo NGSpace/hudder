@@ -29,8 +29,7 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 	@Override public AV2Value parse(V2Runtime runtime, String valuee, AV2Compiler comp, int line, int charpos) throws CompileException {
 		
 		String value = valuee.trim();
-		AV2Value[] values;
-		System.out.println(value);
+		AV2Value[] values;// Some variables need it
 		
 		// Empty variable
 		if (value.isBlank()) throw new CompileException("Unknown variable: empty variable", line, charpos);
@@ -168,13 +167,15 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 		
 		//Logical OR operator
 		values = logicalOperator('|', value, runtime, line, charpos);
-		if (values.length>0) return new V2LogicalOR(values, line, charpos, value, comp);
+		if (values.length>1)
+			return new V2LogicalOR(values, line, charpos, value, comp);
 		
 		
 		
 		//Logical AND operator
 		values = logicalOperator('&', value, runtime, line, charpos);
-		if (values.length>0) return new V2LogicalAND(values, line, charpos, value, comp);
+		if (values.length>1)
+			return new V2LogicalAND(values, line, charpos, value, comp);
 		
 
 		//Comparing values
@@ -268,11 +269,18 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 			}
 			if (c=='('&&mathvalue.isEmpty()) {
 				int parentheses = 1;
+				mathvalue.append(c);
 				i++;
 				for (;i<value.length();i++) {
 					c = value.charAt(i);
 					if (c=='(') parentheses++;
-					if (c==')') {parentheses--;if (parentheses==0) break;}
+					if (c==')') {
+						parentheses--;
+						if (parentheses==0) {
+							mathvalue.append(c);
+							break;
+						}
+					}
 					mathvalue.append(c);
 				}
 				continue;
