@@ -131,12 +131,8 @@ public class NumberData {private NumberData() {}
 				yield yaw % 360d;
 			}
 			// F3 yaw
-			case "f3_dyaw":  {
-				yield (double) Mth.wrapDegrees(p.getYHeadRot());
-			}
-			case "f3_yaw":  {
-				yield (double) (int) Mth.wrapDegrees(p.getYHeadRot());
-			}
+			case "f3_dyaw": yield (double) Mth.wrapDegrees(p.getYHeadRot());
+			case "f3_yaw": yield (double) (int) Mth.wrapDegrees(p.getYHeadRot());
 			
 			
 

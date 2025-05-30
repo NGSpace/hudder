@@ -1,7 +1,5 @@
 package io.github.ngspace.hudder.uielements;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.main.HudderRenderer;
 import io.github.ngspace.hudder.utils.HudFileUtils;
@@ -33,10 +31,6 @@ public class Texture9SliceElement extends AUIElement {
 	}
 
 	@Override public void renderElement(GuiGraphics context, HudderRenderer renderer, DeltaTracker delta) {
-		//TODO this
-//		RenderSystem.enableBlend();
-//		RenderSystem.defaultBlendFunc();
-//		renderer.renderTexture9Slice(context, id, x, y, width, height, scales);
-//		RenderSystem.disableBlend();
+		renderer.renderTexture9Slice(context, id, x, y, width, height, scales);
 	}
 }

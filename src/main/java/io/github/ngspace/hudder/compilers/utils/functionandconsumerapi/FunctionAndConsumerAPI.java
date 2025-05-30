@@ -36,7 +36,6 @@ public class FunctionAndConsumerAPI {
 		for (var cons : consumers.entrySet())
 			binder.bindConsumer(cons.getKey(), cons.getValue());
 		for (var func : functions.entrySet()) {
-			System.out.println(func.getValue());
 			binder.bindFunction(func.getKey(), func.getValue());
 		}
 		binders.add(binder);

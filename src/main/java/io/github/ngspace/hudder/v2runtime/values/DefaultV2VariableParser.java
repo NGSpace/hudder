@@ -167,14 +167,14 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 		
 		//Logical OR operator
 		values = logicalOperator('|', value, runtime, line, charpos);
-		if (values.length>1) 
+		if (values.length>1)
 			return new V2LogicalOR(values, line, charpos, value, comp);
 		
 		
 		
 		//Logical AND operator
 		values = logicalOperator('&', value, runtime, line, charpos);
-		if (values.length>1) 
+		if (values.length>1)
 			return new V2LogicalAND(values, line, charpos, value, comp);
 		
 

@@ -44,7 +44,6 @@ public class Compilers {private Compilers() {}
 			loadedcomps.put(comp, (ATextCompiler) Class.forName(Comps.get(comp)).getConstructor().newInstance());
 			return loadedcomps.get(comp);
 		}
-		System.out.println(name);
 		
 		return getCompilerFromName("default");// Fallback to default compiler
 	}
