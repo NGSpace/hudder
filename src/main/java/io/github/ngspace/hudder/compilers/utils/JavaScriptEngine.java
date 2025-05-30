@@ -46,7 +46,6 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
         		}
         		if (javaObject instanceof ObjectWrapper r) {
         			try {
-        				System.out.println("r");
 						return wrapAsJavaObject(cx, scope, r.get(), staticType);
 					} catch (CompileException e) {
 						e.printStackTrace();
