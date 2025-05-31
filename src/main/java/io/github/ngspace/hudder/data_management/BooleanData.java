@@ -4,6 +4,7 @@ import static io.github.ngspace.hudder.data_management.Advanced.isKeyHeld;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.main.config.HudderConfig;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.level.GameType;
@@ -14,6 +15,7 @@ public class BooleanData {private BooleanData(){}
 		Minecraft ins = Minecraft.getInstance();
 		HudderConfig config = Hudder.config;
 		LocalPlayer p = ins.player;
+		Camera c = ins.gameRenderer.getMainCamera();
 		return switch (key) {
 			case "isslime", "is_slime": {
 				try {
@@ -26,6 +28,7 @@ public class BooleanData {private BooleanData(){}
 			
 			case "hudhidden": yield ins.options.hideGui;
 			case "showdebug": yield ins.getDebugOverlay().showDebugScreen();
+			case "camera_detached": yield c.getEntity() != p;
 			
 			
 			
