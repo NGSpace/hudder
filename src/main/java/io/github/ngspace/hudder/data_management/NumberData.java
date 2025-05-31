@@ -53,7 +53,7 @@ public class NumberData {private NumberData() {}
 			
 			
 			
-			/* time */
+			/* Time */
 			case "time": yield (double) System.currentTimeMillis();
 			case "milliseconds": yield (double) Calendar.getInstance().get(Calendar.MILLISECOND);
 			case "seconds": yield (double) Calendar.getInstance().get(Calendar.SECOND);
@@ -112,9 +112,18 @@ public class NumberData {private NumberData() {}
 			case "subchunkz": yield (double) (p.getBlockZ() & 0xF);
 			case "chunkx": yield (double) p.chunkPosition().x;
 			case "chunkz": yield (double) p.chunkPosition().z;
-			
-			
-			
+
+
+
+			/* Camera chunk information */
+			case "cam_subchunkx": yield (double) (c.getBlockPosition().getX() & 0xF);
+			case "cam_subchunky": yield (double) (c.getBlockPosition().getY() & 0xF);
+			case "cam_subchunkz": yield (double) (c.getBlockPosition().getZ() & 0xF);
+			case "cam_chunkx": yield (double) (c.getBlockPosition().getX() >> 4);
+			case "cam_chunkz": yield (double) (c.getBlockPosition().getZ() >> 4);
+
+
+
 			/* Player roation*/
 			// Pitch
 			case "dpitch": yield (double) p.getXRot();
@@ -136,6 +145,28 @@ public class NumberData {private NumberData() {}
 			
 			
 
+
+			/* Camera roation*/
+			// Pitch
+			case "cam_dpitch": yield (double) c.getXRot();
+			case "cam_pitch": yield (double) (int) c.getXRot();
+			// Yaw
+			case "cam_dyaw": {
+				float yaw = c.getYRot();
+				if (yaw<0) yield (double) (360d+(yaw % 360d));
+				yield yaw % 360d;
+			}
+			case "cam_yaw":  {
+				int yaw = (int) c.getYRot();
+				if (yaw<0) yield (double) (360+(yaw % 360));
+				yield yaw % 360d;
+			}
+			// F3 yaw
+			case "cam_f3_dyaw": yield (double) Mth.wrapDegrees(c.getYRot());
+			case "cam_f3_yaw": yield (double) (int) Mth.wrapDegrees(c.getYRot());
+
+
+
 			/* World Rendering */
 			case "entites", "entities": yield (double) ((WorldRendererAccess)ins.levelRenderer).getVisibleEntityCount();
 			case "particles": yield (double) ((ParticleManagerAccessor)ins.particleEngine)
@@ -145,9 +176,15 @@ public class NumberData {private NumberData() {}
 			
 			
 			/* World */
+			/* At player */
 			case "light": yield (double) ins.level.getMaxLocalRawBrightness(p.blockPosition());
 			case "blocklight", "block_light": yield (double) ins.level.getBrightness(LightLayer.BLOCK,p.blockPosition());
 			case "skylight", "sky_light": yield (double) ins.level.getBrightness(LightLayer.SKY,p.blockPosition());
+			/* At camera */
+			case "cam_light": yield (double) ins.level.getMaxLocalRawBrightness(c.getBlockPosition());
+			case "cam_blocklight", "cam_block_light": yield (double) ins.level.getBrightness(LightLayer.BLOCK,c.getBlockPosition());
+			case "cam_skylight", "cam_sky_light": yield (double) ins.level.getBrightness(LightLayer.SKY,c.getBlockPosition());
+			/* General */
 			case "worldtime", "world_time": yield (double) ins.level.getDayTime();
 			case "daytime", "day_time": yield ins.level.getDayTime()/24000d;
 			
