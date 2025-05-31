@@ -6,19 +6,24 @@ import java.util.Locale;
 import com.mojang.blaze3d.platform.GLX;
 
 import io.github.ngspace.hudder.Hudder;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
+import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 
 public class StringData {private StringData() {}
 	public static String getString(String key) {
 		Minecraft ins = Minecraft.getInstance();
 		LocalPlayer p = ins.player;
+		Camera c = ins.gameRenderer.getMainCamera();
 		return switch (key) {
 			
 			case "damagetype": yield p.getLastDamageSource() == null ? "" : p.getLastDamageSource().type().toString();
@@ -42,6 +47,8 @@ public class StringData {private StringData() {}
 			/* World */
 			case "biome":
 				yield ins.level.getBiome(ins.player.blockPosition()).getRegisteredName();
+			case "cam_biome":
+				yield ins.level.getBiome(c.getBlockPosition()).getRegisteredName();
 			case "dimension": yield ins.level.dimension().toString();
 			
 			
@@ -56,6 +63,28 @@ public class StringData {private StringData() {}
 			    }
 			    yield "";
 			}
+			case "cam_block_in_front": {
+				Vec3 camPos = c.getPosition();
+				Vector3f lookDirF = c.getLookVector();
+				Vec3 lookDir = new Vec3(lookDirF.x(), lookDirF.y(), lookDirF.z());
+				double reachDistance = 50.0;
+				Vec3 reachPoint = camPos.add(lookDir.x * reachDistance, lookDir.y * reachDistance, lookDir.z * reachDistance);
+
+				HitResult vec = ins.level.clip(new ClipContext(
+						camPos,
+						reachPoint,
+						ClipContext.Block.OUTLINE,
+						ClipContext.Fluid.NONE,
+						p
+				));
+
+				if (vec.getType()==Type.BLOCK) {
+					BlockHitResult res = (BlockHitResult) vec;
+					BlockState state = ins.level.getBlockState(res.getBlockPos());
+					yield BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString();
+				}
+				yield "";
+			}
 			case "looking_at_pos": {
 				HitResult vec = ins.player.pick(50,0,true);
 			    if (vec.getType()==Type.BLOCK) {
@@ -64,7 +93,28 @@ public class StringData {private StringData() {}
 			    }
 			    yield "";
 			}
-			
+			case "cam_looking_at_pos": {
+				Vec3 camPos = c.getPosition();
+				Vector3f lookDirF = c.getLookVector();
+				Vec3 lookDir = new Vec3(lookDirF.x(), lookDirF.y(), lookDirF.z());
+				double reachDistance = 50.0;
+				Vec3 reachPoint = camPos.add(lookDir.x * reachDistance, lookDir.y * reachDistance, lookDir.z * reachDistance);
+
+				HitResult vec = ins.level.clip(new ClipContext(
+						camPos,
+						reachPoint,
+						ClipContext.Block.OUTLINE,
+						ClipContext.Fluid.NONE,
+						p
+				));
+
+				if (vec.getType()==Type.BLOCK) {
+					BlockPos res = ((BlockHitResult) vec).getBlockPos();
+					yield "" + res.getX() + ' ' + res.getY() + ' ' + res.getZ();
+				}
+				yield "";
+			}
+
 			
 			
 			/* Hudder */
