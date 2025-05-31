@@ -145,7 +145,6 @@ public class NumberData {private NumberData() {}
 			
 			
 
-
 			/* Camera roation*/
 			// Pitch
 			case "cam_dpitch": yield (double) c.getXRot();
