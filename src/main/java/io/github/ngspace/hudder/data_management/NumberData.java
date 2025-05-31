@@ -55,7 +55,7 @@ public class NumberData {private NumberData() {}
 			
 			
 			
-			/* time */
+			/* Time */
 			case "time": yield (double) System.currentTimeMillis();
 			case "milliseconds": yield (double) Calendar.getInstance().get(Calendar.MILLISECOND);
 			case "seconds": yield (double) Calendar.getInstance().get(Calendar.SECOND);
@@ -136,7 +136,7 @@ public class NumberData {private NumberData() {}
 
 
 
-				/* Player roation*/
+			/* Player roation*/
 			// Pitch
 			case "dpitch": yield (double) p.getXRot();
 			case "pitch": yield (double) (int) p.getXRot();
@@ -157,11 +157,11 @@ public class NumberData {private NumberData() {}
 
 
 
-				/* Camera roation*/
-				// Pitch
+			/* Camera roation*/
+			// Pitch
 			case "cam_dpitch": yield (double) c.getXRot();
 			case "cam_pitch": yield (double) (int) c.getXRot();
-				// Yaw
+			// Yaw
 			case "cam_dyaw": {
 				float yaw = c.getYRot();
 				if (yaw<0) yield (double) (360d+(yaw % 360d));
@@ -178,7 +178,7 @@ public class NumberData {private NumberData() {}
 
 
 
-				/* World Rendering */
+			/* World Rendering */
 			case "entites", "entities": yield (double) ((WorldRendererAccess)ins.levelRenderer).getVisibleEntityCount();
 			case "particles": yield (double) ((ParticleManagerAccessor)ins.particleEngine)
 				.getParticles().values().stream().mapToInt(Queue::size).sum();
@@ -187,15 +187,15 @@ public class NumberData {private NumberData() {}
 			
 			
 			/* World */
-				/* At player */
+			/* At player */
 			case "light": yield (double) ins.level.getMaxLocalRawBrightness(p.blockPosition());
 			case "blocklight", "block_light": yield (double) ins.level.getBrightness(LightLayer.BLOCK,p.blockPosition());
 			case "skylight", "sky_light": yield (double) ins.level.getBrightness(LightLayer.SKY,p.blockPosition());
-				/* At camera */
+			/* At camera */
 			case "cam_light": yield (double) ins.level.getMaxLocalRawBrightness(c.getBlockPosition());
 			case "cam_blocklight", "cam_block_light": yield (double) ins.level.getBrightness(LightLayer.BLOCK,c.getBlockPosition());
 			case "cam_skylight", "cam_sky_light": yield (double) ins.level.getBrightness(LightLayer.SKY,c.getBlockPosition());
-				/* General */
+			/* General */
 			case "worldtime", "world_time": yield (double) ins.level.getDayTime();
 			case "daytime", "day_time": yield ins.level.getDayTime()/24000d;
 
