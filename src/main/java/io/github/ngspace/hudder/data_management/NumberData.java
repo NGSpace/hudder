@@ -12,6 +12,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.level.LightLayer;
 
 public class NumberData {private NumberData() {}
@@ -72,9 +75,20 @@ public class NumberData {private NumberData() {}
 			case "hunger": yield (double) p.getFoodData().getFoodLevel();
 			case "health", "hp": yield (double) p.getHealth();
 			case "maxhealth", "maxhp": yield (double) p.getMaxHealth();
-			
-			
-			
+
+
+
+			/* Mount information */
+			case "mount_health", "mount_hp": yield (p.getVehicle() instanceof LivingEntity) ? (double) ((LivingEntity) p.getVehicle()).getHealth() : null;
+			case "mount_maxhealth", "mount_maxhp": yield (p.getVehicle() instanceof LivingEntity) ? (double) ((LivingEntity) p.getVehicle()).getMaxHealth() : null;
+			case "mount_speed": yield (p.getVehicle() instanceof LivingEntity) ? ((LivingEntity) p.getVehicle()).getAttribute(Attributes.MOVEMENT_SPEED).getBaseValue() : null;
+			case "mount_jump_strength": yield (p.getVehicle() instanceof LivingEntity) ? ((LivingEntity) p.getVehicle()).getAttribute(Attributes.JUMP_STRENGTH).getBaseValue() : null;
+			case "mount_jump_scale": yield (p.getVehicle() instanceof AbstractHorse) ? (double) p.getJumpRidingScale() : null;
+			case "mount_armor": yield (p.getVehicle() instanceof AbstractHorse) ? (double) ((AbstractHorse) p.getVehicle()).getArmorValue() : null;
+			case "mount_jump_cooldown": yield (p.getVehicle() instanceof AbstractHorse) ? (double) ((AbstractHorse) p.getVehicle()).getJumpCooldown() : null;
+
+
+
 			/* Other Player related information */
 			case "selectedslot": yield (double) p.getInventory().getSelectedSlot();
 			case "xplevel": yield (double) p.experienceLevel;

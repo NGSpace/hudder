@@ -11,6 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -41,9 +42,16 @@ public class StringData {private StringData() {}
 			/* Inventory */
 			case "helditem_name": yield ins.player.getInventory()
 				.getItem(ins.player.getInventory().getSelectedSlot()).getDisplayName().getString();
-			
-			
-			
+
+
+
+			/* Mount information */
+			case "mount_type": yield p.getVehicle() == null ? "" : p.getVehicle().getType().builtInRegistryHolder().key().location().toString();
+			case "mount_armor_type": yield (p.getVehicle() instanceof AbstractHorse) ? ((AbstractHorse) p.getVehicle()).getBodyArmorItem().getItem().toString() : null;
+			case "mount_name": yield p.getVehicle() == null || p.getVehicle().getCustomName() == null ? "" : p.getVehicle().getCustomName().getString();
+
+
+
 			/* World */
 			case "biome":
 				yield ins.level.getBiome(ins.player.blockPosition()).getRegisteredName();
