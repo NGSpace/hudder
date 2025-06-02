@@ -9,7 +9,6 @@ import io.github.ngspace.hudder.utils.ObjectWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 
@@ -34,8 +33,8 @@ public class ItemStackMethods implements IMethod {
 		Inventory inv = mc.player.getInventory();
 		
 		ItemStack stack = switch (type) {
-			case "helmet", "hat": yield inv.getItem(39);
 			case "hand","selectedslot": yield inv.getItem(inv.getSelectedSlot());
+			case "helmet", "hat": yield inv.getItem(39);
 			case "chestplate": yield inv.getItem(38);
 			case "pants", "leggings": yield inv.getItem(37);
 			case "boots": yield inv.getItem(36);
