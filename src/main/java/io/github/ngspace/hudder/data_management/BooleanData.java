@@ -7,6 +7,9 @@ import io.github.ngspace.hudder.main.config.HudderConfig;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.animal.horse.AbstractChestedHorse;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 
@@ -60,9 +63,18 @@ public class BooleanData {private BooleanData(){}
 			case "isonground": yield p.onGround();
 			case "isinvisible": yield p.isInvisible();
 			case "isdrowning": yield p.isInWater();
-			
-			
-			
+			case "iscontrollingmount": yield p.getControlledVehicle() != null;
+
+
+
+			/* Mount information */
+			case "mount_is_saddled": yield (p.getVehicle() instanceof Mob) ? ((Mob) p.getVehicle()).isSaddled() : null;
+			case "mount_has_armor": yield (p.getVehicle() instanceof Mob) ? ((Mob) p.getVehicle()).isWearingBodyArmor() : null;
+			case "mount_is_tamed": yield (p.getVehicle() instanceof AbstractHorse) ? ((AbstractHorse) p.getVehicle()).isTamed() : null;
+			case "mount_has_chest": yield (p.getVehicle() instanceof AbstractChestedHorse) ? ((AbstractChestedHorse) p.getVehicle()).hasChest() : null;
+
+
+
 			/* Mouse */
 			case "mouse_left": yield ins.mouseHandler.isLeftPressed();
 			case "mouse_middle": yield ins.mouseHandler.isMiddlePressed();
