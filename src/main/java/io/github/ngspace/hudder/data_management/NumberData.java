@@ -75,6 +75,8 @@ public class NumberData {private NumberData() {}
 			case "hunger": yield (double) p.getFoodData().getFoodLevel();
 			case "health", "hp": yield (double) p.getHealth();
 			case "maxhealth", "maxhp": yield (double) p.getMaxHealth();
+			case "absorption": yield (double) p.getAbsorptionAmount();
+			case "maxabsorption": yield (double) p.getMaxAbsorption();
 
 
 
@@ -95,6 +97,8 @@ public class NumberData {private NumberData() {}
 			case "xp": yield (double) p.totalExperience;
 			case "armor": yield (double) p.getArmorValue();
 			case "falldistance": yield p.fallDistance;
+			case "air": yield (double) p.getAirSupply();
+			case "maxair": yield (double) p.getMaxAirSupply();
 
 			case "playerspeed": {
 				var ent = p.getVehicle() == null ? p : p.getVehicle();
