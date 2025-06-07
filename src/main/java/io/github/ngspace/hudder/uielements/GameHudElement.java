@@ -75,7 +75,7 @@ public class GameHudElement extends AUIElement {
 					break;
 				case HOTBAR:
 			        matrixStack.translate(x-scaledWidth/2, y-scaledHeight, 0f);
-			        acchud.callRenderHotbarAndDecorations(context, delta);
+			        acchud.callRenderItemHotbar(context, delta);
 					break;
 				case ITEM_TOOLTIP:
 					int tooltipy = 44;

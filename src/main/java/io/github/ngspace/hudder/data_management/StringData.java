@@ -43,10 +43,7 @@ public class StringData {private StringData() {}
 			
 			
 			/* World */
-			case "biome":
-				Optional<ResourceKey<Biome>> i = ins.level.getBiome(ins.player.blockPosition()).unwrapKey();
-				if (i.isPresent()) yield i.get().registry().toString();
-				yield null;
+			case "biome": yield ins.level.getBiome(ins.player.blockPosition()).getRegisteredName();
 			case "dimension": yield ins.level.dimension().toString();
 			
 			

@@ -18,5 +18,5 @@ public interface InGameHudAccessor {
     @Invoker public void callRenderJumpMeter(PlayerRideableJumping mount, GuiGraphics context, int x);
     @Invoker public void callRenderExperienceBar(GuiGraphics guiGraphics, int i);
     @Invoker public void callRenderSelectedItemName(GuiGraphics context);
-    @Invoker public void callRenderHotbarAndDecorations(GuiGraphics context, DeltaTracker timeDelta);
+    @Invoker public void callRenderItemHotbar(GuiGraphics context, DeltaTracker timeDelta);
 }
