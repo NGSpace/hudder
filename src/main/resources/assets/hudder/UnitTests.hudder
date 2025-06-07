@@ -203,6 +203,11 @@ false
 ||EXPECT||
 0 0 -1 -1 0
 
+||INPUT||Negative math numbers
+{res=10} {res*-1} {-1*res}
+||EXPECT||
+10 -10 -10
+
 ||INPUT||Boolean invertion
 {!false} {res=true} {!res}
 ||EXPECT||

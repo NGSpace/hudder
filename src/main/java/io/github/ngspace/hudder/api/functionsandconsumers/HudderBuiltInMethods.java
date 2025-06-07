@@ -70,7 +70,8 @@ public class HudderBuiltInMethods {private HudderBuiltInMethods() {}
 
 		//Items
 
-		api.registerConsumer((e,a,s)->e.addUIElement(new ItemElement(s[0].asInt(),s[1].asInt(),(mc.player.getVehicle() instanceof AbstractHorse) ? ((AbstractHorse) mc.player.getVehicle()).getBodyArmorItem() : ItemStack.EMPTY, s[2].asFloat(), false)),
+		api.registerConsumer((e,a,s)->e.addUIElement(new ItemElement(s[0].asInt(),s[1].asInt(),
+				(mc.player.getVehicle() instanceof AbstractHorse horse) ? horse.getBodyArmorItem() : ItemStack.EMPTY, s[2].asFloat(), false)),
 				"drawMountArmor", "mountarmor");
 
 		//Logging

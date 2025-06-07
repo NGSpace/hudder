@@ -75,14 +75,16 @@ public class NumberData {private NumberData() {}
 			case "hunger": yield (double) p.getFoodData().getFoodLevel();
 			case "health", "hp": yield (double) p.getHealth();
 			case "maxhealth", "maxhp": yield (double) p.getMaxHealth();
+			case "absorption": yield (double) p.getAbsorptionAmount();
+			case "maxabsorption": yield (double) p.getMaxAbsorption();
 
 
 
 			/* Mount information */
-			case "mount_health", "mount_hp": yield (p.getVehicle() instanceof LivingEntity) ? (double) ((LivingEntity) p.getVehicle()).getHealth() : null;
-			case "mount_maxhealth", "mount_maxhp": yield (p.getVehicle() instanceof LivingEntity) ? (double) ((LivingEntity) p.getVehicle()).getMaxHealth() : null;
-			case "mount_speed": yield (p.getVehicle() instanceof LivingEntity) ? ((LivingEntity) p.getVehicle()).getAttribute(Attributes.MOVEMENT_SPEED).getBaseValue() : null;
-			case "mount_jump_strength": yield (p.getVehicle() instanceof LivingEntity) ? ((LivingEntity) p.getVehicle()).getAttribute(Attributes.JUMP_STRENGTH).getBaseValue() : null;
+			case "mount_health", "mount_hp": yield (p.getVehicle() instanceof LivingEntity entity) ? (double) entity.getHealth() : null;
+			case "mount_maxhealth", "mount_maxhp": yield (p.getVehicle() instanceof LivingEntity entity) ? (double) entity.getMaxHealth() : null;
+			case "mount_speed": yield (p.getVehicle() instanceof LivingEntity entity) ? entity.getAttribute(Attributes.MOVEMENT_SPEED).getBaseValue() : null;
+			case "mount_jump_strength": yield (p.getVehicle() instanceof LivingEntity entity) ? entity.getAttribute(Attributes.JUMP_STRENGTH).getBaseValue() : null;
 			case "mount_jump_scale": yield (p.getVehicle() instanceof AbstractHorse) ? (double) p.getJumpRidingScale() : null;
 			case "mount_armor": yield (p.getVehicle() instanceof AbstractHorse) ? (double) ((AbstractHorse) p.getVehicle()).getArmorValue() : null;
 			case "mount_jump_cooldown": yield (p.getVehicle() instanceof AbstractHorse) ? (double) ((AbstractHorse) p.getVehicle()).getJumpCooldown() : null;
@@ -95,6 +97,12 @@ public class NumberData {private NumberData() {}
 			case "xp": yield (double) p.totalExperience;
 			case "armor": yield (double) p.getArmorValue();
 			case "falldistance": yield p.fallDistance;
+			case "airbubbles": {
+				yield (double) getCurrentAirSupplyBubble(Math.clamp(p.getAirSupply(), 0, p.getMaxAirSupply()), p.getMaxAirSupply(), 0);
+			}
+			case "maxairbubbles":  {
+				yield (double) getCurrentAirSupplyBubble(Math.clamp(p.getMaxAirSupply(), 0, p.getMaxAirSupply()), p.getMaxAirSupply(), 0);
+			}
 
 			case "playerspeed": {
 				var ent = p.getVehicle() == null ? p : p.getVehicle();
@@ -238,5 +246,9 @@ public class NumberData {private NumberData() {}
 	public static float getTPS(Minecraft client) {
         IntegratedServer server = client.getSingleplayerServer();
         return server == null ? -1f : server.tickRateManager().tickrate();
+	}
+
+	public static int getCurrentAirSupplyBubble(int i, int j, int k) {
+		return Mth.ceil((float)((i + k) * 10) / (float)j);
 	}
 }
