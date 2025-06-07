@@ -47,7 +47,7 @@ public class StringData {private StringData() {}
 
 			/* Mount information */
 			case "mount_type": yield p.getVehicle() == null ? "" : p.getVehicle().getType().builtInRegistryHolder().key().location().toString();
-			case "mount_armor_type": yield (p.getVehicle() instanceof AbstractHorse) ? ((AbstractHorse) p.getVehicle()).getBodyArmorItem().getItem().toString() : null;
+			case "mount_armor_type": yield (p.getVehicle() instanceof AbstractHorse horse) ? horse.getBodyArmorItem().getItem().toString() : null;
 			case "mount_name": yield p.getVehicle() == null || p.getVehicle().getCustomName() == null ? "" : p.getVehicle().getCustomName().getString();
 
 

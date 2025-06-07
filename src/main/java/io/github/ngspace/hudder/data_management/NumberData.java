@@ -79,10 +79,10 @@ public class NumberData {private NumberData() {}
 
 
 			/* Mount information */
-			case "mount_health", "mount_hp": yield (p.getVehicle() instanceof LivingEntity) ? (double) ((LivingEntity) p.getVehicle()).getHealth() : null;
-			case "mount_maxhealth", "mount_maxhp": yield (p.getVehicle() instanceof LivingEntity) ? (double) ((LivingEntity) p.getVehicle()).getMaxHealth() : null;
-			case "mount_speed": yield (p.getVehicle() instanceof LivingEntity) ? ((LivingEntity) p.getVehicle()).getAttribute(Attributes.MOVEMENT_SPEED).getBaseValue() : null;
-			case "mount_jump_strength": yield (p.getVehicle() instanceof LivingEntity) ? ((LivingEntity) p.getVehicle()).getAttribute(Attributes.JUMP_STRENGTH).getBaseValue() : null;
+			case "mount_health", "mount_hp": yield (p.getVehicle() instanceof LivingEntity entity) ? (double) entity.getHealth() : null;
+			case "mount_maxhealth", "mount_maxhp": yield (p.getVehicle() instanceof LivingEntity entity) ? (double) entity.getMaxHealth() : null;
+			case "mount_speed": yield (p.getVehicle() instanceof LivingEntity entity) ? entity.getAttribute(Attributes.MOVEMENT_SPEED).getBaseValue() : null;
+			case "mount_jump_strength": yield (p.getVehicle() instanceof LivingEntity entity) ? entity.getAttribute(Attributes.JUMP_STRENGTH).getBaseValue() : null;
 			case "mount_jump_scale": yield (p.getVehicle() instanceof AbstractHorse) ? (double) p.getJumpRidingScale() : null;
 			case "mount_armor": yield (p.getVehicle() instanceof AbstractHorse) ? (double) ((AbstractHorse) p.getVehicle()).getArmorValue() : null;
 			case "mount_jump_cooldown": yield (p.getVehicle() instanceof AbstractHorse) ? (double) ((AbstractHorse) p.getVehicle()).getJumpCooldown() : null;
