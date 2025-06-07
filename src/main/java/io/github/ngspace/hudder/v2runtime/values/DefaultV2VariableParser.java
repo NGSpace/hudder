@@ -244,7 +244,19 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 			return new V2ClassPropertyCall(charpos, charpos, value, comp, runtime,
 					comp.getV2Value(runtime, classyobjname, line, charpos), functionOrObject);
 		}
+
 		
+		// Post Increase and Decrease Operator
+		if (value.matches("[\\s\\S]+(\\+\\+|--)")) {
+			return new V2PostIncDecOperator(comp.getV2Value(runtime, value.substring(0,value.length()-2),
+					line, charpos), comp, line, charpos, "+".equals(value.substring(value.length()-1)), value);
+		}
+
+		// Pre Increase and Decrease Operator
+		if (value.matches("(\\+\\+|--)[\\s\\S]+")) {
+			return new V2PreIncDecOperator(comp.getV2Value(runtime, value.substring(2),
+					line, charpos), comp, line, charpos, "+".equals(value.substring(0, 1)), value);
+		}
 		
 		
 		//Math operation
@@ -286,6 +298,10 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 				continue;
 			}
 			if (c=='+'||c=='-'||c=='*'||c=='/'||c=='%') {
+				if (mathvalue.toString().isBlank()&&c=='-') {
+					mathvalue.append(c);
+					continue;
+				}
 				if (mathvalue.toString().isBlank()) {//Do not trigger
 					values = new AV2Value[0];
 					break;
@@ -309,18 +325,6 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 		if (value.matches("![\\s\\S]+"))
 			return new V2OppositeOperator(comp.getV2Value(runtime, value.substring(1), line, charpos),
 					line, charpos, value, comp);
-		
-		// Post Increase and Decrease Operator
-		if (value.matches("[\\s\\S]+(\\+\\+|--)")) {
-			return new V2PostIncDecOperator(comp.getV2Value(runtime, value.substring(0,value.length()-2),
-					line, charpos), comp, line, charpos, "+".equals(value.substring(value.length()-1)), value);
-		}
-
-		// Pre Increase and Decrease Operator
-		if (value.matches("(\\+\\+|--)[\\s\\S]+")) {
-			return new V2PreIncDecOperator(comp.getV2Value(runtime, value.substring(2),
-					line, charpos), comp, line, charpos, "+".equals(value.substring(0, 1)), value);
-		}
 		
 		
 		

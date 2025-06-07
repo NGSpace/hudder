@@ -97,8 +97,12 @@ public class NumberData {private NumberData() {}
 			case "xp": yield (double) p.totalExperience;
 			case "armor": yield (double) p.getArmorValue();
 			case "falldistance": yield p.fallDistance;
-			case "air": yield (double) p.getAirSupply();
-			case "maxair": yield (double) p.getMaxAirSupply();
+			case "airbubbles": {
+				yield (double) getCurrentAirSupplyBubble(Math.clamp(p.getAirSupply(), 0, p.getMaxAirSupply()), p.getMaxAirSupply(), 0);
+			}
+			case "maxairbubbles":  {
+				yield (double) getCurrentAirSupplyBubble(Math.clamp(p.getMaxAirSupply(), 0, p.getMaxAirSupply()), p.getMaxAirSupply(), 0);
+			}
 
 			case "playerspeed": {
 				var ent = p.getVehicle() == null ? p : p.getVehicle();
@@ -242,5 +246,9 @@ public class NumberData {private NumberData() {}
 	public static float getTPS(Minecraft client) {
         IntegratedServer server = client.getSingleplayerServer();
         return server == null ? -1f : server.tickRateManager().tickrate();
+	}
+
+	public static int getCurrentAirSupplyBubble(int i, int j, int k) {
+		return Mth.ceil((float)((i + k) * 10) / (float)j);
 	}
 }
