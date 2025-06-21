@@ -226,7 +226,7 @@ public class NumberData {private NumberData() {}
 			/* Hudder rendering */
 			case "width": yield (double) ins.getWindow().getGuiScaledWidth();
 			case "height": yield (double) ins.getWindow().getGuiScaledHeight();
-			case "guiscale": yield ins.getWindow().getGuiScale();
+			case "guiscale": yield (double) ins.getWindow().getGuiScale();
 
 			case "scale": yield (double) config.scale;
 			case "color": yield (double) config.color;
