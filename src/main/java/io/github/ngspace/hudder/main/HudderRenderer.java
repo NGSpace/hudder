@@ -247,15 +247,16 @@ public class HudderRenderer implements HudElement {
 
 	public void renderTexturedVertexArray(GuiGraphics context, float[] vertices, float[] textures,
 			ResourceLocation id, boolean triangles) {
-//		context.drawSpecial((Consumer<MultiBufferSource>)(vcp -> {
-//	        VertexConsumer vertexConsumer =
-//	        		vcp.getBuffer(triangles ? TriangleTextureRenderType.apply(id) : RenderType.guiTextured(id));
-//	        
-//	        var matrix = context.pose();
-//	        for (int i = 0;i<vertices.length;i+=2) {
-//	        	vertexConsumer.addVertexWith2DPose(matrix,vertices[i],vertices[i+1],0f).setUv(textures[i],textures[i+1]).setColor(-1);
-//	        }
-//		}));
+		context.guiRenderState.submitGuiElement(new TextureRenderState(TextureSetup.singleTexture(mc
+				.getTextureManager().getTexture(id).getTextureView()),
+				triangles ? GUI_TEXTURED_TRIANGLES : RenderPipelines.GUI_TEXTURED,
+			(vconsumer, f)->{
+		        Matrix3x2fStack matrix = context.pose();
+		        
+	        for (int i = 0;i<vertices.length;i+=2) {
+	        	vconsumer.addVertexWith2DPose(matrix,vertices[i],vertices[i+1],0f).setUv(textures[i],textures[i+1]).setColor(-1);
+	        }
+		}));
 	}
 	
 	
@@ -278,7 +279,7 @@ public class HudderRenderer implements HudElement {
 	        Matrix3x2fStack matrix = context.pose();
 
 	        for (int i = 0;i<vertices.length;i+=2)
-	        	vconsumer.addVertexWith2DPose(matrix,vertices[i],vertices[i+1],0f).setColor(255, 255, 255, 255).setUv(0, 0);
+	        	vconsumer.addVertexWith2DPose(matrix,vertices[i],vertices[i+1],0f).setColor(r, g, b, a).setUv(0, 0);
 		}));
 	}
 	
