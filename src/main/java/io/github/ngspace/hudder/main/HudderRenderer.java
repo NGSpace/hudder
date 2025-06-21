@@ -1,13 +1,10 @@
 package io.github.ngspace.hudder.main;
 
-import java.util.function.BiConsumer;
-
 import org.joml.Matrix3x2fStack;
-import org.joml.Matrix4f;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 
 import io.github.ngspace.hudder.Hudder;
@@ -21,6 +18,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
@@ -54,7 +52,7 @@ public class HudderRenderer implements HudElement {
 		var lines = mc.font.split(FormattedText.of(FailMessage), mc.getWindow().getGuiScaledWidth());
 		int y = 1;
 		for (FormattedCharSequence line : lines) {
-        	context.drawString(mc.font, line, 1, y, 0xFF5555, true);
+        	context.drawString(mc.font, line, 1, y, 0xFFFF5555, true);
 			y+=9;
 		}
 	}
@@ -161,88 +159,88 @@ public class HudderRenderer implements HudElement {
 	
 	public void renderTexture9Slice(GuiGraphics context, ResourceLocation id, float x, float y, float width,
 			float height, float[] slices) {
-//		context.drawSpecial((Consumer<MultiBufferSource>)(vcp -> {
-//	        VertexConsumer vconsumer = vcp.getBuffer(RenderType.guiTextured(id));
-//	        
-//	        Matrix4f matrix = context.pose().last().pose();
-//	        NativeImage img = ((DynamicTexture)mc.getTextureManager().getTexture(id)).getPixels();
-//	        int texwidth = img.getWidth();
-//	        int texheight = img.getHeight();
-//
-//	        float left = Math.min(slices[0],texwidth/2f);
-//	        float right = Math.min(slices[1],texwidth/2f);
-//	        float top = Math.min(slices[2],texheight/2f);
-//	        float bottom = Math.min(slices[3],texheight/2f);
-//	        
-//	        float middlestart_hor = x+left;
-//	        float middleend_hor = x+width-right;
-//	        float middleend_tex_hor = (texwidth-right)/texwidth;
-//	        float tls = left/texwidth;
-//	        
-//	        
-//	        float middlestart_ver = y+top;
-//	        float middleend_ver = y + height - bottom;
-//	        float middleend_tex_ver = (texheight-bottom)/texheight;
-//	        float lts = top/texheight;
-//	        
-//	        // Top-left
-//	        vconsumer.addVertex(matrix,x,y,0f).setUv(0,0).setColor(-1);
-//	        vconsumer.addVertex(matrix,x,y+top,0f).setUv(0,lts).setColor(-1);
-//	        vconsumer.addVertex(matrix,x+left,y+top,0f).setUv(tls,lts).setColor(-1);
-//	        vconsumer.addVertex(matrix,x+left,y,0f).setUv(tls,0).setColor(-1);
-//	        
-//	        // Top-middle
-//	        vconsumer.addVertex(matrix,middlestart_hor,y, 0f).setUv(tls, 0).setColor(-1);
-//	        vconsumer.addVertex(matrix,middlestart_hor,y+top,0f).setUv(tls,lts).setColor(-1);
-//	        vconsumer.addVertex(matrix,middleend_hor,y+top,0f).setUv(middleend_tex_hor,lts).setColor(-1);
-//	        vconsumer.addVertex(matrix,middleend_hor,y,0f).setUv(middleend_tex_hor,0).setColor(-1);
-//	        
-//	        // Top-right
-//	        vconsumer.addVertex(matrix,middleend_hor,y,0f).setUv(middleend_tex_hor,0).setColor(-1);
-//	        vconsumer.addVertex(matrix,middleend_hor,y+top,0f).setUv(middleend_tex_hor,lts).setColor(-1);
-//	        vconsumer.addVertex(matrix,x+width,y+top,0f).setUv(1,lts).setColor(-1);
-//	        vconsumer.addVertex(matrix,x+width,y,0f).setUv(1,0).setColor(-1);
-//	        
-//	        
-//	        
-//	        // Middle-left
-//	        vconsumer.addVertex(matrix,x,middlestart_ver,0f).setUv(0,lts).setColor(-1);
-//	        vconsumer.addVertex(matrix,x,middleend_ver,0f).setUv(0,middleend_tex_ver).setColor(-1);
-//	        vconsumer.addVertex(matrix,x+left,middleend_ver,0f).setUv(tls,middleend_tex_ver).setColor(-1);
-//	        vconsumer.addVertex(matrix,x+left,middlestart_ver,0f).setUv(tls,lts).setColor(-1);
-//	        
-//	        // Middle-middle
-//	        vconsumer.addVertex(matrix,middlestart_hor,middlestart_ver, 0f).setUv(tls, lts).setColor(-1);
-//	        vconsumer.addVertex(matrix,middlestart_hor,middleend_ver,0f).setUv(tls,middleend_tex_ver).setColor(-1);
-//	        vconsumer.addVertex(matrix,middleend_hor,middleend_ver,0f).setUv(middleend_tex_hor,middleend_tex_ver).setColor(-1);
-//	        vconsumer.addVertex(matrix,middleend_hor,middlestart_ver,0f).setUv(middleend_tex_hor,lts).setColor(-1);
-//	        
-//	        // Middle-right
-//	        vconsumer.addVertex(matrix,middleend_hor,middlestart_ver,0f).setUv(middleend_tex_hor,lts).setColor(-1);
-//	        vconsumer.addVertex(matrix,middleend_hor,middleend_ver,0f).setUv(middleend_tex_hor,middleend_tex_ver).setColor(-1);
-//	        vconsumer.addVertex(matrix,x+width,middleend_ver,0f).setUv(1,middleend_tex_ver).setColor(-1);
-//	        vconsumer.addVertex(matrix,x+width,middlestart_ver,0f).setUv(1,lts).setColor(-1);
-//	        
-//	        
-//	        
-//	        // Bottom-left
-//	        vconsumer.addVertex(matrix,x,middleend_ver,0f).setUv(0,middleend_tex_ver).setColor(-1);
-//	        vconsumer.addVertex(matrix,x,y+height,0f).setUv(0,1).setColor(-1);
-//	        vconsumer.addVertex(matrix,x+left,y+height,0f).setUv(tls,1).setColor(-1);
-//	        vconsumer.addVertex(matrix,x+left,middleend_ver,0f).setUv(tls,middleend_tex_ver).setColor(-1);
-//	        
-//	        // Bottom-middle
-//	        vconsumer.addVertex(matrix,middlestart_hor,middleend_ver, 0f).setUv(tls, middleend_tex_ver).setColor(-1);
-//	        vconsumer.addVertex(matrix,middlestart_hor,y+height,0f).setUv(tls,1).setColor(-1);
-//	        vconsumer.addVertex(matrix,middleend_hor,y+height,0f).setUv(middleend_tex_hor,1).setColor(-1);
-//	        vconsumer.addVertex(matrix,middleend_hor,middleend_ver,0f).setUv(middleend_tex_hor,middleend_tex_ver).setColor(-1);
-//	        
-//	        // Bottom-right
-//	        vconsumer.addVertex(matrix,middleend_hor,middleend_ver,0f).setUv(middleend_tex_hor,middleend_tex_ver).setColor(-1);
-//	        vconsumer.addVertex(matrix,middleend_hor,y+height,0f).setUv(middleend_tex_hor,1).setColor(-1);
-//	        vconsumer.addVertex(matrix,x+width,y+height,0f).setUv(1,1).setColor(-1);
-//	        vconsumer.addVertex(matrix,x+width,middleend_ver,0f).setUv(1,middleend_tex_ver).setColor(-1);
-//		}));
+		context.guiRenderState.submitGuiElement(new TextureRenderState(TextureSetup.singleTexture(mc
+				.getTextureManager().getTexture(id).getTextureView()), RenderPipelines.GUI_TEXTURED,
+		(vconsumer, f)->{
+		    Matrix3x2fStack matrix = context.pose();
+	        NativeImage img = ((DynamicTexture)mc.getTextureManager().getTexture(id)).getPixels();
+	        int texwidth = img.getWidth();
+	        int texheight = img.getHeight();
+
+	        float left = Math.min(slices[0],texwidth/2f);
+	        float right = Math.min(slices[1],texwidth/2f);
+	        float top = Math.min(slices[2],texheight/2f);
+	        float bottom = Math.min(slices[3],texheight/2f);
+	        
+	        float middlestart_hor = x+left;
+	        float middleend_hor = x+width-right;
+	        float middleend_tex_hor = (texwidth-right)/texwidth;
+	        float tls = left/texwidth;
+	        
+	        
+	        float middlestart_ver = y+top;
+	        float middleend_ver = y + height - bottom;
+	        float middleend_tex_ver = (texheight-bottom)/texheight;
+	        float lts = top/texheight;
+	        
+	        // Top-left
+	        vconsumer.addVertexWith2DPose(matrix,x,y,0f).setUv(0,0).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x,y+top,0f).setUv(0,lts).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x+left,y+top,0f).setUv(tls,lts).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x+left,y,0f).setUv(tls,0).setColor(-1);
+	        
+	        // Top-middle
+	        vconsumer.addVertexWith2DPose(matrix,middlestart_hor,y, 0f).setUv(tls, 0).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,middlestart_hor,y+top,0f).setUv(tls,lts).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,y+top,0f).setUv(middleend_tex_hor,lts).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,y,0f).setUv(middleend_tex_hor,0).setColor(-1);
+	        
+	        // Top-right
+	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,y,0f).setUv(middleend_tex_hor,0).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,y+top,0f).setUv(middleend_tex_hor,lts).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x+width,y+top,0f).setUv(1,lts).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x+width,y,0f).setUv(1,0).setColor(-1);
+	        
+	        
+	        
+	        // Middle-left
+	        vconsumer.addVertexWith2DPose(matrix,x,middlestart_ver,0f).setUv(0,lts).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x,middleend_ver,0f).setUv(0,middleend_tex_ver).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x+left,middleend_ver,0f).setUv(tls,middleend_tex_ver).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x+left,middlestart_ver,0f).setUv(tls,lts).setColor(-1);
+	        
+	        // Middle-middle
+	        vconsumer.addVertexWith2DPose(matrix,middlestart_hor,middlestart_ver, 0f).setUv(tls, lts).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,middlestart_hor,middleend_ver,0f).setUv(tls,middleend_tex_ver).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,middleend_ver,0f).setUv(middleend_tex_hor,middleend_tex_ver).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,middlestart_ver,0f).setUv(middleend_tex_hor,lts).setColor(-1);
+	        
+	        // Middle-right
+	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,middlestart_ver,0f).setUv(middleend_tex_hor,lts).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,middleend_ver,0f).setUv(middleend_tex_hor,middleend_tex_ver).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x+width,middleend_ver,0f).setUv(1,middleend_tex_ver).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x+width,middlestart_ver,0f).setUv(1,lts).setColor(-1);
+	        
+	        
+	        
+	        // Bottom-left
+	        vconsumer.addVertexWith2DPose(matrix,x,middleend_ver,0f).setUv(0,middleend_tex_ver).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x,y+height,0f).setUv(0,1).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x+left,y+height,0f).setUv(tls,1).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x+left,middleend_ver,0f).setUv(tls,middleend_tex_ver).setColor(-1);
+	        
+	        // Bottom-middle
+	        vconsumer.addVertexWith2DPose(matrix,middlestart_hor,middleend_ver, 0f).setUv(tls, middleend_tex_ver).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,middlestart_hor,y+height,0f).setUv(tls,1).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,y+height,0f).setUv(middleend_tex_hor,1).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,middleend_ver,0f).setUv(middleend_tex_hor,middleend_tex_ver).setColor(-1);
+	        
+	        // Bottom-right
+	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,middleend_ver,0f).setUv(middleend_tex_hor,middleend_tex_ver).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,y+height,0f).setUv(middleend_tex_hor,1).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x+width,y+height,0f).setUv(1,1).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x+width,middleend_ver,0f).setUv(1,middleend_tex_ver).setColor(-1);
+		}));
 	}
 
 	public void renderTexturedVertexArray(GuiGraphics context, float[] vertices, float[] textures,

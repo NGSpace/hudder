@@ -24,6 +24,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.LoggedPrintStream;
 /**
  * <h1>If you expect any comments or JavaDocs explaining the bug-filled shithole I call "my code"
@@ -75,7 +76,8 @@ public class Hudder implements ClientModInitializer {
 		ClientTickEvents.END_CLIENT_TICK.register(compman);
         
 		HudderRenderer renderer = new HudderRenderer(compman);
-		HudElementRegistry.addLast(renderer.hudElementRegistryID, renderer);
+		HudElementRegistry.attachElementBefore(ResourceLocation.withDefaultNamespace("chat"), renderer
+				.hudElementRegistryID, renderer);
         
         ClientLifecycleEvents.CLIENT_STARTED.register(c->{
 			try {
