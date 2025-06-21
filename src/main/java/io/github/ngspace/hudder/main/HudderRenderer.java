@@ -40,7 +40,7 @@ public class HudderRenderer implements HudElement {
 	
 	public final RenderPipeline GUI_TEXTURED_TRIANGLES = RenderPipelines.register(RenderPipeline.builder(
 			RenderPipelines.GUI_TEXTURED_SNIPPET).withLocation("pipeline/gui_textured_triangles")
-			.withVertexFormat(DefaultVertexFormat.POSITION, VertexFormat.Mode.TRIANGLE_STRIP).build());
+			.withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.TRIANGLE_STRIP).build());
 	
 	
 	
@@ -278,7 +278,7 @@ public class HudderRenderer implements HudElement {
 	        Matrix3x2fStack matrix = context.pose();
 
 	        for (int i = 0;i<vertices.length;i+=2)
-	        	vconsumer.addVertexWith2DPose(matrix,vertices[i],vertices[i+1],0f).setColor(r, g, b, a).setUv(0, 0);
+	        	vconsumer.addVertexWith2DPose(matrix,vertices[i],vertices[i+1],0f).setColor(255, 255, 255, 255).setUv(0, 0);
 		}));
 	}
 	
