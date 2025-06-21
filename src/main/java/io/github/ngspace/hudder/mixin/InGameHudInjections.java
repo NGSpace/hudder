@@ -18,12 +18,7 @@ public class InGameHudInjections {
 	public boolean shouldNotDraw() {return Hudder.config.removegui&&Hudder.config.shouldCompile();}
 
 	@Inject(method = "renderHotbarAndDecorations", at = @At("HEAD"),cancellable=true)
-    public void disableMainHud(GuiGraphics context, DeltaTracker tickCounter, CallbackInfo i) {
+    public void disableHotbarAndDecorations(GuiGraphics context, DeltaTracker tickCounter, CallbackInfo i) {
 		if(shouldNotDraw()) i.cancel();
-	}
-
-	@Inject(method = "renderExperienceLevel", at = @At("HEAD"),cancellable=true)
-    public void disableExperienceLevel(GuiGraphics context, DeltaTracker x, CallbackInfo i) {
-		if (shouldNotDraw()) i.cancel();
 	}
 }
