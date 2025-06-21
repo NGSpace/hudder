@@ -5,17 +5,14 @@ import java.util.function.BiConsumer;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import blue.endless.jankson.annotation.Nullable;
-import io.github.ngspace.hudder.Hudder;
 import net.fabricmc.fabric.api.client.rendering.v1.SpecialGuiElementRegistry;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
-import net.minecraft.client.gui.render.state.BlitRenderState;
 import net.minecraft.client.gui.render.state.pip.PictureInPictureRenderState;
 import net.minecraft.client.renderer.MultiBufferSource;
 
 public record DrawSpecialRenderState(
 		BiConsumer<PoseStack, MultiBufferSource.BufferSource> drawer) implements PictureInPictureRenderState {
-	BlitRenderState r;
     @Override
     public @Nullable ScreenRectangle bounds() {
         return PictureInPictureRenderState.getBounds(x0(), y0(), x1(), y1(), null);

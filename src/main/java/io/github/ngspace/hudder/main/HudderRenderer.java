@@ -19,6 +19,7 @@ import net.minecraft.util.FormattedCharSequence;
 public class HudderRenderer implements HudElement {
 	
 	private HudCompilationManager compman;
+	public ResourceLocation hudElementRegistryID = ResourceLocation.fromNamespaceAndPath("hudder_renderer", "herID");
 	protected static Minecraft mc = Minecraft.getInstance();
     public static final String NL_REGEX = "\r?\n";
 	public static final ResourceLocation RENDER_LAYER = ResourceLocation.fromNamespaceAndPath("hudder", "hudder_render_layer");

@@ -28,18 +28,18 @@ public class ItemElement extends AUIElement {
 	
 	@Override
 	public void renderElement(GuiGraphics context, HudderRenderer renderer, DeltaTracker delta) {
-        PoseStack matrixStack = context.pose();
-        if (scale!=1f) {
-            matrixStack.pushPose();
-            matrixStack.translate(x, y, 0);
-            matrixStack.scale(scale, scale, scale);
-            matrixStack.translate(-x, -y, 0);
+//        PoseStack matrixStack = context.pose();
+//        if (scale!=1f) {
+//            matrixStack.pushPose();
+//            matrixStack.translate(x, y, 0);
+//            matrixStack.scale(scale, scale, scale);
+//            matrixStack.translate(-x, -y, 0);
+//        	context.renderItem(stack, (int)x, (int)y);
+//        	if (showcount) context.renderItemDecorations(textRenderer, stack, (int)x, (int)y);
+//            matrixStack.popPose();
+//        } else {
         	context.renderItem(stack, (int)x, (int)y);
         	if (showcount) context.renderItemDecorations(textRenderer, stack, (int)x, (int)y);
-            matrixStack.popPose();
-        } else {
-        	context.renderItem(stack, (int)x, (int)y);
-        	if (showcount) context.renderItemDecorations(textRenderer, stack, (int)x, (int)y);
-        }
+//        }
 	}
 }
