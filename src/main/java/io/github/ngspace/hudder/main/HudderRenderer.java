@@ -1,5 +1,10 @@
 package io.github.ngspace.hudder.main;
 
+import java.util.function.BiConsumer;
+
+import org.joml.Matrix3x2fStack;
+import org.joml.Matrix4f;
+
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -14,8 +19,8 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
@@ -30,29 +35,17 @@ public class HudderRenderer implements HudElement {
 	protected static Minecraft mc = Minecraft.getInstance();
     public static final String NL_REGEX = "\r?\n";
 	public static final ResourceLocation RENDER_LAYER = ResourceLocation.fromNamespaceAndPath("hudder", "hudder_render_layer");
-
-    public final RenderType TriangleColorRenderType;
-    public final RenderType ColorRenderType;
-//    public final Function<ResourceLocation, RenderType> TriangleTextureRenderType;
+	
+	
+	
+	public final RenderPipeline GUI_TEXTURED_TRIANGLES = RenderPipelines.register(RenderPipeline.builder(
+			RenderPipelines.GUI_TEXTURED_SNIPPET).withLocation("pipeline/gui_textured_triangles")
+			.withVertexFormat(DefaultVertexFormat.POSITION, VertexFormat.Mode.TRIANGLE_STRIP).build());
+	
+	
 	
 	public HudderRenderer(HudCompilationManager compilationManager) {
 		this.compman = compilationManager;
-		
-		// RenderType.gui() but TRIANGLE_STRIP
-		TriangleColorRenderType = RenderType.create("gui", 786432, RenderPipeline.builder(RenderPipelines.GUI_SNIPPET)
-				.withLocation("pipeline/gui").withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode
-				.TRIANGLE_STRIP).build(), RenderType.CompositeState.builder().createCompositeState(false));
-		// RenderType.gui() but TRIANGLE_STRIP
-		ColorRenderType = RenderType.create("gui", 786432, RenderPipeline.builder(RenderPipelines.GUI_SNIPPET)
-				.withLocation("pipeline/gui").withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode
-				.QUADS).build(), RenderType.CompositeState.builder().createCompositeState(false));
-//		
-//		// RenderType.guiTextured(...) but TRIANGLE_STRIP
-//		TriangleTextureRenderType = Util.memoize(id -> RenderType.create("gui_textured", 786432, RenderPipeline
-//				.builder(RenderPipelines.GUI_TEXTURED_SNIPPET).withLocation("pipeline/gui_textured")
-//				.withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLE_STRIP).build(),
-//				RenderType.CompositeState.builder().setTextureState(new RenderStateShard.TextureStateShard(id,
-//				TriState.FALSE, false)).createCompositeState(false)));
 	}
 	
 	
@@ -155,15 +148,14 @@ public class HudderRenderer implements HudElement {
 		int green = (int) ((argb >>  8) & 0xFF);
 		int blue =  (int) ((argb      ) & 0xFF);
 
-		context.guiRenderState.submitPicturesInPictureState(new DrawSpecialRenderState((v, f)->{
-			System.out.println(alpha);
-	        VertexConsumer vconsumer = f.getBuffer(ColorRenderType);
+		context.guiRenderState.submitGuiElement(new TextureRenderState(TextureSetup.noTexture(),
+				RenderPipelines.GUI_TEXTURED, (vconsumer, f)->{
 	        var matrix = context.pose();
 
-	        vconsumer.addVertexWith2DPose(matrix, x, y+height, 0f).setColor(red,green,blue,alpha).setUv2(green, blue);
-	        vconsumer.addVertexWith2DPose(matrix, x+width, y+height, 0f).setColor(red,green,blue,alpha);
-	        vconsumer.addVertexWith2DPose(matrix, x+width, y, 0f).setColor(red,green,blue,alpha);
-	        vconsumer.addVertexWith2DPose(matrix, x, y, 0f).setColor(red,green,blue,alpha);
+	        vconsumer.addVertexWith2DPose(matrix, x, y+height, 0f).setColor(red,green,blue,alpha).setUv(0, 0);
+	        vconsumer.addVertexWith2DPose(matrix, x+width, y+height, 0f).setColor(red,green,blue,alpha).setUv(0, 0);
+	        vconsumer.addVertexWith2DPose(matrix, x+width, y, 0f).setColor(red,green,blue,alpha).setUv(0, 0);
+	        vconsumer.addVertexWith2DPose(matrix, x, y, 0f).setColor(red,green,blue,alpha).setUv(0, 0);
 		}));
 	}
 	
@@ -280,13 +272,14 @@ public class HudderRenderer implements HudElement {
 	 */
 	public void renderColoredVertexArray(GuiGraphics context, float[] vertices, int r, int g, int b, int a,
 			boolean triangle_strip) {
-//		context.guiRenderState.submitPicturesInPictureState(new DrawSpecialRenderState((v, f)->{
-//	        VertexConsumer vconsumer = f.getBuffer(RenderPipelines.GUI);
-//	        Matrix4f matrix = context.pose().last().pose();
-//
-//	        for (int i = 0;i<vertices.length;i+=2)
-//	        	vconsumer.addVertex(matrix,vertices[i],vertices[i+1],0f).setColor(r, g, b, a);
-//		}));
+		context.guiRenderState.submitGuiElement(new TextureRenderState(TextureSetup.noTexture(),
+			triangle_strip ? GUI_TEXTURED_TRIANGLES : RenderPipelines.GUI_TEXTURED,
+		(vconsumer, f)->{
+	        Matrix3x2fStack matrix = context.pose();
+
+	        for (int i = 0;i<vertices.length;i+=2)
+	        	vconsumer.addVertexWith2DPose(matrix,vertices[i],vertices[i+1],0f).setColor(r, g, b, a).setUv(0, 0);
+		}));
 	}
 	
 	
