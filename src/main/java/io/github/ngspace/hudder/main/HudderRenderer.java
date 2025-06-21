@@ -62,6 +62,9 @@ public class HudderRenderer implements HudElement {
 	public void drawCompileResult(GuiGraphics context, Font renderer, HudInformation text, HudderConfig info,
 			DeltaTracker delta) {
         int color = info.color;
+        if (((color >> 24) & 0xFF)==0) {
+        	color = (255 << 24) | color;
+        }
         int bgcolor = info.backgroundcolor;
         boolean shadow = info.shadow;
         boolean background = info.background;
@@ -119,7 +122,6 @@ public class HudderRenderer implements HudElement {
 
 	public void renderTextLine(GuiGraphics context, String text, int x, int y, int color, float scale, boolean shadow,
 			boolean background, long backgroundColor) {
-		//TODO Fix Text color's alpha being 0 by default.
         if (scale != 1.0f) {
             Matrix3x2fStack matrixStack = context.pose();
             matrixStack.pushMatrix();
