@@ -120,22 +120,21 @@ public class HudderRenderer implements HudElement {
 	public void renderTextLine(GuiGraphics context, String text, int x, int y, int color, float scale, boolean shadow,
 			boolean background, long backgroundColor) {
 		//TODO Fix Text color's alpha being 0 by default.
-//        if (scale != 1.0f) {
-//            PoseStack matrixStack = context.pose();
-//            matrixStack.pushPose();
-//            matrixStack.translate(x, y, 0);
-//            matrixStack.scale(scale, scale, scale);
-//            matrixStack.translate(-x, -y, 0);
-//    		if (background&&!"".equals(text))
-//    			renderBlock(context,x-1f,y-1f,mc.font.width(text)+2f,9f+1f,backgroundColor);
-//            context.drawString(mc.font, text, x, y, color, shadow);
-//            matrixStack.popPose();
-//        } else {
+        if (scale != 1.0f) {
+            Matrix3x2fStack matrixStack = context.pose();
+            matrixStack.pushMatrix();
+            matrixStack.translate(x, y);
+            matrixStack.scale(scale, scale);
+            matrixStack.translate(-x, -y);
     		if (background&&!"".equals(text))
     			renderBlock(context,x-1f,y-1f,mc.font.width(text)+2f,9f+1f,backgroundColor);
-//    		System.out.println(text);
+            context.drawString(mc.font, text, x, y, color, shadow);
+            matrixStack.popMatrix();
+        } else {
+    		if (background&&!"".equals(text))
+    			renderBlock(context,x-1f,y-1f,mc.font.width(text)+2f,9f+1f,backgroundColor);
         	context.drawString(mc.font, text, x, y, color, shadow);
-//        }
+        }
     }
 	
 	
