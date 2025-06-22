@@ -9,15 +9,12 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.Gui.ContextualInfo;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.contextualbar.ContextualBarRenderer;
 
-@Environment(EnvType.CLIENT)
 @Mixin(Gui.class)
 public interface InGameHudAccessor {
     @Invoker public void callRenderPlayerHealth(GuiGraphics context);
@@ -25,7 +22,7 @@ public interface InGameHudAccessor {
     @Invoker public void callRenderSelectedItemName(GuiGraphics context);
     @Invoker public void callRenderHotbarAndDecorations(GuiGraphics context, DeltaTracker timeDelta);
 
-    @Shadow public Gui.ContextualInfo nextContextualInfoState();
+    @Invoker public Gui.ContextualInfo callNextContextualInfoState();
     @Accessor("contextualInfoBar") public Pair<ContextualInfo, ContextualBarRenderer> contextualInfoBar();
     @Accessor("contextualInfoBarRenderers") public Map<ContextualInfo, Supplier<ContextualBarRenderer>> contextualInfoBarRenderers();
 }

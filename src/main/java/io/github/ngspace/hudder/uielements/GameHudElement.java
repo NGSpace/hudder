@@ -51,7 +51,8 @@ public class GameHudElement extends AUIElement {
 			        }
 			        break;
 				case EXP_AND_MOUNT_BAR:
-					Gui.ContextualInfo contextualInfo = acchud.nextContextualInfoState();
+					matrixStack.translate(x-scaledWidth/2, y-scaledHeight + 39);
+					Gui.ContextualInfo contextualInfo = acchud.callNextContextualInfoState();
 					var contextualInfoBar = acchud.contextualInfoBar();
 					var contextualInfoBarRenderers = acchud.contextualInfoBarRenderers();
 					if (contextualInfo != contextualInfoBar.getKey()) {
@@ -71,7 +72,7 @@ public class GameHudElement extends AUIElement {
 					break;
 				case ITEM_TOOLTIP:
 					int tooltipy = 44;
-					if (mc.gameMode.canHurtPlayer()) tooltipy -= 14;
+					if (mc.gameMode.canHurtPlayer()) tooltipy += 14;
 			        matrixStack.translate(x-scaledWidth/2, tooltipy-scaledHeight+y);
 			        acchud.callRenderSelectedItemName(context);
 					break;
