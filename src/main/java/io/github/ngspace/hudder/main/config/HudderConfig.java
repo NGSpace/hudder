@@ -34,7 +34,7 @@ public class HudderConfig {
 	@Expose public boolean javascript = false;
 	@Expose public boolean globalVariablesEnabled = true;
 	@Expose public float scale = 1f;
-	@Expose public int color = 0xd6d6d6;
+	@Expose public int color = 0xFFd6d6d6;
 	@Expose public int yoffset = 1;
 	@Expose public int xoffset = 1;
 	@Expose public int lineHeight = 10;

@@ -2,8 +2,15 @@ package io.github.ngspace.hudder.api.functionsandconsumers;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI;
-import io.github.ngspace.hudder.uielements.*;
+import io.github.ngspace.hudder.uielements.BuiltInTextureElement;
+import io.github.ngspace.hudder.uielements.ColorVerticesElement;
+import io.github.ngspace.hudder.uielements.GameHudElement;
 import io.github.ngspace.hudder.uielements.GameHudElement.GuiType;
+import io.github.ngspace.hudder.uielements.ItemElement;
+import io.github.ngspace.hudder.uielements.TextElement;
+import io.github.ngspace.hudder.uielements.Texture9SliceElement;
+import io.github.ngspace.hudder.uielements.TextureElement;
+import io.github.ngspace.hudder.uielements.TextureVerticesElement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;

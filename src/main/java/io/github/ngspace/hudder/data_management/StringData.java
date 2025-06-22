@@ -3,6 +3,8 @@ package io.github.ngspace.hudder.data_management;
 import java.util.Calendar;
 import java.util.Locale;
 
+import org.joml.Vector3f;
+
 import com.mojang.blaze3d.platform.GLX;
 
 import io.github.ngspace.hudder.Hudder;
@@ -18,7 +20,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3f;
 
 public class StringData {private StringData() {}
 	public static String getString(String key) {
