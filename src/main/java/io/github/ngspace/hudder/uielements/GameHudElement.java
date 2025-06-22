@@ -1,14 +1,14 @@
 package io.github.ngspace.hudder.uielements;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import org.apache.commons.lang3.tuple.Pair;
 
 import io.github.ngspace.hudder.main.HudderRenderer;
 import io.github.ngspace.hudder.mixin.InGameHudAccessor;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.world.entity.PlayerRideableJumping;
+import net.minecraft.client.gui.contextualbar.ContextualBarRenderer;
 
 /**
  * This element is a merging of all builtin GUI elements (Status bars) 
@@ -36,60 +36,52 @@ public class GameHudElement extends AUIElement {
 	}
 
 	@Override public void renderElement(GuiGraphics context, HudderRenderer renderer, DeltaTracker delta) {
-//		try {
-//			InGameHudAccessor acchud = (InGameHudAccessor) (mc.gui);
-//			float scaledWidth = context.guiWidth();
-//	        float scaledHeight = context.guiHeight();
-//	        PoseStack matrixStack = context.pose();
-//	        matrixStack.pushPose();
-//	        switch (type) {
-//				case STATUS_BARS:
-//			        if (mc.gameMode.canHurtPlayer()) {
-//				        matrixStack.translate(x-scaledWidth/2, y-scaledHeight + 39, 0f);
-//				        acchud.callRenderPlayerHealth(context);
-//				        acchud.callRenderVehicleHealth(context);
-//			        }
-//			        break;
-//				case EXP_AND_MOUNT_BAR:
-//		            int i = (int) (scaledWidth / 2 - 91);
-//			    	PlayerRideableJumping jumpingMount = mc.player.jumpableVehicle();
-//		            if (jumpingMount != null) {
-//				        matrixStack.translate(x-scaledWidth/2, y-scaledHeight + 39, 0f);
-//				        acchud.callRenderJumpMeter(jumpingMount, context, i);
-//		            } else if (mc.gameMode.hasExperience()) {
-//				        matrixStack.translate(x-scaledWidth/2, y-scaledHeight + 35, 0f);
-//				        Font font = mc.font;
-//			    		int jj = mc.player.experienceLevel;
-//			    		if (mc.gameMode.hasExperience() && jj > 0) {
-//			    			String string = "" + jj;
-//			    			int j = (context.guiWidth() - font.width(string)) / 2;
-//			    			int k = context.guiHeight() - 31 - 8;
-//			    			context.drawString(font, string, j + 1, k, 0, false);
-//			    			context.drawString(font, string, j - 1, k, 0, false);
-//			    			context.drawString(font, string, j, k + 1, 0, false);
-//			    			context.drawString(font, string, j, k - 1, 0, false);
-//			    			context.drawString(font, string, j, k, 8453920, false);
-//			    		}
-//				        acchud.callRenderExperienceBar(context, i);
-//		            }
-//					break;
-//				case HOTBAR:
-//			        matrixStack.translate(x-scaledWidth/2, y-scaledHeight, 0f);
-//			        acchud.callRenderHotbarAndDecorations(context, delta);
-//					break;
-//				case ITEM_TOOLTIP:
-//					int tooltipy = 44;
-//					if (mc.gameMode.canHurtPlayer()) tooltipy -= 14;
-//			        matrixStack.translate(x-scaledWidth/2, tooltipy-scaledHeight+y, 0f);
-//			        acchud.callRenderSelectedItemName(context);
-//					break;
-//				default:
-//					break;
-//			}
-//	        matrixStack.popPose();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
+		try {
+			InGameHudAccessor acchud = (InGameHudAccessor) (mc.gui);
+			float scaledWidth = context.guiWidth();
+	        float scaledHeight = context.guiHeight();
+	        var matrixStack = context.pose();
+	        matrixStack.pushMatrix();
+	        switch (type) {
+				case STATUS_BARS:
+			        if (mc.gameMode.canHurtPlayer()) {
+				        matrixStack.translate(x-scaledWidth/2, y-scaledHeight + 39);
+				        acchud.callRenderPlayerHealth(context);
+				        acchud.callRenderVehicleHealth(context);
+			        }
+			        break;
+				case EXP_AND_MOUNT_BAR:
+					Gui.ContextualInfo contextualInfo = acchud.nextContextualInfoState();
+					var contextualInfoBar = acchud.contextualInfoBar();
+					var contextualInfoBarRenderers = acchud.contextualInfoBarRenderers();
+					if (contextualInfo != contextualInfoBar.getKey()) {
+						contextualInfoBar = Pair.of(contextualInfo, contextualInfoBarRenderers.get(contextualInfo).get());
+					}
+
+					contextualInfoBar.getValue().renderBackground(context, delta);
+					if (mc.gameMode.hasExperience() && mc.player.experienceLevel > 0) {
+						ContextualBarRenderer.renderExperienceLevel(context, mc.font, mc.player.experienceLevel);
+					}
+
+					contextualInfoBar.getValue().render(context, delta);
+					break;
+				case HOTBAR:
+			        matrixStack.translate(x-scaledWidth/2, y-scaledHeight);
+			        acchud.callRenderHotbarAndDecorations(context, delta);
+					break;
+				case ITEM_TOOLTIP:
+					int tooltipy = 44;
+					if (mc.gameMode.canHurtPlayer()) tooltipy -= 14;
+			        matrixStack.translate(x-scaledWidth/2, tooltipy-scaledHeight+y);
+			        acchud.callRenderSelectedItemName(context);
+					break;
+				default:
+					break;
+			}
+	        matrixStack.popMatrix();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }
