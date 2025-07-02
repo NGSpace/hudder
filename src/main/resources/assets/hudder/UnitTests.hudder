@@ -9,6 +9,13 @@
 ||EXPECT||
 0
 
+||INPUT||Decimal point and math
+{i=1}
+{2* 3.141592653589793 * i / 360}
+||EXPECT||
+1
+0.017453292519943295
+
 ||INPUT||Math error
 {(1+2)3/1}
 ||EXPECT||

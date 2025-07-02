@@ -192,6 +192,79 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 					comp.getV2Value(runtime, v[1].trim(), line, charpos), operator, line, charpos, value, comp);
 		}
 
+		
+		// Post Increase and Decrease Operator
+		if (value.matches("[\\s\\S]+(\\+\\+|--)")) {
+			return new V2PostIncDecOperator(comp.getV2Value(runtime, value.substring(0,value.length()-2),
+					line, charpos), comp, line, charpos, "+".equals(value.substring(value.length()-1)), value);
+		}
+
+		// Pre Increase and Decrease Operator
+		if (value.matches("(\\+\\+|--)[\\s\\S]+")) {
+			return new V2PreIncDecOperator(comp.getV2Value(runtime, value.substring(2),
+					line, charpos), comp, line, charpos, "+".equals(value.substring(0, 1)), value);
+		}
+		
+		
+		//Math operation
+		values = new AV2Value[0];
+		StringBuilder mathvalue = new StringBuilder();
+		char[] operations = new char[0];
+		for (int i = 0;i<value.length();i++) {
+			char c = value.charAt(i);
+			if (c=='"'&&mathvalue.isEmpty()) {
+				boolean safe = false;
+				i++;
+				mathvalue.append(c);
+				for (;i<value.length();i++) {
+					c = value.charAt(i);
+					if (c=='\\'&&!safe) {safe = true;mathvalue.append(c);} else {
+						safe = false;
+						mathvalue.append(c);
+						if (c=='"'&&!safe) break;
+					}
+				}
+				continue;
+			}
+			if (c=='(') {
+				int parentheses = 1;
+				mathvalue.append(c);
+				i++;
+				for (;i<value.length();i++) {
+					c = value.charAt(i);
+					if (c=='(') parentheses++;
+					if (c==')') {
+						parentheses--;
+						if (parentheses==0) {
+							mathvalue.append(c);
+							break;
+						}
+					}
+					mathvalue.append(c);
+				}
+				continue;
+			}
+			if (c=='+'||c=='-'||c=='*'||c=='/'||c=='%') {
+				if (mathvalue.toString().isBlank()&&c=='-') {
+					mathvalue.append(c);
+					continue;
+				}
+				if (mathvalue.toString().isBlank()) {//Do not trigger
+					values = new AV2Value[0];
+					break;
+				}
+				values = addToArray(values, comp.getV2Value(runtime, mathvalue.toString(), line, charpos));
+				operations = addToArray(operations, c);
+				mathvalue.setLength(0);
+				continue;
+			}
+			mathvalue.append(c);
+		}
+		if (values.length>0) {
+			values = addToArray(values, comp.getV2Value(runtime, mathvalue.toString(), line, charpos));
+			return new V2MathOperation(values, operations, line, charpos, value, comp);
+		}
+
 
 
 		// Class
@@ -243,79 +316,6 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 		if (!Objects.equals(functionOrObject, value)&&!"".equals(classyobjname)) {
 			return new V2ClassPropertyCall(charpos, charpos, value, comp, runtime,
 					comp.getV2Value(runtime, classyobjname, line, charpos), functionOrObject);
-		}
-
-		
-		// Post Increase and Decrease Operator
-		if (value.matches("[\\s\\S]+(\\+\\+|--)")) {
-			return new V2PostIncDecOperator(comp.getV2Value(runtime, value.substring(0,value.length()-2),
-					line, charpos), comp, line, charpos, "+".equals(value.substring(value.length()-1)), value);
-		}
-
-		// Pre Increase and Decrease Operator
-		if (value.matches("(\\+\\+|--)[\\s\\S]+")) {
-			return new V2PreIncDecOperator(comp.getV2Value(runtime, value.substring(2),
-					line, charpos), comp, line, charpos, "+".equals(value.substring(0, 1)), value);
-		}
-		
-		
-		//Math operation
-		values = new AV2Value[0];
-		StringBuilder mathvalue = new StringBuilder();
-		char[] operations = new char[0];
-		for (int i = 0;i<value.length();i++) {
-			char c = value.charAt(i);
-			if (c=='"'&&mathvalue.isEmpty()) {
-				boolean safe = false;
-				i++;
-				mathvalue.append(c);
-				for (;i<value.length();i++) {
-					c = value.charAt(i);
-					if (c=='\\'&&!safe) {safe = true;mathvalue.append(c);} else {
-						safe = false;
-						mathvalue.append(c);
-						if (c=='"'&&!safe) break;
-					}
-				}
-				continue;
-			}
-			if (c=='('&&mathvalue.isEmpty()) {
-				int parentheses = 1;
-				mathvalue.append(c);
-				i++;
-				for (;i<value.length();i++) {
-					c = value.charAt(i);
-					if (c=='(') parentheses++;
-					if (c==')') {
-						parentheses--;
-						if (parentheses==0) {
-							mathvalue.append(c);
-							break;
-						}
-					}
-					mathvalue.append(c);
-				}
-				continue;
-			}
-			if (c=='+'||c=='-'||c=='*'||c=='/'||c=='%') {
-				if (mathvalue.toString().isBlank()&&c=='-') {
-					mathvalue.append(c);
-					continue;
-				}
-				if (mathvalue.toString().isBlank()) {//Do not trigger
-					values = new AV2Value[0];
-					break;
-				}
-				values = addToArray(values, comp.getV2Value(runtime, mathvalue.toString(), line, charpos));
-				operations = addToArray(operations, c);
-				mathvalue.setLength(0);
-				continue;
-			}
-			mathvalue.append(c);
-		}
-		if (values.length>0) {
-			values = addToArray(values, comp.getV2Value(runtime, mathvalue.toString(), line, charpos));
-			return new V2MathOperation(values, operations, line, charpos, value, comp);
 		}
 		
 		

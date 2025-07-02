@@ -8,14 +8,13 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.gui.render.state.GuiElementRenderState;
-import net.minecraft.client.gui.render.state.pip.PictureInPictureRenderState;
 
 public record TextureRenderState(TextureSetup textureSetup, RenderPipeline pipeline, BiConsumer<VertexConsumer, Float> consumer) implements GuiElementRenderState {
 
 	@Override
 	public ScreenRectangle bounds() {
-        return PictureInPictureRenderState.getBounds(0, 0, HudderRenderer.mc.getWindow().getGuiScaledWidth(),
-        		HudderRenderer.mc.getWindow().getGuiScaledHeight(), null);
+        return new ScreenRectangle(0, 0, HudderRenderer.mc.getWindow().getGuiScaledWidth(),
+        		HudderRenderer.mc.getWindow().getGuiScaledHeight());
 	}
 
 	@Override
@@ -25,7 +24,8 @@ public record TextureRenderState(TextureSetup textureSetup, RenderPipeline pipel
 
 	@Override
 	public ScreenRectangle scissorArea() {
-		return null;
+        return new ScreenRectangle(0, 0, HudderRenderer.mc.getWindow().getGuiScaledWidth(),
+        		HudderRenderer.mc.getWindow().getGuiScaledHeight());
 	}
 	
 }

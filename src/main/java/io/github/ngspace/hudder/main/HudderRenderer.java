@@ -1,5 +1,7 @@
 package io.github.ngspace.hudder.main;
 
+import java.util.List;
+
 import org.joml.Matrix3x2fStack;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
@@ -29,10 +31,9 @@ import net.minecraft.util.FormattedCharSequence;
 public class HudderRenderer implements HudElement {
 	
 	private HudCompilationManager compman;
-	public ResourceLocation hudElementRegistryID = ResourceLocation.fromNamespaceAndPath("hudder_renderer", "her_id");
+	public ResourceLocation hudElementRegistryID = ResourceLocation.fromNamespaceAndPath("hudder_renderer", "renderer");
 	protected static Minecraft mc = Minecraft.getInstance();
     public static final String NL_REGEX = "\r?\n";
-	public static final ResourceLocation RENDER_LAYER = ResourceLocation.fromNamespaceAndPath("hudder", "hudder_render_layer");
 	
 	
 	
@@ -49,7 +50,8 @@ public class HudderRenderer implements HudElement {
 	
 	
 	public void renderFail(GuiGraphics context, String FailMessage) {
-		var lines = mc.font.split(FormattedText.of(FailMessage), mc.getWindow().getGuiScaledWidth());
+		List<FormattedCharSequence> lines = mc.font.split(FormattedText.of(FailMessage),
+				mc.getWindow().getGuiScaledWidth()-10);
 		int y = 1;
 		for (FormattedCharSequence line : lines) {
         	context.drawString(mc.font, line, 1, y, 0xFFFF5555, true);
@@ -62,10 +64,7 @@ public class HudderRenderer implements HudElement {
 	public void drawCompileResult(GuiGraphics context, Font renderer, HudInformation text, HudderConfig info,
 			DeltaTracker delta) {
         int color = info.color;
-        if (((color >> 24) & 0xFF)==0) {
-        	color = (255 << 24) | color;
-        }
-        int bgcolor = info.backgroundcolor;
+        long bgcolor = info.backgroundcolor;
         boolean shadow = info.shadow;
         boolean background = info.background;
         
@@ -141,15 +140,16 @@ public class HudderRenderer implements HudElement {
 	
 	
 	
-	public void renderBlock(GuiGraphics context, float x, float y, float width, float height, long argb) {
+	public void renderBlock(GuiGraphics graphics, float x, float y, float width, float height, long argb) {
 		int alpha = (int) ((argb >> 24) & 0xFF);
 		int red =   (int) ((argb >> 16) & 0xFF);
 		int green = (int) ((argb >>  8) & 0xFF);
 		int blue =  (int) ((argb      ) & 0xFF);
-
-		context.guiRenderState.submitGuiElement(new TextureRenderState(TextureSetup.noTexture(),
+		
+		
+		graphics.guiRenderState.submitGuiElement(new TextureRenderState(TextureSetup.noTexture(),
 				RenderPipelines.GUI_TEXTURED, (vconsumer, f)->{
-	        var matrix = context.pose();
+			Matrix3x2fStack matrix = graphics.pose();
 
 	        vconsumer.addVertexWith2DPose(matrix, x, y+height, 0f).setColor(red,green,blue,alpha).setUv(0, 0);
 	        vconsumer.addVertexWith2DPose(matrix, x+width, y+height, 0f).setColor(red,green,blue,alpha).setUv(0, 0);
@@ -273,8 +273,7 @@ public class HudderRenderer implements HudElement {
 	public void renderColoredVertexArray(GuiGraphics context, float[] vertices, int r, int g, int b, int a,
 			boolean triangle_strip) {
 		context.guiRenderState.submitGuiElement(new TextureRenderState(TextureSetup.noTexture(),
-			triangle_strip ? GUI_TEXTURED_TRIANGLES : RenderPipelines.GUI_TEXTURED,
-		(vconsumer, f)->{
+			triangle_strip ? GUI_TEXTURED_TRIANGLES : RenderPipelines.GUI_TEXTURED, (vconsumer, f) -> {
 	        Matrix3x2fStack matrix = context.pose();
 
 	        for (int i = 0;i<vertices.length;i+=2)
