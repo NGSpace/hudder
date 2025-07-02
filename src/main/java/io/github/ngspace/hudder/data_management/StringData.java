@@ -22,6 +22,7 @@ import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
 
 public class StringData {private StringData() {}
+	@SuppressWarnings("deprecation")
 	public static String getString(String key) {
 		Minecraft ins = Minecraft.getInstance();
 		LocalPlayer p = ins.player;

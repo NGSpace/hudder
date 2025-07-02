@@ -226,7 +226,7 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 				}
 				continue;
 			}
-			if (c=='('&&mathvalue.isEmpty()) {
+			if (c=='(') {
 				int parentheses = 1;
 				mathvalue.append(c);
 				i++;

@@ -44,7 +44,7 @@ public class HudderConfig {
 	@Expose public boolean removegui = false;
 	@Expose public boolean limitrate = true;
 	
-	@Expose public String config_version = getDefaultConfigVersion();
+	@Expose public String config_version = Hudder.HUDDER_VERSION;
 	
 	
 	
@@ -86,10 +86,15 @@ public class HudderConfig {
 	 */
 	public void readConfig() {
 		try {
-			if (!configFile.exists()) save();
+			if (!configFile.exists()) {
+				save();
+				return; // We already know it'll be default value, no need to waste resources.
+			}
 		} catch (Exception e) {
+			Hudder.IS_DEBUG=true;
+			Hudder.log("Failed to create Hudder config file, falling back to default and enabling debug mode.");
 			e.printStackTrace();
-			return; //Cry about it but continue running.
+			return;
 		}
 		try {
 			Hudder.log("Reading Hudder config!");
@@ -98,14 +103,23 @@ public class HudderConfig {
 			Map<?,?> newinfo = new GsonBuilder().create().fromJson(config,HashMap.class);
 			
 			if (newinfo.containsKey("debug")) Hudder.IS_DEBUG = (boolean) newinfo.get("debug");
+			if (!newinfo.containsKey("config_version")) config_version = "0";
 			
 			for(Field f : HudderConfig.class.getFields()) {
-				if (f.getAnnotation(Expose.class)!=null&&newinfo.get(f.getName())!=null) 
+				if (f.getAnnotation(Expose.class)!=null&&newinfo.get(f.getName())!=null) {
 					setField(f, newinfo.get(f.getName()));
+				}
 			}
-		} catch (Exception e) {
+			
+			
+		} catch (IOException e) {
+			Hudder.IS_DEBUG=true;
+			Hudder.log("Failed to read Hudder config file, enabling debug mode.");
 			e.printStackTrace();
-			Hudder.IS_DEBUG=true;//Failed to read config, turn on IS_DEBUG.
+		} catch (ReflectiveOperationException e) {
+			Hudder.IS_DEBUG=true;
+			Hudder.log("Failed to set Hudder config values, enabling debug mode.");
+			e.printStackTrace();
 		}
 		refreshCompiler();
 	}
@@ -212,10 +226,5 @@ public class HudderConfig {
 	 */
 	public ATextCompiler getCompiler() {
 		return compiler;
-	}
-	
-	
-	private static String getDefaultConfigVersion() {
-		return Hudder.HUDDER_VERSION;
 	}
 }

@@ -1,5 +1,7 @@
 package io.github.ngspace.hudder.main;
 
+import java.util.List;
+
 import org.joml.Matrix3x2fStack;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
@@ -20,7 +22,6 @@ import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.chat.FormattedText;
-import net.minecraft.references.Blocks;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 
@@ -30,10 +31,9 @@ import net.minecraft.util.FormattedCharSequence;
 public class HudderRenderer implements HudElement {
 	
 	private HudCompilationManager compman;
-	public ResourceLocation hudElementRegistryID = ResourceLocation.fromNamespaceAndPath("hudder_renderer", "her_id");
+	public ResourceLocation hudElementRegistryID = ResourceLocation.fromNamespaceAndPath("hudder_renderer", "renderer");
 	protected static Minecraft mc = Minecraft.getInstance();
     public static final String NL_REGEX = "\r?\n";
-	public static final ResourceLocation RENDER_LAYER = ResourceLocation.fromNamespaceAndPath("hudder", "hudder_render_layer");
 	
 	
 	
@@ -50,7 +50,8 @@ public class HudderRenderer implements HudElement {
 	
 	
 	public void renderFail(GuiGraphics context, String FailMessage) {
-		var lines = mc.font.split(FormattedText.of(FailMessage), mc.getWindow().getGuiScaledWidth());
+		List<FormattedCharSequence> lines = mc.font.split(FormattedText.of(FailMessage),
+				mc.getWindow().getGuiScaledWidth()-10);
 		int y = 1;
 		for (FormattedCharSequence line : lines) {
         	context.drawString(mc.font, line, 1, y, 0xFFFF5555, true);
@@ -150,8 +151,8 @@ public class HudderRenderer implements HudElement {
 		
 		
 		graphics.guiRenderState.submitGuiElement(new TextureRenderState(TextureSetup.noTexture(),
-				RenderPipelines.GUI, (vconsumer, f)->{
-	        var matrix = graphics.pose();
+				RenderPipelines.GUI_TEXTURED, (vconsumer, f)->{
+			Matrix3x2fStack matrix = graphics.pose();
 
 	        vconsumer.addVertexWith2DPose(matrix, x, y+height, 0f).setColor(red,green,blue,alpha).setUv(0, 0);
 	        vconsumer.addVertexWith2DPose(matrix, x+width, y+height, 0f).setColor(red,green,blue,alpha).setUv(0, 0);
@@ -275,8 +276,7 @@ public class HudderRenderer implements HudElement {
 	public void renderColoredVertexArray(GuiGraphics context, float[] vertices, int r, int g, int b, int a,
 			boolean triangle_strip) {
 		context.guiRenderState.submitGuiElement(new TextureRenderState(TextureSetup.noTexture(),
-			triangle_strip ? GUI_TEXTURED_TRIANGLES : RenderPipelines.GUI_TEXTURED,
-		(vconsumer, f)->{
+			triangle_strip ? GUI_TEXTURED_TRIANGLES : RenderPipelines.GUI_TEXTURED, (vconsumer, f) -> {
 	        Matrix3x2fStack matrix = context.pose();
 
 	        for (int i = 0;i<vertices.length;i+=2)
@@ -291,7 +291,6 @@ public class HudderRenderer implements HudElement {
 			if (!Hudder.config.limitrate) compman.compile(delta);
 			if (Hudder.config.shouldDrawResult()) {
 	            try {
-	            	renderBlock(context, 10, 10, 10, 10, 0xFFFFFFFF);
 	            	if (compman.getResult()!=null)
 	            		drawCompileResult(context, mc.font, compman.getResult(), Hudder.config, delta);
 	            	else
