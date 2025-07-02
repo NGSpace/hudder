@@ -19,6 +19,8 @@ public class InGameHudInjections {
 
 	@Inject(method = "renderHotbarAndDecorations", at = @At("HEAD"),cancellable=true)
     public void disableHotbarAndDecorations(GuiGraphics context, DeltaTracker tickCounter, CallbackInfo i) {
-		if(shouldNotDraw()) i.cancel();
+		if(shouldNotDraw()) {
+			i.cancel();
+		}
 	}
 }

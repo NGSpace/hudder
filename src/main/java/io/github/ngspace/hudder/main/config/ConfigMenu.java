@@ -105,14 +105,14 @@ public class ConfigMenu implements ConfigScreenFactory<Screen> {
 		
 		
 		/* Text */
-		text.addEntry(entryBuilder.startColorField(Component.translatable("hudder.text.color"), config.color)
+		text.addEntry(entryBuilder.startColorField(Component.translatable("hudder.text.color"), (int) config.color)
 				.setTooltip(Component.translatable("hudder.text.color.tooltip"))
 				.setAlphaMode(true)
 				.setDefaultValue(0xFFd6d6d6)
 				.setSaveConsumer(b->config.color=b)
 				.build());
 		text.addEntry(entryBuilder.startColorField(Component.translatable("hudder.text.backgroundcolor"),
-				config.backgroundcolor)
+				(int) config.backgroundcolor)
 				.setTooltip(Component.translatable("hudder.text.backgroundcolor.tooltip"))
 				.setAlphaMode(true)
 				.setDefaultValue(0x86353535)

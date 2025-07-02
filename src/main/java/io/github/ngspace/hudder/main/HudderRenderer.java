@@ -20,6 +20,7 @@ import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.chat.FormattedText;
+import net.minecraft.references.Blocks;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 
@@ -65,7 +66,7 @@ public class HudderRenderer implements HudElement {
         if (((color >> 24) & 0xFF)==0) {
         	color = (255 << 24) | color;
         }
-        int bgcolor = info.backgroundcolor;
+        long bgcolor = info.backgroundcolor;
         boolean shadow = info.shadow;
         boolean background = info.background;
         
@@ -141,15 +142,16 @@ public class HudderRenderer implements HudElement {
 	
 	
 	
-	public void renderBlock(GuiGraphics context, float x, float y, float width, float height, long argb) {
+	public void renderBlock(GuiGraphics graphics, float x, float y, float width, float height, long argb) {
 		int alpha = (int) ((argb >> 24) & 0xFF);
 		int red =   (int) ((argb >> 16) & 0xFF);
 		int green = (int) ((argb >>  8) & 0xFF);
 		int blue =  (int) ((argb      ) & 0xFF);
-
-		context.guiRenderState.submitGuiElement(new TextureRenderState(TextureSetup.noTexture(),
-				RenderPipelines.GUI_TEXTURED, (vconsumer, f)->{
-	        var matrix = context.pose();
+		
+		
+		graphics.guiRenderState.submitGuiElement(new TextureRenderState(TextureSetup.noTexture(),
+				RenderPipelines.GUI, (vconsumer, f)->{
+	        var matrix = graphics.pose();
 
 	        vconsumer.addVertexWith2DPose(matrix, x, y+height, 0f).setColor(red,green,blue,alpha).setUv(0, 0);
 	        vconsumer.addVertexWith2DPose(matrix, x+width, y+height, 0f).setColor(red,green,blue,alpha).setUv(0, 0);
@@ -289,6 +291,7 @@ public class HudderRenderer implements HudElement {
 			if (!Hudder.config.limitrate) compman.compile(delta);
 			if (Hudder.config.shouldDrawResult()) {
 	            try {
+	            	renderBlock(context, 10, 10, 10, 10, 0xFFFFFFFF);
 	            	if (compman.getResult()!=null)
 	            		drawCompileResult(context, mc.font, compman.getResult(), Hudder.config, delta);
 	            	else

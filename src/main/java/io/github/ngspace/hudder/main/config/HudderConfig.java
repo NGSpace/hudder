@@ -39,10 +39,12 @@ public class HudderConfig {
 	@Expose public int xoffset = 1;
 	@Expose public int lineHeight = 10;
 	@Expose public int methodBuffer = 2;
-	@Expose public int backgroundcolor = 0x86353535;
+	@Expose public long backgroundcolor = 0x86353535;
 	@Expose public boolean background = true;
 	@Expose public boolean removegui = false;
 	@Expose public boolean limitrate = true;
+	
+	@Expose public String config_version = getDefaultConfigVersion();
 	
 	
 	
@@ -63,8 +65,8 @@ public class HudderConfig {
 		configFile = f;
 		readConfig();
 	}
-	
-	
+
+
 	/**
 	 * Compiles the main hud using the selected compiler
 	 * @return The result of the execution
@@ -210,5 +212,10 @@ public class HudderConfig {
 	 */
 	public ATextCompiler getCompiler() {
 		return compiler;
+	}
+	
+	
+	private static String getDefaultConfigVersion() {
+		return Hudder.HUDDER_VERSION;
 	}
 }

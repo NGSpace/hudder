@@ -1,7 +1,10 @@
 package io.github.ngspace.hudder;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Optional;
+import java.util.Scanner;
 
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -21,6 +24,10 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.network.chat.Component;
@@ -33,6 +40,10 @@ import net.minecraft.server.LoggedPrintStream;
 public class Hudder implements ClientModInitializer {
 	
     private static final Logger LOGGER = LoggerFactory.getLogger("hudder");
+
+
+
+	public static String HUDDER_VERSION;
 	
     
     
@@ -52,6 +63,35 @@ public class Hudder implements ClientModInitializer {
      * @throws Exception Because I fuck up a lot.
      */
 	@Override public void onInitializeClient() {
+		String hudder_release_version = "${version}";
+		
+		Optional<ModContainer> containerOpt = FabricLoader.getInstance().getModContainer("hudder");
+		
+		if (containerOpt.isPresent()) {
+			hudder_release_version = containerOpt.get().getMetadata().getVersion().getFriendlyString();
+		}
+		// If there is still no version (eg. when running through an IDE)
+		if (hudder_release_version.equals("${version}")) {
+			// Read the version from gradle.properties
+			File gradleProp = new File("../gradle.properties");
+			if (gradleProp.exists()) {
+				try (Scanner scanner = new Scanner(gradleProp)) {
+					while (scanner.hasNext()) {
+						String line = scanner.nextLine();
+						if (line.startsWith("mod_version=")) {
+							hudder_release_version = line.substring(12);
+						}
+					}
+				} catch (FileNotFoundException e) {
+					log("Can not determine Hudder version!");
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		HUDDER_VERSION = hudder_release_version + "-" + SharedConstants.getCurrentVersion().name();
+		log("Starting Hudder version: " + HUDDER_VERSION);
+		
 		config = new HudderConfig(new File(HudFileUtils.FOLDER + "hud.json"));
 
 		if (IS_DEBUG) {
@@ -76,8 +116,7 @@ public class Hudder implements ClientModInitializer {
 		ClientTickEvents.END_CLIENT_TICK.register(compman);
         
 		HudderRenderer renderer = new HudderRenderer(compman);
-		HudElementRegistry.attachElementBefore(ResourceLocation.withDefaultNamespace("chat"), renderer
-				.hudElementRegistryID, renderer);
+		HudElementRegistry.addFirst(renderer.hudElementRegistryID, renderer);
         
         ClientLifecycleEvents.CLIENT_STARTED.register(c->{
 			try {
