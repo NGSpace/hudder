@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gson.GsonBuilder;
@@ -22,6 +24,8 @@ import net.minecraft.client.Minecraft;
 import net.minidev.json.JSONObject;
 
 public class HudderConfig {
+	
+	public static final int HUDDER_CONFIG_VERSION = 1;
 	
 	/* EXPOSED :flushed: */
 	@Expose public Map<String, Object> globalVariables = new HashMap<String, Object>();
@@ -44,7 +48,7 @@ public class HudderConfig {
 	@Expose public boolean removegui = false;
 	@Expose public boolean limitrate = true;
 	
-	@Expose public String config_version = Hudder.HUDDER_VERSION;
+	@Expose public int config_version = HUDDER_CONFIG_VERSION;
 	
 	
 	
@@ -103,7 +107,7 @@ public class HudderConfig {
 			Map<?,?> newinfo = new GsonBuilder().create().fromJson(config,HashMap.class);
 			
 			if (newinfo.containsKey("debug")) Hudder.IS_DEBUG = (boolean) newinfo.get("debug");
-			if (!newinfo.containsKey("config_version")) config_version = "0";
+			if (!newinfo.containsKey("config_version")) config_version = 0;
 			
 			for(Field f : HudderConfig.class.getFields()) {
 				if (f.getAnnotation(Expose.class)!=null&&newinfo.get(f.getName())!=null) {
@@ -111,6 +115,11 @@ public class HudderConfig {
 				}
 			}
 			
+			if (config_version<HUDDER_CONFIG_VERSION) {
+				updateConfigFromVersion(config_version);
+				config_version = HUDDER_CONFIG_VERSION;
+				save();
+			}
 			
 		} catch (IOException e) {
 			Hudder.IS_DEBUG=true;
@@ -124,6 +133,36 @@ public class HudderConfig {
 		refreshCompiler();
 	}
 	
+	
+	
+    private void updateConfigFromVersion(int version) {
+		if (version<1 && ((color >> 24) & 0xFF)==0) {
+        	color = (255 << 24) | color;
+        }
+		
+	}
+
+
+	public static int compareSemanticVersions(String version1, String version2) {
+        List<Integer> version1Components = Arrays.stream(version1.split("\\.")).map(Integer::parseInt).toList();
+        List<Integer> version2Components = Arrays.stream(version2.split("\\.")).map(Integer::parseInt).toList();
+
+        int maxLength = Math.max(version1Components.size(), version2Components.size());
+
+        for (int i = 0; i < maxLength; i++) {
+            int v1Component = i < version1Components.size() ? version1Components.get(i) : 0;
+            int v2Component = i < version2Components.size() ? version2Components.get(i) : 0;
+
+            if (v1Component > v2Component) {
+                return 1;
+            } else if (v1Component < v2Component) {
+                return -1;
+            }
+        }
+
+        return 0;
+    }
+    
 	
 	
 	/**

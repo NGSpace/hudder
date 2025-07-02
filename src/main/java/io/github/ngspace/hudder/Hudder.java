@@ -26,7 +26,6 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
-import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.network.chat.Component;
@@ -41,8 +40,7 @@ public class Hudder implements ClientModInitializer {
 
 
 
-	public static String HUDDER_VERSION;
-	
+	public static String HUDDER_VERSION = "${version}";
     
     
     /**
@@ -61,15 +59,13 @@ public class Hudder implements ClientModInitializer {
      * @throws Exception Because I fuck up a lot.
      */
 	@Override public void onInitializeClient() {
-		String hudder_release_version = "${version}";
-		
 		Optional<ModContainer> containerOpt = FabricLoader.getInstance().getModContainer("hudder");
 		
 		if (containerOpt.isPresent()) {
-			hudder_release_version = containerOpt.get().getMetadata().getVersion().getFriendlyString();
+			HUDDER_VERSION = containerOpt.get().getMetadata().getVersion().getFriendlyString();
 		}
 		// If there is still no version (eg. when running through an IDE)
-		if (hudder_release_version.equals("${version}")) {
+		if (HUDDER_VERSION.equals("${version}")) {
 			// Read the version from gradle.properties
 			File gradleProp = new File("../gradle.properties");
 			if (gradleProp.exists()) {
@@ -77,7 +73,7 @@ public class Hudder implements ClientModInitializer {
 					while (scanner.hasNext()) {
 						String line = scanner.nextLine();
 						if (line.startsWith("mod_version=")) {
-							hudder_release_version = line.substring(12);
+							HUDDER_VERSION = line.substring(12);
 						}
 					}
 				} catch (FileNotFoundException e) {
@@ -86,9 +82,7 @@ public class Hudder implements ClientModInitializer {
 				}
 			}
 		}
-		
-		HUDDER_VERSION = hudder_release_version + "-" + SharedConstants.getCurrentVersion().name();
-		log("Starting Hudder version: " + HUDDER_VERSION);
+		log("Starting Hudder " + HUDDER_VERSION);
 		
 		config = new HudderConfig(new File(HudFileUtils.FOLDER + "hud.json"));
 

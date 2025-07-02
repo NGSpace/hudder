@@ -64,9 +64,6 @@ public class HudderRenderer implements HudElement {
 	public void drawCompileResult(GuiGraphics context, Font renderer, HudInformation text, HudderConfig info,
 			DeltaTracker delta) {
         int color = info.color;
-        if (((color >> 24) & 0xFF)==0) {
-        	color = (255 << 24) | color;
-        }
         long bgcolor = info.backgroundcolor;
         boolean shadow = info.shadow;
         boolean background = info.background;
