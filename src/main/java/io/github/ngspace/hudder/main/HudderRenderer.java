@@ -23,6 +23,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
 
 /**
@@ -51,7 +52,7 @@ public class HudderRenderer implements HudElement {
 	
 	public void renderFail(GuiGraphics context, String FailMessage) {
 		List<FormattedCharSequence> lines = mc.font.split(FormattedText.of(FailMessage),
-				mc.getWindow().getGuiScaledWidth()-10);
+			mc.getWindow().getGuiScaledWidth()-10);
 		int y = 1;
 		for (FormattedCharSequence line : lines) {
         	context.drawString(mc.font, line, 1, y, 0xFFFF5555, true);
@@ -64,7 +65,7 @@ public class HudderRenderer implements HudElement {
 	public void drawCompileResult(GuiGraphics context, Font renderer, HudInformation text, HudderConfig info,
 			DeltaTracker delta) {
         int color = info.color;
-        long bgcolor = info.backgroundcolor;
+        int bgcolor = info.backgroundcolor;
         boolean shadow = info.shadow;
         boolean background = info.background;
         
@@ -120,7 +121,7 @@ public class HudderRenderer implements HudElement {
     
 
 	public void renderTextLine(GuiGraphics context, String text, int x, int y, int color, float scale, boolean shadow,
-			boolean background, long backgroundColor) {
+			boolean background, int backgroundColor) {
         if (scale != 1.0f) {
             Matrix3x2fStack matrixStack = context.pose();
             matrixStack.pushMatrix();
@@ -128,35 +129,23 @@ public class HudderRenderer implements HudElement {
             matrixStack.scale(scale, scale);
             matrixStack.translate(-x, -y);
     		if (background&&!"".equals(text))
-    			renderBlock(context,x-1f,y-1f,mc.font.width(text)+2f,9f+1f,backgroundColor);
+    			renderBlock(context,x-1,y-1,mc.font.width(text)+2,10,backgroundColor);
             context.drawString(mc.font, text, x, y, color, shadow);
             matrixStack.popMatrix();
         } else {
     		if (background&&!"".equals(text))
-    			renderBlock(context,x-1f,y-1f,mc.font.width(text)+2f,9f+1f,backgroundColor);
+    			renderBlock(context,x-1,y-1,mc.font.width(text)+2,10,backgroundColor);
         	context.drawString(mc.font, text, x, y, color, shadow);
         }
     }
 	
 	
 	
-	public void renderBlock(GuiGraphics graphics, float x, float y, float width, float height, long argb) {
-		int alpha = (int) ((argb >> 24) & 0xFF);
-		int red =   (int) ((argb >> 16) & 0xFF);
-		int green = (int) ((argb >>  8) & 0xFF);
-		int blue =  (int) ((argb      ) & 0xFF);
-		
-		
-		graphics.guiRenderState.submitGuiElement(new TextureRenderState(TextureSetup.noTexture(),
-				RenderPipelines.GUI_TEXTURED, (vconsumer, f)->{
-			Matrix3x2fStack matrix = graphics.pose();
-
-	        vconsumer.addVertexWith2DPose(matrix, x, y+height, 0f).setColor(red,green,blue,alpha).setUv(0, 0);
-	        vconsumer.addVertexWith2DPose(matrix, x+width, y+height, 0f).setColor(red,green,blue,alpha).setUv(0, 0);
-	        vconsumer.addVertexWith2DPose(matrix, x+width, y, 0f).setColor(red,green,blue,alpha).setUv(0, 0);
-	        vconsumer.addVertexWith2DPose(matrix, x, y, 0f).setColor(red,green,blue,alpha).setUv(0, 0);
-		}));
+	public void renderBlock(GuiGraphics graphics, int x, int y, int width, int height, int argb) {
+		graphics.fill(x, y, x+width, y+height, argb);
 	}
+	
+	
 	
 	public void renderTexture9Slice(GuiGraphics context, ResourceLocation id, float x, float y, float width,
 			float height, float[] slices) {
@@ -262,6 +251,10 @@ public class HudderRenderer implements HudElement {
 	
 	/**
 	 * Draws the provided vertices on screen with the provided color and render mode
+	 * 
+	 * @deprecated Use {@link #renderColoredVertexArray(GuiGraphics, float[], int, boolean)} instead.
+	 * If needed, use {@link ARGB#color(int, int, int, int)}.
+	 * 
 	 * @param context The render context
 	 * @param vertices The array holding all the vertices
 	 * @param r red
@@ -270,14 +263,29 @@ public class HudderRenderer implements HudElement {
 	 * @param a alpha
 	 * @param mode The rendering mode
 	 */
+	@Deprecated(since = "TBD", forRemoval = false)
 	public void renderColoredVertexArray(GuiGraphics context, float[] vertices, int r, int g, int b, int a,
 			boolean triangle_strip) {
+		renderColoredVertexArray(context, vertices, ARGB.color(r, g, b, a), triangle_strip);
+	}
+	
+	
+	
+	/**
+	 * Draws the provided vertices on screen with the provided color and render mode
+	 * @param context The render context
+	 * @param vertices The array holding all the vertices
+	 * @param argb The ARGB color value
+	 * @param mode The rendering mode
+	 */
+	public void renderColoredVertexArray(GuiGraphics context, float[] vertices, int argb, boolean triangle_strip) {
 		context.guiRenderState.submitGuiElement(new TextureRenderState(TextureSetup.noTexture(),
 			triangle_strip ? GUI_TEXTURED_TRIANGLES : RenderPipelines.GUI_TEXTURED, (vconsumer, f) -> {
+			
 	        Matrix3x2fStack matrix = context.pose();
-
+	        
 	        for (int i = 0;i<vertices.length;i+=2)
-	        	vconsumer.addVertexWith2DPose(matrix,vertices[i],vertices[i+1],0f).setColor(r, g, b, a).setUv(0, 0);
+	        	vconsumer.addVertexWith2DPose(matrix,vertices[i],vertices[i+1],0f).setColor(argb).setUv(0, 0);
 		}));
 	}
 	

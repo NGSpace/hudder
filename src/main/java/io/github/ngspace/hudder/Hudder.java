@@ -108,7 +108,7 @@ public class Hudder implements ClientModInitializer {
 		ClientTickEvents.END_CLIENT_TICK.register(compman);
         
 		HudderRenderer renderer = new HudderRenderer(compman);
-		HudElementRegistry.addFirst(renderer.hudElementRegistryID, renderer);
+		HudElementRegistry.addLast(renderer.hudElementRegistryID, renderer);
         
         ClientLifecycleEvents.CLIENT_STARTED.register(c->{
 			try {
