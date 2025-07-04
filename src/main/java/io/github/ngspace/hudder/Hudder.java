@@ -82,6 +82,7 @@ public class Hudder implements ClientModInitializer {
 				}
 			}
 		}
+		
 		log("Starting Hudder " + HUDDER_VERSION);
 		
 		config = new HudderConfig(new File(HudFileUtils.FOLDER + "hud.json"));
