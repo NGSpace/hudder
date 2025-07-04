@@ -158,7 +158,7 @@ public class NumberData {private NumberData() {}
 
 
 
-			/* Player roation*/
+			/* Player roation */
 			// Pitch
 			case "dpitch": yield (double) p.getXRot();
 			case "pitch": yield (double) (int) p.getXRot();
@@ -179,7 +179,7 @@ public class NumberData {private NumberData() {}
 
 
 
-			/* Camera roation*/
+			/* Camera roation */
 			// Pitch
 			case "cam_dpitch": yield (double) c.getXRot();
 			case "cam_pitch": yield (double) (int) c.getXRot();
@@ -208,7 +208,7 @@ public class NumberData {private NumberData() {}
 			
 			
 			
-			/* World */
+			/* Light */
 			/* At player */
 			case "light": yield (double) ins.level.getMaxLocalRawBrightness(p.blockPosition());
 			case "blocklight", "block_light": yield (double) ins.level.getBrightness(LightLayer.BLOCK,p.blockPosition());
@@ -217,17 +217,22 @@ public class NumberData {private NumberData() {}
 			case "cam_light": yield (double) ins.level.getMaxLocalRawBrightness(c.getBlockPosition());
 			case "cam_blocklight", "cam_block_light": yield (double) ins.level.getBrightness(LightLayer.BLOCK,c.getBlockPosition());
 			case "cam_skylight", "cam_sky_light": yield (double) ins.level.getBrightness(LightLayer.SKY,c.getBlockPosition());
-			/* General */
+			
+			
+			
+			/* World */
 			case "worldtime", "world_time": yield (double) ins.level.getDayTime();
 			case "daytime", "day_time": yield ins.level.getDayTime()/24000d;
 
 
 
-			/* Hudder rendering */
+			/* GUI rendering */
 			case "width": yield (double) ins.getWindow().getGuiScaledWidth();
 			case "height": yield (double) ins.getWindow().getGuiScaledHeight();
 			case "guiscale": yield (double) ins.getWindow().getGuiScale();
-
+			
+			
+			/* Hudder */
 			case "scale": yield (double) config.scale;
 			case "color": yield (double) config.color;
 			case "yoffset": yield (double) config.yoffset;
