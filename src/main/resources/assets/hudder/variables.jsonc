@@ -1,10 +1,13 @@
-// Format:
-// {
-// 	"name": "variable name",
-// 	"desc": "variable description",
-// 	"version": "version added"
-// }
-// "version" is optional.
+//  Format:
+//  "type": [
+//  	{
+//  	 	"name": "variable name",
+//  	 	"desc": "variable description",
+//  	 	"version": "version added"
+//  	}
+//  	...
+//  ]
+//  "version" is optional.
 {
 	"number": [
 		
