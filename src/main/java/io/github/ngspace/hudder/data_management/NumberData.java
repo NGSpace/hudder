@@ -101,7 +101,7 @@ public class NumberData {private NumberData() {}
 				yield (double) getCurrentAirSupplyBubble(Math.clamp(p.getAirSupply(), 0, p.getMaxAirSupply()), p.getMaxAirSupply(), 0);
 			}
 			case "maxairbubbles":  {
-				yield (double) getCurrentAirSupplyBubble(Math.clamp(p.getMaxAirSupply(), 0, p.getMaxAirSupply()), p.getMaxAirSupply(), 0);
+				yield (double) getCurrentAirSupplyBubble(p.getMaxAirSupply(), p.getMaxAirSupply(), 0);
 			}
 
 			case "playerspeed": {
