@@ -16,7 +16,7 @@ public class ColorVerticesElement extends AUIElement {
         this.mode = triangle_strip;
 	}
 	@Override public void renderElement(GuiGraphics context, HudderRenderer renderer, DeltaTracker delta) {
-		renderer.renderColoredVertexArray(context,vertices,argb, mode);
+		renderer.renderColoredVertexArray(context, vertices, argb, mode);
 	}
 	
 }
