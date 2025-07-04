@@ -9,7 +9,7 @@ public class V2Number extends AV2Value {
 	public V2Number(String value, int line, int charpos, AV2Compiler compiler) {
 		super(line, charpos, value, compiler);
 		if (value.startsWith("0x")||value.startsWith("#"))
-			this.doubleVal = Long.decode(value);
+			this.doubleVal = Integer.parseUnsignedInt(value.substring(2), 16);
 		else
 			this.doubleVal = Double.parseDouble(value);
 	}

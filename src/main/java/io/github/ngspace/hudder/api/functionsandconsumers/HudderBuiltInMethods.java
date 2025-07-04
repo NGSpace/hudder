@@ -21,8 +21,8 @@ public class HudderBuiltInMethods {private HudderBuiltInMethods() {}
 	public static void registerMethods(FunctionAndConsumerAPI api) {
 		//Vertex
 
-		api.registerConsumer((e,a,s)->e.addUIElement(new ColorVerticesElement(s[0].asFloatArray(),s[1].asLong(),false)),"colorvertices");
-		api.registerConsumer((e,a,s)->e.addUIElement(new ColorVerticesElement(s[0].asFloatArray(),s[1].asLong(),true)),"colorvertices_con");
+		api.registerConsumer((e,a,s)->e.addUIElement(new ColorVerticesElement(s[0].asFloatArray(),s[1].asInt(),false)),"colorvertices");
+		api.registerConsumer((e,a,s)->e.addUIElement(new ColorVerticesElement(s[0].asFloatArray(),s[1].asInt(),true)),"colorvertices_con");
 		
 		api.registerConsumer((e,a,s)->e.addUIElement(new TextureVerticesElement(
 				s[0].asString(),s[1].asFloatArray(),s[2].asFloatArray(), false)), "texturevertices");
@@ -54,9 +54,9 @@ public class HudderBuiltInMethods {private HudderBuiltInMethods() {}
 			int color = args.length>4 ? args[4].asInt() : Hudder.config.color;
 			boolean shadow = args.length>5 ? args[5].asBoolean(): Hudder.config.shadow;
 			boolean bg = args.length>6 ? args[6].asBoolean(): Hudder.config.background;
-			double bgcolor = args.length>7 ? args[7].asDouble() : Hudder.config.backgroundcolor;
+			int bgcolor = args.length>7 ? args[7].asInt() : Hudder.config.backgroundcolor;
 			
-			e.addUIElement(new TextElement(x,y,text,scale,color,shadow,bg,(long) bgcolor));
+			e.addUIElement(new TextElement(x, y, text, scale, color, shadow, bg, bgcolor));
 		}, "drawText", "text");
 		
 		//GUI
