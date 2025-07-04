@@ -2,9 +2,9 @@
 // {
 // 	"name": "variable name",
 // 	"desc": "variable description",
-// 	"vers": "version added"
+// 	"version": "version added"
 // }
-// If vers is not defined then the version is not known.
+// "version" is optional.
 {
 	"number": [
 		
@@ -508,12 +508,6 @@
 		},
 		
 		// Player movement
-		// isflying
-		// isgliding
-		// isclimbing
-		// iscrawling
-		// isswimming
-		// issneaking
 		
 		{
 			"name": "isflying",
@@ -603,10 +597,6 @@
 		},
 		
 		// Input
-		// mouse_left
-		// mouse_middle
-		// mouse_right
-		// key_[key on keyboard]
 		
 		{
 			"name": "mouse_left",
@@ -730,10 +720,6 @@
 		},
 		
 		// Looking at
-		// block_in_front
-		// cam_block_in_front
-		// looking_at_pos
-		// cam_looking_at_pos
 		
 		{
 			"name": "block_in_front",
@@ -757,7 +743,8 @@
 		{
 			"name": "compilertype",
 			"desc": "The type of Hudder compiler selected"
-		},{
+		},
+		{
 			"name": "mainfile",
 			"desc": "The name of the main file in Hudder"
 		}
