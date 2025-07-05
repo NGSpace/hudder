@@ -81,7 +81,7 @@ function parseJSONC(jsoncString) {
 	return JSON.parse(withoutAnyComments);
 }
 
-var variables_json = parseJSONC(httpGet("https://raw.githubusercontent.com/NGSpace/hudder/refs/heads/main/src/main/resources/assets/hudder/variables.jsonc"));
+var variables_json = parseJSONC(httpGet("https://raw.githubusercontent.com/NGSpace/hudder/refs/heads/latest_release/src/main/resources/assets/hudder/variables.jsonc"));
 
 document.getElementById("hudder_version").innerText = "This list is updated to Hudder version " + variables_json.hudder_version;
 
