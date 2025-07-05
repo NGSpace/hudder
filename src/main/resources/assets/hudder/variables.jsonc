@@ -668,7 +668,7 @@
 		
 		
 		
-		"Hudder": [
+		"Hudder settings": [
 			{
 				"name": "enabled",
 				"desc": "Is Hudder enabled"
@@ -807,7 +807,7 @@
 		
 		
 		
-		"Hudder": [
+		"Hudder settings": [
 			{
 				"name": "compilertype",
 				"desc": "The type of Hudder compiler selected"
