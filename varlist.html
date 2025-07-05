@@ -39,6 +39,7 @@
 </head>
 <body onload="initializeTable()">
 <note>Variables are NOT case sensitive</note>
+<note id="hudder_version">PLACEHOLDER, if you see this something went wrong or is loading very slowly.</note>
 <warning>If you are playing on an older version, some of those variables may not exist.</warning>
 
 <script>
@@ -82,35 +83,54 @@ function parseJSONC(jsoncString) {
 
 var variables_json = parseJSONC(httpGet("https://raw.githubusercontent.com/NGSpace/hudder/refs/heads/main/src/main/resources/assets/hudder/variables.jsonc"));
 
+document.getElementById("hudder_version").innerText = "This list is updated to Hudder version " + variables_json.hudder_version;
+
 function updateSearch() {
-	// Declare variables
+	// Grab and normalize the user input
 	const input = document.getElementById("searchbar");
-	const filter = input.value.toUpperCase();
+	let filter = input.value.trim().toUpperCase();
+	
+	// Auto‐correct: if query mentions horse, pig, or llama, switch to "MOUNT"
+	const keywords = ["HORSE", "PIG", "LLAMA"];
+	if (keywords.some(k => filter.includes(k))) {
+		filter = "MOUNT";
+		console.log(`Auto-corrected search term to: ${filter}`);
+	}
+
 	const table = document.getElementById("var_table");
 	const tr = table.getElementsByTagName("tr");
-	
-	let anyVisible = false; // tracks if at least one row matches
+	let anyVisible = false;
 
-	// Loop through all table rows
+	// Loop through all rows
 	for (let i = 1; i < tr.length; i++) {
 		const tds = tr[i].getElementsByTagName("td");
 		let rowMatches = false;
-		
-		// Check each cell in this row
+
+		// Check each cell
 		for (let j = 0; j < tds.length; j++) {
-			const txtValue = tds[j].textContent || tds[j].innerText;
-			if (txtValue.toUpperCase().indexOf(filter) > -1) {
-			rowMatches = true;
-			break;
+			const txtValue = (tds[j].textContent || tds[j].innerText).trim().toUpperCase();
+			
+			if (j === 2) {
+				// 3rd column: exact match
+				if (txtValue === filter && filter !== "") {
+					rowMatches = true;
+					break;
+				}
+			} else {
+				// other columns: substring match
+				if (txtValue.indexOf(filter) > -1) {
+					rowMatches = true;
+					break;
+				}
 			}
 		}
 		
-		// Show or hide the row
+		// Show/hide row
 		tr[i].style.display = rowMatches ? "" : "none";
 		if (rowMatches) anyVisible = true;
 	}
 
-	// If nothing was found, log a message
+
 	if (!anyVisible) {
 		document.getElementById("res").innerText
 			= "No variable found matching the search \""+input.value+'"'
@@ -123,24 +143,37 @@ function updateSearch() {
 
 function initializeTable() {
 	var table = (document.getElementById("var_table"));
-	for (const key1 in variables_json) {
-		var type = variables_json[key1];
-		for (var i = 0; i<type.length; i++) {
-			var value = type[i];
-			// Create an empty <tr> element and add it to the 1st position of the table:
-			var row = table.insertRow(i+1);
-			
-			var name_cell = row.insertCell(0);
-			name_cell.innerText = value.name;
-			var desc_cell = row.insertCell(1);
-			desc_cell.innerText = value.desc;
-			var type_cell = row.insertCell(2);
-			type_cell.innerText = key1;
-			var cate_cell = row.insertCell(3);
-			cate_cell.innerText = "unknown";
+	for (const type in variables_json) {
+		if (type=="hudder_version") continue;
+		var typelist = variables_json[type];
+		for (const category in typelist) {
+			var categorylist = typelist[category];
+			for (var i = 0; i<categorylist.length; i++) {
+				var value = categorylist[i];
+				// Create an empty <tr> element and add it to the 1st position of the table:
+				var row = table.insertRow(i+1);
+				
+				
+				if (value.name==undefined) {
+					console.log(i)
+					console.log(category)
+				}
+				var name_cell = row.insertCell(0);
+				name_cell.innerText = value.name;
+				var desc_cell = row.insertCell(1);
+				desc_cell.innerText = value.desc;
+				var type_cell = row.insertCell(2);
+				type_cell.innerText = type;
+				var cate_cell = row.insertCell(3);
+				cate_cell.innerText = category;
+			}
 		}
 	}
 	console.log("Done loading variable table");
+	
+	var input = document.getElementById('searchbar');
+	input.focus();
+	input.select();
 }
 
 </script>
