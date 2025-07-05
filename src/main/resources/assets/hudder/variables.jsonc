@@ -9,6 +9,7 @@
 //  ]
 //  "version" is optional.
 {
+	"hudder_version": "8.4.0",
 	"number": [
 		
 		// Performance
