@@ -10,747 +10,812 @@
 //  "version" is optional.
 {
 	"hudder_version": "8.4.0",
-	"number": [
+	"number": {
 		
-		// Performance
 		
-		{
-			"name": "fps",
-			"desc": "The current frame rate"
-		},
-		{
-			"name": "avgfps",
-			"desc": "The average frame rate in the last few seconds (alias: avg_fps)"
-		},
-		{
-			"name": "minfps",
-			"desc": "The lowest frame rate in the last few seconds (alias: min_fps)"
-		},
-		{
-			"name": "maxfps",
-			"desc": "The highest frame rate in the last few seconds (alias: max_fps)"
-		},
-		{
-			"name": "ping",
-			"desc": "The current ping"
-		},
-		{
-			"name": "tps",
-			"desc": "The current Ticks per second (Client only)"
-		},
-		{
-			"name": "gpu_d",
-			"desc": "The current GPU usage in percentage (With decimal precision)"
-		},
-		{
-			"name": "gpu",
-			"desc": "The current GPU usage in percentage percentage"
-		},
-		{
-			"name": "cpu_d",
-			"desc": "The current CPU usage in percentage (With decimal precision)"
-		},
-		{
-			"name": "cpu",
-			"desc": "The current CPU usage in percentage percentage"
-		},
-		{
-			"name": "delta",
-			"desc": "The time since the last frame"
-		},
 		
-		// Memory
+		"Performance": [
+			{
+				"name": "fps",
+				"desc": "The current frame rate"
+			},
+			{
+				"name": "avgfps",
+				"desc": "The average frame rate in the last few seconds (alias: avg_fps)"
+			},
+			{
+				"name": "minfps",
+				"desc": "The lowest frame rate in the last few seconds (alias: min_fps)"
+			},
+			{
+				"name": "maxfps",
+				"desc": "The highest frame rate in the last few seconds (alias: max_fps)"
+			},
+			{
+				"name": "ping",
+				"desc": "The current ping"
+			},
+			{
+				"name": "tps",
+				"desc": "The current Ticks per second (Client only)"
+			},
+			{
+				"name": "gpu_d",
+				"desc": "The current GPU usage in percentage (With decimal precision)"
+			},
+			{
+				"name": "gpu",
+				"desc": "The current GPU usage in percentage percentage"
+			},
+			{
+				"name": "cpu_d",
+				"desc": "The current CPU usage in percentage (With decimal precision)"
+			},
+			{
+				"name": "cpu",
+				"desc": "The current CPU usage in percentage percentage"
+			},
+			{
+				"name": "delta",
+				"desc": "The time since the last frame"
+			}
+		],
 		
-		{
-			"name": "maxmemory",
-			"desc": "The total memory in MB (aliases: totalmemory, totalram, maxram)"
-		},
-		{
-			"name": "usedmemory",
-			"desc": "The used memory in MB (aliases: usedram)"
-		},
-		{
-			"name": "freememory",
-			"desc": "The free memory in MB (aliases: freeram)"
-		},
-		{
-			"name": "usedmemory_percentage",
-			"desc": "The percentage of memory out of total memory that is being used (aliases: usedram_percentage)"
-		},
-		{
-			"name": "freememory_percentage",
-			"desc": "The percentage of memory that is being NOT used (aliases: freeram_percentage)"
-		},
 		
-		// Time
 		
-		{
-			"name": "time",
-			"desc": "The current time in milliseconds as supplied by the Operating System"
-		},
-		{
-			"name": "milliseconds",
-			"desc": "The current millisecond"
-		},
-		{
-			"name": "seconds",
-			"desc": "The current second"
-		},
-		{
-			"name": "minutes",
-			"desc": "The current minute"
-		},
-		{
-			"name": "hour",
-			"desc": "The current hour"
-		},
-		{
-			"name": "day",
-			"desc": "The current day"
-		},
-		{
-			"name": "month",
-			"desc": "The current month"
-		},
-		{
-			"name": "year",
-			"desc": "The current year"
-		},
+		"Memory": [
+			{
+				"name": "maxmemory",
+				"desc": "The total memory in MB (aliases: totalmemory, totalram, maxram)"
+			},
+			{
+				"name": "usedmemory",
+				"desc": "The used memory in MB (aliases: usedram)"
+			},
+			{
+				"name": "freememory",
+				"desc": "The free memory in MB (aliases: freeram)"
+			},
+			{
+				"name": "usedmemory_percentage",
+				"desc": "The percentage of memory out of total memory that is being used (aliases: usedram_percentage)"
+			},
+			{
+				"name": "freememory_percentage",
+				"desc": "The percentage of memory that is being NOT used (aliases: freeram_percentage)"
+			}
+		],
 		
-		// Food and health
+
+		"Time": [
+			{
+				"name": "time",
+				"desc": "The current time in milliseconds as supplied by the Operating System"
+			},
+			{
+				"name": "milliseconds",
+				"desc": "The current millisecond"
+			},
+			{
+				"name": "seconds",
+				"desc": "The current second"
+			},
+			{
+				"name": "minutes",
+				"desc": "The current minute"
+			},
+			{
+				"name": "hour",
+				"desc": "The current hour"
+			},
+			{
+				"name": "day",
+				"desc": "The current day"
+			},
+			{
+				"name": "month",
+				"desc": "The current month"
+			},
+			{
+				"name": "year",
+				"desc": "The current year"
+			}
+		],
 		
-		{
-			"name": "saturation",
-			"desc": "The saturation of the player"
-		},
-		{
-			"name": "hunger",
-			"desc": "The hunger of the player"
-		},
-		{
-			"name": "health",
-			"desc": "The health of the player"
-		},
-		{
-			"name": "maxhealth",
-			"desc": "The maximum health of the player"
-		},
-		{
-			"name": "absorption",
-			"desc": "The absorption of the player"
-		},
-		{
-			"name": "maxabsorption",
-			"desc": "The maximum absorption of the player"
-		},
+
+				
+		"Food and health": [
+			{
+				"name": "saturation",
+				"desc": "The saturation of the player"
+			},
+			{
+				"name": "hunger",
+				"desc": "The hunger of the player"
+			},
+			{
+				"name": "health",
+				"desc": "The health of the player"
+			},
+			{
+				"name": "maxhealth",
+				"desc": "The maximum health of the player"
+			},
+			{
+				"name": "absorption",
+				"desc": "The absorption of the player"
+			},
+			{
+				"name": "maxabsorption",
+				"desc": "The maximum absorption of the player"
+			}
+		],
 		
-		// Mount information
+
+				
+		"Mount information": [
+			{
+				"name": "mount_health",
+				"desc": "The health of the player's mount"
+			},
+			{
+				"name": "mount_maxhealth",
+				"desc": "The maximum health of the player's mount"
+			},
+			{
+				"name": "mount_speed",
+				"desc": "The speed of the player's mount"
+			},
+			{
+				"name": "mount_jump_strength",
+				"desc": "The jump strength of the player's mount"
+			},
+			{
+				"name": "mount_jump_scale",
+				"desc": "The jump scale of the player's mount"
+			},
+			{
+				"name": "mount_armor",
+				"desc": "The armor of the player's mount"
+			},
+			{
+				"name": "mount_jump_cooldown",
+				"desc": "The jump cooldown of the player's mount"
+			}
+		],
 		
-		{
-			"name": "mount_health",
-			"desc": "The health of the player's mount"
-		},
-		{
-			"name": "mount_maxhealth",
-			"desc": "The maximum health of the player's mount"
-		},
-		{
-			"name": "mount_speed",
-			"desc": "The speed of the player's mount"
-		},
-		{
-			"name": "mount_jump_strength",
-			"desc": "The jump strength of the player's mount"
-		},
-		{
-			"name": "mount_jump_scale",
-			"desc": "The jump scale of the player's mount"
-		},
-		{
-			"name": "mount_armor",
-			"desc": "The armor of the player's mount"
-		},
-		{
-			"name": "mount_jump_cooldown",
-			"desc": "The jump cooldown of the player's mount"
-		},
+
+				
+		"Other player related information": [
+			{
+				"name": "selectedslot",
+				"desc": "The player's selected slot"
+			},
+			{
+				"name": "xplevel",
+				"desc": "The player's experience level"
+			},
+			{
+				"name": "xp",
+				"desc": "The player's experience"
+			},
+			{
+				"name": "armor",
+				"desc": "The player's armor level"
+			},
+			{
+				"name": "falldistance",
+				"desc": "The amount of blocks the player has fallen before landing"
+			},
+			{
+				"name": "airbubbles",
+				"desc": "The amount of air bubbles the player has left"
+			},
+			{
+				"name": "maxairbubbles",
+				"desc": "The maximum amount of air bubbles the player can have"
+			},
+			{
+				"name": "playerspeed",
+				"desc": "The speed at which the player is travelling"
+			},
+			{
+				"name": "horizontal_playerspeed",
+				"desc": "The speed at which the player is travelling horizontally"
+			}
+		],
 		
-		// Other player related information
 		
-		{
-			"name": "selectedslot",
-			"desc": "The player's selected slot"
-		},
-		{
-			"name": "xplevel",
-			"desc": "The player's experience level"
-		},
-		{
-			"name": "xp",
-			"desc": "The player's experience"
-		},
-		{
-			"name": "armor",
-			"desc": "The player's armor level"
-		},
-		{
-			"name": "falldistance",
-			"desc": "The amount of blocks the player has fallen before landing"
-		},
-		{
-			"name": "airbubbles",
-			"desc": "The amount of air bubbles the player has left"
-		},
-		{
-			"name": "maxairbubbles",
-			"desc": "The maximum amount of air bubbles the player can have"
-		},
-		{
-			"name": "playerspeed",
-			"desc": "The speed at which the player is travelling"
-		},
-		{
-			"name": "horizontal_playerspeed",
-			"desc": "The speed at which the player is travelling horizontally"
-		},
+				
+		"Player position": [
+			{
+				"name": "dxpos",
+				"desc": "The player's x position (With decimal precision)"
+			},
+			{
+				"name": "dypos",
+				"desc": "The player's y position (With decimal precision)"
+			},
+			{
+				"name": "dzpos",
+				"desc": "The player's z position (With decimal precision)"
+			},
+			{
+				"name": "xpos",
+				"desc": "The player's x position"
+			},
+			{
+				"name": "ypos",
+				"desc": "The player's y position"
+			},
+			{
+				"name": "zpos",
+				"desc": "The player's z position"
+			}
+		],
 		
-		// Player position
+
+				
+		"Camera position": [
+			{
+				"name": "cam_dxpos",
+				"desc": "The camera's x position (With decimal precision)"
+			},
+			{
+				"name": "cam_dypos",
+				"desc": "The camera's y position (With decimal precision)"
+			},
+			{
+				"name": "cam_dzpos",
+				"desc": "The camera's z position (With decimal precision)"
+			},
+			{
+				"name": "cam_xpos",
+				"desc": "The camera's x position"
+			},
+			{
+				"name": "cam_ypos",
+				"desc": "The camera's y position"
+			},
+			{
+				"name": "cam_zpos",
+				"desc": "The camera's z position"
+			}
+		],
 		
-		{
-			"name": "dxpos",
-			"desc": "The player's x position (With decimal precision)"
-		},
-		{
-			"name": "dypos",
-			"desc": "The player's y position (With decimal precision)"
-		},
-		{
-			"name": "dzpos",
-			"desc": "The player's z position (With decimal precision)"
-		},
-		{
-			"name": "xpos",
-			"desc": "The player's x position"
-		},
-		{
-			"name": "ypos",
-			"desc": "The player's y position"
-		},
-		{
-			"name": "zpos",
-			"desc": "The player's z position"
-		},
+
+				
+		"Chunk information": [
+			{
+				"name": "subchunkx",
+				"desc": "The X position of the player in the subchunk"
+			},
+			{
+				"name": "subchunky",
+				"desc": "The Y position of the player in the subchunk"
+			},
+			{
+				"name": "subchunkz",
+				"desc": "The Z position of the player in the subchunk"
+			},
+			{
+				"name": "chunkx",
+				"desc": "The chunk X position of the player"
+			},
+			{
+				"name": "chunkz",
+				"desc": "The chunk Z position of the player"
+			}
+		],
 		
-		// Camera position
+
+				
+		"Camera chunk information": [
+			{
+				"name": "cam_subchunkx",
+				"desc": "The X position of the camera in the subchunk"
+			},
+			{
+				"name": "cam_subchunky",
+				"desc": "The Y position of the camera in the subchunk"
+			},
+			{
+				"name": "cam_subchunkz",
+				"desc": "The Z position of the camera in the subchunk"
+			},
+			{
+				"name": "cam_chunkx",
+				"desc": "The chunk X position of the camera"
+			},
+			{
+				"name": "cam_chunkz",
+				"desc": "The chunk Z position of the camera"
+			}
+		],
 		
-		{
-			"name": "cam_dxpos",
-			"desc": "The camera's x position (With decimal precision)"
-		},
-		{
-			"name": "cam_dypos",
-			"desc": "The camera's y position (With decimal precision)"
-		},
-		{
-			"name": "cam_dzpos",
-			"desc": "The camera's z position (With decimal precision)"
-		},
-		{
-			"name": "cam_xpos",
-			"desc": "The camera's x position"
-		},
-		{
-			"name": "cam_ypos",
-			"desc": "The camera's y position"
-		},
-		{
-			"name": "cam_zpos",
-			"desc": "The camera's z position"
-		},
 		
-		// Chunk information
 		
-		{
-			"name": "subchunkx",
-			"desc": "The X position of the player in the subchunk"
-		},
-		{
-			"name": "subchunky",
-			"desc": "The Y position of the player in the subchunk"
-		},
-		{
-			"name": "subchunkz",
-			"desc": "The Z position of the player in the subchunk"
-		},
-		{
-			"name": "chunkx",
-			"desc": "The chunk X position of the player"
-		},
-		{
-			"name": "chunkz",
-			"desc": "The chunk Z position of the player"
-		},
+		"Player roation": [
+			{
+				"name": "dpitch",
+				"desc": "The player's pitch rotation (With decimal precision)"
+			},
+			{
+				"name": "pitch",
+				"desc": "The player's pitch rotation"
+			},
+			{
+				"name": "dyaw",
+				"desc": "The player's yaw rotation (With decimal precision)"
+			},
+			{
+				"name": "yaw",
+				"desc": "The player's yaw rotation"
+			},
+			{
+				"name": "f3_dyaw",
+				"desc": "The player's yaw as seen in Minecraft's F3 menu (with decimal point)"
+			},
+			{
+				"name": "f3_yaw",
+				"desc": "The player's yaw as seen in Minecraft's F3 menu"
+			}
+		],
 		
-		// Camera chunk information
 		
-		{
-			"name": "cam_subchunkx",
-			"desc": "The X position of the camera in the subchunk"
-		},
-		{
-			"name": "cam_subchunky",
-			"desc": "The Y position of the camera in the subchunk"
-		},
-		{
-			"name": "cam_subchunkz",
-			"desc": "The Z position of the camera in the subchunk"
-		},
-		{
-			"name": "cam_chunkx",
-			"desc": "The chunk X position of the camera"
-		},
-		{
-			"name": "cam_chunkz",
-			"desc": "The chunk Z position of the camera"
-		},
 		
-		// Player roation
+		"Camera roation": [
+			{
+				"name": "cam_dpitch",
+				"desc": "The camera's pitch rotation (With decimal precision)"
+			},
+			{
+				"name": "cam_pitch",
+				"desc": "The camera's pitch rotation"
+			},
+			{
+				"name": "cam_dyaw",
+				"desc": "The camera's yaw rotation (With decimal precision)"
+			},
+			{
+				"name": "cam_yaw",
+				"desc": "The camera's yaw rotation"
+			},
+			{
+				"name": "cam_f3_dyaw",
+				"desc": "The camera's yaw as seen in Minecraft's F3 menu (with decimal point)"
+			},
+			{
+				"name": "cam_f3_yaw",
+				"desc": "The camera's yaw as seen in Minecraft's F3 menu"
+			}
+		],
 		
-		{
-			"name": "dpitch",
-			"desc": "The player's pitch rotation (With decimal precision)"
-		},
-		{
-			"name": "pitch",
-			"desc": "The player's pitch rotation"
-		},
-		{
-			"name": "dyaw",
-			"desc": "The player's yaw rotation (With decimal precision)"
-		},
-		{
-			"name": "yaw",
-			"desc": "The player's yaw rotation"
-		},
-		{
-			"name": "f3_dyaw",
-			"desc": "The player's yaw as seen in Minecraft's F3 menu (with decimal point)"
-		},
-		{
-			"name": "f3_yaw",
-			"desc": "The player's yaw as seen in Minecraft's F3 menu"
-		},
 		
-		// Camera roation
 		
-		{
-			"name": "cam_dpitch",
-			"desc": "The camera's pitch rotation (With decimal precision)"
-		},
-		{
-			"name": "cam_pitch",
-			"desc": "The camera's pitch rotation"
-		},
-		{
-			"name": "cam_dyaw",
-			"desc": "The camera's yaw rotation (With decimal precision)"
-		},
-		{
-			"name": "cam_yaw",
-			"desc": "The camera's yaw rotation"
-		},
-		{
-			"name": "cam_f3_dyaw",
-			"desc": "The camera's yaw as seen in Minecraft's F3 menu (with decimal point)"
-		},
-		{
-			"name": "cam_f3_yaw",
-			"desc": "The camera's yaw as seen in Minecraft's F3 menu"
-		},
+		"World Rendering": [
+			{
+				"name": "entities",
+				"desc": "The number of entites drawn (As shown in the debug/f3 screen, alias: entites (Yes, I managed to get a spelling mistake into published code))"
+			},
+			{
+				"name": "particles",
+				"desc": "The number of particles drawn (As shown in the debug/f3 screen)"
+			},
+			{
+				"name": "chunks",
+				"desc": "The number of chunks loaded (As shown in the debug/f3 screen)"
+			}
+		],
 		
-		// World Rendering
+
 		
-		{
-			"name": "entities",
-			"desc": "The number of entites drawn (As shown in the debug/f3 screen, alias: entites (Yes, I managed to get a spelling mistake into published code))"
-		},
-		{
-			"name": "particles",
-			"desc": "The number of particles drawn (As shown in the debug/f3 screen)"
-		},
-		{
-			"name": "chunks",
-			"desc": "The number of chunks loaded (As shown in the debug/f3 screen)"
-		},
+		"Lighting": [
+			{
+				"name": "light",
+				"desc": "The current light level at the position of the player"
+			},
+			{
+				"name": "blocklight",
+				"desc": "The current block light level at the position of the player (alias: block_light)"
+			},
+			{
+				"name": "skylight",
+				"desc": "The current sky light level at the position of the player (alias: sky_light)"
+			},
+			{
+				"name": "cam_light",
+				"desc": "The current light level at the position of the camera"
+			},
+			{
+				"name": "cam_blocklight",
+				"desc": "The current block light level at the position of the camera (alias: cam_block_light)"
+			},
+			{
+				"name": "cam_skylight",
+				"desc": "The current sky light level at the position of the camera (alias: cam_sky_light)"
+			}
+		],
 		
-		// Lighting
+
 		
-		{
-			"name": "light",
-			"desc": "The current light level at the position of the player"
-		},
-		{
-			"name": "blocklight",
-			"desc": "The current block light level at the position of the player (alias: block_light)"
-		},
-		{
-			"name": "skylight",
-			"desc": "The current sky light level at the position of the player (alias: sky_light)"
-		},
-		{
-			"name": "cam_light",
-			"desc": "The current light level at the position of the camera"
-		},
-		{
-			"name": "cam_blocklight",
-			"desc": "The current block light level at the position of the camera (alias: cam_block_light)"
-		},
-		{
-			"name": "cam_skylight",
-			"desc": "The current sky light level at the position of the camera (alias: cam_sky_light)"
-		},
+		"World": [
+			{
+				"name": "worldtime",
+				"desc": "The ingame tick count (alias: world_time)"
+			},
+			{
+				"name": "daytime",
+				"desc": "The ingame day time (alias: day_time)"
+			}
+		],
 		
-		// World
 		
-		{
-			"name": "worldtime",
-			"desc": "The ingame tick count (alias: world_time)"
-		},
-		{
-			"name": "daytime",
-			"desc": "The ingame day time (alias: day_time)"
-		},
 		
-		// GUI rendering
+		"GUI rendering": [
+			{
+				"name": "width",
+				"desc": "The (adjusted) width of the screen"
+			},
+			{
+				"name": "height",
+				"desc": "The (adjusted) height of the screen"
+			},
+			{
+				"name": "guiscale",
+				"desc": "The scale of the screen (as set in the video settings)"
+			}
+		],
 		
-		{
-			"name": "width",
-			"desc": "The (adjusted) width of the screen"
-		},
-		{
-			"name": "height",
-			"desc": "The (adjusted) height of the screen"
-		},
-		{
-			"name": "guiscale",
-			"desc": "The scale of the screen (as set in the video settings)"
-		},
 		
-		// Hudder settings
 		
-		{
-			"name": "scale",
-			"desc": "The default scale in Hudder"
-		},
-		{
-			"name": "color",
-			"desc": "The default color in Hudder"
-		},
-		{
-			"name": "xoffset",
-			"desc": "The x offset in Hudder"
-		},
-		{
-			"name": "yoffset",
-			"desc": "The y offset in Hudder"
-		},
-		{
-			"name": "lineheight",
-			"desc": "The line height in Hudder"
-		},
-		{
-			"name": "methodbuffer",
-			"desc": "The method buffer in Hudder"
-		},
-		{
-			"name": "backgroundcolor",
-			"desc": "The default background color in Hudder"
-		},
+		"Hudder settings": [
+			{
+				"name": "scale",
+				"desc": "The default scale in Hudder"
+			},
+			{
+				"name": "color",
+				"desc": "The default color in Hudder"
+			},
+			{
+				"name": "xoffset",
+				"desc": "The x offset in Hudder"
+			},
+			{
+				"name": "yoffset",
+				"desc": "The y offset in Hudder"
+			},
+			{
+				"name": "lineheight",
+				"desc": "The line height in Hudder"
+			},
+			{
+				"name": "methodbuffer",
+				"desc": "The method buffer in Hudder"
+			},
+			{
+				"name": "backgroundcolor",
+				"desc": "The default background color in Hudder"
+			}
+		],
 		
-		// Rebecca Memorial
 		
-		{
-			"name": "rebeccapurple",
-			"desc": "0xFF663399"
-		}
-	],
-	"boolean": [
-		{
-			"name": "isslime",
-			"desc": "Whether the player is in a slime chunk (alias: is_slime)"
-		},
-		{
-			"name": "hudhidden",
-			"desc": "Whether the HUD is hidden (AKA F1 is pressed)"
-		},
-		{
-			"name": "showdebug",
-			"desc": "Whether debug/f3 is shown"
-		},
-		{
-			"name": "camera_detached",
-			"desc": "Whether the camera is detached from the player or not"
-		},
 		
-		// Player gamemode
+		"Rebecca Memorial": [
+			{
+				"name": "rebeccapurple",
+				"desc": "0xFF663399"
+			}
+		]
+	},
+	"boolean": {
+		"Generic": [
+			{
+				"name": "isslime",
+				"desc": "Whether the player is in a slime chunk (alias: is_slime)"
+			},
+			{
+				"name": "hudhidden",
+				"desc": "Whether the HUD is hidden (AKA F1 is pressed)"
+			},
+			{
+				"name": "showdebug",
+				"desc": "Whether debug/f3 is shown"
+			},
+			{
+				"name": "camera_detached",
+				"desc": "Whether the camera is detached from the player or not"
+			}
+		],
 		
-		{
-			"name": "issurvival",
-			"desc": "Whether the player is in survival mode (alias: is_survival)"
-		},
-		{
-			"name": "iscreative",
-			"desc": "Whether the player is in creative mode (alias: is_creative)"
-		},
-		{
-			"name": "isadventure",
-			"desc": "Whether the player is in adventure mode (alias: is_adventure)"
-		},
-		{
-			"name": "isspectator",
-			"desc": "Whether the player is in spectator mode (alias: is_spectator)"
-		},
 		
-		// Player movement
 		
-		{
-			"name": "isflying",
-			"desc": "Is the player flying (not elytra)"
-		},
-		{
-			"name": "isgliding",
-			"desc": "Is the player flying using an elytra"
-		},
-		{
-			"name": "isclimbing",
-			"desc": "Is the player climbing (ladder, vines, etc.)"
-		},
-		{
-			"name": "iscrawling",
-			"desc": "Is the player crawling"
-		},
-		{
-			"name": "isswimming",
-			"desc": "Is the player swimming"
-		},
-		{
-			"name": "issneaking",
-			"desc": "Is the player sneaking"
-		},
+		"Player gamemode": [
+			{
+				"name": "issurvival",
+				"desc": "Whether the player is in survival mode (alias: is_survival)"
+			},
+			{
+				"name": "iscreative",
+				"desc": "Whether the player is in creative mode (alias: is_creative)"
+			},
+			{
+				"name": "isadventure",
+				"desc": "Whether the player is in adventure mode (alias: is_adventure)"
+			},
+			{
+				"name": "isspectator",
+				"desc": "Whether the player is in spectator mode (alias: is_spectator)"
+			}
+		],
 		
-		// Player information
 		
-		{
-			"name": "isalive",
-			"desc": "Is the player alive"
-		},
-		{
-			"name": "isblocking",
-			"desc": "Is the player blocking using a sheild"
-		},
-		{
-			"name": "isfreezing",
-			"desc": "Is the player freezing (powdered snow)"
-		},
-		{
-			"name": "isglowing",
-			"desc": "Is the player glowing"
-		},
-		{
-			"name": "isfireimmune",
-			"desc": "Is the player immune to fire (Fire resistance)"
-		},
-		{
-			"name": "isonfire",
-			"desc": "Is the player on fire"
-		},
-		{
-			"name": "isonground",
-			"desc": "Is the player on ground"
-		},
-		{
-			"name": "isinvisible",
-			"desc": "Is the player invisible"
-		},
-		{
-			"name": "isdrowning",
-			"desc": "Is the player drowning"
-		},
-		{
-			"name": "iscontrollingmount",
-			"desc": "Is the player controlling a mount"
-		},
 		
-		// Mount information
+		"Player movement": [
+			{
+				"name": "isflying",
+				"desc": "Is the player flying (not elytra)"
+			},
+			{
+				"name": "isgliding",
+				"desc": "Is the player flying using an elytra"
+			},
+			{
+				"name": "isclimbing",
+				"desc": "Is the player climbing (ladder, vines, etc.)"
+			},
+			{
+				"name": "iscrawling",
+				"desc": "Is the player crawling"
+			},
+			{
+				"name": "isswimming",
+				"desc": "Is the player swimming"
+			},
+			{
+				"name": "issneaking",
+				"desc": "Is the player sneaking"
+			}
+		],
 		
-		{
-			"name": "mount_is_saddled",
-			"desc": "Does the player's mount have a saddle"
-		},
-		{
-			"name": "mount_has_armor",
-			"desc": "Does the player's mount have armor"
-		},
-		{
-			"name": "mount_is_tamed",
-			"desc": "Is the player's mount tamed"
-		},
-		{
-			"name": "mount_has_chest",
-			"desc": "Does the player's mount have a chest"
-		},
 		
-		// Input
 		
-		{
-			"name": "mouse_left",
-			"desc": "Is the left mouse button held"
-		},
-		{
-			"name": "mouse_middle",
-			"desc": "Is the middle mouse button held"
-		},
-		{
-			"name": "mouse_right",
-			"desc": "Is the right mouse button held"
-		},
-		{
-			"name": "key_[key on keyboard]",
-			"desc": "Is the specified key held"
-		},
+		"Player information": [
+			{
+				"name": "isalive",
+				"desc": "Is the player alive"
+			},
+			{
+				"name": "isblocking",
+				"desc": "Is the player blocking using a sheild"
+			},
+			{
+				"name": "isfreezing",
+				"desc": "Is the player freezing (powdered snow)"
+			},
+			{
+				"name": "isglowing",
+				"desc": "Is the player glowing"
+			},
+			{
+				"name": "isfireimmune",
+				"desc": "Is the player immune to fire (Fire resistance)"
+			},
+			{
+				"name": "isonfire",
+				"desc": "Is the player on fire"
+			},
+			{
+				"name": "isonground",
+				"desc": "Is the player on ground"
+			},
+			{
+				"name": "isinvisible",
+				"desc": "Is the player invisible"
+			},
+			{
+				"name": "isdrowning",
+				"desc": "Is the player drowning"
+			},
+			{
+				"name": "iscontrollingmount",
+				"desc": "Is the player controlling a mount"
+			}
+		],
 		
-		// Hudder
 		
-		{
-			"name": "enabled",
-			"desc": "Is Hudder enabled"
-		},
-		{
-			"name": "shadow",
-			"desc": "Is text shadow enabled by default"
-		},
-		{
-			"name": "showinf3",
-			"desc": "Does Hudder still render/compile while F3/debug is enabled"
-		},
-		{
-			"name": "javascriptenabled",
-			"desc": "Is javascript enabled"
-		},
-		{
-			"name": "globalvariablesenabled",
-			"desc": "Are globalvariables enabled"
-		},
-		{
-			"name": "background",
-			"desc": "Is text background enabled by default"
-		},
-		{
-			"name": "removegui",
-			"desc": "Is the HotBar removed"
-		},
-		{
-			"name": "limitrate",
-			"desc": "Is limitrate enabled"
-		}
-	],
-	"string": [
-		{
-			"name": "damagetype",
-			"desc": "The name of the most recent damage type done to the player"
-		},
 		
-		// Computer info
+		"Mount information": [
+			{
+				"name": "mount_is_saddled",
+				"desc": "Does the player's mount have a saddle"
+			},
+			{
+				"name": "mount_has_armor",
+				"desc": "Does the player's mount have armor"
+			},
+			{
+				"name": "mount_is_tamed",
+				"desc": "Is the player's mount tamed"
+			},
+			{
+				"name": "mount_has_chest",
+				"desc": "Does the player's mount have a chest"
+			}
+		],
 		
-		{
-			"name": "cpu_info",
-			"desc": "Information about the CPU"
-		},
-		{
-			"name": "operating_system",
-			"desc": "Which operating system is used"
-		},
-		{
-			"name": "month_name",
-			"desc": "The name of the current month (WARNING: IT IS DEPENDENT ON LOCALE AND LANGUAGE, SHOULD ONLY BE USED FOR DISPLAY)"
-		},
-		{
-			"name": "locale",
-			"desc": "The locale of the system as defined by the JVM and provided by the JVM and Operating System"
-		},
-		{
-			"name": "language",
-			"desc": "The language of the system as provided by the JVM and Operating System (ISO 639)"
-		},
-		{
-			"name": "country",
-			"desc": "The country of the system as provided by the JVM and Operating System (ISO 3166 2-letter code)"
-		},
 		
-		// Inventory
-		{
-			"name": "helditem_name",
-			"desc": "The name of the item currently held in the main hand"
-		},
 		
-		// Mount information
+		"Input": [
+			{
+				"name": "mouse_left",
+				"desc": "Is the left mouse button held"
+			},
+			{
+				"name": "mouse_middle",
+				"desc": "Is the middle mouse button held"
+			},
+			{
+				"name": "mouse_right",
+				"desc": "Is the right mouse button held"
+			},
+			{
+				"name": "key_[key on keyboard]",
+				"desc": "Is the specified key held"
+			}
+		],
 		
-		{
-			"name": "mount_type",
-			"desc": "The type of mount the player is currently riding"
-		},
-		{
-			"name": "mount_armor_type",
-			"desc": "The armor type of the mount the player is currently riding"
-		},
-		{
-			"name": "mount_name",
-			"desc": "The name of the mount the player is currently riding"
-		},
 		
-		// World
 		
-		{
-			"name": "biome",
-			"desc": "The biome the player is currently in"
-		},
-		{
-			"name": "cam_biome",
-			"desc": "The biome the camera is currently in"
-		},
-		{
-			"name": "dimension",
-			"desc": "The dimension the player is currently in"
-		},
+		"Hudder settings": [
+			{
+				"name": "enabled",
+				"desc": "Is Hudder enabled"
+			},
+			{
+				"name": "shadow",
+				"desc": "Is text shadow enabled by default"
+			},
+			{
+				"name": "showinf3",
+				"desc": "Does Hudder still render/compile while F3/debug is enabled"
+			},
+			{
+				"name": "javascriptenabled",
+				"desc": "Is javascript enabled"
+			},
+			{
+				"name": "globalvariablesenabled",
+				"desc": "Are globalvariables enabled"
+			},
+			{
+				"name": "background",
+				"desc": "Is text background enabled by default"
+			},
+			{
+				"name": "removegui",
+				"desc": "Is the HotBar removed"
+			},
+			{
+				"name": "limitrate",
+				"desc": "Is limitrate enabled"
+			}
+		]
+	},
+	"string": {
+		"Generic": [
+			{
+				"name": "damagetype",
+				"desc": "The name of the most recent damage type done to the player"
+			}
+		],
 		
-		// Looking at
 		
-		{
-			"name": "block_in_front",
-			"desc": "The block the player is currently looking at"
-		},
-		{
-			"name": "cam_block_in_front",
-			"desc": "The block the camera is currently looking at"
-		},
-		{
-			"name": "looking_at_pos",
-			"desc": "The block position the player is currently looking at"
-		},
-		{
-			"name": "cam_looking_at_pos",
-			"desc": "The block position the camera is currently looking at"
-		},
 		
-		// Hudder
+		"Computer info": [
+			{
+				"name": "cpu_info",
+				"desc": "Information about the CPU"
+			},
+			{
+				"name": "operating_system",
+				"desc": "Which operating system is used"
+			},
+			{
+				"name": "month_name",
+				"desc": "The name of the current month (WARNING: IT IS DEPENDENT ON LOCALE AND LANGUAGE, SHOULD ONLY BE USED FOR DISPLAY)"
+			},
+			{
+				"name": "locale",
+				"desc": "The locale of the system as defined by the JVM and provided by the JVM and Operating System"
+			},
+			{
+				"name": "language",
+				"desc": "The language of the system as provided by the JVM and Operating System (ISO 639)"
+			},
+			{
+				"name": "country",
+				"desc": "The country of the system as provided by the JVM and Operating System (ISO 3166 2-letter code)"
+			}
+		],
 		
-		{
-			"name": "compilertype",
-			"desc": "The type of Hudder compiler selected"
-		},
-		{
-			"name": "mainfile",
-			"desc": "The name of the main file in Hudder"
-		}
-	]
+		
+		
+		
+		"Inventory": [
+			{
+				"name": "helditem_name",
+				"desc": "The name of the item currently held in the main hand"
+			}
+		],
+		
+
+		
+		"Mount information": [
+			{
+				"name": "mount_type",
+				"desc": "The type of mount the player is currently riding"
+			},
+			{
+				"name": "mount_armor_type",
+				"desc": "The armor type of the mount the player is currently riding"
+			},
+			{
+				"name": "mount_name",
+				"desc": "The name of the mount the player is currently riding"
+			}
+		],
+		
+		
+		
+		"World": [
+			{
+				"name": "biome",
+				"desc": "The biome the player is currently in"
+			},
+			{
+				"name": "cam_biome",
+				"desc": "The biome the camera is currently in"
+			},
+			{
+				"name": "dimension",
+				"desc": "The dimension the player is currently in"
+			}
+		],
+		
+		
+		
+		"Looking at": [
+			{
+				"name": "block_in_front",
+				"desc": "The block the player is currently looking at"
+			},
+			{
+				"name": "cam_block_in_front",
+				"desc": "The block the camera is currently looking at"
+			},
+			{
+				"name": "looking_at_pos",
+				"desc": "The block position the player is currently looking at"
+			},
+			{
+				"name": "cam_looking_at_pos",
+				"desc": "The block position the camera is currently looking at"
+			}
+		],
+		
+		
+		
+		"Hudder settings": [
+			{
+				"name": "compilertype",
+				"desc": "The type of Hudder compiler selected"
+			},
+			{
+				"name": "mainfile",
+				"desc": "The name of the main file in Hudder"
+			}
+		]
+	}
 }
