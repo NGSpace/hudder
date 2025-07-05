@@ -17,6 +17,7 @@ import org.mozilla.javascript.WrappedException;
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.utils.ObjectWrapper;
 import io.github.ngspace.hudder.utils.ValueGetter;
+import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -51,6 +52,8 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 						e.printStackTrace();
 					}
         		}
+        		if (javaObject == V2Runtime.NULL)
+        			return null;
         		return super.wrapAsJavaObject(cx, scope, javaObject, staticType);
         	}
         });

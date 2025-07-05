@@ -11,7 +11,36 @@ import org.lwjgl.glfw.GLFW;
 
 import com.sun.management.OperatingSystemMXBean;
 
+import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.ChatScreen;
+import net.minecraft.client.gui.screens.PauseScreen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.AbstractFurnaceScreen;
+import net.minecraft.client.gui.screens.inventory.AbstractSignEditScreen;
+import net.minecraft.client.gui.screens.inventory.AnvilScreen;
+import net.minecraft.client.gui.screens.inventory.BeaconScreen;
+import net.minecraft.client.gui.screens.inventory.BlastFurnaceScreen;
+import net.minecraft.client.gui.screens.inventory.BookEditScreen;
+import net.minecraft.client.gui.screens.inventory.BookViewScreen;
+import net.minecraft.client.gui.screens.inventory.BrewingStandScreen;
+import net.minecraft.client.gui.screens.inventory.CartographyTableScreen;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.client.gui.screens.inventory.CrafterScreen;
+import net.minecraft.client.gui.screens.inventory.CraftingScreen;
+import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
+import net.minecraft.client.gui.screens.inventory.EnchantmentScreen;
+import net.minecraft.client.gui.screens.inventory.GrindstoneScreen;
+import net.minecraft.client.gui.screens.inventory.HopperScreen;
+import net.minecraft.client.gui.screens.inventory.HorseInventoryScreen;
+import net.minecraft.client.gui.screens.inventory.LecternScreen;
+import net.minecraft.client.gui.screens.inventory.LoomScreen;
+import net.minecraft.client.gui.screens.inventory.MerchantScreen;
+import net.minecraft.client.gui.screens.inventory.ShulkerBoxScreen;
+import net.minecraft.client.gui.screens.inventory.SmokerScreen;
+import net.minecraft.client.gui.screens.inventory.StonecutterScreen;
+import net.minecraft.client.gui.screens.reporting.ReportPlayerScreen;
 
 public class Advanced {private Advanced() {}
 	public static double gpuUsage = 0;
@@ -72,5 +101,44 @@ public class Advanced {private Advanced() {}
 			return keysheld.containsKey(keynum)?2:1;
 		}
 		return 0;
+	}
+	
+	
+	public static Object getScreenType(Screen screen) {
+		return switch (screen) {
+			case BlastFurnaceScreen scr: yield "Blast Furnace";
+			case SmokerScreen scr: yield "Smoker";
+			case AbstractFurnaceScreen<?> scr: yield "Furnace";
+			case AbstractSignEditScreen scr: yield "Sign Edit";
+			case AnvilScreen scr: yield "Anvil";
+			case BeaconScreen scr: yield "Beacon";
+			case BookEditScreen scr: yield "Book Edit";
+			case BrewingStandScreen scr: yield "Brewing Stand";
+			case CartographyTableScreen scr: yield "Cartography Table";
+			case CrafterScreen scr: yield "Crafter";
+			case CraftingScreen scr: yield "Crafting";
+			case CreativeModeInventoryScreen scr: yield "Creative Mode Inventory";
+			case EnchantmentScreen scr: yield "Enchantment";
+			case ContainerScreen scr: yield "Container";
+			case GrindstoneScreen scr: yield "Grindstone";
+			case HopperScreen scr: yield "Hopper";
+			case HorseInventoryScreen scr: yield "Horse Inventory";
+			case LecternScreen scr: yield "Lectern";
+			case LoomScreen scr: yield "Loom";
+			case MerchantScreen scr: yield "Merchant";
+			case ReportPlayerScreen scr: yield "Report Player";
+			case ShulkerBoxScreen scr: yield "Shulker Box";
+			case StonecutterScreen scr: yield "Stonecutter";
+			case PauseScreen scr: yield "Pause";
+			case ChatScreen scr: yield "Chat";
+			case BookViewScreen scr: yield "Anvil";
+			case AbstractContainerScreen<?> scr: yield "Generic container";
+			
+			
+			case null:
+				yield V2Runtime.NULL;
+			default:
+				yield screen.getClass().getSimpleName();
+		};
 	}
 }

@@ -8,6 +8,7 @@ import org.joml.Vector3f;
 import com.mojang.blaze3d.platform.GLX;
 
 import io.github.ngspace.hudder.Hudder;
+import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -23,7 +24,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class StringData {private StringData() {}
 	@SuppressWarnings("deprecation")
-	public static String getString(String key) {
+	public static Object getString(String key) {
 		Minecraft ins = Minecraft.getInstance();
 		LocalPlayer p = ins.player;
 		Camera c = ins.gameRenderer.getMainCamera();
@@ -44,6 +45,12 @@ public class StringData {private StringData() {}
 			/* Inventory */
 			case "helditem_name": yield ins.player.getInventory()
 				.getItem(ins.player.getInventory().getSelectedSlot()).getDisplayName().getString();
+			
+			
+			
+			/* GUI */
+			case "openguitype": yield Advanced.getScreenType(ins.screen);
+			case "openguititle": yield ins.screen == null ? V2Runtime.NULL : ins.screen.getTitle().getString();
 
 
 
