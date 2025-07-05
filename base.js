@@ -187,7 +187,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 		table {
 			background-color: rgb(40, 40, 40);
 		}
-		tr:nth-child(2n-1) {
+		tr:nth-child(2n-1 of *:not([style*="display: none"])) {
 			background-color: rgb(20, 20, 20);
 		}
 		.header {
@@ -209,7 +209,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	<link rel="icon" type="image/x-icon" href="favicon.ico">
 	<div id="topbar">
 		<img src="Images/Hudder.webp" alt="Back to main hudder wiki page" />
-		<div id="title">Hudder 8.1.0 Wiki</div>
+		<div id="title">Hudder 8.4.0 Wiki</div>
 	</div>
 	<div id="sidebar">
 	<h1>Explore</h1>
@@ -286,7 +286,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 		<br>
 		<details open>
 			<summary>
-				<a href="discordredirect.html">Discord<img src="Images/discord.png" style="width: 1.7vw; position: relative;top:1vh;"></a>
+				<a href="discordredirect.html">Discord<img src="Images/discord.webp" style="width: 1.7vw; position: relative;top:1vh;"></a>
 			</summary>
 		</details>
 		<!--details open>
@@ -307,7 +307,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	var notes = document.getElementsByTagName('note');
 	for (var i = 0; i < notes.length; i++) {
 		let content = notes[i].innerHTML;
-		notes[i].innerHTML = "<img src=\"Images/Info.png\" alt=\"INFO\">" + content;
+		notes[i].innerHTML = "<img src=\"Images/Info.webp\" alt=\"INFO\">" + content;
 	}
 	var notes = document.getElementsByTagName('warning');
 	for (var i = 0; i < notes.length; i++) {

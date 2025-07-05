@@ -21,211 +21,185 @@
 		});
 
 	</script>
+	<style>
+	#searchbar {
+		width: 20%;
+		font-size: 1em;
+		padding: 12px 20px 12px 12px;
+		border: 1px solid #ddd;
+		margin-bottom: 12px;
+		color: white;
+		background-color: rgb(0, 0, 0);
+	}
+	#searchbar::placeholder {
+		color: darkgray;
+		opacity: 1; /* Firefox */
+	}
+	</style>
 </head>
-<body>
+<body onload="initializeTable()">
 <note>Variables are NOT case sensitive</note>
+<note id="hudder_version">PLACEHOLDER, if you see this something went wrong or is loading very slowly.</note>
 <warning>If you are playing on an older version, some of those variables may not exist.</warning>
-<h1>Booleans (true/false)</h1>
-<hr><br>
+
+<script>
+
+function httpGet(theUrl) {
+	// create a new XMLHttpRequest object
+	let xmlHttp = new XMLHttpRequest();
 	
-<h3>User input</h3>
+	// open a GET request with the URL
+	xmlHttp.open("GET", theUrl, false);
+	
+	// send the request
+	xmlHttp.send(null);
+	
+	// return the response as a string
+	return xmlHttp.responseText;
+}
 
-<code>key_[key on keyboard] - Is key is held
+/**
+ * Strip JavaScript‐style comments (//… and /*…*​/) from a JSONC string,
+ * then parse it as JSON.
+ * Gippity made this BTW
+ */
+function parseJSONC(jsoncString) {
+	// 1. Remove all /* … */ block comments
+	const withoutBlockComments = jsoncString.replace(
+		/\/\*[\s\S]*?\*\//g,
+		''
+	);
+	
+	// 2. Remove all // … line comments
+	//    – the [^\n\r]* part grabs everything up to a newline
+	const withoutAnyComments = withoutBlockComments.replace(
+		/\/\/[^\n\r]*/g,
+		''
+	);
+	
+	// 3. Now feed the cleaned-up text to the standard JSON parser
+	return JSON.parse(withoutAnyComments);
+}
 
-mouse_left - Is the left mouse button held
-mouse_middle - Is the middle mouse button held
-mouse_right - Is the right mouse button held
-</code>
+var variables_json = parseJSONC(httpGet("https://raw.githubusercontent.com/NGSpace/hudder/refs/heads/latest_release/src/main/resources/assets/hudder/variables.jsonc"));
 
-<h3>Player gamemode</h3>
+document.getElementById("hudder_version").innerText = "This list is updated to Hudder version " + variables_json.hudder_version;
 
-<code>issurvival / is_survival - Is the player in survial mode
-iscreative / is_creative - Is the player in creative mode
-isadventure / is_adventure - Is the player in adventure mode
-isspectator / is_spectator - Is the player in spectator mode
-</code>
+function updateSearch() {
+	// Grab and normalize the user input
+	const input = document.getElementById("searchbar");
+	let filter = input.value.trim().toUpperCase();
+	
+	// Auto‐correct: if query mentions horse, pig, or llama, switch to "MOUNT"
+	const keywords = ["HORSE", "PIG", "LLAMA"];
+	if (keywords.some(k => filter.includes(k))) {
+		filter = "MOUNT";
+		console.log(`Auto-corrected search term to: ${filter}`);
+	}
 
-<h3>Player movement</h3>
+	const table = document.getElementById("var_table");
+	const tr = table.getElementsByTagName("tr");
+	let anyVisible = false;
 
-<code>isgliding - Is the player flying using an elytra
-isclimbing - Is the player climbing (ladder, vines, etc.)
-iscrawling - Is the player crawling
-isswimming - Is the player swimming
-issneaking - Is the player sneaking
-</code>
+	// Loop through all rows
+	for (let i = 1; i < tr.length; i++) {
+		const tds = tr[i].getElementsByTagName("td");
+		let rowMatches = false;
 
-<h3>Other player information</h3>
-
-<code>isalive - Is the player alive
-isblocking - Is the player blocking using a sheild
-isfreezing - Is the player freezing to death (powdered snow)
-isglowing - Is the player glowing
-isfireimmune - Is the player immune to fire (Fire resistance)
-isonfire - Is the player on fire
-isonground - Is the player on the ground
-isinvisible - Is the player invisible
-
-isslime / is_slime - Is the player in a slime chunk (Always returns false if the player lacks /seed permissions)
-</code>
-
-<h3>Hudder</h3>
-
-<code>enabled - Yes (Hudder is enabled)
-shadow - Is Hudder's shadow option selected
-showinf3 - Is Hudder's show in f3 option selected
-javascriptenabled - Is Hudder's javascript enabled option selected
-globalvariablesenabled - Is Hudder's global variables enabled option selected
-background - Is Hudder's background option selected
-removegui - Is Hudder's remove gui option selected
-limitrate - Is Hudder's limit rate option selected
-hudhidden - Is the HUD hidden (F1)
-showdebug - Is the F3 debug menu showing
-</code>
-<br>
-
-<h1>Integers (Numbers)</h1>
-<hr><br>
-<h3>Performance</h3>
-
-<code>fps - The current frame rate
-avgfps / avg_fps - The average frame rate in the last few seconds
-minfps / min_fps - The lowest frame rate in the last few seconds
-maxfps / max_fps - The highest frame rate in the last few seconds
-ping - The current ping
-tps - The current Ticks per second (Client only)
-
-gpu_d - GPU usage (with decimal point)
-gpu - GPU usage (without decimal point)
-cpu_d - CPU usage (with decimal point)
-cpu - CPU usage (without decimal point)
-
-delta - The time between compiles
-
-totalmemory / maxmemory / totalram / maxram - Maximum RAM (In MB)
-usedmemory / usedram - Used RAM (In MB)
-freememory / freeram - Unused RAM (In MB)
-usedmemory_percentage / usedram_percentage - The percentage of memory that is being used (out of the Maximum RAM supplied to Minecraft)
-freememory_percentage / freeram_percentage - The percentage of memory that is being NOT used (out of the Maximum RAM supplied to Minecraft)
-</code>
-
-<h3>Computer Information</h3>
-
-<code>time - The number of milliseconds passed since 1st of January 1970, as supplied by the Operating System (Ex Windows, Linux, MacOS, etc.)
-milliseconds - The current milliseconds time value
-seconds - The current seconds time value
-minutes - The current minutes time value
-hour - The current hour
-day - The current day of year
-month - The current month
-year - The current year
-</code>
-
-<h3>Food and health</h3>
-
-<code>saturation - The saturation of the player (not to be confused with the hunger value)
-hunger - The hunger of the player
-health - The health of the player
-maxhealth - The maximum health of the player
-</code>
-
-<h3>Player Information</h3>
-
-<code>playerspeed - The speed at which the player is travelling
-horizontal_playerspeed - The speed at which the player is travelling horizontally
-xp - The current xp count of the player
-xplevel - The current xp level of the player
-selectedslot - The selected hotbar slot
-</code>
-
-<h3>Player position</h3>
-
-<code>dxpos / dx - The X position of the player (with decimal point)
-dypos / dy - The Y position of the player (with decimal point)
-dzpos / dz - The Z position of the player (with decimal point)
-xpos / x - The X position of the player (Without decimal point)
-ypos / y - The X position of the player (Without decimal point)
-zpos / z - The X position of the player (Without decimal point)
-</code>
-
-<h3>Chunk information</h3>
-
-<code>chunkx - The chunk X position of the player
-chunkz - The chunk Z position of the player
-subchunkx - The X position of the player in the subchunk
-subchunky - The Y position of the player in the subchunk
-subchunkz - The Z position of the player in the subchunk
-</code>
-
-<h3>Player rotation</h3>
-
-<code>dpitch - The pitch (with decimal point)
-dyaw - The yaw (with decimal point)
-f3_dyaw - The yaw value as seen in Minecraft's F3 menu (with decimal point)
-pitch - The pitch (without decimal point)
-yaw - The yaw (without decimal point)
-f3_yaw - The yaw value as seen in Minecraft's F3 menu (without decimal point)
-</code>
-
-<h3>World rendering</h3>
-
-<code>entities - The number of entites drawn (As shown in the debug screen)
-particles - The number of particles drawn (As shown in the debug screen)
-chunks - The number of chunks loaded
-</code>
-
-<h3>World</h3>
-
-<code>light - The current light level
-blocklight - The current block light level
-skylight - The current sky light level
-worldtime - The ingame tick count
-daytime - The ingame day time
-</code>
-
-<h3>Hudder</h3>
-
-<code>width - The (adjusted) width of the screen
-height - The (adjusted) height of the screen
-guiscale - The scale of the screen (as set in the video settings)
-
-scale - The default scale Hudder option
-color - The default color Hudder option
-yoffset - The y offset Hudder option
-xoffset - The x offset Hudder option
-lineheight - The line height Hudder option
-metabuffer - The meta buffer Hudder option
-backgroundcolor - The background color Hudder option
-
-rebeccapurple - 0xFF663399,
-</code>
+		// Check each cell
+		for (let j = 0; j < tds.length; j++) {
+			const txtValue = (tds[j].textContent || tds[j].innerText).trim().toUpperCase();
+			
+			if (j === 2) {
+				// 3rd column: exact match
+				if (txtValue === filter && filter !== "") {
+					rowMatches = true;
+					break;
+				}
+			} else {
+				// other columns: substring match
+				if (txtValue.indexOf(filter) > -1) {
+					rowMatches = true;
+					break;
+				}
+			}
+		}
+		
+		// Show/hide row
+		tr[i].style.display = rowMatches ? "" : "none";
+		if (rowMatches) anyVisible = true;
+	}
 
 
-<br>
-<h1>Strings (Text)</h1>
-<hr><br>
+	if (!anyVisible) {
+		document.getElementById("res").innerText
+			= "No variable found matching the search \""+input.value+'"'
+		document.getElementById("searchnotfound").style.display = "";
+	} else
+		document.getElementById("searchnotfound").style.display = "none";
+}
 
-<h3>Computer information</h3>
 
-<code>cpu_info - Information about the CPU (Model, Generation, etc)
-operating_system - Which operating system is used
-month_name - The name of the current month (WARNING: IT IS DEPENDENT ON LOCALE AND LANGUAGE, SHOULD ONLY BE USED FOR DISPLAY)
-locale - The locale of the system as defined by the JVM and provided by the JVM and Operating System
-language - The language of the system as provided by the JVM and Operating System (ISO 639)
-country - The country of the system as provided by the JVM and Operating System (ISO 3166 2-letter code)
-</code>
 
-<h3>Player information</h3>
+function initializeTable() {
+	var table = (document.getElementById("var_table"));
+	for (const type in variables_json) {
+		if (type=="hudder_version") continue;
+		var typelist = variables_json[type];
+		for (const category in typelist) {
+			var categorylist = typelist[category];
+			for (var i = 0; i<categorylist.length; i++) {
+				var value = categorylist[i];
+				// Create an empty <tr> element and add it to the 1st position of the table:
+				var row = table.insertRow(i+1);
+				
+				
+				if (value.name==undefined) {
+					console.log(i)
+					console.log(category)
+				}
+				var name_cell = row.insertCell(0);
+				name_cell.innerText = value.name;
+				var desc_cell = row.insertCell(1);
+				desc_cell.innerText = value.desc;
+				var type_cell = row.insertCell(2);
+				type_cell.innerText = type;
+				var cate_cell = row.insertCell(3);
+				cate_cell.innerText = category;
+			}
+		}
+	}
+	console.log("Done loading variable table");
+	
+	var input = document.getElementById('searchbar');
+	input.focus();
+	input.select();
+}
 
-<code>helditem_name - The name of the held Item
-biome - The biome the player is currently inside
-damagetype - The name of the most recent damage type done to the player
-block_in_front - The id of the block infront of the player (upto 50 blocks)
-</code>
+</script>
 
-<h3>Hudder</h3>
+<input type="text" id="searchbar" onkeyup="updateSearch()" placeholder="Search for a variable...">
 
-<code>compilertype - The type of Hudder compiler selected
-mainfile - The name of the main Hudder file
-</code>
+<table id="var_table">
+	<colgroup>
+		<col span="1" style="width: 15%;">
+		<col span="1" style="width: 50%;">
+		<col span="1" style="width: 5%;">
+		<col span="1" style="width: 20%;">
+	</colgroup>
+
+	<tr>
+		<th>Function</th>
+		<th width="30%">Description</th>
+		<th>Type</th>
+		<th>Category</th>
+	</tr>
+	
+	<!-- Hidden third option -->
+	<tr style="display:none;color: red;text-align: center;" id="searchnotfound">
+		<th id="res" colspan="4">No variable found matching that search query</th>
+	</tr>
+</table>
+
 <br><br><br>
 </body>
