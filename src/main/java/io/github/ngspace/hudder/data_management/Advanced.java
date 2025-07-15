@@ -20,14 +20,14 @@ public class Advanced {private Advanced() {}
 			((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean())::getProcessCpuLoad, 2000);
 	
 	
-	public static String OS = null; static {
-		if (OS == null) {
-			String OS = System.getProperty("os.name", "generic").toLowerCase();
-			if ((OS.contains("mac")) || (OS.contains("darwin"))) OS = "mac";
-			else if (OS.contains("nux")) OS = "linux";
-			else if (OS.contains("win")) OS = "windows";
-			else OS = "other";
-		}
+	public static String OS = getOS();
+	static String getOS() {
+		String OS = System.getProperty("os.name", "generic").toLowerCase();
+		if ((OS.contains("mac")) || (OS.contains("darwin"))) OS = "mac";
+		else if (OS.contains("nux")) OS = "linux";
+		else if (OS.contains("win")) OS = "windows";
+		else OS = "other";
+		return OS;
 	}
 	
 	
