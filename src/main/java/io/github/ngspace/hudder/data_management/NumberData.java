@@ -7,6 +7,7 @@ import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.main.config.HudderConfig;
 import io.github.ngspace.hudder.mixin.ParticleManagerAccessor;
 import io.github.ngspace.hudder.mixin.WorldRendererAccess;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.server.IntegratedServer;
@@ -20,6 +21,7 @@ public class NumberData {private NumberData() {}
 	public static Double getNumber(String key) {
 		Minecraft ins = Minecraft.getInstance();
 		LocalPlayer p = ins.player;
+		Camera c = ins.gameRenderer.getMainCamera();
 		int fps = Advanced.getFPS(ins);
 		HudderConfig config = Hudder.config;
 		
