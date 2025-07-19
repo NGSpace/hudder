@@ -88,7 +88,7 @@ public class ConfigMenu implements ConfigScreenFactory<Screen> {
 				.setDefaultValue("hud")
 				.setSaveConsumer(b->config.mainfile=b)
 				.setErrorSupplier(e->{
-					if (!new File(HudFileUtils.FOLDER + e).exists())
+					if (!HudFileUtils.exists(e))
 						return Optional.of(Component.translatable("hudder.general.mainfile.error"));
 					return Optional.empty();
 				})

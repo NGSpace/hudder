@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.CRC32;
@@ -14,6 +15,7 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
 
+import io.github.ngspace.hudder.data_management.Advanced;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.ResourceLocation;
 
@@ -38,7 +40,7 @@ public class HudFileUtils {private HudFileUtils() {}
      * @throws IOException
      */
 	public static String readFile(String file) {
-		return reader.readFile(sanitize(FOLDER + file));
+		return reader.getCachedFile(sanitize(FOLDER + file));
 	}
 	
 	
@@ -50,7 +52,7 @@ public class HudFileUtils {private HudFileUtils() {}
      * @throws IOException
      */
 	public static String readFileWithoutCache(String file) throws IOException {
-		return reader.readFileLineByLine(new File(sanitize(FOLDER + file)));
+		return reader.reader.readFile(new File(sanitize(FOLDER + file)));
 	}
 	
 	
@@ -165,11 +167,11 @@ public class HudFileUtils {private HudFileUtils() {}
 				if (image!=null) {
 					ByteArrayOutputStream output = new ByteArrayOutputStream();
 					ImageIO.write(image, "PNG", output);
-					reader.registerAndCacheImage(new ByteArrayInputStream(output.toByteArray()),getTexture(path));
+					reader.loadImageToCache(new ByteArrayInputStream(output.toByteArray()),getTexture(path));
 					continue;
 				}
 			} catch (IOException e) {e.printStackTrace();}
-			reader.readFileAndSaveToCache(resource);
+			reader.loadFileToCache(resource);
 		}
 	}
 

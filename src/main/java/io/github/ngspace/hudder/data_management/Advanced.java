@@ -47,7 +47,8 @@ public class Advanced {private Advanced() {}
 	public static float delta = 1;
 	public static LimitedRefreshSpeedData<Double> CPU = new LimitedRefreshSpeedData<Double>(
 			((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean())::getProcessCpuLoad, 2000);
-	
+
+	public static boolean isWindows;
 	
 	public static String OS = null; static {
 		if (OS == null) {
