@@ -3,6 +3,7 @@ package io.github.ngspace.hudder.main.config;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 
+import dev.ngspace.ngsmcconfig.NGSMCConfigBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -12,7 +13,7 @@ import net.minecraft.network.chat.Component;
 
 public class HudderModMenuImpl implements ModMenuApi {
 	@Override public ConfigScreenFactory<Screen> getModConfigScreenFactory() {
-		return FabricLoader.getInstance().isModLoaded("cloth-config2") ? new ConfigMenu() : InstallClothConfig::new;
+		return FabricLoader.getInstance().isModLoaded("cloth-config2") ? new HudderConfigFactory() : InstallClothConfig::new;
     }
 	
 	class InstallClothConfig extends Screen {
@@ -32,5 +33,14 @@ public class HudderModMenuImpl implements ModMenuApi {
 	        		(width-Minecraft.getInstance().font.width(INSTALLCLOTH))/2, height/3, 0xAA0000);
 	        super.render(drawContext, mouseX, mouseY, delta);
 	    }
+	}
+	
+	class HudderConfigFactory implements ConfigScreenFactory<Screen> {
+
+		@Override
+		public Screen create(Screen parent) {
+			return new NGSMCConfigBuilder(parent).build();
+		}
+		
 	}
 }

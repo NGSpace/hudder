@@ -1,6 +1,5 @@
 package io.github.ngspace.hudder.main.config;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;

@@ -5,7 +5,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.CRC32;
@@ -15,7 +14,6 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
 
-import io.github.ngspace.hudder.data_management.Advanced;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.ResourceLocation;
 
