@@ -47,7 +47,6 @@ public class HudderNGSMCConfigMenu {
 		
 		
 		/* General */
-		
 		general.addOption(BooleanNGSMCConfigOption.builder(config.enabled, Component.translatable("hudder.general.enabled"))
 				.setHoverComponent(Component.translatable("hudder.general.enabled.tooltip"))
 				.setDefaultValue(true)
@@ -68,6 +67,7 @@ public class HudderNGSMCConfigMenu {
 				.setSaveOperation(b->config.scale=b.floatValue())
 				.setDefaultValue(1d)
 				.build());
+		
 		
 		
 		/* Text */
@@ -107,6 +107,8 @@ public class HudderNGSMCConfigMenu {
 				.setSaveOperation(b->config.lineHeight=b)
 				.setDefaultValue(10)
 				.build());
+		
+		
 		
 		/* Advanced */
 		advanced.addOption(IntNGSMCConfigOption.builder(config.methodBuffer, Component.translatable("hudder.advanced.method"))
