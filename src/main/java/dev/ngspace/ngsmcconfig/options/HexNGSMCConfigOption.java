@@ -31,6 +31,8 @@ public class HexNGSMCConfigOption extends AbstractNGSMCConfigOption<Integer> {
 		widget = new EditBox(Minecraft.getInstance().font, 0, 0, 100, 20, Component.literal("")) {
 			
 		};
+		widget.setMaxLength(10);
+		widget.setValue("#"+String.format("%1$08X",value));
 		widget.setFilter(val->{
 			edited = true;
 			try {
@@ -42,8 +44,6 @@ public class HexNGSMCConfigOption extends AbstractNGSMCConfigOption<Integer> {
 			}
 			return true;
 		});
-		widget.setMaxLength(10);
-		widget.setValue("#"+String.format("%1$08X",value));
 		return new NGSMCConfigEntry(widget, text, this);
 	}
 	

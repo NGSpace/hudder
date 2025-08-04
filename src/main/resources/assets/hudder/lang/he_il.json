@@ -1,7 +1,19 @@
 {
-	"hudder.reset": "איפוס",
-	"hudder.true": "כן",
-	"hudder.false": "לא",
+	"ngsmcconfig.reset": "איפוס",
+	"ngsmcconfig.true": "כן",
+	"ngsmcconfig.false": "לא",
+	"ngsmcconfig.back": "חזור",
+	"ngsmcconfig.save": "שמור",
+	"ngsmcconfig.wiki": "וויקי",
+	"ngsmcconfig.config": "פתח קובץ",
+	"ngsmcconfig.globalreset": "איפוס",
+
+	"ngsmcconfig.confirmreset": "איפוס הגדרות Hudder",
+	"ngsmcconfig.confirmreset.text": "האם אתה בטוח שאת/ה רוצה לאפס את כל ההגדרות שלך?",
+
+	"ngsmcconfig.confirmunsavedexit": "שינויים לא שמורים",
+	"ngsmcconfig.confirmunsavedexit.text": "יש שינויים לא שמורים, האם את/ה בטוח שאתה רוצה למחוק את השינויים האלו?",
+
 	
 	"hudder.general": "כללי",
 	
@@ -65,9 +77,6 @@
 	
 	"hudder.advanced.javascript": "Javascript מופעל",
 	"hudder.advanced.javascript.tooltip": "האם JavaScript מופעל",
-	
-	
-	"hudder.noclothapi": "עליך להתקין Cloth Config כדי להשתמש בתפריט זה.",
 
 	"hudder.text.backgroundcolor": "צבע רקע",
 	"hudder.text.backgroundcolor.tooltip": "שנה את צבע ברירת המחדל של הרקע.",

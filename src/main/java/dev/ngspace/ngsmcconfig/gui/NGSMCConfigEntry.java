@@ -29,7 +29,7 @@ public class NGSMCConfigEntry extends ContainerObjectSelectionList.Entry<NGSMCCo
 
     public NGSMCConfigEntry(AbstractWidget widget, Component title, AbstractNGSMCConfigOption<?> option) {
         this.widget = widget;
-        resetButton = Button.builder(Component.translatable("hudder.reset"), button->option.reset())
+        resetButton = Button.builder(Component.translatable("ngsmcconfig.reset"), button->option.reset())
         		.size(40, 20).build();
         text = new StringWidget(0, 0, 200, 20, title, Minecraft.getInstance().font) {
         	@Override public void playDownSound(SoundManager soundManager) { /* Ugly noise */ }
