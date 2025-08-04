@@ -7,6 +7,6 @@ import net.minecraft.client.gui.screens.Screen;
 
 public class HudderModMenuImpl implements ModMenuApi {
 	@Override public ConfigScreenFactory<Screen> getModConfigScreenFactory() {
-		return new HudderNGSMCConfigMenu();
+		return HudderNGSMCConfigMenu::createMenu;
     }
 }

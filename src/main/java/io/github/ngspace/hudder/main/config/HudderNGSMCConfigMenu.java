@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
-import com.terraformersmc.modmenu.api.ConfigScreenFactory;
-
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigBuilder;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 import dev.ngspace.ngsmcconfig.options.BooleanNGSMCConfigOption;
@@ -20,12 +18,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
-public class HudderNGSMCConfigMenu implements ConfigScreenFactory<Screen> {
+public class HudderNGSMCConfigMenu {
 	
 	protected static Minecraft mc = Minecraft.getInstance();
 
-	@Override
-	public Screen create(Screen parent) {
+	public static Screen createMenu(Screen parent) {
 		HudderConfig config = Hudder.config;
 		
 		var builder = new NGSMCConfigBuilder(parent);
