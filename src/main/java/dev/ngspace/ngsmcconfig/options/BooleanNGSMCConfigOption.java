@@ -14,8 +14,7 @@ public class BooleanNGSMCConfigOption extends AbstractNGSMCConfigOption<Boolean>
 			Consumer<Boolean> saveOperation, Function<Boolean, Component> validator) {
 		super(defaultValue, value, text, saveOperation, validator);
 	}
-
-	Function<Boolean, Component> yesno = b->Component.translatable("hudder."+b);
+	
 	Button widget;
 
 	@Override
@@ -23,9 +22,9 @@ public class BooleanNGSMCConfigOption extends AbstractNGSMCConfigOption<Boolean>
         widget = Button.builder(Component.translatable("hudder.reset"), button->{
 			edited = true;
         	value = !value;
-            button.setMessage(yesno.apply(value));
+            button.setMessage(Component.translatable("hudder."+value));
         }).size(100, 20).build();
-        widget.setMessage(yesno.apply(value));
+        widget.setMessage(Component.translatable("hudder."+value));
 		return new NGSMCConfigEntry(widget, text, this);
 	}
 	

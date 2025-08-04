@@ -15,6 +15,7 @@ public class NGSMCConfigCategorySelectionScreen extends AbstractNGSMCConfigScree
 	public NGSMCConfigCategorySelectionScreen(Screen parentScreen,
 			List<NGSMCConfigCategory> categories, Runnable writeoperation, URI wikiUri, File configfile) {
 		super(parentScreen, categories, false, writeoperation, wikiUri, configfile);
+		askBeforeUnsavedLeave = true;
 	}
 	
 	@Override
@@ -32,6 +33,9 @@ public class NGSMCConfigCategorySelectionScreen extends AbstractNGSMCConfigScree
 			if (i%2==0) {
 				catY+= increase;
 				catX=catX-150-CATEGORY_PADDING/2;
+				if (i+1==categories.size()) {
+					catX+=(150+CATEGORY_PADDING/2)/2;
+				}
 			} else catX=catX+CATEGORY_PADDING/2;
 			
 			addRenderableWidget(Button.builder(category.title(),

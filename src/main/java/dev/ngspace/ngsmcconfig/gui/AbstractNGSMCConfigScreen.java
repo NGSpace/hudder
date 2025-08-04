@@ -12,6 +12,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -20,14 +22,16 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 	
 	protected Screen parent;
 	protected List<NGSMCConfigCategory> categories;
-	
 	protected NGSMCConfigOptionsListWidget container;
+	protected boolean createContainer;
+	protected boolean askBeforeUnsavedLeave;
+	
 	protected Button saveButton;
 	protected Button backButton;
+	protected Button globalResetButton;
 	protected Button wikiButton;
 	protected Button configButton;
 	protected StringWidget errorWidget;
-	protected boolean createContainer;
 	protected Runnable writeoperation;
 	protected URI wikiUri;
 	protected File configfile;
@@ -58,18 +62,23 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		saveButton.active = error==null;
 		addRenderableWidget(saveButton);
 		
+		globalResetButton = Button.builder(Component.literal("Wiki"), b->reset())
+				.bounds(width-30, 0, 30, 20)
+				.build();
+		addRenderableWidget(globalResetButton);
+
+		if (configfile!=null) {
+			configButton = Button.builder(Component.literal("Open config"), b->Util.getPlatform().openFile(configfile))
+					.bounds(width-(wikiUri!=null?100:70), 0, 70, 20)
+					.build();
+			addRenderableWidget(configButton);
+		}
+		
 		if (wikiUri!=null) {
 			wikiButton = Button.builder(Component.literal("Wiki"), b->clickUrlAction(Minecraft.getInstance(), this, wikiUri))
 					.bounds(width-30, 0, 30, 20)
 					.build();
 			addRenderableWidget(wikiButton);
-		}
-
-		if (configfile!=null) {
-			configButton = Button.builder(Component.literal("Open config"), b->Util.getPlatform().openFile(configfile))
-					.bounds(width-100, 0, 70, 20)
-					.build();
-			addRenderableWidget(configButton);
 		}
 		
 		errorWidget = new StringWidget(error!=null?error:Component.literal(""), font);
@@ -98,6 +107,19 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		}
 		writeoperation.run();
 	}
+	protected void reset() {
+		minecraft.setScreen(new ConfirmScreen(b->minecraft.setScreen(b?parent:this), Component.literal("Reset to default settings"),
+				Component.literal("Are you sure you want to reset your entire config?")));
+	}
+	protected void resetNoConf() {
+		for (var category : categories) {
+			for (var option : category.options()) {
+				option.reset();
+				option.edited = false;
+			}
+		}
+		writeoperation.run();
+	}
 	protected Component getError() {
 		for (var category : categories) {
 			for (var option : category.options()) {
@@ -120,7 +142,11 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 	
 	@Override
 	public void onClose() {
-		this.minecraft.setScreen(this.parent);
+		if (askBeforeUnsavedLeave&&isEditedAndNotSaved())
+			minecraft.setScreen(new ConfirmScreen(b->minecraft.setScreen(b?parent:this), Component.literal("Unsaved changes"),
+					Component.literal("There are some unsaved changes, are you sure you want to leave and discard those unsaved changes?")));
+		else
+			this.minecraft.setScreen(this.parent);
 	}
 	
     @Override
