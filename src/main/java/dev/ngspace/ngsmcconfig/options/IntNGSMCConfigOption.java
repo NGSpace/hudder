@@ -8,7 +8,7 @@ import net.minecraft.network.chat.Component;
 
 public class IntNGSMCConfigOption extends AbstractTextFieldNGSMCConfigOption<Integer> {
 
-	protected boolean validnum;
+	protected boolean validnum = true;
 	protected String invalidnum;
 	
 	protected IntNGSMCConfigOption(Integer defaultValue, Integer value, Component text, Consumer<Integer> saveOperation,
