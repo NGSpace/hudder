@@ -1,12 +1,11 @@
 package dev.ngspace.ngsmcconfig.gui;
 
-import dev.ngspace.ngsmcconfig.NGSMCConfigEntry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 
-public class ContainerWidget extends ContainerObjectSelectionList<NGSMCConfigEntry> {
-    public ContainerWidget(Minecraft client, int width, int height, int y) {
+public class NGSMCConfigOptionsListWidget extends ContainerObjectSelectionList<NGSMCConfigEntry> {
+    public NGSMCConfigOptionsListWidget(Minecraft client, int width, int height, int y) {
         super(client, width, height, y, 30, 15);
     }
     
@@ -16,9 +15,10 @@ public class ContainerWidget extends ContainerObjectSelectionList<NGSMCConfigEnt
     }
     
 //    @Override protected void renderListBackground(GuiGraphics guiGraphics) {/* It ugly ;_; */}
+    @Override protected void renderListSeparators(GuiGraphics guiGraphics) {/* It ugly too */}
     
     @Override
     public int getRowWidth() {
-    	return width-33;
+    	return 300;
     }
 }

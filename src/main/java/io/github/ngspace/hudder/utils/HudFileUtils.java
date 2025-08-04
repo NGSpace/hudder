@@ -103,6 +103,7 @@ public class HudFileUtils {private HudFileUtils() {}
 	 * @return whether the file exists or not
 	 */
 	public static boolean exists(String file) {
+		if ("".equals(file)) return false;
 		return new File(sanitize(FOLDER + file)).exists();
 	}
 	

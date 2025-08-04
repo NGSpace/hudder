@@ -6,13 +6,13 @@ import java.util.function.Function;
 import dev.ngspace.ngsmcconfig.api.AbstractNGSMCConfigOptionBuilder;
 import net.minecraft.network.chat.Component;
 
-public class IntNGSMCConfigOption extends AbstractTextFieldNGSMCConfigOption<Integer> {
+public class DoubleNGSMCConfigOption extends AbstractTextFieldNGSMCConfigOption<Double> {
 
 	protected boolean validnum;
 	protected String invalidnum;
 	
-	protected IntNGSMCConfigOption(Integer defaultValue, Integer value, Component text, Consumer<Integer> saveOperation,
-			Function<Integer, Component> validator) {
+	protected DoubleNGSMCConfigOption(double defaultValue, double value, Component text, Consumer<Double> saveOperation,
+			Function<Double, Component> validator) {
 		super(defaultValue, value, text, saveOperation, validator);
 		this.validator = val->{
 			if (!validnum)
@@ -20,10 +20,10 @@ public class IntNGSMCConfigOption extends AbstractTextFieldNGSMCConfigOption<Int
 			return validator==null?null:validator.apply(val);
 		};
 		textfilter = val -> {
-			boolean passfilter = val.chars().allMatch(c->Character.isDigit(c)||c=='-');
+			boolean passfilter = val.chars().allMatch(c->Character.isDigit(c)||c=='-'||c=='.');
 			if (passfilter) {
 				try {
-					this.value = Integer.parseInt(val);
+					this.value = Double.parseDouble(val);
 					validnum = true;
 				} catch (NumberFormatException e) {
 					validnum = false;
@@ -34,10 +34,10 @@ public class IntNGSMCConfigOption extends AbstractTextFieldNGSMCConfigOption<Int
 		};
 	}
 	
-	public static AbstractNGSMCConfigOptionBuilder<Integer> builder(int value, Component name) {
-		return new AbstractNGSMCConfigOptionBuilder<Integer>(value, name) {
-			@Override public AbstractNGSMCConfigOption<Integer> build() {
-				return new IntNGSMCConfigOption(defaultValue, value, name, saveOperation, validator);
+	public static AbstractNGSMCConfigOptionBuilder<Double> builder(double value, Component name) {
+		return new AbstractNGSMCConfigOptionBuilder<Double>(value, name) {
+			@Override public AbstractNGSMCConfigOption<Double> build() {
+				return new DoubleNGSMCConfigOption(defaultValue, value, name, saveOperation, validator);
 			}
 		};
 	}

@@ -1,6 +1,10 @@
 package dev.ngspace.ngsmcconfig.options;
 
-import dev.ngspace.ngsmcconfig.NGSMCConfigEntry;
+import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
+import dev.ngspace.ngsmcconfig.gui.NGSMCConfigEntry;
 import net.minecraft.network.chat.Component;
 
 public abstract class AbstractNGSMCConfigOption<T> {
@@ -8,42 +12,32 @@ public abstract class AbstractNGSMCConfigOption<T> {
 	public T defaultValue;
 	public T value;
 	public Component text;
+	public Consumer<T> saveOperation;
+	public Function<T, Component> validator;
+	public boolean edited;
 
-	protected AbstractNGSMCConfigOption(T defaultValue, T value, Component text) {
+	protected AbstractNGSMCConfigOption(T defaultValue, T value, Component text, Consumer<T> saveOperation,
+			Function<T, Component> validator) {
 		this.defaultValue = defaultValue;
 		this.value = value;
 		this.text = text;
+		this.saveOperation = saveOperation;
+		this.validator = validator;
+	}
+	
+	public void save() {
+		saveOperation.accept(value);
+	}
+	
+	public Component getError() {
+		return validator==null ? null : validator.apply(value);
 	}
 	
 	public abstract NGSMCConfigEntry buildEntry();
-	
-	public abstract static class Builder<T> {
-		
-		protected int value;
-		protected int defaultValue;
-		protected Component name;
 
-		protected Builder(int value, Component name) {
-			this.value = value;
-			this.defaultValue = value;
-			this.name = name;
-		}
-		
-		public Builder<T> setValue(int value) {
-			this.value = value;
-			return this;
-		}
+	public abstract void reset();
 
-		public Builder<T> setDefaultValue(int defaultValue) {
-			this.defaultValue = defaultValue;
-			return this;
-		}
-
-		public Builder<T> setName(Component name) {
-			this.name = name;
-			return this;
-		}
-
-		public abstract AbstractNGSMCConfigOption<T> build();
+	public boolean isDefault() {
+		return Objects.equals(value, defaultValue);
 	}
 }

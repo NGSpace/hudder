@@ -1,5 +1,7 @@
-package dev.ngspace.ngsmcconfig;
+package dev.ngspace.ngsmcconfig.api;
 
+import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +14,9 @@ public class NGSMCConfigBuilder {
 	
 	Screen parent;
 	List<NGSMCConfigCategory> categories = new ArrayList<NGSMCConfigCategory>();
+	Runnable writeoperation = () -> {};
+	URI wikiUri;
+	File configfile;
 	
 	public NGSMCConfigBuilder(Screen parent) {
 		this.parent = parent;
@@ -24,6 +29,18 @@ public class NGSMCConfigBuilder {
 	}
 	
 	public Screen build() {
-		return new NGSMCConfigCategorySelectionScreen(parent, categories);
+		return new NGSMCConfigCategorySelectionScreen(parent, categories, writeoperation, wikiUri, configfile);
+	}
+
+	public void setWriteOperation(Runnable writeoperation) {
+		this.writeoperation = writeoperation;
+	}
+
+	public void setWikiUri(URI wikiUri) {
+		this.wikiUri = wikiUri;
+	}
+
+	public void setConfigFile(File configfile) {
+		this.configfile = configfile;
 	}
 }
