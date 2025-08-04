@@ -14,7 +14,7 @@ public class NGSMCConfigOptionsListWidget extends ContainerObjectSelectionList<N
     	return super.addEntry(entry);
     }
     
-//    @Override protected void renderListBackground(GuiGraphics guiGraphics) {/* It ugly ;_; */}
+    @Override protected void renderListBackground(GuiGraphics guiGraphics) {/* It ugly ;_; */}
     @Override protected void renderListSeparators(GuiGraphics guiGraphics) {/* It ugly too */}
     
     @Override
