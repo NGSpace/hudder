@@ -7,8 +7,11 @@ import java.util.Optional;
 import java.util.Scanner;
 
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.mojang.blaze3d.platform.InputConstants;
 
 import io.github.ngspace.hudder.api.functionsandconsumers.HudderBuiltInFunctions;
 import io.github.ngspace.hudder.api.functionsandconsumers.HudderBuiltInMethods;
@@ -23,9 +26,11 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.network.chat.Component;
@@ -52,6 +57,10 @@ public class Hudder implements ClientModInitializer {
      */
     public static HudderConfig config;
 
+
+
+	public static KeyMapping configkeybind;
+
     
     
     /**
@@ -59,6 +68,14 @@ public class Hudder implements ClientModInitializer {
      * @throws Exception Because I fuck up a lot.
      */
 	@Override public void onInitializeClient() {
+		configkeybind = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+            "hudder.configkeybind",
+            InputConstants.Type.KEYSYM, // The type of the keybinding, KEYSYM for keyboard, MOUSE for mouse.
+            GLFW.GLFW_KEY_R, // The keycode of the key
+            "hudder.keybinds" // The translation key of the keybinding's category.
+        ));
+		
+		
 		Optional<ModContainer> containerOpt = FabricLoader.getInstance().getModContainer("hudder");
 		
 		if (containerOpt.isPresent()) {
