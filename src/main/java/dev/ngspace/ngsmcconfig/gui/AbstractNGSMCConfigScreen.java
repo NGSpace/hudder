@@ -64,7 +64,6 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		globalResetButton = Button.builder(Component.translatable("ngsmcconfig.globalreset"), b->reset())
 				.bounds(width-40, 0, 40, 20)
 				.build();
-		addRenderableWidget(globalResetButton);
 
 		if (configfile!=null) {
 			configButton = Button.builder(Component.translatable("ngsmcconfig.config"),
@@ -81,6 +80,7 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 					.build();
 			addRenderableWidget(wikiButton);
 		}
+		addRenderableWidget(globalResetButton);
 		
 		errorWidget = new StringWidget(error!=null?error:Component.literal(""), font);
 		errorWidget.setPosition(65, 0);
