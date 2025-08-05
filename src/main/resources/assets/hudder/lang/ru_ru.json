@@ -1,84 +1,55 @@
 {
-	"hudder.reset": "Сброс",
-	"hudder.true":"Да",
-	"hudder.false":"Нет",
-	
-	"hudder.general": "Общий",
-	
-	"hudder.general.wiki":"Нажмите здесь, чтобы открыть вики Хаддера в вашем браузере",
-	"hudder.general.wiki.tooltip":"Нажмите, чтобы открыть вики",
-	
-	"hudder.general.enabled":"Включено",
-	"hudder.general.enabled.tooltip":"Должен ли Hudder быть включен или нет",
-	
-	"hudder.general.mainfile":"Основной файл",
-	"hudder.general.mainfile.tooltip":"Измените основной файл\n\u00A77Файл должен находиться в папке \u00A76.minecraft/config/Hudder\u00A77",
-	"hudder.general.mainfile.error":"Файл не существует в папке .minecraft/config/Hudder",
-	
-	"hudder.general.scale":"Масштаб по умолчанию",
-	"hudder.general.scale.tooltip":"Управляйте масштабом метаэлементов по умолчанию\n\u00A77Это можно переопределить элементами, указывающими размер самостоятельно",
-	
-	"hudder.general.folder":"\u00A77Файлы расположены в папке \"\u00A76config/Hudder\u00A77\"",
-	"hudder.general.folder.tooltip":"Нажмите, чтобы открыть папку",
-	
-	"hudder.text": "Текст",
-	
-	"hudder.text.color":"Цвет текста",
-	"hudder.text.color.tooltip":"Изменить цвет текста",
-	
-	"hudder.text.shadow":"Текстовая тень",
-	"hudder.text.shadow.tooltip":"Должна ли текст иметь тень",
-	
-	"hudder.text.yoffset":"Смещение по оси Y",
-	"hudder.text.yoffset.tooltip":"Управляет смещением текста по оси Y",
-	
-	"hudder.text.xoffset":"Смещение по X",
-	"hudder.text.xoffset.tooltip":"Управляет смещением текста по оси X",
-	
-	"hudder.text.height":"Высота текста",
-	"hudder.text.height.tooltip":"Управляйте высотой строки текста",
-	
-	"hudder.advanced": "Дополнительно",
-	
-	"hudder.advanced.method": "Буфер мета-строк",
-	"hudder.advanced.method.tooltip": "Управляйте количеством обрезаемых строк до и после метаданных",
-	
-	"hudder.advanced.f3": "Показать при нажатии F3",
-	"hudder.advanced.f3.tooltip": "Должно рендериться, когда отображается F3",
-	
-	"hudder.global_variables": "Глобальные переменные",
-	
-	"hudder.global_variables.enabled":"Глобальные переменные",
-	"hudder.global_variables.enabled.tooltip": "Следует ли использовать глобальные переменные",
-	
-	"hudder.global_variables.tooltip":"Управляйте переменными и устанавливайте значения без редактирования файлов.\n\u00A77Это также можно использовать для создания параметров для файлов Hudder",
-	
-	"hudder.global_variables.key":"Ключ",
-	"hudder.global_variables.key.tooltip": "Имя переменной",
-	
-	"hudder.global_variables.value":"Значение",
-	"hudder.global_variables.value.tooltip": "Значение переменной",
-	
-	"hudder.advanced.compilertype": "Тип компилятора",
-	"hudder.advanced.compilertype.tooltip": "Измените тип компилятора (например, Hudder, JavaScript, None)",
-	"hudder.advanced.compilertype.error":"Неверный тип компилятора",
-	
-	"hudder.advanced.javascript": "Javascript включен",
-	"hudder.advanced.javascript.tooltip": "Включен ли JavaScript",
-	
-	
-	
-	"hudder.noclothapi": "Для использования этого меню вам необходимо установить Cloth Config.",
-
-	"hudder.text.backgroundcolor": "Цвет фона",
-	"hudder.text.backgroundcolor.tooltip": "Изменить цвет фона по умолчанию.",
-	
-	"hudder.text.background": "Фон включен",
-	"hudder.text.background.tooltip": "Добавлен ли фон к тексту по умолчанию.",
-	
-	"hudder.advanced.removehotbar": "Удалить панель быстрого доступа",
-	"hudder.advanced.removehotbar.tooltip": "\u00A74ВНИМАНИЕ! ЭТО СДЕЛАЕТ ВАШУ ГОРЯЧУЮ ПАНЕЛЬ И ПАНЕЛЬ ЗДОРОВЬЯ НЕВИДИМЫМИ ДО ОТКЛЮЧЕНИЯ.\n\u00A7fДолжен ли hudder скрывать все элементы графического интерфейса, связанные с горячей панелью.",
-	
-	"hudder.advanced.limitrate": "Ограничить частоту компиляции",
-	"hudder.advanced.limitrate.tooltip": "\u00A74ВНИМАНИЕ — ЭТО МОЖЕТ ВЫЗВАТЬ ПРОБЛЕМЫ С ПРОИЗВОДИТЕЛЬНОСТЬЮ.\n\u00A7fОтключение этого параметра переведет компиляцию файла hudder с запуска каждого тика клиента на запуск каждого кадра."
+    "hudder.reset": "Сброс",
+    "hudder.true": "Да",
+    "hudder.false": "Нет",
+    "hudder.general": "Общий",
+    "hudder.general.wiki": "Нажмите здесь, чтобы открыть вики Хаддера в вашем браузере",
+    "hudder.general.wiki.tooltip": "Нажмите, чтобы открыть вики",
+    "hudder.general.enabled": "Включено",
+    "hudder.general.enabled.tooltip": "Должен ли Hudder быть включен или нет",
+    "hudder.general.mainfile": "Основной файл",
+    "hudder.general.mainfile.tooltip": "Измените основной файл\n§7Файл должен находиться в папке §6.minecraft/config/Hudder§7",
+    "hudder.general.mainfile.error": "Файл не существует в папке .minecraft/config/Hudder",
+    "hudder.general.scale": "Масштаб по умолчанию",
+    "hudder.general.scale.tooltip": "Управляйте масштабом метаэлементов по умолчанию\n§7Это можно переопределить элементами, указывающими размер самостоятельно",
+    "hudder.general.folder": "§7Файлы расположены в папке \"§6config/Hudder§7\"",
+    "hudder.general.folder.tooltip": "Нажмите, чтобы открыть папку",
+    "hudder.text": "Текст",
+    "hudder.text.color": "Цвет текста",
+    "hudder.text.color.tooltip": "Изменить цвет текста",
+    "hudder.text.shadow": "Текстовая тень",
+    "hudder.text.shadow.tooltip": "Должна ли текст иметь тень",
+    "hudder.text.yoffset": "Смещение по оси Y",
+    "hudder.text.yoffset.tooltip": "Управляет смещением текста по оси Y",
+    "hudder.text.xoffset": "Смещение по X",
+    "hudder.text.xoffset.tooltip": "Управляет смещением текста по оси X",
+    "hudder.text.height": "Высота текста",
+    "hudder.text.height.tooltip": "Управляйте высотой строки текста",
+    "hudder.advanced": "Дополнительно",
+    "hudder.advanced.method": "Буфер мета-строк",
+    "hudder.advanced.method.tooltip": "Управляйте количеством обрезаемых строк до и после метаданных",
+    "hudder.advanced.f3": "Показать при нажатии F3",
+    "hudder.advanced.f3.tooltip": "Должно рендериться, когда отображается F3",
+    "hudder.global_variables": "Глобальные переменные",
+    "hudder.global_variables.enabled": "Глобальные переменные",
+    "hudder.global_variables.enabled.tooltip": "Следует ли использовать глобальные переменные",
+    "hudder.global_variables.tooltip": "Управляйте переменными и устанавливайте значения без редактирования файлов.\n§7Это также можно использовать для создания параметров для файлов Hudder",
+    "hudder.global_variables.key": "Ключ",
+    "hudder.global_variables.key.tooltip": "Имя переменной",
+    "hudder.global_variables.value": "Значение",
+    "hudder.global_variables.value.tooltip": "Значение переменной",
+    "hudder.advanced.compilertype": "Тип компилятора",
+    "hudder.advanced.compilertype.tooltip": "Измените тип компилятора (например, Hudder, JavaScript, None)",
+    "hudder.advanced.compilertype.error": "Неверный тип компилятора",
+    "hudder.advanced.javascript": "Javascript включен",
+    "hudder.advanced.javascript.tooltip": "Включен ли JavaScript",
+    "hudder.noclothapi": "Для использования этого меню вам необходимо установить Cloth Config.",
+    "hudder.text.backgroundcolor": "Цвет фона",
+    "hudder.text.backgroundcolor.tooltip": "Изменить цвет фона по умолчанию.",
+    "hudder.text.background": "Фон включен",
+    "hudder.text.background.tooltip": "Добавлен ли фон к тексту по умолчанию.",
+    "hudder.advanced.removehotbar": "Удалить панель быстрого доступа",
+    "hudder.advanced.removehotbar.tooltip": "§4ВНИМАНИЕ! ЭТО СДЕЛАЕТ ВАШУ ГОРЯЧУЮ ПАНЕЛЬ И ПАНЕЛЬ ЗДОРОВЬЯ НЕВИДИМЫМИ ДО ОТКЛЮЧЕНИЯ.\n§fДолжен ли hudder скрывать все элементы графического интерфейса, связанные с горячей панелью.",
+    "hudder.advanced.limitrate": "Ограничить частоту компиляции",
+    "hudder.advanced.limitrate.tooltip": "§4ВНИМАНИЕ — ЭТО МОЖЕТ ВЫЗВАТЬ ПРОБЛЕМЫ С ПРОИЗВОДИТЕЛЬНОСТЬЮ.\n§fОтключение этого параметра переведет компиляцию файла hudder с запуска каждого тика клиента на запуск каждого кадра."
 }
