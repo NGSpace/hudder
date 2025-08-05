@@ -52,6 +52,12 @@ configurations.all {
 			details.useVersion('2.24.1')
 			details.because('2.8.1 insecure (like me frfr)')
 		}
+		if (requested.group == "com.fasterxml.jackson.core"
+				&& requested.name  == "jackson-core"
+				&& requested.version == "2.13.4") {
+			useVersion("2.15.0")
+			because("Because github keeps screaming at me for it")
+		}
 	}
 }
 

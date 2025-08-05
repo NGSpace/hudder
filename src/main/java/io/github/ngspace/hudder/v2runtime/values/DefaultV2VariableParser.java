@@ -101,7 +101,23 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 		String[] setValues = value.split("=",2);// Split at the first '='
 		// Make sure it's not a condition!
 		if (setValues.length==2&&!isCondition(value)) {
-			return new V2SetValue(comp.getV2Value(runtime, setValues[0], line, charpos),
+			
+			boolean valid = true;
+			
+			boolean escaped = false;
+			for (int i = 0;i<setValues[0].length();i++) {
+				char c = setValues[0].charAt(i);
+				if (c=='\\') {
+					escaped = true;
+				}
+				if (escaped) continue;
+				if (c=='"') {
+					valid = false;
+					break;
+				}
+			}
+			if (valid)
+				return new V2SetValue(comp.getV2Value(runtime, setValues[0], line, charpos),
 					comp.getV2Value(runtime, setValues[1], line, charpos), comp, line, charpos, value);
 		}
 		

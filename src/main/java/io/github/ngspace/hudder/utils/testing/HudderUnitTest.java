@@ -24,6 +24,7 @@ public class HudderUnitTest {
 	
 	public HudderUnitTestResult test(HudderConfig info) {
 		String text = null;
+		Hudder.log("Running unit test: " + texttocompile);
 		try {
 			if (compiler instanceof AV2Compiler v2comp) {
 				v2comp.runtimes = new HashMap<String, V2Runtime>();
