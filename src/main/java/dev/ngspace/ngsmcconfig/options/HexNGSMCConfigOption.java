@@ -59,6 +59,7 @@ public class HexNGSMCConfigOption extends AbstractNGSMCConfigOption<Integer> {
 	public void reset() {
 		edited = true;
 		value = defaultValue;
-		widget.setValue("#"+String.format("%1$08X",value));
+    	if (widget!=null)
+    		widget.setValue("#"+String.format("%1$08X",value));
 	}
 }

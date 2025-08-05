@@ -41,6 +41,7 @@ public class BooleanNGSMCConfigOption extends AbstractNGSMCConfigOption<Boolean>
 	public void reset() {
 		edited = true;
     	value = defaultValue;
-    	widget.setMessage(yesno.apply(value));
+    	if (widget!=null)
+    		widget.setMessage(yesno.apply(value));
 	}
 }

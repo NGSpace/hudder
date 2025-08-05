@@ -109,7 +109,7 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		writeoperation.run();
 	}
 	protected void reset() {
-		minecraft.setScreen(new ConfirmScreen(b->minecraft.setScreen(b?parent:this),
+		minecraft.setScreen(new ConfirmScreen(b->{if (b) resetNoConf();minecraft.setScreen(this);},
 				Component.translatable("ngsmcconfig.confirmreset"),
 				Component.translatable("ngsmcconfig.confirmreset.text")));
 	}
@@ -117,10 +117,9 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		for (var category : categories) {
 			for (var option : category.options()) {
 				option.reset();
-				option.edited = false;
 			}
 		}
-		writeoperation.run();
+		save();
 	}
 	protected Component getError() {
 		for (var category : categories) {

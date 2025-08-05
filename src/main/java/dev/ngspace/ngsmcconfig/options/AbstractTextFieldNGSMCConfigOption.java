@@ -40,6 +40,7 @@ public abstract class AbstractTextFieldNGSMCConfigOption<T> extends AbstractNGSM
 	public void reset() {
 		edited = true;
 		value = defaultValue;
-		widget.setValue(stringify());
+    	if (widget!=null)
+    		widget.setValue(stringify());
 	}
 }
