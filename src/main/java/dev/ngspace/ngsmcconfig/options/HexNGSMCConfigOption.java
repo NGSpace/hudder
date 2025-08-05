@@ -6,6 +6,7 @@ import java.util.function.Function;
 import dev.ngspace.ngsmcconfig.api.AbstractNGSMCConfigOptionBuilder;
 import dev.ngspace.ngsmcconfig.gui.NGSMCConfigEntry;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 
@@ -29,7 +30,13 @@ public class HexNGSMCConfigOption extends AbstractNGSMCConfigOption<Integer> {
 	@Override
 	public NGSMCConfigEntry buildEntry() {
 		widget = new EditBox(Minecraft.getInstance().font, 0, 0, 100, 20, Component.literal("")) {
-			
+			@Override
+			public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
+				guiGraphics.enableScissor(getX(), getY(), getRight()-20, getBottom());
+				super.renderWidget(guiGraphics, i, j, f);
+				guiGraphics.disableScissor();
+				guiGraphics.fill(getRight()-20, getBottom()-20, getRight(), getBottom(), value);
+			}
 		};
 		widget.setMaxLength(10);
 		widget.setValue("#"+String.format("%1$08X",value));
