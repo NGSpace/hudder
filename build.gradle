@@ -41,6 +41,20 @@ dependencies {
     modCompileOnly("com.terraformersmc:modmenu:15.0.0-beta.3")
 }
 
+
+
+configurations.all {
+	resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+		if (details.requested.group == 'org.apache.logging.log4j'
+				&& details.requested.name  == 'log4j-core'
+				&& details.requested.version == '2.8.1') {
+			// disable 2.8.1
+			details.useVersion('2.24.1')
+			details.because('2.8.1 insecure (like me frfr)')
+		}
+	}
+}
+
 processResources {
 	inputs.property "version", project.version
 
