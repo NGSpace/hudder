@@ -17,40 +17,30 @@ public class CachedReader {
 	
 	protected static Minecraft mc = Minecraft.getInstance();
 	
+	public Reader reader = new ScannerReader();
+	
 	
 	HashMap<String, String> savedFiles = new HashMap<String, String>();
 	HashMap<ResourceLocation, DynamicTexture> savedImages = new HashMap<ResourceLocation, DynamicTexture>();
 	
 	
 	
-	public String readFile(String file) {return savedFiles.get(file);}
+	public String getCachedFile(String file) {return savedFiles.get(file);}
 	
 	
 	
-	public boolean readFileAndSaveToCache(File f) throws IOException {
-		if (!f.exists()) {
-			f.getParentFile().mkdirs();
-			if (!f.createNewFile()) return false;
+	public boolean loadFileToCache(File file) throws IOException {
+		if (!file.exists()) {
+			file.getParentFile().mkdirs();
+			if (!file.createNewFile()) return false;
 		}
-		savedFiles.put(f.getAbsolutePath(),readFileLineByLine(f));
+		savedFiles.put(file.getAbsolutePath(),reader.readFile(file));
 		return true;
 	}
 	
-	public String readFileLineByLine(File f) throws IOException {
-		Scanner reader = new Scanner(f);
-		String res = "";
-		while (reader.hasNextLine()) {
-			res += reader.nextLine();
-			res += '\n';
-		}
-		reader.close();
-		if (res.isEmpty()) return res;
-		return res.substring(0, res.length()-1);
-	}
 	
 	
-	
-	public boolean registerAndCacheImage(InputStream inputStream, ResourceLocation id) throws IOException {
+	public boolean loadImageToCache(InputStream inputStream, ResourceLocation id) throws IOException {
 		if (savedImages.containsKey(id)) {
 			mc.getTextureManager().release(id);
 			savedImages.get(id).close();
@@ -76,5 +66,25 @@ public class CachedReader {
 		}
 		savedImages.clear();
 		savedFiles.clear();
+	}
+	
+	public static interface Reader {
+		public String readFile(File f) throws IOException;
+	}
+	
+	public static class ScannerReader implements Reader {
+		
+		public String readFile(File file) throws IOException {
+			Scanner reader = new Scanner(file);
+			String res = "";
+			while (reader.hasNextLine()) {
+				res += reader.nextLine();
+				res += '\n';
+			}
+			reader.close();
+			if (res.isEmpty()) return res;
+			return res.substring(0, res.length()-1);
+		}
+		
 	}
 }

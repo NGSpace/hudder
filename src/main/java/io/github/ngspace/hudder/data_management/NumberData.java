@@ -7,6 +7,7 @@ import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.main.config.HudderConfig;
 import io.github.ngspace.hudder.mixin.ParticleManagerAccessor;
 import io.github.ngspace.hudder.mixin.WorldRendererAccess;
+import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -21,7 +22,7 @@ public class NumberData {private NumberData() {}
 	static final double MB = 1024d*1024d;
     static final Runtime runtime = Runtime.getRuntime();
 	
-	public static Double getNumber(String key) {
+	public static Object getNumber(String key) {
 		Minecraft ins = Minecraft.getInstance();
 		LocalPlayer p = ins.player;
 		Camera c = ins.gameRenderer.getMainCamera();
@@ -81,13 +82,13 @@ public class NumberData {private NumberData() {}
 
 
 			/* Mount information */
-			case "mount_health", "mount_hp": yield (p.getVehicle() instanceof LivingEntity entity) ? (double) entity.getHealth() : null;
-			case "mount_maxhealth", "mount_maxhp": yield (p.getVehicle() instanceof LivingEntity entity) ? (double) entity.getMaxHealth() : null;
-			case "mount_speed": yield (p.getVehicle() instanceof LivingEntity entity) ? entity.getAttribute(Attributes.MOVEMENT_SPEED).getBaseValue() : null;
-			case "mount_jump_strength": yield (p.getVehicle() instanceof LivingEntity entity) ? entity.getAttribute(Attributes.JUMP_STRENGTH).getBaseValue() : null;
-			case "mount_jump_scale": yield (p.getVehicle() instanceof AbstractHorse) ? (double) p.getJumpRidingScale() : null;
-			case "mount_armor": yield (p.getVehicle() instanceof AbstractHorse) ? (double) ((AbstractHorse) p.getVehicle()).getArmorValue() : null;
-			case "mount_jump_cooldown": yield (p.getVehicle() instanceof AbstractHorse) ? (double) ((AbstractHorse) p.getVehicle()).getJumpCooldown() : null;
+			case "mount_health", "mount_hp": yield (p.getVehicle() instanceof LivingEntity entity) ? (double) entity.getHealth() : V2Runtime.NULL;
+			case "mount_maxhealth", "mount_maxhp": yield (p.getVehicle() instanceof LivingEntity entity) ? (double) entity.getMaxHealth() : V2Runtime.NULL;
+			case "mount_speed": yield (p.getVehicle() instanceof LivingEntity entity) ? entity.getAttribute(Attributes.MOVEMENT_SPEED).getBaseValue() : V2Runtime.NULL;
+			case "mount_jump_strength": yield (p.getVehicle() instanceof LivingEntity entity) ? entity.getAttribute(Attributes.JUMP_STRENGTH).getBaseValue() : V2Runtime.NULL;
+			case "mount_jump_scale": yield (p.getVehicle() instanceof AbstractHorse) ? (double) p.getJumpRidingScale() : V2Runtime.NULL;
+			case "mount_armor": yield (p.getVehicle() instanceof AbstractHorse) ? (double) ((AbstractHorse) p.getVehicle()).getArmorValue() : V2Runtime.NULL;
+			case "mount_jump_cooldown": yield (p.getVehicle() instanceof AbstractHorse) ? (double) ((AbstractHorse) p.getVehicle()).getJumpCooldown() : V2Runtime.NULL;
 
 
 

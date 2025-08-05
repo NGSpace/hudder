@@ -1,7 +1,23 @@
 {
-	"hudder.reset": "Reset",
-	"hudder.true": "Yes",
-	"hudder.false": "No",
+	"ngsmcconfig.reset": "Reset",
+	"ngsmcconfig.true": "Yes",
+	"ngsmcconfig.false": "No",
+	"ngsmcconfig.back": "Back",
+	"ngsmcconfig.save": "Save",
+	"ngsmcconfig.wiki": "Wiki",
+	"ngsmcconfig.config": "Open config",
+	"ngsmcconfig.globalreset": "Reset",
+
+	"ngsmcconfig.confirmreset": "Reset to default settings",
+	"ngsmcconfig.confirmreset.text": "Are you sure you want to reset your entire config?",
+
+	"ngsmcconfig.confirmunsavedexit": "Unsaved changes",
+	"ngsmcconfig.confirmunsavedexit.text": "There are some unsaved changes, are you sure you want to leave and discard those unsaved changes?",
+	
+	
+	"hudder.configkeybind": "Open Hudder settings",
+	"hudder.keybinds": "Hudder",
+	
 	
 	"hudder.general": "General",
 	
@@ -12,7 +28,7 @@
 	"hudder.general.enabled.tooltip":"Whether Hudder should be enabled or not (duh).",
 	
 	"hudder.general.mainfile":"Main file",
-	"hudder.general.mainfile.tooltip":"Change the main file\n\u00A77The file must be located in the \u00A76.minecraft/config/Hudder\u00A77 folder.",
+	"hudder.general.mainfile.tooltip":"Change the main file\u00A77The file must be located in the \u00A76.minecraft/config/Hudder\u00A77 folder.",
 	"hudder.general.mainfile.error":"File does not exist in the .minecraft/config/Hudder folder.",
 	
 	"hudder.general.scale":"Default Scale",
@@ -65,8 +81,6 @@
 	
 	"hudder.advanced.javascript": "Javascript enabled",
 	"hudder.advanced.javascript.tooltip": "Whether JavaScript is enabled.",
-	
-	"hudder.noclothapi": "You need to install Cloth Config to use this menu.",
 	
 	"hudder.text.backgroundcolor": "Background color",
 	"hudder.text.backgroundcolor.tooltip": "Change the default color of the background.",

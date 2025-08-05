@@ -1,12 +1,14 @@
 //  Format:
-//  "type": [
-//  	{
-//  	 	"name": "variable name",
-//  	 	"desc": "variable description",
-//  	 	"version": "version added"
-//  	}
-//  	...
-//  ]
+//  "type": {
+//		"category": [
+//		  	{
+//		  	 	"name": "variable name",
+//		  	 	"desc": "variable description",
+//		  	 	"version": "version added"
+//		  	}
+//  		...
+//		]
+//  }
 //  "version" is optional.
 {
 	"hudder_version": "8.4.0",

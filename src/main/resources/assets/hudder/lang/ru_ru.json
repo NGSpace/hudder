@@ -1,7 +1,7 @@
 {
-	"hudder.reset": "Сброс",
-	"hudder.true":"Да",
-	"hudder.false":"Нет",
+	"ngsmcconfig.reset": "Сброс",
+	"ngsmcconfig.true":"Да",
+	"ngsmcconfig.false":"Нет",
 	
 	"hudder.general": "Общий",
 	
@@ -65,10 +65,6 @@
 	
 	"hudder.advanced.javascript": "Javascript включен",
 	"hudder.advanced.javascript.tooltip": "Включен ли JavaScript",
-	
-	
-	
-	"hudder.noclothapi": "Для использования этого меню вам необходимо установить Cloth Config.",
 
 	"hudder.text.backgroundcolor": "Цвет фона",
 	"hudder.text.backgroundcolor.tooltip": "Изменить цвет фона по умолчанию.",
