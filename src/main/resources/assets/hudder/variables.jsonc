@@ -11,7 +11,7 @@
 //  }
 //  "version" is optional.
 {
-	"hudder_version": "8.4.0",
+	"hudder_version": "8.5.0",
 	"number": {
 		
 		
@@ -554,6 +554,36 @@
 		
 		
 		
+		"GUI": [
+			{
+				"name": "isguiopen",
+				"desc": "Whether any GUI screen is currently open",
+				"version": "8.5.0"
+			},
+			{
+				"name": "ischestopen",
+				"desc": "Whether a chest screen is currently open",
+				"version": "8.5.0"
+			},
+			{
+				"name": "iscraftingtableopen",
+				"desc": "Whether a Crafting table screen is currently open",
+				"version": "8.5.0"
+			},
+			{
+				"name": "isdialogopen",
+				"desc": "Whether a Dialog screen is currently open",
+				"version": "8.5.0"
+			},
+			{
+				"name": "isinventoryopen",
+				"desc": "Whether the player's inventory screen is currently open",
+				"version": "8.5.0"
+			}
+		],
+		
+		
+		
 		"Player movement": [
 			{
 				"name": "isflying",
@@ -623,6 +653,11 @@
 			{
 				"name": "iscontrollingmount",
 				"desc": "Is the player controlling a mount"
+			},
+			{
+				"name": "isonmount",
+				"desc": "Is the player on a mount",
+				"version": "8.5.0"
 			}
 		],
 		
@@ -804,6 +839,21 @@
 			{
 				"name": "cam_looking_at_pos",
 				"desc": "The block position the camera is currently looking at"
+			}
+		],
+		
+		
+		
+		"GUI": [
+			{
+				"name": "openguitype",
+				"desc": "The type of the current GUI screen that is open (null if no screen is currently open)",
+				"version": "8.5.0"
+			},
+			{
+				"name": "openguititle",
+				"desc": "The name of the current GUI screen that is open (null if no screen is currently open)",
+				"version": "8.5.0"
 			}
 		],
 		
