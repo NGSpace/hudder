@@ -88,10 +88,10 @@ public class BooleanData {private BooleanData(){}
 
 
 			/* Mount information */
-			case "mount_is_saddled": yield (p.getVehicle() instanceof Mob mob) ? mob.isSaddled() : false;
-			case "mount_has_armor": yield (p.getVehicle() instanceof Mob mob) ? mob.isWearingBodyArmor() : false;
-			case "mount_is_tamed": yield (p.getVehicle() instanceof AbstractHorse horse) ? horse.isTamed() : false;
-			case "mount_has_chest": yield (p.getVehicle() instanceof AbstractChestedHorse horse) ? horse.hasChest() : false;
+			case "mount_is_saddled": yield p.getVehicle() instanceof Mob mob && mob.isSaddled();
+			case "mount_has_armor": yield p.getVehicle() instanceof Mob mob && mob.isWearingBodyArmor();
+			case "mount_is_tamed": yield p.getVehicle() instanceof AbstractHorse horse && horse.isTamed();
+			case "mount_has_chest": yield p.getVehicle() instanceof AbstractChestedHorse horse && horse.hasChest();
 
 
 
