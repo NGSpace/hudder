@@ -18,7 +18,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
-public class HudderNGSMCConfigMenu {
+public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 	
 	protected static Minecraft mc = Minecraft.getInstance();
 
@@ -33,7 +33,7 @@ public class HudderNGSMCConfigMenu {
 				e.printStackTrace();
 			}
 		});
-		builder.setWikiUri(URI.create("https://ngspace.github.io/"));
+		builder.setWikiUri(URI.create("https://ngspace.dev/"));
 		builder.setConfigFile(new File(HudFileUtils.FOLDER));
 		
 		
