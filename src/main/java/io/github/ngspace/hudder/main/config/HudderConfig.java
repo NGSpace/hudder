@@ -63,10 +63,10 @@ public class HudderConfig {
     
     /**
      * Initalize the config. 
-     * @param f - the config file.
+     * @param configFile - the config file.
      */
-	public HudderConfig(File f) {
-		configFile = f;
+	public HudderConfig(File configFile) {
+		this.configFile = configFile;
 		readConfig();
 	}
 
@@ -206,16 +206,16 @@ public class HudderConfig {
 			configFile.getParentFile().mkdirs();
 			if (!configFile.createNewFile()) throw new IOException("Failed to create Hudder config file.");
 		}
-		try (FileWriter fw = new FileWriter(configFile)) {
-			JSONObject js = new JSONObject();
+		try (FileWriter config_writer = new FileWriter(configFile)) {
+			JSONObject json_output = new JSONObject();
 			for (Field f : HudderConfig.class.getFields())
 				if (f.getAnnotation(Expose.class)!=null)
-					js.put(f.getName(), f.get(this));
+					json_output.put(f.getName(), f.get(this));
 
-			js.put("debug", Hudder.IS_DEBUG);
+			json_output.put("debug", Hudder.IS_DEBUG);
 			
-			fw.append(new GsonBuilder().setPrettyPrinting().create().toJson(js));
-			fw.flush();
+			config_writer.append(new GsonBuilder().setPrettyPrinting().create().toJson(json_output));
+			config_writer.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 			Hudder.IS_DEBUG=true;

@@ -30,8 +30,7 @@
 	},
 	"suggests": {
 		"fabric-api": "*",
-		"modmenu": "*",
-		"cloth-config": "*"
+		"modmenu": "*"
 	},
 	"custom": {
 	    "modmenu": {

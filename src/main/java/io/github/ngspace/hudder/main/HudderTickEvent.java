@@ -13,6 +13,7 @@ import java.nio.file.WatchService;
 import java.nio.file.attribute.BasicFileAttributes;
 
 import io.github.ngspace.hudder.Hudder;
+import io.github.ngspace.hudder.main.config.HudderNGSMCConfigMenu;
 import io.github.ngspace.hudder.utils.HudFileUtils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.StartTick;
 import net.minecraft.ChatFormatting;
@@ -40,6 +41,9 @@ public class HudderTickEvent implements StartTick {
 	}
     
 	@Override public void onStartTick(Minecraft client) {
+		while (Hudder.configkeybind.consumeClick()) {
+			Minecraft.getInstance().setScreen(HudderNGSMCConfigMenu.createMenu(Minecraft.getInstance().screen));
+		}
     	if (!Hudder.config.enabled) return;
     	try {
     		if (watcherService==null) return;

@@ -38,7 +38,7 @@ public class HudFileUtils {private HudFileUtils() {}
      * @throws IOException
      */
 	public static String readFile(String file) {
-		return reader.readFile(sanitize(FOLDER + file));
+		return reader.getCachedFile(sanitize(FOLDER + file));
 	}
 	
 	
@@ -50,7 +50,7 @@ public class HudFileUtils {private HudFileUtils() {}
      * @throws IOException
      */
 	public static String readFileWithoutCache(String file) throws IOException {
-		return reader.readFileLineByLine(new File(sanitize(FOLDER + file)));
+		return reader.reader.readFile(new File(sanitize(FOLDER + file)));
 	}
 	
 	
@@ -103,6 +103,7 @@ public class HudFileUtils {private HudFileUtils() {}
 	 * @return whether the file exists or not
 	 */
 	public static boolean exists(String file) {
+		if ("".equals(file)) return false;
 		return new File(sanitize(FOLDER + file)).exists();
 	}
 	
@@ -165,11 +166,11 @@ public class HudFileUtils {private HudFileUtils() {}
 				if (image!=null) {
 					ByteArrayOutputStream output = new ByteArrayOutputStream();
 					ImageIO.write(image, "PNG", output);
-					reader.registerAndCacheImage(new ByteArrayInputStream(output.toByteArray()),getTexture(path));
+					reader.loadImageToCache(new ByteArrayInputStream(output.toByteArray()),getTexture(path));
 					continue;
 				}
 			} catch (IOException e) {e.printStackTrace();}
-			reader.readFileAndSaveToCache(resource);
+			reader.loadFileToCache(resource);
 		}
 	}
 

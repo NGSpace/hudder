@@ -9,6 +9,11 @@
 ||EXPECT||
 0
 
+||INPUT||Equals inside strings
+{r=43} {"result="+r} {"result="+1} {"result="}
+||EXPECT||
+43 result=43 result=1 result=
+
 ||INPUT||Decimal point and math
 {i=1}
 {2* 3.141592653589793 * i / 360}
