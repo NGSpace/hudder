@@ -33,7 +33,7 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 				e.printStackTrace();
 			}
 		});
-		builder.setWikiUri(URI.create("https://ngspace.dev/"));
+		builder.setWikiUri(URI.create("https://ngspace.dev/hudder"));
 		builder.setConfigFile(new File(HudFileUtils.FOLDER));
 		
 		
