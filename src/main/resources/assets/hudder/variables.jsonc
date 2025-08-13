@@ -173,11 +173,13 @@
 			},
 			{
 				"name": "absorption",
-				"desc": "The absorption of the player"
+				"desc": "The absorption of the player",
+				"version": "8.4.0"
 			},
 			{
 				"name": "maxabsorption",
-				"desc": "The maximum absorption of the player"
+				"desc": "The maximum absorption of the player",
+				"version": "8.4.0"
 			}
 		],
 		
@@ -186,31 +188,38 @@
 		"Mount information": [
 			{
 				"name": "mount_health",
-				"desc": "The health of the player's mount"
+				"desc": "The health of the player's mount",
+				"version": "8.4.0"
 			},
 			{
 				"name": "mount_maxhealth",
-				"desc": "The maximum health of the player's mount"
+				"desc": "The maximum health of the player's mount",
+				"version": "8.4.0"
 			},
 			{
 				"name": "mount_speed",
-				"desc": "The speed of the player's mount"
+				"desc": "The speed of the player's mount",
+				"version": "8.4.0"
 			},
 			{
 				"name": "mount_jump_strength",
-				"desc": "The jump strength of the player's mount"
+				"desc": "The jump strength of the player's mount",
+				"version": "8.4.0"
 			},
 			{
 				"name": "mount_jump_scale",
-				"desc": "The jump scale of the player's mount"
+				"desc": "The jump scale of the player's mount",
+				"version": "8.4.0"
 			},
 			{
 				"name": "mount_armor",
-				"desc": "The armor of the player's mount"
+				"desc": "The armor of the player's mount",
+				"version": "8.4.0"
 			},
 			{
 				"name": "mount_jump_cooldown",
-				"desc": "The jump cooldown of the player's mount"
+				"desc": "The jump cooldown of the player's mount",
+				"version": "8.4.0"
 			}
 		],
 		
@@ -243,11 +252,13 @@
 			},
 			{
 				"name": "airbubbles",
-				"desc": "The amount of air bubbles the player has left"
+				"desc": "The amount of air bubbles the player has left",
+				"version": "8.4.0"
 			},
 			{
 				"name": "maxairbubbles",
-				"desc": "The maximum amount of air bubbles the player can have"
+				"desc": "The maximum amount of air bubbles the player can have",
+				"version": "8.4.0"
 			},
 			{
 				"name": "playerspeed",
@@ -776,19 +787,23 @@
 		"Mount information": [
 			{
 				"name": "mount_is_saddled",
-				"desc": "Does the player's mount have a saddle"
+				"desc": "Does the player's mount have a saddle",
+				"version": "8.4.0"
 			},
 			{
 				"name": "mount_has_armor",
-				"desc": "Does the player's mount have armor"
+				"desc": "Does the player's mount have armor",
+				"version": "8.4.0"
 			},
 			{
 				"name": "mount_is_tamed",
-				"desc": "Is the player's mount tamed"
+				"desc": "Is the player's mount tamed",
+				"version": "8.4.0"
 			},
 			{
 				"name": "mount_has_chest",
-				"desc": "Does the player's mount have a chest"
+				"desc": "Does the player's mount have a chest",
+				"version": "8.4.0"
 			}
 		],
 		
@@ -922,15 +937,18 @@
 		"Mount information": [
 			{
 				"name": "mount_type",
-				"desc": "The type of mount the player is currently riding"
+				"desc": "The type of mount the player is currently riding",
+				"version": "8.4.0"
 			},
 			{
 				"name": "mount_armor_type",
-				"desc": "The armor type of the mount the player is currently riding"
+				"desc": "The armor type of the mount the player is currently riding",
+				"version": "8.4.0"
 			},
 			{
 				"name": "mount_name",
-				"desc": "The name of the mount the player is currently riding"
+				"desc": "The name of the mount the player is currently riding",
+				"version": "8.4.0"
 			}
 		],
 		
