@@ -243,7 +243,8 @@
 			},
 			{
 				"name": "armor",
-				"desc": "The player's armor level"
+				"desc": "The player's armor level",
+				"version": "7.1.0"
 			},
 			{
 				"name": "falldistance",
@@ -607,7 +608,8 @@
 		"Rebecca Memorial": [
 			{
 				"name": "rebeccapurple",
-				"desc": "0xFF663399"
+				"desc": "0xFF663399",
+				"version": "7.1.0"
 			}
 		]
 	},
@@ -695,7 +697,8 @@
 		"Player movement": [
 			{
 				"name": "isflying",
-				"desc": "Is the player flying (not elytra)"
+				"desc": "Is the player flying (not elytra)",
+				"version": "8.4.0"
 			},
 			{
 				"name": "isgliding",
@@ -769,11 +772,13 @@
 			},
 			{
 				"name": "isdrowning",
-				"desc": "Is the player drowning"
+				"desc": "Is the player drowning",
+				"version": "8.4.0"
 			},
 			{
 				"name": "iscontrollingmount",
-				"desc": "Is the player controlling a mount"
+				"desc": "Is the player controlling a mount",
+				"version": "8.4.0"
 			},
 			{
 				"name": "isonmount",
