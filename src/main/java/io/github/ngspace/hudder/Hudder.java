@@ -34,6 +34,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.LoggedPrintStream;
 /**
  * <h1>If you expect any comments or JavaDocs explaining the bug-filled shithole I call "my code"
@@ -72,7 +73,7 @@ public class Hudder implements ClientModInitializer {
             "hudder.configkeybind",
             InputConstants.Type.KEYSYM, // The type of the keybinding, KEYSYM for keyboard, MOUSE for mouse.
             GLFW.GLFW_KEY_R, // The keycode of the key
-            "hudder.keybinds" // The translation key of the keybinding's category.
+            KeyMapping.Category.register(ResourceLocation.parse("hudder.keybinds")) // The translation key of the keybinding's category.
         ));
 		
 		

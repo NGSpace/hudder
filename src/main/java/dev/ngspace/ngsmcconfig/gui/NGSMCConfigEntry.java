@@ -34,15 +34,18 @@ public class NGSMCConfigEntry extends ContainerObjectSelectionList.Entry<NGSMCCo
         text = new StringWidget(0, 0, 200, 20, title, Minecraft.getInstance().font) {
         	@Override public void playDownSound(SoundManager soundManager) { /* Ugly noise */ }
         };
-        text.alignLeft();
+//        text.alignLeft();
         text.active = true;
         this.option = option;
         children = Arrays.asList(widget, resetButton, text);
     }
 
     @Override
-    public void render(GuiGraphics graphics, int index, int y, int x, int width, int height, int mouseX, int mouseY,
-    		boolean hovered, float partialTick) {
+    public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float partialTick) {
+    	int x = getX();
+    	int width = getWidth();
+    	int height = getHeight();
+    	int y = getY();
     	resetButton.setPosition(x+width-40, y);
         resetButton.render(graphics, mouseX, mouseY, partialTick);
         resetButton.active = !option.isDefault();
