@@ -38,7 +38,7 @@ dependencies {
 	
 	provided 'org.mozilla:rhino:1.8.0'
 	
-    //modCompileOnly("com.terraformersmc:modmenu:15.0.0-beta.3")
+    modCompileOnly("com.terraformersmc:modmenu:15.0.0-beta.3")
 }
 
 
