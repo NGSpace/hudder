@@ -5,10 +5,9 @@ import java.util.Queue;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.main.config.HudderConfig;
-import io.github.ngspace.hudder.mixin.ParticleManagerAccessor;
 import io.github.ngspace.hudder.mixin.LevelRendererAccess;
+import io.github.ngspace.hudder.mixin.ParticleManagerAccessor;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
