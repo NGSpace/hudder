@@ -1,6 +1,6 @@
 package io.github.ngspace.hudder.main;
 
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -9,7 +9,7 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.gui.render.state.GuiElementRenderState;
 
-public record TextureRenderState(TextureSetup textureSetup, RenderPipeline pipeline, BiConsumer<VertexConsumer, Float> consumer) implements GuiElementRenderState {
+public record TextureRenderState(TextureSetup textureSetup, RenderPipeline pipeline, Consumer<VertexConsumer> consumer) implements GuiElementRenderState {
 
 	@Override
 	public ScreenRectangle bounds() {
@@ -18,8 +18,8 @@ public record TextureRenderState(TextureSetup textureSetup, RenderPipeline pipel
 	}
 
 	@Override
-	public void buildVertices(VertexConsumer vertexConsumer, float f) {
-		consumer().accept(vertexConsumer, f);
+	public void buildVertices(VertexConsumer vertexConsumer) {
+		consumer().accept(vertexConsumer);
 	}
 
 	@Override

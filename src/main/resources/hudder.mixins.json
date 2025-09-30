@@ -1,9 +1,9 @@
 {
 	"required": true,
 	"package": "io.github.ngspace.hudder.mixin",
-	"compatibilityLevel": "JAVA_17",
+	"compatibilityLevel": "JAVA_21",
 	"client": [
-    	"WorldRendererAccess",
+    	"LevelRendererAccess",
     	"ParticleManagerAccessor",
     	"MinecraftClientInjections",
     	"KeyboardInjections",

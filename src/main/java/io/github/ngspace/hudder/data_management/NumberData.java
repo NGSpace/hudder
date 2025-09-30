@@ -5,8 +5,8 @@ import java.util.Queue;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.main.config.HudderConfig;
+import io.github.ngspace.hudder.mixin.LevelRendererAccess;
 import io.github.ngspace.hudder.mixin.ParticleManagerAccessor;
-import io.github.ngspace.hudder.mixin.WorldRendererAccess;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -39,8 +39,8 @@ public class NumberData {private NumberData() {}
 			case "ping": yield (double) ins.getConnection().getPlayerInfo(p.getName().getString()).getLatency();
 			case "tps": yield (double) getTPS(ins);
 			
-			case "gpu_d", "dgpu": yield Advanced.gpuUsage;
-			case "gpu": yield (double) ((int)Advanced.gpuUsage);
+			case "gpu_d", "dgpu": yield Math.min(ins.getGpuUtilization(), 100.0);
+			case "gpu": yield Math.round(Math.min(ins.getGpuUtilization(), 100.0));
 			case "cpu_d": yield Advanced.CPU.get()* 100d;
 			case "cpu": yield (double) (int) (Advanced.CPU.get()* 100d);
 			
@@ -202,7 +202,8 @@ public class NumberData {private NumberData() {}
 
 
 			/* World Rendering */
-			case "entites", "entities": yield (double) ((WorldRendererAccess)ins.levelRenderer).getVisibleEntityCount();
+			case "entites", "entities": yield ((LevelRendererAccess) ins.levelRenderer).getLevelRenderState()
+				.entityRenderStates.size();
 			case "particles": yield (double) ((ParticleManagerAccessor)ins.particleEngine)
 				.getParticles().values().stream().mapToInt(Queue::size).sum();
 			case "chunks": yield (double) ins.levelRenderer.countRenderedSections();

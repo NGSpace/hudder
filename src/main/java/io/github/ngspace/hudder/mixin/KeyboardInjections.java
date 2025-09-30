@@ -11,13 +11,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.KeyboardHandler;
+import net.minecraft.client.input.KeyEvent;
 
 @Environment(EnvType.CLIENT)
 @Mixin(KeyboardHandler.class)
 public class KeyboardInjections {
-	@Inject(method = "keyPress(JIIII)V", at = @At("HEAD"))
-	public void keyPress(long window, int key, int scancode, int action, int modifiers, CallbackInfo callbackInfo) {
+	@Inject(method = "keyPress(JILnet/minecraft/client/input/KeyEvent;)V", at = @At("HEAD"))
+	public void keyPress(long window, int action, KeyEvent keyEvent, CallbackInfo callbackInfo) {
 		if (!config.enabled) return;
+		var key = keyEvent.key();
 		if (action==1) keysheld.put(key, key);
 		if (action==0) keysheld.remove(key);
 	}
