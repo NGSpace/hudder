@@ -1,49 +1,48 @@
 package io.github.ngspace.hudder.data_management;
 
-import static io.github.ngspace.hudder.data_management.Advanced.getAverageFPS;
-import static io.github.ngspace.hudder.data_management.Advanced.getFPS;
-import static io.github.ngspace.hudder.data_management.Advanced.getMaximumFPS;
-import static io.github.ngspace.hudder.data_management.Advanced.getMinimumFPS;
-import static java.lang.System.currentTimeMillis;
+import java.util.Calendar;
+import java.util.Queue;
 
-import java.util.Collection;
-
-import org.joml.Random;
-
-import io.github.ngspace.hudder.config.ConfigManager;
+import io.github.ngspace.hudder.Hudder;
+import io.github.ngspace.hudder.main.config.HudderConfig;
 import io.github.ngspace.hudder.mixin.ParticleManagerAccessor;
 import io.github.ngspace.hudder.mixin.WorldRendererAccess;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.world.LightType;
-import net.minecraft.world.World;
+import io.github.ngspace.hudder.v2runtime.V2Runtime;
+import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.server.IntegratedServer;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.level.LightLayer;
 
 public class NumberData {private NumberData() {}
-	static double MB = 1024d*1024d;
-    static Runtime runtime = Runtime.getRuntime();
+	static final double MB = 1024d*1024d;
+    static final Runtime runtime = Runtime.getRuntime();
 	
-	public static Double getNumber(String key) {
-		MinecraftClient ins = MinecraftClient.getInstance();
-		PlayerEntity p = ins.player;
-		WorldRenderer wr = ins.worldRenderer;
-		World world = ins.world;
-		int fps = getFPS(ins);
+	public static Object getNumber(String key) {
+		Minecraft ins = Minecraft.getInstance();
+		LocalPlayer p = ins.player;
+		Camera c = ins.gameRenderer.getMainCamera();
+		int fps = Advanced.getFPS(ins);
+		HudderConfig config = Hudder.config;
+		
 		return switch(key) {
 			
 			/* Performance */
 			case "fps": yield (double) fps;
-			case "avgfps","avg_fps": yield (double) getAverageFPS();
-			case "minfps","min_fps": yield (double) getMinimumFPS();
-			case "maxfps","max_fps": yield (double) getMaximumFPS();
-			case "ping": yield (double) ins.getNetworkHandler().getPlayerListEntry(p.getName().getString()).getLatency();
+			case "avgfps","avg_fps": yield (double) Advanced.getAverageFPS();
+			case "minfps","min_fps": yield (double) Advanced.getMinimumFPS();
+			case "maxfps","max_fps": yield (double) Advanced.getMaximumFPS();
+			case "ping": yield (double) ins.getConnection().getPlayerInfo(p.getName().getString()).getLatency();
 			case "tps": yield (double) getTPS(ins);
+			
 			case "gpu_d", "dgpu": yield Advanced.gpuUsage;
 			case "gpu": yield (double) ((int)Advanced.gpuUsage);
+			case "cpu_d": yield Advanced.CPU.get()* 100d;
+			case "cpu": yield (double) (int) (Advanced.CPU.get()* 100d);
 			
 			case "delta": yield (double) Advanced.delta;
 			
@@ -60,28 +59,67 @@ public class NumberData {private NumberData() {}
 			
 			
 			
-			/* Computer */
-			case "time": yield (double) currentTimeMillis();
-			case "random","rng": yield (double) new Random().nextFloat();
+			/* Time */
+			case "time": yield (double) System.currentTimeMillis();
+			case "milliseconds": yield (double) Calendar.getInstance().get(Calendar.MILLISECOND);
+			case "seconds": yield (double) Calendar.getInstance().get(Calendar.SECOND);
+			case "minutes": yield (double) Calendar.getInstance().get(Calendar.MINUTE);
+			case "hour": yield (double) Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+			case "day": yield (double) Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+			case "month": yield (double) Calendar.getInstance().get(Calendar.MONTH);
+			case "year": yield (double) Calendar.getInstance().get(Calendar.YEAR);
 			
 			
 			
 			/* Food and health */
-			case "saturation": yield (double) p.getHungerManager().getSaturationLevel();
-			case "hunger": yield (double) p.getHungerManager().getFoodLevel();
-			case "previoushunger": yield (double) p.getHungerManager().getPrevFoodLevel();
-			case "exhaustion": yield (double) p.getHungerManager().getExhaustion();
-			
+			case "saturation": yield (double) p.getFoodData().getSaturationLevel();
+			case "hunger": yield (double) p.getFoodData().getFoodLevel();
 			case "health", "hp": yield (double) p.getHealth();
 			case "maxhealth", "maxhp": yield (double) p.getMaxHealth();
-			
-			
-			
+			case "absorption": yield (double) p.getAbsorptionAmount();
+			case "maxabsorption": yield (double) p.getMaxAbsorption();
+
+
+
+			/* Mount information */
+			case "mount_health", "mount_hp": yield (p.getVehicle() instanceof LivingEntity entity) ? (double) entity.getHealth() : V2Runtime.NULL;
+			case "mount_maxhealth", "mount_maxhp": yield (p.getVehicle() instanceof LivingEntity entity) ? (double) entity.getMaxHealth() : V2Runtime.NULL;
+			case "mount_speed": yield (p.getVehicle() instanceof LivingEntity entity) ? entity.getAttribute(Attributes.MOVEMENT_SPEED).getBaseValue() : V2Runtime.NULL;
+			case "mount_jump_strength": yield (p.getVehicle() instanceof LivingEntity entity) ? entity.getAttribute(Attributes.JUMP_STRENGTH).getBaseValue() : V2Runtime.NULL;
+			case "mount_jump_scale": yield (p.getVehicle() instanceof AbstractHorse) ? (double) p.getJumpRidingScale() : V2Runtime.NULL;
+			case "mount_armor": yield (p.getVehicle() instanceof AbstractHorse) ? (double) ((AbstractHorse) p.getVehicle()).getArmorValue() : V2Runtime.NULL;
+			case "mount_jump_cooldown": yield (p.getVehicle() instanceof AbstractHorse) ? (double) ((AbstractHorse) p.getVehicle()).getJumpCooldown() : V2Runtime.NULL;
+
+
+
 			/* Other Player related information */
-			case "selectedslot": yield (double) p.getInventory().selectedSlot;
+			case "selectedslot": yield (double) p.getInventory().getSelectedSlot();
 			case "xplevel": yield (double) p.experienceLevel;
 			case "xp": yield (double) p.totalExperience;
-			
+			case "armor": yield (double) p.getArmorValue();
+			case "falldistance": yield p.fallDistance;
+			case "airbubbles": {
+				yield (double) getCurrentAirSupplyBubble(Math.clamp(p.getAirSupply(), 0, p.getMaxAirSupply()), p.getMaxAirSupply(), 0);
+			}
+			case "maxairbubbles":  {
+				yield (double) getCurrentAirSupplyBubble(p.getMaxAirSupply(), p.getMaxAirSupply(), 0);
+			}
+
+			case "playerspeed": {
+				var ent = p.getVehicle() == null ? p : p.getVehicle();
+
+			    double speed = (Math.sqrt(Math.pow(ent.getX() - ent.xOld, 2) +
+			    		Math.pow(ent.getY() - ent.yOld , 2) + Math.pow(ent.getZ() - ent.zOld , 2)) * 20);
+			    yield speed;
+			}
+			case "horizontal_playerspeed": {
+				var ent = p.getVehicle() == null ? p : p.getVehicle();
+
+			    double speed = (Math.sqrt(Math.pow(ent.getX() - ent.xOld, 2) + Math.pow(ent.getZ() - ent.zOld , 2)) * 20);
+			    yield speed;
+			}
+
+
 			
 			/* Player position */
 			case "dxpos","dx": yield p.getX();
@@ -91,84 +129,132 @@ public class NumberData {private NumberData() {}
 			case "ypos","y": yield (double) p.getBlockY();
 			case "zpos","z": yield (double) p.getBlockZ();
 
-			case "playerspeed": {
-				// I know, I am soooo funny.
-				Entity veachol = p.getVehicle() == null ? p : p.getVehicle();
-				//IDK how acurate this number is, I just wanted to reach the official 
-				yield veachol.getVelocity().length() * 36.65;
+
+
+			/* Camera position */
+			case "cam_dxpos": yield c.getPosition().x;
+			case "cam_dypos": yield c.getPosition().y;
+			case "cam_dzpos": yield c.getPosition().z;
+			case "cam_xpos": yield (double) c.getBlockPosition().getX();
+			case "cam_ypos": yield (double) c.getBlockPosition().getY();
+			case "cam_zpos": yield (double) c.getBlockPosition().getZ();
+			
+			
+			
+			/* Chunk information */
+			case "subchunkx": yield (double) (p.getBlockX() & 0xF);
+			case "subchunky": yield (double) (p.getBlockY() & 0xF);
+			case "subchunkz": yield (double) (p.getBlockZ() & 0xF);
+			case "chunkx": yield (double) p.chunkPosition().x;
+			case "chunkz": yield (double) p.chunkPosition().z;
+
+
+
+			/* Camera chunk information */
+			case "cam_subchunkx": yield (double) (c.getBlockPosition().getX() & 0xF);
+			case "cam_subchunky": yield (double) (c.getBlockPosition().getY() & 0xF);
+			case "cam_subchunkz": yield (double) (c.getBlockPosition().getZ() & 0xF);
+			case "cam_chunkx": yield (double) (c.getBlockPosition().getX() >> 4);
+			case "cam_chunkz": yield (double) (c.getBlockPosition().getZ() >> 4);
+
+
+
+			/* Player roation */
+			// Pitch
+			case "dpitch": yield (double) p.getXRot();
+			case "pitch": yield (double) (int) p.getXRot();
+			// Yaw
+			case "dyaw": {
+				float yaw = p.getYHeadRot();
+				if (yaw<0) yield (double) (360d+(yaw % 360d));
+				yield yaw % 360d;
 			}
-			case "horizontal_playerspeed": {
-				// I know, I am soooo funny.
-				Entity veachol = p.getVehicle() == null ? p : p.getVehicle();
-				//IDK how acurate this number is, I just wanted to reach the official 
-				yield veachol.getVelocity().horizontalLength() * 36.65;
+			case "yaw":  {
+				int yaw = (int) p.getYHeadRot();
+				if (yaw<0) yield (double) (360+(yaw % 360));
+				yield yaw % 360d;
 			}
-			
-			
-			
-			/* Player roation*/
-			case "dpitch": yield (double) p.getPitch();
-			case "dyaw": yield p.getYaw() % 360d;
-			case "pitch": yield (double) (int) p.getPitch();
-			case "yaw": yield (double) (int) p.getYaw() % 360;
-			
-			
+			// F3 yaw
+			case "f3_dyaw": yield (double) Mth.wrapDegrees(p.getYHeadRot());
+			case "f3_yaw": yield (double) (int) Mth.wrapDegrees(p.getYHeadRot());
+
+
+
+			/* Camera roation */
+			// Pitch
+			case "cam_dpitch": yield (double) c.getXRot();
+			case "cam_pitch": yield (double) (int) c.getXRot();
+			// Yaw
+			case "cam_dyaw": {
+				float yaw = c.getYRot();
+				if (yaw<0) yield (double) (360d+(yaw % 360d));
+				yield yaw % 360d;
+			}
+			case "cam_yaw":  {
+				int yaw = (int) c.getYRot();
+				if (yaw<0) yield (double) (360+(yaw % 360));
+				yield yaw % 360d;
+			}
+			// F3 yaw
+			case "cam_f3_dyaw": yield (double) Mth.wrapDegrees(c.getYRot());
+			case "cam_f3_yaw": yield (double) (int) Mth.wrapDegrees(c.getYRot());
+
+
 
 			/* World Rendering */
-			case "entites": yield (double) ((WorldRendererAccess)wr).getRegularEntityCount();
-			case "particles": yield (double) ((ParticleManagerAccessor)ins.particleManager)
-				.getParticles().values().stream().mapToInt(Collection::size).sum();
-			case "chunks": yield wr.getChunkCount();
+			case "entites", "entities": yield (double) ((WorldRendererAccess)ins.levelRenderer).getVisibleEntityCount();
+			case "particles": yield (double) ((ParticleManagerAccessor)ins.particleEngine)
+				.getParticles().values().stream().mapToInt(Queue::size).sum();
+			case "chunks": yield (double) ins.levelRenderer.countRenderedSections();
+			
+			
+			
+			/* Light */
+			/* At player */
+			case "light": yield (double) ins.level.getMaxLocalRawBrightness(p.blockPosition());
+			case "blocklight", "block_light": yield (double) ins.level.getBrightness(LightLayer.BLOCK,p.blockPosition());
+			case "skylight", "sky_light": yield (double) ins.level.getBrightness(LightLayer.SKY,p.blockPosition());
+			/* At camera */
+			case "cam_light": yield (double) ins.level.getMaxLocalRawBrightness(c.getBlockPosition());
+			case "cam_blocklight", "cam_block_light": yield (double) ins.level.getBrightness(LightLayer.BLOCK,c.getBlockPosition());
+			case "cam_skylight", "cam_sky_light": yield (double) ins.level.getBrightness(LightLayer.SKY,c.getBlockPosition());
 			
 			
 			
 			/* World */
-			case "light": yield (double) world.getLightLevel(p.getBlockPos());
-			case "blocklight", "block_light": yield (double) world.getLightLevel(LightType.BLOCK,p.getBlockPos());
-			case "skylight", "sky_light": yield (double) world.getLightLevel(LightType.SKY,p.getBlockPos());
-			case "worldtime", "world_time": yield (double) world.getTimeOfDay();
-			
-			
-			
-			/* Hudder rendering */
-			case "width": yield (double) ins.getWindow().getScaledWidth();
-			case "height": yield (double) ins.getWindow().getScaledHeight();
-			case "guiscale": yield ins.getWindow().getScaleFactor();
+			case "worldtime", "world_time": yield (double) ins.level.getDayTime();
+			case "daytime", "day_time": yield ins.level.getDayTime()/24000d;
 
-			case "scale": yield (double) ConfigManager.getConfig().scale;
-			case "color": yield (double) ConfigManager.getConfig().color;
-			case "yoffset": yield (double) ConfigManager.getConfig().yoffset;
-			case "xoffset": yield (double) ConfigManager.getConfig().xoffset;
-			case "lineheight": yield (double) ConfigManager.getConfig().lineHeight;
-			case "methodbuffer": yield (double) ConfigManager.getConfig().methodBuffer;
-			case "backgroundcolor": yield (double) ConfigManager.getConfig().backgroundcolor;
+
+
+			/* GUI rendering */
+			case "width": yield (double) ins.getWindow().getGuiScaledWidth();
+			case "height": yield (double) ins.getWindow().getGuiScaledHeight();
+			case "guiscale": yield (double) ins.getWindow().getGuiScale();
+			
+			
+			/* Hudder */
+			case "scale": yield (double) config.scale;
+			case "color": yield (double) config.color;
+			case "yoffset": yield (double) config.yoffset;
+			case "xoffset": yield (double) config.xoffset;
+			case "lineheight": yield (double) config.lineHeight;
+			case "methodbuffer": yield (double) config.methodBuffer;
+			case "backgroundcolor": yield (double) config.backgroundcolor;
 			
 			
 			
-			/* Item Durabilities V3.0.0 */
-			case "held_item_durability","helmet_durability","chestplate_durability","leggings_durability",
-			"boots_durability","offhand_durability": {
-				ItemStack stack = getStack(key, p.getInventory());
-				yield (double) stack.getMaxDamage() - stack.getDamage();
-			}
-			case"held_item_max_durability","helmet_max_durability","chestplate_max_durability","leggings_max_durability",
-			"boots_max_durability","offhand_max_durability":yield (double)getStack(key, p.getInventory()).getMaxDamage();
+			case "rebeccapurple": yield (double) 0xFF663399;
 			
 			default: yield null;
 		};
 	}
-	public static float getTPS(MinecraftClient client) {
-        IntegratedServer server = client.getServer();
-        return server == null ? -1f : server.getTickManager().getTickRate();
+	public static float getTPS(Minecraft client) {
+        IntegratedServer server = client.getSingleplayerServer();
+        return server == null ? -1f : server.tickRateManager().tickrate();
 	}
-	public static ItemStack getStack(String type, PlayerInventory inv) {
-		//I took some short cuts for a tiny performance increase. Probably not even calculatable.
-		if (type.startsWith("held")) return inv.getStack(inv.selectedSlot);//held_item
-		if (type.startsWith("helm")) return inv.getArmorStack(3);//helmet
-		if (type.startsWith("c")) return inv.getArmorStack(2);//chestplate
-		if (type.startsWith("l")) return inv.getArmorStack(1);//leggings
-		if (type.startsWith("b")) return inv.getArmorStack(0);//boots
-		if (type.startsWith("o")) return inv.offHand.get(0);//offhand
-		throw new IllegalArgumentException("Unexpected value: " + type);
+
+	public static int getCurrentAirSupplyBubble(int i, int j, int k) {
+		return Mth.ceil((float)((i + k) * 10) / (float)j);
 	}
 }

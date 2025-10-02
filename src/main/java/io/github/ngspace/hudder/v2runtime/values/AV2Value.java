@@ -1,50 +1,57 @@
 package io.github.ngspace.hudder.v2runtime.values;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Objects;
 
+import io.github.ngspace.hudder.compilers.abstractions.AV2Compiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
-import io.github.ngspace.hudder.methods.MethodValue;
-import io.github.ngspace.hudder.v2runtime.AV2Compiler;
+import io.github.ngspace.hudder.compilers.utils.CompileState;
+import io.github.ngspace.hudder.utils.ObjectWrapper;
 
-public abstract class AV2Value extends MethodValue {
-	/**
-	 * Return the current value of the Object
-	 * @return an Object of any kind.
-	 * @throws CompileException - failed to get value of object
-	 */
-	public abstract Object get() throws CompileException;
+public abstract class AV2Value implements ObjectWrapper {
+	
 	
 	protected final int line;
 	protected final int charpos;
-	protected AV2Value(int line, int charpos) {
+	public final String value;
+	protected final AV2Compiler compiler;
+	protected CompileState state;
+
+	protected AV2Value(int line, int charpos, String debugvalue, AV2Compiler compiler, CompileState state) {
 		this.line = line;
 		this.charpos = charpos;
+		this.value = debugvalue;
+		this.compiler = compiler;
+		this.state = state;
 	}
+	protected AV2Value(int line, int charpos, String debugvalue, AV2Compiler compiler) {
+		this(line, charpos, debugvalue, compiler, null);
+	}
+
 	
-	/**
-	 * Returns true if the variable has a value and false if it does not
-	 */
-	public boolean hasValue() {return true;}
-	
-	@SuppressWarnings("removal")
 	public boolean compare(AV2Value other, String comparisonOperator) throws CompileException {
 		Object val1 = get();
 		Object val2 = other.get();
-		if (other.getAbsoluteValue()!=null&&other.getAbsoluteValue().equalsIgnoreCase("unset")) return !hasValue();
+		if (!other.hasValue()||!hasValue()) {
+			if (comparisonOperator.equals("=="))
+				return other.hasValue()==hasValue();
+			else if (comparisonOperator.equals("!="))
+				return other.hasValue()!=hasValue();
+			else throw new CompileException("Can not compare null values using the "+comparisonOperator+" operator.");
+		}
 		boolean areNums = false;
 		double dou1 = 0;
 		double dou2 = 0;
 		if (val1 instanceof Number num) {
 			dou1 = num.doubleValue();
 			boolean otherhasval = other.hasValue();
-			if (!otherhasval) dou2 = other.asDoubleSafe();
+			if (!otherhasval) dou2 = other.asDouble();
 			if (val2 instanceof Number||!otherhasval) areNums = true;
 		}
 		if (val2 instanceof Number num) {
 			dou2 = num.doubleValue();
 			boolean otherhasval = hasValue();
-			if (!otherhasval)  dou1 = asDoubleSafe();
+			if (!otherhasval)  dou1 = asDouble();
 			if (val1 instanceof Number||!otherhasval) areNums = true;
 		}
 		return switch (comparisonOperator) {
@@ -61,38 +68,42 @@ public abstract class AV2Value extends MethodValue {
 	
 	
 	
-	@Override public boolean asBoolean() throws CompileException {
+	@Override public boolean asBoolean() throws CompileException {return asType(Boolean.class);}
+	@Override public double asDouble() throws CompileException {return asType(Number.class).doubleValue();}
+	@Override public String asString() throws CompileException {return asType(String.class);}
+	
+	
+	@Override public Object[] asArray() throws CompileException {
 		Object get = get();
-		if (get instanceof Boolean b) return b;
-		throw new CompileException(invalidTypeMessage("Boolean", value, get), line, charpos);
+		if (get instanceof Collection<?> c) return c.toArray();
+		return (Object[]) get;
 	}
-	@Override public double asDouble() throws CompileException {
+	
+	
+	public <T> T asType(Class<T> clazz) throws CompileException {
 		Object get = get();
-		if (get instanceof Number b) return b.doubleValue();
-		throw new CompileException(invalidTypeMessage("Double", value, get), line, charpos);
+		if (clazz.isInstance(get)) return clazz.cast(get);
+		throw new CompileException(invalidTypeMessage(clazz.getSimpleName(), value, get), line, charpos);
 	}
-	@Override public int asInt() throws CompileException {
-		Object get = get();
-		if (get instanceof Number b) return b.intValue();
-		throw new CompileException(invalidTypeMessage("Integer", value, get), line, charpos);
-	}
-	@Override public String asString() throws CompileException {
-		Object get = get();
-		if (get instanceof String b) return b;
-		throw new CompileException(invalidTypeMessage("String", value, get), line, charpos);
-	}
-	@SuppressWarnings("unchecked")
-	@Override public List<Object> asList() throws CompileException {
-		Object get = get();
-		if (get instanceof List<?> b) return (List<Object>) b;
-		throw new CompileException(invalidTypeMessage("Array", value, get), line, charpos);
-	}
+	
+	
+	
+	
+	
+	
 	
 	public static String invalidTypeMessage(String type, String value, Object obj) {
 		return "Incorrect type \""+type+"\" for value: \""+value+"\" of type "+obj.getClass().getName();
 	}
+	
+	public abstract void setValue(AV2Compiler compiler, Object value)
+			throws CompileException, UnsupportedOperationException;
 
-	public abstract void setValue(AV2Compiler compiler, Object value) throws CompileException;
-
+	/**
+	 * Returns true if the variable has a value and false if it does not
+	 * @throws CompileException 
+	 */
+	public boolean hasValue() throws CompileException {return true;}
 	public abstract boolean isConstant() throws CompileException;
+	@Override public String toString() {return value;}
 }
