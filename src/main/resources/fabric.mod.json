@@ -1,7 +1,7 @@
 {
 	"schemaVersion": 1,
 	"id": "hudder",
-	"version": "5.5.0",
+	"version": "${version}",
 	"name": "Hudder",
 	"description": "Add a highly customizable hud to your game!",
 	"authors": [
@@ -16,20 +16,21 @@
 	"icon": "assets/hudder/icon.png",
 	"environment": "*",
 	"entrypoints": {
-		"main": ["io.github.ngspace.hudder.Hudder"],
-    	"modmenu": [ "io.github.ngspace.hudder.config.HudderModMenuImpl" ]
+		"client": ["io.github.ngspace.hudder.Hudder"],
+    	"modmenu": [ "io.github.ngspace.hudder.main.config.HudderModMenuImpl" ]
 	},
 	"mixins": [
 		"hudder.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.14.0",
-		"minecraft": ">=1.16",
+		"minecraft": ">=1.21",
 		"java": ">=17",
 		"fabric-api": "*"
 	},
 	"suggests": {
-		"fabric-api": "*"
+		"fabric-api": "*",
+		"modmenu": "*"
 	},
 	"custom": {
 	    "modmenu": {

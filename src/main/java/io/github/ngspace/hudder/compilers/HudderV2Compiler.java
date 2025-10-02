@@ -2,15 +2,18 @@ package io.github.ngspace.hudder.compilers;
 
 import java.util.Arrays;
 
+import io.github.ngspace.hudder.Hudder;
+import io.github.ngspace.hudder.compilers.abstractions.AV2Compiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
-import io.github.ngspace.hudder.config.ConfigInfo;
-import io.github.ngspace.hudder.config.ConfigManager;
-import io.github.ngspace.hudder.util.HudderUtils;
-import io.github.ngspace.hudder.v2runtime.AV2Compiler;
+import io.github.ngspace.hudder.main.config.HudderConfig;
+import io.github.ngspace.hudder.utils.HudderUtils;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
-import io.github.ngspace.hudder.v2runtime.runtime_elements.BasicConditionV2RuntimeElement;
+import io.github.ngspace.hudder.v2runtime.runtime_elements.BreakV2RuntimeElement;
+import io.github.ngspace.hudder.v2runtime.runtime_elements.ConditionV2RuntimeElement;
+import io.github.ngspace.hudder.v2runtime.runtime_elements.ForV2RuntimeElement;
 import io.github.ngspace.hudder.v2runtime.runtime_elements.IfV2RuntimeElement;
 import io.github.ngspace.hudder.v2runtime.runtime_elements.MethodV2RuntimeElement;
+import io.github.ngspace.hudder.v2runtime.runtime_elements.ReturnV2RuntimeElement;
 import io.github.ngspace.hudder.v2runtime.runtime_elements.StringV2RuntimeElement;
 import io.github.ngspace.hudder.v2runtime.runtime_elements.VariableV2RuntimeElement;
 import io.github.ngspace.hudder.v2runtime.runtime_elements.WhileV2RuntimeElement;
@@ -23,12 +26,12 @@ public class HudderV2Compiler extends AV2Compiler {
 	public static final int METHOD_STATE = 3;
 	public static final int HASHTAG_STATE = 4;
 
-	@Override public V2Runtime buildRuntime(ConfigInfo info, String text, CharPosition charPosition)
-			throws CompileException {
-		V2Runtime runtime = new V2Runtime();
+	@Override public V2Runtime buildRuntime(HudderConfig info, String text, CharPosition charPosition, String filename,
+			V2Runtime scope) throws CompileException {
+		V2Runtime runtime = new V2Runtime(this, scope);
 		
 		StringBuilder elemBuilder = new StringBuilder();
-
+		
 		int bracketscount = 0;
 
 		String[] builder = {};
@@ -40,9 +43,9 @@ public class HudderV2Compiler extends AV2Compiler {
 		int savedind = 0;
 		
 		boolean cleanup = false;
-		int cleanup_amount = ConfigManager.getConfig().methodBuffer;
+		int cleanup_amount = Hudder.config.methodBuffer;
 		
-		int compileState = TEXT_STATE;
+		byte compileState = TEXT_STATE;
 
 		for (int ind = 0;ind<text.length();ind++) {
 			char c = text.charAt(ind);
@@ -97,14 +100,28 @@ public class HudderV2Compiler extends AV2Compiler {
 					break;
 				}
 				case VARIABLE_STATE: {
+					if (c=='"') {
+						char prevchar = '\\';
+						for (;ind<text.length();ind++) {
+							c = text.charAt(ind);
+							if (prevchar!='\\'&&c=='"')
+								break;
+							elemBuilder.append(c);
+							prevchar = c;
+						}
+					}
 					if (c=='{') {
 						bracketscount++;elemBuilder.append(c);
 					} else if (c=='}') {
 						bracketscount--;
 						if (bracketscount==0) {
 							var pos = getPosition(charPosition, savedind, text);
-							runtime.addRuntimeElement(new VariableV2RuntimeElement(elemBuilder.toString(), this,
+							if ("break".equalsIgnoreCase(elemBuilder.toString().trim())) {
+								runtime.addRuntimeElement(new BreakV2RuntimeElement());
+							} else {
+								runtime.addRuntimeElement(new VariableV2RuntimeElement(elemBuilder.toString(), this,
 									runtime, pos.line, pos.charpos));
+							}
 							elemBuilder.setLength(0);
 							compileState = TEXT_STATE;
 						} else elemBuilder.append(c);
@@ -125,8 +142,8 @@ public class HudderV2Compiler extends AV2Compiler {
 							compileState = TEXT_STATE;
 							builder = addToArray(builder,elemBuilder.toString().trim());
 							var pos = getPosition(charPosition, savedind, text);
-							runtime.addRuntimeElement(new BasicConditionV2RuntimeElement(builder, this, info, runtime,
-									pos.line, pos.charpos));
+							runtime.addRuntimeElement(new ConditionV2RuntimeElement(builder, this, info, runtime,
+									pos.line, pos.charpos,filename));
 							elemBuilder.setLength(0);
 							break;
 						case '"':
@@ -168,85 +185,124 @@ public class HudderV2Compiler extends AV2Compiler {
 						var pos = getPosition(charPosition, savedind, text);
 						int line = pos.line;
 						int charpos = pos.charpos;
-						runtime.addRuntimeElement(new MethodV2RuntimeElement(builder,this,info,runtime,line,charpos));
+						if (builder[0].toLowerCase().trim().equals("no_sys_var")) {
+							SYSTEM_VARIABLES_ENABLED = false;
+						} else if (builder[0].toLowerCase().trim().equals("sys_var")) {
+							SYSTEM_VARIABLES_ENABLED = true;
+						} else if (builder.length==2&&builder[0].toLowerCase().trim().equals("return")) {
+							runtime.addRuntimeElement(new ReturnV2RuntimeElement(builder[1],this,runtime,line,charpos));
+						} else {
+							runtime.addRuntimeElement(new MethodV2RuntimeElement(builder,this,info,runtime,line,charpos));
+						}
 						elemBuilder.setLength(0);
 						builder = new String[0];
 						cleanup = true;
-						cleanup_amount = ConfigManager.getConfig().methodBuffer/2;
+						cleanup_amount = Hudder.config.methodBuffer/2;
 					}
 					break;
 				}
 				case HASHTAG_STATE: {
-					boolean isWhile = false;
-					boolean isDef = false;
+					/**
+					 * 0x0 - condition
+					 * 0x1 - if
+					 * 0x2 - while
+					 * 0x3 - def (functions and methods)
+					 * 0x5 - class //Not implemented
+					 */
+					byte command = 0x0;
 					compileState = TEXT_STATE;
-					boolean hasbeendefined = false;
 					for (;ind<text.length();ind++) {
 						if ((c = text.charAt(ind))=='\n') break;
-						if (!hasbeendefined) {
-							if(c==' '&&elemBuilder.toString().equals("while")) {hasbeendefined=true;isWhile=true;}
-							else if(c==' '&&elemBuilder.toString().equals("if")) {hasbeendefined=true;}
-							else if(c==' '&&elemBuilder.toString().equals("def")){isDef=true;hasbeendefined=true;}
-							if (hasbeendefined) {elemBuilder.setLength(0);continue;}
+						if (command==0) {
+							if(c==' '&&elemBuilder.toString().equals("while")) {command=0x2;}
+							else if(c==' '&&elemBuilder.toString().equals("if")) {command=0x1;}
+							else if(c==' '&&elemBuilder.toString().equals("def")){command=0x3;}
+							else if(c==' '&&elemBuilder.toString().equals("for")){command=0x4;}
+							if (command!=0x0) {elemBuilder.setLength(0);continue;}
 						}
 						elemBuilder.append(c);
 					}
 					String cond = elemBuilder.toString();
 					elemBuilder.setLength(0);
 					StringBuilder instructions = new StringBuilder();
-					ind++;
-					if (ind<text.length()&&text.charAt(ind)=='\t') {
+					
+					if (ind+1<text.length()&&(text.charAt(ind+1)=='\t'||text.charAt(ind+1)==' ')) {
+						
 						ind++;
+						String initalIndent = checkIndentation(text,ind);
+						
 						for (;ind<text.length();ind++) {
-							c = text.charAt(ind);
-							if ((c=='\n')&&ind+1<text.length()) {
-								if (text.charAt(ind+1)=='\t') {ind++;}
-								else {instructions.append('\n');break;}
-								
+							if (ind+1<text.length()) {
+								String indent = checkIndentation(text,ind);
+								if (indent.startsWith(initalIndent)) {
+									ind+=initalIndent.length();
+									for (;ind<text.length();ind++) {
+										c = text.charAt(ind);
+										instructions.append(c);
+										if (c=='\n') break;
+									}
+								} else break;
 							}
-							instructions.append(c);
+							
 						}
-					} else ind--;
+						ind--;
+					}
+					if (ind!=text.length()&&text.charAt(ind)!='\n'&&text.charAt(ind)!='\r') ind--;
 					String cmds = instructions.toString();
-					if (isDef) {
-						builder = new String[0];
-						for (int i = 0;i<cond.length();i++) {
-							char ch = cond.charAt(i);
-							if (ch==',') {
-								builder = addToArray(builder, elemBuilder.toString().trim().toLowerCase());
-								elemBuilder.setLength(0);
-							} else elemBuilder = elemBuilder.append(ch);
+					CharPosition pos = getPosition(charPosition, savedind+1, "\n"+text);
+					
+					switch (command) {
+						case 0x4: {
+							String[] split = cond.split(" in ", 2);
+							String variablename = split[0];
+							String value = split[1];
+							elemBuilder.setLength(0);
+							runtime.addRuntimeElement(new ForV2RuntimeElement(info,variablename,value,cmds,this,
+									runtime,pos,filename));
+							break;
 						}
-						if (!elemBuilder.toString().isBlank())
-							builder = addToArray(builder, elemBuilder.toString().trim().toLowerCase());
-						String name = builder[0];
-						String[] args = Arrays.copyOfRange(builder, 1, builder.length);
-						var pos = getPosition(charPosition, savedind+1, "\n"+text);
-						methodHandler.register(cmds, args, name, pos.line, pos.charpos);
-						elemBuilder.setLength(0);
-						break;
+						case 0x3: {
+							builder = HudderUtils.processParemeters(cond);
+							String name = builder[0];
+							String[] args = Arrays.copyOfRange(builder, 1, builder.length);
+							defineFunctionOrMethod(cmds,args,name,pos,filename);
+							elemBuilder.setLength(0);
+							break;
+						}
+						case 0x2: {
+							runtime.addRuntimeElement(new WhileV2RuntimeElement(info,cond,cmds,this,runtime,pos,
+									filename));
+							break;
+						}
+						default://0x0 or 0x1
+							runtime.addRuntimeElement(new IfV2RuntimeElement(info,cond,cmds,this,runtime,pos,
+									filename));
+							break;
 					}
-					if (isWhile) {
-						runtime.addRuntimeElement(new WhileV2RuntimeElement(info, cond, cmds, this, runtime,
-								getPosition(charPosition, savedind+1, "\n"+text)));
-						break;
-					}
-					runtime.addRuntimeElement(new IfV2RuntimeElement(info, cond, cmds, this, runtime,
-							getPosition(charPosition, savedind+1, "\n"+text)));
 					break;
 				}
 				default: throw new CompileException("Unknown compile state: " + compileState);
 			}
 		}
 		
-		runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), false, true));
+		runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), false));
 		
 		if (compileState!=0) throw new CompileException(getCompilerErrorMessage(compileState));
 		
 		return runtime;
 	}
 
-	protected String getCompilerErrorMessage(int compileState) {
+	private String checkIndentation(String text, int index) {
+		StringBuilder b = new StringBuilder();
+		for (;index<text.length();index++) {
+			char c = text.charAt(index);
+			if (!(c==' '||c=='\t')) break;
+			b.append(c);
+		}
+		return b.toString();
+	}
+
+	public String getCompilerErrorMessage(int compileState) {
 		StringBuilder strb = new StringBuilder();
 		strb.append(switch(compileState) {
 			case VARIABLE_STATE -> "Expected '}'";

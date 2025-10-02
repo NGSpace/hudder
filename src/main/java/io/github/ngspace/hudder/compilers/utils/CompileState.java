@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import io.github.ngspace.hudder.config.ConfigManager;
-import io.github.ngspace.hudder.methods.elements.AUIElement;
+import io.github.ngspace.hudder.Hudder;
+import io.github.ngspace.hudder.compilers.utils.functionandconsumerapi.IUIElementManager;
+import io.github.ngspace.hudder.uielements.AUIElement;
 
-public class CompileState {
+public class CompileState implements IUIElementManager {
 
 	public static final String TOPLEFT = "topleft";
 	public static final String BOTTOMLEFT = "bottomleft";
@@ -24,15 +25,18 @@ public class CompileState {
 	public float BLScale = 1;
 	public float TRScale = 1;
 	public float BRScale = 1;
+	public boolean hasBroken = false;
 	public List<AUIElement> elements = new ArrayList<AUIElement>();
+	public Object returnValue;
+	public boolean hasReturned;
 
-	public CompileState(String string) {setTextLocation(string, ConfigManager.getConfig().scale);}
+	public CompileState(String string) {setTextLocation(string, Hudder.config.scale);}
 	public void addString(String txt, boolean cleanup) throws CompileException {addString(txt,pos,cleanup);}
 	
 	protected void addString(String txt, String pos, boolean cleanup) throws CompileException {
 		String text = txt;
 		if (cleanup) {
-			int buffer = ConfigManager.getConfig().methodBuffer;
+			int buffer = Hudder.config.methodBuffer;
 			if (buffer<10)
 				for (int i = 0; i<buffer;i++)
 					try {
@@ -64,12 +68,12 @@ public class CompileState {
 		}
 	}
 	
-	public CompileResult toResult() {
-		return new CompileResult(TLText, TLScale, BLText, BLScale, TRText, TRScale, BRText, BRScale,
+	public HudInformation toResult() {
+		return new HudInformation(TLText, TLScale, BLText, BLScale, TRText, TRScale, BRText, BRScale,
 				elements.toArray(new AUIElement[elements.size()]));
 	}
 
-	public void combineWithResult(CompileResult compile, boolean combineText) throws CompileException {
+	public void combineWithResult(HudInformation compile, boolean combineText) throws CompileException {
 		if (combineText) {
 			addString(compile.TopLeftText, TOPLEFT, false);        TLScale = compile.TLScale;
 			addString(compile.BottomLeftText, BOTTOMLEFT, false);  BLScale = compile.BLScale;
@@ -78,5 +82,9 @@ public class CompileState {
 		}
 		Collections.addAll(elements, compile.elements);
 	}
+	@Override public void addUIElement(AUIElement UIElement) {elements.add(UIElement);}
+	@Override public AUIElement[] toUIElementArray() {return elements.toArray(new AUIElement[elements.size()]);}
+	
+	public void setReturnValue(Object value) {hasReturned = true;returnValue = value;}
 	
 }

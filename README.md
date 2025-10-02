@@ -30,6 +30,10 @@ Hudder allows you to create a custom hud to appear on your screen in game using 
 ### Full Method list can also be found [Here](https://ngspace.github.io/hudder/methodlist).
 
 
+# Translations
+
+Use weblate: https://hosted.weblate.org/projects/hudder/mod/
+
 # How to Run, Compile and Add Hudder as a gradle dependency
 
 ## Compiling

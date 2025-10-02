@@ -1,74 +1,86 @@
 {
-	"hudder.reset": "Reset",
-	"hudder.true":"Yes",
-	"hudder.false":"No",
+	"ngsmcconfig.reset": "Reset",
+	"ngsmcconfig.true": "Yes",
+	"ngsmcconfig.false": "No",
+	"ngsmcconfig.back": "Back",
+	"ngsmcconfig.save": "Save",
+	"ngsmcconfig.wiki": "Wiki",
+	"ngsmcconfig.config": "Open config",
+	"ngsmcconfig.globalreset": "Reset",
+
+	"ngsmcconfig.confirmreset": "Reset to default settings",
+	"ngsmcconfig.confirmreset.text": "Are you sure you want to reset your entire config?",
+
+	"ngsmcconfig.confirmunsavedexit": "Unsaved changes",
+	"ngsmcconfig.confirmunsavedexit.text": "There are some unsaved changes, are you sure you want to leave and discard those unsaved changes?",
+	
+	
+	"hudder.configkeybind": "Open Hudder settings",
+	"hudder.keybinds": "Hudder",
+	
 	
 	"hudder.general": "General",
 	
 	"hudder.general.wiki":"Click here to open Hudder's wiki in your browser",
-	"hudder.general.wiki.tooltip":"Click to open Wiki",
+	"hudder.general.wiki.tooltip":"Click to open Wiki.",
 	
 	"hudder.general.enabled":"Enabled",
-	"hudder.general.enabled.tooltip":"Whether Hudder should be enabled or not (duh)",
+	"hudder.general.enabled.tooltip":"Whether Hudder should be enabled or not (duh).",
 	
 	"hudder.general.mainfile":"Main file",
-	"hudder.general.mainfile.tooltip":"Change the main file\n\u00A77The file must be located in the \u00A76.minecraft/config/Hudder\u00A77 folder",
-	"hudder.general.mainfile.error":"File does not exist in the .minecraft/config/Hudder folder",
+	"hudder.general.mainfile.tooltip":"Change the main file\u00A77The file must be located in the \u00A76.minecraft/config/Hudder\u00A77 folder.",
+	"hudder.general.mainfile.error":"File does not exist in the .minecraft/config/Hudder folder.",
 	
 	"hudder.general.scale":"Default Scale",
-	"hudder.general.scale.tooltip":"Control the default scale of Methods \n\u00A77This can be overriden by elements specifying the size on their own",
+	"hudder.general.scale.tooltip":"Control the default scale of Methods \n\u00A77This can be overriden by elements specifying the size on their own.",
 	
 	"hudder.general.folder":"\u00A77The files must be located in the \"\u00A76config/Hudder\u00A77\" folder",
-	"hudder.general.folder.tooltip":"Click to open folder",
+	"hudder.general.folder.tooltip":"Click to open folder.",
 	
 	"hudder.text": "Text",
 	
 	"hudder.text.color":"Text Color",
-	"hudder.text.color.tooltip":"Change the color of the text",
+	"hudder.text.color.tooltip":"Change the color of the text.",
 	
 	"hudder.text.shadow":"Text Shadow",
-	"hudder.text.shadow.tooltip":"Whether text should have a shadow",
+	"hudder.text.shadow.tooltip":"Whether text should have a shadow.",
 	
 	"hudder.text.yoffset":"Y offset",
-	"hudder.text.yoffset.tooltip":"Control the y offset of the text",
+	"hudder.text.yoffset.tooltip":"Control the y offset of the text.",
 	
 	"hudder.text.xoffset":"X offset",
-	"hudder.text.xoffset.tooltip":"Control the x offset of the text",
+	"hudder.text.xoffset.tooltip":"Control the x offset of the text.",
 	
 	"hudder.text.height":"Text height",
-	"hudder.text.height.tooltip":"Control the line height of the text",
+	"hudder.text.height.tooltip":"Control the line height of the text.",
 	
 	"hudder.advanced": "Advanced",
 	
 	"hudder.advanced.method": "Method line buffer",
-	"hudder.advanced.method.tooltip": "Control the amount of lines to be trimmed before and after Methods",
+	"hudder.advanced.method.tooltip": "Control the amount of lines to be trimmed before and after Methods.",
 	
 	"hudder.advanced.f3": "Show in F3",
-	"hudder.advanced.f3.tooltip": "Should still render when f3 is showing",
+	"hudder.advanced.f3.tooltip": "Should still render when f3 is showing.",
 	
 	"hudder.global_variables": "Global Variables",
 	
 	"hudder.global_variables.enabled":"Global Variables",
-	"hudder.global_variables.enabled.tooltip": "Whether global variables should be used",
+	"hudder.global_variables.enabled.tooltip": "Whether global variables should be used.",
 	
-	"hudder.global_variables.tooltip":"Control variables and set values without editing the files\n\u00A77This can also be used to create parameters for Hudder files",
+	"hudder.global_variables.tooltip":"Control variables and set values without editing the files\n\u00A77This can also be used to create parameters for Hudder files.",
 	
 	"hudder.global_variables.key":"Key",
-	"hudder.global_variables.key.tooltip": "The name of the variable",
+	"hudder.global_variables.key.tooltip": "The name of the variable.",
 	
 	"hudder.global_variables.value":"Value",
-	"hudder.global_variables.value.tooltip": "The value of the variable",
+	"hudder.global_variables.value.tooltip": "The value of the variable.",
 	
 	"hudder.advanced.compilertype": "Compiler type",
-	"hudder.advanced.compilertype.tooltip": "Change the type of compiler (ex Default, JavaScript, None)",
-	"hudder.advanced.compilertype.error":"Invalid compiler type",
+	"hudder.advanced.compilertype.tooltip": "Change the type of compiler (ex Hudder, JavaScript, None).",
+	"hudder.advanced.compilertype.error":"Invalid compiler type.",
 	
 	"hudder.advanced.javascript": "Javascript enabled",
-	"hudder.advanced.javascript.tooltip": "Whether JavaScript is enabled",
-	
-	
-	
-	"hudder.noclothapi": "You need to install Cloth Config 13.0.121 or above to use this menu.",
+	"hudder.advanced.javascript.tooltip": "Whether JavaScript is enabled.",
 	
 	"hudder.text.backgroundcolor": "Background color",
 	"hudder.text.backgroundcolor.tooltip": "Change the default color of the background.",
