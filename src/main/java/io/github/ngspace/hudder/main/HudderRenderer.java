@@ -2,34 +2,34 @@ package io.github.ngspace.hudder.main;
 
 import java.util.List;
 
-import org.joml.Matrix3x2fStack;
-
-import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.NativeImage;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
 import io.github.ngspace.hudder.main.config.HudderConfig;
 import io.github.ngspace.hudder.uielements.AUIElement;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.render.TextureSetup;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
 
 /**
  * Hudder.java was too messy so I moved all rendering functions into this one class
  */
-public class HudderRenderer implements HudElement {
+public class HudderRenderer implements HudRenderCallback {
 	
 	private HudCompilationManager compman;
 	public ResourceLocation hudElementRegistryID = ResourceLocation.fromNamespaceAndPath("hudder_renderer", "renderer");
@@ -38,9 +38,9 @@ public class HudderRenderer implements HudElement {
 	
 	
 	
-	public final RenderPipeline GUI_TEXTURED_TRIANGLES = RenderPipelines.register(RenderPipeline.builder(
-			RenderPipelines.GUI_TEXTURED_SNIPPET).withLocation("pipeline/gui_textured_triangles")
-			.withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.TRIANGLE_STRIP).build());
+//	public final RenderPipeline GUI_TEXTURED_TRIANGLES = RenderPipelines.register(RenderPipeline.builder(
+//			RenderPipelines.GUI_TEXTURED_SNIPPET).withLocation("pipeline/gui_textured_triangles")
+//			.withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.TRIANGLE_STRIP).build());
 	
 	
 	
@@ -118,20 +118,19 @@ public class HudderRenderer implements HudElement {
         return count;
     }
     
-    
 
 	public void renderTextLine(GuiGraphics context, String text, int x, int y, int color, float scale, boolean shadow,
 			boolean background, int backgroundColor) {
         if (scale != 1.0f) {
-            Matrix3x2fStack matrixStack = context.pose();
-            matrixStack.pushMatrix();
-            matrixStack.translate(x, y);
-            matrixStack.scale(scale, scale);
-            matrixStack.translate(-x, -y);
+            PoseStack matrixStack = context.pose();
+            matrixStack.pushPose();
+            matrixStack.translate(x, y, 0f);
+            matrixStack.scale(scale, scale, 0f);
+            matrixStack.translate(-x, -y, 0f);
     		if (background&&!"".equals(text))
     			renderBlock(context,x-1,y-1,mc.font.width(text)+2,10,backgroundColor);
             context.drawString(mc.font, text, x, y, color, shadow);
-            matrixStack.popMatrix();
+            matrixStack.popPose();
         } else {
     		if (background&&!"".equals(text))
     			renderBlock(context,x-1,y-1,mc.font.width(text)+2,10,backgroundColor);
@@ -149,102 +148,111 @@ public class HudderRenderer implements HudElement {
 	
 	public void renderTexture9Slice(GuiGraphics context, ResourceLocation id, float x, float y, float width,
 			float height, float[] slices) {
-		context.guiRenderState.submitGuiElement(new TextureRenderState(TextureSetup.singleTexture(mc
-				.getTextureManager().getTexture(id).getTextureView()), RenderPipelines.GUI_TEXTURED,
-		(vconsumer, f)->{
-		    Matrix3x2fStack matrix = context.pose();
-	        NativeImage img = ((DynamicTexture)mc.getTextureManager().getTexture(id)).getPixels();
-	        int texwidth = img.getWidth();
-	        int texheight = img.getHeight();
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShaderTexture(0, id);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
 
-	        float left = Math.min(slices[0],texwidth/2f);
-	        float right = Math.min(slices[1],texwidth/2f);
-	        float top = Math.min(slices[2],texheight/2f);
-	        float bottom = Math.min(slices[3],texheight/2f);
-	        
-	        float middlestart_hor = x+left;
-	        float middleend_hor = x+width-right;
-	        float middleend_tex_hor = (texwidth-right)/texwidth;
-	        float tls = left/texwidth;
-	        
-	        
-	        float middlestart_ver = y+top;
-	        float middleend_ver = y + height - bottom;
-	        float middleend_tex_ver = (texheight-bottom)/texheight;
-	        float lts = top/texheight;
-	        
-	        // Top-left
-	        vconsumer.addVertexWith2DPose(matrix,x,y,0f).setUv(0,0).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,x,y+top,0f).setUv(0,lts).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,x+left,y+top,0f).setUv(tls,lts).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,x+left,y,0f).setUv(tls,0).setColor(-1);
-	        
-	        // Top-middle
-	        vconsumer.addVertexWith2DPose(matrix,middlestart_hor,y, 0f).setUv(tls, 0).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,middlestart_hor,y+top,0f).setUv(tls,lts).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,y+top,0f).setUv(middleend_tex_hor,lts).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,y,0f).setUv(middleend_tex_hor,0).setColor(-1);
-	        
-	        // Top-right
-	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,y,0f).setUv(middleend_tex_hor,0).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,y+top,0f).setUv(middleend_tex_hor,lts).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,x+width,y+top,0f).setUv(1,lts).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,x+width,y,0f).setUv(1,0).setColor(-1);
-	        
-	        
-	        
-	        // Middle-left
-	        vconsumer.addVertexWith2DPose(matrix,x,middlestart_ver,0f).setUv(0,lts).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,x,middleend_ver,0f).setUv(0,middleend_tex_ver).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,x+left,middleend_ver,0f).setUv(tls,middleend_tex_ver).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,x+left,middlestart_ver,0f).setUv(tls,lts).setColor(-1);
-	        
-	        // Middle-middle
-	        vconsumer.addVertexWith2DPose(matrix,middlestart_hor,middlestart_ver, 0f).setUv(tls, lts).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,middlestart_hor,middleend_ver,0f).setUv(tls,middleend_tex_ver).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,middleend_ver,0f).setUv(middleend_tex_hor,middleend_tex_ver).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,middlestart_ver,0f).setUv(middleend_tex_hor,lts).setColor(-1);
-	        
-	        // Middle-right
-	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,middlestart_ver,0f).setUv(middleend_tex_hor,lts).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,middleend_ver,0f).setUv(middleend_tex_hor,middleend_tex_ver).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,x+width,middleend_ver,0f).setUv(1,middleend_tex_ver).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,x+width,middlestart_ver,0f).setUv(1,lts).setColor(-1);
-	        
-	        
-	        
-	        // Bottom-left
-	        vconsumer.addVertexWith2DPose(matrix,x,middleend_ver,0f).setUv(0,middleend_tex_ver).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,x,y+height,0f).setUv(0,1).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,x+left,y+height,0f).setUv(tls,1).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,x+left,middleend_ver,0f).setUv(tls,middleend_tex_ver).setColor(-1);
-	        
-	        // Bottom-middle
-	        vconsumer.addVertexWith2DPose(matrix,middlestart_hor,middleend_ver, 0f).setUv(tls, middleend_tex_ver).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,middlestart_hor,y+height,0f).setUv(tls,1).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,y+height,0f).setUv(middleend_tex_hor,1).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,middleend_ver,0f).setUv(middleend_tex_hor,middleend_tex_ver).setColor(-1);
-	        
-	        // Bottom-right
-	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,middleend_ver,0f).setUv(middleend_tex_hor,middleend_tex_ver).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,y+height,0f).setUv(middleend_tex_hor,1).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,x+width,y+height,0f).setUv(1,1).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,x+width,middleend_ver,0f).setUv(1,middleend_tex_ver).setColor(-1);
-		}));
+        BufferBuilder bgBuilder =  Tesselator.getInstance().begin(VertexFormat.Mode.QUADS,
+        		DefaultVertexFormat.POSITION_TEX);
+        NativeImage img = ((DynamicTexture)mc.getTextureManager().getTexture(id)).getPixels();
+        int texwidth = img.getWidth();
+        int texheight = img.getHeight();
+
+        float left = Math.min(slices[0],texwidth/2f);
+        float right = Math.min(slices[1],texwidth/2f);
+        float top = Math.min(slices[2],texheight/2f);
+        float bottom = Math.min(slices[3],texheight/2f);
+        
+        float middlestart_hor = x+left;
+        float middleend_hor = x+width-right;
+        float middleend_tex_hor = (texwidth-right)/texwidth;
+        float tls = left/texwidth;
+        
+        
+        float middlestart_ver = y+top;
+        float middleend_ver = y + height - bottom;
+        float middleend_tex_ver = (texheight-bottom)/texheight;
+        float lts = top/texheight;
+        
+        // Top-left
+        bgBuilder.addVertex(x,y,0f).setUv(0,0).setColor(-1);
+        bgBuilder.addVertex(x,y+top,0f).setUv(0,lts).setColor(-1);
+        bgBuilder.addVertex(x+left,y+top,0f).setUv(tls,lts).setColor(-1);
+        bgBuilder.addVertex(x+left,y,0f).setUv(tls,0).setColor(-1);
+        
+        // Top-middle
+        bgBuilder.addVertex(middlestart_hor,y, 0f).setUv(tls, 0).setColor(-1);
+        bgBuilder.addVertex(middlestart_hor,y+top,0f).setUv(tls,lts).setColor(-1);
+        bgBuilder.addVertex(middleend_hor,y+top,0f).setUv(middleend_tex_hor,lts).setColor(-1);
+        bgBuilder.addVertex(middleend_hor,y,0f).setUv(middleend_tex_hor,0).setColor(-1);
+        
+        // Top-right
+        bgBuilder.addVertex(middleend_hor,y,0f).setUv(middleend_tex_hor,0).setColor(-1);
+        bgBuilder.addVertex(middleend_hor,y+top,0f).setUv(middleend_tex_hor,lts).setColor(-1);
+        bgBuilder.addVertex(x+width,y+top,0f).setUv(1,lts).setColor(-1);
+        bgBuilder.addVertex(x+width,y,0f).setUv(1,0).setColor(-1);
+        
+        
+        
+        // Middle-left
+        bgBuilder.addVertex(x,middlestart_ver,0f).setUv(0,lts).setColor(-1);
+        bgBuilder.addVertex(x,middleend_ver,0f).setUv(0,middleend_tex_ver).setColor(-1);
+        bgBuilder.addVertex(x+left,middleend_ver,0f).setUv(tls,middleend_tex_ver).setColor(-1);
+        bgBuilder.addVertex(x+left,middlestart_ver,0f).setUv(tls,lts).setColor(-1);
+        
+        // Middle-middle
+        bgBuilder.addVertex(middlestart_hor,middlestart_ver, 0f).setUv(tls, lts).setColor(-1);
+        bgBuilder.addVertex(middlestart_hor,middleend_ver,0f).setUv(tls,middleend_tex_ver).setColor(-1);
+        bgBuilder.addVertex(middleend_hor,middleend_ver,0f).setUv(middleend_tex_hor,middleend_tex_ver).setColor(-1);
+        bgBuilder.addVertex(middleend_hor,middlestart_ver,0f).setUv(middleend_tex_hor,lts).setColor(-1);
+        
+        // Middle-right
+        bgBuilder.addVertex(middleend_hor,middlestart_ver,0f).setUv(middleend_tex_hor,lts).setColor(-1);
+        bgBuilder.addVertex(middleend_hor,middleend_ver,0f).setUv(middleend_tex_hor,middleend_tex_ver).setColor(-1);
+        bgBuilder.addVertex(x+width,middleend_ver,0f).setUv(1,middleend_tex_ver).setColor(-1);
+        bgBuilder.addVertex(x+width,middlestart_ver,0f).setUv(1,lts).setColor(-1);
+        
+        
+        
+        // Bottom-left
+        bgBuilder.addVertex(x,middleend_ver,0f).setUv(0,middleend_tex_ver).setColor(-1);
+        bgBuilder.addVertex(x,y+height,0f).setUv(0,1).setColor(-1);
+        bgBuilder.addVertex(x+left,y+height,0f).setUv(tls,1).setColor(-1);
+        bgBuilder.addVertex(x+left,middleend_ver,0f).setUv(tls,middleend_tex_ver).setColor(-1);
+        
+        // Bottom-middle
+        bgBuilder.addVertex(middlestart_hor,middleend_ver, 0f).setUv(tls, middleend_tex_ver).setColor(-1);
+        bgBuilder.addVertex(middlestart_hor,y+height,0f).setUv(tls,1).setColor(-1);
+        bgBuilder.addVertex(middleend_hor,y+height,0f).setUv(middleend_tex_hor,1).setColor(-1);
+        bgBuilder.addVertex(middleend_hor,middleend_ver,0f).setUv(middleend_tex_hor,middleend_tex_ver).setColor(-1);
+        
+        // Bottom-right
+        bgBuilder.addVertex(middleend_hor,middleend_ver,0f).setUv(middleend_tex_hor,middleend_tex_ver).setColor(-1);
+        bgBuilder.addVertex(middleend_hor,y+height,0f).setUv(middleend_tex_hor,1).setColor(-1);
+        bgBuilder.addVertex(x+width,y+height,0f).setUv(1,1).setColor(-1);
+        bgBuilder.addVertex(x+width,middleend_ver,0f).setUv(1,middleend_tex_ver).setColor(-1);
+        RenderSystem.resetTextureMatrix();
+        BufferUploader.drawWithShader(bgBuilder.build());
+        BufferUploader.reset();
+        RenderSystem.disableBlend();
 	}
 
 	public void renderTexturedVertexArray(GuiGraphics context, float[] vertices, float[] textures,
 			ResourceLocation id, boolean triangles) {
-		context.guiRenderState.submitGuiElement(new TextureRenderState(TextureSetup.singleTexture(mc
-				.getTextureManager().getTexture(id).getTextureView()),
-				triangles ? GUI_TEXTURED_TRIANGLES : RenderPipelines.GUI_TEXTURED,
-			(vconsumer, f)->{
-		        Matrix3x2fStack matrix = context.pose();
-		        
-	        for (int i = 0;i<vertices.length;i+=2) {
-	        	vconsumer.addVertexWith2DPose(matrix,vertices[i],vertices[i+1],0f).setUv(textures[i],textures[i+1]).setColor(-1);
-	        }
-		}));
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShaderTexture(0, id);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+
+        BufferBuilder bgBuilder =  Tesselator.getInstance().begin(triangles ? VertexFormat.Mode.TRIANGLE_STRIP : VertexFormat.Mode.QUADS,
+        		DefaultVertexFormat.POSITION_TEX);
+        for (int i = 0;i<vertices.length;i+=2)
+        	bgBuilder.addVertex(vertices[i],vertices[i+1],0f).setUv(textures[i],textures[i+1]).setColor(-1);
+        RenderSystem.resetTextureMatrix();
+        BufferUploader.drawWithShader(bgBuilder.build());
+        BufferUploader.reset();
+        RenderSystem.disableBlend();
 	}
 	
 	
@@ -266,7 +274,7 @@ public class HudderRenderer implements HudElement {
 	@Deprecated(since = "TBD", forRemoval = false)
 	public void renderColoredVertexArray(GuiGraphics context, float[] vertices, int r, int g, int b, int a,
 			boolean triangle_strip) {
-		renderColoredVertexArray(context, vertices, ARGB.color(r, g, b, a), triangle_strip);
+//		renderColoredVertexArray(context, vertices, ARGB.color(r, g, b, a), triangle_strip);
 	}
 	
 	
@@ -279,19 +287,23 @@ public class HudderRenderer implements HudElement {
 	 * @param mode The rendering mode
 	 */
 	public void renderColoredVertexArray(GuiGraphics context, float[] vertices, int argb, boolean triangle_strip) {
-		context.guiRenderState.submitGuiElement(new TextureRenderState(TextureSetup.noTexture(),
-			triangle_strip ? GUI_TEXTURED_TRIANGLES : RenderPipelines.GUI_TEXTURED, (vconsumer, f) -> {
-			
-	        Matrix3x2fStack matrix = context.pose();
-	        
-	        for (int i = 0;i<vertices.length;i+=2)
-	        	vconsumer.addVertexWith2DPose(matrix,vertices[i],vertices[i+1],0f).setColor(argb).setUv(0, 0);
-		}));
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+
+        BufferBuilder bgBuilder =  Tesselator.getInstance().begin(triangle_strip ? VertexFormat.Mode.TRIANGLE_STRIP : VertexFormat.Mode.QUADS,
+        		DefaultVertexFormat.POSITION_COLOR);
+        for (int i = 0;i<vertices.length;i+=2)
+        	bgBuilder.addVertex(vertices[i],vertices[i+1],0f).setColor(argb).setUv(0, 0);
+        RenderSystem.resetTextureMatrix();
+        BufferUploader.drawWithShader(bgBuilder.build());
+        BufferUploader.reset();
+        RenderSystem.disableBlend();
 	}
 	
 	
 	
-	@Override public void render(GuiGraphics context, DeltaTracker delta) {
+	@Override public void onHudRender(GuiGraphics context, DeltaTracker delta) {
 		try {
 			if (!Hudder.config.limitrate) compman.compile(delta);
 			if (Hudder.config.shouldDrawResult()) {

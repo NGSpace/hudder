@@ -103,7 +103,7 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 		
 		//Item
 		
-		engine.bindConsumer(s->elms.add(new ItemElement(s[1].asInt(), s[2].asInt(),new ItemStack(BuiltInRegistries.ITEM.getValue(
+		engine.bindConsumer(s->elms.add(new ItemElement(s[1].asInt(), s[2].asInt(),new ItemStack(BuiltInRegistries.ITEM.get(
 				ResourceLocation.tryParse(s[0].asString()))),s[3].asFloat(), false)),"drawItem", "item");
 		
 		//Slot

@@ -24,24 +24,22 @@ public class ComponentsData extends HashMap<String, Object> {
 			
 			/* Text Objects */
 			case "custom_name", "item_name": {
-				Component t = (Component) comp.get(BuiltInRegistries.DATA_COMPONENT_TYPE.getValue(ResourceLocation.withDefaultNamespace(key)));
+				Component t = (Component) comp.get(BuiltInRegistries.DATA_COMPONENT_TYPE.get(ResourceLocation.withDefaultNamespace(key)));
 				
 				yield t!=null ? t.getString() : null;
 			}
 			
 			/* Primitives */
 			case "repair_cost", "damage", "max_damage", "max_stack_size", "enchantment_glint_override":
-				yield comp.get(BuiltInRegistries.DATA_COMPONENT_TYPE.getValue(ResourceLocation.withDefaultNamespace(key)));
+				yield comp.get(BuiltInRegistries.DATA_COMPONENT_TYPE.get(ResourceLocation.withDefaultNamespace(key)));
 			
 //			case "mining_speed": yield comp.get(DataComponentTypes.TOOL).defaultMiningSpeed();
 
 			case "trim": yield comp.get(DataComponents.TRIM) !=null ? new Object() {
-				String material = comp.get(DataComponents.TRIM).material().value().assets().base().suffix();
+				String material = comp.get(DataComponents.TRIM).material().value().assetName();
 				String pattern = comp.get(DataComponents.TRIM).pattern().value().assetId().toString();
 			} : null;
 
-			case "enchantable": yield comp.get(DataComponents.ENCHANTABLE) !=null ? 
-					comp.get(DataComponents.ENCHANTABLE).value() : null;
 			case "lore": yield comp.get(DataComponents.LORE) !=null ? 
 					comp.get(DataComponents.LORE).styledLines() : null;
 			case "rarity": yield comp.get(DataComponents.RARITY) !=null ? 

@@ -33,14 +33,14 @@ public class ItemStackMethods implements IMethod {
 		Inventory inv = mc.player.getInventory();
 		
 		ItemStack stack = switch (type) {
-			case "hand","selectedslot": yield inv.getItem(inv.getSelectedSlot());
+			case "hand","selectedslot": yield inv.getItem(inv.selected);
 			case "helmet", "hat": yield inv.getItem(39);
 			case "chestplate": yield inv.getItem(38);
 			case "pants", "leggings": yield inv.getItem(37);
 			case "boots": yield inv.getItem(36);
 			case "offhand": yield mc.player.getOffhandItem();
 			case "slot": yield inv.getItem(args[0].asInt());
-			case "item": yield new ItemStack(BuiltInRegistries.ITEM.getValue(ResourceLocation.tryParse(args[0].asString())));
+			case "item": yield new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(args[0].asString())));
 			default: throw new IllegalArgumentException("Unexpected value: " + type);
 		};
 		meta.elements.add(new ItemElement(x, y, stack, scale, showcount));

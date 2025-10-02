@@ -47,7 +47,7 @@ public class CachedReader {
 			savedImages.remove(id);
 		}
 		NativeImage img = NativeImage.read(inputStream);
-		DynamicTexture tex = new DynamicTexture(id::getPath,img);
+		DynamicTexture tex = new DynamicTexture(img);
 		mc.getTextureManager().register(id, tex);
 		
 		savedImages.put(id,tex);

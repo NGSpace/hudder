@@ -75,7 +75,7 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		
 		if (wikiUri!=null) {
 			wikiButton = Button.builder(Component.translatable("ngsmcconfig.wiki"),
-					b->clickUrlAction(Minecraft.getInstance(), this, wikiUri))
+					b->Util.getPlatform().openUri(wikiUri))
 					.bounds(width-80, 0, 40, 20)
 					.build();
 			addRenderableWidget(wikiButton);

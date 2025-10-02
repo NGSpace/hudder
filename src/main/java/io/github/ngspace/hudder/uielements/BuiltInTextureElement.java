@@ -5,7 +5,6 @@ import io.github.ngspace.hudder.main.HudderRenderer;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.resources.ResourceLocation;
 
@@ -29,6 +28,6 @@ public class BuiltInTextureElement extends AUIElement {
 	}
 	
 	@Override public void renderElement(GuiGraphics context, HudderRenderer renderer, DeltaTracker delta) {
-		context.blit(RenderPipelines.GUI_TEXTURED,id, x, y, 0, 0f, width, height, width, height);
+		context.blit(id, x, y, 0, 0f, width, height, width, height);
 	}
 }

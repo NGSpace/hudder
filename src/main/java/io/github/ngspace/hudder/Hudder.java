@@ -27,7 +27,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.KeyMapping;
@@ -125,8 +125,8 @@ public class Hudder implements ClientModInitializer {
 		HudCompilationManager compman = new HudCompilationManager();
 		ClientTickEvents.END_CLIENT_TICK.register(compman);
         
-		HudderRenderer renderer = new HudderRenderer(compman);
-		HudElementRegistry.addLast(renderer.hudElementRegistryID, renderer);
+		HudRenderCallback renderer = new HudderRenderer(compman);
+		HudRenderCallback.EVENT.register(renderer);
         
         ClientLifecycleEvents.CLIENT_STARTED.register(c->{
 			try {
@@ -142,10 +142,10 @@ public class Hudder implements ClientModInitializer {
 	
 	
 	public static void showToast(Component title, Component content) {
-		Minecraft.getInstance().getToastManager().addToast(new SystemToast(SystemToast.SystemToastId.PERIODIC_NOTIFICATION,title,content));
+		Minecraft.getInstance().getToasts().addToast(new SystemToast(SystemToast.SystemToastId.PERIODIC_NOTIFICATION,title,content));
 	}
 	public static void showWarningToast(Component title, Component content) {
-		Minecraft.getInstance().getToastManager().addToast(new SystemToast(new SystemToast.SystemToastId(10000L),title,content));
+		Minecraft.getInstance().getToasts().addToast(new SystemToast(new SystemToast.SystemToastId(10000L),title,content));
 	}
 	
 	

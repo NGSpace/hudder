@@ -6,7 +6,7 @@ import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 
 public class NGSMCConfigOptionsListWidget extends ContainerObjectSelectionList<NGSMCConfigEntry> {
     public NGSMCConfigOptionsListWidget(Minecraft client, int width, int height, int y) {
-        super(client, width, height, y, 30, 15);
+        super(client, width, height, y, 45);
     }
     
     @Override

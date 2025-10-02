@@ -45,7 +45,7 @@ public abstract class AbstractNGSMCConfigOptionBuilder<T> {
 
 	public AbstractNGSMCConfigOptionBuilder<T> setHoverComponent(MutableComponent hovercomponent) {
 		if (name instanceof MutableComponent mutablename) {
-			mutablename.withStyle(s -> s.withHoverEvent(new HoverEvent.ShowText(hovercomponent)));
+			mutablename.withStyle(s -> s.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hovercomponent)));
 		}
 		return this;
 	}

@@ -7,7 +7,6 @@ import io.github.ngspace.hudder.main.config.HudderConfig;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
-import net.minecraft.client.gui.screens.dialog.DialogScreen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CraftingScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
@@ -48,7 +47,8 @@ public class BooleanData {private BooleanData(){}
 			case "ischestopen": yield ins.screen instanceof ContainerScreen;
 			case "iscraftingtableopen": yield ins.screen instanceof CraftingScreen;
 			case "ischatopen": yield ins.screen instanceof ChatScreen;
-			case "isdialogopen": yield ins.screen instanceof DialogScreen<?>;
+//			No Dialogs
+//			case "isdialogopen": yield ins.screen instanceof DialogScreen<?>;
 			case "isinventoryopen": yield ins.screen instanceof InventoryScreen
 					|| ins.screen instanceof CreativeModeInventoryScreen;
 			
@@ -88,7 +88,7 @@ public class BooleanData {private BooleanData(){}
 
 
 			/* Mount information */
-			case "mount_is_saddled": yield p.getVehicle() instanceof Mob mob && mob.isSaddled();
+			case "mount_is_saddled": yield p.getVehicle() instanceof AbstractHorse mob && mob.isSaddled();
 			case "mount_has_armor": yield p.getVehicle() instanceof Mob mob && mob.isWearingBodyArmor();
 			case "mount_is_tamed": yield p.getVehicle() instanceof AbstractHorse horse && horse.isTamed();
 			case "mount_has_chest": yield p.getVehicle() instanceof AbstractChestedHorse horse && horse.hasChest();

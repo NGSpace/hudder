@@ -6,7 +6,6 @@ import java.util.Queue;
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.main.config.HudderConfig;
 import io.github.ngspace.hudder.mixin.ParticleManagerAccessor;
-import io.github.ngspace.hudder.mixin.WorldRendererAccess;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -93,7 +92,7 @@ public class NumberData {private NumberData() {}
 
 
 			/* Other Player related information */
-			case "selectedslot": yield (double) p.getInventory().getSelectedSlot();
+			case "selectedslot": yield (double) p.getInventory().selected;
 			case "xplevel": yield (double) p.experienceLevel;
 			case "xp": yield (double) p.totalExperience;
 			case "armor": yield (double) p.getArmorValue();
@@ -202,7 +201,7 @@ public class NumberData {private NumberData() {}
 
 
 			/* World Rendering */
-			case "entites", "entities": yield (double) ((WorldRendererAccess)ins.levelRenderer).getVisibleEntityCount();
+//			case "entites", "entities": yield (double) ((WorldRendererAccess)ins.levelRenderer).getRegularEntityCount();
 			case "particles": yield (double) ((ParticleManagerAccessor)ins.particleEngine)
 				.getParticles().values().stream().mapToInt(Queue::size).sum();
 			case "chunks": yield (double) ins.levelRenderer.countRenderedSections();
