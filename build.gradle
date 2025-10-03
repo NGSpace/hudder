@@ -34,7 +34,7 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 	
 	provided 'org.mozilla:rhino:1.8.0'
-	provided 'net.minidev:json-smart:2.6.0'
+	//provided 'net.minidev:json-smart:2.6.0'
 	
     modCompileOnly("com.terraformersmc:modmenu:11.0.1")
 }
