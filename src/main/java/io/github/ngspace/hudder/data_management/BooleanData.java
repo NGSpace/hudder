@@ -4,8 +4,17 @@ import static io.github.ngspace.hudder.data_management.Advanced.isKeyHeld;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.main.config.HudderConfig;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.ChatScreen;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.client.gui.screens.inventory.CraftingScreen;
+import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.animal.horse.AbstractChestedHorse;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 
@@ -14,7 +23,12 @@ public class BooleanData {private BooleanData(){}
 		Minecraft ins = Minecraft.getInstance();
 		HudderConfig config = Hudder.config;
 		LocalPlayer p = ins.player;
+		Camera c = ins.gameRenderer.getMainCamera();
 		return switch (key) {
+			
+			
+			
+			/* Generic */
 			case "isslime", "is_slime": {
 				try {
 					yield WorldgenRandom.seedSlimeChunk(p.getBlockX() >> 4, p.getBlockZ() >> 4, ins.getSingleplayerServer()
@@ -22,10 +36,19 @@ public class BooleanData {private BooleanData(){}
 				} catch (Exception e) {/* For some reason adding a yield false; here causes runtime errors...*/}
 				yield false;
 			}
-			
-			
 			case "hudhidden": yield ins.options.hideGui;
 			case "showdebug": yield ins.getDebugOverlay().showDebugScreen();
+			case "camera_detached": yield c.getEntity() != p;
+			
+			
+			
+			/* GUI */ 
+			case "isguiopen": yield ins.screen!=null;
+			case "ischestopen": yield ins.screen instanceof ContainerScreen;
+			case "iscraftingtableopen": yield ins.screen instanceof CraftingScreen;
+			case "ischatopen": yield ins.screen instanceof ChatScreen;
+			case "isinventoryopen": yield ins.screen instanceof InventoryScreen
+					|| ins.screen instanceof CreativeModeInventoryScreen;
 			
 			
 			
@@ -38,12 +61,13 @@ public class BooleanData {private BooleanData(){}
 			
 			
 			/* Player movement */
+			case "isflying": yield p.getAbilities().flying;
 			case "isgliding": yield p.isFallFlying();
 			case "isclimbing": yield p.onClimbable();
 			case "iscrawling": yield p.isVisuallyCrawling();
 			case "isswimming": yield p.isSwimming();
 			case "issneaking": yield p.isShiftKeyDown();
-			
+				
 			
 			
 			/* Player information */
@@ -55,9 +79,20 @@ public class BooleanData {private BooleanData(){}
 			case "isonfire": yield p.isOnFire();
 			case "isonground": yield p.onGround();
 			case "isinvisible": yield p.isInvisible();
-			
-			
-			
+			case "isdrowning": yield p.isInWater();
+			case "iscontrollingmount": yield p.getControlledVehicle() != null;
+			case "isonmount": yield p.getVehicle()!=null;
+
+
+
+			/* Mount information */
+			case "mount_is_saddled": yield p.getVehicle() instanceof AbstractHorse mob && mob.isSaddled();
+			case "mount_has_armor": yield p.getVehicle() instanceof Mob mob && mob.isWearingBodyArmor();
+			case "mount_is_tamed": yield p.getVehicle() instanceof AbstractHorse horse && horse.isTamed();
+			case "mount_has_chest": yield p.getVehicle() instanceof AbstractChestedHorse horse && horse.hasChest();
+
+
+
 			/* Mouse */
 			case "mouse_left": yield ins.mouseHandler.isLeftPressed();
 			case "mouse_middle": yield ins.mouseHandler.isMiddlePressed();
