@@ -67,6 +67,7 @@ public class BooleanData {private BooleanData(){}
 			case "iscrawling": yield p.isVisuallyCrawling();
 			case "isswimming": yield p.isSwimming();
 			case "issneaking": yield p.isShiftKeyDown();
+			case "issprinting": yield p.isSprinting();
 				
 			
 			

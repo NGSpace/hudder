@@ -150,7 +150,7 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 				}
 				try {
 					CompileState exec = runtime.execute();
-					funcruntime.compileState.combineWithResult(exec.toResult(), false);
+					runtime.compileState.combineWithResult(exec.toResult(), false);
 					return exec.returnValue;
 				} catch (CompileException e) {
 					throw new CompileException("Method "+name+" threw an error: \n"+e.getFailureMessage(),line,charpos);

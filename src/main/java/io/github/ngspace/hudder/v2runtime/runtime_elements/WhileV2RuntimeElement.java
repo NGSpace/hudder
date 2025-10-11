@@ -28,8 +28,8 @@ public class WhileV2RuntimeElement extends AV2RuntimeElement {
 			if (s==Short.MAX_VALUE&&Hudder.IS_DEBUG) throw new CompileException("Max while loop reached: " + s, charPosition.line, charPosition.charpos);
 			CompileState res = nestedRuntime.execute();
 			meta.combineWithResult(res.toResult(), false);
-			if (res.hasBroken) break;
 			if (res.hasReturned) meta.setReturnValue(res.returnValue);
+			if (res.hasBroken) break;
 		}
 		return true;
 	}
