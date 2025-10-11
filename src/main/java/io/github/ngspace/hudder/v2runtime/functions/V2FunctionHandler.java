@@ -1,5 +1,6 @@
 package io.github.ngspace.hudder.v2runtime.functions;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;

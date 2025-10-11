@@ -92,6 +92,15 @@ t
 ||EXPECT||
 rt
 
+||INPUT||While and return
+#def while_and_return
+	#while true
+		;return, true;
+	;return, false;
+{while_and_return()}
+||EXPECT||
+true
+
 ||INPUT||Def and Break
 ;mute;
 #def breaktest
