@@ -43,12 +43,13 @@ import net.minecraft.client.gui.screens.inventory.StonecutterScreen;
 import net.minecraft.client.gui.screens.reporting.ReportPlayerScreen;
 
 public class Advanced {private Advanced() {}
+
+	public static int fps = 0;
+
 	public static double gpuUsage = 0;
 	public static float delta = 1;
 	public static LimitedRefreshSpeedData<Double> CPU = new LimitedRefreshSpeedData<Double>(
 			((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean())::getProcessCpuLoad, 2000);
-
-	public static boolean isWindows;
 	
 	public static String OS = getOS();
 	static String getOS() {
@@ -71,7 +72,7 @@ public class Advanced {private Advanced() {}
     public static int getFPS(Minecraft ins) {
     	int fps = ins.getFps();
         fpshistory.add(fps);
-        if (fpshistory.size()>800) fpshistory.remove(0);
+        if (fpshistory.size()>200) fpshistory.remove(0);
         return fps;
     }
     public static int getMinimumFPS() {int max = fpshistory.get(0);for (int i:fpshistory) if (i<max) max=i;return max;}

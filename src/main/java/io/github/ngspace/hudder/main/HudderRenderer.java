@@ -150,8 +150,7 @@ public class HudderRenderer implements HudElement {
 	public void renderTexture9Slice(GuiGraphics context, ResourceLocation id, float x, float y, float width,
 			float height, float[] slices) {
 		context.guiRenderState.submitGuiElement(new TextureRenderState(TextureSetup.singleTexture(mc
-				.getTextureManager().getTexture(id).getTextureView()), RenderPipelines.GUI_TEXTURED,
-		(vconsumer)->{
+				.getTextureManager().getTexture(id).getTextureView()), RenderPipelines.GUI_TEXTURED, vconsumer->{
 		    Matrix3x2fStack matrix = context.pose();
 	        NativeImage img = ((DynamicTexture)mc.getTextureManager().getTexture(id)).getPixels();
 	        int texwidth = img.getWidth();
@@ -237,8 +236,7 @@ public class HudderRenderer implements HudElement {
 			ResourceLocation id, boolean triangles) {
 		context.guiRenderState.submitGuiElement(new TextureRenderState(TextureSetup.singleTexture(mc
 				.getTextureManager().getTexture(id).getTextureView()),
-				triangles ? GUI_TEXTURED_TRIANGLES : RenderPipelines.GUI_TEXTURED,
-			(vconsumer)->{
+				triangles ? GUI_TEXTURED_TRIANGLES : RenderPipelines.GUI_TEXTURED, vconsumer->{
 		        Matrix3x2fStack matrix = context.pose();
 		        
 	        for (int i = 0;i<vertices.length;i+=2) {
@@ -280,7 +278,7 @@ public class HudderRenderer implements HudElement {
 	 */
 	public void renderColoredVertexArray(GuiGraphics context, float[] vertices, int argb, boolean triangle_strip) {
 		context.guiRenderState.submitGuiElement(new TextureRenderState(TextureSetup.noTexture(),
-			triangle_strip ? GUI_TEXTURED_TRIANGLES : RenderPipelines.GUI_TEXTURED, (vconsumer) -> {
+			triangle_strip ? GUI_TEXTURED_TRIANGLES : RenderPipelines.GUI_TEXTURED, vconsumer -> {
 			
 	        Matrix3x2fStack matrix = context.pose();
 	        

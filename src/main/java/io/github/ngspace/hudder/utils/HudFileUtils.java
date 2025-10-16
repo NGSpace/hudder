@@ -35,9 +35,14 @@ public class HudFileUtils {private HudFileUtils() {}
      * Read file to String
      * @param file - the file to read
      * @return The text in the file
-     * @throws IOException
      */
 	public static String readFile(String file) {
+		return reader.getCachedFileAsString(sanitize(FOLDER + file));
+	}
+	
+    
+    
+	public static byte[] readFileBytes(String file) {
 		return reader.getCachedFile(sanitize(FOLDER + file));
 	}
 	
@@ -50,7 +55,7 @@ public class HudFileUtils {private HudFileUtils() {}
      * @throws IOException
      */
 	public static String readFileWithoutCache(String file) throws IOException {
-		return reader.reader.readFile(new File(sanitize(FOLDER + file)));
+		return new String(reader.reader.readFile(new File(sanitize(FOLDER + file))));
 	}
 	
 	

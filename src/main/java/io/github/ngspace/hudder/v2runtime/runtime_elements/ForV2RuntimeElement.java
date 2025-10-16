@@ -29,8 +29,8 @@ public class ForV2RuntimeElement extends AV2RuntimeElement {
 				nestedRuntime.putScoped(variablename, val);
 				CompileState res = nestedRuntime.execute();
 				compileState.combineWithResult(res.toResult(), false);
-				if (res.hasBroken) break;
 				if (res.hasReturned) compileState.setReturnValue(res.returnValue);
+				if (res.hasBroken) break;
 			}
 		}
 		return true;

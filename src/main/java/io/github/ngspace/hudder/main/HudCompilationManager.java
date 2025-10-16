@@ -14,6 +14,9 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 
 public class HudCompilationManager implements EndTick {
+	
+	protected static Minecraft mc = Minecraft.getInstance();
+	
     public static List<Consumer<ATextCompiler>> precomplistners = new ArrayList<Consumer<ATextCompiler>>();
     public static List<Consumer<ATextCompiler>> postcomplistners = new ArrayList<Consumer<ATextCompiler>>();
     private HudInformation result = null;

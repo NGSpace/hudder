@@ -26,13 +26,12 @@ public class NumberData {private NumberData() {}
 		Minecraft ins = Minecraft.getInstance();
 		LocalPlayer p = ins.player;
 		Camera c = ins.gameRenderer.getMainCamera();
-		int fps = Advanced.getFPS(ins);
 		HudderConfig config = Hudder.config;
 		
 		return switch(key) {
 			
 			/* Performance */
-			case "fps": yield (double) fps;
+			case "fps": yield (double) Advanced.fps;
 			case "avgfps","avg_fps": yield (double) Advanced.getAverageFPS();
 			case "minfps","min_fps": yield (double) Advanced.getMinimumFPS();
 			case "maxfps","max_fps": yield (double) Advanced.getMaximumFPS();

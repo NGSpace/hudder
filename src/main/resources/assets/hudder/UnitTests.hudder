@@ -101,6 +101,22 @@ rt
 ||EXPECT||
 true
 
+||INPUT||For and Break
+r#for x in range(1)
+	{break}
+t
+||EXPECT||
+rt
+
+||INPUT||For and return
+#def while_and_return
+	#for x in range(1)
+		;return, true;
+	;return, false;
+{while_and_return()}
+||EXPECT||
+true
+
 ||INPUT||Def and Break
 ;mute;
 #def breaktest
@@ -113,12 +129,14 @@ true
 ||EXPECT||
 y
 
-||INPUT||Break and Break
-r#if true
-	{break}
-t
+||INPUT||If and return
+#def while_and_return
+	#if true
+		;return, true;
+	;return, false;
+{while_and_return()}
 ||EXPECT||
-r
+true
 
 ||INPUT||New line concatination
 {"r" + "\n" + "o"}

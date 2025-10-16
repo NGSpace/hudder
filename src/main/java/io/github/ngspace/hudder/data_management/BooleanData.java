@@ -107,7 +107,8 @@ public class BooleanData {private BooleanData(){}
 			case "enabled": yield true; //Duh
 			case "shadow": yield config.shadow;
 			case "showinf3": yield config.showInF3;
-			case "javascriptenabled": yield config.javascript;
+			case "javascriptenabled": yield true; // For compatibility
+			case "unsafeoperations": yield config.unsafeoperations;
 			case "globalvariablesenabled": yield config.globalVariablesEnabled;
 			case "background": yield config.background;
 			case "removegui": yield config.removegui;

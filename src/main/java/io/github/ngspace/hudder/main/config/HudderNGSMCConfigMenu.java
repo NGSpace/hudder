@@ -128,9 +128,9 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 	    		.setSaveOperation(b->config.setCompiler(b.toLowerCase()))
 	    		.setValidator(e->!Compilers.has(e.toLowerCase())?Component.translatable("hudder.advanced.compilertype.error"):null)
 	    		.build());
-		advanced.addOption(BooleanNGSMCConfigOption.builder(config.javascript, Component.translatable("hudder.advanced.javascript"))
-				.setHoverComponent(Component.translatable("hudder.advanced.javascript.tooltip"))
-				.setSaveOperation(b->config.javascript=b)
+		advanced.addOption(BooleanNGSMCConfigOption.builder(config.unsafeoperations, Component.translatable("hudder.advanced.unsafeoperations"))
+				.setHoverComponent(Component.translatable("hudder.advanced.unsafeoperations.tooltip"))
+				.setSaveOperation(b->config.unsafeoperations=b)
 				.setDefaultValue(false)
 				.build());
 		advanced.addOption(BooleanNGSMCConfigOption.builder(config.removegui, Component.translatable("hudder.advanced.removehotbar"))

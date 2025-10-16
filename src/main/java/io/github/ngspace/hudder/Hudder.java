@@ -16,6 +16,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import io.github.ngspace.hudder.api.functionsandconsumers.HudderBuiltInFunctions;
 import io.github.ngspace.hudder.api.functionsandconsumers.HudderBuiltInMethods;
 import io.github.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI;
+import io.github.ngspace.hudder.data_management.Advanced;
 import io.github.ngspace.hudder.main.HudCompilationManager;
 import io.github.ngspace.hudder.main.HudderRenderer;
 import io.github.ngspace.hudder.main.HudderTickEvent;
@@ -136,6 +137,10 @@ public class Hudder implements ClientModInitializer {
 				e.printStackTrace();
 			}
 		});
+        
+        // Make sure the FPS variable is updated once every compilation instead of every time a number variable is used
+        var mc = Minecraft.getInstance();
+        HudCompilationManager.addPreCompilerListener(c->Advanced.fps = Advanced.getFPS(mc));
 		
 		log("Hudder has finished loading!");
 	}

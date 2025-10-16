@@ -52,12 +52,13 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 						e.printStackTrace();
 					}
         		}
-        		if (javaObject == V2Runtime.NULL)
+        		if (javaObject == V2Runtime.NULL
+	        			|| javaObject instanceof Class<?>
+	        			|| javaObject instanceof ClassLoader)
         			return null;
         		return super.wrapAsJavaObject(cx, scope, javaObject, staticType);
         	}
         });
-        cx.setLanguageVersion(Context.VERSION_ES6);//Beta features
         cx.setInterpretedMode(false);
         
         scope = cx.initSafeStandardObjects();
@@ -66,6 +67,10 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 		
 		insertObject(JavaScriptIO, "console");
 		insertObject(JavaScriptIO, "hudder" );
+		
+		// To prevent the script from not stoppping
+		if (!Hudder.config.unsafeoperations)
+			cx.setInstructionObserverThreshold(1024);
 	}
 
 	@Override public void bindFunction(ScriptFunction function, String... names) {

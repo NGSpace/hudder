@@ -25,17 +25,16 @@ import net.minidev.json.JSONObject;
 
 public class HudderConfig {
 	
-	public static final int HUDDER_CONFIG_VERSION = 1;
+	public static final int HUDDER_CONFIG_VERSION = 2;
 	
 	/* EXPOSED :flushed: */
 	@Expose public Map<String, Object> globalVariables = new HashMap<String, Object>();
-//	@Expose public Map<String, Object> savedVariables = new HashMap<String, Object>();
     @Expose public String compilertype = "hudder";
 	@Expose public String mainfile = "tutorial";//Set "tutorial" as the default file selected
     @Expose public boolean enabled = true;
 	@Expose public boolean shadow = true;
 	@Expose public boolean showInF3 = false;
-	@Expose public boolean javascript = false;
+	@Expose public boolean unsafeoperations = false;
 	@Expose public boolean globalVariablesEnabled = true;
 	@Expose public float scale = 1f;
 	@Expose public int color = 0xFFd6d6d6;
@@ -116,7 +115,7 @@ public class HudderConfig {
 			}
 			
 			if (config_version<HUDDER_CONFIG_VERSION) {
-				updateConfigFromVersion(config_version);
+				updateConfigFromVersion(config_version, newinfo);
 				config_version = HUDDER_CONFIG_VERSION;
 				save();
 			}
@@ -135,11 +134,13 @@ public class HudderConfig {
 	
 	
 	
-    private void updateConfigFromVersion(int version) {
+    private void updateConfigFromVersion(int version, Map<?, ?> newinfo) {
 		if (version<1 && ((color >> 24) & 0xFF)==0) {
         	color = (255 << 24) | color;
         }
-		
+		if (version<2) {
+			unsafeoperations = (boolean) newinfo.get("javascript");
+		}
 	}
 
 
