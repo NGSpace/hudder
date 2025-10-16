@@ -52,7 +52,9 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 						e.printStackTrace();
 					}
         		}
-        		if (javaObject == V2Runtime.NULL)
+        		if (javaObject == V2Runtime.NULL
+	        			|| javaObject instanceof Class<?>
+	        			|| javaObject instanceof ClassLoader))
         			return null;
         		return super.wrapAsJavaObject(cx, scope, javaObject, staticType);
         	}
