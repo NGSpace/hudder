@@ -54,7 +54,7 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
         		}
         		if (javaObject == V2Runtime.NULL
 	        			|| javaObject instanceof Class<?>
-	        			|| javaObject instanceof ClassLoader))
+	        			|| javaObject instanceof ClassLoader)
         			return null;
         		return super.wrapAsJavaObject(cx, scope, javaObject, staticType);
         	}
