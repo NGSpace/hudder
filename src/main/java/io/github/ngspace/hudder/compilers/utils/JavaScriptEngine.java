@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.mozilla.javascript.BaseFunction;
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.NativeJavaObject;
@@ -23,7 +24,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
 public class JavaScriptEngine implements IScriptingLanguageEngine {
-	
+
 	protected static Minecraft mc = Minecraft.getInstance();
 	
 	Context cx;
@@ -67,10 +68,6 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 		
 		insertObject(JavaScriptIO, "console");
 		insertObject(JavaScriptIO, "hudder" );
-		
-		// To prevent the script from crashing the game
-		if (!Hudder.config.unsafeoperations)
-			cx.setInstructionObserverThreshold(1024);
 	}
 
 	@Override public void bindFunction(ScriptFunction function, String... names) {

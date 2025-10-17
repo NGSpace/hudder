@@ -8,6 +8,9 @@ import dev.ngspace.ngsmcconfig.gui.NGSMCConfigEntry;
 import dev.ngspace.ngsmcconfig.gui.dropdown.DropdownElement;
 import net.minecraft.network.chat.Component;
 
+/**
+ * Failed Experiment, does not work, do not use.
+ */
 public class DropdownNGSMCConfigOption extends AbstractNGSMCConfigOption<Boolean> {
 	
 	protected DropdownNGSMCConfigOption(Boolean defaultValue, Boolean value, Component text,

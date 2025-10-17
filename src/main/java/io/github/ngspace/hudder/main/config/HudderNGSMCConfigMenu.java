@@ -8,7 +8,6 @@ import dev.ngspace.ngsmcconfig.api.NGSMCConfigBuilder;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 import dev.ngspace.ngsmcconfig.options.BooleanNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.DoubleNGSMCConfigOption;
-import dev.ngspace.ngsmcconfig.options.DropdownNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.HexNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.IntNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.StringNGSMCConfigOption;
@@ -68,11 +67,11 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 				.setSaveOperation(b->config.scale=b.floatValue())
 				.setDefaultValue(1d)
 				.build());
-		general.addOption(DropdownNGSMCConfigOption.builder(true, Component.translatable("hudder.general.dropdown"))
-				.setHoverComponent(Component.translatable("hudder.general.dropdown.tooltip"))
-				.setSaveOperation(Hudder::log)
-				.setDefaultValue(true)
-				.build());
+//		general.addOption(DropdownNGSMCConfigOption.builder(true, Component.translatable("hudder.general.dropdown"))
+//				.setHoverComponent(Component.translatable("hudder.general.dropdown.tooltip"))
+//				.setSaveOperation(Hudder::log)
+//				.setDefaultValue(true)
+//				.build());
 		
 		
 		
