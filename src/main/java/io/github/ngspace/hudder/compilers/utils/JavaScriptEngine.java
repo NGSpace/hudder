@@ -68,7 +68,7 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 		insertObject(JavaScriptIO, "console");
 		insertObject(JavaScriptIO, "hudder" );
 		
-		// To prevent the script from not stoppping
+		// To prevent the script from crashing the game
 		if (!Hudder.config.unsafeoperations)
 			cx.setInstructionObserverThreshold(1024);
 	}
@@ -145,7 +145,8 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 
 	@Override public CompileException processException(Exception e) {
 		if (e instanceof RhinoException ex) {
-			String msg = "\u00A74"+ex.getMessage()
+			String msg = "\u00A74"+(ex instanceof WrappedException wex ?
+					wex.getWrappedException().getMessage() :ex.getMessage())
 					+"\n\u00A7bat Line "+ex.lineNumber()+" at col "+ex.columnNumber();
 			return new CompileException(msg,-1,-1,ex);
 		}

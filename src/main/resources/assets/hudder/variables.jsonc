@@ -724,6 +724,11 @@
 				"name": "issneaking",
 				"desc": "Is the player sneaking",
 				"version": "6.2.0"
+			},
+			{
+				"name": "issprinting",
+				"desc": "Is the player sprinting",
+				"version": "8.6.0"
 			}
 		],
 		
@@ -857,8 +862,13 @@
 			},
 			{
 				"name": "javascriptenabled",
-				"desc": "Is javascript enabled",
+				"desc": "Is javascript enabled (Always true since 8.6.0)",
 				"version": "2.0.0"
+			},
+			{
+				"name": "unsafeoperations",
+				"desc": "Are unsafe operations allowed",
+				"version": "8.6.0"
 			},
 			{
 				"name": "globalvariablesenabled",

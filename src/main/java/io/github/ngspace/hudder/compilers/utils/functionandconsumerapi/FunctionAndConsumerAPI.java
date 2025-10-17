@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.abstractions.ATextCompiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.data_management.ComponentsData;
@@ -48,13 +49,29 @@ public class FunctionAndConsumerAPI {
 			binder.bindFunction(func, names);
 		functions.put(func, names);
 	}
+	
+	public void registerUnsafeFunction(BindableFunction func, String... names) {
+		registerFunction((m,c,a)->{
+			if (!Hudder.config.unsafeoperations)
+				throw new CompileException("Called unsafe function with unsafe operations disabled!");
+			return func.invoke(m,c,a);
+		}, names);
+	}
 
 
 
-	public void registerConsumer(BindableConsumer func, String... names) {
+	public void registerConsumer(BindableConsumer cons, String... names) {
 		for (var binder : binders) 
-			binder.bindConsumer(func, names);
-		consumers.put(func, names);
+			binder.bindConsumer(cons, names);
+		consumers.put(cons, names);
+	}
+	
+	public void registerUnsafeConsumer(BindableConsumer cons, String... names) {
+		registerConsumer((m,c,a)->{
+			if (!Hudder.config.unsafeoperations)
+				throw new CompileException("Called unsafe method with unsafe operations disabled!");
+			cons.invoke(m,c,a);
+		}, names);
 	}
 	
 	

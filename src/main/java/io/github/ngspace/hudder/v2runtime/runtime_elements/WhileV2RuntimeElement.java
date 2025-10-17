@@ -24,8 +24,11 @@ public class WhileV2RuntimeElement extends AV2RuntimeElement {
 	@Override public boolean execute(CompileState meta, StringBuilder builder) throws CompileException {
 		short s=0;
 		while (condition.asBoolean()) {
-			s++;
-			if (s==Short.MAX_VALUE&&Hudder.IS_DEBUG) throw new CompileException("Max while loop reached: " + s, charPosition.line, charPosition.charpos);
+			if (!Hudder.config.unsafeoperations) {
+				s++;
+				if (s==Short.MAX_VALUE)
+					throw new CompileException("Max while loop reached: " + s, charPosition.line, charPosition.charpos);
+			}
 			CompileState res = nestedRuntime.execute();
 			meta.combineWithResult(res.toResult(), false);
 			if (res.hasReturned) meta.setReturnValue(res.returnValue);

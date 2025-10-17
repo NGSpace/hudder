@@ -61,6 +61,6 @@ public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 		binder.registerFunction((m,c,s)->HudFileUtils.exists(s[0].asString()),"exists");
 		binder.registerFunction((m,c,s)->mc.font.width(s[0].asString()), "strWidth", "strwidth");
 		binder.registerFunction((m,c,s)->s[0].get().toString(), "toString");
-		binder.registerFunction((m,c,s)->new HashMap<Object, Object>(), "map");
+		binder.registerUnsafeFunction((m,c,s)->new HashMap<Object, Object>(), "map");
 	}
 }

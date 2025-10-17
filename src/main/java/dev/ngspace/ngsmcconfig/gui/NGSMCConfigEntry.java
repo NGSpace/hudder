@@ -16,7 +16,9 @@ import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 
-public class NGSMCConfigEntry extends ContainerObjectSelectionList.Entry<NGSMCConfigEntry>{
+public class NGSMCConfigEntry extends ContainerObjectSelectionList.Entry<NGSMCConfigEntry> {
+	
+	public boolean renderlast;
 	
     AbstractWidget widget;
     Button resetButton;
@@ -26,15 +28,20 @@ public class NGSMCConfigEntry extends ContainerObjectSelectionList.Entry<NGSMCCo
 	private AbstractNGSMCConfigOption<?> option;
     
     protected NGSMCConfigEntry() {}
-
+    
     public NGSMCConfigEntry(AbstractWidget widget, Component title, AbstractNGSMCConfigOption<?> option) {
+    	this(widget,title,option,false);
+    }
+
+    public NGSMCConfigEntry(AbstractWidget widget, Component title, AbstractNGSMCConfigOption<?> option,
+    		boolean renderlast) {
+    	this.renderlast = renderlast;
         this.widget = widget;
         resetButton = Button.builder(Component.translatable("ngsmcconfig.reset"), button->option.reset())
         		.size(40, 20).build();
         text = new StringWidget(0, 0, 200, 20, title, Minecraft.getInstance().font) {
         	@Override public void playDownSound(SoundManager soundManager) { /* Ugly noise */ }
         };
-//        text.alignLeft();
         text.active = true;
         this.option = option;
         children = Arrays.asList(widget, resetButton, text);

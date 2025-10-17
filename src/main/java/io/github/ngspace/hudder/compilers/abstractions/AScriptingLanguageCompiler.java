@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.mozilla.javascript.WrappedException;
+
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
@@ -88,7 +90,7 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 			throw new CompileException(e.getMessage(),-1,-1,e);
 		}
 	}
-	
+
 	@Override public Object getVariable(String key) throws CompileException {
 		Object obj = NumberData.getNumber(key);
 		if ( obj!=null) return obj;

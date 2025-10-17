@@ -16,7 +16,6 @@ public class JavaScriptCompiler extends AScriptingLanguageCompiler {
 		FunctionAndConsumerAPI api = FunctionAndConsumerAPI.getInstance();
 		var compiler = this;
 		api.applyFunctionsAndConsumers(new Binder() {
-			
 			@Override
 			public void bindFunction(BindableFunction c, String... n) {
 				engine.bindFunction(e->c.invoke(elms, compiler, e), n);
