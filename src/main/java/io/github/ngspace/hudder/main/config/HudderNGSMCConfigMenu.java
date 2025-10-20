@@ -67,11 +67,6 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 				.setSaveOperation(b->config.scale=b.floatValue())
 				.setDefaultValue(1d)
 				.build());
-//		general.addOption(DropdownNGSMCConfigOption.builder(true, Component.translatable("hudder.general.dropdown"))
-//				.setHoverComponent(Component.translatable("hudder.general.dropdown.tooltip"))
-//				.setSaveOperation(Hudder::log)
-//				.setDefaultValue(true)
-//				.build());
 		
 		
 		
