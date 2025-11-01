@@ -1,16 +1,25 @@
 # Translations
 Think you're better than ~~google~~ me at a speaking another language? then you probably are!
-To access the language files you can go to `src/main/resources/assets/hudder/lang` and either edit an existing translation file or create a new one with the name of the corresponding language codes from [this list](https://minecraft.wiki/w/Language)
+To translate you can go to https://hosted.weblate.org/projects/hudder/, make a weblate account and start translating!
 
 # Code
-Chances are if you are reading this you already know how to clone this repository, edit the code and make a pull request. If not then... idfk what to tell you ¯\\\_(ツ)_/¯
-
-If you do know here are some rules:
+All contributions to Hudder must follow the following rules
 1. No malicious code (obviously).
 2. No stupid code.
 3. Below 10k lines additions and deletions (combined).
-5. Do not add any precompiled code.
-6. Please run your code through SonarQube before submitting it to review.
 
 # License
-By contributing to this repository you agree to give me (NGSpace) full control over the license of your work.
+By submitting a contribution to this repository, you agree to grant NGSpace
+a perpetual, worldwide, irrevocable, royalty-free license to use, modify,
+distribute, sublicense, and relicense your contribution under any terms,
+including changing the overall project license in the future.
+
+You retain copyright ownership of your contribution, but you agree that
+NGSpace may, at their discretion, relicense the project (including your
+contribution) under different open-source or proprietary terms.
+
+You represent that:
+1. You are legally entitled to grant this license.
+2. Your contribution is your original work (or you have sufficient rights to submit it).
+3. Your contribution does not contain confidential or third-party code that violates others’ rights.
+4. Where legally possible, you waive or agree not to assert any moral rights in your contribution.
