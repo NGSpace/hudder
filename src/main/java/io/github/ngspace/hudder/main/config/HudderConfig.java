@@ -3,10 +3,10 @@ package io.github.ngspace.hudder.main.config;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.AccessFlag;
 import java.lang.reflect.Field;
-import java.util.Arrays;
+import java.lang.reflect.Member;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.google.gson.GsonBuilder;
@@ -19,17 +19,17 @@ import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.Compilers;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
 import io.github.ngspace.hudder.utils.HudFileUtils;
+import io.github.ngspace.hudder.utils.NoAccess;
 import io.github.ngspace.hudder.utils.testing.HudderUnitTester;
 import net.minecraft.client.Minecraft;
 import net.minidev.json.JSONObject;
 
 public class HudderConfig {
 	
-	public static final int HUDDER_CONFIG_VERSION = 2;
+	public static final int HUDDER_CONFIG_VERSION = 3;
 	
 	/* EXPOSED :flushed: */
 	@Expose public Map<String, Object> globalVariables = new HashMap<String, Object>();
-    @Expose public String compilertype = "hudder";
 	@Expose public String mainfile = "tutorial";//Set "tutorial" as the default file selected
     @Expose public boolean enabled = true;
 	@Expose public boolean shadow = true;
@@ -48,6 +48,8 @@ public class HudderConfig {
 	@Expose public boolean limitrate = true;
 	
 	@Expose public int config_version = HUDDER_CONFIG_VERSION;
+
+    @Expose private String compilername = "hudder";
 	
 	
 	
@@ -66,7 +68,7 @@ public class HudderConfig {
      */
 	public HudderConfig(File configFile) {
 		this.configFile = configFile;
-		readConfig();
+		readAndUpdateConfig();
 	}
 
 
@@ -87,7 +89,7 @@ public class HudderConfig {
 	 * Read the JSON values from the config file that was provided durinng the ConfigInfo's initalization and apply
 	 * them to this ConfigInfo Object.
 	 */
-	public void readConfig() {
+	public void readAndUpdateConfig() {
 		try {
 			if (!configFile.exists()) {
 				save();
@@ -134,35 +136,22 @@ public class HudderConfig {
 	
 	
 	
-    private void updateConfigFromVersion(int version, Map<?, ?> newinfo) {
+	private void updateConfigFromVersion(int version, Map<?, ?> newinfo) {
 		if (version<1 && ((color >> 24) & 0xFF)==0) {
         	color = (255 << 24) | color;
         }
 		if (version<2) {
 			unsafeoperations = (boolean) newinfo.get("javascript");
 		}
+		if (version<3&&newinfo.get("compilertype")!=null) {
+			compilername = switch (newinfo.get("compilertype").toString()) {
+				case "none","null" -> "empty";
+				case "javascript" -> "js";
+				case "default", "defaultcompiler", "default compiler" -> "hudder";
+				default -> newinfo.get("compilertype").toString();
+			};
+		}
 	}
-
-
-	public static int compareSemanticVersions(String version1, String version2) {
-        List<Integer> version1Components = Arrays.stream(version1.split("\\.")).map(Integer::parseInt).toList();
-        List<Integer> version2Components = Arrays.stream(version2.split("\\.")).map(Integer::parseInt).toList();
-
-        int maxLength = Math.max(version1Components.size(), version2Components.size());
-
-        for (int i = 0; i < maxLength; i++) {
-            int v1Component = i < version1Components.size() ? version1Components.get(i) : 0;
-            int v2Component = i < version2Components.size() ? version2Components.get(i) : 0;
-
-            if (v1Component > v2Component) {
-                return 1;
-            } else if (v1Component < v2Component) {
-                return -1;
-            }
-        }
-
-        return 0;
-    }
     
 	
 	
@@ -173,10 +162,11 @@ public class HudderConfig {
 	 */
 	public void refreshCompiler() {
 		try {
-			compiler = Compilers.getCompilerFromName(compilertype.toLowerCase());
+			compiler = Compilers.getCompilerFromName(compilername);
 		} catch (Exception e) {
-			compiler = new HudderV2Compiler();
 			e.printStackTrace();
+			Hudder.log("Using default compiler due to error");
+			compiler = new HudderV2Compiler();
 		}
 	}
 	
@@ -186,12 +176,12 @@ public class HudderConfig {
 	 */
 	private void setField(Field f, Object object) throws ReflectiveOperationException {
 		if (object instanceof Number num) {
-			if (f.getType().isAssignableFrom(int.class)) f.set(this, num.intValue());
-			else if (f.getType().isAssignableFrom(float.class)) f.set(this, num.floatValue());
-			else if (f.getType().isAssignableFrom(double.class)) f.set(this, num.doubleValue());
-			else if (f.getType().isAssignableFrom(long.class)) f.set(this, num.longValue());
-			else if (f.getType().isAssignableFrom(byte.class)) f.set(this, num.byteValue());
-			else if (f.getType().isAssignableFrom(short.class)) f.set(this, num.shortValue());
+			if (f.getType()==(int.class)) f.set(this, num.intValue());
+			else if (f.getType()==(float.class)) f.set(this, num.floatValue());
+			else if (f.getType()==(double.class)) f.set(this, num.doubleValue());
+			else if (f.getType()==(long.class)) f.set(this, num.longValue());
+			else if (f.getType()==(byte.class)) f.set(this, num.byteValue());
+			else if (f.getType()==(short.class)) f.set(this, num.shortValue());
 			else f.set(this, object);
 		} else f.set(this, object);
 	}
@@ -234,7 +224,7 @@ public class HudderConfig {
 	 * @return true or false
 	 */
 	public boolean shouldDrawResult() {
-		return !mc.options.hideGui&&(!mc.getDebugOverlay().showDebugScreen()||showInF3)&&enabled;
+		return !mc.options.hideGui&&(!mc.debugEntries.isF3Visible()||showInF3)&&enabled;
 	}
 	
 	
@@ -249,12 +239,21 @@ public class HudderConfig {
 	
 	
 	/**
+	 * Returns the name of the current compiler
+	 * @return
+	 */
+	public String getCompilerName() {
+		return compilername;
+	}
+	
+	
+	/**
 	 * Sets the compilertype to the provided compiler name and refreshes the compiler
 	 * @param compilername - the name of the compiler
 	 * @return the provided name (for clothconfig)
 	 */
-	public String setCompiler(String compilername) {
-		compilertype=compilername;
+	public String setCompilerName(String compilername) {
+		this.compilername=compilername;
 		refreshCompiler();
 		return compilername;
 	}
@@ -266,5 +265,14 @@ public class HudderConfig {
 	 */
 	public ATextCompiler getCompiler() {
 		return compiler;
+	}
+
+
+	public static boolean isAccessible(Class<?> clazz) {
+		return (clazz.accessFlags().contains(AccessFlag.PUBLIC)&&!clazz.accessFlags().contains(AccessFlag.PRIVATE))
+				&&!clazz.isAnnotationPresent(NoAccess.class);
+	}
+	public static boolean isPublic(Member member) {
+		return member.accessFlags().contains(AccessFlag.PUBLIC)&&!member.accessFlags().contains(AccessFlag.PRIVATE);
 	}
 }

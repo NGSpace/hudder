@@ -121,11 +121,11 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 				.setSaveOperation(b->config.showInF3=b)
 				.setDefaultValue(false)
 				.build());
-		advanced.addOption(StringNGSMCConfigOption.builder(config.compilertype,
+		advanced.addOption(StringNGSMCConfigOption.builder(config.getCompilerName(),
 					Component.translatable("hudder.advanced.compilertype"))
 	    		.setHoverComponent(Component.translatable("hudder.advanced.compilertype.tooltip"))
 	    		.setDefaultValue("hudder")
-	    		.setSaveOperation(b->config.setCompiler(b.toLowerCase()))
+	    		.setSaveOperation(b->config.setCompilerName(b.toLowerCase()))
 	    		.setValidator(e->!Compilers.has(e.toLowerCase())?Component.translatable("hudder.advanced.compilertype.error"):null)
 	    		.build());
 		advanced.addOption(BooleanNGSMCConfigOption.builder(config.unsafeoperations, Component.translatable("hudder.advanced.unsafeoperations"))

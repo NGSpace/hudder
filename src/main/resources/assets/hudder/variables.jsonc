@@ -627,8 +627,13 @@
 			},
 			{
 				"name": "showdebug",
-				"desc": "Whether debug/f3 is shown",
+				"desc": "Whether debug features are shown",
 				"version": "1.0.0"
+			},
+			{
+				"name": "f3enabled",
+				"desc": "Whether f3 is toggled",
+				"version": "9.0.0"
 			},
 			{
 				"name": "camera_detached",

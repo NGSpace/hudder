@@ -28,7 +28,7 @@ public class HudderUnitTest {
 		try {
 			if (compiler instanceof AV2Compiler v2comp) {
 				v2comp.runtimes = new HashMap<String, V2Runtime>();
-				v2comp.tempVariables = new HashMap<String, Object>();
+				AV2Compiler.tempVariables = new HashMap<String, Object>();
 			}
 			ATextCompiler.variables.clear();
 			text = compiler.compile(info, texttocompile, "Unit Tests").TopLeftText;

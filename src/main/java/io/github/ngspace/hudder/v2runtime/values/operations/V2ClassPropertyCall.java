@@ -13,6 +13,7 @@ import org.mozilla.javascript.ScriptableObject;
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.abstractions.AV2Compiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
+import io.github.ngspace.hudder.main.config.HudderConfig;
 import io.github.ngspace.hudder.utils.HudderUtils;
 import io.github.ngspace.hudder.utils.NoAccess;
 import io.github.ngspace.hudder.utils.ValueGetter;
@@ -58,6 +59,8 @@ public class V2ClassPropertyCall extends AV2Value {
 	}
 	@Override public Object get() throws CompileException {
 		Object obj = smartGet();
+		if (!HudderConfig.isAccessible(obj.getClass()))
+			return null;
 		if (obj instanceof Set<?> r) return r.toArray();
 		if (obj instanceof ScriptableObject en) {
 			return new ValueGetter() {
@@ -80,6 +83,9 @@ public class V2ClassPropertyCall extends AV2Value {
 		
 		if (objClass.isPrimitive())
 			throw new CompileException("Can not read properties of Numbers, Booleans and Chars : "+classobj.value,line,charpos);
+
+		if (!HudderConfig.isAccessible(objClass))
+			throw new CompileException("Access to this type is not allowed",line,charpos);
 		
 		if (isFunctionCall) {
 			Object[] parameters = new Object[functionCallArgs.length];
@@ -97,14 +103,14 @@ public class V2ClassPropertyCall extends AV2Value {
 				Class<?>[] v = method.getParameterTypes();
 				
 				for (int i=0;i<v.length;i++) {
-					if (v[i].isPrimitive()&&!v[i].isInstance(char.class)&&!v[i].isInstance(boolean.class)) {
+					if (v[i].isPrimitive() && v[i] != char.class && v[i] != boolean.class) {
 						if (parameters[i] instanceof Number num) {
-							if      (v[i].isAssignableFrom(int.class   )) finalParameters[i] = num.intValue   ();
-							else if (v[i].isAssignableFrom(float.class )) finalParameters[i] = num.floatValue ();
-							else if (v[i].isAssignableFrom(double.class)) finalParameters[i] = num.doubleValue();
-							else if (v[i].isAssignableFrom(long.class  )) finalParameters[i] = num.longValue  ();
-							else if (v[i].isAssignableFrom(byte.class  )) finalParameters[i] = num.byteValue  ();
-							else if (v[i].isAssignableFrom(short.class )) finalParameters[i] = num.shortValue ();
+							if      (v[i] == int.class   ) finalParameters[i] = num.intValue   ();
+							else if (v[i] == float.class ) finalParameters[i] = num.floatValue ();
+							else if (v[i] == double.class) finalParameters[i] = num.doubleValue();
+							else if (v[i] == long.class  ) finalParameters[i] = num.longValue  ();
+							else if (v[i] == byte.class  ) finalParameters[i] = num.byteValue  ();
+							else if (v[i] == short.class ) finalParameters[i] = num.shortValue ();
 							else isCompatible = false;
 						} else isCompatible = false;
 					} else if (!v[i].isAssignableFrom(classes[i])) isCompatible = false;

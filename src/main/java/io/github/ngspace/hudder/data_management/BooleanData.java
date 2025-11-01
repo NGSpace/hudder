@@ -39,6 +39,7 @@ public class BooleanData {private BooleanData(){}
 			}
 			case "hudhidden": yield ins.options.hideGui;
 			case "showdebug": yield ins.getDebugOverlay().showDebugScreen();
+			case "f3enabled": yield ins.debugEntries.isF3Visible();
 			case "camera_detached": yield c.getEntity() != p;
 			
 			

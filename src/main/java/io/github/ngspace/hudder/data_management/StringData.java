@@ -135,7 +135,7 @@ public class StringData {private StringData() {}
 			
 			
 			/* Hudder */
-			case "compilertype": yield Hudder.config.compilertype;
+			case "compilertype": yield Hudder.config.getCompilerName();
 			case "mainfile": yield Hudder.config.mainfile;
 			
 			case "unset": yield "unset";

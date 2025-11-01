@@ -15,6 +15,7 @@ import org.mozilla.javascript.WrapFactory;
 import org.mozilla.javascript.WrappedException;
 
 import io.github.ngspace.hudder.Hudder;
+import io.github.ngspace.hudder.main.config.HudderConfig;
 import io.github.ngspace.hudder.utils.ObjectWrapper;
 import io.github.ngspace.hudder.utils.ValueGetter;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
@@ -33,6 +34,12 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
         cx.setWrapFactory(new WrapFactory() {
         	@Override
         	public Scriptable wrapAsJavaObject(Context cx, Scriptable scope, Object javaObject, Class<?> staticType) {
+        		if (javaObject == V2Runtime.NULL
+	        			|| javaObject instanceof Class<?>
+	        			|| javaObject instanceof ClassLoader)
+        			return null;
+        		if (!HudderConfig.isAccessible(javaObject.getClass()))
+        			return null;
         		if (javaObject instanceof ValueGetter r) {
 					return new NativeJavaObject(scope,r,r.getClass(),true) {
 						private static final long serialVersionUID = -6145385781375908982L;
@@ -52,10 +59,6 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 						e.printStackTrace();
 					}
         		}
-        		if (javaObject == V2Runtime.NULL
-	        			|| javaObject instanceof Class<?>
-	        			|| javaObject instanceof ClassLoader)
-        			return null;
         		return super.wrapAsJavaObject(cx, scope, javaObject, staticType);
         	}
         });

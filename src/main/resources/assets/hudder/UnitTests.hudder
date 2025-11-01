@@ -80,6 +80,11 @@ true
 ||EXPECT||
 012345678910
 
+||INPUT||No Access Class
+{JavaTestNoAccess.ImportantDataHolder}
+||EXPECT||
+Access to this type is not allowed
+
 ||INPUT||Data API
 {ObjectDataAPITestVariable}
 ||EXPECT||

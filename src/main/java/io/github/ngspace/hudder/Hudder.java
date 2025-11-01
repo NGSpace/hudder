@@ -15,6 +15,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 
 import io.github.ngspace.hudder.api.functionsandconsumers.HudderBuiltInFunctions;
 import io.github.ngspace.hudder.api.functionsandconsumers.HudderBuiltInMethods;
+import io.github.ngspace.hudder.compilers.utils.Compilers;
 import io.github.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI;
 import io.github.ngspace.hudder.data_management.Advanced;
 import io.github.ngspace.hudder.main.HudCompilationManager;
@@ -70,6 +71,9 @@ public class Hudder implements ClientModInitializer {
      * @throws Exception Because I fuck up a lot.
      */
 	@Override public void onInitializeClient() {
+		
+		log("Starting Hudder " + HUDDER_VERSION);
+		
 		configkeybind = KeyBindingHelper.registerKeyBinding(new KeyMapping(
             "hudder.configkeybind",
             InputConstants.Type.KEYSYM, // The type of the keybinding, KEYSYM for keyboard, MOUSE for mouse.
@@ -102,8 +106,10 @@ public class Hudder implements ClientModInitializer {
 			}
 		}
 		
-		log("Starting Hudder " + HUDDER_VERSION);
+		log("Loading default compilers");
+		Compilers.registerDefaultCompilers();
 		
+		log("Reading Hudder config");
 		config = new HudderConfig(new File(HudFileUtils.FOLDER + "hud.json"));
 
 		if (IS_DEBUG) {
