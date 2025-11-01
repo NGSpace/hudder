@@ -18,6 +18,8 @@ import io.github.ngspace.hudder.api.functionsandconsumers.HudderBuiltInMethods;
 import io.github.ngspace.hudder.compilers.utils.Compilers;
 import io.github.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI;
 import io.github.ngspace.hudder.data_management.Advanced;
+import io.github.ngspace.hudder.data_management.ObjectDataAPI;
+import io.github.ngspace.hudder.data_management.ResourcePackVariables;
 import io.github.ngspace.hudder.main.HudCompilationManager;
 import io.github.ngspace.hudder.main.HudderRenderer;
 import io.github.ngspace.hudder.main.HudderTickEvent;
@@ -129,6 +131,8 @@ public class Hudder implements ClientModInitializer {
 		HudderBuiltInMethods.registerMethods(FunctionAndConsumerAPI.getInstance());
 		HudderBuiltInFunctions.registerFunction(FunctionAndConsumerAPI.getInstance());
 		ClientTickEvents.START_CLIENT_TICK.register(new HudderTickEvent());
+		
+		ObjectDataAPI.addObjectGetter(new ResourcePackVariables());
         
 		HudCompilationManager compman = new HudCompilationManager();
 		ClientTickEvents.END_CLIENT_TICK.register(compman);
