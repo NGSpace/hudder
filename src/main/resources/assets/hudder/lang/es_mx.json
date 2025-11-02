@@ -23,7 +23,7 @@
     "hudder.general.mainfile.error": "El archivo no existe en la carpeta .minecraft/config/Hudder.",
     "hudder.general.scale": "Escala por defecto",
     "hudder.general.scale.tooltip": "Controla la escala por defecto de los métodos\n§7Esto puede ser anulado por los elementos especificando su propia escala.",
-    "hudder.general.folder": "§7Los archivos deben de estár localizados en la carpeta de \"§6config/Hudder§7\".",
+    "hudder.general.folder": "§7Los archivos deben de estár localizados en la carpeta de \"§6config/Hudder§7\"",
     "hudder.general.folder.tooltip": "Haz click para abrir la carpeta.",
     "hudder.text": "Texto",
     "hudder.text.color": "Color del texto",
