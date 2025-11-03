@@ -27,7 +27,7 @@ public class StringData {private StringData() {}
 		Camera c = ins.gameRenderer.getMainCamera();
 		return switch (key) {
 			
-			case "damagetype": yield p.getLastDamageSource() == null ? "" : p.getLastDamageSource().type().toString();
+			case "damagetype": yield p.getLastDamageSource() == null ? V2Runtime.NULL : p.getLastDamageSource().type().toString();
 			
 			/* Computer info */
 			case "cpu_info": yield GLX._getCpuInfo();
@@ -63,9 +63,9 @@ public class StringData {private StringData() {}
 
 
 			/* Mount information */
-			case "mount_type": yield p.getVehicle() == null ? "" : p.getVehicle().getType().builtInRegistryHolder().key().location().toString();
-			case "mount_armor_type": yield (p.getVehicle() instanceof AbstractHorse horse) ? horse.getBodyArmorItem().getItem().toString() : "";
-			case "mount_name": yield p.getVehicle() == null || p.getVehicle().getCustomName() == null ? "" : p.getVehicle().getCustomName().getString();
+			case "mount_type": yield p.getVehicle() == null ? V2Runtime.NULL : p.getVehicle().getType().builtInRegistryHolder().key().location().toString();
+			case "mount_armor_type": yield (p.getVehicle() instanceof AbstractHorse horse) ? horse.getBodyArmorItem().getItem().toString() : V2Runtime.NULL;
+			case "mount_name": yield p.getVehicle() == null || p.getVehicle().getCustomName() == null ? V2Runtime.NULL : p.getVehicle().getCustomName().getString();
 
 
 
@@ -77,71 +77,59 @@ public class StringData {private StringData() {}
 			case "dimension":
 				yield ins.level.dimension().toString();
 			case "world_name":
-				yield ins.getSingleplayerServer() == null ? "" : ins.getSingleplayerServer().getWorldData().getLevelName();
+				yield ins.getSingleplayerServer() == null ? V2Runtime.NULL : ins.getSingleplayerServer().getWorldData().getLevelName();
 
 
 
 			/* Server */
 			case "server_name":
-				yield ins.getCurrentServer() == null ? "" : ins.getCurrentServer().name;
+				yield ins.getCurrentServer() == null ? V2Runtime.NULL : ins.getCurrentServer().name;
 			case "server_ip":
-				yield ins.getCurrentServer() == null ? "" : ins.getCurrentServer().ip;
+				yield ins.getCurrentServer() == null ? V2Runtime.NULL : ins.getCurrentServer().ip;
 			case "server_motd":
-				yield ins.getCurrentServer() == null ? "" : ins.getCurrentServer().motd.getString();
+				yield ins.getCurrentServer() == null ? V2Runtime.NULL : ins.getCurrentServer().motd.getString();
 
 
 			
 			/* Looking at */
 			case "looking_at_pos": {
 				BlockHitResult hit = raycast(ins, p.getEyePosition(1.0f), p.getLookAngle(), 50, false);
-				yield (hit == null) ? "" : hit.getBlockPos().getX() + " " + hit.getBlockPos().getY() + " " + hit.getBlockPos().getZ();
+				yield (hit == null) ? V2Runtime.NULL : hit.getBlockPos().getX() + " " + hit.getBlockPos().getY() + " " + hit.getBlockPos().getZ();
 			}
 
 			case "cam_looking_at_pos": {
 				Vec3 camPos = c.getPosition();
 				Vec3 camLook = new Vec3(c.getLookVector().x(), c.getLookVector().y(), c.getLookVector().z());
 				BlockHitResult hit = raycast(ins, camPos, camLook, 50, false);
-				yield (hit == null) ? "" : hit.getBlockPos().getX() + " " + hit.getBlockPos().getY() + " " + hit.getBlockPos().getZ();
-			}
-
-			case "looking_at_fluid_pos": {
-				BlockHitResult hit = raycast(ins, p.getEyePosition(1.0f), p.getLookAngle(), 50, true);
-				yield (hit == null) ? "" : hit.getBlockPos().getX() + " " + hit.getBlockPos().getY() + " " + hit.getBlockPos().getZ();
-			}
-
-			case "cam_looking_at_fluid_pos": {
-				Vec3 camPos = c.getPosition();
-				Vec3 camLook = new Vec3(c.getLookVector().x(), c.getLookVector().y(), c.getLookVector().z());
-				BlockHitResult hit = raycast(ins, camPos, camLook, 50, true);
-				yield (hit == null) ? "" : hit.getBlockPos().getX() + " " + hit.getBlockPos().getY() + " " + hit.getBlockPos().getZ();
+				yield (hit == null) ? V2Runtime.NULL : hit.getBlockPos().getX() + " " + hit.getBlockPos().getY() + " " + hit.getBlockPos().getZ();
 			}
 
 			case "block_in_front": {
 				BlockHitResult hit = raycast(ins, p.getEyePosition(1.0f), p.getLookAngle(), 50, false);
-				yield (hit == null) ? "" : BuiltInRegistries.BLOCK.getKey(ins.level.getBlockState(hit.getBlockPos()).getBlock()).toString();
+				yield (hit == null) ? V2Runtime.NULL : BuiltInRegistries.BLOCK.getKey(ins.level.getBlockState(hit.getBlockPos()).getBlock()).toString();
 			}
 
 			case "cam_block_in_front": {
 				Vec3 camPos = c.getPosition();
 				Vec3 camLook = new Vec3(c.getLookVector().x(), c.getLookVector().y(), c.getLookVector().z());
 				BlockHitResult hit = raycast(ins, camPos, camLook, 50, false);
-				yield (hit == null) ? "" : BuiltInRegistries.BLOCK.getKey(ins.level.getBlockState(hit.getBlockPos()).getBlock()).toString();
+				yield (hit == null) ? V2Runtime.NULL : BuiltInRegistries.BLOCK.getKey(ins.level.getBlockState(hit.getBlockPos()).getBlock()).toString();
 			}
 
 			case "fluid_in_front": {
 				BlockHitResult hit = raycast(ins, p.getEyePosition(1.0f), p.getLookAngle(), 50, true);
-				yield (hit == null) ? "" : BuiltInRegistries.FLUID.getKey(ins.level.getFluidState(hit.getBlockPos()).getType()).toString();
+				yield (hit == null) ? V2Runtime.NULL : BuiltInRegistries.FLUID.getKey(ins.level.getFluidState(hit.getBlockPos()).getType()).toString();
 			}
 
 			case "cam_fluid_in_front": {
 				Vec3 camPos = c.getPosition();
 				Vec3 camLook = new Vec3(c.getLookVector().x(), c.getLookVector().y(), c.getLookVector().z());
 				BlockHitResult hit = raycast(ins, camPos, camLook, 50, true);
-				yield (hit == null) ? "" : BuiltInRegistries.FLUID.getKey(ins.level.getFluidState(hit.getBlockPos()).getType()).toString();
+				yield (hit == null) ? V2Runtime.NULL : BuiltInRegistries.FLUID.getKey(ins.level.getFluidState(hit.getBlockPos()).getType()).toString();
 			}
 
 			case "entity_in_front":
-				yield (ins.crosshairPickEntity == null) ? "" : BuiltInRegistries.ENTITY_TYPE.getKey(ins.crosshairPickEntity.getType()).toString();
+				yield (ins.crosshairPickEntity == null) ? V2Runtime.NULL : BuiltInRegistries.ENTITY_TYPE.getKey(ins.crosshairPickEntity.getType()).toString();
 
 
 
