@@ -3,7 +3,7 @@ package io.github.ngspace.hudder.data_management;
 import java.util.Calendar;
 import java.util.Locale;
 
-import org.joml.Vector3f;
+import net.minecraft.SharedConstants;
 
 import com.mojang.blaze3d.platform.GLX;
 
@@ -12,14 +12,11 @@ import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
 
 public class StringData {private StringData() {}
@@ -39,9 +36,20 @@ public class StringData {private StringData() {}
 			case "locale": yield Locale.getDefault().getDisplayName();
 			case "language": yield Locale.getDefault().getLanguage();
 			case "country": yield Locale.getDefault().getCountry();
+
+
+			/* Game */
+			case "version_type": yield ins.getVersionType();
+			case "game_version": yield SharedConstants.getCurrentVersion().id();
+
+
+
+			/* Player */
+			case "username": yield ins.player.getName().getString();
+			case "uuid": yield ins.player.getStringUUID();
 			
-			
-			
+
+
 			/* Inventory */
 			case "helditem_name": yield ins.player.getInventory()
 				.getItem(ins.player.getInventory().getSelectedSlot()).getDisplayName().getString();
@@ -56,7 +64,7 @@ public class StringData {private StringData() {}
 
 			/* Mount information */
 			case "mount_type": yield p.getVehicle() == null ? "" : p.getVehicle().getType().builtInRegistryHolder().key().location().toString();
-			case "mount_armor_type": yield (p.getVehicle() instanceof AbstractHorse horse) ? horse.getBodyArmorItem().getItem().toString() : null;
+			case "mount_armor_type": yield (p.getVehicle() instanceof AbstractHorse horse) ? horse.getBodyArmorItem().getItem().toString() : "";
 			case "mount_name": yield p.getVehicle() == null || p.getVehicle().getCustomName() == null ? "" : p.getVehicle().getCustomName().getString();
 
 
@@ -66,74 +74,77 @@ public class StringData {private StringData() {}
 				yield ins.level.getBiome(ins.player.blockPosition()).getRegisteredName();
 			case "cam_biome":
 				yield ins.level.getBiome(c.getBlockPosition()).getRegisteredName();
-			case "dimension": yield ins.level.dimension().toString();
-			
-			
+			case "dimension":
+				yield ins.level.dimension().toString();
+			case "world_name":
+				yield ins.getSingleplayerServer() == null ? "" : ins.getSingleplayerServer().getWorldData().getLevelName();
+
+
+
+			/* Server */
+			case "server_name":
+				yield ins.getCurrentServer() == null ? "" : ins.getCurrentServer().name;
+			case "server_ip":
+				yield ins.getCurrentServer() == null ? "" : ins.getCurrentServer().ip;
+			case "server_motd":
+				yield ins.getCurrentServer() == null ? "" : ins.getCurrentServer().motd.getString();
+
+
 			
 			/* Looking at */
-			case "block_in_front": {
-			    HitResult vec = ins.player.pick(50,0,true);
-			    if (vec.getType()==Type.BLOCK) {
-			    	BlockHitResult res = (BlockHitResult) vec;
-			    	BlockState state = ins.level.getBlockState(res.getBlockPos());
-			    	yield BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString();
-			    }
-			    yield "";
-			}
-			case "cam_block_in_front": {
-				Vec3 camPos = c.getPosition();
-				Vector3f lookDirF = c.getLookVector();
-				Vec3 lookDir = new Vec3(lookDirF.x(), lookDirF.y(), lookDirF.z());
-				double reachDistance = 50.0;
-				Vec3 reachPoint = camPos.add(lookDir.x * reachDistance, lookDir.y * reachDistance, lookDir.z * reachDistance);
-
-				HitResult vec = ins.level.clip(new ClipContext(
-						camPos,
-						reachPoint,
-						ClipContext.Block.OUTLINE,
-						ClipContext.Fluid.NONE,
-						p
-				));
-
-				if (vec.getType()==Type.BLOCK) {
-					BlockHitResult res = (BlockHitResult) vec;
-					BlockState state = ins.level.getBlockState(res.getBlockPos());
-					yield BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString();
-				}
-				yield "";
-			}
 			case "looking_at_pos": {
-				HitResult vec = ins.player.pick(50,0,true);
-			    if (vec.getType()==Type.BLOCK) {
-			    	BlockPos res = ((BlockHitResult) vec).getBlockPos();
-			    	yield "" + res.getX() + ' ' + res.getY() + ' ' + res.getZ();
-			    }
-			    yield "";
+				BlockHitResult hit = raycast(ins, p.getEyePosition(1.0f), p.getLookAngle(), 50, false);
+				yield (hit == null) ? "" : hit.getBlockPos().getX() + " " + hit.getBlockPos().getY() + " " + hit.getBlockPos().getZ();
 			}
+
 			case "cam_looking_at_pos": {
 				Vec3 camPos = c.getPosition();
-				Vector3f lookDirF = c.getLookVector();
-				Vec3 lookDir = new Vec3(lookDirF.x(), lookDirF.y(), lookDirF.z());
-				double reachDistance = 50.0;
-				Vec3 reachPoint = camPos.add(lookDir.x * reachDistance, lookDir.y * reachDistance, lookDir.z * reachDistance);
-
-				HitResult vec = ins.level.clip(new ClipContext(
-						camPos,
-						reachPoint,
-						ClipContext.Block.OUTLINE,
-						ClipContext.Fluid.NONE,
-						p
-				));
-
-				if (vec.getType()==Type.BLOCK) {
-					BlockPos res = ((BlockHitResult) vec).getBlockPos();
-					yield "" + res.getX() + ' ' + res.getY() + ' ' + res.getZ();
-				}
-				yield "";
+				Vec3 camLook = new Vec3(c.getLookVector().x(), c.getLookVector().y(), c.getLookVector().z());
+				BlockHitResult hit = raycast(ins, camPos, camLook, 50, false);
+				yield (hit == null) ? "" : hit.getBlockPos().getX() + " " + hit.getBlockPos().getY() + " " + hit.getBlockPos().getZ();
 			}
 
-			
-			
+			case "looking_at_fluid_pos": {
+				BlockHitResult hit = raycast(ins, p.getEyePosition(1.0f), p.getLookAngle(), 50, true);
+				yield (hit == null) ? "" : hit.getBlockPos().getX() + " " + hit.getBlockPos().getY() + " " + hit.getBlockPos().getZ();
+			}
+
+			case "cam_looking_at_fluid_pos": {
+				Vec3 camPos = c.getPosition();
+				Vec3 camLook = new Vec3(c.getLookVector().x(), c.getLookVector().y(), c.getLookVector().z());
+				BlockHitResult hit = raycast(ins, camPos, camLook, 50, true);
+				yield (hit == null) ? "" : hit.getBlockPos().getX() + " " + hit.getBlockPos().getY() + " " + hit.getBlockPos().getZ();
+			}
+
+			case "block_in_front": {
+				BlockHitResult hit = raycast(ins, p.getEyePosition(1.0f), p.getLookAngle(), 50, false);
+				yield (hit == null) ? "" : BuiltInRegistries.BLOCK.getKey(ins.level.getBlockState(hit.getBlockPos()).getBlock()).toString();
+			}
+
+			case "cam_block_in_front": {
+				Vec3 camPos = c.getPosition();
+				Vec3 camLook = new Vec3(c.getLookVector().x(), c.getLookVector().y(), c.getLookVector().z());
+				BlockHitResult hit = raycast(ins, camPos, camLook, 50, false);
+				yield (hit == null) ? "" : BuiltInRegistries.BLOCK.getKey(ins.level.getBlockState(hit.getBlockPos()).getBlock()).toString();
+			}
+
+			case "fluid_in_front": {
+				BlockHitResult hit = raycast(ins, p.getEyePosition(1.0f), p.getLookAngle(), 50, true);
+				yield (hit == null) ? "" : BuiltInRegistries.FLUID.getKey(ins.level.getFluidState(hit.getBlockPos()).getType()).toString();
+			}
+
+			case "cam_fluid_in_front": {
+				Vec3 camPos = c.getPosition();
+				Vec3 camLook = new Vec3(c.getLookVector().x(), c.getLookVector().y(), c.getLookVector().z());
+				BlockHitResult hit = raycast(ins, camPos, camLook, 50, true);
+				yield (hit == null) ? "" : BuiltInRegistries.FLUID.getKey(ins.level.getFluidState(hit.getBlockPos()).getType()).toString();
+			}
+
+			case "entity_in_front":
+				yield (ins.crosshairPickEntity == null) ? "" : BuiltInRegistries.ENTITY_TYPE.getKey(ins.crosshairPickEntity.getType()).toString();
+
+
+
 			/* Hudder */
 			case "compilertype": yield Hudder.config.compilertype;
 			case "mainfile": yield Hudder.config.mainfile;
@@ -142,5 +153,19 @@ public class StringData {private StringData() {}
 			
 			default: yield null;
 		};
+	}
+	private static BlockHitResult raycast(Minecraft ins, Vec3 start, Vec3 direction, double reach, boolean fluid) {
+		ClipContext.Fluid fluidMode = fluid ? ClipContext.Fluid.ANY : ClipContext.Fluid.NONE;
+		Vec3 end = start.add(direction.scale(reach));
+
+		HitResult hit = ins.level.clip(new ClipContext(
+				start,
+				end,
+				ClipContext.Block.OUTLINE,
+				fluidMode,
+				ins.player
+		));
+
+		return (hit.getType() == HitResult.Type.BLOCK) ? (BlockHitResult) hit : null;
 	}
 }
