@@ -110,7 +110,7 @@ public class HudderConfig {
 			if (newinfo.containsKey("debug")) Hudder.IS_DEBUG = (boolean) newinfo.get("debug");
 			if (!newinfo.containsKey("config_version")) config_version = 0;
 			
-			for(Field f : HudderConfig.class.getFields()) {
+			for(Field f : HudderConfig.class.getDeclaredFields()) {
 				if (f.getAnnotation(Expose.class)!=null&&newinfo.get(f.getName())!=null) {
 					setField(f, newinfo.get(f.getName()));
 				}
@@ -199,7 +199,7 @@ public class HudderConfig {
 		}
 		try (FileWriter config_writer = new FileWriter(configFile)) {
 			JSONObject json_output = new JSONObject();
-			for (Field f : HudderConfig.class.getFields())
+			for (Field f : HudderConfig.class.getDeclaredFields())
 				if (f.getAnnotation(Expose.class)!=null)
 					json_output.put(f.getName(), f.get(this));
 

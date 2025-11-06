@@ -13,6 +13,11 @@ public class ObjectDataAPI {private ObjectDataAPI() {}
 		}
 		return null;
 	}
+	/**
+	 * @deprecated use registerVariable
+	 * @param function
+	 */
+	@Deprecated(since = "9.0.0", forRemoval = true)
 	public static void addObjectGetter(Function<String, Object> function) {getters.add(function);}
 	public static List<Function<String, Object>> getObjectGetters() {return getters;}
 }

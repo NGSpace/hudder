@@ -11,14 +11,10 @@ import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.Undefined;
-import org.mozilla.javascript.WrapFactory;
 import org.mozilla.javascript.WrappedException;
 
 import io.github.ngspace.hudder.Hudder;
-import io.github.ngspace.hudder.main.config.HudderConfig;
 import io.github.ngspace.hudder.utils.ObjectWrapper;
-import io.github.ngspace.hudder.utils.ValueGetter;
-import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -31,37 +27,7 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 	ScriptableObject scope;
 	public JavaScriptEngine() {
         cx = Context.enter();
-        cx.setWrapFactory(new WrapFactory() {
-        	@Override
-        	public Scriptable wrapAsJavaObject(Context cx, Scriptable scope, Object javaObject, Class<?> staticType) {
-        		if (javaObject == V2Runtime.NULL
-	        			|| javaObject instanceof Class<?>
-	        			|| javaObject instanceof ClassLoader)
-        			return null;
-        		if (!HudderConfig.isAccessible(javaObject.getClass()))
-        			return null;
-        		if (javaObject instanceof ValueGetter r) {
-					return new NativeJavaObject(scope,r,r.getClass(),true) {
-						private static final long serialVersionUID = -6145385781375908982L;
-
-						@Override public String getClassName() {return r.getClass().getName();}
-					    @Override public Object get(String name, Scriptable start) {
-					    	var v = r.get(name);
-					    	if (v==null||v==NOT_FOUND) return super.get(name, start);
-					        return v;
-					    }
-					};
-        		}
-        		if (javaObject instanceof ObjectWrapper r) {
-        			try {
-						return wrapAsJavaObject(cx, scope, r.get(), staticType);
-					} catch (CompileException e) {
-						e.printStackTrace();
-					}
-        		}
-        		return super.wrapAsJavaObject(cx, scope, javaObject, staticType);
-        	}
-        });
+        cx.setWrapFactory(new HudderJavaScriptWrapFactory());
         cx.setInterpretedMode(false);
         
         scope = cx.initSafeStandardObjects();
@@ -75,13 +41,13 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 	@Override public void bindFunction(ScriptFunction function, String... names) {
         Function func = new BaseFunction() {
             private static final long serialVersionUID = 1L;
-			@Override public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
+			@Override public Object call(Context con, Scriptable scope, Scriptable thisObj, Object[] args) {
 				try {
 					ObjectWrapper[] vals = new ObjectWrapper[args.length];
 					for (int i = 0;i<args.length;i++) {
 						vals[i] = new JavaScriptValue(args[i]);
 					}
-					return function.exec(vals);
+					return cx.getWrapFactory().wrap(cx, scope, function.exec(vals), null);
 				} catch (Exception e) {
 					throw new WrappedException(e);
 				}
