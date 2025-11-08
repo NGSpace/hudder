@@ -61,5 +61,7 @@
     "hudder.advanced.removehotbar": "Eliminar la hotbar",
     "hudder.advanced.removehotbar.tooltip": "§4ADVERTENCIA - ESTO HARÁ QUE TU HOTBAR Y BARRA DE VIDA SEAN INVISIBLES HASTA QUE SE DESACTIVE.\n§fSi Hudder debería de ocultar toda la hotbar y elementos relacionados a la GUI.",
     "hudder.advanced.limitrate": "Limitar la velocidad del compilador",
-    "hudder.advanced.limitrate.tooltip": "§4ADVERTENCIA - ESTO PODRÍA CAUSAR PROBLEMAS DE RENDIMIENTO\n§fDesactivar esto moverá la compilación de el archivo de Hudder desde ejecutarse cada tick del cliente a ejecutarse cada frame."
+    "hudder.advanced.limitrate.tooltip": "§4ADVERTENCIA - ESTO PODRÍA CAUSAR PROBLEMAS DE RENDIMIENTO\n§fDesactivar esto moverá la compilación de el archivo de Hudder desde ejecutarse cada tick del cliente a ejecutarse cada frame.",
+    "hudder.advanced.unsafeoperations": "Operaciones no seguras activadas",
+    "hudder.advanced.unsafeoperations.tooltip": "§4ADVERTENCIA - SOLO ACTIVAR SI SABES QUE ES LO QUE TU HUD HACE.\n§fActivar esto da acceso a características bloqueadas así como también eliminar ciertas limitaciones de las existentes (Mirar la Wiki para más información)."
 }
