@@ -3,10 +3,8 @@
 &6You can go into &dHudder's settings&6 and change the main file to:
 - "hud"
 - "hand"
-- "armor"
 - "armorside"
 - "basic"
-- "fibonacci"
 &3- if you want to use JavaScript you can use:
 - "hud.js"
 - "hotbar.js"
