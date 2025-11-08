@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+/**
+ * @deprecated use DataVariableRegistry
+ */
 @Deprecated(since = "9.0.0", forRemoval = true)
 public class ObjectDataAPI {private ObjectDataAPI() {}
 	static List<Function<String, Object>> getters = new ArrayList<Function<String,Object>>();
