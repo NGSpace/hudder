@@ -14,6 +14,11 @@ import io.github.ngspace.hudder.utils.ValueGetter;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
 
 public class HudderJavaScriptWrapFactory extends WrapFactory {
+	
+	public HudderJavaScriptWrapFactory() {
+		setJavaPrimitiveWrap(false);
+	}
+	
 	@Override
 	public Scriptable wrapAsJavaObject(Context cx, Scriptable scope, Object javaObject, Class<?> staticType) {
 		if (javaObject == V2Runtime.NULL
