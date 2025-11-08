@@ -168,8 +168,6 @@ public class Hudder implements ClientModInitializer {
 	
 	
 	
-	public static void showToast(Component title) {showToast(title, Component.keybind(""));}
-	
 	public static void log  (Object str) {LOGGER.info (String.valueOf(str));}
 	public static void warn (Object str) {LOGGER.warn (String.valueOf(str));}
 	public static void error(Object str) {LOGGER.error(String.valueOf(str));}
