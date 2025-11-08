@@ -136,12 +136,6 @@ public class Hudder implements ClientModInitializer {
 		
 		ObjectDataAPI.addObjectGetter(new ResourcePackVariables());
 		Advanced.registerKeyVariables();
-		
-		DataVariableRegistry.registerVariable(key->{
-			if ("key1".equals(key))
-				return true;
-			return 1;
-		}, VariableTypes.OBJECT, "key1", "key2");
         
 		HudCompilationManager compman = new HudCompilationManager();
 		ClientTickEvents.END_CLIENT_TICK.register(compman);
