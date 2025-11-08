@@ -8,6 +8,7 @@ import net.minecraft.SharedConstants;
 import com.mojang.blaze3d.platform.GLX;
 
 import io.github.ngspace.hudder.Hudder;
+import io.github.ngspace.hudder.data_management.api.DataVariableRegistry;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -139,7 +140,7 @@ public class StringData {private StringData() {}
 			
 			case "unset": yield "unset";
 			
-			default: yield null;
+			default: yield DataVariableRegistry.getString(key);
 		};
 	}
 	private static BlockHitResult raycast(Minecraft ins, Vec3 start, Vec3 direction, double reach, boolean fluid) {

@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Queue;
 
 import io.github.ngspace.hudder.Hudder;
+import io.github.ngspace.hudder.data_management.api.DataVariableRegistry;
 import io.github.ngspace.hudder.main.config.HudderConfig;
 import io.github.ngspace.hudder.mixin.LevelRendererAccess;
 import io.github.ngspace.hudder.mixin.ParticleManagerAccessor;
@@ -246,7 +247,7 @@ public class NumberData {private NumberData() {}
 			
 			case "rebeccapurple": yield (double) 0xFF663399;
 			
-			default: yield null;
+			default: yield DataVariableRegistry.getNumber(key);
 		};
 	}
 	public static float getTPS(Minecraft client) {

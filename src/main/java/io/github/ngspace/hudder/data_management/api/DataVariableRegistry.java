@@ -1,34 +1,84 @@
 package io.github.ngspace.hudder.data_management.api;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import io.github.ngspace.hudder.data_management.ObjectDataAPI;
 
+/**
+ * Hudder's class for management of system variables
+ * <br><br>
+ * Use {@link #registerVariable(DataVariable, io.github.ngspace.hudder.data_management.api.VariableTypes.Type, String...)}
+ * to register variables
+ */
 public class DataVariableRegistry {
-	
-	static HashMap<String, DataVariable<?>> registeredVariables = new HashMap<String, DataVariable<?>>();
-	
 	private DataVariableRegistry() {}
-	
-	static {
-		registerLegacyVariableSystem();
-	}
+	static {registerLegacyVariableSystem();}
+
+	private static Map<String, DataVariable<?>> BooleanVariables = new HashMap<String, DataVariable<?>>();
+	private static Map<String, DataVariable<?>> StringVariables = new HashMap<String, DataVariable<?>>();
+	private static Map<String, DataVariable<?>> NumberVariables = new HashMap<String, DataVariable<?>>();
+	private static Map<String, DataVariable<?>> ObjectVariables = new HashMap<String, DataVariable<?>>();
+	private static Map<String, DataVariable<?>> AllVariables = new HashMap<String, DataVariable<?>>();
 	
 	@SuppressWarnings("removal")
 	static void registerLegacyVariableSystem() {
 		ObjectDataAPI.addObjectGetter(key-> {
-			var variable = registeredVariables.get(key);
-			if (key!=null)
+			var variable = ObjectVariables.get(key);
+			if (variable!=null)
 				return variable.getValue(key);
 			return null;
 		});
 	}
 	
-	public static <T> void registerVariable(DataVariable<T> variable, VariableType type) {
-		
+	public static void registerVariable(DataVariable<Object> variable, String... names) {
+		registerVariable(variable, VariableTypes.OBJECT, names);
 	}
 	
-	public static enum VariableType {
-		OBJECT;
+	/**
+	 * Registers a variable by the given names in the given variable type.
+	 * 
+	 * @param <T> - The type of object the variable returns
+	 * @param variable - The variable function
+	 * @param type - The type of variable (Make sure this matches with <T> to prevent issues)
+	 * @param names - The names of the variable
+	 */
+	public static <T> void registerVariable(DataVariable<?> variable, VariableTypes.Type<T> type, String... names) {
+		Map<String, DataVariable<?>> typemap = ObjectVariables;
+		if (type == VariableTypes.NUMBER)
+			typemap = NumberVariables;
+		if (type == VariableTypes.STRING)
+			typemap = StringVariables;
+		if (type == VariableTypes.BOOLEAN)
+			typemap = BooleanVariables;
+		for (String name : names) {
+			typemap.put(name.toLowerCase(), variable);
+			AllVariables.put(name.toLowerCase(), variable);
+		}
+	}
+	
+	public static String getString(String key) {
+		var v = StringVariables.get(key);
+		return v==null ? null : (String) v.getValue(key);
+	}
+	public static Double getNumber(String key) {
+		var v = NumberVariables.get(key);
+		return v==null ? null : (Double) v.getValue(key);
+	}
+	public static Boolean getBoolean(String key) {
+		var v = BooleanVariables.get(key);
+		return v==null ? null : (Boolean) v.getValue(key);
+	}
+	public static Object getObject(String key) {
+		var v = ObjectVariables.get(key);
+		return v==null ? null : v.getValue(key);
+	}
+	public static Object getAny(String key) {
+		var v = AllVariables.get(key);
+		return v==null ? null : v.getValue(key);
+	}
+	
+	public static boolean hasVariable(String key) {
+		return AllVariables.containsKey(key);
 	}
 }

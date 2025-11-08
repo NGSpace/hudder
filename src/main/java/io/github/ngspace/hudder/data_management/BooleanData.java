@@ -1,8 +1,7 @@
 package io.github.ngspace.hudder.data_management;
 
-import static io.github.ngspace.hudder.data_management.Advanced.isKeyHeld;
-
 import io.github.ngspace.hudder.Hudder;
+import io.github.ngspace.hudder.data_management.api.DataVariableRegistry;
 import io.github.ngspace.hudder.main.config.HudderConfig;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -86,17 +85,17 @@ public class BooleanData {private BooleanData(){}
 			case "isdrowning": yield p.isInWater();
 			case "iscontrollingmount": yield p.getControlledVehicle() != null;
 			case "isonmount": yield p.getVehicle()!=null;
-
-
-
+			
+			
+			
 			/* Mount information */
 			case "mount_is_saddled": yield p.getVehicle() instanceof Mob mob && mob.isSaddled();
 			case "mount_has_armor": yield p.getVehicle() instanceof Mob mob && mob.isWearingBodyArmor();
 			case "mount_is_tamed": yield p.getVehicle() instanceof AbstractHorse horse && horse.isTamed();
 			case "mount_has_chest": yield p.getVehicle() instanceof AbstractChestedHorse horse && horse.hasChest();
-
-
-
+			
+			
+			
 			/* Mouse */
 			case "mouse_left": yield ins.mouseHandler.isLeftPressed();
 			case "mouse_middle": yield ins.mouseHandler.isMiddlePressed();
@@ -114,7 +113,7 @@ public class BooleanData {private BooleanData(){}
 			case "background": yield config.background;
 			case "removegui": yield config.removegui;
 			case "limitrate": yield config.limitrate;
-			default: int keyheld = isKeyHeld(key); yield keyheld==0 ? null : keyheld==2;
+			default: yield DataVariableRegistry.getBoolean(key);
 		};
 	}
 }

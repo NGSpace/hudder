@@ -1,14 +1,11 @@
 package io.github.ngspace.hudder.data_management.api;
 
-import java.util.function.Function;
-
 @FunctionalInterface
-public interface DataVariable<T> extends Function<String, T> {
+public interface DataVariable<T> {
 	
-	@Override
-	default T apply(String key) {
-		return getValue(key);
+	public default T getValue(String key) {
+		return getValue0(key);
 	}
 	
-	public T getValue(String key);
+	T getValue0(String key);
 }

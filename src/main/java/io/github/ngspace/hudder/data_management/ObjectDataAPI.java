@@ -14,7 +14,7 @@ public class ObjectDataAPI {private ObjectDataAPI() {}
 		return null;
 	}
 	/**
-	 * @deprecated use registerVariable
+	 * @deprecated use {@link io.github.ngspace.hudder.data_management.api.DataVariableRegistry}
 	 * @param function
 	 */
 	@Deprecated(since = "9.0.0", forRemoval = true)

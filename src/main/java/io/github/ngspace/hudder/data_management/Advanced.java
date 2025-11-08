@@ -11,6 +11,8 @@ import org.lwjgl.glfw.GLFW;
 
 import com.sun.management.OperatingSystemMXBean;
 
+import io.github.ngspace.hudder.data_management.api.DataVariableRegistry;
+import io.github.ngspace.hudder.data_management.api.VariableTypes;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
@@ -85,24 +87,25 @@ public class Advanced {private Advanced() {}
     
     
     
-    public static final Map<Integer,Integer> keysheld = new HashMap<Integer,Integer>();
-
-    //Kinda cheating?
-    static HashMap<String, Integer> keys = new HashMap<String, Integer>(); static {
+    public static final Map<Integer,Integer> held_keys = new HashMap<Integer,Integer>();
+	
+	public static void registerKeyVariables() {
+		ArrayList<String> keyNames = new ArrayList<String>();
+		HashMap<String, Integer> keys = new HashMap<String, Integer>();
+		
 	    for (Field field : GLFW.class.getFields()) {
 	    	try {
-	    		if (field.getName().startsWith("GLFW_KEY_")&&field.canAccess(null))
-	    			keys.put(field.getName().substring(9).toLowerCase(),field.getInt(null));
+	    		if (field.getName().startsWith("GLFW_KEY_")&&field.canAccess(null)) {
+	    			String keyname = field.getName().substring(9).toLowerCase();
+	    			keyNames.add("key_" + keyname);
+	    			keys.put(keyname,field.getInt(null));
+	    		}
 			} catch (Exception e) {e.printStackTrace();}
 	    }
-    }
-	public static int isKeyHeld(String key) {
-		if (key.length()>4&&key.length()<18&&key.startsWith("key_")) {
-			int keynum = keys.get(key.substring(4));
-			if (keynum==0) return 0;
-			return keysheld.containsKey(keynum)?2:1;
-		}
-		return 0;
+	    
+	    DataVariableRegistry.registerVariable(
+	    		variable->held_keys.containsKey(keys.get(variable.substring(4).toLowerCase())),
+	    		VariableTypes.BOOLEAN, keyNames.toArray(new String[keyNames.size()]));
 	}
 	
 	
