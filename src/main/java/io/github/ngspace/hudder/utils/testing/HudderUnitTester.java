@@ -68,8 +68,8 @@ public class HudderUnitTester {
 				result.append(":");
 				result.append(failedtest.getKey().getFailureMessage());
 			}
-			result.append(Component.literal(milliseconds(false, start, end, failedtests.size(), UnitTests.size())));
-		} else result.append(Component.literal(milliseconds(true, start, end, failedtests.size(), UnitTests.size())));
+		}
+		result.append(Component.literal(milliseconds(!failed, start, end, failedtests.size(), UnitTests.size())));
 		return result;
 	}
 

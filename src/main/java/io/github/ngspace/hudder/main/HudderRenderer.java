@@ -50,7 +50,7 @@ public class HudderRenderer implements HudElement {
 	
 	
 	
-	public void renderFail(GuiGraphics context, String FailMessage) {
+	protected void renderFail(GuiGraphics context, String FailMessage) {
 		List<FormattedCharSequence> lines = mc.font.split(FormattedText.of(FailMessage),
 			mc.getWindow().getGuiScaledWidth()-10);
 		int y = 1;
@@ -62,7 +62,7 @@ public class HudderRenderer implements HudElement {
 	
 	
 	
-	public void drawCompileResult(GuiGraphics context, Font renderer, HudInformation text, HudderConfig info,
+	protected void renderHudInformation(GuiGraphics context, Font renderer, HudInformation text, HudderConfig info,
 			DeltaTracker delta) {
         int color = info.color;
         int bgcolor = info.backgroundcolor;
@@ -112,7 +112,7 @@ public class HudderRenderer implements HudElement {
 	
 	
 	
-    public int countLines(String str) {
+    private int countLines(String str) {
         int count = 1;
         for (int i = 0; i<str.length();i++) if (str.charAt(i) == '\n') count++;
         return count;
@@ -150,8 +150,7 @@ public class HudderRenderer implements HudElement {
 	public void renderTexture9Slice(GuiGraphics context, ResourceLocation id, float x, float y, float width,
 			float height, float[] slices) {
 		context.guiRenderState.submitGuiElement(new TextureRenderState(TextureSetup.singleTexture(mc
-				.getTextureManager().getTexture(id).getTextureView()), RenderPipelines.GUI_TEXTURED,
-		(vconsumer, f)->{
+				.getTextureManager().getTexture(id).getTextureView()), RenderPipelines.GUI_TEXTURED, vconsumer->{
 		    Matrix3x2fStack matrix = context.pose();
 	        NativeImage img = ((DynamicTexture)mc.getTextureManager().getTexture(id)).getPixels();
 	        int texwidth = img.getWidth();
@@ -174,62 +173,62 @@ public class HudderRenderer implements HudElement {
 	        float lts = top/texheight;
 	        
 	        // Top-left
-	        vconsumer.addVertexWith2DPose(matrix,x,y,0f).setUv(0,0).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,x,y+top,0f).setUv(0,lts).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,x+left,y+top,0f).setUv(tls,lts).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,x+left,y,0f).setUv(tls,0).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x,y).setUv(0,0).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x,y+top).setUv(0,lts).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x+left,y+top).setUv(tls,lts).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x+left,y).setUv(tls,0).setColor(-1);
 	        
 	        // Top-middle
-	        vconsumer.addVertexWith2DPose(matrix,middlestart_hor,y, 0f).setUv(tls, 0).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,middlestart_hor,y+top,0f).setUv(tls,lts).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,y+top,0f).setUv(middleend_tex_hor,lts).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,y,0f).setUv(middleend_tex_hor,0).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,middlestart_hor,y).setUv(tls, 0).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,middlestart_hor,y+top).setUv(tls,lts).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,y+top).setUv(middleend_tex_hor,lts).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,y).setUv(middleend_tex_hor,0).setColor(-1);
 	        
 	        // Top-right
-	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,y,0f).setUv(middleend_tex_hor,0).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,y+top,0f).setUv(middleend_tex_hor,lts).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,x+width,y+top,0f).setUv(1,lts).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,x+width,y,0f).setUv(1,0).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,y).setUv(middleend_tex_hor,0).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,y+top).setUv(middleend_tex_hor,lts).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x+width,y+top).setUv(1,lts).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x+width,y).setUv(1,0).setColor(-1);
 	        
 	        
 	        
 	        // Middle-left
-	        vconsumer.addVertexWith2DPose(matrix,x,middlestart_ver,0f).setUv(0,lts).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,x,middleend_ver,0f).setUv(0,middleend_tex_ver).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,x+left,middleend_ver,0f).setUv(tls,middleend_tex_ver).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,x+left,middlestart_ver,0f).setUv(tls,lts).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x,middlestart_ver).setUv(0,lts).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x,middleend_ver).setUv(0,middleend_tex_ver).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x+left,middleend_ver).setUv(tls,middleend_tex_ver).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x+left,middlestart_ver).setUv(tls,lts).setColor(-1);
 	        
 	        // Middle-middle
-	        vconsumer.addVertexWith2DPose(matrix,middlestart_hor,middlestart_ver, 0f).setUv(tls, lts).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,middlestart_hor,middleend_ver,0f).setUv(tls,middleend_tex_ver).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,middleend_ver,0f).setUv(middleend_tex_hor,middleend_tex_ver).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,middlestart_ver,0f).setUv(middleend_tex_hor,lts).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,middlestart_hor,middlestart_ver).setUv(tls, lts).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,middlestart_hor,middleend_ver).setUv(tls,middleend_tex_ver).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,middleend_ver).setUv(middleend_tex_hor,middleend_tex_ver).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,middlestart_ver).setUv(middleend_tex_hor,lts).setColor(-1);
 	        
 	        // Middle-right
-	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,middlestart_ver,0f).setUv(middleend_tex_hor,lts).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,middleend_ver,0f).setUv(middleend_tex_hor,middleend_tex_ver).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,x+width,middleend_ver,0f).setUv(1,middleend_tex_ver).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,x+width,middlestart_ver,0f).setUv(1,lts).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,middlestart_ver).setUv(middleend_tex_hor,lts).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,middleend_ver).setUv(middleend_tex_hor,middleend_tex_ver).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x+width,middleend_ver).setUv(1,middleend_tex_ver).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x+width,middlestart_ver).setUv(1,lts).setColor(-1);
 	        
 	        
 	        
 	        // Bottom-left
-	        vconsumer.addVertexWith2DPose(matrix,x,middleend_ver,0f).setUv(0,middleend_tex_ver).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,x,y+height,0f).setUv(0,1).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,x+left,y+height,0f).setUv(tls,1).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,x+left,middleend_ver,0f).setUv(tls,middleend_tex_ver).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x,middleend_ver).setUv(0,middleend_tex_ver).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x,y+height).setUv(0,1).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x+left,y+height).setUv(tls,1).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x+left,middleend_ver).setUv(tls,middleend_tex_ver).setColor(-1);
 	        
 	        // Bottom-middle
-	        vconsumer.addVertexWith2DPose(matrix,middlestart_hor,middleend_ver, 0f).setUv(tls, middleend_tex_ver).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,middlestart_hor,y+height,0f).setUv(tls,1).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,y+height,0f).setUv(middleend_tex_hor,1).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,middleend_ver,0f).setUv(middleend_tex_hor,middleend_tex_ver).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,middlestart_hor,middleend_ver).setUv(tls, middleend_tex_ver).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,middlestart_hor,y+height).setUv(tls,1).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,y+height).setUv(middleend_tex_hor,1).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,middleend_ver).setUv(middleend_tex_hor,middleend_tex_ver).setColor(-1);
 	        
 	        // Bottom-right
-	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,middleend_ver,0f).setUv(middleend_tex_hor,middleend_tex_ver).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,y+height,0f).setUv(middleend_tex_hor,1).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,x+width,y+height,0f).setUv(1,1).setColor(-1);
-	        vconsumer.addVertexWith2DPose(matrix,x+width,middleend_ver,0f).setUv(1,middleend_tex_ver).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,middleend_ver).setUv(middleend_tex_hor,middleend_tex_ver).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,middleend_hor,y+height).setUv(middleend_tex_hor,1).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x+width,y+height).setUv(1,1).setColor(-1);
+	        vconsumer.addVertexWith2DPose(matrix,x+width,middleend_ver).setUv(1,middleend_tex_ver).setColor(-1);
 		}));
 	}
 
@@ -237,12 +236,11 @@ public class HudderRenderer implements HudElement {
 			ResourceLocation id, boolean triangles) {
 		context.guiRenderState.submitGuiElement(new TextureRenderState(TextureSetup.singleTexture(mc
 				.getTextureManager().getTexture(id).getTextureView()),
-				triangles ? GUI_TEXTURED_TRIANGLES : RenderPipelines.GUI_TEXTURED,
-			(vconsumer, f)->{
+				triangles ? GUI_TEXTURED_TRIANGLES : RenderPipelines.GUI_TEXTURED, vconsumer->{
 		        Matrix3x2fStack matrix = context.pose();
 		        
 	        for (int i = 0;i<vertices.length;i+=2) {
-	        	vconsumer.addVertexWith2DPose(matrix,vertices[i],vertices[i+1],0f).setUv(textures[i],textures[i+1]).setColor(-1);
+	        	vconsumer.addVertexWith2DPose(matrix,vertices[i],vertices[i+1]).setUv(textures[i],textures[i+1]).setColor(-1);
 	        }
 		}));
 	}
@@ -280,12 +278,12 @@ public class HudderRenderer implements HudElement {
 	 */
 	public void renderColoredVertexArray(GuiGraphics context, float[] vertices, int argb, boolean triangle_strip) {
 		context.guiRenderState.submitGuiElement(new TextureRenderState(TextureSetup.noTexture(),
-			triangle_strip ? GUI_TEXTURED_TRIANGLES : RenderPipelines.GUI_TEXTURED, (vconsumer, f) -> {
+			triangle_strip ? GUI_TEXTURED_TRIANGLES : RenderPipelines.GUI_TEXTURED, vconsumer -> {
 			
 	        Matrix3x2fStack matrix = context.pose();
 	        
 	        for (int i = 0;i<vertices.length;i+=2)
-	        	vconsumer.addVertexWith2DPose(matrix,vertices[i],vertices[i+1],0f).setColor(argb).setUv(0, 0);
+	        	vconsumer.addVertexWith2DPose(matrix,vertices[i],vertices[i+1]).setColor(argb).setUv(0, 0);
 		}));
 	}
 	
@@ -297,7 +295,7 @@ public class HudderRenderer implements HudElement {
 			if (Hudder.config.shouldDrawResult()) {
 	            try {
 	            	if (compman.getResult()!=null)
-	            		drawCompileResult(context, mc.font, compman.getResult(), Hudder.config, delta);
+	            		renderHudInformation(context, mc.font, compman.getResult(), Hudder.config, delta);
 	            	else
 	            		renderFail(context, HudCompilationManager.LastFailMessage);
 				} catch (Exception e) {

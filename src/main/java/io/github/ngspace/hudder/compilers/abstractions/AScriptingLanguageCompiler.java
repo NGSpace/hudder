@@ -28,6 +28,9 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 	
 	protected static Minecraft mc = Minecraft.getInstance();
 	
+	public Map<String, RuntimeCache> cache = new HashMap<String, RuntimeCache>();
+	public ArrayElementManager elms = new ArrayElementManager();
+	
 	protected AScriptingLanguageCompiler() {
 		HudCompilationManager.addPreCompilerListener(c->{if(c==this) elms.clear();});
 		HudFileUtils.addReloadResourcesListener(()->{
@@ -35,9 +38,6 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 			cache.clear();
 		});
 	}
-	
-	public Map<String, RuntimeCache> cache = new HashMap<String, RuntimeCache>();
-	public ArrayElementManager elms = new ArrayElementManager();
 	
 	protected abstract IScriptingLanguageEngine createLangEngine() throws CompileException;
 
@@ -88,7 +88,8 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 			throw new CompileException(e.getMessage(),-1,-1,e);
 		}
 	}
-	
+
+	@SuppressWarnings("removal")
 	@Override public Object getVariable(String key) throws CompileException {
 		Object obj = NumberData.getNumber(key);
 		if ( obj!=null) return obj;

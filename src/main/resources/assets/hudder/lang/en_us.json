@@ -79,8 +79,8 @@
 	"hudder.advanced.compilertype.tooltip": "Change the type of compiler (ex Hudder, JavaScript, None).",
 	"hudder.advanced.compilertype.error":"Invalid compiler type.",
 	
-	"hudder.advanced.javascript": "Javascript enabled",
-	"hudder.advanced.javascript.tooltip": "Whether JavaScript is enabled.",
+	"hudder.advanced.unsafeoperations": "Unsafe operations enabled",
+	"hudder.advanced.unsafeoperations.tooltip": "\u00A74WARNING - ONLY ENABLE IF YOU KNOW WHAT YOUR HUD DOES.\n\u00A7fEnabling this gives access to blocked features as well as removing certain limitations from existing ones (See Wiki for more information).",
 	
 	"hudder.text.backgroundcolor": "Background color",
 	"hudder.text.backgroundcolor.tooltip": "Change the default color of the background.",

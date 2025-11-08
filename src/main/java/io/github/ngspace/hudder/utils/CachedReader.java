@@ -3,6 +3,7 @@ package io.github.ngspace.hudder.utils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Scanner;
@@ -17,15 +18,25 @@ public class CachedReader {
 	
 	protected static Minecraft mc = Minecraft.getInstance();
 	
-	public Reader reader = new ScannerReader();
+	public Reader reader = new FilesRABReader();
 	
-	
-	HashMap<String, String> savedFiles = new HashMap<String, String>();
+
+	HashMap<String, byte[]> savedFiles = new HashMap<String, byte[]>();
+	HashMap<String, String> savedFilesStrings = new HashMap<String, String>();
 	HashMap<ResourceLocation, DynamicTexture> savedImages = new HashMap<ResourceLocation, DynamicTexture>();
 	
 	
-	
-	public String getCachedFile(String file) {return savedFiles.get(file);}
+
+	public byte[] getCachedFile(String file) {return savedFiles.get(file);}
+	public String getCachedFileAsString(String file) {
+		String contents = savedFilesStrings.get(file);
+		if (contents == null) {
+			contents = new String(getCachedFile(file));
+			savedFilesStrings.put(file, contents);
+			return contents;
+		}
+		return contents;
+	}
 	
 	
 	
@@ -66,15 +77,20 @@ public class CachedReader {
 		}
 		savedImages.clear();
 		savedFiles.clear();
+		savedFilesStrings.clear();
 	}
 	
 	public static interface Reader {
-		public String readFile(File f) throws IOException;
+		public byte[] readFile(File f) throws IOException;
 	}
 	
+	/**
+	 * @deprecated Very limited
+	 */
+	@Deprecated(since = "8.6.0", forRemoval = true)
 	public static class ScannerReader implements Reader {
 		
-		public String readFile(File file) throws IOException {
+		public byte[] readFile(File file) throws IOException {
 			Scanner reader = new Scanner(file);
 			String res = "";
 			while (reader.hasNextLine()) {
@@ -82,8 +98,16 @@ public class CachedReader {
 				res += '\n';
 			}
 			reader.close();
-			if (res.isEmpty()) return res;
-			return res.substring(0, res.length()-1);
+			if (res.isEmpty()) return res.getBytes();
+			return res.substring(0, res.length()-1).getBytes();
+		}
+		
+	}
+	
+	public static class FilesRABReader implements Reader {
+		
+		public byte[] readFile(File file) throws IOException {
+			return Files.readAllBytes(file.toPath());
 		}
 		
 	}

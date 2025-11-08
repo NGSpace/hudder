@@ -86,14 +86,14 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		errorWidget.setPosition(65, 0);
 		errorWidget.setSize(300, 20);
 		errorWidget.setColor(0xFF0000);
-		errorWidget.alignLeft();
+//		errorWidget.alignLeft();
 		addRenderableWidget(errorWidget);
 		
 		if (createContainer) {
 			int width = Minecraft.getInstance().getWindow().getGuiScaledWidth();
 			int height = Minecraft.getInstance().getWindow().getGuiScaledHeight();
 		
-			container = new NGSMCConfigOptionsListWidget(Minecraft.getInstance(), width, height, 20);
+			container = new NGSMCConfigOptionsListWidget(Minecraft.getInstance(), width, height, 35);
 			
 			addRenderableWidget(container);
 		}

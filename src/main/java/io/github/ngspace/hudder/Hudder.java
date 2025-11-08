@@ -15,7 +15,11 @@ import com.mojang.blaze3d.platform.InputConstants;
 
 import io.github.ngspace.hudder.api.functionsandconsumers.HudderBuiltInFunctions;
 import io.github.ngspace.hudder.api.functionsandconsumers.HudderBuiltInMethods;
+import io.github.ngspace.hudder.compilers.utils.Compilers;
 import io.github.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI;
+import io.github.ngspace.hudder.data_management.Advanced;
+import io.github.ngspace.hudder.data_management.ResourcePackVariables;
+import io.github.ngspace.hudder.data_management.api.DataVariableRegistry;
 import io.github.ngspace.hudder.main.HudCompilationManager;
 import io.github.ngspace.hudder.main.HudderRenderer;
 import io.github.ngspace.hudder.main.HudderTickEvent;
@@ -34,6 +38,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.LoggedPrintStream;
 /**
  * <h1>If you expect any comments or JavaDocs explaining the bug-filled shithole I call "my code"
@@ -68,11 +73,14 @@ public class Hudder implements ClientModInitializer {
      * @throws Exception Because I fuck up a lot.
      */
 	@Override public void onInitializeClient() {
+		
+		log("Starting Hudder " + HUDDER_VERSION);
+		
 		configkeybind = KeyBindingHelper.registerKeyBinding(new KeyMapping(
             "hudder.configkeybind",
             InputConstants.Type.KEYSYM, // The type of the keybinding, KEYSYM for keyboard, MOUSE for mouse.
             GLFW.GLFW_KEY_R, // The keycode of the key
-            "hudder.keybinds" // The translation key of the keybinding's category.
+            KeyMapping.Category.register(ResourceLocation.parse("hudder.keybinds")) // The translation key of the keybinding's category.
         ));
 		
 		
@@ -100,9 +108,11 @@ public class Hudder implements ClientModInitializer {
 			}
 		}
 		
-		log("Starting Hudder " + HUDDER_VERSION);
+		log("Loading default compilers");
+		Compilers.registerDefaultCompilers();
 		
-		config = new HudderConfig(new File(HudFileUtils.FOLDER + "hud.json"));
+		log("Reading Hudder config");
+		config = new HudderConfig(HudderConfig.DEFAULT_CONFIG_FILE);
 
 		if (IS_DEBUG) {
 			log("HUDDER'S DEBUG MODE IS TURNED ON");
@@ -121,6 +131,10 @@ public class Hudder implements ClientModInitializer {
 		HudderBuiltInMethods.registerMethods(FunctionAndConsumerAPI.getInstance());
 		HudderBuiltInFunctions.registerFunction(FunctionAndConsumerAPI.getInstance());
 		ClientTickEvents.START_CLIENT_TICK.register(new HudderTickEvent());
+		
+		DataVariableRegistry.registerVariable(new ResourcePackVariables(), "selectedresourcepacks",
+				"selectedresourcepacks_unfiltered");
+		Advanced.registerKeyVariables();
         
 		HudCompilationManager compman = new HudCompilationManager();
 		ClientTickEvents.END_CLIENT_TICK.register(compman);
@@ -135,6 +149,10 @@ public class Hudder implements ClientModInitializer {
 				e.printStackTrace();
 			}
 		});
+        
+        // Make sure the FPS variable is updated once every compilation instead of every time a number variable is used
+        var mc = Minecraft.getInstance();
+        HudCompilationManager.addPreCompilerListener(c->Advanced.fps = Advanced.getFPS(mc));
 		
 		log("Hudder has finished loading!");
 	}
@@ -149,8 +167,6 @@ public class Hudder implements ClientModInitializer {
 	}
 	
 	
-	
-	public static void showToast(Component title) {showToast(title, Component.keybind(""));}
 	
 	public static void log  (Object str) {LOGGER.info (String.valueOf(str));}
 	public static void warn (Object str) {LOGGER.warn (String.valueOf(str));}

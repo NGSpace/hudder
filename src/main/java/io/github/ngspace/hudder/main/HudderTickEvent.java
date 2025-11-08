@@ -62,7 +62,7 @@ public class HudderTickEvent implements StartTick {
 						e.printStackTrace();
 					}
 				    if (changed.toString().equals("hud.json")) {
-				    	Hudder.config.readConfig();
+				    	Hudder.config.readAndUpdateConfig();
 				    	Hudder.showToast(Component.literal("Refreshed Config file!").withStyle(ChatFormatting.BOLD),
 				    			Component.literal("\u00A7aLoaded File"));
 				    }
@@ -70,7 +70,8 @@ public class HudderTickEvent implements StartTick {
 				if (!wk.reset()) {
 					watcherService = null;
 					Hudder.error("Unable to watch for changes in config folder!");
-					Hudder.showToast(Component.literal("\u00A74Failed to reload files!").withStyle(ChatFormatting.BOLD));
+					Hudder.showToast(Component.literal("\u00A74Failed to reload files!").withStyle(ChatFormatting.BOLD),
+			    			Component.literal("\u00A74Failed to reload files"));
 				}
 			}
     	} catch (RuntimeException e) {e.printStackTrace();}

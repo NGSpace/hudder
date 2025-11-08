@@ -14,6 +14,9 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 
 public class HudCompilationManager implements EndTick {
+	
+	protected static Minecraft mc = Minecraft.getInstance();
+	
     public static List<Consumer<ATextCompiler>> precomplistners = new ArrayList<Consumer<ATextCompiler>>();
     public static List<Consumer<ATextCompiler>> postcomplistners = new ArrayList<Consumer<ATextCompiler>>();
     private HudInformation result = null;
@@ -26,6 +29,7 @@ public class HudCompilationManager implements EndTick {
 		try {
     		Advanced.delta = f!=null?f.getGameTimeDeltaTicks():3;
     		if (Hudder.config.shouldCompile()) {
+    			Advanced.updateCPS();
     			for (Consumer<ATextCompiler> con : precomplistners)  con.accept(Hudder.config.getCompiler());
     			result = Hudder.config.compileMainHud();
     			for (Consumer<ATextCompiler> con : postcomplistners) con.accept(Hudder.config.getCompiler());

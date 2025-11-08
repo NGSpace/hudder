@@ -26,7 +26,7 @@ public class LoadMethod implements IMethod {
 			for (var i : HudCompilationManager.precomplistners) i.accept(ecompiler);
 			meta.combineWithResult(ecompiler.compile(ci, HudFileUtils.readFile(file), file), AddText);
 			for (var i : HudCompilationManager.postcomplistners) i.accept(ecompiler);
-		} catch (ReflectiveOperationException e) {
+		} catch (IllegalArgumentException e) {
 			throw new CompileException(e.getLocalizedMessage());
 		} catch (CompileException e) {
 			throw new CompileException(e.getFailureMessage() +"\nRun Failed for hud file " + file, line, charpos);

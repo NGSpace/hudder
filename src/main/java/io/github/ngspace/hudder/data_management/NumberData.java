@@ -4,9 +4,10 @@ import java.util.Calendar;
 import java.util.Queue;
 
 import io.github.ngspace.hudder.Hudder;
+import io.github.ngspace.hudder.data_management.api.DataVariableRegistry;
 import io.github.ngspace.hudder.main.config.HudderConfig;
+import io.github.ngspace.hudder.mixin.LevelRendererAccess;
 import io.github.ngspace.hudder.mixin.ParticleManagerAccessor;
-import io.github.ngspace.hudder.mixin.WorldRendererAccess;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -26,25 +27,25 @@ public class NumberData {private NumberData() {}
 		Minecraft ins = Minecraft.getInstance();
 		LocalPlayer p = ins.player;
 		Camera c = ins.gameRenderer.getMainCamera();
-		int fps = Advanced.getFPS(ins);
 		HudderConfig config = Hudder.config;
 		
 		return switch(key) {
 			
 			/* Performance */
-			case "fps": yield (double) fps;
+			case "fps": yield (double) Advanced.fps;
 			case "avgfps","avg_fps": yield (double) Advanced.getAverageFPS();
 			case "minfps","min_fps": yield (double) Advanced.getMinimumFPS();
 			case "maxfps","max_fps": yield (double) Advanced.getMaximumFPS();
 			case "ping": yield (double) ins.getConnection().getPlayerInfo(p.getName().getString()).getLatency();
 			case "tps": yield (double) getTPS(ins);
 			
-			case "gpu_d", "dgpu": yield Advanced.gpuUsage;
-			case "gpu": yield (double) ((int)Advanced.gpuUsage);
+			case "gpu_d", "dgpu": yield Math.min(ins.getGpuUtilization(), 100.0);
+			case "gpu": yield Math.round(Math.min(ins.getGpuUtilization(), 100.0));
 			case "cpu_d": yield Advanced.CPU.get()* 100d;
 			case "cpu": yield (double) (int) (Advanced.CPU.get()* 100d);
 			
 			case "delta": yield (double) Advanced.delta;
+			
 			
 			
 			/* Memory */
@@ -118,6 +119,9 @@ public class NumberData {private NumberData() {}
 			    double speed = (Math.sqrt(Math.pow(ent.getX() - ent.xOld, 2) + Math.pow(ent.getZ() - ent.zOld , 2)) * 20);
 			    yield speed;
 			}
+			case "cps": yield Advanced.getLeftCPS() + Advanced.getRightCPS();
+			case "cps_left": yield Advanced.getLeftCPS();
+			case "cps_right": yield Advanced.getRightCPS();
 
 
 			
@@ -202,7 +206,8 @@ public class NumberData {private NumberData() {}
 
 
 			/* World Rendering */
-			case "entites", "entities": yield (double) ((WorldRendererAccess)ins.levelRenderer).getVisibleEntityCount();
+			case "entites", "entities": yield ((LevelRendererAccess) ins.levelRenderer).getLevelRenderState()
+				.entityRenderStates.size();
 			case "particles": yield (double) ((ParticleManagerAccessor)ins.particleEngine)
 				.getParticles().values().stream().mapToInt(Queue::size).sum();
 			case "chunks": yield (double) ins.levelRenderer.countRenderedSections();
@@ -246,7 +251,7 @@ public class NumberData {private NumberData() {}
 			
 			case "rebeccapurple": yield (double) 0xFF663399;
 			
-			default: yield null;
+			default: yield DataVariableRegistry.getNumber(key);
 		};
 	}
 	public static float getTPS(Minecraft client) {

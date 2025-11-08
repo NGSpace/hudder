@@ -19,6 +19,7 @@ import net.minecraft.client.Minecraft;
 public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 	public static Minecraft mc = Minecraft.getInstance();
 	
+	@SuppressWarnings("removal")
 	public static void registerFunction(FunctionAndConsumerAPI binder) {
 		
 		//Getters
@@ -36,23 +37,18 @@ public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 		//Compile
 		
 		binder.registerFunction((m,c,s)-> {
-			try {
-				var e = m.toUIElementArray();
-				
-				ATextCompiler ecompiler = Compilers.getCompilerFromName(s[1].asString());
-				for (var i : HudCompilationManager.precomplistners) i.accept(ecompiler);
-				
-				HudInformation result = ecompiler.compile(Hudder.config,HudFileUtils.readFile(s[0].asString()),s[0].asString());
+			var e = m.toUIElementArray();
+			
+			ATextCompiler ecompiler = Compilers.getCompilerFromName(s[1].asString());
+			for (var i : HudCompilationManager.precomplistners) i.accept(ecompiler);
+			
+			HudInformation result = ecompiler.compile(Hudder.config,HudFileUtils.readFile(s[0].asString()),s[0].asString());
 
-				for (var v : result.elements) m.addUIElement(v);
-				for (var v : e) m.addUIElement(v);
-				
-				for (var i : HudCompilationManager.postcomplistners) i.accept(ecompiler);
-				return result;
-			} catch (ReflectiveOperationException e) {
-				if (Hudder.IS_DEBUG) e.printStackTrace();
-				throw new IllegalArgumentException("Unknown compiler");
-			}
+			for (var v : result.elements) m.addUIElement(v);
+			for (var v : e) m.addUIElement(v);
+			
+			for (var i : HudCompilationManager.postcomplistners) i.accept(ecompiler);
+			return result;
 		}, "compile", "run", "execute");
 		
 		
@@ -61,6 +57,6 @@ public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 		binder.registerFunction((m,c,s)->HudFileUtils.exists(s[0].asString()),"exists");
 		binder.registerFunction((m,c,s)->mc.font.width(s[0].asString()), "strWidth", "strwidth");
 		binder.registerFunction((m,c,s)->s[0].get().toString(), "toString");
-		binder.registerFunction((m,c,s)->new HashMap<Object, Object>(), "map");
+		binder.registerUnsafeFunction((m,c,s)->new HashMap<Object, Object>(), "map");
 	}
 }

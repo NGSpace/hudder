@@ -1,0 +1,60 @@
+name: Sync stable on release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:        # 👈 allows manual runs via the Actions tab
+
+permissions:
+  contents: write
+
+env:
+  SOURCE_BRANCH: main
+  TARGET_BRANCH: latest_release
+
+jobs:
+  merge-main-into-stable:
+    # Run if manually triggered OR if release is stable (not a prerelease)
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.release.prerelease == false }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure git
+        run: |
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+
+      - name: Fetch branches
+        run: |
+          git fetch origin $SOURCE_BRANCH || true
+          git fetch origin $TARGET_BRANCH || true
+
+      - name: Update local main
+        run: |
+          git checkout "$SOURCE_BRANCH"
+          git pull --ff-only origin "$SOURCE_BRANCH"
+
+      - name: Create or update local latest_release
+        run: |
+          if git show-ref --verify --quiet "refs/remotes/origin/${TARGET_BRANCH}"; then
+            git checkout -B "$TARGET_BRANCH" "origin/${TARGET_BRANCH}"
+          else
+            git checkout -b "$TARGET_BRANCH"
+          fi
+
+      - name: Merge main -> latest_release
+        run: |
+          set -e
+          echo "Running merge of $SOURCE_BRANCH into $TARGET_BRANCH"
+          git merge --no-ff --no-edit "$SOURCE_BRANCH" || { 
+            echo "::error::Merge conflicts occurred merging '$SOURCE_BRANCH' into '$TARGET_BRANCH'. Resolve manually."; 
+            exit 1; 
+          }
+
+      - name: Push latest_release
+        run: git push origin "$TARGET_BRANCH"

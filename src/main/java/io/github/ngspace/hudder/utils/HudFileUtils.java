@@ -25,8 +25,8 @@ public class HudFileUtils {private HudFileUtils() {}
 	public static final String FABRIC_CONFIG_FOLDER = FabricLoader.getInstance().getConfigDir().toString();
 	public static final String FOLDER = FABRIC_CONFIG_FOLDER + File.separator + "hudder" + File.separator;
     public static final String ASSETS = "/assets/hudder/";
-    public static final String[] DEFAULT_HUDS = {"tutorial", "hand", "armor", "armorside", "hud", "basic", "hud.js",
-    		"hotbar.js", "fibonacci", "worldtime.js"};
+    public static final String[] DEFAULT_HUDS = {"tutorial", "hand", "armorside", "hud", "basic", "hud.js",
+    		"hotbar.js", "worldtime.js"};
     public static final String[] DEFAULT_TEXTURES = {"pointer.png","selection.png"};
 	
     
@@ -35,9 +35,14 @@ public class HudFileUtils {private HudFileUtils() {}
      * Read file to String
      * @param file - the file to read
      * @return The text in the file
-     * @throws IOException
      */
 	public static String readFile(String file) {
+		return reader.getCachedFileAsString(sanitize(FOLDER + file));
+	}
+	
+    
+    
+	public static byte[] readFileBytes(String file) {
 		return reader.getCachedFile(sanitize(FOLDER + file));
 	}
 	
@@ -50,7 +55,13 @@ public class HudFileUtils {private HudFileUtils() {}
      * @throws IOException
      */
 	public static String readFileWithoutCache(String file) throws IOException {
-		return reader.reader.readFile(new File(sanitize(FOLDER + file)));
+		return new String(reader.reader.readFile(new File(sanitize(FOLDER + file))));
+	}
+
+
+
+	public static String readFileUnsanitized(File file) throws IOException {
+		return new String(reader.reader.readFile(file));
 	}
 	
 	

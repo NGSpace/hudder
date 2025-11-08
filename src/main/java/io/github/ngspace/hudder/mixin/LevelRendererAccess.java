@@ -6,9 +6,10 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.state.LevelRenderState;
 
 @Environment(EnvType.CLIENT)
 @Mixin(LevelRenderer.class)
-public interface WorldRendererAccess {
-	@Accessor int getVisibleEntityCount();
+public interface LevelRendererAccess {
+	@Accessor LevelRenderState getLevelRenderState();
 }
