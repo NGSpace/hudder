@@ -627,8 +627,13 @@
 			},
 			{
 				"name": "showdebug",
-				"desc": "Whether debug/f3 is shown",
+				"desc": "Whether debug features are shown",
 				"version": "1.0.0"
+			},
+			{
+				"name": "f3enabled",
+				"desc": "Whether f3 is toggled",
+				"version": "9.0.0"
 			},
 			{
 				"name": "camera_detached",
@@ -724,6 +729,11 @@
 				"name": "issneaking",
 				"desc": "Is the player sneaking",
 				"version": "6.2.0"
+			},
+			{
+				"name": "issprinting",
+				"desc": "Is the player sprinting",
+				"version": "8.6.0"
 			}
 		],
 		
@@ -831,6 +841,21 @@
 				"version": "6.1.0"
 			},
 			{
+				"name": "cps",
+				"desc": "The clicks per second of both mouse buttons",
+				"version": "9.0.0"
+			},
+			{
+				"name": "cps_left",
+				"desc": "The clicks per second of the left mouse button",
+				"version": "9.0.0"
+			},
+			{
+				"name": "cps_right",
+				"desc": "The clicks per second of the right mouse button",
+				"version": "9.0.0"
+			},
+			{
 				"name": "key_[key on keyboard]",
 				"desc": "Is the specified key held",
 				"version": "2.0.0"
@@ -857,8 +882,13 @@
 			},
 			{
 				"name": "javascriptenabled",
-				"desc": "Is javascript enabled",
+				"desc": "Is javascript enabled (Always true since 8.6.0)",
 				"version": "2.0.0"
+			},
+			{
+				"name": "unsafeoperations",
+				"desc": "Are unsafe operations allowed",
+				"version": "8.6.0"
 			},
 			{
 				"name": "globalvariablesenabled",
@@ -925,6 +955,38 @@
 				"version": "6.2.0"
 			}
 		],
+
+
+
+
+		"Game": [
+			{
+				"name": "version_type",
+				"desc": "",
+				"version": "9.0.0"
+			},
+			{
+				"name": "game_version",
+				"desc": "The version of minecraft you're playing on",
+				"version": "9.0.0"
+			}
+		],
+
+
+
+
+		"Player": [
+			{
+				"name": "username",
+				"desc": "The username of the player",
+				"version": "9.0.0"
+			},
+			{
+				"name": "uuid",
+				"desc": "The uuid of the player",
+				"version": "9.0.0"
+			}
+		],
 		
 		
 		
@@ -956,9 +1018,9 @@
 				"version": "8.4.0"
 			}
 		],
-		
-		
-		
+
+
+
 		"World": [
 			{
 				"name": "biome",
@@ -974,6 +1036,31 @@
 				"name": "dimension",
 				"desc": "The dimension the player is currently in",
 				"version": "3.2.0"
+			},
+			{
+				"name": "world_name",
+				"desc": "The name of the world you're currently on (Singleplayer only, null in a server)",
+				"version": "9.0.0"
+			}
+		],
+
+
+
+		"Server": [
+			{
+				"name": "server_name",
+				"desc": "The name of the server currently connected to (As in the name set in the server selection screen, null in singleplayer)",
+				"version": "9.0.0"
+			},
+			{
+				"name": "server_ip",
+				"desc": "The ip/domain of the server currently connected to (null in singleplayer)",
+				"version": "9.0.0"
+			},
+			{
+				"name": "server_motd",
+				"desc": "The motd of the server currently connected to (null in singleplayer)",
+				"version": "9.0.0"
 			}
 		],
 		
@@ -999,6 +1086,21 @@
 				"name": "cam_looking_at_pos",
 				"desc": "The block position the camera is currently looking at",
 				"version": "8.3.0"
+			},
+			{
+				"name": "entity_in_front",
+				"desc": "The entity that is being looked at",
+				"version": "9.0.0"
+			},
+			{
+				"name": "cam_fluid_in_front",
+				"desc": "The fluid block position the camera is currently looking at",
+				"version": "9.0.0"
+			},
+			{
+				"name": "fluid_in_front",
+				"desc": "The fluid block position the player is currently looking at",
+				"version": "9.0.0"
 			}
 		],
 		
@@ -1029,6 +1131,21 @@
 				"name": "mainfile",
 				"desc": "The name of the main file in Hudder",
 				"version": "1.0.0"
+			}
+		]
+	},
+
+	"array": {
+		"Resource packs": [
+			{
+				"name": "selectedresourcepacks",
+				"desc": "An array of the resource packs (that can be removed) which currently selected",
+				"version": "9.0.0"
+			},
+			{
+				"name": "selectedresourcepacks_unfiltered",
+				"desc": "An array of all the resource packs which currently selected",
+				"version": "9.0.0"
 			}
 		]
 	}

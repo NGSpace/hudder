@@ -80,6 +80,42 @@ true
 ||EXPECT||
 012345678910
 
+||INPUT||Variable Registry
+{string_var}
+{STrIng_vAR}
+{STrIng_vAR2}
+{number_var}
+{boolean_var}
+{object_var.toString()}
+||EXPECT||
+Value
+Value
+string_var2
+69
+true
+lol
+
+||INPUT||No Access Class
+{JavaTestNoAccess.ImportantDataHolder}
+||EXPECT||
+Access to this type is not allowed
+
+||INPUT||Java Classes
+;mute;
+{javaobject=JavaObjectAccess}
+;topleft;
+{javaobject.field}
+{javaobject.getField()}
+{javaobject.setField(10)}
+{javaobject.field}
+{javaobject.getField()}
+||EXPECT||
+69
+69
+null
+10
+10
+
 ||INPUT||Data API
 {ObjectDataAPITestVariable}
 ||EXPECT||

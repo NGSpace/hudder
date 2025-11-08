@@ -50,7 +50,7 @@ public class HudderRenderer implements HudElement {
 	
 	
 	
-	public void renderFail(GuiGraphics context, String FailMessage) {
+	protected void renderFail(GuiGraphics context, String FailMessage) {
 		List<FormattedCharSequence> lines = mc.font.split(FormattedText.of(FailMessage),
 			mc.getWindow().getGuiScaledWidth()-10);
 		int y = 1;
@@ -62,7 +62,7 @@ public class HudderRenderer implements HudElement {
 	
 	
 	
-	public void drawCompileResult(GuiGraphics context, Font renderer, HudInformation text, HudderConfig info,
+	protected void renderHudInformation(GuiGraphics context, Font renderer, HudInformation text, HudderConfig info,
 			DeltaTracker delta) {
         int color = info.color;
         int bgcolor = info.backgroundcolor;
@@ -112,7 +112,7 @@ public class HudderRenderer implements HudElement {
 	
 	
 	
-    public int countLines(String str) {
+    private int countLines(String str) {
         int count = 1;
         for (int i = 0; i<str.length();i++) if (str.charAt(i) == '\n') count++;
         return count;
@@ -295,7 +295,7 @@ public class HudderRenderer implements HudElement {
 			if (Hudder.config.shouldDrawResult()) {
 	            try {
 	            	if (compman.getResult()!=null)
-	            		drawCompileResult(context, mc.font, compman.getResult(), Hudder.config, delta);
+	            		renderHudInformation(context, mc.font, compman.getResult(), Hudder.config, delta);
 	            	else
 	            		renderFail(context, HudCompilationManager.LastFailMessage);
 				} catch (Exception e) {

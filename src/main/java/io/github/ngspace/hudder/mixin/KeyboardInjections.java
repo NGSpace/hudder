@@ -1,7 +1,7 @@
 package io.github.ngspace.hudder.mixin;
 
 import static io.github.ngspace.hudder.Hudder.config;
-import static io.github.ngspace.hudder.data_management.Advanced.keysheld;
+import static io.github.ngspace.hudder.data_management.Advanced.held_keys;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,7 +20,7 @@ public class KeyboardInjections {
 	public void keyPress(long window, int action, KeyEvent keyEvent, CallbackInfo callbackInfo) {
 		if (!config.enabled) return;
 		var key = keyEvent.key();
-		if (action==1) keysheld.put(key, key);
-		if (action==0) keysheld.remove(key);
+		if (action==1) held_keys.put(key, key);
+		if (action==0) held_keys.remove(key);
 	}
 }

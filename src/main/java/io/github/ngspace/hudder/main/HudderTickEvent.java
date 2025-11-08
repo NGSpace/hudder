@@ -62,7 +62,7 @@ public class HudderTickEvent implements StartTick {
 						e.printStackTrace();
 					}
 				    if (changed.toString().equals("hud.json")) {
-				    	Hudder.config.readConfig();
+				    	Hudder.config.readAndUpdateConfig();
 				    	Hudder.showToast(Component.literal("Refreshed Config file!").withStyle(ChatFormatting.BOLD),
 				    			Component.literal("\u00A7aLoaded File"));
 				    }

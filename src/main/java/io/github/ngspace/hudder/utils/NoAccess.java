@@ -10,5 +10,5 @@ import java.lang.annotation.Target;
  * WELL THEN JUST SLAP THIS GAL ONTO ALL YOUR IMPORTANT SHIT AND I WILL DO MY BEST TO KEEP YOUR SECRET SOMEWHAT SECURE.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.METHOD})
-public @interface NoAccess{}
+@Target({ElementType.TYPE})
+public @interface NoAccess {}

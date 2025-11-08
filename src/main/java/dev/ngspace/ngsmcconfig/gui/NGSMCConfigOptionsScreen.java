@@ -19,7 +19,7 @@ public class NGSMCConfigOptionsScreen extends AbstractNGSMCConfigScreen {
 	
 	@Override
 	protected void init() {
-		super.init();
+		super.init(); 
 		for (var option : selectedCategory.options()) {
 			container.addEntry(option.buildEntry());
 		}

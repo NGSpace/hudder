@@ -24,15 +24,14 @@ import io.github.ngspace.hudder.v2runtime.values.IV2VariableParser;
 public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 	
 	public Map<String, V2Runtime> runtimes = new HashMap<String, V2Runtime>();
-	public Map<String, Object> tempVariables = new HashMap<String, Object>();
+	public static Map<String, Object> tempVariables = new HashMap<String, Object>();
 	public MethodHandler methodHandler = new MethodHandler();
 	public V2FunctionHandler functionHandler = new V2FunctionHandler();
 	protected IV2VariableParser variableParser = new DefaultV2VariableParser();
 	public boolean SYSTEM_VARIABLES_ENABLED = true;
-	public V2Runtime globalRuntime = null;
 	
 	protected AV2Compiler() {
-		HudCompilationManager.addPreCompilerListener(c -> {globalRuntime=null;tempVariables.clear();});
+		HudCompilationManager.addPreCompilerListener(c -> tempVariables.clear());
 		FunctionAndConsumerAPI.getInstance().applyFunctionsAndConsumers(this);
 	}
 	
@@ -92,8 +91,8 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 	@Override public final HudInformation compile(HudderConfig info, String text, String filename)
 			throws CompileException {
 		V2Runtime runtime = runtimes.get(text);
-		if (runtime==null) runtimes.put(text, (runtime=buildRuntime(info, text, new CharPosition(-1, -1), filename, null)));
-		if (globalRuntime==null) globalRuntime = runtime;
+		if (runtime==null)
+			runtimes.put(text, (runtime=buildRuntime(info, text, new CharPosition(-1, -1), filename, null)));
 		return runtime.execute().toResult();
 	}
 	

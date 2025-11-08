@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Queue;
 
 import io.github.ngspace.hudder.Hudder;
+import io.github.ngspace.hudder.data_management.api.DataVariableRegistry;
 import io.github.ngspace.hudder.main.config.HudderConfig;
 import io.github.ngspace.hudder.mixin.LevelRendererAccess;
 import io.github.ngspace.hudder.mixin.ParticleManagerAccessor;
@@ -44,6 +45,7 @@ public class NumberData {private NumberData() {}
 			case "cpu": yield (double) (int) (Advanced.CPU.get()* 100d);
 			
 			case "delta": yield (double) Advanced.delta;
+			
 			
 			
 			/* Memory */
@@ -117,6 +119,9 @@ public class NumberData {private NumberData() {}
 			    double speed = (Math.sqrt(Math.pow(ent.getX() - ent.xOld, 2) + Math.pow(ent.getZ() - ent.zOld , 2)) * 20);
 			    yield speed;
 			}
+			case "cps": yield Advanced.getLeftCPS() + Advanced.getRightCPS();
+			case "cps_left": yield Advanced.getLeftCPS();
+			case "cps_right": yield Advanced.getRightCPS();
 
 
 			
@@ -246,7 +251,7 @@ public class NumberData {private NumberData() {}
 			
 			case "rebeccapurple": yield (double) 0xFF663399;
 			
-			default: yield null;
+			default: yield DataVariableRegistry.getNumber(key);
 		};
 	}
 	public static float getTPS(Minecraft client) {
