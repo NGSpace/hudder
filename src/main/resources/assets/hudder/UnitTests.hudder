@@ -80,6 +80,21 @@ true
 ||EXPECT||
 012345678910
 
+||INPUT||Variable Registry
+{string_var}
+{STrIng_vAR}
+{STrIng_vAR2}
+{number_var}
+{boolean_var}
+{object_var.toString()}
+||EXPECT||
+Value
+Value
+string_var2
+69
+true
+lol
+
 ||INPUT||No Access Class
 {JavaTestNoAccess.ImportantDataHolder}
 ||EXPECT||

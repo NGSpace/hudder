@@ -63,7 +63,7 @@ public class DataVariableRegistry {
 	}
 	public static Double getNumber(String key) {
 		var v = NumberVariables.get(key);
-		return v==null ? null : (Double) v.getValue(key);
+		return v==null ? null : ((Number) v.getValue(key)).doubleValue();
 	}
 	public static Boolean getBoolean(String key) {
 		var v = BooleanVariables.get(key);

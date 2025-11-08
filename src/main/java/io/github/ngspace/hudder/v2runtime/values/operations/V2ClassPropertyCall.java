@@ -122,6 +122,7 @@ public class V2ClassPropertyCall extends AV2Value {
 				throw new CompileException("No function named \""+getCallSign(classes)+"\" in type \"" +objClass.getSimpleName()+'"',line,charpos);
 			
 			try {
+				finalmethod.setAccessible(true);
 				return finalmethod.invoke(objValue, finalParameters);
 			} catch (InvocationTargetException e) {
 				if (Hudder.IS_DEBUG) e.getTargetException().printStackTrace();
@@ -161,7 +162,7 @@ public class V2ClassPropertyCall extends AV2Value {
 		return isAccessible((Member) method)&&!method.isAnnotationPresent(NoAccess.class);
 	}
 	private boolean isAccessible(Member method) {
-		return method.accessFlags().contains(AccessFlag.PUBLIC)&&!method.accessFlags().contains(AccessFlag.PRIVATE);
+		return !method.accessFlags().contains(AccessFlag.PRIVATE);
 	}
 	
 	

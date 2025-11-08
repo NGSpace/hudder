@@ -57,6 +57,12 @@ public class HudFileUtils {private HudFileUtils() {}
 	public static String readFileWithoutCache(String file) throws IOException {
 		return new String(reader.reader.readFile(new File(sanitize(FOLDER + file))));
 	}
+
+
+
+	public static String readFileUnsanitized(File file) throws IOException {
+		return new String(reader.reader.readFile(file));
+	}
 	
 	
 	

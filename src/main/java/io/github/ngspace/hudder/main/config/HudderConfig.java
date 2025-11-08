@@ -27,6 +27,7 @@ import net.minidev.json.JSONObject;
 public class HudderConfig {
 	
 	public static final int HUDDER_CONFIG_VERSION = 3;
+	public static final File DEFAULT_CONFIG_FILE = new File(HudFileUtils.FABRIC_CONFIG_FOLDER + File.separator + "hudder.json");
 	
 	/* EXPOSED :flushed: */
 	@Expose public Map<String, Object> globalVariables = new HashMap<String, Object>();
@@ -54,7 +55,7 @@ public class HudderConfig {
 	
 	
 	private ATextCompiler compiler = new HudderV2Compiler();
-	private File configFile = new File(HudFileUtils.FOLDER + "hud.json");
+	private File configFile;
 	
 	
 	
@@ -68,6 +69,17 @@ public class HudderConfig {
      */
 	public HudderConfig(File configFile) {
 		this.configFile = configFile;
+		if (!configFile.exists()) {
+			File oldconfigloc = new File(HudFileUtils.FOLDER + "hud.json");
+			if (oldconfigloc.exists()) {
+				Hudder.log("Migrating Hudder config");
+				if (!oldconfigloc.renameTo(configFile)) {
+					Hudder.log("Failed to migrate Hudder config file.");
+					throw new UnsupportedOperationException("Failed to migrate Hudder config file.");
+				}
+			}
+			
+		}
 		readAndUpdateConfig();
 	}
 
@@ -103,7 +115,7 @@ public class HudderConfig {
 		}
 		try {
 			Hudder.log("Reading Hudder config!");
-			String config = HudFileUtils.readFileWithoutCache(configFile.getName());
+			String config = HudFileUtils.readFileUnsanitized(configFile);
 			Hudder.log("Loading Hudder Config File:\n" + config);
 			Map<?,?> newinfo = new GsonBuilder().create().fromJson(config,HashMap.class);
 			
@@ -269,7 +281,7 @@ public class HudderConfig {
 
 
 	public static boolean isAccessible(Class<?> clazz) {
-		return (clazz.accessFlags().contains(AccessFlag.PUBLIC)&&!clazz.accessFlags().contains(AccessFlag.PRIVATE))
+		return !clazz.accessFlags().contains(AccessFlag.PRIVATE)
 				&&!clazz.isAnnotationPresent(NoAccess.class);
 	}
 	public static boolean isPublic(Member member) {

@@ -114,7 +114,7 @@ public class Hudder implements ClientModInitializer {
 		Compilers.registerDefaultCompilers();
 		
 		log("Reading Hudder config");
-		config = new HudderConfig(new File(HudFileUtils.FOLDER + "hud.json"));
+		config = new HudderConfig(HudderConfig.DEFAULT_CONFIG_FILE);
 
 		if (IS_DEBUG) {
 			log("HUDDER'S DEBUG MODE IS TURNED ON");
