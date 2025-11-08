@@ -31,6 +31,7 @@ public abstract class AVarTextCompiler extends ATextCompiler {
 	 * @param key - the name of the variable
 	 * @return The value of the variable or null if it doesn't exist.
 	 */
+	@SuppressWarnings("removal")
 	public Object getSystemVariable(String key) {
 		Object obj = NumberData.getNumber(key);
 		if (obj!=null) return obj;

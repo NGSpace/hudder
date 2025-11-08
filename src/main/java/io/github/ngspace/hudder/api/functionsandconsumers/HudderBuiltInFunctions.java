@@ -19,6 +19,7 @@ import net.minecraft.client.Minecraft;
 public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 	public static Minecraft mc = Minecraft.getInstance();
 	
+	@SuppressWarnings("removal")
 	public static void registerFunction(FunctionAndConsumerAPI binder) {
 		
 		//Getters

@@ -89,6 +89,7 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 		}
 	}
 
+	@SuppressWarnings("removal")
 	@Override public Object getVariable(String key) throws CompileException {
 		Object obj = NumberData.getNumber(key);
 		if ( obj!=null) return obj;
