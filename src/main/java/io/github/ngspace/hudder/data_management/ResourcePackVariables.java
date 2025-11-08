@@ -1,12 +1,11 @@
 package io.github.ngspace.hudder.data_management;
 
-import java.util.function.Function;
-
+import io.github.ngspace.hudder.data_management.api.DataVariable;
 import net.minecraft.client.Minecraft;
 
-public class ResourcePackVariables implements Function<String, Object> {
+public class ResourcePackVariables implements DataVariable<Object> {
 	@Override
-	public Object apply(String key) {
+	public Object getValue0(String key) {
 		var ins = Minecraft.getInstance();
 		return switch (key) {
 			case "selectedresourcepacks": yield ins.getResourcePackRepository().getSelectedPacks().stream()
