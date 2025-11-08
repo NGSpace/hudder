@@ -59,6 +59,7 @@ public class V2ClassPropertyCall extends AV2Value {
 	}
 	@Override public Object get() throws CompileException {
 		Object obj = smartGet();
+		if (obj==null) return null;
 		if (!HudderConfig.isAccessible(obj.getClass()))
 			return null;
 		if (obj instanceof Set<?> r) return r.toArray();

@@ -85,6 +85,22 @@ true
 ||EXPECT||
 Access to this type is not allowed
 
+||INPUT||Java Classes
+;mute;
+{javaobject=JavaObjectAccess}
+;topleft;
+{javaobject.field}
+{javaobject.getField()}
+{javaobject.setField(10)}
+{javaobject.field}
+{javaobject.getField()}
+||EXPECT||
+69
+69
+null
+10
+10
+
 ||INPUT||Data API
 {ObjectDataAPITestVariable}
 ||EXPECT||

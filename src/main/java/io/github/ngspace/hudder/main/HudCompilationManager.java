@@ -29,6 +29,7 @@ public class HudCompilationManager implements EndTick {
 		try {
     		Advanced.delta = f!=null?f.getGameTimeDeltaTicks():3;
     		if (Hudder.config.shouldCompile()) {
+    			Advanced.updateCPS();
     			for (Consumer<ATextCompiler> con : precomplistners)  con.accept(Hudder.config.getCompiler());
     			result = Hudder.config.compileMainHud();
     			for (Consumer<ATextCompiler> con : postcomplistners) con.accept(Hudder.config.getCompiler());

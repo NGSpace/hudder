@@ -47,6 +47,8 @@ import net.minecraft.client.gui.screens.reporting.ReportPlayerScreen;
 public class Advanced {private Advanced() {}
 
 	public static int fps = 0;
+	public static List<Long> clicks_left = new ArrayList<Long>();
+	public static List<Long> cps_right = new ArrayList<Long>();
 
 	public static double gpuUsage = 0;
 	public static float delta = 1;
@@ -54,6 +56,7 @@ public class Advanced {private Advanced() {}
 			((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean())::getProcessCpuLoad, 2000);
 	
 	public static String OS = getOS();
+
 	static String getOS() {
 		String OS = System.getProperty("os.name", "generic").toLowerCase();
 		if ((OS.contains("mac")) || (OS.contains("darwin"))) OS = "mac";
@@ -62,6 +65,29 @@ public class Advanced {private Advanced() {}
 		else OS = "other";
 		return OS;
 	}
+
+	static double oldcps_l = 0;
+	static double newcps_l = 0;
+	static double oldcps_r = 0;
+	static double newcps_r = 0;
+	
+    public static void updateCPS() {
+        long now = System.currentTimeMillis();
+        clicks_left.removeIf(age -> age < now - 1000);
+        oldcps_l = newcps_l;
+        newcps_l = clicks_left.size();
+        cps_right.removeIf(age -> age < now - 1000);
+        oldcps_r = newcps_r;
+        newcps_r = cps_right.size();
+    }
+    
+    public static double getLeftCPS() {
+    	return truncate(oldcps_l*.8 + newcps_l*.2, 3);
+    }
+    
+    public static double getRightCPS() {
+    	return truncate(oldcps_r*.8 + newcps_r*.2, 3);
+    }
 	
 	
 	
@@ -145,5 +171,9 @@ public class Advanced {private Advanced() {}
 			default:
 				yield screen.getClass().getSimpleName();
 		};
+	}
+	
+	static double truncate(double num, int cutoff) {
+		return Math.floor(num*Math.pow(10, cutoff))/Math.pow(10, cutoff);
 	}
 }
