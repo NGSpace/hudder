@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.Scanner;
 
+import io.github.ngspace.hudder.data_management.EffectData;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
@@ -134,6 +135,7 @@ public class Hudder implements ClientModInitializer {
 		
 		DataVariableRegistry.registerVariable(new ResourcePackVariables(), "selectedresourcepacks",
 				"selectedresourcepacks_unfiltered");
+		DataVariableRegistry.registerVariable(new EffectData(), "active_effects");
 		Advanced.registerKeyVariables();
         
 		HudCompilationManager compman = new HudCompilationManager();
