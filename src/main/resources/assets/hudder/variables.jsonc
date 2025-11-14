@@ -11,7 +11,7 @@
 //  }
 //  "version" is optional.
 {
-	"hudder_version": "8.5.0",
+	"hudder_version": "9.0.0",
 	"number": {
 		
 		
@@ -54,7 +54,7 @@
 			},
 			{
 				"name": "gpu",
-				"desc": "The current GPU usage in percentage percentage",
+				"desc": "The current GPU usage in percentage",
 				"version": "1.0.0"
 			},
 			{
@@ -405,7 +405,7 @@
 		
 		
 		
-		"Player roation": [
+		"Player rotation": [
 			{
 				"name": "dpitch",
 				"desc": "The player's pitch rotation (With decimal precision)",
@@ -440,7 +440,7 @@
 		
 		
 		
-		"Camera roation": [
+		"Camera rotation": [
 			{
 				"name": "cam_dpitch",
 				"desc": "The camera's pitch rotation (With decimal precision)",
@@ -1146,6 +1146,13 @@
 				"name": "selectedresourcepacks_unfiltered",
 				"desc": "An array of all the resource packs which currently selected",
 				"version": "9.0.0"
+			}
+		],
+		"Active Effects": [
+			{
+				"name": "active_effects",
+				"desc": "An array of all active effects",
+				"version": "unreleased"
 			}
 		]
 	}

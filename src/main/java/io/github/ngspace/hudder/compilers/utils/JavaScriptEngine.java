@@ -150,7 +150,7 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 		@Override public boolean asBoolean() {return Context.toBoolean(value);}
 		@Override public Object[] asArray() {return ((NativeArray) value).toArray();}
 		
-		@Override public String toString() {return value.toString();}
+		@Override public String toString() {return Context.toString(value);}
 
 		@Override public <T> T asType(Class<T> clazz) throws CompileException {return clazz.cast(get());}
 	}
