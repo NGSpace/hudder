@@ -93,7 +93,7 @@ public abstract class AV2Value implements ObjectWrapper {
 	
 	
 	public static String invalidTypeMessage(String type, String value, Object obj) {
-		return "Incorrect type \""+type+"\" for value: \""+value+"\" of type "+obj.getClass().getName();
+		return "Incorrect type \""+type+"\" for value: \""+value+"\" of type "+(obj!=null?obj.getClass().getName():null);
 	}
 	
 	public abstract void setValue(AV2Compiler compiler, Object value)
