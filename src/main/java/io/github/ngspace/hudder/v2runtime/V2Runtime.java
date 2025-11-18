@@ -3,6 +3,7 @@ package io.github.ngspace.hudder.v2runtime;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import dev.ngspace.ngasmhelper.ClassMaker;
 import io.github.ngspace.hudder.compilers.abstractions.AV2Compiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileState;
@@ -11,6 +12,7 @@ import io.github.ngspace.hudder.v2runtime.runtime_elements.AV2RuntimeElement;
 public class V2Runtime {
 	public final AV2Compiler compiler;
 	protected V2Runtime scope;
+	protected CompiledV2Executor executor;
 	/**
 	 * Should stay mostly unused for now.
 	 */
@@ -19,7 +21,17 @@ public class V2Runtime {
 		@Override public int hashCode() {return super.hashCode();}
 		@Override public String toString() {return "null";}
 	};
-	public V2Runtime(AV2Compiler compiler, V2Runtime scope) {this.compiler = compiler;this.scope = scope;}
+	public V2Runtime(AV2Compiler compiler, V2Runtime scope) {
+		this.compiler = compiler;
+		this.scope = scope;
+		try {
+			ClassMaker<Object> maker = new ClassMaker<Object>(Object.class, "Gen", CompiledV2Executor.class);
+			maker.makeMethod("exec", null, StringBuilder.class, CompileState.class).build();
+			this.executor = (CompiledV2Executor) maker.build(V2Runtime.class.getClassLoader());
+		} catch (ReflectiveOperationException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	protected AV2RuntimeElement[] elements = new AV2RuntimeElement[0];
 	public CompileState compileState;
@@ -27,13 +39,14 @@ public class V2Runtime {
 	public CompileState execute() throws CompileException {
 		compileState = new CompileState(CompileState.TOPLEFT);
 		StringBuilder builder = new StringBuilder();
-		for (int i = 0;i<elements.length;i++) {
-			AV2RuntimeElement element = elements[i];
-			if (!element.execute(compileState, builder)||compileState.hasReturned) {
-				compileState.hasBroken = true;
-				break;
-			}
-		}
+//		for (int i = 0;i<elements.length;i++) {
+//			AV2RuntimeElement element = elements[i];
+//			if (!element.execute(compileState, builder)||compileState.hasReturned) {
+//				compileState.hasBroken = true;
+//				break;
+//			}
+//		}
+		executor.exec(builder, compileState);
 		compileState.addString(builder.toString(), false);
 		return compileState;
 	}

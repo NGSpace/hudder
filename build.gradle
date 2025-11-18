@@ -37,6 +37,7 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 	
 	provided 'org.mozilla:rhino:1.8.0'
+	provided 'org.ow2.asm:asm:9.8'
 	
     modCompileOnly("com.terraformersmc:modmenu:16.0.0-rc.1")
 }
