@@ -17,7 +17,7 @@ public class EffectData implements DataVariable<Object> {
                     .toList();
         }
         return null;
-    };
+    }
     public static class Effect {
         public final String id;
         public final int amplifier;
