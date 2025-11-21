@@ -6,7 +6,7 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class DropdownElement extends AbstractWidget {
 
@@ -20,7 +20,7 @@ public class DropdownElement extends AbstractWidget {
 	@Override
 	protected void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
 		guiGraphics.fill(getX(), getY(), getRight(), getBottom(), 0xFFFFFFFF);
-		ResourceLocation resourceLocation = ResourceLocation.withDefaultNamespace("widget/text_field");
+		Identifier resourceLocation = Identifier.withDefaultNamespace("widget/text_field");
 		guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, resourceLocation, this.getX(), this.getY(), this.getWidth(), this.getHeight());
 	}
 

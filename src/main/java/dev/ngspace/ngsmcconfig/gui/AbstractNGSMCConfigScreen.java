@@ -4,10 +4,7 @@ import java.io.File;
 import java.net.URI;
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
-
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -15,7 +12,7 @@ import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
+import net.minecraft.util.Util;
 
 public abstract class AbstractNGSMCConfigScreen extends Screen {
 	
@@ -82,10 +79,9 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		}
 		addRenderableWidget(globalResetButton);
 		
-		errorWidget = new StringWidget(error!=null?error:Component.literal(""), font);
+		errorWidget = new StringWidget(error!=null?error.plainCopy().withColor(0xFF0000):Component.literal(""), font);
 		errorWidget.setPosition(65, 0);
 		errorWidget.setSize(300, 20);
-		errorWidget.setColor(0xFF0000);
 //		errorWidget.alignLeft();
 		addRenderableWidget(errorWidget);
 		
@@ -161,9 +157,9 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
         	container.render(graphics, mouseX, mouseY, partialTick);
         super.render(graphics, mouseX, mouseY, partialTick);
     }
-    @Override
-    public boolean handleComponentClicked(@Nullable Style style) {
-        if (style == null) return false;
-        return super.handleComponentClicked(style);
-    }
+//    @Override
+//    public boolean handleComponentClicked(@Nullable Style style) {
+//        if (style == null) return false;
+//        return super.handleComponentClicked(style);
+//    }
 }

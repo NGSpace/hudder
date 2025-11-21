@@ -16,7 +16,7 @@ import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.animal.equine.AbstractHorse;
 import net.minecraft.world.level.LightLayer;
 
 public class NumberData {private NumberData() {}
@@ -36,7 +36,7 @@ public class NumberData {private NumberData() {}
 			case "avgfps","avg_fps": yield (double) Advanced.getAverageFPS();
 			case "minfps","min_fps": yield (double) Advanced.getMinimumFPS();
 			case "maxfps","max_fps": yield (double) Advanced.getMaximumFPS();
-			case "ping": yield (double) ins.getConnection().getPlayerInfo(p.getName().getString()).getLatency();
+			case "ping": yield (double) ins.getConnection().getPlayerInfo(p.getUUID()).getLatency();
 			case "tps": yield (double) getTPS(ins);
 			
 			case "gpu_d", "dgpu": yield Math.min(ins.getGpuUtilization(), 100.0);
@@ -108,6 +108,7 @@ public class NumberData {private NumberData() {}
 
 			case "playerspeed": {
 				var ent = p.getVehicle() == null ? p : p.getVehicle();
+				if (ent==null) yield 0;
 
 			    double speed = (Math.sqrt(Math.pow(ent.getX() - ent.xOld, 2) +
 			    		Math.pow(ent.getY() - ent.yOld , 2) + Math.pow(ent.getZ() - ent.zOld , 2)) * 20);
@@ -115,6 +116,7 @@ public class NumberData {private NumberData() {}
 			}
 			case "horizontal_playerspeed": {
 				var ent = p.getVehicle() == null ? p : p.getVehicle();
+				if (ent==null) yield 0;
 
 			    double speed = (Math.sqrt(Math.pow(ent.getX() - ent.xOld, 2) + Math.pow(ent.getZ() - ent.zOld , 2)) * 20);
 			    yield speed;
@@ -136,12 +138,12 @@ public class NumberData {private NumberData() {}
 
 
 			/* Camera position */
-			case "cam_dxpos": yield c.getPosition().x;
-			case "cam_dypos": yield c.getPosition().y;
-			case "cam_dzpos": yield c.getPosition().z;
-			case "cam_xpos": yield (double) c.getBlockPosition().getX();
-			case "cam_ypos": yield (double) c.getBlockPosition().getY();
-			case "cam_zpos": yield (double) c.getBlockPosition().getZ();
+			case "cam_dxpos": yield c.position().x;
+			case "cam_dypos": yield c.position().y;
+			case "cam_dzpos": yield c.position().z;
+			case "cam_xpos": yield (double) c.blockPosition().getX();
+			case "cam_ypos": yield (double) c.blockPosition().getY();
+			case "cam_zpos": yield (double) c.blockPosition().getZ();
 			
 			
 			
@@ -155,11 +157,11 @@ public class NumberData {private NumberData() {}
 
 
 			/* Camera chunk information */
-			case "cam_subchunkx": yield (double) (c.getBlockPosition().getX() & 0xF);
-			case "cam_subchunky": yield (double) (c.getBlockPosition().getY() & 0xF);
-			case "cam_subchunkz": yield (double) (c.getBlockPosition().getZ() & 0xF);
-			case "cam_chunkx": yield (double) (c.getBlockPosition().getX() >> 4);
-			case "cam_chunkz": yield (double) (c.getBlockPosition().getZ() >> 4);
+			case "cam_subchunkx": yield (double) (c.blockPosition().getX() & 0xF);
+			case "cam_subchunky": yield (double) (c.blockPosition().getY() & 0xF);
+			case "cam_subchunkz": yield (double) (c.blockPosition().getZ() & 0xF);
+			case "cam_chunkx": yield (double) (c.blockPosition().getX() >> 4);
+			case "cam_chunkz": yield (double) (c.blockPosition().getZ() >> 4);
 
 
 
@@ -186,22 +188,22 @@ public class NumberData {private NumberData() {}
 
 			/* Camera roation */
 			// Pitch
-			case "cam_dpitch": yield (double) c.getXRot();
-			case "cam_pitch": yield (double) (int) c.getXRot();
+			case "cam_dpitch": yield (double) c.xRot();
+			case "cam_pitch": yield (double) (int) c.xRot();
 			// Yaw
 			case "cam_dyaw": {
-				float yaw = c.getYRot();
+				float yaw = c.yRot();
 				if (yaw<0) yield (double) (360d+(yaw % 360d));
 				yield yaw % 360d;
 			}
 			case "cam_yaw":  {
-				int yaw = (int) c.getYRot();
+				int yaw = (int) c.yRot();
 				if (yaw<0) yield (double) (360+(yaw % 360));
 				yield yaw % 360d;
 			}
 			// F3 yaw
-			case "cam_f3_dyaw": yield (double) Mth.wrapDegrees(c.getYRot());
-			case "cam_f3_yaw": yield (double) (int) Mth.wrapDegrees(c.getYRot());
+			case "cam_f3_dyaw": yield (double) Mth.wrapDegrees(c.yRot());
+			case "cam_f3_yaw": yield (double) (int) Mth.wrapDegrees(c.yRot());
 
 
 
@@ -220,9 +222,9 @@ public class NumberData {private NumberData() {}
 			case "blocklight", "block_light": yield (double) ins.level.getBrightness(LightLayer.BLOCK,p.blockPosition());
 			case "skylight", "sky_light": yield (double) ins.level.getBrightness(LightLayer.SKY,p.blockPosition());
 			/* At camera */
-			case "cam_light": yield (double) ins.level.getMaxLocalRawBrightness(c.getBlockPosition());
-			case "cam_blocklight", "cam_block_light": yield (double) ins.level.getBrightness(LightLayer.BLOCK,c.getBlockPosition());
-			case "cam_skylight", "cam_sky_light": yield (double) ins.level.getBrightness(LightLayer.SKY,c.getBlockPosition());
+			case "cam_light": yield (double) ins.level.getMaxLocalRawBrightness(c.blockPosition());
+			case "cam_blocklight", "cam_block_light": yield (double) ins.level.getBrightness(LightLayer.BLOCK,c.blockPosition());
+			case "cam_skylight", "cam_sky_light": yield (double) ins.level.getBrightness(LightLayer.SKY,c.blockPosition());
 			
 			
 			

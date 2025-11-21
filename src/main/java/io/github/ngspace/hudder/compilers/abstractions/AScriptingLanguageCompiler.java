@@ -21,7 +21,7 @@ import io.github.ngspace.hudder.uielements.ItemElement;
 import io.github.ngspace.hudder.utils.HudFileUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
@@ -105,7 +105,7 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 		//Item
 		
 		engine.bindConsumer(s->elms.add(new ItemElement(s[1].asInt(), s[2].asInt(),new ItemStack(BuiltInRegistries.ITEM.getValue(
-				ResourceLocation.tryParse(s[0].asString()))),s[3].asFloat(), false)),"drawItem", "item");
+				Identifier.tryParse(s[0].asString()))),s[3].asFloat(), false)),"drawItem", "item");
 		
 		//Slot
 		
