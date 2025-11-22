@@ -22,7 +22,7 @@ import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.chat.FormattedText;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
 
@@ -32,7 +32,7 @@ import net.minecraft.util.FormattedCharSequence;
 public class HudderRenderer implements HudElement {
 	
 	private HudCompilationManager compman;
-	public ResourceLocation hudElementRegistryID = ResourceLocation.fromNamespaceAndPath("hudder_renderer", "renderer");
+	public Identifier hudElementRegistryID = Identifier.fromNamespaceAndPath("hudder_renderer", "renderer");
 	protected static Minecraft mc = Minecraft.getInstance();
     public static final String NL_REGEX = "\r?\n";
 	
@@ -147,10 +147,11 @@ public class HudderRenderer implements HudElement {
 	
 	
 	
-	public void renderTexture9Slice(GuiGraphics context, ResourceLocation id, float x, float y, float width,
+	public void renderTexture9Slice(GuiGraphics context, Identifier id, float x, float y, float width,
 			float height, float[] slices) {
-		context.guiRenderState.submitGuiElement(new TextureRenderState(TextureSetup.singleTexture(mc
-				.getTextureManager().getTexture(id).getTextureView()), RenderPipelines.GUI_TEXTURED, vconsumer->{
+		var tex = mc.getTextureManager().getTexture(id);
+		context.guiRenderState.submitGuiElement(new TextureRenderState(TextureSetup.singleTexture(tex.getTextureView(),
+				tex.getSampler()), RenderPipelines.GUI_TEXTURED, vconsumer->{
 		    Matrix3x2fStack matrix = context.pose();
 	        NativeImage img = ((DynamicTexture)mc.getTextureManager().getTexture(id)).getPixels();
 	        int texwidth = img.getWidth();
@@ -233,9 +234,10 @@ public class HudderRenderer implements HudElement {
 	}
 
 	public void renderTexturedVertexArray(GuiGraphics context, float[] vertices, float[] textures,
-			ResourceLocation id, boolean triangles) {
-		context.guiRenderState.submitGuiElement(new TextureRenderState(TextureSetup.singleTexture(mc
-				.getTextureManager().getTexture(id).getTextureView()),
+			Identifier id, boolean triangles) {
+		var tex = mc.getTextureManager().getTexture(id);
+		context.guiRenderState.submitGuiElement(new TextureRenderState(TextureSetup.singleTexture(tex.getTextureView(),
+				tex.getSampler()),
 				triangles ? GUI_TEXTURED_TRIANGLES : RenderPipelines.GUI_TEXTURED, vconsumer->{
 		        Matrix3x2fStack matrix = context.pose();
 		        

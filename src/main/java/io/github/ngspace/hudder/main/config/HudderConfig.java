@@ -236,7 +236,7 @@ public class HudderConfig {
 	 * @return true or false
 	 */
 	public boolean shouldDrawResult() {
-		return !mc.options.hideGui&&(!mc.debugEntries.isF3Visible()||showInF3)&&enabled;
+		return !mc.options.hideGui&&(!mc.debugEntries.isOverlayVisible()||showInF3)&&enabled;
 	}
 	
 	

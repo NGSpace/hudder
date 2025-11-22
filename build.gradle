@@ -32,7 +32,9 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 	
 	provided "org.mozilla:rhino:${project.rhino_version}"
-    modCompileOnly("com.terraformersmc:modmenu:${project.modmenu_version}")
+	provided 'net.minidev:json-smart:2.6.0'
+	
+    modApi("com.terraformersmc:modmenu:${project.modmenu_version}")
 }
 
 processResources {

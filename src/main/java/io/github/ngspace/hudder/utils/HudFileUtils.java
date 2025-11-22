@@ -15,7 +15,7 @@ import javax.imageio.ImageIO;
 import org.apache.commons.io.FileUtils;
 
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class HudFileUtils {private HudFileUtils() {}
 
@@ -145,9 +145,9 @@ public class HudFileUtils {private HudFileUtils() {}
 		}
 	}
 	
-	public static ResourceLocation getTexture(String filename) {
+	public static Identifier getTexture(String filename) {
 		sanitize(FOLDER + filename);
-		return ResourceLocation.fromNamespaceAndPath("hudder",
+		return Identifier.fromNamespaceAndPath("hudder",
 				String.valueOf(getCRC32Checksum(filename.trim().toLowerCase())));
 	}
 	private static long getCRC32Checksum(String str) {return getCRC32Checksum(str.getBytes());}
@@ -187,7 +187,7 @@ public class HudFileUtils {private HudFileUtils() {}
 
 
 
-	public static boolean imageLoaded(ResourceLocation id) {
+	public static boolean imageLoaded(Identifier id) {
 		return reader.savedImages.containsKey(id);
 	}
 }

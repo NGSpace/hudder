@@ -13,8 +13,8 @@ import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.animal.horse.AbstractChestedHorse;
-import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.animal.equine.AbstractChestedHorse;
+import net.minecraft.world.entity.animal.equine.AbstractHorse;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 
@@ -38,8 +38,8 @@ public class BooleanData {private BooleanData(){}
 			}
 			case "hudhidden": yield ins.options.hideGui;
 			case "showdebug": yield ins.getDebugOverlay().showDebugScreen();
-			case "f3enabled": yield ins.debugEntries.isF3Visible();
-			case "camera_detached": yield c.getEntity() != p;
+			case "f3enabled": yield ins.debugEntries.isOverlayVisible();
+			case "camera_detached": yield c.entity() != p;
 			
 			
 			

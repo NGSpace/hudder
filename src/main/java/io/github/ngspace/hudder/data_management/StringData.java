@@ -3,18 +3,17 @@ package io.github.ngspace.hudder.data_management;
 import java.util.Calendar;
 import java.util.Locale;
 
-import net.minecraft.SharedConstants;
-
 import com.mojang.blaze3d.platform.GLX;
 
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.data_management.api.DataVariableRegistry;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.animal.equine.AbstractHorse;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -64,7 +63,7 @@ public class StringData {private StringData() {}
 
 
 			/* Mount information */
-			case "mount_type": yield p.getVehicle() == null ? V2Runtime.NULL : p.getVehicle().getType().builtInRegistryHolder().key().location().toString();
+			case "mount_type": yield p.getVehicle() == null ? V2Runtime.NULL : p.getVehicle().getType().builtInRegistryHolder().key().identifier().toString();
 			case "mount_armor_type": yield (p.getVehicle() instanceof AbstractHorse horse) ? horse.getBodyArmorItem().getItem().toString() : V2Runtime.NULL;
 			case "mount_name": yield p.getVehicle() == null || p.getVehicle().getCustomName() == null ? V2Runtime.NULL : p.getVehicle().getCustomName().getString();
 
@@ -74,7 +73,7 @@ public class StringData {private StringData() {}
 			case "biome":
 				yield ins.level.getBiome(ins.player.blockPosition()).getRegisteredName();
 			case "cam_biome":
-				yield ins.level.getBiome(c.getBlockPosition()).getRegisteredName();
+				yield ins.level.getBiome(c.blockPosition()).getRegisteredName();
 			case "dimension":
 				yield ins.level.dimension().toString();
 			case "world_name":
@@ -99,8 +98,8 @@ public class StringData {private StringData() {}
 			}
 
 			case "cam_looking_at_pos": {
-				Vec3 camPos = c.getPosition();
-				Vec3 camLook = new Vec3(c.getLookVector().x(), c.getLookVector().y(), c.getLookVector().z());
+				Vec3 camPos = c.position();
+				Vec3 camLook = new Vec3(c.forwardVector().x(), c.forwardVector().y(), c.forwardVector().z());
 				BlockHitResult hit = raycast(ins, camPos, camLook, 50, false);
 				yield (hit == null) ? V2Runtime.NULL : hit.getBlockPos().getX() + " " + hit.getBlockPos().getY() + " " + hit.getBlockPos().getZ();
 			}
@@ -111,8 +110,8 @@ public class StringData {private StringData() {}
 			}
 
 			case "cam_block_in_front": {
-				Vec3 camPos = c.getPosition();
-				Vec3 camLook = new Vec3(c.getLookVector().x(), c.getLookVector().y(), c.getLookVector().z());
+				Vec3 camPos = c.position();
+				Vec3 camLook = new Vec3(c.forwardVector().x(), c.forwardVector().y(), c.forwardVector().z());
 				BlockHitResult hit = raycast(ins, camPos, camLook, 50, false);
 				yield (hit == null) ? V2Runtime.NULL : BuiltInRegistries.BLOCK.getKey(ins.level.getBlockState(hit.getBlockPos()).getBlock()).toString();
 			}
@@ -123,8 +122,8 @@ public class StringData {private StringData() {}
 			}
 
 			case "cam_fluid_in_front": {
-				Vec3 camPos = c.getPosition();
-				Vec3 camLook = new Vec3(c.getLookVector().x(), c.getLookVector().y(), c.getLookVector().z());
+				Vec3 camPos = c.position();
+				Vec3 camLook = new Vec3(c.forwardVector().x(), c.forwardVector().y(), c.forwardVector().z());
 				BlockHitResult hit = raycast(ins, camPos, camLook, 50, true);
 				yield (hit == null) ? V2Runtime.NULL : BuiltInRegistries.FLUID.getKey(ins.level.getFluidState(hit.getBlockPos()).getType()).toString();
 			}

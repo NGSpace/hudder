@@ -8,7 +8,7 @@ import io.github.ngspace.hudder.uielements.ItemElement;
 import io.github.ngspace.hudder.utils.ObjectWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 
@@ -40,7 +40,7 @@ public class ItemStackMethods implements IMethod {
 			case "boots": yield inv.getItem(36);
 			case "offhand": yield mc.player.getOffhandItem();
 			case "slot": yield inv.getItem(args[0].asInt());
-			case "item": yield new ItemStack(BuiltInRegistries.ITEM.getValue(ResourceLocation.tryParse(args[0].asString())));
+			case "item": yield new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.tryParse(args[0].asString())));
 			default: throw new IllegalArgumentException("Unexpected value: " + type);
 		};
 		meta.elements.add(new ItemElement(x, y, stack, scale, showcount));

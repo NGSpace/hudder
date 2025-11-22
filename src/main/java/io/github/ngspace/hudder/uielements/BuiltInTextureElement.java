@@ -7,7 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.SimpleTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class BuiltInTextureElement extends AUIElement {
 	
@@ -15,10 +15,10 @@ public class BuiltInTextureElement extends AUIElement {
 	public final int y;
 	public final int width;
 	public final int height;
-	public final ResourceLocation id;
+	public final Identifier id;
     public static Minecraft mc = Minecraft.getInstance();
 	
-	public BuiltInTextureElement(ResourceLocation id, int x, int y, int width, int height) throws CompileException {
+	public BuiltInTextureElement(Identifier id, int x, int y, int width, int height) throws CompileException {
 		this.x=x;
 		this.y=y;
 		this.width=width;
