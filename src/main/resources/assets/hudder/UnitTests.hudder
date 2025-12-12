@@ -1,0 +1,499 @@
+
+||INPUT||Order of operations
+{6/2*(1+2)}
+||EXPECT||
+9
+
+||INPUT||Math
+{(1+2)/3-1}
+||EXPECT||
+0
+
+||INPUT||Equals inside strings
+{r=43} {"result="+r} {"result="+1} {"result="}
+||EXPECT||
+43 result=43 result=1 result=
+
+||INPUT||Decimal point and math
+{i=1}
+{2* 3.141592653589793 * i / 360}
+||EXPECT||
+1
+0.017453292519943295
+
+||INPUT||Math error
+{(1+2)3/1}
+||EXPECT||
+Untokenizable variable: (1+2)3
+
+||INPUT||Math operations
+{truncate(3*2.1,1)}
+||EXPECT||
+6.3
+
+||INPUT||Logical operators in comparisions
+{5>6||6>6}
+{5>6&&6>6}
+{5<6||6>6}
+{5<6&&6>5}
+||EXPECT||
+false
+false
+true
+true
+
+||INPUT||If and Break
+r#if true
+	{break}
+t
+||EXPECT||
+r
+
+||INPUT||Function API test function
+{FunctionAPITestingFunction("1")=="1"}
+||EXPECT||
+true
+
+||INPUT||Method API test method
+;MethodAPITestingMethod, "1";
+{methodvalue}
+||EXPECT||
+1
+
+||INPUT||For loops in range
+;mute;
+{j=""}
+#for i in range(0,11)
+	{j=j+i}
+;topleft;
+{j}
+||EXPECT||
+012345678910
+
+||INPUT||For loops in array
+;mute;
+{j=""}
+#for i in [0,1,2,3,4,5,6,"7",8,9,10]
+	{j=j+i}
+;topleft;
+{j}
+||EXPECT||
+012345678910
+
+||INPUT||Variable Registry
+{string_var}
+{STrIng_vAR}
+{STrIng_vAR2}
+{number_var}
+{boolean_var}
+{object_var.toString()}
+||EXPECT||
+Value
+Value
+string_var2
+69
+true
+lol
+
+||INPUT||No Access Class
+{JavaTestNoAccess.ImportantDataHolder}
+||EXPECT||
+Access to this type is not allowed
+
+||INPUT||Java Classes
+;mute;
+{javaobject=JavaObjectAccess}
+;topleft;
+{javaobject.field}
+{javaobject.getField()}
+{javaobject.setField(10)}
+{javaobject.field}
+{javaobject.getField()}
+||EXPECT||
+69
+69
+null
+10
+10
+
+||INPUT||Data API
+{ObjectDataAPITestVariable}
+||EXPECT||
+Oh jeepers, you found me. Good job, I'm glad you found me, because I have something kind of important to say. beep noise It's about th-the game..Don't, beep noise Uh, Eh. Don't beep noise Don't, just... This is.. This is probably looking pretty ridiculous beep noise Don't tell anyone about this game. You gonna.. Don't, don't bring attention to yourself. Destroy it, destroy the game. Destroy the game. Before, they see it. beep noise What i'm saying is.. is get out of this, while you still can. beep noise Just, don't.. don't know that you probably know i'm not saying that i'm trapped inside the game, no that would be ridiculous. No i'm.. beep noise I can't..this is..i'm not..the game is..kind of..beep noise I got really corrupted. Yeah, I.. beep noise I don't know what to say. Just..Just trust me. We gonna.. beep noise This isn't..This seems..I me-i mean it seems...ohh. *beep noise They'd know I.. They intentionally..that's..I guess..unintelligible They can't tell you, and some...stuff is classified. I can't say it. beep noise I wish I could say more. I can't talk normally. I-it's corrupted. There's..beep noise..Yeah..beep noise Just.. close the program. Destroy it. Never come back. long beep noise
+
+||INPUT||While and Break
+r#while true
+	{break}
+t
+||EXPECT||
+rt
+
+||INPUT||While and return
+#def while_and_return
+	#while true
+		;return, true;
+	;return, false;
+{while_and_return()}
+||EXPECT||
+true
+
+||INPUT||For and Break
+r#for x in range(1)
+	{break}
+t
+||EXPECT||
+rt
+
+||INPUT||For and return
+#def while_and_return
+	#for x in range(1)
+		;return, true;
+	;return, false;
+{while_and_return()}
+||EXPECT||
+true
+
+||INPUT||Def and Break
+;mute;
+#def breaktest
+	{r="y"}
+	{break}
+	{r="t"}
+;breaktest;
+;topleft;
+{r}
+||EXPECT||
+y
+
+||INPUT||If and return
+#def while_and_return
+	#if true
+		;return, true;
+	;return, false;
+{while_and_return()}
+||EXPECT||
+true
+
+||INPUT||New line concatination
+{"r" + "\n" + "o"}
+||EXPECT||
+r
+o
+
+||INPUT||Basic text
+Basic Bitch Test
+||EXPECT||
+Basic Bitch Test
+
+||INPUT||String newlines
+{"r\nr"}
+||EXPECT||
+r
+r
+
+||INPUT||Logical And/Or operators
+{false||false||true}
+{true&&true}
+{ false || true && true || false}
+{true && false || false}
+||EXPECT||
+true
+true
+true
+false
+
+||INPUT||Math and string
+{1+2+"r"}
+||EXPECT||
+12r
+
+||INPUT||Concatination using plus
+{"X: " + 1 + " Y: " + 60 + " Z: " + 0}
+||EXPECT||
+X: 1 Y: 60 Z: 0
+
+||INPUT||Int
+{int(1.6)}
+||EXPECT||
+1
+
+||INPUT||Char
+{char(int(97))}
+||EXPECT||
+a
+
+||INPUT||Char Int
+{int(char(int(97.1)))}
+||EXPECT||
+97
+
+||INPUT||Predefined array creation
+{array(3)}
+{array(3,1)}
+{r=array(2,"r")}
+{r[1]="t"}
+{r}
+||EXPECT||
+[0, 0, 0]
+[1.0, 1.0, 1.0]
+[r, r]
+t
+[r, t]
+
+||INPUT||Class access and math
+{"Days: ".concat(string(int(1/2),true))}
+||EXPECT||
+Days: 0
+
+||INPUT||String brackets
+{"{}}"}
+||EXPECT||
+{}}
+
+||INPUT||Conditions
+%401>400, "a", 399>100, "b", "c"%
+||EXPECT||
+a
+
+||INPUT||Conditions count
+%401>400, "{_i=_i+1}", 399>100, "{_i=_i+1}", "{_i=_i+1}"%
+||EXPECT||
+1
+
+||INPUT||Break
+r
+{break}
+t
+||EXPECT||
+r
+
+
+||INPUT||Conditions and Math
+{100==10/2}
+||EXPECT||
+false
+
+||INPUT||Inc and Dec
+{res=0} {res--} {res++} {--res} {++res}
+||EXPECT||
+0 0 -1 -1 0
+
+||INPUT||Negative math numbers
+{res=10} {res*-1} {-1*res}
+||EXPECT||
+10 -10 -10
+
+||INPUT||Boolean invertion
+{!false} {res=true} {!res}
+||EXPECT||
+true true false
+
+||INPUT||Boolean invertion and conditions
+{res=1} {!(res!=1)} {true==!false}
+||EXPECT||
+1 true true
+
+||INPUT||Multi Line Arrays
+{[1,
+1]}
+||EXPECT||
+[1.0, 1.0]
+
+||INPUT||Case insensitivity in variables
+{vAr=1} {VaR}
+||EXPECT||
+1 1
+
+||INPUT||Type casting
+{str(int("10"),false)}
+||EXPECT||
+10.0
+
+||INPUT||Text concatination
+{str(10,true).concat("test")}
+||EXPECT||
+10test
+
+||INPUT||Text substring
+{"Long text".substring(1, 4)}
+||EXPECT||
+ong
+
+||INPUT||Array length
+{length([1,"4"])}
+||EXPECT||
+2
+
+||INPUT||2D Arrays
+{2darr=[[0,1],[2,3]]}
+{2darr[1][0]}
+{2darr[1][1]=4}
+{2darr}
+||EXPECT||
+[[0.0, 1.0], [2.0, 3.0]]
+2
+4
+[[0.0, 1.0], [2.0, 4.0]]
+
+||INPUT||Fibonacci
+;mute;
+{r=""}
+{N=0}
+{num1=0}{num2=1}
+#while N<20
+	{N=N+1}
+	{r=r.concat(str(num1,true).concat(" "))}
+	{num3=num2+num1}
+	{num1=num2}
+	{num2=num3}
+;topleft,1;
+{r}
+||EXPECT||
+0 1 1 2 3 5 8 13 21 34 55 89 144 233 377 610 987 1597 2584 4181 
+
+||INPUT||Text repeat
+{"Repeat".repeat(2)}
+||EXPECT||
+RepeatRepeat
+
+||INPUT||Text length
+{length("Length")}
+||EXPECT||
+6
+
+||INPUT||Trigo Functions
+{sin(69)} {cos(69)} {tan(69)}
+||EXPECT||
+-0.11478481378318722 0.9933903797222716 -0.11554854579453279
+
+||INPUT||Math Functions
+{abs(-69)} {floor(69.7)} {ceiling(68.7)} {sqrt(4)} {pow(2,8)} {min(1,20)} {max(1,20)} {truncate(1.69, 1)}
+||EXPECT||
+69 69 69 2 256 1 20 1.6
+
+||INPUT||Misc Functions
+{exists("hud")} {strwidth("hud")}
+||EXPECT||
+true 18
+
+||INPUT||Basic addition
+{1+1}
+||EXPECT||
+2
+
+||INPUT||Basic setting addition
+{r=1+1} {r}
+||EXPECT||
+2 2
+
+||INPUT||Comparing unset values
+{unsetval==unset} {unset==unsetval} {unset==0} {unsetval==0} {0==unset} {0==unsetval}
+||EXPECT||
+true true false false false false
+
+||INPUT||Nested Advanced if spaces
+#if testif==unset
+	{testif=1}
+	#if testif!=unset
+	  {testif=2}
+{testif}
+#if testif!=unset
+  {testif=1}
+  #if true
+   {testif=2}
+{testif}
+||EXPECT||
+2
+2
+
+||INPUT||String with quotes
+{"1 \"2\" 3"}
+||EXPECT||
+1 "2" 3
+
+||INPUT||String case sensitivity
+{"CaSE SenSitive"} {r="CaSE SenSitive"} {r}
+||EXPECT||
+CaSE SenSitive CaSE SenSitive CaSE SenSitive
+
+||INPUT||Nested conditions
+{testping=20}
+%testping>5, "&6PING: &%testping>=400,\"4\",testping>=100,\"e\",\"2\"%{testping}"%
+||EXPECT||
+20
+&6PING: &220
+
+||INPUT||Putall method
+#def putall, string, number, boolean, array, any
+	{str=int(arg1)}
+	{num=str(arg2)}
+	{bool=arg3==false}
+	{array=arg4[0]}
+	{any=arg5}
+;putall, "1", 10, true, ["yes","no"], "no";
+{str} {num} {bool} {array} {any}
+||EXPECT||
+1 10.0 false yes no
+
+||INPUT||Divide method
+#def divide, num1, num2
+	{result=num1/arg2}
+;divide, 4, 2;
+{result}
+||EXPECT||
+2
+
+||INPUT||Spaced divide method
+#def divide, num1, num2
+	{result=num1/arg2}
+; divide, 4, 2;
+{result}
+||EXPECT||
+2
+
+||INPUT||Divide function
+#def divide, num1, num2
+	#if num2==0
+		;return, -1;
+	;return, arg1/arg2;
+{divide(4,2)} {divide(4,0)}
+||EXPECT||
+2 -1
+
+||INPUT||Uncertain function
+#def divide, num1, num2
+	#if num2==0
+		;return, -1;
+	oww no return value? too bad
+||EXPECT||
+Main path in function "divide" does not return a value!
+
+||INPUT||Vertices
+r;mute;{vert=[10,10,
+	10, 200,
+	200, 200,
+	200, 10,
+	
+	100,100,
+	100, 300,
+	300, 300,
+	300, 100]}
+
+{tex=[0, 1,
+	1, 1,
+	1, 0,
+	0, 0,
+	
+	0, 1,
+	1, 1,
+	1, 0,
+	0, 0]}
+;textureVertices, "Textures/pointer.png", vert, tex;
+||EXPECT||
+r
+
+||INPUT||Newlines
+
+
+||EXPECT||
+

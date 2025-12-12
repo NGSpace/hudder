@@ -1,0 +1,40 @@
+{
+	"schemaVersion": 1,
+	"id": "hudder",
+	"version": "${version}",
+	"name": "Hudder",
+	"description": "Add a highly customizable hud to your game!",
+	"authors": [
+		"NGSpace"
+	],
+	"contact": {
+		"Modrinth": "https://modrinth.com/mod/hudder",
+		"CurseForge": "https://www.curseforge.com/minecraft/mc-mods/hudder",
+		"GitHub": "https://github.com/NGSpace/hudder"
+	},
+	"license": "Apache-2.0 license",
+	"icon": "assets/hudder/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"client": ["io.github.ngspace.hudder.Hudder"],
+    	"modmenu": [ "io.github.ngspace.hudder.main.config.HudderModMenuImpl" ]
+	},
+	"mixins": [
+		"hudder.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.14.0",
+		"minecraft": ">=1.21.9",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"fabric-api": "*",
+		"modmenu": "*"
+	},
+	"custom": {
+	    "modmenu": {
+        	"update_checker": true
+	    }
+	}
+}

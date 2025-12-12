@@ -1,0 +1,12 @@
+;mute; GUIScale 5 is the basis of the calculations
+
+Item size - can be changed
+{itemsize=0.8}
+
+Calculate how much we need to scale the item to make it fit a fixed a fixed width, height and position.
+{itemscale=(itemsize/guiscale)*5}
+%guiscale>=6, "{offset=0}", "{offset=0.5}"%
+
+8 pixels
+
+;hand, width/2-(itemscale*8)-offset, height/2+(itemscale/itemsize*guiscale)*2.9, itemscale,true;

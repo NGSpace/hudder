@@ -1,0 +1,1159 @@
+//  Format:
+//  "type": {
+//		"category": [
+//		  	{
+//		  	 	"name": "variable name",
+//		  	 	"desc": "variable description",
+//		  	 	"version": "version added"
+//		  	}
+//  		...
+//		]
+//  }
+//  "version" is optional.
+{
+	"hudder_version": "9.0.0",
+	"number": {
+		
+		
+		
+		"Performance": [
+			{
+				"name": "fps",
+				"desc": "The current frame rate",
+				"version": "1.0.0"
+			},
+			{
+				"name": "avgfps",
+				"desc": "The average frame rate in the last few seconds (alias: avg_fps)",
+				"version": "1.0.0"
+			},
+			{
+				"name": "minfps",
+				"desc": "The lowest frame rate in the last few seconds (alias: min_fps)",
+				"version": "1.0.0"
+			},
+			{
+				"name": "maxfps",
+				"desc": "The highest frame rate in the last few seconds (alias: max_fps)",
+				"version": "1.0.0"
+			},
+			{
+				"name": "ping",
+				"desc": "The current ping",
+				"version": "1.0.0"
+			},
+			{
+				"name": "tps",
+				"desc": "The current Ticks per second (Client only)",
+				"version": "1.0.0"
+			},
+			{
+				"name": "gpu_d",
+				"desc": "The current GPU usage in percentage (With decimal precision)",
+				"version": "1.0.0"
+			},
+			{
+				"name": "gpu",
+				"desc": "The current GPU usage in percentage",
+				"version": "1.0.0"
+			},
+			{
+				"name": "cpu_d",
+				"desc": "The current CPU usage in percentage (With decimal precision)",
+				"version": "6.0.0"
+			},
+			{
+				"name": "cpu",
+				"desc": "The current CPU usage in percentage percentage",
+				"version": "1.0.0"
+			},
+			{
+				"name": "delta",
+				"desc": "The time since the last frame",
+				"version": "3.0.0"
+			}
+		],
+		
+		
+		
+		"Memory": [
+			{
+				"name": "maxmemory",
+				"desc": "The total memory in MB (aliases: totalmemory, totalram, maxram)",
+				"version": "1.0.0"
+			},
+			{
+				"name": "usedmemory",
+				"desc": "The used memory in MB (aliases: usedram)",
+				"version": "1.0.0"
+			},
+			{
+				"name": "freememory",
+				"desc": "The free memory in MB (aliases: freeram)",
+				"version": "1.0.0"
+			},
+			{
+				"name": "usedmemory_percentage",
+				"desc": "The percentage of memory out of total memory that is being used (aliases: usedram_percentage)",
+				"version": "1.0.0"
+			},
+			{
+				"name": "freememory_percentage",
+				"desc": "The percentage of memory that is being NOT used (aliases: freeram_percentage)",
+				"version": "1.0.0"
+			}
+		],
+		
+
+		"Time": [
+			{
+				"name": "time",
+				"desc": "The current time in milliseconds as supplied by the Operating System",
+				"version": "2.0.0"
+			},
+			{
+				"name": "milliseconds",
+				"desc": "The current millisecond",
+				"version": "6.2.0"
+			},
+			{
+				"name": "seconds",
+				"desc": "The current second",
+				"version": "6.2.0"
+			},
+			{
+				"name": "minutes",
+				"desc": "The current minute",
+				"version": "6.2.0"
+			},
+			{
+				"name": "hour",
+				"desc": "The current hour",
+				"version": "6.2.0"
+			},
+			{
+				"name": "day",
+				"desc": "The current day",
+				"version": "6.2.0"
+			},
+			{
+				"name": "month",
+				"desc": "The current month",
+				"version": "6.2.0"
+			},
+			{
+				"name": "year",
+				"desc": "The current year",
+				"version": "6.2.0"
+			}
+		],
+		
+
+				
+		"Food and health": [
+			{
+				"name": "saturation",
+				"desc": "The saturation of the player",
+				"version": "1.0.0"
+			},
+			{
+				"name": "hunger",
+				"desc": "The hunger of the player",
+				"version": "1.0.0"
+			},
+			{
+				"name": "health",
+				"desc": "The health of the player",
+				"version": "1.0.0"
+			},
+			{
+				"name": "maxhealth",
+				"desc": "The maximum health of the player",
+				"version": "1.0.0"
+			},
+			{
+				"name": "absorption",
+				"desc": "The absorption of the player",
+				"version": "8.4.0"
+			},
+			{
+				"name": "maxabsorption",
+				"desc": "The maximum absorption of the player",
+				"version": "8.4.0"
+			}
+		],
+		
+
+				
+		"Mount information": [
+			{
+				"name": "mount_health",
+				"desc": "The health of the player's mount",
+				"version": "8.4.0"
+			},
+			{
+				"name": "mount_maxhealth",
+				"desc": "The maximum health of the player's mount",
+				"version": "8.4.0"
+			},
+			{
+				"name": "mount_speed",
+				"desc": "The speed of the player's mount",
+				"version": "8.4.0"
+			},
+			{
+				"name": "mount_jump_strength",
+				"desc": "The jump strength of the player's mount",
+				"version": "8.4.0"
+			},
+			{
+				"name": "mount_jump_scale",
+				"desc": "The jump scale of the player's mount",
+				"version": "8.4.0"
+			},
+			{
+				"name": "mount_armor",
+				"desc": "The armor of the player's mount",
+				"version": "8.4.0"
+			},
+			{
+				"name": "mount_jump_cooldown",
+				"desc": "The jump cooldown of the player's mount",
+				"version": "8.4.0"
+			}
+		],
+		
+
+				
+		"Other player related information": [
+			{
+				"name": "selectedslot",
+				"desc": "The player's selected slot",
+				"version": "2.0.0"
+			},
+			{
+				"name": "xplevel",
+				"desc": "The player's experience level",
+				"version": "3.5.0"
+			},
+			{
+				"name": "xp",
+				"desc": "The player's experience",
+				"version": "3.5.0"
+			},
+			{
+				"name": "armor",
+				"desc": "The player's armor level",
+				"version": "7.1.0"
+			},
+			{
+				"name": "falldistance",
+				"desc": "The amount of blocks the player has fallen before landing",
+				"version": "8.0.2"
+			},
+			{
+				"name": "airbubbles",
+				"desc": "The amount of air bubbles the player has left",
+				"version": "8.4.0"
+			},
+			{
+				"name": "maxairbubbles",
+				"desc": "The maximum amount of air bubbles the player can have",
+				"version": "8.4.0"
+			},
+			{
+				"name": "playerspeed",
+				"desc": "The speed at which the player is travelling",
+				"version": "3.5.1"
+			},
+			{
+				"name": "horizontal_playerspeed",
+				"desc": "The speed at which the player is travelling horizontally",
+				"version": "3.5.1"
+			}
+		],
+		
+		
+				
+		"Player position": [
+			{
+				"name": "dxpos",
+				"desc": "The player's x position (With decimal precision)",
+				"version": "1.0.0"
+			},
+			{
+				"name": "dypos",
+				"desc": "The player's y position (With decimal precision)",
+				"version": "1.0.0"
+			},
+			{
+				"name": "dzpos",
+				"desc": "The player's z position (With decimal precision)",
+				"version": "1.0.0"
+			},
+			{
+				"name": "xpos",
+				"desc": "The player's x position",
+				"version": "1.0.0"
+			},
+			{
+				"name": "ypos",
+				"desc": "The player's y position",
+				"version": "1.0.0"
+			},
+			{
+				"name": "zpos",
+				"desc": "The player's z position",
+				"version": "1.0.0"
+			}
+		],
+		
+
+				
+		"Camera position": [
+			{
+				"name": "cam_dxpos",
+				"desc": "The camera's x position (With decimal precision)",
+				"version": "8.3.0"
+			},
+			{
+				"name": "cam_dypos",
+				"desc": "The camera's y position (With decimal precision)",
+				"version": "8.3.0"
+			},
+			{
+				"name": "cam_dzpos",
+				"desc": "The camera's z position (With decimal precision)",
+				"version": "8.3.0"
+			},
+			{
+				"name": "cam_xpos",
+				"desc": "The camera's x position",
+				"version": "8.3.0"
+			},
+			{
+				"name": "cam_ypos",
+				"desc": "The camera's y position",
+				"version": "8.3.0"
+			},
+			{
+				"name": "cam_zpos",
+				"desc": "The camera's z position",
+				"version": "8.3.0"
+			}
+		],
+		
+
+				
+		"Chunk information": [
+			{
+				"name": "subchunkx",
+				"desc": "The X position of the player in the subchunk",
+				"version": "6.2.0"
+			},
+			{
+				"name": "subchunky",
+				"desc": "The Y position of the player in the subchunk",
+				"version": "6.2.0"
+			},
+			{
+				"name": "subchunkz",
+				"desc": "The Z position of the player in the subchunk",
+				"version": "6.2.0"
+			},
+			{
+				"name": "chunkx",
+				"desc": "The chunk X position of the player",
+				"version": "6.0.0"
+			},
+			{
+				"name": "chunkz",
+				"desc": "The chunk Z position of the player",
+				"version": "6.0.0"
+			}
+		],
+		
+
+				
+		"Camera chunk information": [
+			{
+				"name": "cam_subchunkx",
+				"desc": "The X position of the camera in the subchunk",
+				"version": "8.3.0"
+			},
+			{
+				"name": "cam_subchunky",
+				"desc": "The Y position of the camera in the subchunk",
+				"version": "8.3.0"
+			},
+			{
+				"name": "cam_subchunkz",
+				"desc": "The Z position of the camera in the subchunk",
+				"version": "8.3.0"
+			},
+			{
+				"name": "cam_chunkx",
+				"desc": "The chunk X position of the camera",
+				"version": "8.3.0"
+			},
+			{
+				"name": "cam_chunkz",
+				"desc": "The chunk Z position of the camera",
+				"version": "8.3.0"
+			}
+		],
+		
+		
+		
+		"Player rotation": [
+			{
+				"name": "dpitch",
+				"desc": "The player's pitch rotation (With decimal precision)",
+				"version": "3.2.0"
+			},
+			{
+				"name": "pitch",
+				"desc": "The player's pitch rotation",
+				"version": "3.2.0"
+			},
+			{
+				"name": "dyaw",
+				"desc": "The player's yaw rotation (With decimal precision)",
+				"version": "3.2.0"
+			},
+			{
+				"name": "yaw",
+				"desc": "The player's yaw rotation",
+				"version": "3.2.0"
+			},
+			{
+				"name": "f3_dyaw",
+				"desc": "The player's yaw as seen in Minecraft's F3 menu (with decimal point)",
+				"version": "8.1.0"
+			},
+			{
+				"name": "f3_yaw",
+				"desc": "The player's yaw as seen in Minecraft's F3 menu",
+				"version": "8.1.0"
+			}
+		],
+		
+		
+		
+		"Camera rotation": [
+			{
+				"name": "cam_dpitch",
+				"desc": "The camera's pitch rotation (With decimal precision)",
+				"version": "8.3.0"
+			},
+			{
+				"name": "cam_pitch",
+				"desc": "The camera's pitch rotation",
+				"version": "8.3.0"
+			},
+			{
+				"name": "cam_dyaw",
+				"desc": "The camera's yaw rotation (With decimal precision)",
+				"version": "8.3.0"
+			},
+			{
+				"name": "cam_yaw",
+				"desc": "The camera's yaw rotation",
+				"version": "8.3.0"
+			},
+			{
+				"name": "cam_f3_dyaw",
+				"desc": "The camera's yaw as seen in Minecraft's F3 menu (with decimal point)",
+				"version": "8.3.0"
+			},
+			{
+				"name": "cam_f3_yaw",
+				"desc": "The camera's yaw as seen in Minecraft's F3 menu",
+				"version": "8.3.0"
+			}
+		],
+		
+		
+		
+		"World Rendering": [
+			{
+				"name": "entities",
+				"desc": "The number of entites drawn (As shown in the debug/f3 screen, alias: entites (Older versions may require the incorrect spelling))",
+				"version": "1.0.0"
+			},
+			{
+				"name": "particles",
+				"desc": "The number of particles drawn (As shown in the debug/f3 screen)",
+				"version": "1.0.0"
+			},
+			{
+				"name": "chunks",
+				"desc": "The number of chunks loaded (As shown in the debug/f3 screen)",
+				"version": "1.0.0"
+			}
+		],
+		
+
+		
+		"Lighting": [
+			{
+				"name": "light",
+				"desc": "The current light level at the position of the player",
+				"version": "1.0.0"
+			},
+			{
+				"name": "blocklight",
+				"desc": "The current block light level at the position of the player (alias: block_light)",
+				"version": "1.0.0"
+			},
+			{
+				"name": "skylight",
+				"desc": "The current sky light level at the position of the player (alias: sky_light)",
+				"version": "1.0.0"
+			},
+			{
+				"name": "cam_light",
+				"desc": "The current light level at the position of the camera",
+				"version": "8.3.0"
+			},
+			{
+				"name": "cam_blocklight",
+				"desc": "The current block light level at the position of the camera (alias: cam_block_light)",
+				"version": "8.3.0"
+			},
+			{
+				"name": "cam_skylight",
+				"desc": "The current sky light level at the position of the camera (alias: cam_sky_light)",
+				"version": "8.3.0"
+			}
+		],
+		
+
+		
+		"World": [
+			{
+				"name": "worldtime",
+				"desc": "The ingame tick count (alias: world_time)",
+				"version": "3.2.0"
+			},
+			{
+				"name": "daytime",
+				"desc": "The ingame day time (alias: day_time)",
+				"version": "7.2.0"
+			}
+		],
+		
+		
+		
+		"GUI rendering": [
+			{
+				"name": "width",
+				"desc": "The (adjusted) width of the screen",
+				"version": "1.0.0"
+			},
+			{
+				"name": "height",
+				"desc": "The (adjusted) height of the screen",
+				"version": "1.0.0"
+			},
+			{
+				"name": "guiscale",
+				"desc": "The scale of the screen (as set in the video settings)",
+				"version": "1.0.0"
+			}
+		],
+		
+		
+		
+		"Hudder settings": [
+			{
+				"name": "scale",
+				"desc": "The default scale in Hudder",
+				"version": "1.0.0"
+			},
+			{
+				"name": "color",
+				"desc": "The default color in Hudder",
+				"version": "1.0.0"
+			},
+			{
+				"name": "xoffset",
+				"desc": "The x offset in Hudder",
+				"version": "1.0.0"
+			},
+			{
+				"name": "yoffset",
+				"desc": "The y offset in Hudder",
+				"version": "1.0.0"
+			},
+			{
+				"name": "lineheight",
+				"desc": "The line height in Hudder",
+				"version": "1.0.0"
+			},
+			{
+				"name": "methodbuffer",
+				"desc": "The method buffer in Hudder",
+				"version": "3.5.0"
+			},
+			{
+				"name": "backgroundcolor",
+				"desc": "The default background color in Hudder",
+				"version": "3.0.0"
+			}
+		],
+		
+		
+		
+		"Rebecca Memorial": [
+			{
+				"name": "rebeccapurple",
+				"desc": "0xFF663399",
+				"version": "7.1.0"
+			}
+		]
+	},
+	"boolean": {
+		"Generic": [
+			{
+				"name": "isslime",
+				"desc": "Whether the player is in a slime chunk (alias: is_slime)",
+				"version": "1.0.0"
+			},
+			{
+				"name": "hudhidden",
+				"desc": "Whether the HUD is hidden (AKA F1 is pressed)",
+				"version": "1.0.0"
+			},
+			{
+				"name": "showdebug",
+				"desc": "Whether debug features are shown",
+				"version": "1.0.0"
+			},
+			{
+				"name": "f3enabled",
+				"desc": "Whether f3 is toggled",
+				"version": "9.0.0"
+			},
+			{
+				"name": "camera_detached",
+				"desc": "Whether the camera is detached from the player or not",
+				"version": "8.3.0"
+			}
+		],
+		
+		
+		
+		"Player gamemode": [
+			{
+				"name": "issurvival",
+				"desc": "Whether the player is in survival mode (alias: is_survival)",
+				"version": "3.1.0"
+			},
+			{
+				"name": "iscreative",
+				"desc": "Whether the player is in creative mode (alias: is_creative)",
+				"version": "3.1.0"
+			},
+			{
+				"name": "isadventure",
+				"desc": "Whether the player is in adventure mode (alias: is_adventure)",
+				"version": "3.1.0"
+			},
+			{
+				"name": "isspectator",
+				"desc": "Whether the player is in spectator mode (alias: is_spectator)",
+				"version": "3.1.0"
+			}
+		],
+		
+		
+		
+		"GUI": [
+			{
+				"name": "isguiopen",
+				"desc": "Whether any GUI screen is currently open",
+				"version": "8.5.0"
+			},
+			{
+				"name": "ischestopen",
+				"desc": "Whether a chest screen is currently open",
+				"version": "8.5.0"
+			},
+			{
+				"name": "iscraftingtableopen",
+				"desc": "Whether a Crafting table screen is currently open",
+				"version": "8.5.0"
+			},
+			{
+				"name": "isdialogopen",
+				"desc": "Whether a Dialog screen is currently open",
+				"version": "8.5.0"
+			},
+			{
+				"name": "isinventoryopen",
+				"desc": "Whether the player's inventory screen is currently open",
+				"version": "8.5.0"
+			}
+		],
+		
+		
+		
+		"Player movement": [
+			{
+				"name": "isflying",
+				"desc": "Is the player flying (not elytra)",
+				"version": "8.4.0"
+			},
+			{
+				"name": "isgliding",
+				"desc": "Is the player flying using an elytra",
+				"version": "6.2.0"
+			},
+			{
+				"name": "isclimbing",
+				"desc": "Is the player climbing (ladder, vines, etc.)",
+				"version": "6.2.0"
+			},
+			{
+				"name": "iscrawling",
+				"desc": "Is the player crawling",
+				"version": "6.2.0"
+			},
+			{
+				"name": "isswimming",
+				"desc": "Is the player swimming",
+				"version": "6.2.0"
+			},
+			{
+				"name": "issneaking",
+				"desc": "Is the player sneaking",
+				"version": "6.2.0"
+			},
+			{
+				"name": "issprinting",
+				"desc": "Is the player sprinting",
+				"version": "8.6.0"
+			}
+		],
+		
+		
+		
+		"Player information": [
+			{
+				"name": "isalive",
+				"desc": "Is the player alive",
+				"version": "6.2.0"
+			},
+			{
+				"name": "isblocking",
+				"desc": "Is the player blocking using a sheild",
+				"version": "6.2.0"
+			},
+			{
+				"name": "isfreezing",
+				"desc": "Is the player freezing (powdered snow)",
+				"version": "6.2.0"
+			},
+			{
+				"name": "isglowing",
+				"desc": "Is the player glowing",
+				"version": "6.2.0"
+			},
+			{
+				"name": "isfireimmune",
+				"desc": "Is the player immune to fire (Fire resistance)",
+				"version": "6.2.0"
+			},
+			{
+				"name": "isonfire",
+				"desc": "Is the player on fire",
+				"version": "6.2.0"
+			},
+			{
+				"name": "isonground",
+				"desc": "Is the player on ground",
+				"version": "6.2.0"
+			},
+			{
+				"name": "isinvisible",
+				"desc": "Is the player invisible",
+				"version": "6.2.0"
+			},
+			{
+				"name": "isdrowning",
+				"desc": "Is the player drowning",
+				"version": "8.4.0"
+			},
+			{
+				"name": "iscontrollingmount",
+				"desc": "Is the player controlling a mount",
+				"version": "8.4.0"
+			},
+			{
+				"name": "isonmount",
+				"desc": "Is the player on a mount",
+				"version": "8.5.0"
+			}
+		],
+		
+		
+		
+		"Mount information": [
+			{
+				"name": "mount_is_saddled",
+				"desc": "Does the player's mount have a saddle",
+				"version": "8.4.0"
+			},
+			{
+				"name": "mount_has_armor",
+				"desc": "Does the player's mount have armor",
+				"version": "8.4.0"
+			},
+			{
+				"name": "mount_is_tamed",
+				"desc": "Is the player's mount tamed",
+				"version": "8.4.0"
+			},
+			{
+				"name": "mount_has_chest",
+				"desc": "Does the player's mount have a chest",
+				"version": "8.4.0"
+			}
+		],
+		
+		
+		
+		"Input": [
+			{
+				"name": "mouse_left",
+				"desc": "Is the left mouse button held",
+				"version": "6.1.0"
+			},
+			{
+				"name": "mouse_middle",
+				"desc": "Is the middle mouse button held",
+				"version": "6.1.0"
+			},
+			{
+				"name": "mouse_right",
+				"desc": "Is the right mouse button held",
+				"version": "6.1.0"
+			},
+			{
+				"name": "cps",
+				"desc": "The clicks per second of both mouse buttons",
+				"version": "9.0.0"
+			},
+			{
+				"name": "cps_left",
+				"desc": "The clicks per second of the left mouse button",
+				"version": "9.0.0"
+			},
+			{
+				"name": "cps_right",
+				"desc": "The clicks per second of the right mouse button",
+				"version": "9.0.0"
+			},
+			{
+				"name": "key_[key on keyboard]",
+				"desc": "Is the specified key held",
+				"version": "2.0.0"
+			}
+		],
+		
+		
+		
+		"Hudder settings": [
+			{
+				"name": "enabled",
+				"desc": "Is Hudder enabled",
+				"version": "1.0.0"
+			},
+			{
+				"name": "shadow",
+				"desc": "Is text shadow enabled by default",
+				"version": "1.0.0"
+			},
+			{
+				"name": "showinf3",
+				"desc": "Does Hudder still render/compile while F3/debug is enabled",
+				"version": "2.0.0"
+			},
+			{
+				"name": "javascriptenabled",
+				"desc": "Is javascript enabled (Always true since 8.6.0)",
+				"version": "2.0.0"
+			},
+			{
+				"name": "unsafeoperations",
+				"desc": "Are unsafe operations allowed",
+				"version": "8.6.0"
+			},
+			{
+				"name": "globalvariablesenabled",
+				"desc": "Are globalvariables enabled",
+				"version": "2.0.0"
+			},
+			{
+				"name": "background",
+				"desc": "Is text background enabled by default",
+				"version": "3.0.0"
+			},
+			{
+				"name": "removegui",
+				"desc": "Is the HotBar removed",
+				"version": "3.0.0"
+			},
+			{
+				"name": "limitrate",
+				"desc": "Is limitrate enabled",
+				"version": "3.0.0"
+			}
+		]
+	},
+	"string": {
+		"Generic": [
+			{
+				"name": "damagetype",
+				"desc": "The name of the most recent damage type done to the player",
+				"version": "6.2.0"
+			}
+		],
+		
+		
+		
+		"Computer info": [
+			{
+				"name": "cpu_info",
+				"desc": "Information about the CPU",
+				"version": "1.0.0"
+			},
+			{
+				"name": "operating_system",
+				"desc": "Which operating system is used",
+				"version": "2.0.0"
+			},
+			{
+				"name": "month_name",
+				"desc": "The name of the current month (WARNING: IT IS DEPENDENT ON LOCALE AND LANGUAGE, SHOULD ONLY BE USED FOR DISPLAY)",
+				"version": "6.2.0"
+			},
+			{
+				"name": "locale",
+				"desc": "The locale of the system as defined by the JVM and provided by the JVM and Operating System",
+				"version": "6.2.0"
+			},
+			{
+				"name": "language",
+				"desc": "The language of the system as provided by the JVM and Operating System (ISO 639)",
+				"version": "6.2.0"
+			},
+			{
+				"name": "country",
+				"desc": "The country of the system as provided by the JVM and Operating System (ISO 3166 2-letter code)",
+				"version": "6.2.0"
+			}
+		],
+
+
+
+
+		"Game": [
+			{
+				"name": "version_type",
+				"desc": "",
+				"version": "9.0.0"
+			},
+			{
+				"name": "game_version",
+				"desc": "The version of minecraft you're playing on",
+				"version": "9.0.0"
+			}
+		],
+
+
+
+
+		"Player": [
+			{
+				"name": "username",
+				"desc": "The username of the player",
+				"version": "9.0.0"
+			},
+			{
+				"name": "uuid",
+				"desc": "The uuid of the player",
+				"version": "9.0.0"
+			}
+		],
+		
+		
+		
+		
+		"Inventory": [
+			{
+				"name": "helditem_name",
+				"desc": "The name of the item currently held in the main hand",
+				"version": "3.0.0"
+			}
+		],
+		
+
+		
+		"Mount information": [
+			{
+				"name": "mount_type",
+				"desc": "The type of mount the player is currently riding",
+				"version": "8.4.0"
+			},
+			{
+				"name": "mount_armor_type",
+				"desc": "The armor type of the mount the player is currently riding",
+				"version": "8.4.0"
+			},
+			{
+				"name": "mount_name",
+				"desc": "The name of the mount the player is currently riding",
+				"version": "8.4.0"
+			}
+		],
+
+
+
+		"World": [
+			{
+				"name": "biome",
+				"desc": "The biome the player is currently in",
+				"version": "1.0.0"
+			},
+			{
+				"name": "cam_biome",
+				"desc": "The biome the camera is currently in",
+				"version": "8.3.0"
+			},
+			{
+				"name": "dimension",
+				"desc": "The dimension the player is currently in",
+				"version": "3.2.0"
+			},
+			{
+				"name": "world_name",
+				"desc": "The name of the world you're currently on (Singleplayer only, null in a server)",
+				"version": "9.0.0"
+			}
+		],
+
+
+
+		"Server": [
+			{
+				"name": "server_name",
+				"desc": "The name of the server currently connected to (As in the name set in the server selection screen, null in singleplayer)",
+				"version": "9.0.0"
+			},
+			{
+				"name": "server_ip",
+				"desc": "The ip/domain of the server currently connected to (null in singleplayer)",
+				"version": "9.0.0"
+			},
+			{
+				"name": "server_motd",
+				"desc": "The motd of the server currently connected to (null in singleplayer)",
+				"version": "9.0.0"
+			}
+		],
+		
+		
+		
+		"Looking at": [
+			{
+				"name": "block_in_front",
+				"desc": "The block the player is currently looking at",
+				"version": "1.0.0"
+			},
+			{
+				"name": "cam_block_in_front",
+				"desc": "The block the camera is currently looking at",
+				"version": "8.3.0"
+			},
+			{
+				"name": "looking_at_pos",
+				"desc": "The block position the player is currently looking at",
+				"version": "1.0.0"
+			},
+			{
+				"name": "cam_looking_at_pos",
+				"desc": "The block position the camera is currently looking at",
+				"version": "8.3.0"
+			},
+			{
+				"name": "entity_in_front",
+				"desc": "The entity that is being looked at",
+				"version": "9.0.0"
+			},
+			{
+				"name": "cam_fluid_in_front",
+				"desc": "The fluid block position the camera is currently looking at",
+				"version": "9.0.0"
+			},
+			{
+				"name": "fluid_in_front",
+				"desc": "The fluid block position the player is currently looking at",
+				"version": "9.0.0"
+			}
+		],
+		
+		
+		
+		"GUI": [
+			{
+				"name": "openguitype",
+				"desc": "The type of the current GUI screen that is open (null if no screen is currently open)",
+				"version": "8.5.0"
+			},
+			{
+				"name": "openguititle",
+				"desc": "The name of the current GUI screen that is open (null if no screen is currently open)",
+				"version": "8.5.0"
+			}
+		],
+		
+		
+		
+		"Hudder settings": [
+			{
+				"name": "compilertype",
+				"desc": "The type of Hudder compiler selected",
+				"version": "1.0.0"
+			},
+			{
+				"name": "mainfile",
+				"desc": "The name of the main file in Hudder",
+				"version": "1.0.0"
+			}
+		]
+	},
+
+	"array": {
+		"Resource packs": [
+			{
+				"name": "selectedresourcepacks",
+				"desc": "An array of the resource packs (that can be removed) which currently selected",
+				"version": "9.0.0"
+			},
+			{
+				"name": "selectedresourcepacks_unfiltered",
+				"desc": "An array of all the resource packs which currently selected",
+				"version": "9.0.0"
+			}
+		],
+		"Active Effects": [
+			{
+				"name": "active_effects",
+				"desc": "An array of all active effects",
+				"version": "unreleased"
+			}
+		]
+	}
+}

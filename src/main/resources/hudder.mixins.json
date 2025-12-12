@@ -1,0 +1,19 @@
+{
+	"required": true,
+	"package": "io.github.ngspace.hudder.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"client": [
+    	"LevelRendererAccess",
+    	"ParticleManagerAccessor",
+    	"MinecraftClientInjections",
+    	"KeyboardInjections",
+    	"InGameHudInjections",
+    	"InGameHudAccessor",
+		"MouseHandlerInjections"
+	],
+	"mixins": [
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}
