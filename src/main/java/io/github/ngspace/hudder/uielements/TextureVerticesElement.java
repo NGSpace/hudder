@@ -5,11 +5,11 @@ import io.github.ngspace.hudder.main.HudderRenderer;
 import io.github.ngspace.hudder.utils.HudFileUtils;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class TextureVerticesElement extends AUIElement {
 
-	private ResourceLocation id;
+	private Identifier id;
 	private float[] vertices;
 	private float[] textures;
 	private boolean triangles;

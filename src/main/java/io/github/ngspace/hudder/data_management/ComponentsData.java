@@ -9,7 +9,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 
@@ -24,14 +24,14 @@ public class ComponentsData extends HashMap<String, Object> {
 			
 			/* Text Objects */
 			case "custom_name", "item_name": {
-				Component t = (Component) comp.get(BuiltInRegistries.DATA_COMPONENT_TYPE.getValue(ResourceLocation.withDefaultNamespace(key)));
+				Component t = (Component) comp.get(BuiltInRegistries.DATA_COMPONENT_TYPE.getValue(Identifier.withDefaultNamespace(key)));
 				
 				yield t!=null ? t.getString() : null;
 			}
 			
 			/* Primitives */
 			case "repair_cost", "damage", "max_damage", "max_stack_size", "enchantment_glint_override":
-				yield comp.get(BuiltInRegistries.DATA_COMPONENT_TYPE.getValue(ResourceLocation.withDefaultNamespace(key)));
+				yield comp.get(BuiltInRegistries.DATA_COMPONENT_TYPE.getValue(Identifier.withDefaultNamespace(key)));
 			
 //			case "mining_speed": yield comp.get(DataComponentTypes.TOOL).defaultMiningSpeed();
 
