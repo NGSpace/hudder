@@ -58,7 +58,8 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		saveButton.active = error==null;
 		addRenderableWidget(saveButton);
 		
-		globalResetButton = Button.builder(Component.translatable("ngsmcconfig.globalreset"), b->reset())
+		globalResetButton = Button.builder(Component.translatable("ngsmcconfig.globalreset").withColor(0xdb3b3b),
+				b->reset())
 				.bounds(width-40, 0, 40, 20)
 				.build();
 
@@ -79,7 +80,7 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		}
 		addRenderableWidget(globalResetButton);
 		
-		errorWidget = new StringWidget(error!=null?error.plainCopy().withColor(0xFF0000):Component.literal(""), font);
+		errorWidget = new StringWidget(stylizeErrorComponment(error), font);
 		errorWidget.setPosition(65, 0);
 		errorWidget.setSize(300, 20);
 //		errorWidget.alignLeft();
@@ -94,7 +95,7 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 			addRenderableWidget(container);
 		}
 	}
-
+	
 	protected void save() {
 		for (var category : categories) {
 			for (var option : category.options()) {
@@ -151,15 +152,14 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		Component error = getError();
 		
 		saveButton.active = error==null;
-		errorWidget.setMessage(error!=null?error:Component.literal(""));
+		errorWidget.setMessage(stylizeErrorComponment(error));
 		
         if (container!=null)
         	container.render(graphics, mouseX, mouseY, partialTick);
         super.render(graphics, mouseX, mouseY, partialTick);
     }
-//    @Override
-//    public boolean handleComponentClicked(@Nullable Style style) {
-//        if (style == null) return false;
-//        return super.handleComponentClicked(style);
-//    }
+
+	private Component stylizeErrorComponment(Component error) {
+		return error!=null?error.plainCopy().withColor(0xFF0000):Component.literal("");
+	}
 }

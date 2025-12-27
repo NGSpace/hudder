@@ -129,7 +129,7 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 				try {
 					state.combineWithResult(runtime.execute().toResult(), false);
 				} catch (CompileException e) {
-					throw new CompileException("Method "+type+" threw an error: \n"+e.getFailureMessage(),line,charpos);
+					throw new CompileException("Method "+type+" threw an error: \n"+e.getFailureMessage(),charpos);
 				}
 			});
 		} else {//Is function

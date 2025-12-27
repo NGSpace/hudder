@@ -9,7 +9,8 @@
     	"KeyboardInjections",
     	"InGameHudInjections",
     	"InGameHudAccessor",
-		"MouseHandlerInjections"
+		"MouseHandlerInjections",
+		"ItemCooldownsAccessor"
 	],
 	"mixins": [
 	],
