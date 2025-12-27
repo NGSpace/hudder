@@ -2,7 +2,9 @@ package io.github.ngspace.hudder.data_management;
 
 import java.util.HashMap;
 
+import io.github.ngspace.hudder.mixin.ItemCooldownsAccessor;
 import io.github.ngspace.hudder.utils.ValueGetter;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
@@ -10,6 +12,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 
@@ -18,8 +21,8 @@ public class ComponentsData extends HashMap<String, Object> {
 	
 	private static final long serialVersionUID = 229002063971831208L;
 	
-	public static Object getObject(String key, DataComponentMap comp) {
-		
+	public static Object getObject(String key, DataComponentMap comp, ItemStack item) {
+		var player = Minecraft.getInstance().player;
 		return switch (key.toLowerCase()) {
 			
 			/* Text Objects */
@@ -32,8 +35,20 @@ public class ComponentsData extends HashMap<String, Object> {
 			/* Primitives */
 			case "repair_cost", "damage", "max_damage", "max_stack_size", "enchantment_glint_override":
 				yield comp.get(BuiltInRegistries.DATA_COMPONENT_TYPE.getValue(Identifier.withDefaultNamespace(key)));
-			
-//			case "mining_speed": yield comp.get(DataComponentTypes.TOOL).defaultMiningSpeed();
+
+			case "max_cooldown": {
+				var component = comp.get(DataComponents.USE_COOLDOWN);
+				yield component == null ? 0 : component.seconds() * 20;
+			}
+			case "cooldown": {
+				var group = player.getCooldowns().getCooldownGroup(item);
+				var acc = ((ItemCooldownsAccessor)player.getCooldowns());
+				var cooldown = acc.getCooldowns().get(group);
+				if (cooldown==null)
+					yield 0;
+				var totaltime = (cooldown.endTime()-acc.getTickCount()) - (cooldown.startTime()-acc.getTickCount());
+				yield totaltime - (acc.getTickCount()-cooldown.startTime());
+			}
 
 			case "trim": yield comp.get(DataComponents.TRIM) !=null ? new Object() {
 				String material = comp.get(DataComponents.TRIM).material().value().assets().base().suffix();

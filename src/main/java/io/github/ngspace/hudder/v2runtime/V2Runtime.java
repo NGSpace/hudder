@@ -60,4 +60,12 @@ public class V2Runtime {
 		if (object==null) return compiler.getDynamicVariable(name);
 		return object;
 	}
+	
+	public V2Runtime getScope() {
+		return scope;
+	}
+	
+	public V2Runtime getMasterScope() {
+		return scope == null ? this : scope.getMasterScope();
+	}
 }

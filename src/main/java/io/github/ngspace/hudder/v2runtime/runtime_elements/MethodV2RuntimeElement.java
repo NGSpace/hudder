@@ -3,12 +3,13 @@ package io.github.ngspace.hudder.v2runtime.runtime_elements;
 import java.util.Arrays;
 
 import io.github.ngspace.hudder.Hudder;
+import io.github.ngspace.hudder.compilers.abstractions.ATextCompiler.CharPosition;
 import io.github.ngspace.hudder.compilers.abstractions.AV2Compiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileState;
 import io.github.ngspace.hudder.main.config.HudderConfig;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
-import io.github.ngspace.hudder.v2runtime.methods.IMethod;
+import io.github.ngspace.hudder.v2runtime.methods.V2IMethod;
 import io.github.ngspace.hudder.v2runtime.values.AV2Value;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -19,13 +20,14 @@ public class MethodV2RuntimeElement extends AV2RuntimeElement {
 	private String type;
 	private AV2Compiler compiler;
 	private HudderConfig info;
-	private IMethod method;
-	private int line;
-	private int charpos;
+	private V2IMethod method;
+	private CharPosition pos;
+	private V2Runtime runtime;
 
 	public MethodV2RuntimeElement(String[] args, AV2Compiler compiler, HudderConfig info, V2Runtime runtime, int line, int charpos) throws CompileException {
 		this.compiler = compiler;
 		this.info = info;
+		this.runtime = runtime;
 		this.type = args[0];
 		for (int i = 1;i<args.length;i++) {
 			values = Arrays.copyOf(values, values.length+1);
@@ -36,11 +38,10 @@ public class MethodV2RuntimeElement extends AV2RuntimeElement {
 			Hudder.showWarningToast(Component.literal(type+" method is Deprecated!").withStyle(ChatFormatting.BOLD),
 					Component.literal("\u00A7a" + method.getDeprecationWarning(type)));
 		}
-		this.line = line;
-		this.charpos = charpos;
+		this.pos = new CharPosition(line, charpos);
 	}
 	@Override public boolean execute(CompileState meta, StringBuilder builder) throws CompileException {
-		method.invoke(info, meta, compiler, type, line, charpos, values);
+		method.invoke(info, meta, compiler, runtime, type, pos, values);
 		return true;
 	}
 }

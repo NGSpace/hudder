@@ -918,6 +918,11 @@
 				"name": "damagetype",
 				"desc": "The name of the most recent damage type done to the player",
 				"version": "6.2.0"
+			},
+			{
+				"name": "hudder_version",
+				"desc": "The hudder version currently installed",
+				"version": "9.2.0"
 			}
 		],
 		
@@ -962,13 +967,29 @@
 		"Game": [
 			{
 				"name": "version_type",
-				"desc": "",
+				"desc": "Most likely fabric",
 				"version": "9.0.0"
 			},
 			{
 				"name": "game_version",
 				"desc": "The version of minecraft you're playing on",
 				"version": "9.0.0"
+			}
+		],
+
+
+
+
+		"Time": [
+			{
+				"name": "hour12",
+				"desc": "The current hour in 12h format with a leading 0",
+				"version": "9.2.0"
+			},
+			{
+				"name": "ampm",
+				"desc": "If it's currently am or pm",
+				"version": "9.2.0"
 			}
 		],
 
