@@ -10,10 +10,7 @@ import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.HudInformation;
 import io.github.ngspace.hudder.compilers.utils.IScriptingLanguageEngine;
 import io.github.ngspace.hudder.compilers.utils.functionandconsumerapi.ArrayElementManager;
-import io.github.ngspace.hudder.data_management.BooleanData;
-import io.github.ngspace.hudder.data_management.NumberData;
 import io.github.ngspace.hudder.data_management.ObjectDataAPI;
-import io.github.ngspace.hudder.data_management.StringData;
 import io.github.ngspace.hudder.main.HudCompilationManager;
 import io.github.ngspace.hudder.main.config.HudderConfig;
 import io.github.ngspace.hudder.uielements.AUIElement;
@@ -91,11 +88,8 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 
 	@SuppressWarnings("removal")
 	@Override public Object getVariable(String key) throws CompileException {
-		Object obj = NumberData.getNumber(key);
+		Object obj = ObjectDataAPI.getObject(key);
 		if ( obj!=null) return obj;
-		if ((obj=StringData.getString (key))!=null) return obj;
-		if ((obj=BooleanData.getBoolean(key))!=null) return obj;
-		if ((obj=ObjectDataAPI.getObject(key))!=null) return obj;
 		if ((obj=get(key))!=null) return obj;
 		if ((obj=Hudder.config.globalVariables.get(key))!=null) return obj;
 		return null;
