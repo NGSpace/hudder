@@ -149,6 +149,9 @@ public class Hudder implements ClientModInitializer {
         ClientLifecycleEvents.CLIENT_STARTED.register(c->{
 			try {
 				HudFileUtils.reloadResources();
+				if (config.globalVariables.size()>0)
+					showWarningToast(Component.literal("Hudder is deprecating global variables!"),
+							Component.literal("Please stop using them or shit will break."));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

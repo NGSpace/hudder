@@ -30,8 +30,9 @@ public abstract class AVarTextCompiler extends ATextCompiler {
 	 */
 	@SuppressWarnings("removal")
 	public Object getSystemVariable(String key) {
-		Object obj = ObjectDataAPI.getObject(key);
+		Object obj = DataVariableRegistry.getAny(key);
 		if (obj!=null) return obj;
+		if ((obj=ObjectDataAPI.getObject(key))!=null) return obj;
 		return Hudder.config.globalVariables.get(key);
 	}
 

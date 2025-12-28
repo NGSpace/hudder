@@ -30,6 +30,7 @@ public class HudderConfig {
 	
 	/* EXPOSED :flushed: */
 	@Expose public Map<String, Object> globalVariables = new HashMap<String, Object>();
+	@Expose public Map<String, Object> savedVariables = new HashMap<String, Object>();
 	@Expose public String mainfile = "tutorial";//Set "tutorial" as the default file selected
     @Expose public boolean enabled = true;
 	@Expose public boolean shadow = true;
@@ -284,5 +285,19 @@ public class HudderConfig {
 	}
 	public static boolean isPublic(Member member) {
 		return member.accessFlags().contains(AccessFlag.PUBLIC)&&!member.accessFlags().contains(AccessFlag.PRIVATE);
+	}
+
+
+	public void putSavedVariable(String key, Object value) throws IOException {
+		if (!(value instanceof Number
+				|| value instanceof String
+				|| value instanceof Boolean
+				|| value instanceof Character
+				|| unsafeoperations
+				|| value==null))
+			throw new IllegalArgumentException("Can only save variables of types: Number, String, Boolean or"
+					+ " Character with unsafe operations disabled.");
+		savedVariables.put(key, value);
+		save();
 	}
 }
