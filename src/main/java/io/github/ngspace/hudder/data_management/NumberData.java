@@ -1,6 +1,5 @@
 package io.github.ngspace.hudder.data_management;
 
-import java.util.Calendar;
 import java.util.Queue;
 
 import io.github.ngspace.hudder.Hudder;
@@ -12,7 +11,6 @@ import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -20,8 +18,6 @@ import net.minecraft.world.entity.animal.equine.AbstractHorse;
 import net.minecraft.world.level.LightLayer;
 
 public class NumberData {private NumberData() {}
-	static final double MB = 1024d*1024d;
-    static final Runtime runtime = Runtime.getRuntime();
 	
 	public static Object getNumber(String key) {
 		Minecraft ins = Minecraft.getInstance();
@@ -30,45 +26,6 @@ public class NumberData {private NumberData() {}
 		HudderConfig config = Hudder.config;
 		
 		return switch(key) {
-			
-			/* Performance */
-			case "fps": yield (double) Advanced.fps;
-			case "avgfps","avg_fps": yield (double) Advanced.getAverageFPS();
-			case "minfps","min_fps": yield (double) Advanced.getMinimumFPS();
-			case "maxfps","max_fps": yield (double) Advanced.getMaximumFPS();
-			case "ping": yield (double) ins.getConnection().getPlayerInfo(p.getUUID()).getLatency();
-			case "tps": yield (double) getTPS(ins);
-			
-			case "gpu_d", "dgpu": yield Math.min(ins.getGpuUtilization(), 100.0);
-			case "gpu": yield Math.round(Math.min(ins.getGpuUtilization(), 100.0));
-			case "cpu_d": yield Advanced.CPU.get()* 100d;
-			case "cpu": yield (double) (int) (Advanced.CPU.get()* 100d);
-			
-			case "delta": yield (double) Advanced.delta;
-			
-			
-			
-			/* Memory */
-			case "totalmemory","maxmemory","totalram","maxram": yield runtime.maxMemory() / MB;
-			case "usedmemory","usedram": yield (runtime.totalMemory() - runtime.freeMemory()) / MB;
-			case "freememory","freeram": yield runtime.freeMemory() / MB;
-			case "usedmemory_percentage","usedram_percentage":
-				double usedmem = ((double)runtime.totalMemory() - (double)runtime.freeMemory()) / MB;
-				double totalmem = (runtime.maxMemory())/MB;
-				yield (double) ((int)(usedmem/totalmem*100));
-			case "freememory_percentage","freeram_percentage": yield (double) runtime.freeMemory() / runtime.maxMemory();
-			
-			
-			
-			/* Time */
-			case "time": yield (double) System.currentTimeMillis();
-			case "milliseconds": yield (double) Calendar.getInstance().get(Calendar.MILLISECOND);
-			case "seconds": yield (double) Calendar.getInstance().get(Calendar.SECOND);
-			case "minutes": yield (double) Calendar.getInstance().get(Calendar.MINUTE);
-			case "hour": yield (double) Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-			case "day": yield (double) Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-			case "month": yield (double) Calendar.getInstance().get(Calendar.MONTH);
-			case "year": yield (double) Calendar.getInstance().get(Calendar.YEAR);
 			
 			
 			
@@ -255,10 +212,6 @@ public class NumberData {private NumberData() {}
 			
 			default: yield DataVariableRegistry.getNumber(key);
 		};
-	}
-	public static float getTPS(Minecraft client) {
-        IntegratedServer server = client.getSingleplayerServer();
-        return server == null ? -1f : server.tickRateManager().tickrate();
 	}
 
 	public static int getCurrentAirSupplyBubble(int i, int j, int k) {

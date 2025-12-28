@@ -21,6 +21,7 @@ import io.github.ngspace.hudder.data_management.Advanced;
 import io.github.ngspace.hudder.data_management.EffectData;
 import io.github.ngspace.hudder.data_management.ResourcePackVariables;
 import io.github.ngspace.hudder.data_management.api.DataVariableRegistry;
+import io.github.ngspace.hudder.data_management.builtin.HudderBuiltInVariables;
 import io.github.ngspace.hudder.main.HudCompilationManager;
 import io.github.ngspace.hudder.main.HudderRenderer;
 import io.github.ngspace.hudder.main.HudderTickEvent;
@@ -137,6 +138,7 @@ public class Hudder implements ClientModInitializer {
 				"selectedresourcepacks_unfiltered");
 		DataVariableRegistry.registerVariable(new EffectData(), "active_effects");
 		Advanced.registerKeyVariables();
+		HudderBuiltInVariables.registerVariables();
         
 		HudCompilationManager compman = new HudCompilationManager();
 		ClientTickEvents.END_CLIENT_TICK.register(compman);

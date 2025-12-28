@@ -1,10 +1,5 @@
 package io.github.ngspace.hudder.data_management;
 
-import java.util.Calendar;
-import java.util.Locale;
-
-import com.mojang.blaze3d.platform.GLX;
-
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.data_management.api.DataVariableRegistry;
 import io.github.ngspace.hudder.v2runtime.V2Runtime;
@@ -25,28 +20,15 @@ public class StringData {private StringData() {}
 		Minecraft ins = Minecraft.getInstance();
 		LocalPlayer p = ins.player;
 		Camera c = ins.gameRenderer.getMainCamera();
-		var hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
 		return switch (key) {
 			
 			case "damagetype": yield p.getLastDamageSource() == null ? V2Runtime.NULL : p.getLastDamageSource().type().toString();
 			
-			/* Computer info */
-			case "cpu_info": yield GLX._getCpuInfo();
-			case "operating_system": yield Advanced.OS;
-			case "month_name": yield Calendar.getInstance().getDisplayName(Calendar.MONTH,Calendar.LONG,Locale.getDefault());
-			case "locale": yield Locale.getDefault().getDisplayName();
-			case "language": yield Locale.getDefault().getLanguage();
-			case "country": yield Locale.getDefault().getCountry();
-
+			
 
 			/* Game */
 			case "version_type": yield ins.getVersionType();
 			case "game_version": yield SharedConstants.getCurrentVersion().id();
-
-
-			/* Time */
-			case "hour12": yield clockify(hour % 12);
-			case "ampm": yield hour / 12 == 1 ? "pm" : "am";
 
 
 
@@ -162,8 +144,5 @@ public class StringData {private StringData() {}
 		));
 
 		return (hit.getType() == HitResult.Type.BLOCK) ? (BlockHitResult) hit : null;
-	}
-	private static String clockify(int time) {
-		return String.valueOf(time < 10 ? "0" + time : time);
 	}
 }
