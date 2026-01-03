@@ -83,5 +83,10 @@ public class V2MathOperation extends AV2Value {
 		throw new CompileException("Can't change the value of a math operation", line, charpos);
 	}
 	
-	@Override public boolean isConstant() throws CompileException {return false;}
+	@Override public boolean isConstant() throws CompileException {
+        for (AV2Value v : values) {
+            if (!v.isConstant()) return false;
+        }
+        return true;
+	}
 }

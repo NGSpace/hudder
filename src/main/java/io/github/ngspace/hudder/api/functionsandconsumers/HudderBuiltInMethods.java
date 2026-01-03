@@ -82,7 +82,7 @@ public class HudderBuiltInMethods {private HudderBuiltInMethods() {}
 				ex.printStackTrace();
 				throw new IllegalArgumentException(ex);
 			}
-		},"saveVal");
+		},"writeValue");
 
 		//Items
 

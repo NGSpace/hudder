@@ -30,7 +30,7 @@ public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 		
 		binder.registerFunction((m,c,s)->new TranslatedItemStack(mc.player.getInventory().getItem(s[0].asInt())), "getItem");
 		
-		binder.registerFunction((m,c,s)->c.getConfig().savedVariables.get(s[0].asString()),"readVal");
+		binder.registerFunction((m,c,s)->c.getConfig().savedVariables.get(s[0].asString()),"readValue");
 		
 		//Compile
 		
