@@ -8,8 +8,10 @@ public class V2Number extends AV2Value {
 	double doubleVal;
 	public V2Number(String value, int line, int charpos, AV2Compiler compiler) {
 		super(line, charpos, value, compiler);
-		if (value.startsWith("0x")||value.startsWith("#"))
+		if (value.startsWith("0x"))
 			this.doubleVal = Integer.parseUnsignedInt(value.substring(2), 16);
+		else if (value.startsWith("#"))
+			this.doubleVal = Integer.parseUnsignedInt(value.substring(1), 16);
 		else
 			this.doubleVal = Double.parseDouble(value);
 	}
