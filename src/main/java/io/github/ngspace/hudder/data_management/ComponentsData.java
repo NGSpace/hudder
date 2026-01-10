@@ -2,7 +2,9 @@ package io.github.ngspace.hudder.data_management;
 
 import java.util.HashMap;
 
+import io.github.ngspace.hudder.mixin.ItemCooldownsAccessor;
 import io.github.ngspace.hudder.utils.ValueGetter;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
@@ -10,6 +12,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 
@@ -18,41 +21,57 @@ public class ComponentsData extends HashMap<String, Object> {
 	
 	private static final long serialVersionUID = 229002063971831208L;
 	
-	public static Object getObject(String key, DataComponentMap comp) {
-		
+	public static Object getObject(String key, DataComponentMap data, ItemStack item) {
+		var player = Minecraft.getInstance().player;
 		return switch (key.toLowerCase()) {
 			
 			/* Text Objects */
 			case "custom_name", "item_name": {
-				Component t = (Component) comp.get(BuiltInRegistries.DATA_COMPONENT_TYPE.getValue(Identifier.withDefaultNamespace(key)));
+				Component t = (Component) data.get(BuiltInRegistries.DATA_COMPONENT_TYPE.getValue(Identifier.withDefaultNamespace(key)));
 				
 				yield t!=null ? t.getString() : null;
 			}
 			
 			/* Primitives */
 			case "repair_cost", "damage", "max_damage", "max_stack_size", "enchantment_glint_override":
-				yield comp.get(BuiltInRegistries.DATA_COMPONENT_TYPE.getValue(Identifier.withDefaultNamespace(key)));
-			
-//			case "mining_speed": yield comp.get(DataComponentTypes.TOOL).defaultMiningSpeed();
+				yield data.get(BuiltInRegistries.DATA_COMPONENT_TYPE.getValue(Identifier.withDefaultNamespace(key)));
 
-			case "trim": yield comp.get(DataComponents.TRIM) !=null ? new Object() {
-				String material = comp.get(DataComponents.TRIM).material().value().assets().base().suffix();
-				String pattern = comp.get(DataComponents.TRIM).pattern().value().assetId().toString();
-			} : null;
+			case "max_cooldown": {
+				var component = data.get(DataComponents.USE_COOLDOWN);
+				yield component == null ? 0 : component.seconds() * 20;
+			}
+			case "cooldown": {
+				var group = player.getCooldowns().getCooldownGroup(item);
+				var acc = ((ItemCooldownsAccessor)player.getCooldowns());
+				var cooldown = acc.getCooldowns().get(group);
+				if (cooldown==null)
+					yield 0;
+				var totaltime = (cooldown.endTime()-acc.getTickCount()) - (cooldown.startTime()-acc.getTickCount());
+				yield totaltime - (acc.getTickCount()-cooldown.startTime());
+			}
 
-			case "enchantable": yield comp.get(DataComponents.ENCHANTABLE) !=null ? 
-					comp.get(DataComponents.ENCHANTABLE).value() : null;
-			case "lore": yield comp.get(DataComponents.LORE) !=null ? 
-					comp.get(DataComponents.LORE).styledLines() : null;
-			case "rarity": yield comp.get(DataComponents.RARITY) !=null ? 
-					comp.get(DataComponents.RARITY).toString() : null;
+			case "trim":
+				yield data.get(DataComponents.TRIM) ==null ? null : new Object() {
+					String material = data.get(DataComponents.TRIM).material().value().assets().base().suffix();
+					String pattern = data.get(DataComponents.TRIM).pattern().value().assetId().toString();
+				};
+
+			case "enchantable":
+				var enchantable = data.get(DataComponents.ENCHANTABLE);
+				yield enchantable !=null ? enchantable.value() : null;
+			case "lore":
+				var lore = data.get(DataComponents.LORE);
+				yield lore !=null ? lore.styledLines() : null;
+			case "rarity":
+				var rarity = data.get(DataComponents.RARITY);
+				yield rarity !=null ? rarity.toString() : null;
 			
-			case "unbreakable": yield comp.get(DataComponents.UNBREAKABLE);
+			case "unbreakable": yield data.get(DataComponents.UNBREAKABLE);
 			
-			case "custom_data": yield String.valueOf(comp.get(DataComponents.CUSTOM_DATA));
+			case "custom_data": yield String.valueOf(data.get(DataComponents.CUSTOM_DATA));
 			
 			case "enchantments": {
-				var d = comp.get(DataComponents.ENCHANTMENTS);
+				var d = data.get(DataComponents.ENCHANTMENTS);
 				if (d==null) yield null;
 				yield new EnchantmentInfo(d);
 			}

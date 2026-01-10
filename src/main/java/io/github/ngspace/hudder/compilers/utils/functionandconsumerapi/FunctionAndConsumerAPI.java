@@ -102,6 +102,7 @@ public class FunctionAndConsumerAPI {
 		public int durability;
 		public int maxdurability;
 		private DataComponentMap components;
+		private ItemStack item;
 		public TranslatedItemStack(ItemStack stack) {
 			name = stack.getDisplayName().getString();
 			count = stack.getCount();
@@ -109,13 +110,14 @@ public class FunctionAndConsumerAPI {
 			durability = stack.getMaxDamage()-stack.getDamageValue();
 			maxdurability = stack.getMaxDamage();
 			components = stack.getComponents();
+			item = stack;
 		}
 		@Override public String toString() {
 			return "{name:\"" + name + "\", count:" + count + ", maxcount: " + maxcount + ", durability: " + durability
 					+ ", maxdurability: " + maxdurability + "}";
 		}
 		@Override public Object get(String component) {
-			return ComponentsData.getObject(component, components);
+			return ComponentsData.getObject(component, components, item);
 		}
 	}
 }

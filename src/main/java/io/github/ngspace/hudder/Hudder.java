@@ -21,6 +21,7 @@ import io.github.ngspace.hudder.data_management.Advanced;
 import io.github.ngspace.hudder.data_management.EffectData;
 import io.github.ngspace.hudder.data_management.ResourcePackVariables;
 import io.github.ngspace.hudder.data_management.api.DataVariableRegistry;
+import io.github.ngspace.hudder.data_management.builtin.HudderBuiltInVariables;
 import io.github.ngspace.hudder.main.HudCompilationManager;
 import io.github.ngspace.hudder.main.HudderRenderer;
 import io.github.ngspace.hudder.main.HudderTickEvent;
@@ -137,6 +138,7 @@ public class Hudder implements ClientModInitializer {
 				"selectedresourcepacks_unfiltered");
 		DataVariableRegistry.registerVariable(new EffectData(), "active_effects");
 		Advanced.registerKeyVariables();
+		HudderBuiltInVariables.registerVariables();
         
 		HudCompilationManager compman = new HudCompilationManager();
 		ClientTickEvents.END_CLIENT_TICK.register(compman);
@@ -147,6 +149,9 @@ public class Hudder implements ClientModInitializer {
         ClientLifecycleEvents.CLIENT_STARTED.register(c->{
 			try {
 				HudFileUtils.reloadResources();
+				if (config.globalVariables.size()>0)
+					showWarningToast(Component.literal("Hudder is deprecating global variables!"),
+							Component.literal("Please stop using them as they'll stop working in a future release."));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

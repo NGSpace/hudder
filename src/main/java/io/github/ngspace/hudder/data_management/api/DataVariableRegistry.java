@@ -3,8 +3,6 @@ package io.github.ngspace.hudder.data_management.api;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.github.ngspace.hudder.data_management.ObjectDataAPI;
-
 /**
  * Hudder's class for management of system variables
  * <br><br>
@@ -13,23 +11,12 @@ import io.github.ngspace.hudder.data_management.ObjectDataAPI;
  */
 public class DataVariableRegistry {
 	private DataVariableRegistry() {}
-	static {registerLegacyVariableSystem();}
 
 	private static Map<String, DataVariable<?>> BooleanVariables = new HashMap<String, DataVariable<?>>();
 	private static Map<String, DataVariable<?>> StringVariables = new HashMap<String, DataVariable<?>>();
 	private static Map<String, DataVariable<?>> NumberVariables = new HashMap<String, DataVariable<?>>();
 	private static Map<String, DataVariable<?>> ObjectVariables = new HashMap<String, DataVariable<?>>();
 	private static Map<String, DataVariable<?>> AllVariables = new HashMap<String, DataVariable<?>>();
-	
-	@SuppressWarnings("removal")
-	static void registerLegacyVariableSystem() {
-		ObjectDataAPI.addObjectGetter(key-> {
-			var variable = ObjectVariables.get(key);
-			if (variable!=null)
-				return variable.getValue(key);
-			return null;
-		});
-	}
 	
 	public static void registerVariable(DataVariable<Object> variable, String... names) {
 		registerVariable(variable, VariableTypes.OBJECT, names);

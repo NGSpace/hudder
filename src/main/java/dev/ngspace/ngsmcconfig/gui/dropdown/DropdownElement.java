@@ -25,7 +25,7 @@ public class DropdownElement extends AbstractWidget {
 	}
 
 	@Override
-	protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {}
+	protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) { /* */ }
 	
 	@Override
 	public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean bl) {

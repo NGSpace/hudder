@@ -9,7 +9,9 @@ import java.util.function.Function;
  */
 @Deprecated(since = "9.0.0", forRemoval = true)
 public class ObjectDataAPI {private ObjectDataAPI() {}
+	@Deprecated(since = "9.0.0", forRemoval = true)
 	static List<Function<String, Object>> getters = new ArrayList<Function<String,Object>>();
+	@Deprecated(since = "9.0.0", forRemoval = true)
 	public static Object getObject(String key) {
 		for (var getter : getters) {
 			Object obj = getter.apply(key);
@@ -23,5 +25,6 @@ public class ObjectDataAPI {private ObjectDataAPI() {}
 	 */
 	@Deprecated(since = "9.0.0", forRemoval = true)
 	public static void addObjectGetter(Function<String, Object> function) {getters.add(function);}
+	@Deprecated(since = "9.0.0", forRemoval = true)
 	public static List<Function<String, Object>> getObjectGetters() {return getters;}
 }

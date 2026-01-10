@@ -42,6 +42,9 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 			// Assume that it's good
 			boolean isSafe = true;
 			
+			boolean quotes = false;
+			boolean backslash = false;
+			
 			// Count how deep the parenthesses
 			// NOTE it is initalized at 0 but since the first char is always going to be (, it will become one.
 			int layers = 0;
@@ -49,6 +52,16 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 			for (int i=0;i<value.length();i++) {
 				char c = value.charAt(i);
 				
+				if (quotes) {
+					if (!backslash) {
+						if (c=='"') quotes = false;
+						if (c=='\\') {backslash = !backslash;continue;}
+					}
+					backslash = false;
+					continue;
+				}
+
+				if (c=='"') quotes = true;
 				if (c=='(') layers++; // Layer up
 				if (c==')') layers--; // Layer down
 				
@@ -153,15 +166,21 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 			// Same thing as before except we start reading at the first instance of a '(' char instead of at index 0.
 			int argStart = value.indexOf("(");
 			boolean isSafe = false;
+			boolean quotes = false;
+//			boolean backslash = false;
 			int parenthesses = 0;
 			if (argStart!=-1) {
 				isSafe = true;
 				for (int i = argStart;i<value.length();i++) {
 					char c = value.charAt(i);
-					if (c=='(')
-						parenthesses++;
-					if (c==')')
-						parenthesses--;
+					if (c=='"') {
+						quotes = !quotes;
+					}
+					if (quotes) {
+						continue;
+					}
+					if (c=='(') parenthesses++;
+					if (c==')') parenthesses--;
 					if (parenthesses==0) {
 						isSafe = i+1==value.length();
 						break;
@@ -198,10 +217,22 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 		String operator = getOperator(value);
 		if (operator!=null) {
 			int parenthesses = 0;
+			boolean quotes = false;
+			boolean backslash = false;
 			String[] v = value.split(operator,2);
 			for (char c : v[0].trim().toCharArray()) {
-				if (c=='(') parenthesses++;
-				if (c==')') parenthesses--;
+				if (quotes) {
+					if (!backslash) {
+						if (c=='"')
+							quotes = false;
+						if (c=='\\')
+							backslash = true;
+					}
+				} else {
+					if (c=='"') quotes = true;
+					if (c=='(') parenthesses++;
+					if (c==')') parenthesses--;
+				}
 			}
 			if (parenthesses==0)
 				return new V2Comparison(comp.getV2Value(runtime, v[0].trim(), line, charpos),
