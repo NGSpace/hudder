@@ -9,7 +9,7 @@
 	],
 	"contributors": [
 		"magor2345",
-		"Daniel El Pro XDDD"
+		"DanielElProXDDD-GD"
 	],
 	"contact": {
 		"Modrinth": "https://modrinth.com/mod/hudder",
@@ -30,12 +30,10 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.14.0",
-		"minecraft": ">=1.21.9",
-		"java": ">=21",
+		"minecraft": ">=1.21.11",
 		"fabric-api": "*"
 	},
 	"suggests": {
-		"fabric-api": "*",
 		"modmenu": "*"
 	},
 	"custom": {

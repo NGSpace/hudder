@@ -25,13 +25,13 @@ import net.minecraft.client.Minecraft;
 
 public class HudderConfig {
 	
-	public static final int HUDDER_CONFIG_VERSION = 3;
+	public static final int HUDDER_CONFIG_VERSION = 4;
 	public static final File DEFAULT_CONFIG_FILE = new File(HudFileUtils.FABRIC_CONFIG_FOLDER + File.separator + "hudder.json");
 	
 	/* EXPOSED :flushed: */
 	@Expose public Map<String, Object> globalVariables = new HashMap<String, Object>();
 	@Expose public Map<String, Object> savedVariables = new HashMap<String, Object>();
-	@Expose public String mainfile = "tutorial";//Set "tutorial" as the default file selected
+	@Expose public String mainfile = "tutorial.hud";//Set "tutorial.hud" as the default file selected
     @Expose public boolean enabled = true;
 	@Expose public boolean shadow = true;
 	@Expose public boolean showInF3 = false;
@@ -78,7 +78,6 @@ public class HudderConfig {
 					throw new UnsupportedOperationException("Failed to migrate Hudder config file.");
 				}
 			}
-			
 		}
 		readAndUpdateConfig();
 	}
@@ -161,6 +160,19 @@ public class HudderConfig {
 				case "default", "defaultcompiler", "default compiler" -> "hudder";
 				default -> newinfo.get("compilertype").toString();
 			};
+		}
+		if (version<4) {
+			String[] oldBuiltins = new String[] {"tutorial", "hand", "armorside", "hud", "basic"};
+			for (String name : oldBuiltins) {
+				File f = new File(HudFileUtils.FOLDER + name);
+				if (f.exists() && !f.renameTo(new File(HudFileUtils.FOLDER + name + ".hud"))) {
+					Hudder.error("Failed to update old hud, stopping migration process.");
+					break;
+				}
+				
+				if (mainfile.equals(name))
+					mainfile = name + ".hud";
+			}
 		}
 	}
     
