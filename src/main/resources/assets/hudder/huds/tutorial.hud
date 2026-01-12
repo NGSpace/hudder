@@ -1,10 +1,10 @@
 ;topleft;
 &6Welcome to &dHudder!
 &6You can go into &dHudder's settings&6 and change the main file to:
-- "hud"
-- "hand"
-- "armorside"
-- "basic"
+- "hud.hud"
+- "hand.hud"
+- "armorside.hud"
+- "basic.hud"
 &3- if you want to use JavaScript you can use:
 - "hud.js"
 - "hotbar.js"
