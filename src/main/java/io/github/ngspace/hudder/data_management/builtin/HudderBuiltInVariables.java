@@ -5,6 +5,8 @@ import static io.github.ngspace.hudder.data_management.api.VariableTypes.NUMBER;
 import static io.github.ngspace.hudder.data_management.api.VariableTypes.STRING;
 
 import io.github.ngspace.hudder.Hudder;
+import io.github.ngspace.hudder.data_management.EffectData;
+import io.github.ngspace.hudder.data_management.ResourcePackVariables;
 import io.github.ngspace.hudder.data_management.api.DataVariable;
 import io.github.ngspace.hudder.data_management.api.DataVariableRegistry;
 import io.github.ngspace.hudder.data_management.api.VariableTypes;
@@ -15,6 +17,11 @@ public class HudderBuiltInVariables {
 	protected HudderBuiltInVariables() {}
 	
 	public static void registerVariables() {
+		
+		DataVariableRegistry.registerVariable(new ResourcePackVariables(), "selectedresourcepacks",
+				"selectedresourcepacks_unfiltered");
+		DataVariableRegistry.registerVariable(new EffectData(), "active_effects");
+		
 		ComputerData.registerVariables();
 		PlayerData.registerVariables();
 		ClientData.registerVariables();

@@ -119,7 +119,7 @@ public class WorldData extends HudderBuiltInVariables {
 		register(k->ins.level.getDayTime(), NUMBER, "worldtime", "world_time");
 		register(k->ins.level.getDayTime() / 24000d, NUMBER, "daytime", "day_time");
 
-		// Slime chunk (guards preserved)
+		// Slime chunk
 		register(k->{
 		    try {
 		        var server = ins.getSingleplayerServer();
@@ -133,9 +133,17 @@ public class WorldData extends HudderBuiltInVariables {
 		                .seedSlimeChunk(cx, cz, seed, 987234911L)
 		                .nextInt(10) == 0;
 		    } catch (Exception e) {
-		        // preserve old behavior
+		    	// Fallback when there is no permission
 		        return false;
 		    }
 		}, BOOLEAN, "isslime", "is_slime");
+		
+		// Weather
+		register(k->ins.player.level().isRaining(), BOOLEAN, "is_raining");
+		register(k->ins.player.level().isThundering(), BOOLEAN, "is_thundering");
+		register(k->ins.player.level().canHaveWeather(), BOOLEAN, "can_have_weather");
+		
+		// Difficulty
+		register(k->ins.player.level().getDifficulty().getSerializedName(), STRING, "difficulty");
 	}
 }

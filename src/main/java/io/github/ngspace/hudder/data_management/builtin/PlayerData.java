@@ -48,7 +48,8 @@ public class PlayerData extends HudderBuiltInVariables {
 
 		// XP
 		register(k->ins.player.experienceLevel, NUMBER, "xplevel");
-		register(k->ins.player.totalExperience, NUMBER, "xp");
+		register(k->ins.player.experienceProgress*ins.player.getXpNeededForNextLevel(), NUMBER, "xp");
+		register(k->ins.player.getXpNeededForNextLevel(), NUMBER, "next_level_xp_requirement");
 
 		// Armor / movement
 		register(k->ins.player.getArmorValue(), NUMBER, "armor");
@@ -108,6 +109,9 @@ public class PlayerData extends HudderBuiltInVariables {
 		register(k->ins.player.isInWater(), BOOLEAN, "isdrowning");
 		register(k->ins.player.getControlledVehicle() != null, BOOLEAN, "iscontrollingmount");
 		register(k->ins.player.getVehicle() != null, BOOLEAN, "isonmount");
+		
+		register(k->ins.player.level().isRainingAt(ins.player.blockPosition()), BOOLEAN, "is_in_rain");
+		register(k->ins.player.level().canSeeSky(ins.player.blockPosition()), BOOLEAN, "is_exposed_to_sky");
 
 		// Game mode flags (with aliases)
 		register(k->ins.gameMode.getPlayerMode() == GameType.SURVIVAL, BOOLEAN, "issurvival", "is_survival");
@@ -282,7 +286,7 @@ public class PlayerData extends HudderBuiltInVariables {
 
 		register(k->{
 		    var src = ins.player.getLastDamageSource();
-		    return (src == null) ? null : src.type().toString();
+		    return (src == null) ? null : src.type().msgId();
 		}, STRING, "damagetype");
 
 		register(k->ins.player.getInventory().getSelectedSlot(), NUMBER, "selectedslot");

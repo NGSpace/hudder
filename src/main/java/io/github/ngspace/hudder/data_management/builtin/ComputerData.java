@@ -22,6 +22,9 @@ public class ComputerData extends HudderBuiltInVariables {
 		registerMemoryVariables();
 		registerTimeVariables();
 		registerStringComputerInfo();
+
+		register(k->ins.getConnection().getConnection().getAverageSentPackets(), NUMBER, "sent_packets");
+		register(k->ins.getConnection().getConnection().getAverageReceivedPackets(), NUMBER, "recieved_packets");
 	}
 
 	public static void registerPerformanceVariables() {
