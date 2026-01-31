@@ -61,6 +61,9 @@ public class PlayerData extends HudderBuiltInVariables {
 
 		register(k->getCurrentAirSupplyBubble(ins.player.getMaxAirSupply(),ins.player.getMaxAirSupply(),0),
 				NUMBER, "maxairbubbles");
+		
+		// Attack indicator
+		register(k->ins.player.getAttackStrengthScale(0.0F), NUMBER, "attack_cooldown");
 	}
 	
 	private static void registerPlayerMovement() {
