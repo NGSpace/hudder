@@ -71,12 +71,12 @@
 			{
 				"name": "sent_packets",
 				"desc": "Average sent packets (from the current network connection)",
-				"version": "unreleased"
+				"version": "9.2.0"
 			},
 			{
 				"name": "received_packets",
 				"desc": "Average received packets (from the current network connection)",
-				"version": "unreleased"
+				"version": "9.2.0"
 			}
 		],
 		"Memory": [
@@ -236,12 +236,12 @@
 			{
 				"name": "next_level_xp_requirement",
 				"desc": "XP needed to reach the next XP level",
-				"version": "unreleased"
+				"version": "9.2.0"
 			},
 			{
 				"name": "attack_cooldown",
 				"desc": "Player attack indicator cooldown (0.0 to 1.0)",
-				"version": "unreleased"
+				"version": "9.2.0"
 			},
 			{
 				"name": "armor",
@@ -519,17 +519,17 @@
 			{
 				"name": "is_raining",
 				"desc": "Whether it is currently raining in the world",
-				"version": "unreleased"
+				"version": "9.2.0"
 			},
 			{
 				"name": "is_thundering",
 				"desc": "Whether it is currently thundering in the world",
-				"version": "unreleased"
+				"version": "9.2.0"
 			},
 			{
 				"name": "can_have_weather",
 				"desc": "Whether the current dimension/world can have weather",
-				"version": "unreleased"
+				"version": "9.2.0"
 			}
 		],
 		"GUI rendering": [
@@ -673,7 +673,7 @@
 			{
 				"name": "ischatopen",
 				"desc": "Whether the chat screen is currently open",
-				"version": "unreleased"
+				"version": "9.2.0"
 			}
 		],
 		"Player movement": [
@@ -772,12 +772,12 @@
 			{
 				"name": "is_in_rain",
 				"desc": "Whether the player is currently in rain (raining at the player's position)",
-				"version": "unreleased"
+				"version": "9.2.0"
 			},
 			{
 				"name": "is_exposed_to_sky",
 				"desc": "Whether the player can see the sky from their position",
-				"version": "unreleased"
+				"version": "9.2.0"
 			}
 		],
 		"Mount information": [
@@ -1016,7 +1016,7 @@
 			{
 				"name": "difficulty",
 				"desc": "The world's difficulty",
-				"version": "unreleased"
+				"version": "9.2.0"
 			}
 		],
 		"Server": [
@@ -1115,7 +1115,7 @@
 			{
 				"name": "active_effects",
 				"desc": "An array of all active effects",
-				"version": "unreleased"
+				"version": "9.2.0"
 			}
 		]
 	}
