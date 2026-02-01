@@ -68,4 +68,8 @@ public class DataVariableRegistry {
 	public static boolean hasVariable(String key) {
 		return AllVariables.containsKey(key);
 	}
+
+	public static int getTotalEntriesCount() {
+		return AllVariables.size();
+	}
 }

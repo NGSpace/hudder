@@ -18,6 +18,7 @@ import io.github.ngspace.hudder.api.functionsandconsumers.HudderBuiltInMethods;
 import io.github.ngspace.hudder.compilers.utils.Compilers;
 import io.github.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI;
 import io.github.ngspace.hudder.data_management.Advanced;
+import io.github.ngspace.hudder.data_management.api.DataVariableRegistry;
 import io.github.ngspace.hudder.data_management.builtin.HudderBuiltInVariables;
 import io.github.ngspace.hudder.main.HudCompilationManager;
 import io.github.ngspace.hudder.main.HudderRenderer;
@@ -115,7 +116,6 @@ public class Hudder implements ClientModInitializer {
 
 		if (IS_DEBUG) {
 			log("HUDDER'S DEBUG MODE IS TURNED ON");
-			log(System.err.getClass().getCanonicalName());
 			// Makes debugging easier since it makes errors red in the console.
 			// It extends LoggerPrintStream to not break compatibility
 			System.setErr(new LoggedPrintStream("STDERR",System.err) {
@@ -131,8 +131,10 @@ public class Hudder implements ClientModInitializer {
 		HudderBuiltInFunctions.registerFunction(FunctionAndConsumerAPI.getInstance());
 		ClientTickEvents.START_CLIENT_TICK.register(new HudderTickEvent());
 		
+		Hudder.log("Loading variables.");
 		Advanced.registerKeyVariables();
 		HudderBuiltInVariables.registerVariables();
+		Hudder.log("Finished loading " + DataVariableRegistry.getTotalEntriesCount() + " variables!");
         
 		HudCompilationManager compman = new HudCompilationManager();
 		ClientTickEvents.END_CLIENT_TICK.register(compman);
