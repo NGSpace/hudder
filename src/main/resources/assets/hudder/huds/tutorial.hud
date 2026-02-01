@@ -10,4 +10,4 @@
 - "hotbar.js"
 - "worldtime.js"
 &3- or create your own hud!
-&6A tutorial on how to make your own hud is available on &dHudder's wiki;run, "hand";;run, "armorside";
+&6A tutorial on how to make your own hud is available on &dHudder's wiki;run, "hand.hud";;run, "armorside.hud";
