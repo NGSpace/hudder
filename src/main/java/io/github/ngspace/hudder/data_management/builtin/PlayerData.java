@@ -15,6 +15,7 @@ import net.minecraft.world.entity.animal.equine.AbstractHorse;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
@@ -183,11 +184,11 @@ public class PlayerData extends HudderBuiltInVariables {
 	private static void registerLookingAtVariables() {
 		/* Looking at */
 
-		register(k->hitPos(raycastPlayer(false)), STRING, "looking_at_pos");
+		register(k->hitPos(raycastBlockPlayer(false, 50)), STRING, "looking_at_pos");
 		register(k->hitPos(raycastCamera(false)), STRING, "cam_looking_at_pos");
 
 		register(k->{
-		    var hit = raycastPlayer(false);
+		    var hit = raycastBlockPlayer(false, 50);
 		    return hit == null ? null : BuiltInRegistries.BLOCK
 		    		.getKey(ins.level.getBlockState(hit.getBlockPos()).getBlock()).toString();
 		}, STRING, "block_in_front");
@@ -199,7 +200,7 @@ public class PlayerData extends HudderBuiltInVariables {
 		}, STRING, "cam_block_in_front");
 
 		register(k->{
-		    var hit = raycastPlayer(true);
+		    var hit = raycastBlockPlayer(true, 50);
 		    return hit == null ? null : BuiltInRegistries.FLUID
 		    		.getKey(ins.level.getFluidState(hit.getBlockPos()).getType()).toString();
 		}, STRING, "fluid_in_front");
@@ -313,10 +314,10 @@ public class PlayerData extends HudderBuiltInVariables {
 
 		return (hit.getType() == HitResult.Type.BLOCK) ? (BlockHitResult) hit : null;
 	}
-	
-	private static BlockHitResult raycastPlayer(boolean fluids) {
+
+	private static BlockHitResult raycastBlockPlayer(boolean fluids, double reach) {
 	    var p = ins.player;
-	    return raycast(ins, p.getEyePosition(1.0f), p.getLookAngle(), 50, fluids);
+	    return raycast(ins, p.getEyePosition(1.0f), p.getLookAngle(), reach, fluids);
 	}
 
 	private static BlockHitResult raycastCamera(boolean fluids) {
