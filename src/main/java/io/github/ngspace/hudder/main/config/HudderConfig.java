@@ -6,8 +6,11 @@ import java.io.IOException;
 import java.lang.reflect.AccessFlag;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.commons.io.FileUtils;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
@@ -162,16 +165,36 @@ public class HudderConfig {
 			};
 		}
 		if (version<4) {
-			String[] oldBuiltins = new String[] {"tutorial", "hand", "armorside", "hud", "basic"};
-			for (String name : oldBuiltins) {
-				File f = new File(HudFileUtils.FOLDER + name);
-				if (f.exists() && !f.renameTo(new File(HudFileUtils.FOLDER + name + ".hud"))) {
-					Hudder.error("Failed to update old hud, stopping migration process.");
-					break;
-				}
+			try {
+				// For the love of god, back up the user's data before doing literally anything to it.
+				FileUtils.copyDirectory(new File(HudFileUtils.FOLDER),
+						new File(HudFileUtils.FABRIC_CONFIG_FOLDER + File.separator + "hudder_backup"), true);
 				
-				if (mainfile.equals(name))
-					mainfile = name + ".hud";
+				String[] oldBuiltins = new String[] {"tutorial", "hand", "armorside", "hud", "basic"};
+				for (String name : oldBuiltins) {
+					File f = new File(HudFileUtils.FOLDER + name);
+					if (f.exists()) {
+						String res = new String(Files.readAllBytes(f.toPath()));
+						FileWriter writer = new FileWriter(f);
+						for (String name2 : oldBuiltins) {
+							res = res.replaceAll("; *run *, *[\"']?"+name2+"[\"']? *;",
+									";run, \""+name2+".hud\";");
+						}
+						writer.append(res);
+						writer.flush();
+						writer.close();
+						
+						if (!f.renameTo(new File(HudFileUtils.FOLDER + name + ".hud"))) {
+							Hudder.error("Failed to update old hud, stopping migration process.");
+							break;
+						}
+					}
+					
+					if (mainfile.equals(name))
+						mainfile = name + ".hud";
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 	}
