@@ -7,6 +7,8 @@ import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.Undefined;
 import org.mozilla.javascript.WrapFactory;
+import org.mozilla.javascript.lc.type.TypeInfo;
+import org.mozilla.javascript.lc.type.TypeInfoFactory;
 
 import io.github.ngspace.hudder.utils.NoAccess;
 import io.github.ngspace.hudder.utils.ObjectWrapper;
@@ -20,14 +22,14 @@ public class HudderJavaScriptWrapFactory extends WrapFactory {
 	}
 	
 	@Override
-	public Scriptable wrapAsJavaObject(Context cx, Scriptable scope, Object javaObject, Class<?> staticType) {
+	public Scriptable wrapAsJavaObject(Context cx, Scriptable scope, Object javaObject, TypeInfo staticType) {
 		if (javaObject == V2Runtime.NULL
     			|| javaObject instanceof Class<?>
     			|| javaObject instanceof ClassLoader
     			|| javaObject.getClass().isAnnotationPresent(NoAccess.class))
 			return Undefined.SCRIPTABLE_UNDEFINED;
 		if (javaObject instanceof ValueGetter r) {
-			return new NativeJavaObject(scope,r,r.getClass(),true) {
+			return new NativeJavaObject(scope,r,TypeInfoFactory.GLOBAL.create(r.getClass()),true) {
 				private static final long serialVersionUID = -6145385781375908982L;
 
 				@Override public String getClassName() {return r.getClass().getName();}

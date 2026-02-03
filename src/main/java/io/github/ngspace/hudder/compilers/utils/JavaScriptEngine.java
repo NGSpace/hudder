@@ -47,7 +47,7 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 					for (int i = 0;i<args.length;i++) {
 						vals[i] = new JavaScriptValue(args[i]);
 					}
-					return cx.getWrapFactory().wrap(cx, scope, function.exec(vals), null);
+					return cx.getWrapFactory().wrap(cx, scope, function.exec(vals), (Class<?>) null);
 				} catch (Exception e) {
 					throw new WrappedException(e);
 				}
