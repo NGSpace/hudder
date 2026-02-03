@@ -3,11 +3,11 @@ package dev.ngspace.hudder.compilers;
 import dev.ngspace.hudder.compilers.abstractions.AScriptingLanguageCompiler;
 import dev.ngspace.hudder.compilers.abstractions.IScriptingLanguageEngine;
 import dev.ngspace.hudder.compilers.utils.CompileException;
-import dev.ngspace.hudder.compilers.utils.JavaScriptEngine;
 import dev.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI.BindableConsumer;
 import dev.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI.BindableFunction;
 import dev.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI.Binder;
+import dev.ngspace.hudder.compilers.utils.javascript.JavaScriptEngine;
 
 public class JavaScriptCompiler extends AScriptingLanguageCompiler {
 

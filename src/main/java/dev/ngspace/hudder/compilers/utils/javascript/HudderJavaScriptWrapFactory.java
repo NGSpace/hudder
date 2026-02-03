@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.compilers.utils;
+package dev.ngspace.hudder.compilers.utils.javascript;
 
 import java.util.List;
 
@@ -10,6 +10,7 @@ import org.mozilla.javascript.WrapFactory;
 import org.mozilla.javascript.lc.type.TypeInfo;
 import org.mozilla.javascript.lc.type.TypeInfoFactory;
 
+import dev.ngspace.hudder.compilers.utils.CompileException;
 import dev.ngspace.hudder.utils.NoAccess;
 import dev.ngspace.hudder.utils.ObjectWrapper;
 import dev.ngspace.hudder.utils.ValueGetter;

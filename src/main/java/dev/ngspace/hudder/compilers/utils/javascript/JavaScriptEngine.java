@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.compilers.utils;
+package dev.ngspace.hudder.compilers.utils.javascript;
 
 import java.io.IOException;
 
@@ -15,6 +15,7 @@ import org.mozilla.javascript.WrappedException;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.abstractions.IScriptingLanguageEngine;
+import dev.ngspace.hudder.compilers.utils.CompileException;
 import dev.ngspace.hudder.utils.ObjectWrapper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
