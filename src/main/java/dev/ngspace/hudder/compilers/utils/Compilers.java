@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.compilers.EmptyCompiler;
 import dev.ngspace.hudder.compilers.HudderV2Compiler;
 import dev.ngspace.hudder.compilers.JavaScriptCompiler;
 import dev.ngspace.hudder.compilers.abstractions.ATextCompiler;
@@ -17,7 +16,6 @@ public class Compilers {private Compilers() {}
 	public static void registerDefaultCompilers() {
 		registeredcompilers.put("hudder", new HudderV2Compiler());
 		registeredcompilers.put("js", new JavaScriptCompiler());
-		registeredcompilers.put("empty", new EmptyCompiler());
 	}
 	
 	public static ATextCompiler getCompilerFromName(String name) throws IllegalArgumentException {
