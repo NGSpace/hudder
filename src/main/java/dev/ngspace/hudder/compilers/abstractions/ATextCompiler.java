@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.compilers.utils.CharPosition;
+import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.compilers.utils.CompileException;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
 import dev.ngspace.hudder.main.config.HudderConfig;
@@ -19,7 +19,7 @@ public abstract class ATextCompiler {
 	public void put(String key, Object value) {variables.put(key, value);}
 	public Object get(String key) {return variables.get(key);}
 	
-	protected CharPosition getPosition(int ind, String string) {
+	protected TextPos getPosition(int ind, String string) {
 		int line = 0;
 		int charpos = 0;
 		
@@ -31,11 +31,11 @@ public abstract class ATextCompiler {
 			}
 			charpos++;
 		}
-		return new CharPosition(line, charpos);
+		return new TextPos(line, charpos);
 	}
-	protected CharPosition getPosition(CharPosition charPosition, int ind, String j) {
+	protected TextPos getPosition(TextPos charPosition, int ind, String j) {
 		int line = charPosition.line();
-		int charpos = charPosition.charpos();
+		int charpos = charPosition.column();
 		if (line==-1||charpos==-1) {
 			line = 0;
 			charpos = 0;
@@ -49,7 +49,7 @@ public abstract class ATextCompiler {
 			}
 			charpos++;
 		}
-		return new CharPosition(line, charpos);
+		return new TextPos(line, charpos);
 	}
 	public HudderConfig getConfig() {
 		return Hudder.config;

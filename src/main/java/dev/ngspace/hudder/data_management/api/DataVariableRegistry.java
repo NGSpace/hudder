@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * Hudder's class for management of system variables
  * <br><br>
- * Use {@link #registerVariable(DataVariable, io.github.ngspace.hudder.data_management.api.VariableTypes.Type, String...)}
+ * Use {@link #registerVariable(DataVariable, dev.ngspace.hudder.data_management.api.VariableTypes.Type, String...)}
  * to register variables
  */
 public class DataVariableRegistry {

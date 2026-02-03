@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.abstractions.AV2Compiler;
-import dev.ngspace.hudder.compilers.utils.CharPosition;
+import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.compilers.utils.CompileException;
 import dev.ngspace.hudder.compilers.utils.CompileState;
 import dev.ngspace.hudder.main.config.HudderConfig;
@@ -21,7 +21,7 @@ public class MethodV2RuntimeElement extends AV2RuntimeElement {
 	private AV2Compiler compiler;
 	private HudderConfig info;
 	private V2IMethod method;
-	private CharPosition pos;
+	private TextPos pos;
 	private V2Runtime runtime;
 
 	public MethodV2RuntimeElement(String[] args, AV2Compiler compiler, HudderConfig info, V2Runtime runtime, int line, int charpos) throws CompileException {
@@ -38,7 +38,7 @@ public class MethodV2RuntimeElement extends AV2RuntimeElement {
 			Hudder.showWarningToast(Component.literal(type+" method is Deprecated!").withStyle(ChatFormatting.BOLD),
 					Component.literal("\u00A7a" + method.getDeprecationWarning(type)));
 		}
-		this.pos = new CharPosition(line, charpos);
+		this.pos = new TextPos(line, charpos);
 	}
 	@Override public boolean execute(CompileState meta, StringBuilder builder) throws CompileException {
 		method.invoke(info, meta, compiler, runtime, type, pos, values);

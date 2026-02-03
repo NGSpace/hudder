@@ -1,7 +1,7 @@
 package dev.ngspace.hudder.v2runtime.methods;
 
 import dev.ngspace.hudder.compilers.abstractions.AV2Compiler;
-import dev.ngspace.hudder.compilers.utils.CharPosition;
+import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.compilers.utils.CompileException;
 import dev.ngspace.hudder.compilers.utils.CompileState;
 import dev.ngspace.hudder.main.config.HudderConfig;
@@ -19,5 +19,5 @@ public interface V2IMethod {
 	}
 	
 	public void invoke(HudderConfig ci, CompileState meta, AV2Compiler comp, V2Runtime runtime, String type,
-			CharPosition pos, ObjectWrapper... args) throws CompileException;
+			TextPos pos, ObjectWrapper... args) throws CompileException;
 }

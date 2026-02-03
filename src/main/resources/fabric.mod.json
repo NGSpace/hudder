@@ -23,8 +23,8 @@
 	"icon": "assets/hudder/icon.png",
 	"environment": "*",
 	"entrypoints": {
-		"client": ["io.github.ngspace.hudder.Hudder"],
-    	"modmenu": [ "io.github.ngspace.hudder.main.config.HudderModMenuImpl" ]
+		"client": ["dev.ngspace.hudder.Hudder"],
+    	"modmenu": [ "dev.ngspace.hudder.main.config.HudderModMenuImpl" ]
 	},
 	"mixins": [
 		"hudder.mixins.json"

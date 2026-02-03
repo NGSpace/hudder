@@ -1,7 +1,7 @@
 package dev.ngspace.hudder.v2runtime.methods;
 
 import dev.ngspace.hudder.compilers.abstractions.AV2Compiler;
-import dev.ngspace.hudder.compilers.utils.CharPosition;
+import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.compilers.utils.CompileException;
 import dev.ngspace.hudder.compilers.utils.CompileState;
 import dev.ngspace.hudder.main.config.HudderConfig;
@@ -18,7 +18,7 @@ public class ItemStackMethods implements V2IMethod {
 	
 	protected static Minecraft mc = Minecraft.getInstance();
 	@Override
-	public void invoke(HudderConfig ci, CompileState meta, AV2Compiler comp, V2Runtime runtime, String type, CharPosition pos, ObjectWrapper... args) throws CompileException {
+	public void invoke(HudderConfig ci, CompileState meta, AV2Compiler comp, V2Runtime runtime, String type, TextPos pos, ObjectWrapper... args) throws CompileException {
 		int offset = "slot".equals(type)||"item".equals(type) ? 1:0;
 		if (args.length<2+offset) {
 			throw new CompileException("\""+type+"\" only accepts ;"+type

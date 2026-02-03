@@ -6,7 +6,7 @@ public class CompileException extends Exception {
 	
 	public CompileException(String string) {this(string,-1,0);}
 	public CompileException(String string, int line, int col) {super(string);this.line = line;this.col = col;}
-	public CompileException(String string, CharPosition pos) {this(string, pos.line(), pos.charpos());}
+	public CompileException(String string, TextPos pos) {this(string, pos.line(), pos.column());}
 	public CompileException(String string, int line, int col, Throwable e) {
 		super(string,e);
 		this.line = line;

@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.abstractions.AV2Compiler;
-import dev.ngspace.hudder.compilers.utils.CharPosition;
+import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.compilers.utils.CompileException;
 import dev.ngspace.hudder.main.config.HudderConfig;
 import dev.ngspace.hudder.utils.HudderUtils;
@@ -28,7 +28,7 @@ public class HudderV2Compiler extends AV2Compiler {
 	public static final int METHOD_STATE = 3;
 	public static final int HASHTAG_STATE = 4;
 
-	@Override public V2Runtime buildRuntime(HudderConfig info, String text, CharPosition charPosition, String filename,
+	@Override public V2Runtime buildRuntime(HudderConfig info, String text, TextPos charPosition, String filename,
 			V2Runtime scope) throws CompileException {
 		V2Runtime runtime = new V2Runtime(this, scope);
 		
@@ -36,7 +36,7 @@ public class HudderV2Compiler extends AV2Compiler {
 		
 		int bracketscount = 0;
 
-		String[] builder = {};
+//		String[] builder;
 
 		boolean quotesafe = false;
 		boolean backslashsafe = false;
@@ -80,14 +80,14 @@ public class HudderV2Compiler extends AV2Compiler {
 							compileState = METHOD_STATE;
 							runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), true));
 							elemBuilder.setLength(0);
-							builder = new String[] {};
+//							builder = new String[] {};
 							savedind = ind;
 						    quotesafe = false;
 						    backslashsafe = false;
 							break;
 						case '#':
 							compileState = HASHTAG_STATE;
-							builder = new String[] {};
+//							builder = new String[] {};
 							runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), false));
 							elemBuilder.setLength(0);
 							savedind = ind;
@@ -122,7 +122,7 @@ public class HudderV2Compiler extends AV2Compiler {
 								runtime.addRuntimeElement(new BreakV2RuntimeElement());
 							} else {
 								runtime.addRuntimeElement(new VariableV2RuntimeElement(elemBuilder.toString(), this,
-									runtime, pos.line(), pos.charpos()));
+									runtime, pos.line(), pos.column()));
 							}
 							elemBuilder.setLength(0);
 							compileState = TEXT_STATE;
@@ -162,7 +162,7 @@ public class HudderV2Compiler extends AV2Compiler {
 							conds.add(conditionOrValue.toString());
 							runtime.addRuntimeElement(new ConditionV2RuntimeElement(
 									conds.toArray(new String[conds.size()]), this, info,
-									runtime, pos.line(), pos.charpos(),filename));
+									runtime, pos.line(), pos.column(),filename));
 							compileState = TEXT_STATE;
 							break;
 						} else {
@@ -194,10 +194,10 @@ public class HudderV2Compiler extends AV2Compiler {
 						default: elemBuilder.append(c);break;
 					}
 					if (compileState!=METHOD_STATE) {
-						builder = HudderUtils.processParemeters(elemBuilder.toString());
+						String[] builder = HudderUtils.processParemeters(elemBuilder.toString());
 						var pos = getPosition(charPosition, savedind, text);
 						int line = pos.line();
-						int charpos = pos.charpos();
+						int charpos = pos.column();
 						if (builder[0].toLowerCase().trim().equals("no_sys_var")) {
 							SYSTEM_VARIABLES_ENABLED = false;
 						} else if (builder[0].toLowerCase().trim().equals("sys_var")) {
@@ -208,7 +208,7 @@ public class HudderV2Compiler extends AV2Compiler {
 							runtime.addRuntimeElement(new MethodV2RuntimeElement(builder,this,info,runtime,line,charpos));
 						}
 						elemBuilder.setLength(0);
-						builder = new String[0];
+//						builder = new String[0];
 						cleanup = true;
 						cleanup_amount = Hudder.config.methodBuffer/2;
 					}
@@ -262,7 +262,7 @@ public class HudderV2Compiler extends AV2Compiler {
 					}
 					if (ind!=text.length()&&text.charAt(ind)!='\n'&&text.charAt(ind)!='\r') ind--;
 					String cmds = instructions.toString();
-					CharPosition pos = getPosition(charPosition, savedind+1, "\n"+text);
+					TextPos pos = getPosition(charPosition, savedind+1, "\n"+text);
 					
 					switch (command) {
 						case 0x4: {
@@ -275,7 +275,7 @@ public class HudderV2Compiler extends AV2Compiler {
 							break;
 						}
 						case 0x3: {
-							builder = HudderUtils.processParemeters(cond);
+							String[] builder = HudderUtils.processParemeters(cond);
 							String name = builder[0];
 							String[] args = Arrays.copyOfRange(builder, 1, builder.length);
 							defineFunctionOrMethod(cmds,args,name,pos,filename);

@@ -2,7 +2,7 @@ package dev.ngspace.hudder.v2runtime.methods;
 
 import dev.ngspace.hudder.compilers.abstractions.ATextCompiler;
 import dev.ngspace.hudder.compilers.abstractions.AV2Compiler;
-import dev.ngspace.hudder.compilers.utils.CharPosition;
+import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.compilers.utils.CompileException;
 import dev.ngspace.hudder.compilers.utils.CompileState;
 import dev.ngspace.hudder.compilers.utils.Compilers;
@@ -15,7 +15,7 @@ import dev.ngspace.hudder.v2runtime.V2Runtime;
 public class LoadMethod implements V2IMethod {
 	@Override
 	public void invoke(HudderConfig ci, CompileState meta, AV2Compiler comp, V2Runtime runtime, String type,
-			CharPosition charpos, ObjectWrapper... args) throws CompileException {
+			TextPos charpos, ObjectWrapper... args) throws CompileException {
 		if (args.length<1)
 			throw new CompileException("\""+type+"\" only accepts ;"+type+",[file],<text>,<compiler>;");
 		String file = null;
