@@ -36,8 +36,6 @@ public class HudderV2Compiler extends AV2Compiler {
 		
 		int bracketscount = 0;
 
-//		String[] builder;
-
 		boolean quotesafe = false;
 		boolean backslashsafe = false;
 		boolean safeappend = false;
@@ -80,14 +78,12 @@ public class HudderV2Compiler extends AV2Compiler {
 							compileState = METHOD_STATE;
 							runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), true));
 							elemBuilder.setLength(0);
-//							builder = new String[] {};
 							savedind = ind;
 						    quotesafe = false;
 						    backslashsafe = false;
 							break;
 						case '#':
 							compileState = HASHTAG_STATE;
-//							builder = new String[] {};
 							runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), false));
 							elemBuilder.setLength(0);
 							savedind = ind;
@@ -208,7 +204,6 @@ public class HudderV2Compiler extends AV2Compiler {
 							runtime.addRuntimeElement(new MethodV2RuntimeElement(builder,this,info,runtime,line,charpos));
 						}
 						elemBuilder.setLength(0);
-//						builder = new String[0];
 						cleanup = true;
 						cleanup_amount = Hudder.config.methodBuffer/2;
 					}
