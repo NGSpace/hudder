@@ -1,0 +1,23 @@
+package dev.ngspace.hudder.compilers.utils;
+
+import dev.ngspace.hudder.compilers.abstractions.ATextCompiler.CharPosition;
+
+public class CompileException extends Exception {
+	public final int line;
+	public final int col;
+	
+	public CompileException(String string) {this(string,-1,0);}
+	public CompileException(String string, int line, int col) {super(string);this.line = line;this.col = col;}
+	public CompileException(String string, CharPosition pos) {this(string, pos.line, pos.charpos);}
+	public CompileException(String string, int line, int col, Throwable e) {
+		super(string,e);
+		this.line = line;
+		this.col = col;
+	}
+
+	private static final long serialVersionUID = -5301919978870515553L;
+
+	public String getFailureMessage() {
+		return getLocalizedMessage()+(col>-1?"\nat line "+(line+1)+" col "+col:"");
+	}
+}
