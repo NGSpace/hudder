@@ -1,7 +1,7 @@
 package dev.ngspace.hudder.v2runtime.runtime_elements;
 
 import dev.ngspace.hudder.compilers.abstractions.AV2Compiler;
-import dev.ngspace.hudder.compilers.abstractions.ATextCompiler.CharPosition;
+import dev.ngspace.hudder.compilers.utils.CharPosition;
 import dev.ngspace.hudder.compilers.utils.CompileException;
 import dev.ngspace.hudder.compilers.utils.CompileState;
 import dev.ngspace.hudder.main.config.HudderConfig;
@@ -17,8 +17,8 @@ public class ForV2RuntimeElement extends AV2RuntimeElement {
 			AV2Compiler compiler, V2Runtime parentRuntime, CharPosition charPosition, String filename)
 					throws CompileException {
 		this.variablename = variablename;
-		this.condition = compiler.getV2Value(parentRuntime, value, charPosition.line, charPosition.charpos);
-		this.nestedRuntime = compiler.buildRuntime(info, instructions, new CharPosition(charPosition.line, 1),
+		this.condition = compiler.getV2Value(parentRuntime, value, charPosition.line(), charPosition.charpos());
+		this.nestedRuntime = compiler.buildRuntime(info, instructions, new CharPosition(charPosition.line(), 1),
 				filename, parentRuntime);
 	}
 	

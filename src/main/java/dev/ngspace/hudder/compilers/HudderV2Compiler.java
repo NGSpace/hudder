@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.abstractions.AV2Compiler;
+import dev.ngspace.hudder.compilers.utils.CharPosition;
 import dev.ngspace.hudder.compilers.utils.CompileException;
 import dev.ngspace.hudder.main.config.HudderConfig;
 import dev.ngspace.hudder.utils.HudderUtils;
@@ -121,7 +122,7 @@ public class HudderV2Compiler extends AV2Compiler {
 								runtime.addRuntimeElement(new BreakV2RuntimeElement());
 							} else {
 								runtime.addRuntimeElement(new VariableV2RuntimeElement(elemBuilder.toString(), this,
-									runtime, pos.line, pos.charpos));
+									runtime, pos.line(), pos.charpos()));
 							}
 							elemBuilder.setLength(0);
 							compileState = TEXT_STATE;
@@ -161,7 +162,7 @@ public class HudderV2Compiler extends AV2Compiler {
 							conds.add(conditionOrValue.toString());
 							runtime.addRuntimeElement(new ConditionV2RuntimeElement(
 									conds.toArray(new String[conds.size()]), this, info,
-									runtime, pos.line, pos.charpos,filename));
+									runtime, pos.line(), pos.charpos(),filename));
 							compileState = TEXT_STATE;
 							break;
 						} else {
@@ -195,8 +196,8 @@ public class HudderV2Compiler extends AV2Compiler {
 					if (compileState!=METHOD_STATE) {
 						builder = HudderUtils.processParemeters(elemBuilder.toString());
 						var pos = getPosition(charPosition, savedind, text);
-						int line = pos.line;
-						int charpos = pos.charpos;
+						int line = pos.line();
+						int charpos = pos.charpos();
 						if (builder[0].toLowerCase().trim().equals("no_sys_var")) {
 							SYSTEM_VARIABLES_ENABLED = false;
 						} else if (builder[0].toLowerCase().trim().equals("sys_var")) {

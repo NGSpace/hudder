@@ -3,6 +3,7 @@ package dev.ngspace.hudder.compilers.abstractions;
 import java.util.HashMap;
 import java.util.Map;
 
+import dev.ngspace.hudder.compilers.utils.CharPosition;
 import dev.ngspace.hudder.compilers.utils.CompileException;
 import dev.ngspace.hudder.compilers.utils.CompileState;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
@@ -120,7 +121,7 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 		
 		if (isMethod) {
 			MethodHandler.methods.put(name, (info,state,comp,type,line,charpos,vals) -> {
-				if (vals.length<args.length) throw new CompileException("Not enough arguments", pos.line, pos.charpos);
+				if (vals.length<args.length) throw new CompileException("Not enough arguments", pos.line(), pos.charpos());
 				for (int i = 0;i<vals.length;i++) {
 					Object v = vals[i].get();
 					runtime.putScoped("arg"+(i+1), v);
@@ -139,9 +140,9 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 				if (element.returnsAValue()) temp = false;
 			}
 			if (temp) throw new CompileException("Main path in function \""+name
-					+"\" does not return a value!",pos.line,pos.charpos);
+					+"\" does not return a value!",pos.line(),pos.charpos());
 			functionHandler.bindFunction((IV2Function) (funcruntime,funcname,vals,line,charpos) -> {
-				if (vals.length<args.length) throw new CompileException("Not enough arguments", pos.line, pos.charpos);
+				if (vals.length<args.length) throw new CompileException("Not enough arguments", pos.line(), pos.charpos());
 				for (int i = 0;i<vals.length;i++) {
 					Object v = vals[i].get();
 					runtime.putScoped("arg"+(i+1), v);

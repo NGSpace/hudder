@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.abstractions.AV2Compiler;
-import dev.ngspace.hudder.compilers.abstractions.ATextCompiler.CharPosition;
+import dev.ngspace.hudder.compilers.utils.CharPosition;
 import dev.ngspace.hudder.compilers.utils.CompileException;
 import dev.ngspace.hudder.compilers.utils.CompileState;
 import dev.ngspace.hudder.main.config.HudderConfig;

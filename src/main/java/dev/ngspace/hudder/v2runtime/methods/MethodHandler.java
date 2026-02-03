@@ -47,7 +47,7 @@ public class MethodHandler {
 				String err='"'+name+"\" only accepts ;"+name+"";
 				for(String str:args)err+=", "+ str;
 				err+=';';
-				throw new CompileException(err,charpos.line,charpos.charpos);
+				throw new CompileException(err,charpos.line(),charpos.charpos());
 			}
 			method.invoke(config, meta, compiler, runtime, name, charpos, vals);
 		};
