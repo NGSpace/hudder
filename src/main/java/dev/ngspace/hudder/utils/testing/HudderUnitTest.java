@@ -31,7 +31,7 @@ public class HudderUnitTest {
 				AV2Compiler.tempVariables = new HashMap<String, Object>();
 			}
 			ATextCompiler.variables.clear();
-			text = compiler.compile(info, texttocompile, "Unit Tests").TopLeftText;
+			text = compiler.compile(info, texttocompile, "Unit Tests").TopLeftText();
 		} catch (Exception e) {
 			e.printStackTrace();
 			text = e.getMessage();

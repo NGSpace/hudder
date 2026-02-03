@@ -75,12 +75,12 @@ public class CompileState implements IUIElementManager {
 
 	public void combineWithResult(HudInformation compile, boolean combineText) throws CompileException {
 		if (combineText) {
-			addString(compile.TopLeftText, TOPLEFT, false);        TLScale = compile.TLScale;
-			addString(compile.BottomLeftText, BOTTOMLEFT, false);  BLScale = compile.BLScale;
-			addString(compile.TopRightText, TOPRIGHT, false);      TRScale = compile.TRScale;
-			addString(compile.BottomRightText, BOTTOMRIGHT, false);BRScale = compile.BRScale;
+			addString(compile.TopLeftText(), TOPLEFT, false);        TLScale = compile.TLScale();
+			addString(compile.BottomLeftText(), BOTTOMLEFT, false);  BLScale = compile.BLScale();
+			addString(compile.TopRightText(), TOPRIGHT, false);      TRScale = compile.TRScale();
+			addString(compile.BottomRightText(), BOTTOMRIGHT, false);BRScale = compile.BRScale();
 		}
-		Collections.addAll(elements, compile.elements);
+		Collections.addAll(elements, compile.elements());
 	}
 	@Override public void addUIElement(AUIElement UIElement) {elements.add(UIElement);}
 	@Override public AUIElement[] toUIElementArray() {return elements.toArray(new AUIElement[elements.size()]);}

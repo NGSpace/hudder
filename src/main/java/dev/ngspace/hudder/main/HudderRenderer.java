@@ -70,44 +70,44 @@ public class HudderRenderer implements HudElement {
         boolean background = info.background;
         
         /* Top Left */
-        String[] lines = text.TopLeftText.split(NL_REGEX);
+        String[] lines = text.TopLeftText().split(NL_REGEX);
         int yoff = info.yoffset;
         int xoff = info.xoffset;
         for (String txt : lines) {
-        	renderTextLine(context, txt, xoff, yoff, color, text.TLScale, shadow, background, bgcolor);
-        	yoff+=info.lineHeight * text.TLScale;
+        	renderTextLine(context, txt, xoff, yoff, color, text.TLScale(), shadow, background, bgcolor);
+        	yoff+=info.lineHeight * text.TLScale();
         }
         
         /* Bottom Left */
-        String[] BL = text.BottomLeftText.split(NL_REGEX);
-        yoff = (int) (context.guiHeight() - countLines(text.BottomLeftText) *
-        		info.lineHeight * text.BLScale - info.yoffset + 1);
+        String[] BL = text.BottomLeftText().split(NL_REGEX);
+        yoff = (int) (context.guiHeight() - countLines(text.BottomLeftText()) *
+        		info.lineHeight * text.BLScale() - info.yoffset + 1);
         xoff = info.xoffset;
         for (String txt : BL) {
-        	renderTextLine(context, txt, xoff, yoff, color, text.BLScale, shadow, background, bgcolor);
-        	yoff+=info.lineHeight * text.BLScale;
+        	renderTextLine(context, txt, xoff, yoff, color, text.BLScale(), shadow, background, bgcolor);
+        	yoff+=info.lineHeight * text.BLScale();
         }
         
         /* Top Right */
-        String[] TR = text.TopRightText.split(NL_REGEX);
+        String[] TR = text.TopRightText().split(NL_REGEX);
         yoff = info.yoffset;
         for (String txt : TR) {
-        	xoff = (int) (context.guiWidth() - renderer.width(txt) * text.TRScale - info.xoffset);
-        	renderTextLine(context, txt, xoff, yoff, color, text.TRScale, shadow, background, bgcolor);
-        	yoff+=info.lineHeight * text.TRScale;
+        	xoff = (int) (context.guiWidth() - renderer.width(txt) * text.TRScale() - info.xoffset);
+        	renderTextLine(context, txt, xoff, yoff, color, text.TRScale(), shadow, background, bgcolor);
+        	yoff+=info.lineHeight * text.TRScale();
         }
         
         /* Bottom Right */
-        String[] BR = text.BottomRightText.split(NL_REGEX);
-        yoff = (int) (context.guiHeight() - countLines(text.BottomRightText) *
-        		info.lineHeight * text.BRScale - info.yoffset + 1);
+        String[] BR = text.BottomRightText().split(NL_REGEX);
+        yoff = (int) (context.guiHeight() - countLines(text.BottomRightText()) *
+        		info.lineHeight * text.BRScale() - info.yoffset + 1);
         for (String txt : BR) {
-        	xoff = (int) (context.guiWidth() - renderer.width(txt) * text.BRScale - info.xoffset);
-        	renderTextLine(context, txt, xoff, yoff, color, text.BRScale, shadow, background, bgcolor);
-        	yoff+=info.lineHeight * text.BRScale;
+        	xoff = (int) (context.guiWidth() - renderer.width(txt) * text.BRScale() - info.xoffset);
+        	renderTextLine(context, txt, xoff, yoff, color, text.BRScale(), shadow, background, bgcolor);
+        	yoff+=info.lineHeight * text.BRScale();
         }
         
-        for (AUIElement e : text.elements) e.renderElement(context, this, delta);
+        for (AUIElement e : text.elements()) e.renderElement(context, this, delta);
     }
 	
 	
