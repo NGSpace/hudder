@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.11-SNAPSHOT'
+	id 'fabric-loom' version "${loom_version}"
 	id 'maven-publish'
 }
 loom {
@@ -15,13 +15,9 @@ base {
 
 repositories {
 	maven {
-        name = "TerraformersMC"
-        url = uri("https://maven.terraformersmc.com/releases/")
-
-        content {
-            includeGroup("com.terraformersmc")
-        }
-    }
+		name = "Terraformers"
+		url = "https://maven.terraformersmc.com/"
+	}
 }
 configurations {
    provided
@@ -30,45 +26,22 @@ configurations {
 
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	//mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-    mappings loom.officialMojangMappings()
+	
+	mappings loom.officialMojangMappings()
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 	
-	provided 'org.mozilla:rhino:1.8.0'
+	provided "org.mozilla:rhino:${project.rhino_version}"
 	
-    modCompileOnly("com.terraformersmc:modmenu:16.0.0-rc.1")
-}
-
-
-
-configurations.all {
-	resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-		if (details.requested.group == 'org.apache.logging.log4j'
-				&& details.requested.name  == 'log4j-core'
-				&& details.requested.version == '2.8.1') {
-			// disable 2.8.1
-			details.useVersion('2.24.1')
-			details.because('2.8.1 insecure (like me frfr)')
-		}
-		if (requested.group == "com.fasterxml.jackson.core"
-				&& requested.name  == "jackson-core"
-				&& requested.version == "2.13.4") {
-			useVersion("2.15.0")
-			because("Because github keeps screaming at me for it")
-		}
-	}
+	modCompileOnly("com.terraformersmc:modmenu:${project.modmenu_version}")
 }
 
 processResources {
 	inputs.property "version", project.version
 
 	filesMatching("fabric.mod.json") {
-		expand "version": project.version
-	}
-	filesMatching("tutorial") {
-		expand "version": project.version
+		expand "version": inputs.properties.version
 	}
 }
 
@@ -87,8 +60,10 @@ java {
 }
 
 jar {
+	inputs.property "archivesName", project.base.archivesName
+
 	from("LICENSE") {
-		rename { "${it}_${project.base.archivesName.get()}"}
+		rename { "${it}_${inputs.properties.archivesName}"}
 	}
 	from {configurations.provided.collect { it.isDirectory() ? it : zipTree(it) }}
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
@@ -109,8 +84,5 @@ publishing {
 		// Notice: This block does NOT have the same function as the block in the top level.
 		// The repositories here will be used for publishing your artifact, not for
 		// retrieving dependencies.
-	}
-	dependencies {
-		
 	}
 }

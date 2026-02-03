@@ -5,7 +5,7 @@ import io.github.ngspace.hudder.main.HudderRenderer;
 import io.github.ngspace.hudder.utils.HudFileUtils;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class Texture9SliceElement extends AUIElement {
 
@@ -13,7 +13,7 @@ public class Texture9SliceElement extends AUIElement {
 	public final int y;
 	public final int width;
 	public final int height;
-	public final ResourceLocation id;
+	public final Identifier id;
 	private float[] scales;
 	
 	public Texture9SliceElement(String filename, int x, int y, int width, int height, float[] slices)

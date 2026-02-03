@@ -16,7 +16,7 @@ import io.github.ngspace.hudder.compilers.utils.CompileException;
 public class MethodHandler {
 	
 	
-	public static Map<String, IMethod> methods = new HashMap<String,IMethod>();
+	public static Map<String, V2IMethod> methods = new HashMap<String,V2IMethod>();
 	public static final String[] Var = {"[Variable]"};
 	public static final String[] TextArg = {"[Text]"};
 	public MethodHandler() {
@@ -25,31 +25,31 @@ public class MethodHandler {
 				"pants", "boots", "offhand");
 		
 		//Text and compiling
-		bindConsumer((c,m,a,t,l,ch,s)->m.setTextLocation(t,(float) (s.length>0?s[0].asDouble():c.scale)),
+		bindConsumer((c,m,a,r,t,ch,s)->m.setTextLocation(t,(float) (s.length>0?s[0].asDouble():c.scale)),
 				BOTTOMRIGHT, TOPLEFT, TOPRIGHT, BOTTOMLEFT, MUTE);
 		
 		//Compiler and Variables
 		bindConsumer(new LoadMethod(), "load", "execute", "compile", "run", "add");
 		
 		//Logging and errors
-		bindConsumer((c,m,a,t,l,ch,s)->{throw new CompileException(s[0].asString(),l,ch);},1, TextArg, "throw");
+		bindConsumer((c,m,a,r,t,ch,s)->{throw new CompileException(s[0].asString(),ch);},1, TextArg, "throw");
 	}
 	
 	
-	public void bindConsumer(IMethod method, String... names) {
+	public void bindConsumer(V2IMethod method, String... names) {
 		for(String name:names)
 			methods.put(name.toLowerCase(),method);
 	}
 	
-	public void bindConsumer(IMethod method, int length, String[] args, String... names) {
-		IMethod newmethod = (config,meta,compiler,name,l,c,vals) -> {
+	public void bindConsumer(V2IMethod method, int length, String[] args, String... names) {
+		V2IMethod newmethod = (config,meta,compiler,runtime,name,charpos,vals) -> {
 			if (vals.length<length) {
 				String err='"'+name+"\" only accepts ;"+name+"";
 				for(String str:args)err+=", "+ str;
 				err+=';';
-				throw new CompileException(err,l,c);
+				throw new CompileException(err,charpos.line,charpos.charpos);
 			}
-			method.invoke(config,meta,compiler,name,l,c,vals);
+			method.invoke(config, meta, compiler, runtime, name, charpos, vals);
 		};
 		bindConsumer(newmethod, names);
 	}
@@ -61,8 +61,8 @@ public class MethodHandler {
 	 * @return The method
 	 * @throws CompileException - if there is no method with that name.
 	 */
-	public IMethod getMethodFromName(String name) throws CompileException {
-		IMethod method = methods.get(name.toLowerCase().trim());
+	public V2IMethod getMethodFromName(String name) throws CompileException {
+		V2IMethod method = methods.get(name.toLowerCase().trim());
 		if (method==null) throw new CompileException("Unknown method " + name);
 		return method;
 	}

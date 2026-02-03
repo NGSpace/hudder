@@ -7,12 +7,19 @@
 	"authors": [
 		"NGSpace"
 	],
+	"contributors": [
+		"magor2345",
+		"DanielElProXDDD-GD",
+		"Hilmar"
+	],
 	"contact": {
 		"Modrinth": "https://modrinth.com/mod/hudder",
 		"CurseForge": "https://www.curseforge.com/minecraft/mc-mods/hudder",
-		"GitHub": "https://github.com/NGSpace/hudder"
+		"sources": "https://github.com/NGSpace/hudder",
+		"homepage": "https://ngspace.dev/hudder",
+		"issues": "https://github.com/NGSpace/hudder/issues"
 	},
-	"license": "Apache-2.0 license",
+	"license": "MPL 2.0",
 	"icon": "assets/hudder/icon.png",
 	"environment": "*",
 	"entrypoints": {
@@ -24,12 +31,10 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.14.0",
-		"minecraft": ">=1.21.9",
-		"java": ">=21",
+		"minecraft": ">=1.21.11",
 		"fabric-api": "*"
 	},
 	"suggests": {
-		"fabric-api": "*",
 		"modmenu": "*"
 	},
 	"custom": {

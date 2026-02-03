@@ -11,6 +11,7 @@ import io.github.ngspace.hudder.data_management.ComponentsData;
 import io.github.ngspace.hudder.utils.ObjectWrapper;
 import io.github.ngspace.hudder.utils.ValueGetter;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -101,7 +102,9 @@ public class FunctionAndConsumerAPI {
 		public int maxcount;
 		public int durability;
 		public int maxdurability;
+		public String identifier;
 		private DataComponentMap components;
+		private ItemStack item;
 		public TranslatedItemStack(ItemStack stack) {
 			name = stack.getDisplayName().getString();
 			count = stack.getCount();
@@ -109,13 +112,15 @@ public class FunctionAndConsumerAPI {
 			durability = stack.getMaxDamage()-stack.getDamageValue();
 			maxdurability = stack.getMaxDamage();
 			components = stack.getComponents();
+			identifier = BuiltInRegistries.ITEM.wrapAsHolder(stack.getItem()).getRegisteredName();
+			item = stack;
 		}
 		@Override public String toString() {
 			return "{name:\"" + name + "\", count:" + count + ", maxcount: " + maxcount + ", durability: " + durability
-					+ ", maxdurability: " + maxdurability + "}";
+					+ ", maxdurability: " + maxdurability + ", identifier: " + identifier + "}";
 		}
 		@Override public Object get(String component) {
-			return ComponentsData.getObject(component, components);
+			return ComponentsData.getObject(component, components, item);
 		}
 	}
 }

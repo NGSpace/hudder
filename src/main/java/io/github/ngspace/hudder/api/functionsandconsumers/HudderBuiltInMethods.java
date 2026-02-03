@@ -1,5 +1,7 @@
 package io.github.ngspace.hudder.api.functionsandconsumers;
 
+import java.io.IOException;
+
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI;
 import io.github.ngspace.hudder.uielements.BuiltInTextureElement;
@@ -12,8 +14,8 @@ import io.github.ngspace.hudder.uielements.Texture9SliceElement;
 import io.github.ngspace.hudder.uielements.TextureElement;
 import io.github.ngspace.hudder.uielements.TextureVerticesElement;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.animal.equine.AbstractHorse;
 import net.minecraft.world.item.ItemStack;
 
 public class HudderBuiltInMethods {private HudderBuiltInMethods() {}
@@ -32,7 +34,7 @@ public class HudderBuiltInMethods {private HudderBuiltInMethods() {}
 		
 		//Textures
 		
-		api.registerConsumer((e,a,s)->e.addUIElement(new BuiltInTextureElement(ResourceLocation.withDefaultNamespace(
+		api.registerConsumer((e,a,s)->e.addUIElement(new BuiltInTextureElement(Identifier.withDefaultNamespace(
 				s[0].asString().trim()), s[1].asInt(), s[2].asInt(), s[3].asInt(),s[4].asInt())), "drawTexture", "texture");
 		
 		api.registerConsumer((e,a,s)-> e.addUIElement(new TextureElement(s[0].asString(),
@@ -73,7 +75,14 @@ public class HudderBuiltInMethods {private HudderBuiltInMethods() {}
 		//Variables
 		
 		api.registerConsumer((e,a,s)->a.put(s[0].asString(), s[1]), "set", "setVal", "setVariable");
-//		binder.bindConsumer((e,a,l,ch,s)->a.getConfig().savedVariables.put(s[0].asString(),s[1]),"saveVal");
+		api.registerConsumer((e,a,s)->{
+			try {
+				a.getConfig().putSavedVariable(s[0].asString(),s[1].get());
+			} catch (IOException ex) {
+				ex.printStackTrace();
+				throw new IllegalArgumentException(ex);
+			}
+		},"writeValue");
 
 		//Items
 

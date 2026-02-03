@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.Scanner;
 
-import io.github.ngspace.hudder.data_management.EffectData;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
@@ -19,8 +18,8 @@ import io.github.ngspace.hudder.api.functionsandconsumers.HudderBuiltInMethods;
 import io.github.ngspace.hudder.compilers.utils.Compilers;
 import io.github.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI;
 import io.github.ngspace.hudder.data_management.Advanced;
-import io.github.ngspace.hudder.data_management.ResourcePackVariables;
 import io.github.ngspace.hudder.data_management.api.DataVariableRegistry;
+import io.github.ngspace.hudder.data_management.builtin.HudderBuiltInVariables;
 import io.github.ngspace.hudder.main.HudCompilationManager;
 import io.github.ngspace.hudder.main.HudderRenderer;
 import io.github.ngspace.hudder.main.HudderTickEvent;
@@ -39,7 +38,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.LoggedPrintStream;
 /**
  * <h1>If you expect any comments or JavaDocs explaining the bug-filled shithole I call "my code"
@@ -81,7 +80,7 @@ public class Hudder implements ClientModInitializer {
             "hudder.configkeybind",
             InputConstants.Type.KEYSYM, // The type of the keybinding, KEYSYM for keyboard, MOUSE for mouse.
             GLFW.GLFW_KEY_R, // The keycode of the key
-            KeyMapping.Category.register(ResourceLocation.parse("hudder.keybinds")) // The translation key of the keybinding's category.
+            KeyMapping.Category.register(Identifier.parse("hudder.keybinds")) // The translation key of the keybinding's category.
         ));
 		
 		
@@ -117,7 +116,6 @@ public class Hudder implements ClientModInitializer {
 
 		if (IS_DEBUG) {
 			log("HUDDER'S DEBUG MODE IS TURNED ON");
-			log(System.err.getClass().getCanonicalName());
 			// Makes debugging easier since it makes errors red in the console.
 			// It extends LoggerPrintStream to not break compatibility
 			System.setErr(new LoggedPrintStream("STDERR",System.err) {
@@ -133,10 +131,10 @@ public class Hudder implements ClientModInitializer {
 		HudderBuiltInFunctions.registerFunction(FunctionAndConsumerAPI.getInstance());
 		ClientTickEvents.START_CLIENT_TICK.register(new HudderTickEvent());
 		
-		DataVariableRegistry.registerVariable(new ResourcePackVariables(), "selectedresourcepacks",
-				"selectedresourcepacks_unfiltered");
-		DataVariableRegistry.registerVariable(new EffectData(), "active_effects");
+		Hudder.log("Loading variables.");
 		Advanced.registerKeyVariables();
+		HudderBuiltInVariables.registerVariables();
+		Hudder.log("Finished loading " + DataVariableRegistry.getTotalEntriesCount() + " variables!");
         
 		HudCompilationManager compman = new HudCompilationManager();
 		ClientTickEvents.END_CLIENT_TICK.register(compman);
@@ -147,6 +145,9 @@ public class Hudder implements ClientModInitializer {
         ClientLifecycleEvents.CLIENT_STARTED.register(c->{
 			try {
 				HudFileUtils.reloadResources();
+				if (config.globalVariables.size()>0)
+					showWarningToast(Component.literal("Hudder is deprecating global variables!"),
+							Component.literal("Please stop using them as they'll stop working in a future release."));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

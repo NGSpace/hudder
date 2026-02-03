@@ -1,5 +1,6 @@
 package io.github.ngspace.hudder.compilers;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import io.github.ngspace.hudder.Hudder;
@@ -38,7 +39,6 @@ public class HudderV2Compiler extends AV2Compiler {
 
 		boolean quotesafe = false;
 		boolean backslashsafe = false;
-		boolean condSafe = false;
 		boolean safeappend = false;
 		int savedind = 0;
 		
@@ -64,7 +64,6 @@ public class HudderV2Compiler extends AV2Compiler {
 					switch (c) {
 						case '%':
 							compileState = CONDITION_STATE;
-							builder = new String[] {};
 							runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), false));
 							elemBuilder.setLength(0);
 							savedind = ind;
@@ -82,6 +81,8 @@ public class HudderV2Compiler extends AV2Compiler {
 							elemBuilder.setLength(0);
 							builder = new String[] {};
 							savedind = ind;
+						    quotesafe = false;
+						    backslashsafe = false;
 							break;
 						case '#':
 							compileState = HASHTAG_STATE;
@@ -129,33 +130,44 @@ public class HudderV2Compiler extends AV2Compiler {
 					break;
 				}
 				case CONDITION_STATE: {
-					if (c=='\\') {
-						if (condSafe) {elemBuilder.append('\\');condSafe = false;}
-						else condSafe = true;
-						continue;
-					}
-					if (quotesafe&&c!='"') {elemBuilder.append(c);continue;}
-					if (condSafe&&c=='"') {elemBuilder.append('\\');elemBuilder.append(c);condSafe=false;continue;}
-					if (condSafe) {elemBuilder.append(c);condSafe=false;continue;}
-					switch (c) {
-						case '%':
-							compileState = TEXT_STATE;
-							builder = addToArray(builder,elemBuilder.toString().trim());
+					StringBuilder conditionOrValue = new StringBuilder();
+					ArrayList<String> conds = new ArrayList<String>();
+					
+					boolean quotes = false;
+					boolean escaped = false;
+					
+					for (;ind<text.length();ind++) {
+						c = text.charAt(ind);
+						
+						if (quotes) {
+							conditionOrValue.append(c);
+							if (c=='\\') {
+								escaped = true;
+								continue;
+							}
+							if (c=='"'&&!escaped) quotes = false;
+							escaped = false;
+							continue;
+						}
+						
+						if (c=='"') quotes = true;
+						
+						if (c==',') {
+							conds.add(conditionOrValue.toString());
+							conditionOrValue.setLength(0);
+						} else if (c=='%') {
 							var pos = getPosition(charPosition, savedind, text);
-							runtime.addRuntimeElement(new ConditionV2RuntimeElement(builder, this, info, runtime,
-									pos.line, pos.charpos,filename));
-							elemBuilder.setLength(0);
+							Hudder.log(conds.get(0));
+							conds.add(conditionOrValue.toString());
+							runtime.addRuntimeElement(new ConditionV2RuntimeElement(
+									conds.toArray(new String[conds.size()]), this, info,
+									runtime, pos.line, pos.charpos,filename));
+							compileState = TEXT_STATE;
 							break;
-						case '"':
-							quotesafe = !quotesafe;
-							elemBuilder.append(c);
-							break;
-						case ',':
-							builder = addToArray(builder,elemBuilder.toString().trim());
-							elemBuilder.setLength(0);
-							break;
-						default: elemBuilder.append(c);break;
-					}	
+						} else {
+							conditionOrValue.append(c);
+						}
+					}
 					
 					break;
 				}
@@ -287,7 +299,9 @@ public class HudderV2Compiler extends AV2Compiler {
 		
 		runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), false));
 		
-		if (compileState!=0) throw new CompileException(getCompilerErrorMessage(compileState));
+		if (compileState!=0) {
+			throw new CompileException(getCompilerErrorMessage(compileState));
+		}
 		
 		return runtime;
 	}
@@ -312,11 +326,5 @@ public class HudderV2Compiler extends AV2Compiler {
 			default -> "An unknown error has occurred";
 		});
 		return strb.toString();
-	}
-	
-	private static <T> T[] addToArray(T[] arr, T t) {
-		T[] newarr = Arrays.copyOf(arr, arr.length+1);
-		newarr[arr.length] = t;
-		return newarr;
 	}
 }

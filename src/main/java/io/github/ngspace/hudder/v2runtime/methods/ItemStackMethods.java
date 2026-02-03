@@ -1,28 +1,30 @@
 package io.github.ngspace.hudder.v2runtime.methods;
 
-import io.github.ngspace.hudder.compilers.abstractions.ATextCompiler;
+import io.github.ngspace.hudder.compilers.abstractions.ATextCompiler.CharPosition;
+import io.github.ngspace.hudder.compilers.abstractions.AV2Compiler;
 import io.github.ngspace.hudder.compilers.utils.CompileException;
 import io.github.ngspace.hudder.compilers.utils.CompileState;
 import io.github.ngspace.hudder.main.config.HudderConfig;
 import io.github.ngspace.hudder.uielements.ItemElement;
 import io.github.ngspace.hudder.utils.ObjectWrapper;
+import io.github.ngspace.hudder.v2runtime.V2Runtime;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 
-public class ItemStackMethods implements IMethod {
+public class ItemStackMethods implements V2IMethod {
 	
 	protected static Minecraft mc = Minecraft.getInstance();
 	@Override
-	public void invoke(HudderConfig ci, CompileState meta, ATextCompiler comp, String type, int line, int charpos, ObjectWrapper... args) throws CompileException {
+	public void invoke(HudderConfig ci, CompileState meta, AV2Compiler comp, V2Runtime runtime, String type, CharPosition pos, ObjectWrapper... args) throws CompileException {
 		int offset = "slot".equals(type)||"item".equals(type) ? 1:0;
 		if (args.length<2+offset) {
 			throw new CompileException("\""+type+"\" only accepts ;"+type
 				+("slot".equals(type)?",[slot]":"")
 				+("item".equals(type)?",[item]":"")
-				+",[x],[y],<scale>,<show count>;", line, charpos);
+				+",[x],[y],<scale>,<show count>;", pos);
 		}
 		double x = args[0+offset].asDouble();
 		double y = args[1+offset].asDouble();
@@ -40,7 +42,7 @@ public class ItemStackMethods implements IMethod {
 			case "boots": yield inv.getItem(36);
 			case "offhand": yield mc.player.getOffhandItem();
 			case "slot": yield inv.getItem(args[0].asInt());
-			case "item": yield new ItemStack(BuiltInRegistries.ITEM.getValue(ResourceLocation.tryParse(args[0].asString())));
+			case "item": yield new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.tryParse(args[0].asString())));
 			default: throw new IllegalArgumentException("Unexpected value: " + type);
 		};
 		meta.elements.add(new ItemElement(x, y, stack, scale, showcount));

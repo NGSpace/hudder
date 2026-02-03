@@ -9,13 +9,9 @@
 //  		...
 //		]
 //  }
-//  "version" is optional.
 {
-	"hudder_version": "9.0.0",
+	"hudder_version": "9.2.0",
 	"number": {
-		
-		
-		
 		"Performance": [
 			{
 				"name": "fps",
@@ -71,11 +67,18 @@
 				"name": "delta",
 				"desc": "The time since the last frame",
 				"version": "3.0.0"
+			},
+			{
+				"name": "sent_packets",
+				"desc": "Average sent packets (from the current network connection)",
+				"version": "9.2.0"
+			},
+			{
+				"name": "received_packets",
+				"desc": "Average received packets (from the current network connection)",
+				"version": "9.2.0"
 			}
 		],
-		
-		
-		
 		"Memory": [
 			{
 				"name": "maxmemory",
@@ -103,8 +106,6 @@
 				"version": "1.0.0"
 			}
 		],
-		
-
 		"Time": [
 			{
 				"name": "time",
@@ -147,9 +148,6 @@
 				"version": "6.2.0"
 			}
 		],
-		
-
-				
 		"Food and health": [
 			{
 				"name": "saturation",
@@ -182,9 +180,6 @@
 				"version": "8.4.0"
 			}
 		],
-		
-
-				
 		"Mount information": [
 			{
 				"name": "mount_health",
@@ -222,9 +217,6 @@
 				"version": "8.4.0"
 			}
 		],
-		
-
-				
 		"Other player related information": [
 			{
 				"name": "selectedslot",
@@ -240,6 +232,16 @@
 				"name": "xp",
 				"desc": "The player's experience",
 				"version": "3.5.0"
+			},
+			{
+				"name": "next_level_xp_requirement",
+				"desc": "XP needed to reach the next XP level",
+				"version": "9.2.0"
+			},
+			{
+				"name": "attack_cooldown",
+				"desc": "Player attack indicator cooldown (0.0 to 1.0)",
+				"version": "9.2.0"
 			},
 			{
 				"name": "armor",
@@ -272,9 +274,6 @@
 				"version": "3.5.1"
 			}
 		],
-		
-		
-				
 		"Player position": [
 			{
 				"name": "dxpos",
@@ -307,9 +306,6 @@
 				"version": "1.0.0"
 			}
 		],
-		
-
-				
 		"Camera position": [
 			{
 				"name": "cam_dxpos",
@@ -342,9 +338,6 @@
 				"version": "8.3.0"
 			}
 		],
-		
-
-				
 		"Chunk information": [
 			{
 				"name": "subchunkx",
@@ -372,9 +365,6 @@
 				"version": "6.0.0"
 			}
 		],
-		
-
-				
 		"Camera chunk information": [
 			{
 				"name": "cam_subchunkx",
@@ -402,9 +392,6 @@
 				"version": "8.3.0"
 			}
 		],
-		
-		
-		
 		"Player rotation": [
 			{
 				"name": "dpitch",
@@ -437,9 +424,6 @@
 				"version": "8.1.0"
 			}
 		],
-		
-		
-		
 		"Camera rotation": [
 			{
 				"name": "cam_dpitch",
@@ -472,9 +456,6 @@
 				"version": "8.3.0"
 			}
 		],
-		
-		
-		
 		"World Rendering": [
 			{
 				"name": "entities",
@@ -492,9 +473,6 @@
 				"version": "1.0.0"
 			}
 		],
-		
-
-		
 		"Lighting": [
 			{
 				"name": "light",
@@ -527,9 +505,6 @@
 				"version": "8.3.0"
 			}
 		],
-		
-
-		
 		"World": [
 			{
 				"name": "worldtime",
@@ -540,11 +515,23 @@
 				"name": "daytime",
 				"desc": "The ingame day time (alias: day_time)",
 				"version": "7.2.0"
+			},
+			{
+				"name": "is_raining",
+				"desc": "Whether it is currently raining in the world",
+				"version": "9.2.0"
+			},
+			{
+				"name": "is_thundering",
+				"desc": "Whether it is currently thundering in the world",
+				"version": "9.2.0"
+			},
+			{
+				"name": "can_have_weather",
+				"desc": "Whether the current dimension/world can have weather",
+				"version": "9.2.0"
 			}
 		],
-		
-		
-		
 		"GUI rendering": [
 			{
 				"name": "width",
@@ -562,9 +549,6 @@
 				"version": "1.0.0"
 			}
 		],
-		
-		
-		
 		"Hudder settings": [
 			{
 				"name": "scale",
@@ -602,9 +586,6 @@
 				"version": "3.0.0"
 			}
 		],
-		
-		
-		
 		"Rebecca Memorial": [
 			{
 				"name": "rebeccapurple",
@@ -641,9 +622,6 @@
 				"version": "8.3.0"
 			}
 		],
-		
-		
-		
 		"Player gamemode": [
 			{
 				"name": "issurvival",
@@ -666,9 +644,6 @@
 				"version": "3.1.0"
 			}
 		],
-		
-		
-		
 		"GUI": [
 			{
 				"name": "isguiopen",
@@ -694,11 +669,13 @@
 				"name": "isinventoryopen",
 				"desc": "Whether the player's inventory screen is currently open",
 				"version": "8.5.0"
+			},
+			{
+				"name": "ischatopen",
+				"desc": "Whether the chat screen is currently open",
+				"version": "9.2.0"
 			}
 		],
-		
-		
-		
 		"Player movement": [
 			{
 				"name": "isflying",
@@ -736,9 +713,6 @@
 				"version": "8.6.0"
 			}
 		],
-		
-		
-		
 		"Player information": [
 			{
 				"name": "isalive",
@@ -794,11 +768,18 @@
 				"name": "isonmount",
 				"desc": "Is the player on a mount",
 				"version": "8.5.0"
+			},
+			{
+				"name": "is_in_rain",
+				"desc": "Whether the player is currently in rain (raining at the player's position)",
+				"version": "9.2.0"
+			},
+			{
+				"name": "is_exposed_to_sky",
+				"desc": "Whether the player can see the sky from their position",
+				"version": "9.2.0"
 			}
 		],
-		
-		
-		
 		"Mount information": [
 			{
 				"name": "mount_is_saddled",
@@ -821,9 +802,6 @@
 				"version": "8.4.0"
 			}
 		],
-		
-		
-		
 		"Input": [
 			{
 				"name": "mouse_left",
@@ -861,9 +839,6 @@
 				"version": "2.0.0"
 			}
 		],
-		
-		
-		
 		"Hudder settings": [
 			{
 				"name": "enabled",
@@ -918,11 +893,13 @@
 				"name": "damagetype",
 				"desc": "The name of the most recent damage type done to the player",
 				"version": "6.2.0"
+			},
+			{
+				"name": "hudder_version",
+				"desc": "The hudder version currently installed",
+				"version": "9.2.0"
 			}
 		],
-		
-		
-		
 		"Computer info": [
 			{
 				"name": "cpu_info",
@@ -955,14 +932,10 @@
 				"version": "6.2.0"
 			}
 		],
-
-
-
-
 		"Game": [
 			{
 				"name": "version_type",
-				"desc": "",
+				"desc": "Most likely fabric",
 				"version": "9.0.0"
 			},
 			{
@@ -971,10 +944,18 @@
 				"version": "9.0.0"
 			}
 		],
-
-
-
-
+		"Time": [
+			{
+				"name": "hour12",
+				"desc": "The current hour in 12h format with a leading 0",
+				"version": "9.2.0"
+			},
+			{
+				"name": "ampm",
+				"desc": "If it's currently am or pm",
+				"version": "9.2.0"
+			}
+		],
 		"Player": [
 			{
 				"name": "username",
@@ -987,10 +968,6 @@
 				"version": "9.0.0"
 			}
 		],
-		
-		
-		
-		
 		"Inventory": [
 			{
 				"name": "helditem_name",
@@ -998,9 +975,6 @@
 				"version": "3.0.0"
 			}
 		],
-		
-
-		
 		"Mount information": [
 			{
 				"name": "mount_type",
@@ -1018,9 +992,6 @@
 				"version": "8.4.0"
 			}
 		],
-
-
-
 		"World": [
 			{
 				"name": "biome",
@@ -1041,11 +1012,13 @@
 				"name": "world_name",
 				"desc": "The name of the world you're currently on (Singleplayer only, null in a server)",
 				"version": "9.0.0"
+			},
+			{
+				"name": "difficulty",
+				"desc": "The world's difficulty",
+				"version": "9.2.0"
 			}
 		],
-
-
-
 		"Server": [
 			{
 				"name": "server_name",
@@ -1063,9 +1036,6 @@
 				"version": "9.0.0"
 			}
 		],
-		
-		
-		
 		"Looking at": [
 			{
 				"name": "block_in_front",
@@ -1103,9 +1073,6 @@
 				"version": "9.0.0"
 			}
 		],
-		
-		
-		
 		"GUI": [
 			{
 				"name": "openguitype",
@@ -1118,9 +1085,6 @@
 				"version": "8.5.0"
 			}
 		],
-		
-		
-		
 		"Hudder settings": [
 			{
 				"name": "compilertype",
@@ -1134,7 +1098,6 @@
 			}
 		]
 	},
-
 	"array": {
 		"Resource packs": [
 			{
@@ -1152,7 +1115,7 @@
 			{
 				"name": "active_effects",
 				"desc": "An array of all active effects",
-				"version": "unreleased"
+				"version": "9.2.0"
 			}
 		]
 	}

@@ -6,8 +6,11 @@ import java.io.IOException;
 import java.lang.reflect.AccessFlag;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.commons.io.FileUtils;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
@@ -22,16 +25,16 @@ import io.github.ngspace.hudder.utils.HudFileUtils;
 import io.github.ngspace.hudder.utils.NoAccess;
 import io.github.ngspace.hudder.utils.testing.HudderUnitTester;
 import net.minecraft.client.Minecraft;
-import net.minidev.json.JSONObject;
 
 public class HudderConfig {
 	
-	public static final int HUDDER_CONFIG_VERSION = 3;
+	public static final int HUDDER_CONFIG_VERSION = 4;
 	public static final File DEFAULT_CONFIG_FILE = new File(HudFileUtils.FABRIC_CONFIG_FOLDER + File.separator + "hudder.json");
 	
 	/* EXPOSED :flushed: */
 	@Expose public Map<String, Object> globalVariables = new HashMap<String, Object>();
-	@Expose public String mainfile = "tutorial";//Set "tutorial" as the default file selected
+	@Expose public Map<String, Object> savedVariables = new HashMap<String, Object>();
+	@Expose public String mainfile = "tutorial.hud";//Set "tutorial.hud" as the default file selected
     @Expose public boolean enabled = true;
 	@Expose public boolean shadow = true;
 	@Expose public boolean showInF3 = false;
@@ -78,7 +81,6 @@ public class HudderConfig {
 					throw new UnsupportedOperationException("Failed to migrate Hudder config file.");
 				}
 			}
-			
 		}
 		readAndUpdateConfig();
 	}
@@ -114,9 +116,8 @@ public class HudderConfig {
 			return;
 		}
 		try {
-			Hudder.log("Reading Hudder config!");
+			Hudder.log("Loading Hudder config");
 			String config = HudFileUtils.readFileUnsanitized(configFile);
-			Hudder.log("Loading Hudder Config File:\n" + config);
 			Map<?,?> newinfo = new GsonBuilder().create().fromJson(config,HashMap.class);
 			
 			if (newinfo.containsKey("debug")) Hudder.IS_DEBUG = (boolean) newinfo.get("debug");
@@ -162,6 +163,39 @@ public class HudderConfig {
 				case "default", "defaultcompiler", "default compiler" -> "hudder";
 				default -> newinfo.get("compilertype").toString();
 			};
+		}
+		if (version<4) {
+			try {
+				// For the love of god, back up the user's data before doing literally anything to it.
+				FileUtils.copyDirectory(new File(HudFileUtils.FOLDER),
+						new File(HudFileUtils.FABRIC_CONFIG_FOLDER + File.separator + "hudder_backup"), true);
+				
+				String[] oldBuiltins = new String[] {"tutorial", "hand", "armorside", "hud", "basic"};
+				for (String name : oldBuiltins) {
+					File f = new File(HudFileUtils.FOLDER + name);
+					if (f.exists()) {
+						String res = new String(Files.readAllBytes(f.toPath()));
+						FileWriter writer = new FileWriter(f);
+						for (String name2 : oldBuiltins) {
+							res = res.replaceAll("; *run *, *[\"']?"+name2+"[\"']? *;",
+									";run, \""+name2+".hud\";");
+						}
+						writer.append(res);
+						writer.flush();
+						writer.close();
+						
+						if (!f.renameTo(new File(HudFileUtils.FOLDER + name + ".hud"))) {
+							Hudder.error("Failed to update old hud, stopping migration process.");
+							break;
+						}
+					}
+					
+					if (mainfile.equals(name))
+						mainfile = name + ".hud";
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
     
@@ -210,7 +244,7 @@ public class HudderConfig {
 			if (!configFile.createNewFile()) throw new IOException("Failed to create Hudder config file.");
 		}
 		try (FileWriter config_writer = new FileWriter(configFile)) {
-			JSONObject json_output = new JSONObject();
+			Map<String, Object> json_output = new HashMap<String, Object>();
 			for (Field f : HudderConfig.class.getDeclaredFields())
 				if (f.getAnnotation(Expose.class)!=null)
 					json_output.put(f.getName(), f.get(this));
@@ -236,7 +270,7 @@ public class HudderConfig {
 	 * @return true or false
 	 */
 	public boolean shouldDrawResult() {
-		return !mc.options.hideGui&&(!mc.debugEntries.isF3Visible()||showInF3)&&enabled;
+		return !mc.options.hideGui&&(!mc.debugEntries.isOverlayVisible()||showInF3)&&enabled;
 	}
 	
 	
@@ -286,5 +320,19 @@ public class HudderConfig {
 	}
 	public static boolean isPublic(Member member) {
 		return member.accessFlags().contains(AccessFlag.PUBLIC)&&!member.accessFlags().contains(AccessFlag.PRIVATE);
+	}
+
+
+	public void putSavedVariable(String key, Object value) throws IOException {
+		if (!(value instanceof Number
+				|| value instanceof String
+				|| value instanceof Boolean
+				|| value instanceof Character
+				|| unsafeoperations
+				|| value==null))
+			throw new IllegalArgumentException("Can only save variables of types: Number, String, Boolean or"
+					+ " Character with unsafe operations disabled.");
+		savedVariables.put(key, value);
+		save();
 	}
 }
