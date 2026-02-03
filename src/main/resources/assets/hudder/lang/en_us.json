@@ -16,7 +16,7 @@
 	
 	
 	"hudder.configkeybind": "Open Hudder settings",
-	"hudder.keybinds": "Hudder",
+	"key.category.minecraft.hudder.keybinds": "Hudder",
 	
 	
 	"hudder.general": "General",

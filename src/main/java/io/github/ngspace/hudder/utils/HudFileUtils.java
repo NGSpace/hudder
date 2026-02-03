@@ -25,8 +25,8 @@ public class HudFileUtils {private HudFileUtils() {}
 	public static final String FABRIC_CONFIG_FOLDER = FabricLoader.getInstance().getConfigDir().toString();
 	public static final String FOLDER = FABRIC_CONFIG_FOLDER + File.separator + "hudder" + File.separator;
     public static final String ASSETS = "/assets/hudder/";
-    public static final String[] DEFAULT_HUDS = {"tutorial", "hand", "armorside", "hud", "basic", "hud.js",
-    		"hotbar.js", "worldtime.js"};
+    public static final String[] DEFAULT_HUDS = {"tutorial.hud", "hand.hud", "armorside.hud", "hud.hud", "basic.hud",
+    		"hud.js", "hotbar.js", "worldtime.js"};
     public static final String[] DEFAULT_TEXTURES = {"pointer.png","selection.png"};
 	
     

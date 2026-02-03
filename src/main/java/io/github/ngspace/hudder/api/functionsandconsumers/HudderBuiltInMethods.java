@@ -1,5 +1,7 @@
 package io.github.ngspace.hudder.api.functionsandconsumers;
 
+import java.io.IOException;
+
 import io.github.ngspace.hudder.Hudder;
 import io.github.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI;
 import io.github.ngspace.hudder.uielements.BuiltInTextureElement;
@@ -73,7 +75,14 @@ public class HudderBuiltInMethods {private HudderBuiltInMethods() {}
 		//Variables
 		
 		api.registerConsumer((e,a,s)->a.put(s[0].asString(), s[1]), "set", "setVal", "setVariable");
-//		binder.bindConsumer((e,a,l,ch,s)->a.getConfig().savedVariables.put(s[0].asString(),s[1]),"saveVal");
+		api.registerConsumer((e,a,s)->{
+			try {
+				a.getConfig().putSavedVariable(s[0].asString(),s[1].get());
+			} catch (IOException ex) {
+				ex.printStackTrace();
+				throw new IllegalArgumentException(ex);
+			}
+		},"writeValue");
 
 		//Items
 

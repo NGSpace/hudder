@@ -361,6 +361,11 @@ RepeatRepeat
 ||EXPECT||
 6
 
+||INPUT||% in conditions
+%true, "0\\%1"%
+||EXPECT||
+0%1
+
 ||INPUT||Trigo Functions
 {sin(69)} {cos(69)} {tan(69)}
 ||EXPECT||
@@ -372,7 +377,7 @@ RepeatRepeat
 69 69 69 2 256 1 20 1.6
 
 ||INPUT||Misc Functions
-{exists("hud")} {strwidth("hud")}
+{exists("hud.hud")} {strwidth("hud")}
 ||EXPECT||
 true 18
 

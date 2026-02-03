@@ -54,7 +54,7 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 				.build());
 		general.addOption(StringNGSMCConfigOption.builder(config.mainfile, Component.translatable("hudder.general.mainfile"))
 				.setHoverComponent(Component.translatable("hudder.general.mainfile.tooltip"))
-				.setDefaultValue("hud")
+				.setDefaultValue("hud.hud")
 				.setSaveOperation(s->config.mainfile=s)
 				.setValidator(val->{
 					if (!HudFileUtils.exists(val))

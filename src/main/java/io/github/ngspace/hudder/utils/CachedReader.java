@@ -90,6 +90,7 @@ public class CachedReader {
 	@Deprecated(since = "8.6.0", forRemoval = true)
 	public static class ScannerReader implements Reader {
 		
+		@Deprecated
 		public byte[] readFile(File file) throws IOException {
 			Scanner reader = new Scanner(file);
 			String res = "";
