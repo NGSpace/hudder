@@ -21,6 +21,7 @@ import dev.ngspace.hudder.v2runtime.runtime_elements.AV2RuntimeElement;
 import dev.ngspace.hudder.v2runtime.values.AV2Value;
 import dev.ngspace.hudder.v2runtime.values.DefaultV2VariableParser;
 import dev.ngspace.hudder.v2runtime.values.IV2VariableParser;
+import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 
 public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 	
@@ -165,6 +166,11 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 			if (element.returnsAValue()) return true;
 			if (element.getNestedRuntime()!=null&&hasReturnValue(element.getNestedRuntime())) return true;
 		}
+		return false;
+	}
+
+	@Override
+	public boolean setupHudSettings(NGSMCConfigCategory hudsettings) {
 		return false;
 	}
 }

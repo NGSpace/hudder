@@ -8,6 +8,7 @@ import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.compilers.utils.CompileException;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
 import dev.ngspace.hudder.main.config.HudderConfig;
+import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 
 public abstract class ATextCompiler {
 
@@ -54,4 +55,5 @@ public abstract class ATextCompiler {
 	public HudderConfig getConfig() {
 		return Hudder.config;
 	}
+	public abstract boolean setupHudSettings(NGSMCConfigCategory hudsettings);
 }

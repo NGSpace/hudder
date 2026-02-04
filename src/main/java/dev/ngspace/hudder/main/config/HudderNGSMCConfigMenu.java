@@ -42,7 +42,7 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 		NGSMCConfigCategory general = builder.createCategory(Component.translatable("hudder.general"));
 		NGSMCConfigCategory text = builder.createCategory(Component.translatable("hudder.text"));
 		NGSMCConfigCategory advanced = builder.createCategory(Component.translatable("hudder.advanced"));
-//		NGSMCConfigCategory variables = builder.createCategory(Component.translatable("hudder.global_variables"));
+		NGSMCConfigCategory hudsettings = builder.createCategory(Component.translatable("hudder.hudsettings"));
 		
 		
 		
@@ -146,13 +146,9 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 		
 		
 		
-
-//		variables.addOption(BooleanNGSMCConfigOption.builder(Component.translatable("hudder.global_variables"),
-//						config.globalVariablesEnabled)
-//				.setHoverComponent(Component.translatable("hudder.global_variables.enabled.tooltip"))
-//				.setSaveOperation(b->config.globalVariablesEnabled=b)
-//				.setDefaultValue(true)
-//				.build());
+		/* Hud specific settings */
+		if (!config.getCompiler().setupHudSettings(hudsettings))
+			builder.removeCategory(hudsettings);
 		
 		return builder.build();
 	}

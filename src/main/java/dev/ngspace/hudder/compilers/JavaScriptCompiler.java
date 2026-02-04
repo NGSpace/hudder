@@ -8,6 +8,7 @@ import dev.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndCons
 import dev.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI.BindableFunction;
 import dev.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI.Binder;
 import dev.ngspace.hudder.compilers.utils.javascript.JavaScriptEngine;
+import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 
 public class JavaScriptCompiler extends AScriptingLanguageCompiler {
 
@@ -27,5 +28,10 @@ public class JavaScriptCompiler extends AScriptingLanguageCompiler {
 			}
 		});
 		return engine;
+	}
+
+	@Override
+	public boolean setupHudSettings(NGSMCConfigCategory hudsettings) {
+		return false;
 	}
 }

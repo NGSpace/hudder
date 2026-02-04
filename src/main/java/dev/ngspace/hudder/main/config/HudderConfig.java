@@ -34,7 +34,7 @@ public class HudderConfig {
 	/* EXPOSED :flushed: */
 	@Expose public Map<String, Object> globalVariables = new HashMap<String, Object>();
 	@Expose public Map<String, Object> savedVariables = new HashMap<String, Object>();
-	@Expose public String mainfile = "tutorial.hud";//Set "tutorial.hud" as the default file selected
+	@Expose public String mainfile = "tutorial.hud";//Set "tutorial.hud" as the initial file selected
     @Expose public boolean enabled = true;
 	@Expose public boolean shadow = true;
 	@Expose public boolean showInF3 = false;
