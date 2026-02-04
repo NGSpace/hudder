@@ -15,17 +15,17 @@ import com.mojang.blaze3d.platform.InputConstants;
 
 import dev.ngspace.hudder.api.functionsandconsumers.HudderBuiltInFunctions;
 import dev.ngspace.hudder.api.functionsandconsumers.HudderBuiltInMethods;
+import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.compilers.utils.Compilers;
 import dev.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI;
-import dev.ngspace.hudder.data_management.Advanced;
-import dev.ngspace.hudder.data_management.api.DataVariableRegistry;
-import dev.ngspace.hudder.data_management.builtin.HudderBuiltInVariables;
+import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.main.HudCompilationManager;
 import dev.ngspace.hudder.main.HudderRenderer;
 import dev.ngspace.hudder.main.HudderTickEvent;
-import dev.ngspace.hudder.main.config.HudderConfig;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.hudder.utils.testing.HudderUnitTestingCommand;
+import dev.ngspace.hudder.variables.HudderBuiltInVariables;
+import dev.ngspace.hudder.variables.advanced.Misc;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -132,7 +132,7 @@ public class Hudder implements ClientModInitializer {
 		ClientTickEvents.START_CLIENT_TICK.register(new HudderTickEvent());
 		
 		Hudder.log("Loading variables.");
-		Advanced.registerKeyVariables();
+		Misc.registerKeyVariables();
 		HudderBuiltInVariables.registerVariables();
 		Hudder.log("Finished loading " + DataVariableRegistry.getTotalEntriesCount() + " variables!");
         
@@ -155,7 +155,7 @@ public class Hudder implements ClientModInitializer {
         
         // Make sure the FPS variable is updated once every compilation instead of every time a number variable is used
         var mc = Minecraft.getInstance();
-        HudCompilationManager.addPreCompilerListener(c->Advanced.fps = Advanced.getFPS(mc));
+        HudCompilationManager.addPreCompilerListener(c->Misc.fps = Misc.getFPS(mc));
 		
 		log("Hudder has finished loading!");
 	}

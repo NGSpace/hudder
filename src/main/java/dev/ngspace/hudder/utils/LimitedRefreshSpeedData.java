@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.data_management;
+package dev.ngspace.hudder.utils;
 
 import java.time.Duration;
 import java.time.Instant;

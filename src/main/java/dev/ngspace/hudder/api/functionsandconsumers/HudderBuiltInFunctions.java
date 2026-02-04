@@ -3,13 +3,12 @@ package dev.ngspace.hudder.api.functionsandconsumers;
 import java.util.HashMap;
 
 import dev.ngspace.hudder.Hudder;
+import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.compilers.abstractions.ATextCompiler;
 import dev.ngspace.hudder.compilers.utils.Compilers;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
 import dev.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI.TranslatedItemStack;
-import dev.ngspace.hudder.data_management.ObjectDataAPI;
-import dev.ngspace.hudder.data_management.api.DataVariableRegistry;
 import dev.ngspace.hudder.main.HudCompilationManager;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import net.minecraft.client.Minecraft;
@@ -17,7 +16,6 @@ import net.minecraft.client.Minecraft;
 public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 	public static Minecraft mc = Minecraft.getInstance();
 	
-	@SuppressWarnings("removal")
 	public static void registerFunction(FunctionAndConsumerAPI binder) {
 		
 		//Getters
@@ -25,7 +23,7 @@ public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 		binder.registerFunction((m,c,s)->c.getVariable(s[0].asString()), "get", "getVal", "getVariable");
 		binder.registerFunction((m,c,s)->DataVariableRegistry.getNumber  (s[0].asString()), "getNumber" );
 		binder.registerFunction((m,c,s)->DataVariableRegistry.getString  (s[0].asString()), "getString" );
-		binder.registerFunction((m,c,s)->ObjectDataAPI.getObject         (s[0].asString()), "getObject" );
+		binder.registerFunction((m,c,s)->DataVariableRegistry.getObject  (s[0].asString()), "getObject" );
 		binder.registerFunction((m,c,s)->DataVariableRegistry.getBoolean (s[0].asString()), "getBoolean");
 		
 		binder.registerFunction((m,c,s)->new TranslatedItemStack(mc.player.getInventory().getItem(s[0].asInt())), "getItem");

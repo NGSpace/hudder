@@ -1,15 +1,18 @@
-package dev.ngspace.hudder.data_management.builtin;
+package dev.ngspace.hudder.variables;
 
-import static dev.ngspace.hudder.data_management.api.VariableTypes.BOOLEAN;
-import static dev.ngspace.hudder.data_management.api.VariableTypes.NUMBER;
-import static dev.ngspace.hudder.data_management.api.VariableTypes.STRING;
+import static dev.ngspace.hudder.api.variableregistry.VariableTypes.BOOLEAN;
+import static dev.ngspace.hudder.api.variableregistry.VariableTypes.NUMBER;
+import static dev.ngspace.hudder.api.variableregistry.VariableTypes.STRING;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.data_management.EffectData;
-import dev.ngspace.hudder.data_management.ResourcePackVariables;
-import dev.ngspace.hudder.data_management.api.DataVariable;
-import dev.ngspace.hudder.data_management.api.DataVariableRegistry;
-import dev.ngspace.hudder.data_management.api.VariableTypes;
+import dev.ngspace.hudder.api.variableregistry.DataVariable;
+import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
+import dev.ngspace.hudder.api.variableregistry.VariableTypes;
+import dev.ngspace.hudder.variables.advanced.EffectData;
+import dev.ngspace.hudder.variables.data.ClientData;
+import dev.ngspace.hudder.variables.data.ComputerData;
+import dev.ngspace.hudder.variables.data.PlayerData;
+import dev.ngspace.hudder.variables.data.WorldData;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 
@@ -18,8 +21,6 @@ public class HudderBuiltInVariables {
 	
 	public static void registerVariables() {
 		
-		DataVariableRegistry.registerVariable(new ResourcePackVariables(), "selectedresourcepacks",
-				"selectedresourcepacks_unfiltered");
 		DataVariableRegistry.registerVariable(new EffectData(), "active_effects");
 		
 		ComputerData.registerVariables();

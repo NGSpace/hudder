@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.data_management;
+package dev.ngspace.hudder.variables.advanced;
 
 import java.util.HashMap;
 

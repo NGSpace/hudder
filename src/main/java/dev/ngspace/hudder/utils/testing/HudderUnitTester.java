@@ -14,7 +14,7 @@ import org.apache.commons.io.IOUtils;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.abstractions.ATextCompiler;
-import dev.ngspace.hudder.main.config.HudderConfig;
+import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.utils.testing.HudderUnitTest.HudderUnitTestResult;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;

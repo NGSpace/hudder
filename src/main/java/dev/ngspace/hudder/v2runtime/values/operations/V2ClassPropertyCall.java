@@ -13,7 +13,7 @@ import org.mozilla.javascript.ScriptableObject;
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.abstractions.AV2Compiler;
 import dev.ngspace.hudder.compilers.utils.CompileException;
-import dev.ngspace.hudder.main.config.HudderConfig;
+import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.utils.HudderUtils;
 import dev.ngspace.hudder.utils.NoAccess;
 import dev.ngspace.hudder.utils.ValueGetter;

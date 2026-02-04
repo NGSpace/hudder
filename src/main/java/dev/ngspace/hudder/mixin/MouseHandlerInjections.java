@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import dev.ngspace.hudder.data_management.Advanced;
+import dev.ngspace.hudder.variables.advanced.Misc;
 import net.minecraft.client.MouseHandler;
 import net.minecraft.client.input.MouseButtonInfo;
 
@@ -15,9 +15,9 @@ public class MouseHandlerInjections {
     public void checkCPS(long l, MouseButtonInfo mouseButtonInfo, int i, CallbackInfo ci) {
     	if (i==1) {
 	        if (mouseButtonInfo.button() == 0)
-	        	Advanced.clicks_left.add(System.currentTimeMillis());
+	        	Misc.clicks_left.add(System.currentTimeMillis());
 	        if (mouseButtonInfo.button() == 1)
-	            Advanced.cps_right.add(System.currentTimeMillis());
+	            Misc.cps_right.add(System.currentTimeMillis());
     	}
     }
 	

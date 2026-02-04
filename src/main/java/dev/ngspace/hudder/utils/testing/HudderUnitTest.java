@@ -5,7 +5,7 @@ import java.util.HashMap;
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.abstractions.ATextCompiler;
 import dev.ngspace.hudder.compilers.abstractions.AV2Compiler;
-import dev.ngspace.hudder.main.config.HudderConfig;
+import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.v2runtime.V2Runtime;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;

@@ -1,9 +1,7 @@
 package dev.ngspace.hudder.compilers.abstractions;
 
-import dev.ngspace.hudder.Hudder;
+import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.compilers.utils.CompileException;
-import dev.ngspace.hudder.data_management.ObjectDataAPI;
-import dev.ngspace.hudder.data_management.api.DataVariableRegistry;
 
 public abstract class AVarTextCompiler extends ATextCompiler {
 	
@@ -28,12 +26,8 @@ public abstract class AVarTextCompiler extends ATextCompiler {
 	 * @param key - the name of the variable
 	 * @return The value of the variable or null if it doesn't exist.
 	 */
-	@SuppressWarnings("removal")
 	public Object getSystemVariable(String key) {
-		Object obj = DataVariableRegistry.getAny(key);
-		if (obj!=null) return obj;
-		if ((obj=ObjectDataAPI.getObject(key))!=null) return obj;
-		return Hudder.config.globalVariables.get(key);
+		return DataVariableRegistry.getAny(key);
 	}
 
 	public Object getDynamicVariable(String key) {

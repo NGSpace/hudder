@@ -11,8 +11,8 @@ import dev.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndCons
 import dev.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI.BindableConsumer;
 import dev.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI.BindableFunction;
 import dev.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI.Binder;
+import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.main.HudCompilationManager;
-import dev.ngspace.hudder.main.config.HudderConfig;
 import dev.ngspace.hudder.v2runtime.V2Runtime;
 import dev.ngspace.hudder.v2runtime.functions.IV2Function;
 import dev.ngspace.hudder.v2runtime.functions.V2FunctionHandler;

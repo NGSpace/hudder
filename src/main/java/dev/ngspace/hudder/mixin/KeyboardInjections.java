@@ -1,7 +1,7 @@
 package dev.ngspace.hudder.mixin;
 
 import static dev.ngspace.hudder.Hudder.config;
-import static dev.ngspace.hudder.data_management.Advanced.held_keys;
+import static dev.ngspace.hudder.variables.advanced.Misc.held_keys;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

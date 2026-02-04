@@ -1,10 +1,12 @@
-package dev.ngspace.hudder.data_management.builtin;
+package dev.ngspace.hudder.variables.data;
 
-import static dev.ngspace.hudder.data_management.api.VariableTypes.BOOLEAN;
-import static dev.ngspace.hudder.data_management.api.VariableTypes.NUMBER;
-import static dev.ngspace.hudder.data_management.api.VariableTypes.STRING;
+import static dev.ngspace.hudder.api.variableregistry.VariableTypes.BOOLEAN;
+import static dev.ngspace.hudder.api.variableregistry.VariableTypes.NUMBER;
+import static dev.ngspace.hudder.api.variableregistry.VariableTypes.OBJECT;
+import static dev.ngspace.hudder.api.variableregistry.VariableTypes.STRING;
 
-import dev.ngspace.hudder.data_management.Advanced;
+import dev.ngspace.hudder.variables.HudderBuiltInVariables;
+import dev.ngspace.hudder.variables.advanced.Misc;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.dialog.DialogScreen;
@@ -21,6 +23,18 @@ public class ClientData extends HudderBuiltInVariables {
 		registerInputVariables();
 		registerScreenVariables();
 		registerScreenTypeVariables();
+
+		// Camera state
+		register(k->ins.gameRenderer.getMainCamera().entity() != ins.player, BOOLEAN, "camera_detached");
+		
+		// Resource packs
+		register(k->ins.getResourcePackRepository().getSelectedPacks().stream()
+					.filter(pack->!pack.isRequired())
+					.map(t -> t.getTitle().getString())
+					.toList(), OBJECT, "selectedresourcepacks");
+		register(k->ins.getResourcePackRepository().getSelectedPacks().stream()
+					.map(t -> t.getTitle().getString())
+					.toList(), OBJECT, "selectedresourcepacks_unfiltered");
 	}
 
 	private static void registerInputVariables() {
@@ -30,9 +44,9 @@ public class ClientData extends HudderBuiltInVariables {
 		register(k->ins.mouseHandler.isRightPressed(), BOOLEAN, "mouse_right");
 
 		// Clicks per second
-		register(k->Advanced.getLeftCPS() + Advanced.getRightCPS(), NUMBER, "cps");
-		register(k->Advanced.getLeftCPS(), NUMBER, "cps_left");
-		register(k->Advanced.getRightCPS(), NUMBER, "cps_right");
+		register(k->Misc.getLeftCPS() + Misc.getRightCPS(), NUMBER, "cps");
+		register(k->Misc.getLeftCPS(), NUMBER, "cps_left");
+		register(k->Misc.getRightCPS(), NUMBER, "cps_right");
 	}
 
 	private static void registerScreenVariables() {
@@ -42,7 +56,7 @@ public class ClientData extends HudderBuiltInVariables {
 		register(k->ins.getWindow().getGuiScale(), NUMBER, "guiscale");
 
 		// Open GUI
-		register(k->Advanced.getScreenType(ins.screen), STRING, "openguitype");
+		register(k->Misc.getScreenType(ins.screen), STRING, "openguitype");
 
 		register(k->(ins.screen == null) ? null : ins.screen.getTitle().getString(), STRING, "openguititle");
 
@@ -50,9 +64,6 @@ public class ClientData extends HudderBuiltInVariables {
 		register(k->ins.options.hideGui, BOOLEAN, "hudhidden");
 		register(k->ins.getDebugOverlay().showDebugScreen(), BOOLEAN, "showdebug");
 		register(k->ins.debugEntries.isOverlayVisible(), BOOLEAN, "f3enabled");
-
-		// Camera state
-		register(k->ins.gameRenderer.getMainCamera().entity() != ins.player, BOOLEAN, "camera_detached");
 	}
 	
 	private static void registerScreenTypeVariables() {

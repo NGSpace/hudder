@@ -5,9 +5,9 @@ import java.util.Map;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.utils.TextPos;
+import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.compilers.utils.CompileException;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
-import dev.ngspace.hudder.main.config.HudderConfig;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 
 public abstract class ATextCompiler {

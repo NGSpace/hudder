@@ -1,8 +1,8 @@
-package dev.ngspace.hudder.data_management;
+package dev.ngspace.hudder.variables.advanced;
 
 import java.util.Objects;
 
-import dev.ngspace.hudder.data_management.api.DataVariable;
+import dev.ngspace.hudder.api.variableregistry.DataVariable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -27,7 +27,7 @@ public class EffectData implements DataVariable<Object> {
         public final boolean beneficial;
 
         public Effect(MobEffectInstance e) {
-            this.id = BuiltInRegistries.MOB_EFFECT.getKey(e.getEffect().value()).toString();
+            this.id = String.valueOf(BuiltInRegistries.MOB_EFFECT.getKey(e.getEffect().value()));
             this.amplifier = e.getAmplifier();
             this.duration = e.getDuration();
             this.ambient = e.isAmbient();

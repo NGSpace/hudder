@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.data_management;
+package dev.ngspace.hudder.variables.advanced;
 
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Field;
@@ -11,8 +11,9 @@ import org.lwjgl.glfw.GLFW;
 
 import com.sun.management.OperatingSystemMXBean;
 
-import dev.ngspace.hudder.data_management.api.DataVariableRegistry;
-import dev.ngspace.hudder.data_management.api.VariableTypes;
+import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
+import dev.ngspace.hudder.api.variableregistry.VariableTypes;
+import dev.ngspace.hudder.utils.LimitedRefreshSpeedData;
 import dev.ngspace.hudder.v2runtime.V2Runtime;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
@@ -44,7 +45,7 @@ import net.minecraft.client.gui.screens.inventory.SmokerScreen;
 import net.minecraft.client.gui.screens.inventory.StonecutterScreen;
 import net.minecraft.client.gui.screens.reporting.ReportPlayerScreen;
 
-public class Advanced {private Advanced() {}
+public class Misc {private Misc() {}
 
 	public static int fps = 0;
 	public static List<Long> clicks_left = new ArrayList<Long>();

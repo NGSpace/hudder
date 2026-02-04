@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.main.config;
+package dev.ngspace.hudder.config;
 
 import java.io.File;
 import java.io.IOException;

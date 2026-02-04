@@ -6,13 +6,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import dev.ngspace.hudder.Hudder;
+import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.compilers.utils.CompileException;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
 import dev.ngspace.hudder.compilers.utils.functionandconsumerapi.ArrayElementManager;
-import dev.ngspace.hudder.data_management.ObjectDataAPI;
-import dev.ngspace.hudder.data_management.api.DataVariableRegistry;
+import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.main.HudCompilationManager;
-import dev.ngspace.hudder.main.config.HudderConfig;
 import dev.ngspace.hudder.uielements.AUIElement;
 import dev.ngspace.hudder.uielements.ItemElement;
 import dev.ngspace.hudder.utils.HudFileUtils;
@@ -86,14 +85,10 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 		}
 	}
 
-	@SuppressWarnings("removal")
 	@Override public Object getVariable(String key) throws CompileException {
 		Object obj = DataVariableRegistry.getAny(key);
-		if ( obj!=null) return obj;
-		if ((obj=ObjectDataAPI.getObject(key))!=null) return obj;
-		if ((obj=get(key))!=null) return obj;
-		if ((obj=Hudder.config.globalVariables.get(key))!=null) return obj;
-		return null;
+		if (obj!=null) return obj;
+		return get(key);
 	}
 	public void loadFunctions(IScriptingLanguageEngine engine) {
 		

@@ -8,7 +8,7 @@ import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.abstractions.ATextCompiler;
 import dev.ngspace.hudder.compilers.utils.CompileException;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
-import dev.ngspace.hudder.data_management.Advanced;
+import dev.ngspace.hudder.variables.advanced.Misc;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.EndTick;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -27,9 +27,9 @@ public class HudCompilationManager implements EndTick {
 	public void compile(DeltaTracker f) {
 		result = null;
 		try {
-    		Advanced.delta = f!=null?f.getGameTimeDeltaTicks():3;
+    		Misc.delta = f!=null?f.getGameTimeDeltaTicks():3;
     		if (Hudder.config.shouldCompile()) {
-    			Advanced.updateCPS();
+    			Misc.updateCPS();
     			for (Consumer<ATextCompiler> con : precomplistners)  con.accept(Hudder.config.getCompiler());
     			result = Hudder.config.compileMainHud();
     			for (Consumer<ATextCompiler> con : postcomplistners) con.accept(Hudder.config.getCompiler());

@@ -13,7 +13,7 @@ import java.nio.file.WatchService;
 import java.nio.file.attribute.BasicFileAttributes;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.main.config.HudderNGSMCConfigMenu;
+import dev.ngspace.hudder.config.HudderNGSMCConfigMenu;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.StartTick;
 import net.minecraft.ChatFormatting;

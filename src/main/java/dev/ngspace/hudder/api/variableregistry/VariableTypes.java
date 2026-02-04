@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.data_management.api;
+package dev.ngspace.hudder.api.variableregistry;
 
 public class VariableTypes {
 	

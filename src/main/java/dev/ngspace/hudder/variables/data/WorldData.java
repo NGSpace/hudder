@@ -1,13 +1,14 @@
-package dev.ngspace.hudder.data_management.builtin;
+package dev.ngspace.hudder.variables.data;
 
-import static dev.ngspace.hudder.data_management.api.VariableTypes.BOOLEAN;
-import static dev.ngspace.hudder.data_management.api.VariableTypes.NUMBER;
-import static dev.ngspace.hudder.data_management.api.VariableTypes.STRING;
+import static dev.ngspace.hudder.api.variableregistry.VariableTypes.BOOLEAN;
+import static dev.ngspace.hudder.api.variableregistry.VariableTypes.NUMBER;
+import static dev.ngspace.hudder.api.variableregistry.VariableTypes.STRING;
 
 import java.util.Queue;
 
 import dev.ngspace.hudder.mixin.LevelRendererAccess;
 import dev.ngspace.hudder.mixin.ParticleManagerAccessor;
+import dev.ngspace.hudder.variables.HudderBuiltInVariables;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.levelgen.WorldgenRandom;

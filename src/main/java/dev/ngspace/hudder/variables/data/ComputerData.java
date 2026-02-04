@@ -1,13 +1,14 @@
-package dev.ngspace.hudder.data_management.builtin;
+package dev.ngspace.hudder.variables.data;
 
-import static dev.ngspace.hudder.data_management.api.VariableTypes.*;
+import static dev.ngspace.hudder.api.variableregistry.VariableTypes.*;
 
 import java.util.Calendar;
 import java.util.Locale;
 
 import com.mojang.blaze3d.platform.GLX;
 
-import dev.ngspace.hudder.data_management.Advanced;
+import dev.ngspace.hudder.variables.HudderBuiltInVariables;
+import dev.ngspace.hudder.variables.advanced.Misc;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.server.IntegratedServer;
 
@@ -28,10 +29,10 @@ public class ComputerData extends HudderBuiltInVariables {
 	}
 
 	public static void registerPerformanceVariables() {
-		register(k->Advanced.fps, NUMBER, "fps");
-		register(k->Advanced.getAverageFPS(), NUMBER, "avgfps", "avg_fps");
-		register(k->Advanced.getMinimumFPS(), NUMBER, "minfps", "min_fps");
-		register(k->Advanced.getMaximumFPS(), NUMBER, "maxfps", "max_fps");
+		register(k->Misc.fps, NUMBER, "fps");
+		register(k->Misc.getAverageFPS(), NUMBER, "avgfps", "avg_fps");
+		register(k->Misc.getMinimumFPS(), NUMBER, "minfps", "min_fps");
+		register(k->Misc.getMaximumFPS(), NUMBER, "maxfps", "max_fps");
 		
 		register(k->{
 			var playerInfo = ins.player.connection.getPlayerInfo(ins.player.getUUID());
@@ -45,10 +46,10 @@ public class ComputerData extends HudderBuiltInVariables {
 		
 		register(k->Math.min(ins.getGpuUtilization(), 100.0), NUMBER, "gpu_d", "dgpu");
 		register(k->(int) (Math.min(ins.getGpuUtilization(), 100.0)), NUMBER, "gpu");
-		register(k->Advanced.CPU.get()* 100d, NUMBER, "cpu_d", "dcpu");
-		register(k->(int) (Advanced.CPU.get()* 100d), NUMBER, "cpu");
+		register(k->Misc.CPU.get()* 100d, NUMBER, "cpu_d", "dcpu");
+		register(k->(int) (Misc.CPU.get()* 100d), NUMBER, "cpu");
 		
-		register(k->Advanced.delta, NUMBER, "delta");
+		register(k->Misc.delta, NUMBER, "delta");
 	}
 	
 	public static void registerMemoryVariables() {
@@ -80,7 +81,7 @@ public class ComputerData extends HudderBuiltInVariables {
 	
 	public static void registerStringComputerInfo() {
 		register(k->GLX._getCpuInfo(), STRING, "cpu_info");
-		register(k->Advanced.OS, STRING, "operating_system");
+		register(k->Misc.OS, STRING, "operating_system");
 		register(k->Locale.getDefault().getDisplayName(), STRING, "locale");
 		register(k->Locale.getDefault().getLanguage(), STRING, "language");
 		register(k->Locale.getDefault().getCountry(), STRING, "country");

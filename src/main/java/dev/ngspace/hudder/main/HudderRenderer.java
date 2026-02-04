@@ -11,7 +11,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
-import dev.ngspace.hudder.main.config.HudderConfig;
+import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.uielements.AUIElement;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.minecraft.client.DeltaTracker;
