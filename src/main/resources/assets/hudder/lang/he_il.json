@@ -61,5 +61,8 @@
     "hudder.advanced.limitrate": "הגבלת קצב המהדר",
     "hudder.advanced.limitrate.tooltip": "§4אזהרה - זה עלול לגרום לבעיות ביצועים.\n§fהשבתה זו תעביר את הידור קבצי ה-Hudder מהפעלת כל סימון לקוח להפעלת כל פריים.",
     "hudder.configkeybind": "פתח הגדרות של Hudder",
-    "hudder.keybinds": "Hudder"
+    "hudder.keybinds": "Hudder",
+    "key.category.minecraft.hudder.keybinds": "Hudder",
+    "hudder.advanced.unsafeoperations": "פעולות לא בטוחות",
+    "hudder.advanced.unsafeoperations.tooltip": "§4 אזהרה - הפעל רק אם אתה יודע מה ה-HUD שלך עושה.\n§f הפעלת אפשרות זו מעניקה גישה לתכונות חסומות וכן הסרת מגבלות מסוימות מתכונות קיימות (ראה ויקי למידע נוסף)."
 }

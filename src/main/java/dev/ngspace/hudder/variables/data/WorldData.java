@@ -107,7 +107,7 @@ public class WorldData extends HudderBuiltInVariables {
 		register(k->ins.level.getBiome(ins.gameRenderer.getMainCamera().blockPosition()).getRegisteredName(),
 		    STRING, "cam_biome");
 
-		register(k->ins.level.dimension().identifier(),
+		register(k->ins.level.dimension().identifier().toString(),
 		    STRING, "dimension");
 
 		// World name (singleplayer only)
