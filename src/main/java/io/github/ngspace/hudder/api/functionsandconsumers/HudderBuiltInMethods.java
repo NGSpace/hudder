@@ -23,8 +23,8 @@ public class HudderBuiltInMethods {private HudderBuiltInMethods() {}
 	public static void registerMethods(FunctionAndConsumerAPI api) {
 		//Vertex
 
-		api.registerConsumer((e,a,s)->e.addUIElement(new ColorVerticesElement(s[0].asFloatArray(),s[1].asInt(),false)),"colorvertices");
-		api.registerConsumer((e,a,s)->e.addUIElement(new ColorVerticesElement(s[0].asFloatArray(),s[1].asInt(),true)),"colorvertices_con");
+		api.registerConsumer((e,a,s)->e.addUIElement(new ColorVerticesElement(s[0].asFloatArray(),(int) s[1].asLong(),false)),"colorvertices");
+		api.registerConsumer((e,a,s)->e.addUIElement(new ColorVerticesElement(s[0].asFloatArray(),(int) s[1].asLong(),true)),"colorvertices_con");
 		
 		api.registerConsumer((e,a,s)->e.addUIElement(new TextureVerticesElement(
 				s[0].asString(),s[1].asFloatArray(),s[2].asFloatArray(), false)), "texturevertices");
