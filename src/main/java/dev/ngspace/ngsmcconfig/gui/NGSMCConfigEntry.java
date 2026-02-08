@@ -44,7 +44,7 @@ public class NGSMCConfigEntry extends ContainerObjectSelectionList.Entry<NGSMCCo
         };
         text.active = true;
         this.option = option;
-        children = Arrays.asList(widget, resetButton, text);
+        children = widget==null ? Arrays.asList(text) : Arrays.asList(widget, resetButton, text);
     }
 
     @Override
@@ -53,12 +53,17 @@ public class NGSMCConfigEntry extends ContainerObjectSelectionList.Entry<NGSMCCo
     	int width = getWidth();
     	int height = getHeight();
     	int y = getY();
-    	resetButton.setPosition(x+width-40, y);
-        resetButton.render(graphics, mouseX, mouseY, partialTick);
-        resetButton.active = !option.isDefault();
+    	
         if (widget!=null) {
+        	resetButton.setPosition(x+width-40, y);
+            resetButton.render(graphics, mouseX, mouseY, partialTick);
+            resetButton.active = !option.isDefault();
+            
         	widget.setPosition(x+width-50-widget.getWidth(), y);
         	widget.render(graphics, mouseX, mouseY, partialTick);
+        } else {
+        	text.setSize(width, height);
+//        	text.visitLines(graphics, width, height, y);
         }
         text.setPosition(x, y);
         text.render(graphics, mouseX, mouseY, partialTick);

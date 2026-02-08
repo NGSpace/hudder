@@ -1,6 +1,6 @@
 {
 	"required": true,
-	"package": "io.github.ngspace.hudder.mixin",
+	"package": "dev.ngspace.hudder.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
     	"LevelRendererAccess",
