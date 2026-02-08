@@ -56,7 +56,7 @@ public class HudderBuiltInMethods {private HudderBuiltInMethods() {}
 			int color = args.length>4 ? (int) args[4].asLong() : Hudder.config.color;
 			boolean shadow = args.length>5 ? args[5].asBoolean(): Hudder.config.shadow;
 			boolean bg = args.length>6 ? args[6].asBoolean(): Hudder.config.background;
-			int bgcolor = args.length>7 ? args[7].asInt() : Hudder.config.backgroundcolor;
+			int bgcolor = args.length>7 ? (int) args[7].asLong() : Hudder.config.backgroundcolor;
 			
 			e.addUIElement(new TextElement(x, y, text, scale, color, shadow, bg, bgcolor));
 		}, "drawText", "text");
