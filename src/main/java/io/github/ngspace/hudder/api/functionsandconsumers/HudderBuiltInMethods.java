@@ -53,7 +53,7 @@ public class HudderBuiltInMethods {private HudderBuiltInMethods() {}
 			String text = args[2].asString();
 			float scale = (float) (args.length>3 ? args[3].asDouble() : Hudder.config.scale);
 
-			int color = args.length>4 ? args[4].asInt() : Hudder.config.color;
+			int color = args.length>4 ? (int) args[4].asLong() : Hudder.config.color;
 			boolean shadow = args.length>5 ? args[5].asBoolean(): Hudder.config.shadow;
 			boolean bg = args.length>6 ? args[6].asBoolean(): Hudder.config.background;
 			int bgcolor = args.length>7 ? args[7].asInt() : Hudder.config.backgroundcolor;
