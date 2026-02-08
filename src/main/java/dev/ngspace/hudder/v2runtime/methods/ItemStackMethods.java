@@ -28,7 +28,7 @@ public class ItemStackMethods implements V2IMethod {
 		}
 		double x = args[0+offset].asDouble();
 		double y = args[1+offset].asDouble();
-		float scale = (float)(args.length>2+offset?args[2+offset].asDouble():ci.scale);
+		float scale = (float)(args.length>2+offset?args[2+offset].asDouble():ci.scale());
 
 		boolean showcount = args.length<=3+offset || args[3+offset].asBoolean();
 		

@@ -49,5 +49,5 @@ public class HudCompilationManager implements EndTick {
 	
 	public HudInformation getResult() {return result;}
 	
-	@Override public void onEndTick(Minecraft client) {if (Hudder.config.limitrate) compile(null);}
+	@Override public void onEndTick(Minecraft client) {if (Hudder.config.limitrate()) compile(null);}
 }

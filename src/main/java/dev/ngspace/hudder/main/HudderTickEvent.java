@@ -44,7 +44,7 @@ public class HudderTickEvent implements StartTick {
 		while (Hudder.configkeybind.consumeClick()) {
 			Minecraft.getInstance().setScreen(HudderNGSMCConfigMenu.createMenu(Minecraft.getInstance().screen));
 		}
-    	if (!Hudder.config.enabled) return;
+    	if (!Hudder.config.enabled()) return;
     	try {
     		if (watcherService==null) return;
     		WatchKey wk = watcherService.poll();

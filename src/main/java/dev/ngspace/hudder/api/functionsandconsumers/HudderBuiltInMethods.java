@@ -51,12 +51,12 @@ public class HudderBuiltInMethods {private HudderBuiltInMethods() {}
 			int y = args[1].asInt();
 
 			String text = args[2].asString();
-			float scale = (float) (args.length>3 ? args[3].asDouble() : Hudder.config.scale);
+			float scale = (float) (args.length>3 ? args[3].asDouble() : Hudder.config.scale());
 
-			int color = args.length>4 ? args[4].asInt() : Hudder.config.color;
-			boolean shadow = args.length>5 ? args[5].asBoolean(): Hudder.config.shadow;
-			boolean bg = args.length>6 ? args[6].asBoolean(): Hudder.config.background;
-			int bgcolor = args.length>7 ? args[7].asInt() : Hudder.config.backgroundcolor;
+			int color = args.length>4 ? args[4].asInt() : Hudder.config.color();
+			boolean shadow = args.length>5 ? args[5].asBoolean(): Hudder.config.shadow();
+			boolean bg = args.length>6 ? args[6].asBoolean(): Hudder.config.background();
+			int bgcolor = args.length>7 ? args[7].asInt() : Hudder.config.backgroundcolor();
 			
 			e.addUIElement(new TextElement(x, y, text, scale, color, shadow, bg, bgcolor));
 		}, "drawText", "text");

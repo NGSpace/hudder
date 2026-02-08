@@ -72,6 +72,7 @@ public class Hudder implements ClientModInitializer {
      * Errors usually happen beyond this point
      * @throws Exception Because I fuck up a lot.
      */
+	@SuppressWarnings("removal")
 	@Override public void onInitializeClient() {
 		
 		log("Starting Hudder " + HUDDER_VERSION);
@@ -145,7 +146,7 @@ public class Hudder implements ClientModInitializer {
         ClientLifecycleEvents.CLIENT_STARTED.register(c->{
 			try {
 				HudFileUtils.reloadResources();
-				if (config.globalVariables.size()>0)
+				if (config.globalVariables().size()>0)
 					showWarningToast(Component.literal("Hudder is deprecating global variables!"),
 							Component.literal("Please stop using them as they'll stop working in a future release."));
 			} catch (IOException e) {

@@ -23,12 +23,12 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 	protected static Minecraft mc = Minecraft.getInstance();
 
 	public static Screen createMenu(Screen parent) {
-		HudderConfig config = Hudder.config;
+		HudderUserSettings config = Hudder.config.userSettings;
 		
 		var builder = new NGSMCConfigBuilder(parent);
 		builder.setWriteOperation(() -> {
 			try {
-				config.save();
+				Hudder.config.save();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -121,11 +121,11 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 				.setSaveOperation(b->config.showInF3=b)
 				.setDefaultValue(false)
 				.build());
-		advanced.addOption(StringNGSMCConfigOption.builder(config.getCompilerName(),
+		advanced.addOption(StringNGSMCConfigOption.builder(Hudder.config.compilerName(),
 					Component.translatable("hudder.advanced.compilertype"))
 	    		.setHoverComponent(Component.translatable("hudder.advanced.compilertype.tooltip"))
 	    		.setDefaultValue("hudder")
-	    		.setSaveOperation(b->config.setCompilerName(b.toLowerCase()))
+	    		.setSaveOperation(b->Hudder.config.setCompilerName(b.toLowerCase()))
 	    		.setValidator(e->!Compilers.has(e.toLowerCase())?Component.translatable("hudder.advanced.compilertype.error"):null)
 	    		.build());
 		advanced.addOption(BooleanNGSMCConfigOption.builder(config.unsafeoperations, Component.translatable("hudder.advanced.unsafeoperations"))
@@ -147,7 +147,7 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 		
 		
 		/* Hud specific settings */
-		if (!config.getCompiler().setupHudSettings(hudsettings))
+		if (!Hudder.config.getCompiler().setupHudSettings(hudsettings))
 			builder.removeCategory(hudsettings);
 		
 		return builder.build();

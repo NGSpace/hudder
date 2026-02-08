@@ -53,7 +53,7 @@ public class FunctionAndConsumerAPI {
 	
 	public void registerUnsafeFunction(BindableFunction func, String... names) {
 		registerFunction((m,c,a)->{
-			if (!Hudder.config.unsafeoperations)
+			if (!Hudder.config.unsafeoperations())
 				throw new CompileException("Called unsafe function with unsafe operations disabled!");
 			return func.invoke(m,c,a);
 		}, names);
@@ -69,7 +69,7 @@ public class FunctionAndConsumerAPI {
 	
 	public void registerUnsafeConsumer(BindableConsumer cons, String... names) {
 		registerConsumer((m,c,a)->{
-			if (!Hudder.config.unsafeoperations)
+			if (!Hudder.config.unsafeoperations())
 				throw new CompileException("Called unsafe method with unsafe operations disabled!");
 			cons.invoke(m,c,a);
 		}, names);

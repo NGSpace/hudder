@@ -19,7 +19,7 @@ public abstract class MinecraftClientInjections {
     @Redirect(method = "runTick", at = @At(value = "INVOKE",
     		target = "Lnet/minecraft/client/gui/components/debug/DebugScreenEntryList;isCurrentlyEnabled(Lnet/minecraft/resources/Identifier;)Z"))
     public boolean shouldGetGpuUsage(DebugScreenEntryList list, Identifier loc) {
-    	if (config.enabled) return true;
+    	if (config.enabled()) return true;
     	return list.isCurrentlyEnabled(loc);
     }
 }

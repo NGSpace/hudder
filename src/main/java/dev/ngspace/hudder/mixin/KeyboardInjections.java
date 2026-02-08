@@ -18,7 +18,7 @@ import net.minecraft.client.input.KeyEvent;
 public class KeyboardInjections {
 	@Inject(method = "keyPress(JILnet/minecraft/client/input/KeyEvent;)V", at = @At("HEAD"))
 	public void keyPress(long window, int action, KeyEvent keyEvent, CallbackInfo callbackInfo) {
-		if (!config.enabled) return;
+		if (!config.enabled()) return;
 		var key = keyEvent.key();
 		if (action==1) held_keys.put(key, key);
 		if (action==0) held_keys.remove(key);

@@ -31,29 +31,7 @@ public class HudderConfig {
 	public static final int HUDDER_CONFIG_VERSION = 4;
 	public static final File DEFAULT_CONFIG_FILE = new File(HudFileUtils.FABRIC_CONFIG_FOLDER + File.separator + "hudder.json");
 	
-	/* EXPOSED :flushed: */
-	@Expose public Map<String, Object> globalVariables = new HashMap<String, Object>();
-	@Expose public Map<String, Object> savedVariables = new HashMap<String, Object>();
-	@Expose public String mainfile = "tutorial.hud";//Set "tutorial.hud" as the initial file selected
-    @Expose public boolean enabled = true;
-	@Expose public boolean shadow = true;
-	@Expose public boolean showInF3 = false;
-	@Expose public boolean unsafeoperations = false;
-	@Expose public boolean globalVariablesEnabled = true;
-	@Expose public float scale = 1f;
-	@Expose public int color = 0xFFd6d6d6;
-	@Expose public int yoffset = 1;
-	@Expose public int xoffset = 1;
-	@Expose public int lineHeight = 10;
-	@Expose public int methodBuffer = 2;
-	@Expose public int backgroundcolor = 0x86353535;
-	@Expose public boolean background = true;
-	@Expose public boolean removegui = false;
-	@Expose public boolean limitrate = true;
-	
-	@Expose public int config_version = HUDDER_CONFIG_VERSION;
-
-    @Expose private String compilername = "hudder";
+	public HudderUserSettings userSettings = new HudderUserSettings();
 	
 	
 	
@@ -93,12 +71,11 @@ public class HudderConfig {
 	 * @throws IOException
 	 */
 	public HudInformation compileMainHud() throws CompileException {
-		if (getCompiler()!=null) return getCompiler().compile(this, HudFileUtils.readFile(mainfile), mainfile);
+		if (getCompiler()!=null) return getCompiler().compile(this, HudFileUtils.readFile(mainfile()), mainfile());
 		else throw new CompileException("There is no Compiler!");
 	}
-	
-	
-	
+
+
 	/**
 	 * Read the JSON values from the config file that was provided durinng the ConfigInfo's initalization and apply
 	 * them to this ConfigInfo Object.
@@ -121,17 +98,17 @@ public class HudderConfig {
 			Map<?,?> newinfo = new GsonBuilder().create().fromJson(config,HashMap.class);
 			
 			if (newinfo.containsKey("debug")) Hudder.IS_DEBUG = (boolean) newinfo.get("debug");
-			if (!newinfo.containsKey("config_version")) config_version = 0;
+			if (!newinfo.containsKey("config_version")) userSettings.config_version = 0;
 			
-			for(Field f : HudderConfig.class.getDeclaredFields()) {
+			for(Field f : HudderUserSettings.class.getDeclaredFields()) {
 				if (f.getAnnotation(Expose.class)!=null&&newinfo.get(f.getName())!=null) {
 					setField(f, newinfo.get(f.getName()));
 				}
 			}
 			
-			if (config_version<HUDDER_CONFIG_VERSION) {
-				updateConfigFromVersion(config_version, newinfo);
-				config_version = HUDDER_CONFIG_VERSION;
+			if (userSettings.config_version<HUDDER_CONFIG_VERSION) {
+				updateConfigFromVersion(userSettings.config_version, newinfo);
+				userSettings.config_version = HUDDER_CONFIG_VERSION;
 				save();
 			}
 			
@@ -150,14 +127,14 @@ public class HudderConfig {
 	
 	
 	private void updateConfigFromVersion(int version, Map<?, ?> newinfo) {
-		if (version<1 && ((color >> 24) & 0xFF)==0) {
-        	color = (255 << 24) | color;
+		if (version<1 && ((userSettings.color >> 24) & 0xFF)==0) {
+			userSettings.color = (255 << 24) | userSettings.color;
         }
 		if (version<2) {
-			unsafeoperations = (boolean) newinfo.get("javascript");
+			userSettings.unsafeoperations = (boolean) newinfo.get("javascript");
 		}
 		if (version<3&&newinfo.get("compilertype")!=null) {
-			compilername = switch (newinfo.get("compilertype").toString()) {
+			userSettings.compilername = switch (newinfo.get("compilertype").toString()) {
 				case "none","null" -> "empty";
 				case "javascript" -> "js";
 				case "default", "defaultcompiler", "default compiler" -> "hudder";
@@ -190,8 +167,8 @@ public class HudderConfig {
 						}
 					}
 					
-					if (mainfile.equals(name))
-						mainfile = name + ".hud";
+					if (userSettings.mainfile.equals(name))
+						userSettings.mainfile = name + ".hud";
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -208,7 +185,7 @@ public class HudderConfig {
 	 */
 	public void refreshCompiler() {
 		try {
-			compiler = Compilers.getCompilerFromName(compilername);
+			compiler = Compilers.getCompilerFromName(compilerName());
 		} catch (Exception e) {
 			e.printStackTrace();
 			Hudder.log("Using default compiler due to error");
@@ -222,14 +199,14 @@ public class HudderConfig {
 	 */
 	private void setField(Field f, Object object) throws ReflectiveOperationException {
 		if (object instanceof Number num) {
-			if (f.getType()==(int.class)) f.set(this, num.intValue());
-			else if (f.getType()==(float.class)) f.set(this, num.floatValue());
-			else if (f.getType()==(double.class)) f.set(this, num.doubleValue());
-			else if (f.getType()==(long.class)) f.set(this, num.longValue());
-			else if (f.getType()==(byte.class)) f.set(this, num.byteValue());
-			else if (f.getType()==(short.class)) f.set(this, num.shortValue());
-			else f.set(this, object);
-		} else f.set(this, object);
+			if (f.getType()==(int.class)) f.set(userSettings, num.intValue());
+			else if (f.getType()==(float.class)) f.set(userSettings, num.floatValue());
+			else if (f.getType()==(double.class)) f.set(userSettings, num.doubleValue());
+			else if (f.getType()==(long.class)) f.set(userSettings, num.longValue());
+			else if (f.getType()==(byte.class)) f.set(userSettings, num.byteValue());
+			else if (f.getType()==(short.class)) f.set(userSettings, num.shortValue());
+			else f.set(userSettings, object);
+		} else f.set(userSettings, object);
 	}
 	
 	
@@ -245,9 +222,9 @@ public class HudderConfig {
 		}
 		try (FileWriter config_writer = new FileWriter(configFile)) {
 			Map<String, Object> json_output = new HashMap<String, Object>();
-			for (Field f : HudderConfig.class.getDeclaredFields())
+			for (Field f : HudderUserSettings.class.getDeclaredFields())
 				if (f.getAnnotation(Expose.class)!=null)
-					json_output.put(f.getName(), f.get(this));
+					json_output.put(f.getName(), f.get(userSettings));
 
 			json_output.put("debug", Hudder.IS_DEBUG);
 			
@@ -270,7 +247,7 @@ public class HudderConfig {
 	 * @return true or false
 	 */
 	public boolean shouldDrawResult() {
-		return !mc.options.hideGui&&(!mc.debugEntries.isOverlayVisible()||showInF3)&&enabled;
+		return !mc.options.hideGui&&(!mc.debugEntries.isOverlayVisible()||showInF3())&&enabled();
 	}
 	
 	
@@ -280,16 +257,7 @@ public class HudderConfig {
 	 * @return true or false
 	 */
 	public boolean shouldCompile() {
-		return enabled&&mc.player!=null;
-	}
-	
-	
-	/**
-	 * Returns the name of the current compiler
-	 * @return
-	 */
-	public String getCompilerName() {
-		return compilername;
+		return enabled()&&mc.player!=null;
 	}
 	
 	
@@ -299,7 +267,7 @@ public class HudderConfig {
 	 * @return the provided name (for clothconfig)
 	 */
 	public String setCompilerName(String compilername) {
-		this.compilername=compilername;
+		userSettings.compilername=compilername;
 		refreshCompiler();
 		return compilername;
 	}
@@ -328,11 +296,92 @@ public class HudderConfig {
 				|| value instanceof String
 				|| value instanceof Boolean
 				|| value instanceof Character
-				|| unsafeoperations
+				|| unsafeoperations()
 				|| value==null))
 			throw new IllegalArgumentException("Can only save variables of types: Number, String, Boolean or"
 					+ " Character with unsafe operations disabled.");
-		savedVariables.put(key, value);
+		savedVariables().put(key, value);
 		save();
+	}
+	
+	public Map<String, Object> savedVariables() {
+	    return userSettings.savedVariables;
+	}
+
+	public String mainfile() {
+	    return userSettings.mainfile;
+	}
+
+	public boolean enabled() {
+	    return userSettings.enabled;
+	}
+
+	public boolean shadow() {
+	    return userSettings.shadow;
+	}
+
+	public boolean showInF3() {
+	    return userSettings.showInF3;
+	}
+
+	public boolean unsafeoperations() {
+	    return userSettings.unsafeoperations;
+	}
+
+	public boolean globalVariablesEnabled() {
+	    return userSettings.globalVariablesEnabled;
+	}
+
+	public float scale() {
+	    return userSettings.scale;
+	}
+
+	public int color() {
+	    return userSettings.color;
+	}
+
+	public int yoffset() {
+	    return userSettings.yoffset;
+	}
+
+	public int xoffset() {
+	    return userSettings.xoffset;
+	}
+
+	public int lineHeight() {
+	    return userSettings.lineHeight;
+	}
+
+	public int methodBuffer() {
+	    return userSettings.methodBuffer;
+	}
+
+	public int backgroundcolor() {
+	    return userSettings.backgroundcolor;
+	}
+
+	public boolean background() {
+	    return userSettings.background;
+	}
+
+	public boolean removegui() {
+	    return userSettings.removegui;
+	}
+
+	public boolean limitrate() {
+	    return userSettings.limitrate;
+	}
+
+	public int config_version() {
+	    return userSettings.config_version;
+	}
+
+	public String compilerName() {
+	    return userSettings.compilername;
+	}
+	
+	@Deprecated(since = "9.2.0", forRemoval = true)
+	public Map<String, Object> globalVariables() {
+		return userSettings.globalVariables;
 	}
 }

@@ -39,28 +39,28 @@ public class HudderBuiltInVariables {
 		
 		// Booleans
 		register(k->true, BOOLEAN, "enabled"); // duh
-		register(k->Hudder.config.shadow, BOOLEAN, "shadow");
-		register(k->Hudder.config.showInF3, BOOLEAN, "showinf3");
+		register(k->Hudder.config.shadow(), BOOLEAN, "shadow");
+		register(k->Hudder.config.showInF3(), BOOLEAN, "showinf3");
 		register(k->true, BOOLEAN, "javascriptenabled"); // compatibility
-		register(k->Hudder.config.unsafeoperations, BOOLEAN, "unsafeoperations");
-		register(k->Hudder.config.globalVariablesEnabled, BOOLEAN, "globalvariablesenabled");
-		register(k->Hudder.config.background, BOOLEAN, "background");
-		register(k->Hudder.config.removegui, BOOLEAN, "removegui");
-		register(k->Hudder.config.limitrate, BOOLEAN, "limitrate");
+		register(k->Hudder.config.unsafeoperations(), BOOLEAN, "unsafeoperations");
+		register(k->Hudder.config.globalVariablesEnabled(), BOOLEAN, "globalvariablesenabled");
+		register(k->Hudder.config.background(), BOOLEAN, "background");
+		register(k->Hudder.config.removegui(), BOOLEAN, "removegui");
+		register(k->Hudder.config.limitrate(), BOOLEAN, "limitrate");
 		
 		// Strings
-		register(k->Hudder.config.getCompilerName(), STRING, "compilertype");
-		register(k->Hudder.config.mainfile, STRING, "mainfile");
+		register(k->Hudder.config.compilerName(), STRING, "compilertype");
+		register(k->Hudder.config.mainfile(), STRING, "mainfile");
 		register(k->Hudder.HUDDER_VERSION, STRING, "hudder_version");
 		
 		// Numbers
-		register(k->Hudder.config.scale, NUMBER, "scale");
-		register(k->Hudder.config.color, NUMBER, "color");
-		register(k->Hudder.config.yoffset, NUMBER, "yoffset");
-		register(k->Hudder.config.xoffset, NUMBER, "xoffset");
-		register(k->Hudder.config.lineHeight, NUMBER, "lineheight");
-		register(k->Hudder.config.methodBuffer, NUMBER, "methodbuffer");
-		register(k->Hudder.config.backgroundcolor, NUMBER, "backgroundcolor");
+		register(k->Hudder.config.scale(), NUMBER, "scale");
+		register(k->Hudder.config.color(), NUMBER, "color");
+		register(k->Hudder.config.yoffset(), NUMBER, "yoffset");
+		register(k->Hudder.config.xoffset(), NUMBER, "xoffset");
+		register(k->Hudder.config.lineHeight(), NUMBER, "lineheight");
+		register(k->Hudder.config.methodBuffer(), NUMBER, "methodbuffer");
+		register(k->Hudder.config.backgroundcolor(), NUMBER, "backgroundcolor");
 
 		/* Constants */
 		

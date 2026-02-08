@@ -17,7 +17,7 @@ public class StringV2RuntimeElement extends AV2RuntimeElement {
 	}
 	@Override public boolean execute(CompileState meta, StringBuilder builder) throws CompileException {
 		String str = string;
-		if (cleanUp&&(buffer = Hudder.config.methodBuffer)<10) {
+		if (cleanUp&&(buffer = Hudder.config.methodBuffer())<10) {
 			for (int i = 0; i<buffer;i++) {
 				if (str.endsWith("\n")||str.endsWith("\r")) str = str.substring(0, str.length()-1);
 			}

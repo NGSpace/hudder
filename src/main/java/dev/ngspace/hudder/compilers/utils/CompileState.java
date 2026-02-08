@@ -30,13 +30,13 @@ public class CompileState implements IUIElementManager {
 	public Object returnValue;
 	public boolean hasReturned;
 
-	public CompileState(String string) {setTextLocation(string, Hudder.config.scale);}
+	public CompileState(String string) {setTextLocation(string, Hudder.config.scale());}
 	public void addString(String txt, boolean cleanup) throws CompileException {addString(txt,pos,cleanup);}
 	
 	protected void addString(String txt, String pos, boolean cleanup) throws CompileException {
 		String text = txt;
 		if (cleanup) {
-			int buffer = Hudder.config.methodBuffer;
+			int buffer = Hudder.config.methodBuffer();
 			if (buffer<10)
 				for (int i = 0; i<buffer;i++)
 					try {

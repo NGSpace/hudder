@@ -25,7 +25,7 @@ public class MethodHandler {
 				"pants", "boots", "offhand");
 		
 		//Text and compiling
-		bindConsumer((c,m,a,r,t,ch,s)->m.setTextLocation(t,(float) (s.length>0?s[0].asDouble():c.scale)),
+		bindConsumer((c,m,a,r,t,ch,s)->m.setTextLocation(t,(float) (s.length>0?s[0].asDouble():c.scale())),
 				BOTTOMRIGHT, TOPLEFT, TOPRIGHT, BOTTOMLEFT, MUTE);
 		
 		//Compiler and Variables

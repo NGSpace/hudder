@@ -24,7 +24,7 @@
 	"environment": "*",
 	"entrypoints": {
 		"client": ["dev.ngspace.hudder.Hudder"],
-    	"modmenu": [ "dev.ngspace.hudder.main.config.HudderModMenuImpl" ]
+    	"modmenu": [ "dev.ngspace.hudder.config.HudderModMenuImpl" ]
 	},
 	"mixins": [
 		"hudder.mixins.json"
