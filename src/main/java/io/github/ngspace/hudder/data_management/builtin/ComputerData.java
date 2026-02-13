@@ -35,9 +35,16 @@ public class ComputerData extends HudderBuiltInVariables {
 		register(k->Advanced.getMinimumFPS(), NUMBER, "minfps", "min_fps");
 		register(k->Advanced.getMaximumFPS(), NUMBER, "maxfps", "max_fps");
 
-		register(k->ins.getFramerateLimitTracker().getFramerateLimit(), NUMBER, "framerate_limit");
 		register(k->ins.options.enableVsync().get(), BOOLEAN, "vsync_enabled");
-		register(k->GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor()).refreshRate(), NUMBER, "monitor_fps");
+		register(
+			k -> Math.min(
+				ins.getFramerateLimitTracker().getFramerateLimit(),
+				ins.options.enableVsync().get() ? 
+					GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor()).refreshRate() : Integer.MAX_VALUE
+        	),
+			NUMBER,
+			"framerate_limit"
+		);
 		
 		register(k->{
 			var playerInfo = ins.player.connection.getPlayerInfo(ins.player.getUUID());
