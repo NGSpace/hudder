@@ -13,12 +13,8 @@ import dev.ngspace.hudder.compilers.utils.functionandconsumerapi.ArrayElementMan
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.main.HudCompilationManager;
 import dev.ngspace.hudder.uielements.AUIElement;
-import dev.ngspace.hudder.uielements.ItemElement;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemStack;
 
 public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 	
@@ -46,7 +42,6 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 			wrapper = rtcache==null?null:rtcache.engine;
 			if (wrapper==null) {
 				wrapper = createLangEngine();
-				loadFunctions(wrapper);
 				
 				Exception exception = null;
 				try {
@@ -89,23 +84,6 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 		Object obj = DataVariableRegistry.getAny(key);
 		if (obj!=null) return obj;
 		return get(key);
-	}
-	public void loadFunctions(IScriptingLanguageEngine engine) {
-		
-		//Item
-		
-		engine.bindConsumer(s->elms.add(new ItemElement(s[1].asInt(), s[2].asInt(),new ItemStack(BuiltInRegistries.ITEM.getValue(
-				Identifier.tryParse(s[0].asString()))),s[3].asFloat(), false)),"drawItem", "item");
-		
-		//Slot
-		
-		engine.bindConsumer(s->elms.add(new ItemElement(s[1].asInt(),s[2].asInt(),mc.player.getInventory()
-				.getItem(s[0].asInt()),s[3].asFloat(), s[4].asBoolean())),"drawSlot", "slot");
-		
-		//Armor
-		
-		engine.bindConsumer(s->elms.add(new ItemElement(s[1].asInt(),s[2].asInt(),mc.player.getInventory()
-				.getItem(36+s[0].asInt()),s[3].asFloat(), s[4].asBoolean())),"drawArmor", "armor");
 	}
 	
 	

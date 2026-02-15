@@ -17,7 +17,7 @@ import com.google.gson.annotations.Expose;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.HudderV2Compiler;
-import dev.ngspace.hudder.compilers.abstractions.ATextCompiler;
+import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
 import dev.ngspace.hudder.compilers.utils.CompileException;
 import dev.ngspace.hudder.compilers.utils.Compilers;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
@@ -35,7 +35,7 @@ public class HudderConfig {
 	
 	
 	
-	private ATextCompiler compiler = new HudderV2Compiler();
+	private AHudCompiler<?> compiler = new HudderV2Compiler();
 	private File configFile;
 	
 	
@@ -71,7 +71,7 @@ public class HudderConfig {
 	 * @throws IOException
 	 */
 	public HudInformation compileMainHud() throws CompileException {
-		if (getCompiler()!=null) return getCompiler().compile(this, HudFileUtils.readFile(mainfile()), mainfile());
+		if (getCompiler()!=null) return getCompiler().processAndCompile(this, mainfile(), mainfile());
 		else throw new CompileException("There is no Compiler!");
 	}
 
@@ -277,7 +277,7 @@ public class HudderConfig {
 	 * Returns the compiler currently used to compile the main file.
 	 * @return The current compiler
 	 */
-	public ATextCompiler getCompiler() {
+	public AHudCompiler<?> getCompiler() {
 		return compiler;
 	}
 
@@ -380,6 +380,10 @@ public class HudderConfig {
 	    return userSettings.compilername;
 	}
 	
+	/**
+	 * @deprecated
+	 * @return fuckall
+	 */
 	@Deprecated(since = "9.2.0", forRemoval = true)
 	public Map<String, Object> globalVariables() {
 		return userSettings.globalVariables;

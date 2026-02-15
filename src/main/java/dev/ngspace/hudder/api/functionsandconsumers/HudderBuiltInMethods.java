@@ -14,6 +14,7 @@ import dev.ngspace.hudder.uielements.TextureElement;
 import dev.ngspace.hudder.uielements.TextureVerticesElement;
 import dev.ngspace.hudder.uielements.GameHudElement.GuiType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.animal.equine.AbstractHorse;
 import net.minecraft.world.item.ItemStack;
@@ -89,6 +90,18 @@ public class HudderBuiltInMethods {private HudderBuiltInMethods() {}
 		api.registerConsumer((e,a,s)->e.addUIElement(new ItemElement(s[0].asInt(),s[1].asInt(),
 				(mc.player.getVehicle() instanceof AbstractHorse horse) ? horse.getBodyArmorItem() : ItemStack.EMPTY, s[2].asFloat(), false)),
 				"drawMountArmor", "mountarmor");
+		
+		api.registerConsumer((e,a,s)->e.addUIElement(new ItemElement(s[1].asInt(), s[2].asInt(),new ItemStack(BuiltInRegistries.ITEM.getValue(
+				Identifier.tryParse(s[0].asString()))),s[3].asFloat(), false)),"drawItem", "item");
+		
+		//Slot
+		
+		api.registerConsumer((e,a,s)->e.addUIElement(new ItemElement(s[1].asInt(),s[2].asInt(),mc.player.getInventory()
+				.getItem(s[0].asInt()),s[3].asFloat(), s[4].asBoolean())),"drawSlot", "slot");
+		
+		//Armor
+		api.registerConsumer((e,a,s)->e.addUIElement(new ItemElement(s[1].asInt(),s[2].asInt(),mc.player.getInventory()
+				.getItem(36+s[0].asInt()),s[3].asFloat(), s[4].asBoolean())),"drawArmor", "armor");
 
 		//Logging
 		

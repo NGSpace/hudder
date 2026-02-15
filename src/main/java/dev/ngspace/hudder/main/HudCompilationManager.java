@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.compilers.abstractions.ATextCompiler;
+import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
 import dev.ngspace.hudder.compilers.utils.CompileException;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
 import dev.ngspace.hudder.variables.advanced.Misc;
@@ -17,8 +17,8 @@ public class HudCompilationManager implements EndTick {
 	
 	protected static Minecraft mc = Minecraft.getInstance();
 	
-    public static List<Consumer<ATextCompiler>> precomplistners = new ArrayList<Consumer<ATextCompiler>>();
-    public static List<Consumer<ATextCompiler>> postcomplistners = new ArrayList<Consumer<ATextCompiler>>();
+    public static List<Consumer<AHudCompiler<?>>> precomplistners = new ArrayList<Consumer<AHudCompiler<?>>>();
+    public static List<Consumer<AHudCompiler<?>>> postcomplistners = new ArrayList<Consumer<AHudCompiler<?>>>();
     private HudInformation result = null;
     
     public static String LastFailMessage = "";
@@ -30,9 +30,9 @@ public class HudCompilationManager implements EndTick {
     		Misc.delta = f!=null?f.getGameTimeDeltaTicks():3;
     		if (Hudder.config.shouldCompile()) {
     			Misc.updateCPS();
-    			for (Consumer<ATextCompiler> con : precomplistners)  con.accept(Hudder.config.getCompiler());
+    			for (Consumer<AHudCompiler<?>> con : precomplistners)  con.accept(Hudder.config.getCompiler());
     			result = Hudder.config.compileMainHud();
-    			for (Consumer<ATextCompiler> con : postcomplistners) con.accept(Hudder.config.getCompiler());
+    			for (Consumer<AHudCompiler<?>> con : postcomplistners) con.accept(Hudder.config.getCompiler());
     		}
 		} catch (CompileException e) {
 			LastFailMessage = e.getFailureMessage();
@@ -43,8 +43,8 @@ public class HudCompilationManager implements EndTick {
 	}
 	
 	
-	public static void addPreCompilerListener(Consumer<ATextCompiler> consumer) {precomplistners.add(consumer);}
-	public static void addPostCompilerListener(Consumer<ATextCompiler> consumer) {postcomplistners.add(consumer);}
+	public static void addPreCompilerListener(Consumer<AHudCompiler<?>> consumer) {precomplistners.add(consumer);}
+	public static void addPostCompilerListener(Consumer<AHudCompiler<?>> consumer) {postcomplistners.add(consumer);}
 
 	
 	public HudInformation getResult() {return result;}

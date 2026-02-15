@@ -3,6 +3,7 @@ package dev.ngspace.hudder.utils.testing;
 import java.util.HashMap;
 
 import dev.ngspace.hudder.Hudder;
+import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
 import dev.ngspace.hudder.compilers.abstractions.ATextCompiler;
 import dev.ngspace.hudder.compilers.abstractions.AV2Compiler;
 import dev.ngspace.hudder.config.HudderConfig;
@@ -30,7 +31,7 @@ public class HudderUnitTest {
 				v2comp.runtimes = new HashMap<String, V2Runtime>();
 				AV2Compiler.tempVariables = new HashMap<String, Object>();
 			}
-			ATextCompiler.variables.clear();
+			AHudCompiler.variables.clear();
 			text = compiler.compile(info, texttocompile, "Unit Tests").TopLeftText();
 		} catch (Exception e) {
 			e.printStackTrace();

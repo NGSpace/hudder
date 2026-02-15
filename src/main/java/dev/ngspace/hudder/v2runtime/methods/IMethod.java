@@ -1,6 +1,6 @@
 package dev.ngspace.hudder.v2runtime.methods;
 
-import dev.ngspace.hudder.compilers.abstractions.ATextCompiler;
+import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
 import dev.ngspace.hudder.compilers.abstractions.AV2Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.config.HudderConfig;
@@ -36,7 +36,7 @@ public interface IMethod extends V2IMethod {
 	 * @throws CompileException - if the method is not called properly or is unable to execute.
 	 */
 	@Deprecated
-	public void invoke(HudderConfig ci, CompileState meta, ATextCompiler comp, String type, int line, int charpos,
+	public void invoke(HudderConfig ci, CompileState meta, AHudCompiler<?> comp, String type, int line, int charpos,
 			ObjectWrapper... args) throws CompileException;
 	
 	@Deprecated

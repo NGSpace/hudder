@@ -21,7 +21,7 @@ public class MethodHandler {
 	public static final String[] TextArg = {"[Text]"};
 	public MethodHandler() {
 		//Inventory Rendering
-		bindConsumer(new ItemStackMethods(),"slot","item","hand","selectedslot","hat", "helmet", "chestplate", "leggings",
+		bindConsumer(new ItemStackMethods(),"hand","selectedslot","hat", "helmet", "chestplate", "leggings",
 				"pants", "boots", "offhand");
 		
 		//Text and compiling
@@ -87,7 +87,7 @@ public class MethodHandler {
 		for (String arg : argtypes) errb += ", [" + arg + "]";
 		errb+=';';
 		String err = errb;
-		IMethod newmethod = (info,state,comp,type,line,charpos,vals) -> {
+		V2IMethod newmethod = (info,state,comp,runtime,type,pos,vals) -> {
 			if (vals.length!=argtypes.length) throw new CompileException(err, defline, defcharpos);
 			for (int i = 0;i<vals.length;i++) {
 				if      (parameters[i]==1) comp.put("arg"+(i+1), vals[i].asString());
@@ -99,7 +99,7 @@ public class MethodHandler {
 			try {
 				state.combineWithResult(comp.compile(info, method, filename), false);
 			} catch (CompileException e) {
-				throw new CompileException(e.getFailureMessage() +"\nMethod "+type+" threw an error ", line, charpos);
+				throw new CompileException(e.getFailureMessage() +"\nMethod "+type+" threw an error ", pos);
 			}
 		};
 		methods.put(name,newmethod);

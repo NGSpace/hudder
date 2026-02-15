@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.compilers.abstractions.ATextCompiler;
+import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
 import dev.ngspace.hudder.compilers.utils.CompileException;
 import dev.ngspace.hudder.utils.ObjectWrapper;
 import dev.ngspace.hudder.utils.ValueGetter;
@@ -37,9 +37,8 @@ public class FunctionAndConsumerAPI {
 	public void applyFunctionsAndConsumers(Binder binder) {
 		for (var cons : consumers.entrySet())
 			binder.bindConsumer(cons.getKey(), cons.getValue());
-		for (var func : functions.entrySet()) {
+		for (var func : functions.entrySet())
 			binder.bindFunction(func.getKey(), func.getValue());
-		}
 		binders.add(binder);
 	}
 	
@@ -78,14 +77,15 @@ public class FunctionAndConsumerAPI {
 	
 
 	@FunctionalInterface public interface BindableFunction {
-		public Object invoke(IUIElementManager man, ATextCompiler comp, ObjectWrapper... args) throws CompileException;
+		public Object invoke(IUIElementManager man, AHudCompiler<?> comp, ObjectWrapper... args) throws CompileException;
 	}
 	@FunctionalInterface public interface BindableConsumer {
-		public void invoke(IUIElementManager man, ATextCompiler comp, ObjectWrapper... args) throws CompileException;
+		public void invoke(IUIElementManager man, AHudCompiler<?> comp, ObjectWrapper... args) throws CompileException;
 	}
 
 	
 	
+	// Tranz Rightz
 	public interface Binder {
 		public void bindConsumer(BindableConsumer cons, String... names);
 		public void bindFunction(BindableFunction cons, String... names);
