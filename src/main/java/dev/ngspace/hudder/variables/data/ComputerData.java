@@ -12,6 +12,8 @@ import dev.ngspace.hudder.variables.advanced.Misc;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.server.IntegratedServer;
 
+import org.lwjgl.glfw.GLFW;
+
 public class ComputerData extends HudderBuiltInVariables {
 	static Minecraft ins;
 	static final double MB = 1024d*1024d;
@@ -33,6 +35,17 @@ public class ComputerData extends HudderBuiltInVariables {
 		register(k->Misc.getAverageFPS(), NUMBER, "avgfps", "avg_fps");
 		register(k->Misc.getMinimumFPS(), NUMBER, "minfps", "min_fps");
 		register(k->Misc.getMaximumFPS(), NUMBER, "maxfps", "max_fps");
+
+		register(k->ins.options.enableVsync().get(), BOOLEAN, "vsync_enabled");
+		register(
+			k -> Math.min(
+				ins.getFramerateLimitTracker().getFramerateLimit(),
+				Boolean.TRUE.equals(ins.options.enableVsync().get()) ? 
+					GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor()).refreshRate() : Integer.MAX_VALUE
+        	),
+			NUMBER,
+			"framerate_limit"
+		);
 		
 		register(k->{
 			var playerInfo = ins.player.connection.getPlayerInfo(ins.player.getUUID());

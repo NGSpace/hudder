@@ -24,7 +24,7 @@ public class BuiltInTextureElement extends AUIElement {
 		this.width=width;
 		this.height=height;
 		this.id=id;
-		if (mc.getTextureManager().getTexture(id) instanceof SimpleTexture)
+		if (!mc.getResourceManager().getResource(id).isPresent())
 			throw new CompileException("Builtin texture not found: " + id.toString());
 	}
 	
