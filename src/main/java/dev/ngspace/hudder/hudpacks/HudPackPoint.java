@@ -1,5 +1,10 @@
 package dev.ngspace.hudder.hudpacks;
 
+import static dev.ngspace.hudder.hudpacks.HudPackHudState.BOTTOMLEFT;
+import static dev.ngspace.hudder.hudpacks.HudPackHudState.BOTTOMRIGHT;
+import static dev.ngspace.hudder.hudpacks.HudPackHudState.TOPLEFT;
+import static dev.ngspace.hudder.hudpacks.HudPackHudState.TOPRIGHT;
+
 import java.io.IOException;
 
 import dev.ngspace.hudder.compilers.HudPackCompiler;
@@ -9,8 +14,6 @@ import dev.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndCons
 import dev.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI.BindableFunction;
 import dev.ngspace.hudder.compilers.utils.functionandconsumerapi.FunctionAndConsumerAPI.Binder;
 import dev.ngspace.hudder.compilers.utils.javascript.JavaScriptEngine;
-
-import static dev.ngspace.hudder.hudpacks.HudPackHudState.*;
 
 public class HudPackPoint {
 	
@@ -37,6 +40,7 @@ public class HudPackPoint {
 			}
 		});
 		engine.evaluateCode(point_code, config.path());
+		
 	}
 	
 	public void execute(HudPackHudState state) throws IOException, CompileException {

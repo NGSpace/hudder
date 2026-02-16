@@ -52,12 +52,17 @@ public class CachedReader {
 	
 	
 	public boolean loadImageToCache(InputStream inputStream, Identifier id) throws IOException {
+		return loadImageToCache(NativeImage.read(inputStream), id);
+	}
+	
+	
+	
+	public boolean loadImageToCache(NativeImage img, Identifier id) {
 		if (savedImages.containsKey(id)) {
 			mc.getTextureManager().release(id);
 			savedImages.get(id).close();
 			savedImages.remove(id);
 		}
-		NativeImage img = NativeImage.read(inputStream);
 		DynamicTexture tex = new DynamicTexture(id::getPath,img);
 		mc.getTextureManager().register(id, tex);
 		

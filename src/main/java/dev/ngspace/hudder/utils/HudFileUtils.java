@@ -14,6 +14,8 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
 
+import com.mojang.blaze3d.platform.NativeImage;
+
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.Identifier;
 
@@ -73,6 +75,7 @@ public class HudFileUtils {private HudFileUtils() {}
 	public static void addReloadResourcesListener(ERunnable<IOException> listener) {
 		reloadResourcesListeners.add(listener);
 	}
+	
 	
 	
 	/**
@@ -173,16 +176,29 @@ public class HudFileUtils {private HudFileUtils() {}
 				continue;
 			}
 			try {
-				var image = ImageIO.read(resource);
-				if (image!=null) {
-					ByteArrayOutputStream output = new ByteArrayOutputStream();
-					ImageIO.write(image, "PNG", output);
-					reader.loadImageToCache(new ByteArrayInputStream(output.toByteArray()),getTexture(path));
+				if (loadImage(resource, path))
 					continue;
-				}
 			} catch (IOException e) {e.printStackTrace();}
 			reader.loadFileToCache(resource);
 		}
+	}
+
+
+
+	public static boolean loadImage(File resource, String path) throws IOException {
+		var image = ImageIO.read(resource);
+		if (image!=null) {
+			ByteArrayOutputStream output = new ByteArrayOutputStream();
+			ImageIO.write(image, "PNG", output);
+			reader.loadImageToCache(new ByteArrayInputStream(output.toByteArray()),getTexture(path));
+		}
+		return image!=null;
+	}
+
+
+
+	public static void loadImage(NativeImage img, String path) {
+		reader.loadImageToCache(img,getTexture(path));
 	}
 
 

@@ -25,7 +25,7 @@ public class HudPackHudState {
 				elements.toUIElementArray());
 	}
 	
-	protected void addString(String text, String pos) {
+	public void addString(String text, String pos) {
 		switch (pos) {
 			case TOPLEFT: TLText+=text; break;
 			case BOTTOMLEFT: BLText+=text; break;

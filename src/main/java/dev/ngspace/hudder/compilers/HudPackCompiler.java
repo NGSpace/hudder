@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
 import dev.ngspace.hudder.compilers.utils.CompileException;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
@@ -28,26 +29,25 @@ public class HudPackCompiler extends AHudCompiler<HudPackImpl> {
 		elms.clear();
 		if (hudpacks.containsKey(filepath))
 			return hudpacks.get(filepath);
-		if (filepath.endsWith(".zip")) {
-			hudpacks.put(filepath, new HudPackImpl(HudFileUtils.FOLDER + filepath, this));
-			return processFile(filepath);
-		}
-		return null;
+		hudpacks.put(filepath, new HudPackImpl(HudFileUtils.FOLDER + filepath, this));
+		return hudpacks.get(filepath);
 	}
 
 	@Override
 	public HudInformation compile(HudderConfig info, HudPackImpl pack, String filename) throws CompileException {
-		elms.clear();
-		HudPackHudState state = new HudPackHudState();
-		for (var point : pack.hudpackpoints) {
-			try {
-				point.execute(state);
-			} catch (IOException e) {
-				e.printStackTrace();
-				return HudInformation.of(e.getMessage());
+		try {
+			elms.clear();
+			HudPackHudState state = new HudPackHudState();
+			for (var point : pack.hudpackpoints) {
+				if (point.config.condition()==null||
+						Boolean.TRUE.equals(DataVariableRegistry.getBoolean(point.config.condition())))
+					point.execute(state);
 			}
+			return state.toResult(elms);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return HudInformation.of(e.getMessage());
 		}
-		return state.toResult(elms);
 	}
 
 	@Override
