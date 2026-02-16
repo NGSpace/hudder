@@ -43,4 +43,8 @@ public class NGSMCConfigBuilder {
 	public void setConfigFile(File configfile) {
 		this.configfile = configfile;
 	}
+
+	public void removeCategory(NGSMCConfigCategory category) {
+		categories.remove(category);
+	}
 }
