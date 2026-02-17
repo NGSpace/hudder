@@ -51,10 +51,7 @@ public class ComponentsData extends HashMap<String, Object> {
 			}
 
 			case "trim":
-				yield data.get(DataComponents.TRIM) ==null ? null : new Object() {
-					String material = data.get(DataComponents.TRIM).material().value().assets().base().suffix();
-					String pattern = data.get(DataComponents.TRIM).pattern().value().assetId().toString();
-				};
+				yield data.get(DataComponents.TRIM) ==null ? null : new TrimHolder(data);
 
 			case "enchantable":
 				var enchantable = data.get(DataComponents.ENCHANTABLE);
@@ -112,5 +109,17 @@ public class ComponentsData extends HashMap<String, Object> {
 			this.level = d.getLevel(e);
 		}
 		@Override public String toString() {return EnchantmentInfo.getName(e.description()) + " " + level;}
+	}
+	public static class TrimHolder {
+		public String material;
+		public String pattern;
+		public TrimHolder(DataComponentMap data) {
+			material = data.get(DataComponents.TRIM).material().value().assets().base().suffix();
+			pattern = data.get(DataComponents.TRIM).pattern().value().assetId().toString();
+		}
+		@Override
+		public String toString() {
+			return "TrimHolder [material=" + material + ", pattern=" + pattern + "]";
+		}
 	}
 }
