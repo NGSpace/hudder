@@ -29,6 +29,7 @@
 	"mixins": [
 		"hudder.mixins.json"
 	],
+	"accessWidener" : "hudder.classtweaker",
 	"depends": {
 		"fabricloader": ">=0.14.0",
 		"minecraft": ">=1.21.11",

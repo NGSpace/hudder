@@ -3,7 +3,7 @@ plugins {
 	id 'maven-publish'
 }
 loom {
-	accessWidenerPath = file("src/main/resources/hudder.accesswidener")
+	accessWidenerPath = file("src/main/resources/hudder.classtweaker")
 }
 
 version = project.mod_version

@@ -12,6 +12,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemCooldowns.CooldownInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
@@ -41,12 +42,12 @@ public class ComponentsData extends HashMap<String, Object> {
 				yield component == null ? 0 : component.seconds() * 20;
 			}
 			case "cooldown": {
-				var group = player.getCooldowns().getCooldownGroup(item);
-				var acc = ((ItemCooldownsAccessor)player.getCooldowns());
-				var cooldown = acc.getCooldowns().get(group);
+				Identifier group = player.getCooldowns().getCooldownGroup(item);
+				ItemCooldownsAccessor acc = ((ItemCooldownsAccessor)player.getCooldowns());
+				CooldownInstance cooldown = acc.getCooldowns().get(group);
 				if (cooldown==null)
 					yield 0;
-				var totaltime = (cooldown.endTime()-acc.getTickCount()) - (cooldown.startTime()-acc.getTickCount());
+				int totaltime = (cooldown.endTime()-acc.getTickCount()) - (cooldown.startTime()-acc.getTickCount());
 				yield totaltime - (acc.getTickCount()-cooldown.startTime());
 			}
 

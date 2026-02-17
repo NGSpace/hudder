@@ -42,7 +42,7 @@ public class HudderBuiltInMethods {private HudderBuiltInMethods() {}
 				"drawLocalTexture","drawPNG","drawImage","image","png");
 		
 		api.registerConsumer((e,a,s)-> e.addUIElement(new Texture9SliceElement(s[0].asString(),
-				s[1].asInt(),s[2].asInt(),s[3].asInt(),s[4].asInt(),s[5].asFloatArray())), "9slicetexture");
+				s[1].asInt(),s[2].asInt(),s[3].asInt(),s[4].asInt(),s[5].asFloatArray())), "9slicetexture", "nineslicetexture");
 		
 		//Text
 		
