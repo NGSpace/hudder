@@ -14,18 +14,21 @@
 	"ngsmcconfig.confirmunsavedexit": "Unsaved changes",
 	"ngsmcconfig.confirmunsavedexit.text": "There are some unsaved changes, are you sure you want to leave and discard those unsaved changes?",
 	
-	
+
 	"hudder.configkeybind": "Open Hudder settings",
+	"hudder.reloadkeybind": "Reload Hudder files",
 	"key.category.minecraft.hudder.keybinds": "Hudder",
 	
 	
 	"hudder.general": "General",
 	
+	"hudder.hudsettings": "Hud settings (%s)",
+	
 	"hudder.general.wiki":"Click here to open Hudder's wiki in your browser",
 	"hudder.general.wiki.tooltip":"Click to open Wiki.",
 	
 	"hudder.general.enabled":"Enabled",
-	"hudder.general.enabled.tooltip":"Whether Hudder should be enabled or not (duh).",
+	"hudder.general.enabled.tooltip":"Whether Hudder should be enabled or not.",
 	
 	"hudder.general.mainfile":"Main file",
 	"hudder.general.mainfile.tooltip":"Change the main file\u00A77The file must be located in the \u00A76.minecraft/config/Hudder\u00A77 folder.",
@@ -62,19 +65,6 @@
 	"hudder.advanced.f3": "Show in F3",
 	"hudder.advanced.f3.tooltip": "Should still render when f3 is showing.",
 	
-	"hudder.global_variables": "Global Variables",
-	
-	"hudder.global_variables.enabled":"Global Variables",
-	"hudder.global_variables.enabled.tooltip": "Whether global variables should be used.",
-	
-	"hudder.global_variables.tooltip":"Control variables and set values without editing the files\n\u00A77This can also be used to create parameters for Hudder files.",
-	
-	"hudder.global_variables.key":"Key",
-	"hudder.global_variables.key.tooltip": "The name of the variable.",
-	
-	"hudder.global_variables.value":"Value",
-	"hudder.global_variables.value.tooltip": "The value of the variable.",
-	
 	"hudder.advanced.compilertype": "Compiler type",
 	"hudder.advanced.compilertype.tooltip": "Change the type of compiler (ex Hudder, JavaScript, None).",
 	"hudder.advanced.compilertype.error":"Invalid compiler type.",
@@ -92,5 +82,8 @@
 	"hudder.advanced.removehotbar.tooltip": "\u00A74WARNING - THIS WILL MAKE YOUR HOTBAR AND HEALTH BAR INVISIBLE UNTIL DISABLED.\n\u00A7fWhether hudder should hide all Hotbar related GUI elements.",
 	
 	"hudder.advanced.limitrate": "Limit compiler rate",
-	"hudder.advanced.limitrate.tooltip": "\u00A74WARNING - THIS MAY CAUSE PERFORMANCE ISSUES.\n\u00A7fDisabling this will move hudder file compilation from running every client tick to running every frame."
+	"hudder.advanced.limitrate.tooltip": "\u00A74WARNING - THIS MAY CAUSE PERFORMANCE ISSUES.\n\u00A7fDisabling this will move hudder file compilation from running every client tick to running every frame.",
+		
+	"hudder.advanced.autorefresh": "Automatically refresh hud",
+	"hudder.advanced.autorefresh.tooltip": "Disabling this will stop your hud from updating with every change. Manual refreshes through the keybind will still function"
 }

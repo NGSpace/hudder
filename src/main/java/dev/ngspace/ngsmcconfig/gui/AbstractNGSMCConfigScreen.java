@@ -90,7 +90,7 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 			int width = Minecraft.getInstance().getWindow().getGuiScaledWidth();
 			int height = Minecraft.getInstance().getWindow().getGuiScaledHeight();
 		
-			container = new NGSMCConfigOptionsListWidget(Minecraft.getInstance(), width, height, 35);
+			container = new NGSMCConfigOptionsListWidget(Minecraft.getInstance(), width, height-35, 35);
 			
 			addRenderableWidget(container);
 		}

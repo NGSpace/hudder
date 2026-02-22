@@ -44,10 +44,22 @@ public class HudderTickEvent implements StartTick {
 		while (Hudder.configkeybind.consumeClick()) {
 			Minecraft.getInstance().setScreen(HudderNGSMCConfigMenu.createMenu(Minecraft.getInstance().screen));
 		}
-    	if (!Hudder.config.enabled()) return;
+		while (Hudder.reloadkeybind.consumeClick()) {
+	    	Hudder.log("Manual file refresh triggered!");
+			try {
+				HudFileUtils.reloadResources();
+				Hudder.showToast(Component.literal("Refreshed files!").withStyle(ChatFormatting.BOLD), 
+						Component.literal("\u00A7aDue to manual refresh."));
+			} catch (IOException e) {
+				Hudder.showToast(Component.literal("\\u00A74Error refreshing files!")
+						.withStyle(ChatFormatting.BOLD),Component.literal(e.getMessage()));
+				e.printStackTrace();
+			}
+		}
     	try {
     		if (watcherService==null) return;
     		WatchKey wk = watcherService.poll();
+        	if (!Hudder.config.enabled()||!Hudder.config.autorefresh()) return;
 			if (wk!=null) {
 				for (WatchEvent<?> event : wk.pollEvents()) {
 				    Path changed = (Path) event.context();

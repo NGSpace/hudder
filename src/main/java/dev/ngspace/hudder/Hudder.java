@@ -65,6 +65,7 @@ public class Hudder implements ClientModInitializer {
 
 
 	public static KeyMapping configkeybind;
+	public static KeyMapping reloadkeybind;
 
     
     
@@ -77,11 +78,20 @@ public class Hudder implements ClientModInitializer {
 		
 		log("Starting Hudder " + HUDDER_VERSION);
 		
+		var keycategory = KeyMapping.Category.register(Identifier.parse("hudder.keybinds"));
+		
 		configkeybind = KeyBindingHelper.registerKeyBinding(new KeyMapping(
             "hudder.configkeybind",
-            InputConstants.Type.KEYSYM, // The type of the keybinding, KEYSYM for keyboard, MOUSE for mouse.
-            GLFW.GLFW_KEY_R, // The keycode of the key
-            KeyMapping.Category.register(Identifier.parse("hudder.keybinds")) // The translation key of the keybinding's category.
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_R,
+            keycategory
+        ));
+		
+		reloadkeybind = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+            "hudder.reloadkeybind",
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_H,
+            keycategory
         ));
 		
 		

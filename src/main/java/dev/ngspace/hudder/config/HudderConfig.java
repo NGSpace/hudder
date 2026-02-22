@@ -372,12 +372,21 @@ public class HudderConfig {
 	    return userSettings.limitrate;
 	}
 
-	public int config_version() {
+	public boolean autorefresh() {
+	    return userSettings.autorefresh;
+	}
+
+	public int configVersion() {
 	    return userSettings.config_version;
 	}
 
 	public String compilerName() {
 	    return userSettings.compilername;
+	}
+	
+	public Map<String, Object> getHudSettings(String compiler, String hud) {
+		return userSettings.hudSettings.computeIfAbsent(compiler,k->new HashMap<String, Map<String, Object>>())
+				.computeIfAbsent(hud, k->new HashMap<String, Object>());
 	}
 	
 	/**

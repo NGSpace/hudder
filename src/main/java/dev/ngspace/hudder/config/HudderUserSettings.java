@@ -7,6 +7,8 @@ import com.google.gson.annotations.Expose;
 
 public class HudderUserSettings {
 	@Expose public Map<String, Object> globalVariables = new HashMap<String, Object>();
+	// This one needs some xplaining, First string is the compiler key, then the hud key, then the setting key
+	@Expose public Map<String, Map<String, Map<String, Object>>> hudSettings = new HashMap<String, Map<String, Map<String, Object>>>();
 	@Expose public Map<String, Object> savedVariables = new HashMap<String, Object>();
 	@Expose public String mainfile = "tutorial.hud";//Set "tutorial.hud" as the initial file selected
 	@Expose public boolean enabled = true;
@@ -24,6 +26,7 @@ public class HudderUserSettings {
 	@Expose public boolean background = true;
 	@Expose public boolean removegui = false;
 	@Expose public boolean limitrate = true;
+	@Expose public boolean autorefresh = true;
 	
 	@Expose public int config_version = HudderConfig.HUDDER_CONFIG_VERSION;
 

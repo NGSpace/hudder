@@ -42,7 +42,8 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 		NGSMCConfigCategory general = builder.createCategory(Component.translatable("hudder.general"));
 		NGSMCConfigCategory text = builder.createCategory(Component.translatable("hudder.text"));
 		NGSMCConfigCategory advanced = builder.createCategory(Component.translatable("hudder.advanced"));
-		NGSMCConfigCategory hudsettings = builder.createCategory(Component.translatable("hudder.hudsettings"));
+		NGSMCConfigCategory hudsettings = builder.createCategory(Component.translatable("hudder.hudsettings",
+				config.mainfile));
 		
 		
 		
@@ -143,12 +144,22 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 				.setSaveOperation(b->config.limitrate=b)
 				.setDefaultValue(true)
 				.build());
+		advanced.addOption(BooleanNGSMCConfigOption.builder(config.autorefresh, Component.translatable("hudder.advanced.autorefresh"))
+				.setHoverComponent(Component.translatable("hudder.advanced.autorefresh.tooltip"))
+				.setSaveOperation(b->config.autorefresh=b)
+				.setDefaultValue(true)
+				.build());
 		
 		
 		
 		/* Hud specific settings */
-		if (!Hudder.config.getCompiler().setupHudSettings(hudsettings))
+		try {
+			if (!Hudder.config.getCompiler().setupHudSettings(hudsettings))
+				builder.removeCategory(hudsettings);
+		} catch (Exception e) {
+			e.printStackTrace();
 			builder.removeCategory(hudsettings);
+		}
 		
 		return builder.build();
 	}
