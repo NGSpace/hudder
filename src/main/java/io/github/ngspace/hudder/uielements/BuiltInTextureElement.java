@@ -5,29 +5,43 @@ import io.github.ngspace.hudder.main.HudderRenderer;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.Identifier;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.renderer.RenderPipelines;
 
+@Environment(EnvType.CLIENT)
 public class BuiltInTextureElement extends AUIElement {
-	
-	public final int x;
-	public final int y;
-	public final int width;
-	public final int height;
-	public final Identifier id;
-    public static Minecraft mc = Minecraft.getInstance();
-	
-	public BuiltInTextureElement(Identifier id, int x, int y, int width, int height) throws CompileException {
-		this.x=x;
-		this.y=y;
-		this.width=width;
-		this.height=height;
-		this.id=id;
-		if (!mc.getResourceManager().getResource(id).isPresent())
-			throw new CompileException("Builtin texture not found: " + id.toString());
+
+	private static final Minecraft mc = Minecraft.getInstance();
+
+	private final Identifier atlasId;
+	private final Identifier spriteId;
+	private final int x, y;
+	private final int width, height;
+
+	public BuiltInTextureElement(Identifier atlasId, Identifier spriteId, int x, int y, int width, int height) {
+		this.atlasId = atlasId;
+		this.spriteId = spriteId;
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
 	}
-	
-	@Override public void renderElement(GuiGraphics context, HudderRenderer renderer, DeltaTracker delta) {
-		context.blit(RenderPipelines.GUI_TEXTURED,id, x, y, 0, 0f, width, height, width, height);
-	}
+
+	@Override
+	public void renderElement(GuiGraphics context, HudderRenderer renderer, DeltaTracker delta) {
+
+		TextureAtlasSprite sprite = mc.getAtlasManager().getAtlasOrThrow(atlasId).getSprite(spriteId);
+
+        context.blitSprite(
+                RenderPipelines.GUI_TEXTURED,
+                sprite,
+                x,
+                y,
+                width,
+                height
+        );
+    }
 }

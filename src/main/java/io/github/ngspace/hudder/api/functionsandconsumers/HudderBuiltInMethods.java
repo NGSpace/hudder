@@ -35,7 +35,7 @@ public class HudderBuiltInMethods {private HudderBuiltInMethods() {}
 		//Textures
 		
 		api.registerConsumer((e,a,s)->e.addUIElement(new BuiltInTextureElement(Identifier.withDefaultNamespace(
-				s[0].asString().trim()), s[1].asInt(), s[2].asInt(), s[3].asInt(),s[4].asInt())), "drawTexture", "texture");
+				s[0].asString().trim()), Identifier.withDefaultNamespace(s[1].asString().trim()), s[2].asInt(), s[3].asInt(), s[4].asInt(),s[5].asInt())), "drawTexture", "texture");
 		
 		api.registerConsumer((e,a,s)-> e.addUIElement(new TextureElement(s[0].asString(),
 				s[1].asInt(),s[2].asInt(),s[3].asInt(),s[4].asInt())),
