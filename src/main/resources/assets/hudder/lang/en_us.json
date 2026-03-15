@@ -90,6 +90,9 @@
 	
 	"hudder.advanced.removehotbar": "Remove hotbar",
 	"hudder.advanced.removehotbar.tooltip": "\u00A74WARNING - THIS WILL MAKE YOUR HOTBAR AND HEALTH BAR INVISIBLE UNTIL DISABLED.\n\u00A7fWhether hudder should hide all Hotbar related GUI elements.",
+
+	"hudder.advanced.removeeffects": "Remove effects hud",
+	"hudder.advanced.removeeffects.tooltip": "\u00A74WARNING - THIS WILL MAKE YOUR EFFECTS HUD INVISIBLE UNTIL DISABLED.\n\u00A7fWhether hudder should hide the effects hud.",
 	
 	"hudder.advanced.limitrate": "Limit compiler rate",
 	"hudder.advanced.limitrate.tooltip": "\u00A74WARNING - THIS MAY CAUSE PERFORMANCE ISSUES.\n\u00A7fDisabling this will move hudder file compilation from running every client tick to running every frame."

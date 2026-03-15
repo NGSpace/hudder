@@ -16,6 +16,7 @@ import net.minecraft.client.gui.GuiGraphics;
 @Mixin(Gui.class)
 public class InGameHudInjections {
 	public boolean shouldNotDraw() {return Hudder.config.removegui&&Hudder.config.shouldCompile();}
+    public boolean shouldNotDrawEffects() { return Hudder.config.removeeffects && Hudder.config.shouldCompile(); }
 
 	@Inject(method = "renderHotbarAndDecorations", at = @At("HEAD"),cancellable=true)
     public void disableHotbarAndDecorations(GuiGraphics context, DeltaTracker tickCounter, CallbackInfo i) {
@@ -23,4 +24,11 @@ public class InGameHudInjections {
 			i.cancel();
 		}
 	}
+
+    @Inject(method = "renderEffects", at = @At("HEAD"), cancellable = true)
+    public void disableEffectsHud(CallbackInfo ci) {
+        if (shouldNotDrawEffects()) {
+            ci.cancel();
+        }
+    }
 }

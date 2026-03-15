@@ -46,6 +46,7 @@ public class HudderConfig {
 	@Expose public int backgroundcolor = 0x86353535;
 	@Expose public boolean background = true;
 	@Expose public boolean removegui = false;
+    @Expose public boolean removeeffects = false;
 	@Expose public boolean limitrate = true;
 	
 	@Expose public int config_version = HUDDER_CONFIG_VERSION;
