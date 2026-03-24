@@ -46,6 +46,8 @@
     "hudder.text.background.tooltip": "Entscheidet, ob Text standartmäßig einen Hintergrund besitzen soll",
     "hudder.advanced.removehotbar": "Schnellzugriffsleiste entfernen",
     "hudder.advanced.removehotbar.tooltip": "§4ACHTUNG - DIESE OPTION MACHT DIE LEBENS- UND SCHNELLZUGRIFFSLEISTE UNSICHTBAR!\n§fEntscheidet, ob Hudder alle GUI-Elemente nahe der Schnellzugriffsleiste verstecken soll",
+    "hudder.advanced.removeeffects": "Effekt-Anzeige entfernen",
+    "hudder.advanced.removeeffects.tooltip": "§4ACHTUNG - DIESE OPTION MACHT DIE EFFEKT-ANZEIGE UNSICHTBAR!\n§fEntscheidet, ob Hudder die Effekt-Anzeige verstecken soll",
     "hudder.advanced.limitrate": "Compiler Rate beschränken",
     "hudder.advanced.limitrate.tooltip": "§4ACHTUNG - DIESE OPTION VERURSACHT PERFORMANCE PROBLEME!\n§fDas Deaktivieren dieser Option wird dem Hudder Compiler befehlen, jedes Bild anstatt jeden Client Tick ausgeführt zu werden"
 }

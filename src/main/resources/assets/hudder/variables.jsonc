@@ -562,13 +562,33 @@
 			},
 			{
 				"name": "xoffset",
-				"desc": "The x offset in Hudder",
+				"desc": "The x offset in Hudder (After 10.0.0 it is just an alias to xoffset_right)",
 				"version": "1.0.0"
 			},
 			{
 				"name": "yoffset",
-				"desc": "The y offset in Hudder",
+				"desc": "The y offset in Hudder (After 10.0.0 it is just an alias to yoffset_top)",
 				"version": "1.0.0"
+			},
+			{
+				"name": "xoffset_left",
+				"desc": "The x offset in Hudder",
+				"version": "10.0.0"
+			},
+			{
+				"name": "xoffset_right",
+				"desc": "The x offset in Hudder",
+				"version": "10.0.0"
+			},
+			{
+				"name": "yoffset_top",
+				"desc": "The y offset in Hudder",
+				"version": "10.0.0"
+			},
+			{
+				"name": "yoffset_bottom",
+				"desc": "The y offset in Hudder",
+				"version": "10.0.0"
 			},
 			{
 				"name": "lineheight",
@@ -877,8 +897,13 @@
 			},
 			{
 				"name": "removegui",
-				"desc": "Is the HotBar removed",
+				"desc": "Is Minecraft's builtin HotBar removed",
 				"version": "3.0.0"
+			},
+			{
+				"name": "removeeffects",
+				"desc": "Is Minecraft's builtin Effects hud removed",
+				"version": "10.0.0"
 			},
 			{
 				"name": "limitrate",

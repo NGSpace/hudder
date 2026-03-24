@@ -9,6 +9,8 @@
 	],
 	"contributors": [
 		"magor2345",
+		"AndyLiu0",
+		"technicfan",
 		"DanielElProXDDD-GD",
 		"Hilmar"
 	],
@@ -23,15 +25,16 @@
 	"icon": "assets/hudder/icon.png",
 	"environment": "*",
 	"entrypoints": {
-		"client": ["io.github.ngspace.hudder.Hudder"],
-    	"modmenu": [ "io.github.ngspace.hudder.main.config.HudderModMenuImpl" ]
+		"client": ["dev.ngspace.hudder.Hudder"],
+    	"modmenu": [ "dev.ngspace.hudder.config.HudderModMenuImpl" ]
 	},
 	"mixins": [
 		"hudder.mixins.json"
 	],
+	"accessWidener" : "hudder.classtweaker",
 	"depends": {
 		"fabricloader": ">=0.14.0",
-		"minecraft": ">=1.21.11",
+		"minecraft": ">=26.1",
 		"fabric-api": "*"
 	},
 	"suggests": {

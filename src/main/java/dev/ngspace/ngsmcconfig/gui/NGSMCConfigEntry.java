@@ -3,9 +3,10 @@ package dev.ngspace.ngsmcconfig.gui;
 import java.util.Arrays;
 import java.util.List;
 
+import dev.ngspace.hudder.mixin.GuiGraphicsExtractorAccessor;
 import dev.ngspace.ngsmcconfig.options.AbstractNGSMCConfigOption;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
@@ -37,36 +38,40 @@ public class NGSMCConfigEntry extends ContainerObjectSelectionList.Entry<NGSMCCo
     		boolean renderlast) {
     	this.renderlast = renderlast;
         this.widget = widget;
-        resetButton = Button.builder(Component.translatable("ngsmcconfig.reset"), button->option.reset())
+        resetButton = Button.builder(Component.translatable("ngsmcconfig.reset"), _->option.reset())
         		.size(40, 20).build();
         text = new StringWidget(0, 0, 200, 20, title, Minecraft.getInstance().font) {
         	@Override public void playDownSound(SoundManager soundManager) { /* Ugly noise */ }
         };
         text.active = true;
         this.option = option;
-        children = Arrays.asList(widget, resetButton, text);
+        children = widget==null ? Arrays.asList(text) : Arrays.asList(widget, resetButton, text);
     }
 
     @Override
-    public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float partialTick) {
+    public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float partialTick) {
     	int x = getX();
     	int width = getWidth();
     	int height = getHeight();
     	int y = getY();
-    	resetButton.setPosition(x+width-40, y);
-        resetButton.render(graphics, mouseX, mouseY, partialTick);
-        resetButton.active = !option.isDefault();
+    	
         if (widget!=null) {
+        	resetButton.setPosition(x+width-40, y);
+            resetButton.extractRenderState(graphics, mouseX, mouseY, partialTick);
+            resetButton.active = !option.isDefault();
+            
         	widget.setPosition(x+width-50-widget.getWidth(), y);
-        	widget.render(graphics, mouseX, mouseY, partialTick);
+        	widget.extractRenderState(graphics, mouseX, mouseY, partialTick);
+        } else {
+        	text.setSize(width, height);
         }
         text.setPosition(x, y);
-        text.render(graphics, mouseX, mouseY, partialTick);
+        text.extractWidgetRenderState(graphics, mouseX, mouseY, partialTick);
         var c = getChildAt(mouseX, mouseY);
         if (c.isPresent()) {
         	var child = c.get();
         	if (child==text) {
-        		text.renderWidget(graphics, height, mouseY, partialTick);
+        		text.extractWidgetRenderState(graphics, height, mouseY, partialTick);
         	}
         }
         
@@ -74,7 +79,7 @@ public class NGSMCConfigEntry extends ContainerObjectSelectionList.Entry<NGSMCCo
         
         if (hoveredwidget.isPresent() && hoveredwidget.get() instanceof AbstractWidget hoveredawidget) {
             Style style = hoveredawidget.getMessage().getStyle();
-            graphics.renderComponentHoverEffect(Minecraft.getInstance().font, style, mouseX-5, mouseY+10);
+            ((GuiGraphicsExtractorAccessor) graphics).callComponentHoverEffect(Minecraft.getInstance().font, style, mouseX-5, mouseY+10);
         }
     }
 

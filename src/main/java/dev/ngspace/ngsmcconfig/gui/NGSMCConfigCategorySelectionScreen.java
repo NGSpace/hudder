@@ -13,8 +13,8 @@ public class NGSMCConfigCategorySelectionScreen extends AbstractNGSMCConfigScree
 	public static final int CATEGORY_PADDING = 8;
 
 	public NGSMCConfigCategorySelectionScreen(Screen parentScreen,
-			List<NGSMCConfigCategory> categories, Runnable writeoperation, URI wikiUri, File configfile) {
-		super(parentScreen, categories, false, writeoperation, wikiUri, configfile);
+			List<NGSMCConfigCategory> categories, Runnable writeoperation, URI docsUri, File configfile) {
+		super(parentScreen, categories, false, writeoperation, docsUri, configfile);
 		askBeforeUnsavedLeave = true;
 	}
 	
@@ -39,7 +39,7 @@ public class NGSMCConfigCategorySelectionScreen extends AbstractNGSMCConfigScree
 			} else catX=catX+CATEGORY_PADDING/2;
 			
 			addRenderableWidget(Button.builder(category.title(),
-				b->minecraft.setScreen(new NGSMCConfigOptionsScreen(this, categories, category, writeoperation, wikiUri, configfile)))
+				_->minecraft.setScreen(new NGSMCConfigOptionsScreen(this, categories, category, writeoperation, docsUri, configfile)))
 				.pos(catX, catY)
 				.build());
 		}

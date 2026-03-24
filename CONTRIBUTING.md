@@ -7,6 +7,7 @@ All contributions to Hudder must follow the following rules
 1. No malicious code (obviously).
 2. No stupid code.
 3. Below 10k lines additions and deletions (combined).
+4. Contain changes that might break stuff to major releases (x.0.0)
 
 # License
 By submitting a contribution to this repository, you agree to grant NGSpace

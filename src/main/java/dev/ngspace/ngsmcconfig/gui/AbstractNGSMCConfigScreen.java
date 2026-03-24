@@ -6,7 +6,7 @@ import java.util.List;
 
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.ConfirmScreen;
@@ -29,17 +29,17 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 	protected Button configButton;
 	protected StringWidget errorWidget;
 	protected Runnable writeoperation;
-	protected URI wikiUri;
+	protected URI docsUri;
 	protected File configfile;
 	
 	protected AbstractNGSMCConfigScreen(Screen parentScreen, List<NGSMCConfigCategory> categories, boolean c,
-			Runnable writeoperation, URI wikiUri, File configfile) {
+			Runnable writeoperation, URI docsUri, File configfile) {
 		super(Component.literal("NGSMCConfig"));
 		this.categories = categories;
 		this.parent = parentScreen;
 		this.createContainer = c;
 		this.writeoperation = writeoperation;
-		this.wikiUri = wikiUri;
+		this.docsUri = docsUri;
 		this.configfile = configfile;
 	}
 	@Override
@@ -47,33 +47,33 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		
 		Component error = getError();
 		
-		backButton = Button.builder(Component.translatable("ngsmcconfig.back"), b->onClose())
+		backButton = Button.builder(Component.translatable("ngsmcconfig.back"), _->onClose())
 				.bounds(0, 0, 30, 20)
 				.build();
 		addRenderableWidget(backButton);
 		
-		saveButton = Button.builder(Component.translatable("ngsmcconfig.save"), b->save())
+		saveButton = Button.builder(Component.translatable("ngsmcconfig.save"), _->save())
 				.bounds(30, 0, 30, 20)
 				.build();
 		saveButton.active = error==null;
 		addRenderableWidget(saveButton);
 		
 		globalResetButton = Button.builder(Component.translatable("ngsmcconfig.globalreset").withColor(0xdb3b3b),
-				b->reset())
+				_->reset())
 				.bounds(width-40, 0, 40, 20)
 				.build();
 
 		if (configfile!=null) {
 			configButton = Button.builder(Component.translatable("ngsmcconfig.config"),
-					b->Util.getPlatform().openFile(configfile))
-					.bounds(width-(wikiUri!=null?150:120), 0, 70, 20)
+					_->Util.getPlatform().openFile(configfile))
+					.bounds(width-(docsUri!=null?150:120), 0, 70, 20)
 					.build();
 			addRenderableWidget(configButton);
 		}
 		
-		if (wikiUri!=null) {
+		if (docsUri!=null) {
 			wikiButton = Button.builder(Component.translatable("ngsmcconfig.wiki"),
-					b->clickUrlAction(Minecraft.getInstance(), this, wikiUri))
+					_->clickUrlAction(Minecraft.getInstance(), this, docsUri))
 					.bounds(width-80, 0, 40, 20)
 					.build();
 			addRenderableWidget(wikiButton);
@@ -90,7 +90,7 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 			int width = Minecraft.getInstance().getWindow().getGuiScaledWidth();
 			int height = Minecraft.getInstance().getWindow().getGuiScaledHeight();
 		
-			container = new NGSMCConfigOptionsListWidget(Minecraft.getInstance(), width, height, 35);
+			container = new NGSMCConfigOptionsListWidget(Minecraft.getInstance(), width, height-35, 35);
 			
 			addRenderableWidget(container);
 		}
@@ -147,7 +147,7 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 	}
 	
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
 		
 		Component error = getError();
 		
@@ -155,8 +155,8 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		errorWidget.setMessage(stylizeErrorComponment(error));
 		
         if (container!=null)
-        	container.render(graphics, mouseX, mouseY, partialTick);
-        super.render(graphics, mouseX, mouseY, partialTick);
+        	container.extractRenderState(graphics, mouseX, mouseY, partialTick);
+        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
     }
 
 	private Component stylizeErrorComponment(Component error) {

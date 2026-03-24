@@ -1,7 +1,7 @@
 package dev.ngspace.ngsmcconfig.gui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 
 public class NGSMCConfigOptionsListWidget extends ContainerObjectSelectionList<NGSMCConfigEntry> {
@@ -14,8 +14,7 @@ public class NGSMCConfigOptionsListWidget extends ContainerObjectSelectionList<N
     	return super.addEntry(entry);
     }
     
-    @Override protected void renderListBackground(GuiGraphics guiGraphics) {/* It ugly ;_; */}
-    @Override protected void renderListSeparators(GuiGraphics guiGraphics) {/* It ugly too */}
+    @Override protected void extractListBackground(GuiGraphicsExtractor guiGraphics) {/* It ugly ;_; */}
     
     @Override
     public int getRowWidth() {
