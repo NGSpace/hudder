@@ -106,7 +106,7 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		writeoperation.run();
 	}
 	protected void reset() {
-		minecraft.setScreen(new ConfirmScreen(b->{if (b) resetNoConf();minecraft.setScreen(this);},
+		minecraft.gui.setScreen(new ConfirmScreen(b->{if (b) resetNoConf();minecraft.gui.setScreen(this);},
 				Component.translatable("ngsmcconfig.confirmreset"),
 				Component.translatable("ngsmcconfig.confirmreset.text")));
 	}
@@ -139,11 +139,11 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 	@Override
 	public void onClose() {
 		if (askBeforeUnsavedLeave&&isEditedAndNotSaved())
-			minecraft.setScreen(new ConfirmScreen(b->minecraft.setScreen(b?parent:this),
+			minecraft.gui.setScreen(new ConfirmScreen(b->minecraft.gui.setScreen(b?parent:this),
 					Component.translatable("ngsmcconfig.confirmunsavedexit"),
 					Component.translatable("ngsmcconfig.confirmunsavedexit.text")));
 		else
-			this.minecraft.setScreen(this.parent);
+			this.minecraft.gui.setScreen(this.parent);
 	}
 	
     @Override

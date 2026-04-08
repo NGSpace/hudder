@@ -253,7 +253,7 @@ public class HudderConfig {
 	 * @return true or false
 	 */
 	public boolean shouldDrawResult() {
-		return !mc.options.hideGui&&(!mc.debugEntries.isOverlayVisible()||showInF3())&&enabled();
+		return !mc.gui.hud.isHidden()&&(!mc.debugEntries.isOverlayVisible()||showInF3())&&enabled();
 	}
 	
 	
