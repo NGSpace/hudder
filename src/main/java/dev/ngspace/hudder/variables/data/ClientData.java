@@ -25,7 +25,7 @@ public class ClientData extends HudderBuiltInVariables {
 		registerScreenTypeVariables();
 
 		// Camera state
-		register(_->ins.gameRenderer.getMainCamera().entity() != ins.player, BOOLEAN, "camera_detached");
+		register(_->ins.gameRenderer.mainCamera().entity() != ins.player, BOOLEAN, "camera_detached");
 		
 		// Resource packs
 		register(_->ins.getResourcePackRepository().getSelectedPacks().stream()
