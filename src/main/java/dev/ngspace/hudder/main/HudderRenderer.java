@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.joml.Matrix3x2fStack;
 
+import com.mojang.blaze3d.PrimitiveTopology;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
@@ -40,7 +40,8 @@ public class HudderRenderer implements HudElement {
 	
 	public final RenderPipeline GUI_TEXTURED_TRIANGLES = RenderPipelines.register(RenderPipeline.builder(
 			RenderPipelines.GUI_TEXTURED_SNIPPET).withLocation("pipeline/gui_textured_triangles")
-			.withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.TRIANGLE_STRIP).build());
+			.withVertexBinding(0, DefaultVertexFormat.POSITION_TEX_COLOR)
+			.withPrimitiveTopology(PrimitiveTopology.TRIANGLE_STRIP).build());
 	
 	
 	
