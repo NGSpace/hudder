@@ -70,7 +70,7 @@ public class HudderConfig {
 	 * @throws CompileException
 	 * @throws IOException
 	 */
-	public HudInformation compileMainHud() throws CompileException, ExecutionException {
+	public HudInformation compileMainHud() throws CompileException, ExecutionException, IOException {
 		if (getCompiler()!=null) return getCompiler().processAndExecute(this, mainfile(), mainfile());
 		else throw new CompileException("There is no Compiler!", -1, -1);
 	}
@@ -130,15 +130,15 @@ public class HudderConfig {
 		if (version<1 && ((userSettings.color >> 24) & 0xFF)==0) {
 			userSettings.color = (255 << 24) | userSettings.color;
         }
-		if (version<2) {
+		if (version<2&&newinfo.containsKey("javascript")&&newinfo.get("javascript") instanceof Boolean) {
 			userSettings.unsafeoperations = (boolean) newinfo.get("javascript");
 		}
 		if (version<3&&newinfo.get("compilertype")!=null) {
-			userSettings.compilername = switch (newinfo.get("compilertype").toString()) {
+			userSettings.compilername = switch (String.valueOf(newinfo.get("compilertype"))) {
 				case "none","null" -> "empty";
 				case "javascript" -> "js";
 				case "default", "defaultcompiler", "default compiler" -> "hudder";
-				default -> newinfo.get("compilertype").toString();
+				default -> String.valueOf(newinfo.get("compilertype"));
 			};
 		}
 		if (version<4) {
@@ -175,10 +175,14 @@ public class HudderConfig {
 			}
 		}
 		if (version<5) {
-			userSettings.xoffset_left = ((Number) newinfo.get("xoffset")).intValue();
-			userSettings.xoffset_right = ((Number) newinfo.get("xoffset")).intValue();
-			userSettings.yoffset_top = ((Number) newinfo.get("yoffset")).intValue();
-			userSettings.yoffset_bottom = ((Number) newinfo.get("yoffset")).intValue() - 1;
+			if (newinfo.containsKey("xoffset")&&newinfo.get("xoffset") instanceof Number) {
+				userSettings.xoffset_left = ((Number) newinfo.get("xoffset")).intValue();
+				userSettings.xoffset_right = ((Number) newinfo.get("xoffset")).intValue();
+			}
+			if (newinfo.containsKey("yoffset")&&newinfo.get("yoffset") instanceof Number) {
+				userSettings.yoffset_top = ((Number) newinfo.get("yoffset")).intValue();
+				userSettings.yoffset_bottom = ((Number) newinfo.get("yoffset")).intValue() - 1;
+			}
 		}
 	}
     

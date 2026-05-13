@@ -18,81 +18,79 @@
 	"hudder.configkeybind": "Open Hudder settings",
 	"hudder.reloadkeybind": "Reload Hudder files",
 	"key.category.minecraft.hudder.keybinds": "Hudder",
-	
-	
-	"hudder.general": "General",
-	
+
+
 	"hudder.hudsettings": "Hud settings (%s)",
 	
-	"hudder.general.wiki":"Click here to open Hudder's wiki in your browser",
-	"hudder.general.wiki.tooltip":"Click to open Wiki.",
+	"hudder.general": "General",
 	
 	"hudder.general.enabled":"Enabled",
 	"hudder.general.enabled.tooltip":"Whether Hudder should be enabled or not.",
 	
-	"hudder.general.mainfile":"Main file",
-	"hudder.general.mainfile.tooltip":"Change the main file\u00A77The file must be located in the \u00A76.minecraft/config/Hudder\u00A77 folder.",
+	"hudder.general.mainfile":"Hud",
+	"hudder.general.mainfile.tooltip":"Change the main hud file.\u00A77\nThe file must be located in the \u00A76.minecraft/config/Hudder\u00A77 folder.",
 	"hudder.general.mainfile.error":"File does not exist in the .minecraft/config/Hudder folder.",
-	
-	"hudder.general.scale":"Default Scale",
-	"hudder.general.scale.tooltip":"Control the default scale of Methods \n\u00A77This can be overriden by elements specifying the size on their own.",
-	
-	"hudder.general.folder":"\u00A77The files must be located in the \"\u00A76config/Hudder\u00A77\" folder",
-	"hudder.general.folder.tooltip":"Click to open folder.",
-	
-	"hudder.text": "Text",
-	
-	"hudder.text.color":"Text Color",
-	"hudder.text.color.tooltip":"Change the color of the text.",
-	
-	"hudder.text.shadow":"Text Shadow",
-	"hudder.text.shadow.tooltip":"Whether text should have a shadow.",
 
-	"hudder.text.yoffset_top":"Top padding",
-	"hudder.text.yoffset_top.tooltip":"Control the top padding of the text.",
+	"hudder.general.compilertype": "Compiler type",
+	"hudder.general.compilertype.tooltip": "Change the type of compiler (ex hudder, js, pack).",
+	"hudder.general.compilertype.error":"Invalid compiler type.",
+	
+	"hudder.general.scale":"Scale",
+	"hudder.general.scale.tooltip":"Control the default scale of Hud Elements and text.\n\u00A77This can be overriden by elements specifying the size on their own.",
+	
+	"hudder.text_rendering": "Text Rendering",
+	
+	"hudder.text_rendering.color":"Text Color",
+	"hudder.text_rendering.color.tooltip":"Change the color of the text.",
 
-	"hudder.text.xoffset_left":"Left padding",
-	"hudder.text.xoffset_left.tooltip":"Control the left padding of the text.",
+	"hudder.text_rendering.backgroundcolor": "Background color",
+	"hudder.text_rendering.backgroundcolor.tooltip": "Change the default color of the background.",
 
-	"hudder.text.yoffset_bottom":"Bottom padding",
-	"hudder.text.yoffset_bottom.tooltip":"Control the bottom padding of the text.",
+	"hudder.text_rendering.background": "Background enabled",
+	"hudder.text_rendering.background.tooltip": "Whether should add a background to the text by default.",
+	
+	"hudder.text_rendering.shadow":"Text Shadow",
+	"hudder.text_rendering.shadow.tooltip":"Whether text should have a shadow.",
+	
+	"hudder.text_rendering.height":"Text height",
+	"hudder.text_rendering.height.tooltip":"Control the line height of the text.",
+	
+	"hudder.text_padding": "Padding",
 
-	"hudder.text.xoffset_right":"Right padding",
-	"hudder.text.xoffset_right.tooltip":"Control the right padding of the text.",
-	
-	"hudder.text.height":"Text height",
-	"hudder.text.height.tooltip":"Control the line height of the text.",
-	
-	"hudder.advanced": "Advanced",
-	
-	"hudder.advanced.method": "Method line buffer",
-	"hudder.advanced.method.tooltip": "Control the amount of lines to be trimmed before and after Methods.",
-	
-	"hudder.advanced.f3": "Show in F3",
-	"hudder.advanced.f3.tooltip": "Should still render when f3 is showing.",
-	
-	"hudder.advanced.compilertype": "Compiler type",
-	"hudder.advanced.compilertype.tooltip": "Change the type of compiler (ex Hudder, JavaScript, None).",
-	"hudder.advanced.compilertype.error":"Invalid compiler type.",
-	
-	"hudder.advanced.unsafeoperations": "Unsafe operations enabled",
-	"hudder.advanced.unsafeoperations.tooltip": "\u00A74WARNING - ONLY ENABLE IF YOU KNOW WHAT YOUR HUD DOES.\n\u00A7fEnabling this gives access to blocked features as well as removing certain limitations from existing ones (See Wiki for more information).",
-	
-	"hudder.text.backgroundcolor": "Background color",
-	"hudder.text.backgroundcolor.tooltip": "Change the default color of the background.",
-	
-	"hudder.text.background": "Background enabled",
-	"hudder.text.background.tooltip": "Whether should add a background to the text by default.",
-	
-	"hudder.advanced.removehotbar": "Remove hotbar",
-	"hudder.advanced.removehotbar.tooltip": "\u00A74WARNING - THIS WILL MAKE YOUR HOTBAR AND HEALTH BAR INVISIBLE UNTIL DISABLED.\n\u00A7fWhether hudder should hide all Hotbar related GUI elements.",
+	"hudder.text_padding.yoffset_top":"Top padding",
+	"hudder.text_padding.yoffset_top.tooltip":"Control the top padding of the text.",
 
-	"hudder.advanced.removeeffects": "Remove effects hud",
-	"hudder.advanced.removeeffects.tooltip": "\u00A74WARNING - THIS WILL MAKE YOUR EFFECTS HUD INVISIBLE UNTIL DISABLED.\n\u00A7fWhether hudder should hide the effects hud.",
+	"hudder.text_padding.xoffset_left":"Left padding",
+	"hudder.text_padding.xoffset_left.tooltip":"Control the left padding of the text.",
+
+	"hudder.text_padding.yoffset_bottom":"Bottom padding",
+	"hudder.text_padding.yoffset_bottom.tooltip":"Control the bottom padding of the text.",
+
+	"hudder.text_padding.xoffset_right":"Right padding",
+	"hudder.text_padding.xoffset_right.tooltip":"Control the right padding of the text.",
 	
-	"hudder.advanced.limitrate": "Limit compiler rate",
-	"hudder.advanced.limitrate.tooltip": "\u00A74WARNING - THIS MAY CAUSE PERFORMANCE ISSUES.\n\u00A7fDisabling this will move hudder file compilation from running every client tick to running every frame.",
+	"hudder.vanillahud": "Vanilla Hud",
+
+	"hudder.vanillahud.f3": "Show in F3",
+	"hudder.vanillahud.f3.tooltip": "Should still render when f3 is showing.",
+
+	"hudder.vanillahud.removehotbar": "Remove hotbar",
+	"hudder.vanillahud.removehotbar.tooltip": "\u00A74WARNING - THIS WILL MAKE YOUR HOTBAR AND HEALTH BAR INVISIBLE UNTIL DISABLED.\n\u00A7fWhether hudder should hide all Hotbar related GUI elements.",
+
+	"hudder.vanillahud.removeeffects": "Remove effects hud",
+	"hudder.vanillahud.removeeffects.tooltip": "\u00A74WARNING - THIS WILL MAKE YOUR EFFECTS HUD INVISIBLE UNTIL DISABLED.\n\u00A7fWhether hudder should hide the effects hud.",
+	
+	"hudder.safety_perf": "Safety & Performance",
+	
+	"hudder.safety_perf.method": "Method line buffer",
+	"hudder.safety_perf.method.tooltip": "Control the amount of lines to be trimmed before and after Methods.",
+	
+	"hudder.safety_perf.unsafeoperations": "Unsafe operations enabled",
+	"hudder.safety_perf.unsafeoperations.tooltip": "\u00A74WARNING - ONLY ENABLE IF YOU KNOW WHAT YOUR HUD DOES.\n\u00A7fEnabling this gives access to blocked features as well as removing certain limitations from existing ones (See Wiki for more information).",
+	
+	"hudder.safety_perf.limitrate": "Limit compiler rate",
+	"hudder.safety_perf.limitrate.tooltip": "\u00A74WARNING - THIS MAY CAUSE PERFORMANCE ISSUES.\n\u00A7fDisabling this will move hudder file compilation from running every client tick to running every frame.",
 		
-	"hudder.advanced.autorefresh": "Automatically refresh hud",
-	"hudder.advanced.autorefresh.tooltip": "Disabling this will stop your hud from updating with every change. Manual refreshes through the keybind will still function"
+	"hudder.safety_perf.autorefresh": "Automatically refresh hud",
+	"hudder.safety_perf.autorefresh.tooltip": "Disabling this will stop your hud from updating with every change. Manual refreshes through the keybind will still function"
 }

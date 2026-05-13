@@ -36,53 +36,49 @@ public class GameHudElement extends AUIElement {
 	}
 
 	@Override public void renderElement(GuiGraphicsExtractor context, HudderRenderer renderer, DeltaTracker delta) {
-		try {
-			InGameHudAccessor acchud = (InGameHudAccessor) (mc.gui);
-			float scaledWidth = context.guiWidth();
-	        float scaledHeight = context.guiHeight();
-	        var matrixStack = context.pose();
-	        matrixStack.pushMatrix();
-	        switch (type) {
-				case STATUS_BARS:
-			        if (mc.gameMode.canHurtPlayer()) {
-				        matrixStack.translate(x-scaledWidth/2, y-scaledHeight + 39);
-				        acchud.callRenderPlayerHealth(context);
-				        acchud.callRenderVehicleHealth(context);
-			        }
-			        break;
-				case EXP_AND_MOUNT_BAR:
-					matrixStack.translate(x-scaledWidth/2, y-scaledHeight + 39);
-					Gui.ContextualInfo contextualInfo = acchud.callNextContextualInfoState();
-					var contextualInfoBar = acchud.contextualInfoBar();
-					var contextualInfoBarRenderers = acchud.contextualInfoBarRenderers();
-					if (contextualInfo != contextualInfoBar.getKey()) {
-						contextualInfoBar = Pair.of(contextualInfo, contextualInfoBarRenderers.get(contextualInfo).get());
-					}
+		InGameHudAccessor acchud = (InGameHudAccessor) (mc.gui);
+		float scaledWidth = context.guiWidth();
+        float scaledHeight = context.guiHeight();
+        var matrixStack = context.pose();
+        matrixStack.pushMatrix();
+        switch (type) {
+			case STATUS_BARS:
+		        if (mc.gameMode.canHurtPlayer()) {
+			        matrixStack.translate(x-scaledWidth/2, y-scaledHeight + 39);
+			        acchud.callRenderPlayerHealth(context);
+			        acchud.callRenderVehicleHealth(context);
+		        }
+		        break;
+			case EXP_AND_MOUNT_BAR:
+				matrixStack.translate(x-scaledWidth/2, y-scaledHeight + 39);
+				Gui.ContextualInfo contextualInfo = acchud.callNextContextualInfoState();
+				var contextualInfoBar = acchud.contextualInfoBar();
+				var contextualInfoBarRenderers = acchud.contextualInfoBarRenderers();
+				if (contextualInfo != contextualInfoBar.getKey()) {
+					contextualInfoBar = Pair.of(contextualInfo, contextualInfoBarRenderers.get(contextualInfo).get());
+				}
 
-					contextualInfoBar.getValue().extractBackground(context, delta);
-					if (mc.gameMode.hasExperience() && mc.player.experienceLevel > 0) {
-						ContextualBarRenderer.extractExperienceLevel(context, mc.font, mc.player.experienceLevel);
-					}
+				contextualInfoBar.getValue().extractBackground(context, delta);
+				if (mc.gameMode.hasExperience() && mc.player.experienceLevel > 0) {
+					ContextualBarRenderer.extractExperienceLevel(context, mc.font, mc.player.experienceLevel);
+				}
 
-					contextualInfoBar.getValue().extractRenderState(context, delta);
-					break;
-				case HOTBAR:
-			        matrixStack.translate(x-scaledWidth/2, y-scaledHeight);
-			        acchud.callRenderHotbarAndDecorations(context, delta);
-					break;
-				case ITEM_TOOLTIP:
-					int tooltipy = 44;
-					if (mc.gameMode.canHurtPlayer()) tooltipy += 14;
-			        matrixStack.translate(x-scaledWidth/2, tooltipy-scaledHeight+y);
-			        acchud.callRenderSelectedItemName(context);
-					break;
-				default:
-					break;
-			}
-	        matrixStack.popMatrix();
-		} catch (Exception e) {
-			e.printStackTrace();
+				contextualInfoBar.getValue().extractRenderState(context, delta);
+				break;
+			case HOTBAR:
+		        matrixStack.translate(x-scaledWidth/2, y-scaledHeight);
+		        acchud.callRenderHotbarAndDecorations(context, delta);
+				break;
+			case ITEM_TOOLTIP:
+				int tooltipy = 44;
+				if (mc.gameMode.canHurtPlayer()) tooltipy += 14;
+		        matrixStack.translate(x-scaledWidth/2, tooltipy-scaledHeight+y);
+		        acchud.callRenderSelectedItemName(context);
+				break;
+			default:
+				break;
 		}
+        matrixStack.popMatrix();
 	}
 
 }

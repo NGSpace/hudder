@@ -51,7 +51,7 @@ public class HudPackCompiler extends AHudCompiler<HudPack> {
 			}
 			return state.toResult(elms);
 		} catch (IOException e) {
-			e.printStackTrace();
+			if (Hudder.IS_DEBUG) e.printStackTrace();
 			return HudInformation.of(e.getMessage());
 		}
 	}
