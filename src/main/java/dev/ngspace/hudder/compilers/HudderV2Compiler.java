@@ -262,6 +262,7 @@ public class HudderV2Compiler extends AV2Compiler {
 					switch (command) {
 						case 0x4: {
 							String[] split = cond.split(" in ", 2);
+							if (split.length<2) throw new CompileException("Invalid for loop syntax: \"" + cond + "\"", pos);
 							String variablename = split[0];
 							String value = split[1];
 							elemBuilder.setLength(0);
