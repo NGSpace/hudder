@@ -42,7 +42,7 @@ public class HudderTickEvent implements StartTick {
     
 	@Override public void onStartTick(Minecraft client) {
 		while (Hudder.configkeybind.consumeClick()) {
-			Minecraft.getInstance().setScreen(HudderNGSMCConfigMenu.createMenu(Minecraft.getInstance().screen));
+			Minecraft.getInstance().gui.setScreen(HudderNGSMCConfigMenu.createMenu(Minecraft.getInstance().gui.screen()));
 		}
 		while (Hudder.reloadkeybind.consumeClick()) {
 	    	Hudder.log("Manual file refresh triggered!");

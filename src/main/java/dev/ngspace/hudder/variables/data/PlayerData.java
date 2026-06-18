@@ -229,13 +229,13 @@ public class PlayerData extends HudderBuiltInVariables {
 
 		/* Camera position */
 
-		register(_->ins.gameRenderer.getMainCamera().position().x, NUMBER, "cam_dxpos");
-		register(_->ins.gameRenderer.getMainCamera().position().y, NUMBER, "cam_dypos");
-		register(_->ins.gameRenderer.getMainCamera().position().z, NUMBER, "cam_dzpos");
+		register(_->ins.gameRenderer.mainCamera().position().x, NUMBER, "cam_dxpos");
+		register(_->ins.gameRenderer.mainCamera().position().y, NUMBER, "cam_dypos");
+		register(_->ins.gameRenderer.mainCamera().position().z, NUMBER, "cam_dzpos");
 
-		register(_->ins.gameRenderer.getMainCamera().blockPosition().getX(), NUMBER, "cam_xpos");
-		register(_->ins.gameRenderer.getMainCamera().blockPosition().getY(), NUMBER, "cam_ypos");
-		register(_->ins.gameRenderer.getMainCamera().blockPosition().getZ(), NUMBER, "cam_zpos");
+		register(_->ins.gameRenderer.mainCamera().blockPosition().getX(), NUMBER, "cam_xpos");
+		register(_->ins.gameRenderer.mainCamera().blockPosition().getY(), NUMBER, "cam_ypos");
+		register(_->ins.gameRenderer.mainCamera().blockPosition().getZ(), NUMBER, "cam_zpos");
 	}
 	
 	private static void registerRotationVariables() {
@@ -265,23 +265,23 @@ public class PlayerData extends HudderBuiltInVariables {
 		/* Camera rotation */
 
 		// Pitch
-		register(_->ins.gameRenderer.getMainCamera().xRot(), NUMBER, "cam_dpitch");
-		register(_->(int) ins.gameRenderer.getMainCamera().xRot(), NUMBER, "cam_pitch");
+		register(_->ins.gameRenderer.mainCamera().xRot(), NUMBER, "cam_dpitch");
+		register(_->(int) ins.gameRenderer.mainCamera().xRot(), NUMBER, "cam_pitch");
 
 		// Yaw (0–360)
 		register(_->{
-		    float yaw = ins.gameRenderer.getMainCamera().yRot();
+		    float yaw = ins.gameRenderer.mainCamera().yRot();
 		    return (yaw < 0) ? 360d + (yaw % 360d) : yaw % 360d;
 		}, NUMBER, "cam_dyaw");
 
 		register(_->{
-		    int yaw = (int) ins.gameRenderer.getMainCamera().yRot();
+		    int yaw = (int) ins.gameRenderer.mainCamera().yRot();
 		    return (yaw < 0) ? 360 + (yaw % 360) : yaw % 360d;
 		}, NUMBER, "cam_yaw");
 
 		// F3-style yaw
-		register(_->Mth.wrapDegrees(ins.gameRenderer.getMainCamera().yRot()), NUMBER, "cam_f3_dyaw");
-		register(_->(int) Mth.wrapDegrees(ins.gameRenderer.getMainCamera().yRot()), NUMBER, "cam_f3_yaw");
+		register(_->Mth.wrapDegrees(ins.gameRenderer.mainCamera().yRot()), NUMBER, "cam_f3_dyaw");
+		register(_->(int) Mth.wrapDegrees(ins.gameRenderer.mainCamera().yRot()), NUMBER, "cam_f3_yaw");
 	}
 	
 	private static void registerOtherPlayerVariables() {
@@ -321,7 +321,7 @@ public class PlayerData extends HudderBuiltInVariables {
 	}
 
 	private static BlockHitResult raycastCamera(boolean fluids) {
-	    var cam = ins.gameRenderer.getMainCamera();
+	    var cam = ins.gameRenderer.mainCamera();
 	    Vec3 pos = cam.position();
 	    Vec3 look = new Vec3(cam.forwardVector().x(), cam.forwardVector().y(), cam.forwardVector().z());
 	    return raycast(ins, pos, look, 50, fluids);

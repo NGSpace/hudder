@@ -1,14 +1,14 @@
 package dev.ngspace.hudder.uielements;
 
-import org.apache.commons.lang3.tuple.Pair;
+import com.mojang.datafixers.util.Pair;
 
 import dev.ngspace.hudder.main.HudderRenderer;
 import dev.ngspace.hudder.mixin.InGameHudAccessor;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.contextualbar.ContextualBarRenderer;
+import net.minecraft.client.gui.Hud;
+import net.minecraft.client.gui.contextualbar.ContextualBar;
 
 /**
  * This element is a merging of all builtin GUI elements (Status bars) 
@@ -37,7 +37,7 @@ public class GameHudElement extends AUIElement {
 
 	@Override public void renderElement(GuiGraphicsExtractor context, HudderRenderer renderer, DeltaTracker delta) {
 		try {
-			InGameHudAccessor acchud = (InGameHudAccessor) (mc.gui);
+			InGameHudAccessor acchud = (InGameHudAccessor) (mc.gui.hud);
 			float scaledWidth = context.guiWidth();
 	        float scaledHeight = context.guiHeight();
 	        var matrixStack = context.pose();
@@ -52,19 +52,19 @@ public class GameHudElement extends AUIElement {
 			        break;
 				case EXP_AND_MOUNT_BAR:
 					matrixStack.translate(x-scaledWidth/2, y-scaledHeight + 39);
-					Gui.ContextualInfo contextualInfo = acchud.callNextContextualInfoState();
+					Hud.ContextualInfo contextualInfo = acchud.callNextContextualInfoState();
 					var contextualInfoBar = acchud.contextualInfoBar();
 					var contextualInfoBarRenderers = acchud.contextualInfoBarRenderers();
-					if (contextualInfo != contextualInfoBar.getKey()) {
+					if (contextualInfo != contextualInfoBar.getFirst()) {
 						contextualInfoBar = Pair.of(contextualInfo, contextualInfoBarRenderers.get(contextualInfo).get());
 					}
 
-					contextualInfoBar.getValue().extractBackground(context, delta);
+					contextualInfoBar.getSecond().extractBackground(context, delta);
 					if (mc.gameMode.hasExperience() && mc.player.experienceLevel > 0) {
-						ContextualBarRenderer.extractExperienceLevel(context, mc.font, mc.player.experienceLevel);
+						ContextualBar.extractExperienceLevel(context, mc.font, mc.player.experienceLevel);
 					}
 
-					contextualInfoBar.getValue().extractRenderState(context, delta);
+					contextualInfoBar.getSecond().extractRenderState(context, delta);
 					break;
 				case HOTBAR:
 			        matrixStack.translate(x-scaledWidth/2, y-scaledHeight);

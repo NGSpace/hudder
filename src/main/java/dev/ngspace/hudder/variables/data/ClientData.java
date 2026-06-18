@@ -25,7 +25,7 @@ public class ClientData extends HudderBuiltInVariables {
 		registerScreenTypeVariables();
 
 		// Camera state
-		register(_->ins.gameRenderer.getMainCamera().entity() != ins.player, BOOLEAN, "camera_detached");
+		register(_->ins.gameRenderer.mainCamera().entity() != ins.player, BOOLEAN, "camera_detached");
 		
 		// Resource packs
 		register(_->ins.getResourcePackRepository().getSelectedPacks().stream()
@@ -56,23 +56,23 @@ public class ClientData extends HudderBuiltInVariables {
 		register(_->ins.getWindow().getGuiScale(), NUMBER, "guiscale");
 
 		// Open GUI
-		register(_->Misc.getScreenType(ins.screen), STRING, "openguitype");
+		register(_->Misc.getScreenType(ins.gui.screen()), STRING, "openguitype");
 
-		register(_->(ins.screen == null) ? null : ins.screen.getTitle().getString(), STRING, "openguititle");
+		register(_->(ins.gui.screen() == null) ? null : ins.gui.screen().getTitle().getString(), STRING, "openguititle");
 
 		// HUD / debug
-		register(_->ins.options.hideGui, BOOLEAN, "hudhidden");
+		register(_->ins.gui.hud.isHidden(), BOOLEAN, "hudhidden");
 		register(_->ins.getDebugOverlay().showDebugScreen(), BOOLEAN, "showdebug");
 		register(_->ins.debugEntries.isOverlayVisible(), BOOLEAN, "f3enabled");
 	}
 	
 	private static void registerScreenTypeVariables() {
-		register(_->ins.screen != null, BOOLEAN, "isguiopen");
-		register(_->ins.screen instanceof ContainerScreen, BOOLEAN, "ischestopen");
-		register(_->ins.screen instanceof CraftingScreen, BOOLEAN, "iscraftingtableopen");
-		register(_->ins.screen instanceof ChatScreen, BOOLEAN, "ischatopen");
-		register(_->ins.screen instanceof DialogScreen<?>, BOOLEAN, "isdialogopen");
-		register(_->ins.screen instanceof InventoryScreen
-		        || ins.screen instanceof CreativeModeInventoryScreen, BOOLEAN, "isinventoryopen");
+		register(_->ins.gui.screen() != null, BOOLEAN, "isguiopen");
+		register(_->ins.gui.screen() instanceof ContainerScreen, BOOLEAN, "ischestopen");
+		register(_->ins.gui.screen() instanceof CraftingScreen, BOOLEAN, "iscraftingtableopen");
+		register(_->ins.gui.screen() instanceof ChatScreen, BOOLEAN, "ischatopen");
+		register(_->ins.gui.screen() instanceof DialogScreen<?>, BOOLEAN, "isdialogopen");
+		register(_->ins.gui.screen() instanceof InventoryScreen
+		        || ins.gui.screen() instanceof CreativeModeInventoryScreen, BOOLEAN, "isinventoryopen");
 	}
 }
