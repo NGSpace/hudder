@@ -403,8 +403,8 @@ public class HudderConfig {
 	}
 	
 	public Map<String, Object> getHudSettings(String compiler, String hud) {
-		return userSettings.hudSettings.computeIfAbsent(compiler,k->new HashMap<String, Map<String, Object>>())
-				.computeIfAbsent(hud, k->new HashMap<String, Object>());
+		return userSettings.hudSettings.computeIfAbsent(compiler,_->new HashMap<String, Map<String, Object>>())
+				.computeIfAbsent(hud, _->new HashMap<String, Object>());
 	}
 	
 	/**

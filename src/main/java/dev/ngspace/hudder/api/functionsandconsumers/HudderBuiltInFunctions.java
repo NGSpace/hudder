@@ -21,19 +21,19 @@ public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 		
 		//Getters
 		
-		binder.registerFunction((m,c,s)->c.getVariable(s[0].asString()), "get", "getVal", "getVariable");
-		binder.registerFunction((m,c,s)->DataVariableRegistry.getNumber  (s[0].asString()), "getNumber" );
-		binder.registerFunction((m,c,s)->DataVariableRegistry.getString  (s[0].asString()), "getString" );
-		binder.registerFunction((m,c,s)->DataVariableRegistry.getObject  (s[0].asString()), "getObject" );
-		binder.registerFunction((m,c,s)->DataVariableRegistry.getBoolean (s[0].asString()), "getBoolean");
+		binder.registerFunction((_,c,s)->c.getVariable(s[0].asString()), "get", "getVal", "getVariable");
+		binder.registerFunction((_,_,s)->DataVariableRegistry.getNumber  (s[0].asString()), "getNumber" );
+		binder.registerFunction((_,_,s)->DataVariableRegistry.getString  (s[0].asString()), "getString" );
+		binder.registerFunction((_,_,s)->DataVariableRegistry.getObject  (s[0].asString()), "getObject" );
+		binder.registerFunction((_,_,s)->DataVariableRegistry.getBoolean (s[0].asString()), "getBoolean");
 		
-		binder.registerFunction((m,c,s)->new TranslatedItemStack(mc.player.getInventory().getItem(s[0].asInt())), "getItem");
+		binder.registerFunction((_,_,s)->new TranslatedItemStack(mc.player.getInventory().getItem(s[0].asInt())), "getItem");
 		
-		binder.registerFunction((m,c,s)->Hudder.config.savedVariables().get(s[0].asString()),"readValue");
+		binder.registerFunction((_,_,s)->Hudder.config.savedVariables().get(s[0].asString()),"readValue");
 		
 		//Compile
 		
-		binder.registerFunction((m,c,s)-> {
+		binder.registerFunction((m,_,s)-> {
 			try {
 				var e = m.toUIElementArray();
 				
@@ -55,9 +55,9 @@ public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 		
 		//Misc
 		
-		binder.registerFunction((m,c,s)->HudFileUtils.exists(s[0].asString()),"exists");
-		binder.registerFunction((m,c,s)->mc.font.width(s[0].asString()), "strWidth", "strwidth");
-		binder.registerFunction((m,c,s)->s[0].get().toString(), "toString");
-		binder.registerUnsafeFunction((m,c,s)->new HashMap<Object, Object>(), "map");
+		binder.registerFunction((_,_,s)->HudFileUtils.exists(s[0].asString()),"exists");
+		binder.registerFunction((_,_,s)->mc.font.width(s[0].asString()), "strWidth", "strwidth");
+		binder.registerFunction((_,_,s)->s[0].get().toString(), "toString");
+		binder.registerUnsafeFunction((_,_,_)->new HashMap<Object, Object>(), "map");
 	}
 }

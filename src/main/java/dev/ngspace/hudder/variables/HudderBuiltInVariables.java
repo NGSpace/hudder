@@ -38,41 +38,41 @@ public class HudderBuiltInVariables {
 		/* Hudder */
 		
 		// Booleans
-		register(k->true, BOOLEAN, "enabled"); // duh
-		register(k->Hudder.config.shadow(), BOOLEAN, "shadow");
-		register(k->Hudder.config.showInF3(), BOOLEAN, "showinf3");
-		register(k->true, BOOLEAN, "javascriptenabled"); // compatibility
-		register(k->Hudder.config.unsafeoperations(), BOOLEAN, "unsafeoperations");
-		register(k->Hudder.config.globalVariablesEnabled(), BOOLEAN, "globalvariablesenabled");
-		register(k->Hudder.config.background(), BOOLEAN, "background");
-		register(k->Hudder.config.removegui(), BOOLEAN, "removegui");
-		register(k->Hudder.config.removeeffects(), BOOLEAN, "removeeffects");
-		register(k->Hudder.config.limitrate(), BOOLEAN, "limitrate");
+		register(_->true, BOOLEAN, "enabled"); // duh
+		register(_->Hudder.config.shadow(), BOOLEAN, "shadow");
+		register(_->Hudder.config.showInF3(), BOOLEAN, "showinf3");
+		register(_->true, BOOLEAN, "javascriptenabled"); // compatibility
+		register(_->Hudder.config.unsafeoperations(), BOOLEAN, "unsafeoperations");
+		register(_->Hudder.config.globalVariablesEnabled(), BOOLEAN, "globalvariablesenabled");
+		register(_->Hudder.config.background(), BOOLEAN, "background");
+		register(_->Hudder.config.removegui(), BOOLEAN, "removegui");
+		register(_->Hudder.config.removeeffects(), BOOLEAN, "removeeffects");
+		register(_->Hudder.config.limitrate(), BOOLEAN, "limitrate");
 		
 		// Strings
-		register(k->Hudder.config.compilerName(), STRING, "compilertype");
-		register(k->Hudder.config.mainfile(), STRING, "mainfile");
-		register(k->Hudder.HUDDER_VERSION, STRING, "hudder_version");
+		register(_->Hudder.config.compilerName(), STRING, "compilertype");
+		register(_->Hudder.config.mainfile(), STRING, "mainfile");
+		register(_->Hudder.HUDDER_VERSION, STRING, "hudder_version");
 		
 		// Numbers
-		register(k->Hudder.config.scale(), NUMBER, "scale");
-		register(k->Hudder.config.color(), NUMBER, "color");
-		register(k->Hudder.config.yoffsetTop(), NUMBER, "yoffset_top", "yoffset");
-		register(k->Hudder.config.yoffsetBottom(), NUMBER, "yoffset_bottom");
-		register(k->Hudder.config.xoffsetLeft(), NUMBER, "xoffset_left", "xoffset");
-		register(k->Hudder.config.xoffsetRight(), NUMBER, "xoffset_right");
-		register(k->Hudder.config.lineHeight(), NUMBER, "lineheight");
-		register(k->Hudder.config.methodBuffer(), NUMBER, "methodbuffer");
-		register(k->Hudder.config.backgroundcolor(), NUMBER, "backgroundcolor");
+		register(_->Hudder.config.scale(), NUMBER, "scale");
+		register(_->Hudder.config.color(), NUMBER, "color");
+		register(_->Hudder.config.yoffsetTop(), NUMBER, "yoffset_top", "yoffset");
+		register(_->Hudder.config.yoffsetBottom(), NUMBER, "yoffset_bottom");
+		register(_->Hudder.config.xoffsetLeft(), NUMBER, "xoffset_left", "xoffset");
+		register(_->Hudder.config.xoffsetRight(), NUMBER, "xoffset_right");
+		register(_->Hudder.config.lineHeight(), NUMBER, "lineheight");
+		register(_->Hudder.config.methodBuffer(), NUMBER, "methodbuffer");
+		register(_->Hudder.config.backgroundcolor(), NUMBER, "backgroundcolor");
 
 		/* Constants */
 		
 //		register(k->"unset", STRING, "unset");
 
-		register(k->Minecraft.getInstance().getVersionType(), STRING, "version_type");
-		register(k->SharedConstants.getCurrentVersion().id(), STRING, "game_version");
+		register(_->Minecraft.getInstance().getVersionType(), STRING, "version_type");
+		register(_->SharedConstants.getCurrentVersion().id(), STRING, "game_version");
 
-		register(k->0xFF663399, NUMBER, "rebeccapurple");
+		register(_->0xFF663399, NUMBER, "rebeccapurple");
 
 	}
 }

@@ -39,7 +39,7 @@ public class NGSMCConfigCategorySelectionScreen extends AbstractNGSMCConfigScree
 			} else catX=catX+CATEGORY_PADDING/2;
 			
 			addRenderableWidget(Button.builder(category.title(),
-				b->minecraft.setScreen(new NGSMCConfigOptionsScreen(this, categories, category, writeoperation, docsUri, configfile)))
+				_->minecraft.setScreen(new NGSMCConfigOptionsScreen(this, categories, category, writeoperation, docsUri, configfile)))
 				.pos(catX, catY)
 				.build());
 		}

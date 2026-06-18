@@ -137,33 +137,33 @@ public class Misc {private Misc() {}
 	
 	public static Object getScreenType(Screen screen) {
 		return switch (screen) {
-			case BlastFurnaceScreen scr: yield "Blast Furnace";
-			case SmokerScreen scr: yield "Smoker";
-			case AbstractFurnaceScreen<?> scr: yield "Furnace";
-			case AbstractSignEditScreen scr: yield "Sign Edit";
-			case AnvilScreen scr: yield "Anvil";
-			case BeaconScreen scr: yield "Beacon";
-			case BookEditScreen scr: yield "Book Edit";
-			case BrewingStandScreen scr: yield "Brewing Stand";
-			case CartographyTableScreen scr: yield "Cartography Table";
-			case CrafterScreen scr: yield "Crafter";
-			case CraftingScreen scr: yield "Crafting";
-			case CreativeModeInventoryScreen scr: yield "Creative Mode Inventory";
-			case EnchantmentScreen scr: yield "Enchantment";
-			case ContainerScreen scr: yield "Container";
-			case GrindstoneScreen scr: yield "Grindstone";
-			case HopperScreen scr: yield "Hopper";
-			case HorseInventoryScreen scr: yield "Horse Inventory";
-			case LecternScreen scr: yield "Lectern";
-			case LoomScreen scr: yield "Loom";
-			case MerchantScreen scr: yield "Merchant";
-			case ReportPlayerScreen scr: yield "Report Player";
-			case ShulkerBoxScreen scr: yield "Shulker Box";
-			case StonecutterScreen scr: yield "Stonecutter";
-			case PauseScreen scr: yield "Pause";
-			case ChatScreen scr: yield "Chat";
-			case BookViewScreen scr: yield "Anvil";
-			case AbstractContainerScreen<?> scr: yield "Generic container";
+			case BlastFurnaceScreen _: yield "Blast Furnace";
+			case SmokerScreen _: yield "Smoker";
+			case AbstractFurnaceScreen<?> _: yield "Furnace";
+			case AbstractSignEditScreen _: yield "Sign Edit";
+			case AnvilScreen _: yield "Anvil";
+			case BeaconScreen _: yield "Beacon";
+			case BookEditScreen _: yield "Book Edit";
+			case BrewingStandScreen _: yield "Brewing Stand";
+			case CartographyTableScreen _: yield "Cartography Table";
+			case CrafterScreen _: yield "Crafter";
+			case CraftingScreen _: yield "Crafting";
+			case CreativeModeInventoryScreen _: yield "Creative Mode Inventory";
+			case EnchantmentScreen _: yield "Enchantment";
+			case ContainerScreen _: yield "Container";
+			case GrindstoneScreen _: yield "Grindstone";
+			case HopperScreen _: yield "Hopper";
+			case HorseInventoryScreen _: yield "Horse Inventory";
+			case LecternScreen _: yield "Lectern";
+			case LoomScreen _: yield "Loom";
+			case MerchantScreen _: yield "Merchant";
+			case ReportPlayerScreen _: yield "Report Player";
+			case ShulkerBoxScreen _: yield "Shulker Box";
+			case StonecutterScreen _: yield "Stonecutter";
+			case PauseScreen _: yield "Pause";
+			case ChatScreen _: yield "Chat";
+			case BookViewScreen _: yield "Anvil";
+			case AbstractContainerScreen<?> _: yield "Generic container";
 			
 			
 			case null:

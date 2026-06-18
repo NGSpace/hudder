@@ -32,6 +32,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.KeyMapping;
@@ -151,9 +152,9 @@ public class Hudder implements ClientModInitializer {
 		ClientTickEvents.END_CLIENT_TICK.register(compman);
         
 		HudderRenderer renderer = new HudderRenderer(compman);
-		HudElementRegistry.addLast(renderer.hudElementRegistryID, renderer);
+		HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT, renderer.hudElementRegistryID, renderer);
         
-        ClientLifecycleEvents.CLIENT_STARTED.register(c->{
+        ClientLifecycleEvents.CLIENT_STARTED.register(_->{
 			try {
 				HudFileUtils.reloadResources();
 				if (config.globalVariables().size()>0)
@@ -166,7 +167,7 @@ public class Hudder implements ClientModInitializer {
         
         // Make sure the FPS variable is updated once every compilation instead of every time a number variable is used
         var mc = Minecraft.getInstance();
-        HudCompilationManager.addPreCompilerListener(c->Misc.fps = Misc.getFPS(mc));
+        HudCompilationManager.addPreCompilerListener(_->Misc.fps = Misc.getFPS(mc));
 		
 		log("Hudder has finished loading!");
 	}

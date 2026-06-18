@@ -35,7 +35,7 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 	public boolean SYSTEM_VARIABLES_ENABLED = true;
 	
 	protected AV2Compiler() {
-		HudCompilationManager.addPreCompilerListener(c -> tempVariables.clear());
+		HudCompilationManager.addPreCompilerListener(_ -> tempVariables.clear());
 		FunctionAndConsumerAPI.getInstance().applyFunctionsAndConsumers(this);
 	}
 	
@@ -111,10 +111,10 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 	
 	
 	@Override public void bindConsumer(BindableConsumer cons, String... names) {
-		methodHandler.bindConsumer((c,m,a,t,l,ch,s)->cons.invoke(m, this, s), names);
+		methodHandler.bindConsumer((_,m,_,_,_,_,s)->cons.invoke(m, this, s), names);
 	}
 	@Override public void bindFunction(BindableFunction cons, String... names) {
-		functionHandler.bindFunction((c,a,s,l,ch)->cons.invoke(c.compileState, this, s), names);
+		functionHandler.bindFunction((c,_,s,_,_)->cons.invoke(c.compileState, this, s), names);
 	}
 	
 
@@ -126,7 +126,7 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 		boolean isMethod = !hasReturnValue(runtime);
 		
 		if (isMethod) {
-			MethodHandler.methods.put(name, (info,state,comp,type,line,charpos,vals) -> {
+			MethodHandler.methods.put(name, (_,state,_,type,_,charpos,vals) -> {
 				if (vals.length<args.length) throw new ExecutionException("Not enough arguments", pos.line(), pos.column());
 				for (int i = 0;i<vals.length;i++) {
 					Object v = vals[i].get();
@@ -147,7 +147,7 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 			}
 			if (temp) throw new CompileException("Main path in function \""+name
 					+"\" does not return a value!",pos.line(),pos.column());
-			functionHandler.bindFunction((IV2Function) (funcruntime,funcname,vals,line,charpos) -> {
+			functionHandler.bindFunction((IV2Function) (_,_,vals,line,charpos) -> {
 				if (vals.length<args.length) throw new ExecutionException("Not enough arguments", pos.line(), pos.column());
 				for (int i = 0;i<vals.length;i++) {
 					Object v = vals[i].get();

@@ -23,14 +23,14 @@ public class MethodHandler {
 	public MethodHandler() {
 		
 		//Text and compiling
-		bindConsumer((c,m,a,r,t,ch,s)->m.setTextLocation(t,(float) (s.length>0?s[0].asDouble():c.scale())),
+		bindConsumer((c,m,_,_,t,_,s)->m.setTextLocation(t,(float) (s.length>0?s[0].asDouble():c.scale())),
 				BOTTOMRIGHT, TOPLEFT, TOPRIGHT, BOTTOMLEFT, MUTE);
 		
 		//Compiler and Variables
 		bindConsumer(new LoadMethod(), "load", "execute", "compile", "run", "add");
 		
 		//Logging and errors
-		bindConsumer((c,m,a,r,t,ch,s)->{throw new ExecutionException(s[0].asString(),ch);},1, TextArg, "throw");
+		bindConsumer((_,_,_,_,_,ch,s)->{throw new ExecutionException(s[0].asString(),ch);},1, TextArg, "throw");
 	}
 	
 	
@@ -85,7 +85,7 @@ public class MethodHandler {
 		for (String arg : argtypes) errb += ", [" + arg + "]";
 		errb+=';';
 		String err = errb;
-		V2IMethod newmethod = (info,state,comp,runtime,type,pos,vals) -> {
+		V2IMethod newmethod = (info,state,comp,_,type,pos,vals) -> {
 			if (vals.length!=argtypes.length) throw new ExecutionException(err, defline, defcharpos);
 			for (int i = 0;i<vals.length;i++) {
 				if      (parameters[i]==1) comp.put("arg"+(i+1), vals[i].asString());

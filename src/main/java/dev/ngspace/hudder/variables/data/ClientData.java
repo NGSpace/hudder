@@ -25,54 +25,54 @@ public class ClientData extends HudderBuiltInVariables {
 		registerScreenTypeVariables();
 
 		// Camera state
-		register(k->ins.gameRenderer.getMainCamera().entity() != ins.player, BOOLEAN, "camera_detached");
+		register(_->ins.gameRenderer.getMainCamera().entity() != ins.player, BOOLEAN, "camera_detached");
 		
 		// Resource packs
-		register(k->ins.getResourcePackRepository().getSelectedPacks().stream()
+		register(_->ins.getResourcePackRepository().getSelectedPacks().stream()
 					.filter(pack->!pack.isRequired())
 					.map(t -> t.getTitle().getString())
 					.toList(), OBJECT, "selectedresourcepacks");
-		register(k->ins.getResourcePackRepository().getSelectedPacks().stream()
+		register(_->ins.getResourcePackRepository().getSelectedPacks().stream()
 					.map(t -> t.getTitle().getString())
 					.toList(), OBJECT, "selectedresourcepacks_unfiltered");
 	}
 
 	private static void registerInputVariables() {
 		// Mouse buttons
-		register(k->ins.mouseHandler.isLeftPressed(), BOOLEAN, "mouse_left");
-		register(k->ins.mouseHandler.isMiddlePressed(), BOOLEAN, "mouse_middle");
-		register(k->ins.mouseHandler.isRightPressed(), BOOLEAN, "mouse_right");
+		register(_->ins.mouseHandler.isLeftPressed(), BOOLEAN, "mouse_left");
+		register(_->ins.mouseHandler.isMiddlePressed(), BOOLEAN, "mouse_middle");
+		register(_->ins.mouseHandler.isRightPressed(), BOOLEAN, "mouse_right");
 
 		// Clicks per second
-		register(k->Misc.getLeftCPS() + Misc.getRightCPS(), NUMBER, "cps");
-		register(k->Misc.getLeftCPS(), NUMBER, "cps_left");
-		register(k->Misc.getRightCPS(), NUMBER, "cps_right");
+		register(_->Misc.getLeftCPS() + Misc.getRightCPS(), NUMBER, "cps");
+		register(_->Misc.getLeftCPS(), NUMBER, "cps_left");
+		register(_->Misc.getRightCPS(), NUMBER, "cps_right");
 	}
 
 	private static void registerScreenVariables() {
 		// Window / GUI
-		register(k->ins.getWindow().getGuiScaledWidth(), NUMBER, "width");
-		register(k->ins.getWindow().getGuiScaledHeight(), NUMBER, "height");
-		register(k->ins.getWindow().getGuiScale(), NUMBER, "guiscale");
+		register(_->ins.getWindow().getGuiScaledWidth(), NUMBER, "width");
+		register(_->ins.getWindow().getGuiScaledHeight(), NUMBER, "height");
+		register(_->ins.getWindow().getGuiScale(), NUMBER, "guiscale");
 
 		// Open GUI
-		register(k->Misc.getScreenType(ins.screen), STRING, "openguitype");
+		register(_->Misc.getScreenType(ins.screen), STRING, "openguitype");
 
-		register(k->(ins.screen == null) ? null : ins.screen.getTitle().getString(), STRING, "openguititle");
+		register(_->(ins.screen == null) ? null : ins.screen.getTitle().getString(), STRING, "openguititle");
 
 		// HUD / debug
-		register(k->ins.options.hideGui, BOOLEAN, "hudhidden");
-		register(k->ins.getDebugOverlay().showDebugScreen(), BOOLEAN, "showdebug");
-		register(k->ins.debugEntries.isOverlayVisible(), BOOLEAN, "f3enabled");
+		register(_->ins.options.hideGui, BOOLEAN, "hudhidden");
+		register(_->ins.getDebugOverlay().showDebugScreen(), BOOLEAN, "showdebug");
+		register(_->ins.debugEntries.isOverlayVisible(), BOOLEAN, "f3enabled");
 	}
 	
 	private static void registerScreenTypeVariables() {
-		register(k->ins.screen != null, BOOLEAN, "isguiopen");
-		register(k->ins.screen instanceof ContainerScreen, BOOLEAN, "ischestopen");
-		register(k->ins.screen instanceof CraftingScreen, BOOLEAN, "iscraftingtableopen");
-		register(k->ins.screen instanceof ChatScreen, BOOLEAN, "ischatopen");
-		register(k->ins.screen instanceof DialogScreen<?>, BOOLEAN, "isdialogopen");
-		register(k->ins.screen instanceof InventoryScreen
+		register(_->ins.screen != null, BOOLEAN, "isguiopen");
+		register(_->ins.screen instanceof ContainerScreen, BOOLEAN, "ischestopen");
+		register(_->ins.screen instanceof CraftingScreen, BOOLEAN, "iscraftingtableopen");
+		register(_->ins.screen instanceof ChatScreen, BOOLEAN, "ischatopen");
+		register(_->ins.screen instanceof DialogScreen<?>, BOOLEAN, "isdialogopen");
+		register(_->ins.screen instanceof InventoryScreen
 		        || ins.screen instanceof CreativeModeInventoryScreen, BOOLEAN, "isinventoryopen");
 	}
 }

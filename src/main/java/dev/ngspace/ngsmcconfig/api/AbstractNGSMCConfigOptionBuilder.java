@@ -20,7 +20,7 @@ public abstract class AbstractNGSMCConfigOptionBuilder<T> {
 		this.value = value;
 		this.defaultValue = value;
 		this.name = name;
-		this.saveOperation = v->{};
+		this.saveOperation = _->{};
 	}
 	
 	public AbstractNGSMCConfigOptionBuilder<T> setValue(T value) {

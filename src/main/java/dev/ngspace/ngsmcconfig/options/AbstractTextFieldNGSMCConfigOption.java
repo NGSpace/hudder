@@ -11,7 +11,7 @@ import net.minecraft.network.chat.Component;
 
 public abstract class AbstractTextFieldNGSMCConfigOption<T> extends AbstractNGSMCConfigOption<T> {
 
-	protected Predicate<String> textfilter = e->true;
+	protected Predicate<String> textfilter = _->true;
 	int max_length = Integer.MAX_VALUE;
 	EditBox widget;
 

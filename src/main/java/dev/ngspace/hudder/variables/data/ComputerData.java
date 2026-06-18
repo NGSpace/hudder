@@ -26,19 +26,19 @@ public class ComputerData extends HudderBuiltInVariables {
 		registerTimeVariables();
 		registerStringComputerInfo();
 
-		register(k->ins.getConnection().getConnection().getAverageSentPackets(), NUMBER, "sent_packets");
-		register(k->ins.getConnection().getConnection().getAverageReceivedPackets(), NUMBER, "received_packets");
+		register(_->ins.getConnection().getConnection().getAverageSentPackets(), NUMBER, "sent_packets");
+		register(_->ins.getConnection().getConnection().getAverageReceivedPackets(), NUMBER, "received_packets");
 	}
 
 	public static void registerPerformanceVariables() {
-		register(k->Misc.fps, NUMBER, "fps");
-		register(k->Misc.getAverageFPS(), NUMBER, "avgfps", "avg_fps");
-		register(k->Misc.getMinimumFPS(), NUMBER, "minfps", "min_fps");
-		register(k->Misc.getMaximumFPS(), NUMBER, "maxfps", "max_fps");
+		register(_->Misc.fps, NUMBER, "fps");
+		register(_->Misc.getAverageFPS(), NUMBER, "avgfps", "avg_fps");
+		register(_->Misc.getMinimumFPS(), NUMBER, "minfps", "min_fps");
+		register(_->Misc.getMaximumFPS(), NUMBER, "maxfps", "max_fps");
 
-		register(k->ins.options.enableVsync().get(), BOOLEAN, "vsync_enabled");
+		register(_->ins.options.enableVsync().get(), BOOLEAN, "vsync_enabled");
 		register(
-			k -> Math.min(
+			_ -> Math.min(
 				ins.getFramerateLimitTracker().getFramerateLimit(),
 				Boolean.TRUE.equals(ins.options.enableVsync().get()) ? 
 					GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor()).refreshRate() : Integer.MAX_VALUE
@@ -47,30 +47,30 @@ public class ComputerData extends HudderBuiltInVariables {
 			"framerate_limit"
 		);
 		
-		register(k->{
+		register(_->{
 			var playerInfo = ins.player.connection.getPlayerInfo(ins.player.getUUID());
 			return playerInfo==null?0:playerInfo.getLatency();
 		}, NUMBER, "ping");
 		
-		register(k->{
+		register(_->{
 	        IntegratedServer server = ins.getSingleplayerServer();
 	        return server == null ? -1f : server.tickRateManager().tickrate();
 		}, NUMBER, "tps");
 		
-		register(k->Math.min(ins.getGpuUtilization(), 100.0), NUMBER, "gpu_d", "dgpu");
-		register(k->(int) (Math.min(ins.getGpuUtilization(), 100.0)), NUMBER, "gpu");
-		register(k->Misc.CPU.get()* 100d, NUMBER, "cpu_d", "dcpu");
-		register(k->(int) (Misc.CPU.get()* 100d), NUMBER, "cpu");
+		register(_->Math.min(ins.getGpuUtilization(), 100.0), NUMBER, "gpu_d", "dgpu");
+		register(_->(int) (Math.min(ins.getGpuUtilization(), 100.0)), NUMBER, "gpu");
+		register(_->Misc.CPU.get()* 100d, NUMBER, "cpu_d", "dcpu");
+		register(_->(int) (Misc.CPU.get()* 100d), NUMBER, "cpu");
 		
-		register(k->Misc.delta, NUMBER, "delta");
+		register(_->Misc.delta, NUMBER, "delta");
 	}
 	
 	public static void registerMemoryVariables() {
-		register(k->runtime.maxMemory() / MB, NUMBER, "totalmemory","maxmemory","totalram","maxram");
-		register(k->(runtime.totalMemory() - runtime.freeMemory()) / MB, NUMBER, "usedmemory","usedram");
-		register(k->runtime.freeMemory() / MB, NUMBER, "freememory","freeram");
-		register(k->runtime.freeMemory() / runtime.maxMemory(), NUMBER, "freememory_percentage","freeram_percentage");
-		register(k->{
+		register(_->runtime.maxMemory() / MB, NUMBER, "totalmemory","maxmemory","totalram","maxram");
+		register(_->(runtime.totalMemory() - runtime.freeMemory()) / MB, NUMBER, "usedmemory","usedram");
+		register(_->runtime.freeMemory() / MB, NUMBER, "freememory","freeram");
+		register(_->runtime.freeMemory() / runtime.maxMemory(), NUMBER, "freememory_percentage","freeram_percentage");
+		register(_->{
 			double usedmem = ((double)runtime.totalMemory() - (double)runtime.freeMemory()) / MB;
 			double totalmem = (runtime.maxMemory())/MB;
 			return (int)(usedmem/totalmem*100);
@@ -78,26 +78,26 @@ public class ComputerData extends HudderBuiltInVariables {
 	}
 	
 	public static void registerTimeVariables() {
-		register(k->System.currentTimeMillis(), NUMBER, "time");
-		register(k->Calendar.getInstance().get(Calendar.MILLISECOND), NUMBER, "milliseconds");
-		register(k->Calendar.getInstance().get(Calendar.SECOND), NUMBER, "seconds");
-		register(k->Calendar.getInstance().get(Calendar.MINUTE), NUMBER, "minutes");
-		register(k->Calendar.getInstance().get(Calendar.HOUR_OF_DAY), NUMBER, "hour");
-		register(k->Calendar.getInstance().get(Calendar.DAY_OF_MONTH), NUMBER, "day");
-		register(k->Calendar.getInstance().get(Calendar.MONTH)+1, NUMBER, "month");
-		register(k->Calendar.getInstance().get(Calendar.YEAR), NUMBER, "year");
+		register(_->System.currentTimeMillis(), NUMBER, "time");
+		register(_->Calendar.getInstance().get(Calendar.MILLISECOND), NUMBER, "milliseconds");
+		register(_->Calendar.getInstance().get(Calendar.SECOND), NUMBER, "seconds");
+		register(_->Calendar.getInstance().get(Calendar.MINUTE), NUMBER, "minutes");
+		register(_->Calendar.getInstance().get(Calendar.HOUR_OF_DAY), NUMBER, "hour");
+		register(_->Calendar.getInstance().get(Calendar.DAY_OF_MONTH), NUMBER, "day");
+		register(_->Calendar.getInstance().get(Calendar.MONTH)+1, NUMBER, "month");
+		register(_->Calendar.getInstance().get(Calendar.YEAR), NUMBER, "year");
 		
-		register(k->Calendar.getInstance().getDisplayName(Calendar.MONTH,Calendar.LONG,Locale.getDefault()), STRING, "month_name");
-		register(k->clockify(Calendar.getInstance().get(Calendar.HOUR_OF_DAY) % 12),STRING,"hour12");
-		register(k->Calendar.getInstance().get(Calendar.HOUR_OF_DAY) / 12 == 1 ? "pm" : "am", STRING, "ampm");
+		register(_->Calendar.getInstance().getDisplayName(Calendar.MONTH,Calendar.LONG,Locale.getDefault()), STRING, "month_name");
+		register(_->clockify(Calendar.getInstance().get(Calendar.HOUR_OF_DAY) % 12),STRING,"hour12");
+		register(_->Calendar.getInstance().get(Calendar.HOUR_OF_DAY) / 12 == 1 ? "pm" : "am", STRING, "ampm");
 	}
 	
 	public static void registerStringComputerInfo() {
-		register(k->GLX._getCpuInfo(), STRING, "cpu_info");
-		register(k->Misc.OS, STRING, "operating_system");
-		register(k->Locale.getDefault().getDisplayName(), STRING, "locale");
-		register(k->Locale.getDefault().getLanguage(), STRING, "language");
-		register(k->Locale.getDefault().getCountry(), STRING, "country");
+		register(_->GLX._getCpuInfo(), STRING, "cpu_info");
+		register(_->Misc.OS, STRING, "operating_system");
+		register(_->Locale.getDefault().getDisplayName(), STRING, "locale");
+		register(_->Locale.getDefault().getLanguage(), STRING, "language");
+		register(_->Locale.getDefault().getCountry(), STRING, "country");
 	}
 	
 	private static String clockify(int time) {

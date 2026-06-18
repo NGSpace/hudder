@@ -42,17 +42,17 @@ public class HudderUnitTestingCommand implements ClientCommandRegistrationCallba
 
 	@Override public void register(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
 
-		FunctionAndConsumerAPI.getInstance().registerFunction((m,co,a)-> a[0].get(), "FunctionAPITestingFunction");
-		FunctionAndConsumerAPI.getInstance().registerConsumer((m,co,a)-> ((AVarTextCompiler) co).put("methodvalue",a[0].get()), "MethodAPITestingMethod");
+		FunctionAndConsumerAPI.getInstance().registerFunction((_,_,a)-> a[0].get(), "FunctionAPITestingFunction");
+		FunctionAndConsumerAPI.getInstance().registerConsumer((_,co,a)-> ((AVarTextCompiler) co).put("methodvalue",a[0].get()), "MethodAPITestingMethod");
 
-		DataVariableRegistry.registerVariable(k->new JavaTestObject(), "JavaObjectAccess");
-		DataVariableRegistry.registerVariable(k->new JavaTestNoAccess(), "JavaTestNoAccess");
+		DataVariableRegistry.registerVariable(_->new JavaTestObject(), "JavaObjectAccess");
+		DataVariableRegistry.registerVariable(_->new JavaTestNoAccess(), "JavaTestNoAccess");
 
-		DataVariableRegistry.registerVariable(k->"Value", VariableTypes.STRING, "string_var");
+		DataVariableRegistry.registerVariable(_->"Value", VariableTypes.STRING, "string_var");
 		DataVariableRegistry.registerVariable(k->k, VariableTypes.STRING, "string_var2");
-		DataVariableRegistry.registerVariable(k->69, VariableTypes.NUMBER, "number_var");
-		DataVariableRegistry.registerVariable(k->true, VariableTypes.BOOLEAN, "boolean_var");
-		DataVariableRegistry.registerVariable(k->new Object() {
+		DataVariableRegistry.registerVariable(_->69, VariableTypes.NUMBER, "number_var");
+		DataVariableRegistry.registerVariable(_->true, VariableTypes.BOOLEAN, "boolean_var");
+		DataVariableRegistry.registerVariable(_->new Object() {
 			@Override
 			public String toString() {
 				return "lol";

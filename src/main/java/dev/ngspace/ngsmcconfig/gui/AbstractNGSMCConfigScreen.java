@@ -47,25 +47,25 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		
 		Component error = getError();
 		
-		backButton = Button.builder(Component.translatable("ngsmcconfig.back"), b->onClose())
+		backButton = Button.builder(Component.translatable("ngsmcconfig.back"), _->onClose())
 				.bounds(0, 0, 30, 20)
 				.build();
 		addRenderableWidget(backButton);
 		
-		saveButton = Button.builder(Component.translatable("ngsmcconfig.save"), b->save())
+		saveButton = Button.builder(Component.translatable("ngsmcconfig.save"), _->save())
 				.bounds(30, 0, 30, 20)
 				.build();
 		saveButton.active = error==null;
 		addRenderableWidget(saveButton);
 		
 		globalResetButton = Button.builder(Component.translatable("ngsmcconfig.globalreset").withColor(0xdb3b3b),
-				b->reset())
+				_->reset())
 				.bounds(width-40, 0, 40, 20)
 				.build();
 
 		if (configfile!=null) {
 			configButton = Button.builder(Component.translatable("ngsmcconfig.config"),
-					b->Util.getPlatform().openFile(configfile))
+					_->Util.getPlatform().openFile(configfile))
 					.bounds(width-(docsUri!=null?150:120), 0, 70, 20)
 					.build();
 			addRenderableWidget(configButton);
@@ -73,7 +73,7 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		
 		if (docsUri!=null) {
 			wikiButton = Button.builder(Component.translatable("ngsmcconfig.wiki"),
-					b->clickUrlAction(Minecraft.getInstance(), this, docsUri))
+					_->clickUrlAction(Minecraft.getInstance(), this, docsUri))
 					.bounds(width-80, 0, 40, 20)
 					.build();
 			addRenderableWidget(wikiButton);
