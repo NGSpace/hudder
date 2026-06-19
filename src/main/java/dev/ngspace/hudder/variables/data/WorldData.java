@@ -53,12 +53,12 @@ public class WorldData extends HudderBuiltInVariables {
 
 		/* Camera chunk information */
 		
-		register(_->ins.gameRenderer.getMainCamera().blockPosition().getX() & 0xF, NUMBER, "cam_subchunkx");
-		register(_->ins.gameRenderer.getMainCamera().blockPosition().getY() & 0xF, NUMBER, "cam_subchunky");
-		register(_->ins.gameRenderer.getMainCamera().blockPosition().getZ() & 0xF, NUMBER, "cam_subchunkz")
+		register(_->ins.gameRenderer.mainCamera().blockPosition().getX() & 0xF, NUMBER, "cam_subchunkx");
+		register(_->ins.gameRenderer.mainCamera().blockPosition().getY() & 0xF, NUMBER, "cam_subchunky");
+		register(_->ins.gameRenderer.mainCamera().blockPosition().getZ() & 0xF, NUMBER, "cam_subchunkz")
 		;
-		register(_->ins.gameRenderer.getMainCamera().blockPosition().getX() >> 4, NUMBER, "cam_chunkx");
-		register(_->ins.gameRenderer.getMainCamera().blockPosition().getZ() >> 4, NUMBER, "cam_chunkz");
+		register(_->ins.gameRenderer.mainCamera().blockPosition().getX() >> 4, NUMBER, "cam_chunkx");
+		register(_->ins.gameRenderer.mainCamera().blockPosition().getZ() >> 4, NUMBER, "cam_chunkz");
 	}
 	
 	private static void registerRenderingVariables() {
@@ -78,7 +78,7 @@ public class WorldData extends HudderBuiltInVariables {
 		                .sum(),
 		    NUMBER, "particles");
 
-		register(_->ins.levelRenderer.countRenderedSections(), NUMBER, "chunks");
+		register(_->ins.levelExtractor.countRenderedSections(), NUMBER, "chunks");
 
 
 
@@ -91,11 +91,11 @@ public class WorldData extends HudderBuiltInVariables {
 		    NUMBER, "skylight", "sky_light");
 
 		/* At camera */
-		register(_->ins.level.getMaxLocalRawBrightness(ins.gameRenderer.getMainCamera().blockPosition()),
+		register(_->ins.level.getMaxLocalRawBrightness(ins.gameRenderer.mainCamera().blockPosition()),
 		    NUMBER, "cam_light");
-		register(_->ins.level.getBrightness(LightLayer.BLOCK, ins.gameRenderer.getMainCamera().blockPosition()),
+		register(_->ins.level.getBrightness(LightLayer.BLOCK, ins.gameRenderer.mainCamera().blockPosition()),
 		    NUMBER, "cam_blocklight", "cam_block_light");
-		register(_->ins.level.getBrightness(LightLayer.SKY, ins.gameRenderer.getMainCamera().blockPosition()),
+		register(_->ins.level.getBrightness(LightLayer.SKY, ins.gameRenderer.mainCamera().blockPosition()),
 		    NUMBER, "cam_skylight", "cam_sky_light");
 	}
 	
@@ -104,7 +104,7 @@ public class WorldData extends HudderBuiltInVariables {
 		register(_->ins.level.getBiome(ins.player.blockPosition()).getRegisteredName(),
 		    STRING, "biome");
 
-		register(_->ins.level.getBiome(ins.gameRenderer.getMainCamera().blockPosition()).getRegisteredName(),
+		register(_->ins.level.getBiome(ins.gameRenderer.mainCamera().blockPosition()).getRegisteredName(),
 		    STRING, "cam_biome");
 
 		register(_->ins.level.dimension().identifier().toString(),

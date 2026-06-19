@@ -9,11 +9,11 @@ import dev.ngspace.hudder.Hudder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.Hud;
 
 @Environment(EnvType.CLIENT)
-@Mixin(Gui.class)
+@Mixin(Hud.class)
 public class InGameHudInjections {
 	public boolean shouldNotDraw() {return Hudder.config.removegui()&&Hudder.config.shouldCompile();}
     public boolean shouldNotDrawEffects() {return Hudder.config.removeeffects()&&Hudder.config.shouldCompile();}
