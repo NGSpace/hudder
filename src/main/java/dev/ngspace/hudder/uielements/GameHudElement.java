@@ -83,7 +83,6 @@ public class GameHudElement extends AUIElement {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-        matrixStack.popMatrix();
 	}
 
 }
