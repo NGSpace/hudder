@@ -14,7 +14,7 @@ import dev.ngspace.hudder.variables.data.ComputerData;
 import dev.ngspace.hudder.variables.data.PlayerData;
 import dev.ngspace.hudder.variables.data.WorldData;
 import net.minecraft.SharedConstants;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.ClientBrandRetriever;
 
 public class HudderBuiltInVariables {
 	protected HudderBuiltInVariables() {}
@@ -69,7 +69,7 @@ public class HudderBuiltInVariables {
 		
 //		register(k->"unset", STRING, "unset");
 
-		register(_->Minecraft.getInstance().getVersionType(), STRING, "version_type");
+		register(_->ClientBrandRetriever.getClientModName(), STRING, "version_type");
 		register(_->SharedConstants.getCurrentVersion().id(), STRING, "game_version");
 
 		register(_->0xFF663399, NUMBER, "rebeccapurple");

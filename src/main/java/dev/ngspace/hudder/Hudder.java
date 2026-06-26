@@ -175,10 +175,10 @@ public class Hudder implements ClientModInitializer {
 	
 	
 	public static void showToast(Component title, Component content) {
-		Minecraft.getInstance().getToastManager().addToast(new SystemToast(SystemToast.SystemToastId.PERIODIC_NOTIFICATION,title,content));
+		Minecraft.getInstance().gui.toastManager().addToast(new SystemToast(SystemToast.SystemToastId.PERIODIC_NOTIFICATION,title,content));
 	}
 	public static void showWarningToast(Component title, Component content) {
-		Minecraft.getInstance().getToastManager().addToast(new SystemToast(new SystemToast.SystemToastId(50000L),title,content));
+		Minecraft.getInstance().gui.toastManager().addToast(new SystemToast(new SystemToast.SystemToastId(50000L),title,content));
 	}
 	
 	
