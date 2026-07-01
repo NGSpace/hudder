@@ -1,5 +1,6 @@
 package dev.ngspace.hudder.compilers.abstractions;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,7 +14,7 @@ public abstract class AHudCompiler<T> {
 
 	public static Map<String, Object> variables = new HashMap<String, Object>();
 	
-	public abstract T processFile(String filepath) throws CompileException;
+	public abstract T processFile(String filepath) throws CompileException, IOException;
 	public abstract HudInformation execute(HudderConfig info, T processedfile, String filename) throws ExecutionException;
 	public abstract Object getVariable(String key) throws ExecutionException;
 	
@@ -21,7 +22,7 @@ public abstract class AHudCompiler<T> {
 	public abstract boolean setupHudSettings(NGSMCConfigCategory hudsettings);
 	
 	public HudInformation processAndExecute(HudderConfig config, String filepath, String filename)
-			throws CompileException, ExecutionException {
+			throws CompileException, ExecutionException, IOException {
 		return execute(config, processFile(filepath), filename);
 	}
 }

@@ -1,5 +1,6 @@
 package dev.ngspace.hudder.api.functionsandconsumers;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import dev.ngspace.hudder.Hudder;
@@ -49,13 +50,23 @@ public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 				return result;
 			} catch (CompileException e1) {
 				throw new ExecutionException(e1);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+				throw new ExecutionException(e1);
 			}
 		}, "compile", "run", "execute");
 		
 		
 		//Misc
 		
-		binder.registerFunction((_,_,s)->HudFileUtils.exists(s[0].asString()),"exists");
+		binder.registerFunction((_,_,s)->{
+			try {
+				return HudFileUtils.exists(s[0].asString());
+			} catch (IOException e) {
+				e.printStackTrace();
+				throw new ExecutionException(e);
+			}
+		},"exists");
 		binder.registerFunction((_,_,s)->mc.font.width(s[0].asString()), "strWidth", "strwidth");
 		binder.registerFunction((_,_,s)->s[0].get().toString(), "toString");
 		binder.registerUnsafeFunction((_,_,_)->new HashMap<Object, Object>(), "map");

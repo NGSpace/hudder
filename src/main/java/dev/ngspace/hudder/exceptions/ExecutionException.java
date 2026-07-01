@@ -1,5 +1,7 @@
 package dev.ngspace.hudder.exceptions;
 
+import java.io.IOException;
+
 import dev.ngspace.hudder.compilers.utils.TextPos;
 
 public class ExecutionException extends Exception {
@@ -16,6 +18,12 @@ public class ExecutionException extends Exception {
 
 	public ExecutionException(CompileException e1) {
 		this(e1.getMessage(), e1.line, e1.col, e1);
+	}
+
+	public ExecutionException(IOException e1) {
+		super(e1.getMessage(), e1);
+		this.line = 0;
+		this.col = 0;
 	}
 
 	private static final long serialVersionUID = -5301919978870515553L;

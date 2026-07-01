@@ -80,7 +80,7 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 		
 		// Double constant
 		// Accepts the following formats: "0x(0-F)+", "#(0-F)+", "(0-9)+", "(0-9)*.(0-9)+"
-		if (value.matches("((0x|#)[\\daAbBcCdDeEfF]+|[-+]*\\d*(\\.?(\\d+)?))"))
+		if (value.matches("((0x|#)[\\daAbBcCdDeEfF]+|[-+]?\\d*(\\.?(\\d+)?))"))
 			return new V2Number(value, line, charpos, comp);
 		
 		
