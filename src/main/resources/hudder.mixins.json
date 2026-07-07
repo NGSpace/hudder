@@ -5,7 +5,6 @@
 	"client": [
     	"LevelRendererAccess",
     	"ParticleManagerAccessor",
-    	"MinecraftClientInjections",
     	"KeyboardInjections",
     	"InGameHudInjections",
     	"InGameHudAccessor",
