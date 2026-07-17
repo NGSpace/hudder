@@ -78,7 +78,8 @@ public class NGSMCCategoryList extends ContainerObjectSelectionList<NGSMCCategor
 	    	}
 	    	
 	    	renderCategoryTitle(graphics, x, y, width, height);
-	    	icon.extractRenderState(graphics, mouseX, mouseY, a, height-4, height-4, x+2, y+2);
+	    	if (icon!=null)
+	    		icon.extractRenderState(graphics, mouseX, mouseY, a, height-4, height-4, x+2, y+2);
 
 	    	if (selected) {
 	    		graphics.fill(x+width-2, y, x+width, y+height, 0xFFFFFFFF);
