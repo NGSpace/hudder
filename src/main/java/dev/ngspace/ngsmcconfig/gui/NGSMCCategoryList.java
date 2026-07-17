@@ -6,6 +6,7 @@ import java.util.List;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigIcon;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
@@ -29,17 +30,24 @@ public class NGSMCCategoryList extends ContainerObjectSelectionList<NGSMCCategor
 	
 	public static class Entry extends ContainerObjectSelectionList.Entry<NGSMCCategoryList.Entry> {
 
+		private static final int TEXT_X_OFFSET = 20;
+		private static final int TEXT_RIGHT_PADDING = 4;
+		private static final long MARQUEE_DELAY_MS = 1000;
+		private static final float MARQUEE_SPEED = 20F;
+
 		private AbstractNGSMCConfigScreen screen;
 		private NGSMCConfigCategory category;
 		private boolean selected;
 		private NGSMCConfigIcon icon;
 		private final Button categoryButton;
+		private final long marqueeStartTime;
 		
 		public Entry(AbstractNGSMCConfigScreen screen, NGSMCConfigCategory category, boolean isSelected) {
 			this.screen = screen;
 			this.category = category;
 			this.selected = isSelected;
 			this.icon = category.icon();
+			this.marqueeStartTime = System.currentTimeMillis();
 			this.categoryButton = Button.builder(category.title(), _->openCategory())
 					.bounds(0, 0, 1, 1)
 					.build();
@@ -69,7 +77,7 @@ public class NGSMCCategoryList extends ContainerObjectSelectionList<NGSMCCategor
 	    		graphics.fill(x, y, x+width, y+height, 0x30FFFFFF);
 	    	}
 	    	
-	    	graphics.text(Minecraft.getInstance().font, category.title(), x+20, y+7, 0xFFFFFFFF);
+	    	renderCategoryTitle(graphics, x, y, width, height);
 	    	icon.extractRenderState(graphics, mouseX, mouseY, a, height-4, height-4, x+2, y+2);
 
 	    	if (selected) {
@@ -81,6 +89,28 @@ public class NGSMCCategoryList extends ContainerObjectSelectionList<NGSMCCategor
 	    	}
 		}
 		
+		private void renderCategoryTitle(GuiGraphicsExtractor graphics, int x, int y, int width, int height) {
+			Font font = Minecraft.getInstance().font;
+			int textX = x + TEXT_X_OFFSET;
+			int textRight = x + width - TEXT_RIGHT_PADDING;
+			int availableWidth = Math.max(0, textRight - textX);
+			int titleWidth = font.width(category.title())-1;
+
+			graphics.enableScissor(textX, y, textRight, y + height);
+			if (titleWidth <= availableWidth) {
+				graphics.text(font, category.title(), textX, y + 7, 0xFFFFFFFF);
+			} else {
+				long scrollingTime = Math.max(0L, System.currentTimeMillis() - marqueeStartTime - MARQUEE_DELAY_MS);
+				int cycleWidth = titleWidth + 16;
+				int offset = (int) ((scrollingTime * MARQUEE_SPEED / 1_000.0F) % cycleWidth);
+				int drawX = textX - offset;
+
+				graphics.text(font, category.title(), drawX, y + 7, 0xFFFFFFFF);
+				graphics.text(font, category.title(), drawX + cycleWidth, y + 7, 0xFFFFFFFF);
+			}
+			graphics.disableScissor();
+		}
+
 		private void openCategory() {
 			Minecraft.getInstance().gui.setScreen(new NGSMCConfigOptionsScreen(screen, category, screen.root));
 		}

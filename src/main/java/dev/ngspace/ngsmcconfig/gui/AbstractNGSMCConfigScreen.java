@@ -17,12 +17,11 @@ import net.minecraft.util.Util;
 public abstract class AbstractNGSMCConfigScreen extends Screen {
 	
 	public static final int TOP_ROW_SIZE = 22;
-	public static final int BUTTONS_WIDTH = 105;
+	public static final int BUTTONS_WIDTH = 135;
 	
 	protected Screen parent;
 	protected List<NGSMCConfigCategory> categories;
 	protected NGSMCCategoryList categoryContainer;
-	protected boolean askBeforeUnsavedLeave;
 	
 	protected Button saveButton;
 	protected Button backButton;
@@ -157,10 +156,12 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 	
 	@Override
 	public void onClose() {
-		if (askBeforeUnsavedLeave&&isEditedAndNotSaved())
+		if (isEditedAndNotSaved())
 			minecraft.gui.setScreen(new ConfirmScreen(b->minecraft.gui.setScreen(b?parent:this),
 					Component.translatable("ngsmcconfig.confirmunsavedexit"),
-					Component.translatable("ngsmcconfig.confirmunsavedexit.text")));
+					Component.translatable("ngsmcconfig.confirmunsavedexit.text"),
+					Component.translatable("ngsmcconfig.confirmunsavedexit.yes"),
+					Component.translatable("ngsmcconfig.confirmunsavedexit.no")));
 		else
 			this.minecraft.gui.setScreen(this.root.parent);
 	}

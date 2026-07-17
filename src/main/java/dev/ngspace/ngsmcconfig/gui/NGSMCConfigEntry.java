@@ -58,8 +58,8 @@ public class NGSMCConfigEntry extends ContainerObjectSelectionList.Entry<NGSMCCo
     	
         if (widget!=null) {
         	resetButton.setPosition(x+width-40, y);
-            resetButton.extractRenderState(graphics, mouseX, mouseY, partialTick);
             resetButton.active = !option.isDefault();
+            resetButton.extractRenderState(graphics, mouseX, mouseY, partialTick);
             
         	widget.setPosition(x+width-50-widget.getWidth(), y);
         	widget.extractRenderState(graphics, mouseX, mouseY, partialTick);
