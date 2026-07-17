@@ -23,7 +23,13 @@ public class NGSMCConfigBuilder {
 	}
 	
 	public NGSMCConfigCategory createCategory(Component title) {
-		NGSMCConfigCategory category = new NGSMCConfigCategory(title, new ArrayList<AbstractNGSMCConfigOption<?>>());
+		return createCategory(title, null);
+	}
+	
+	public NGSMCConfigCategory createCategory(Component title, NGSMCConfigIcon icon) {
+		NGSMCConfigCategory category = new NGSMCConfigCategory(title,
+				new ArrayList<AbstractNGSMCConfigOption<?>>(),
+				icon);
 		categories.add(category);
 		return category;
 	}

@@ -24,8 +24,7 @@ public class NGSMCConfigCategorySelectionScreen extends AbstractNGSMCConfigScree
 		
 		final int increase = CATEGORY_PADDING + 20;
 		
-		int catY = (int) ((height)/2d-increase*(Math.ceil(categories.size()/2d)));
-		catY += 20; // The buttons at the top
+		int catY = (int) (height/2d-increase*(Math.ceil(categories.size()/2d)));
 		
 		for (int i = 0;i<categories.size();i++) {
 			var category = categories.get(i);
@@ -43,6 +42,10 @@ public class NGSMCConfigCategorySelectionScreen extends AbstractNGSMCConfigScree
 				_->minecraft.gui.setScreen(new NGSMCConfigOptionsScreen(this, categories, category, writeoperation, docsUri, configfile)))
 				.pos(catX, catY)
 				.build());
+			
+			if (category.icon()!=null) {
+				addRenderableWidget(category.icon().build(catX+2, catY+2, 16, 16));// Buttons are 20 pixels tall
+			}
 		}
 	}
 	

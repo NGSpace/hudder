@@ -11,9 +11,15 @@ public class NGSMCConfigOptionsScreen extends AbstractNGSMCConfigScreen {
 
 	private NGSMCConfigCategory selectedCategory;
 
-	protected NGSMCConfigOptionsScreen(Screen parentScreen, List<NGSMCConfigCategory> categories,
+	public NGSMCConfigOptionsScreen(Screen parentScreen, List<NGSMCConfigCategory> categories,
 			NGSMCConfigCategory selectedCategory, Runnable writeoperation, URI wikiUri, File configfile) {
 		super(parentScreen, categories, true, writeoperation, wikiUri, configfile);
+		this.selectedCategory = selectedCategory;
+	}
+
+	public NGSMCConfigOptionsScreen(AbstractNGSMCConfigScreen parentScreen,
+			NGSMCConfigCategory selectedCategory) {
+		super(parentScreen, true);
 		this.selectedCategory = selectedCategory;
 	}
 	

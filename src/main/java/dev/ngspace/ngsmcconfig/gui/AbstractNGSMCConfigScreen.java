@@ -31,16 +31,26 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 	protected Runnable writeoperation;
 	protected URI docsUri;
 	protected File configfile;
-	
-	protected AbstractNGSMCConfigScreen(Screen parentScreen, List<NGSMCConfigCategory> categories, boolean c,
+
+	protected AbstractNGSMCConfigScreen(Screen parentScreen, List<NGSMCConfigCategory> categories, boolean createContainer,
 			Runnable writeoperation, URI docsUri, File configfile) {
 		super(Component.literal("NGSMCConfig"));
 		this.categories = categories;
 		this.parent = parentScreen;
-		this.createContainer = c;
+		this.createContainer = createContainer;
 		this.writeoperation = writeoperation;
 		this.docsUri = docsUri;
 		this.configfile = configfile;
+	}
+	
+	protected AbstractNGSMCConfigScreen(AbstractNGSMCConfigScreen parent, boolean createContainer) {
+		super(Component.literal("NGSMCConfig"));
+		this.categories = parent.categories;
+		this.parent = parent;
+		this.createContainer = createContainer;
+		this.writeoperation = parent.writeoperation;
+		this.docsUri = parent.docsUri;
+		this.configfile = parent.configfile;
 	}
 	@Override
 	protected void init() {

@@ -9,6 +9,7 @@ import dev.ngspace.hudder.compilers.utils.Compilers;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigBuilder;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
+import dev.ngspace.ngsmcconfig.api.NGSMCConfigIcon;
 import dev.ngspace.ngsmcconfig.options.BooleanNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.DoubleNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.HexNGSMCConfigOption;
@@ -16,7 +17,11 @@ import dev.ngspace.ngsmcconfig.options.IntNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.StringNGSMCConfigOption;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 	
@@ -39,16 +44,22 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 		
 		
 		// General
-		NGSMCConfigCategory general = builder.createCategory(Component.translatable("hudder.general"));
-		NGSMCConfigCategory text_rendering = builder.createCategory(Component.translatable("hudder.text_rendering"));
-		NGSMCConfigCategory text_padding = builder.createCategory(Component.translatable("hudder.text_padding"));
-		NGSMCConfigCategory vanillahud = builder.createCategory(Component.translatable("hudder.vanillahud"));
-		NGSMCConfigCategory safety_perf = builder.createCategory(Component.translatable("hudder.safety_perf"));
+		NGSMCConfigCategory general = builder.createCategory(Component.translatable("hudder.general"),
+				new NGSMCConfigIcon.SpriteIcon("items", "item/compass_00"));
+		NGSMCConfigCategory text_rendering = builder.createCategory(Component.translatable("hudder.text_rendering"),
+				new NGSMCConfigIcon.SpriteIcon("items", "item/name_tag"));
+		NGSMCConfigCategory text_padding = builder.createCategory(Component.translatable("hudder.text_padding"),
+				new NGSMCConfigIcon.SpriteIcon("items", "item/structure_void"));
+		NGSMCConfigCategory vanillahud = builder.createCategory(Component.translatable("hudder.vanillahud"),
+				new NGSMCConfigIcon.SpriteIcon("gui", "hud/heart/full"));
+		NGSMCConfigCategory safety_perf = builder.createCategory(Component.translatable("hudder.safety_perf"),
+				new NGSMCConfigIcon.SpriteIcon("gui", "mob_effect/resistance"));
 		
 		
 		
 		NGSMCConfigCategory hudsettings = builder.createCategory(Component.translatable("hudder.hudsettings",
-				config.mainfile));
+				config.mainfile),
+				new NGSMCConfigIcon.SpriteIcon("items", "item/amethyst_shard"));
 		
 		
 		
