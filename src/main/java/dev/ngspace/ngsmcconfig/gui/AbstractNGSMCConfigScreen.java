@@ -16,8 +16,8 @@ import net.minecraft.util.Util;
 
 public abstract class AbstractNGSMCConfigScreen extends Screen {
 	
-	public static final int CATEGORY_PADDING = 8;
-	public static final int BUTTONS_WIDTH = 135;
+	public static final int TOP_ROW_SIZE = 22;
+	public static final int BUTTONS_WIDTH = 105;
 	
 	protected Screen parent;
 	protected List<NGSMCConfigCategory> categories;
@@ -104,7 +104,7 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 	protected void initCategoryButtons() {
 		int height = Minecraft.getInstance().getWindow().getGuiScaledHeight();
 	
-		categoryContainer = new NGSMCCategoryList(Minecraft.getInstance(), BUTTONS_WIDTH, height-35, 35);
+		categoryContainer = new NGSMCCategoryList(Minecraft.getInstance(), BUTTONS_WIDTH, height-TOP_ROW_SIZE, TOP_ROW_SIZE);
 		
 		for (var category : categories) {
 			categoryContainer.addCategory(this, category, category == getSelectedCategory());

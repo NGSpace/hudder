@@ -39,7 +39,7 @@ public class NGSMCConfigOptionsScreen extends AbstractNGSMCConfigScreen {
 		int width = Minecraft.getInstance().getWindow().getGuiScaledWidth();
 		int height = Minecraft.getInstance().getWindow().getGuiScaledHeight();
 	
-		container = new NGSMCConfigOptionsListWidget(Minecraft.getInstance(), width, height-35, BUTTONS_WIDTH, 35);
+		container = new NGSMCConfigOptionsListWidget(Minecraft.getInstance(), width, height-TOP_ROW_SIZE, BUTTONS_WIDTH, TOP_ROW_SIZE);
 		
 		addRenderableWidget(container);
 		
