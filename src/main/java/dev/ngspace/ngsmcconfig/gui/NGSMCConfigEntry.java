@@ -13,6 +13,7 @@ import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -86,4 +87,24 @@ public class NGSMCConfigEntry extends ContainerObjectSelectionList.Entry<NGSMCCo
     @Override public List<? extends GuiEventListener> children() {return children;}
 
 	@Override public List<? extends NarratableEntry> narratables() {return children;}
+
+	public void extractOverlayRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick,
+			int overlayTop, int overlayBottom) {
+		if (renderlast && widget instanceof NGSMCConfigOverlayWidget overlayWidget)
+			overlayWidget.extractOverlayRenderState(graphics, mouseX, mouseY, partialTick, overlayTop, overlayBottom);
+	}
+
+	public boolean mouseClickedOverlay(MouseButtonEvent event, boolean doubleClick, int overlayTop, int overlayBottom) {
+		return renderlast && widget instanceof NGSMCConfigOverlayWidget overlayWidget
+				&& overlayWidget.mouseClickedOverlay(event, doubleClick, overlayTop, overlayBottom);
+	}
+
+	public boolean isOverlayOpen() {
+		return renderlast && widget instanceof NGSMCConfigOverlayWidget overlayWidget && overlayWidget.isOverlayOpen();
+	}
+
+	public void closeOverlay() {
+		if (widget instanceof NGSMCConfigOverlayWidget overlayWidget)
+			overlayWidget.closeOverlay();
+	}
 }

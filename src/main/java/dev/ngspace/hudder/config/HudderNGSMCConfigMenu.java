@@ -3,6 +3,9 @@ package dev.ngspace.hudder.config;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.utils.Compilers;
@@ -12,16 +15,13 @@ import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigIcon;
 import dev.ngspace.ngsmcconfig.options.BooleanNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.DoubleNGSMCConfigOption;
+import dev.ngspace.ngsmcconfig.options.DropdownNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.HexNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.IntNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.StringNGSMCConfigOption;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 	
@@ -83,13 +83,15 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 					return null;
 				})
 				.build());
-		general.addOption(StringNGSMCConfigOption.builder(Hudder.config.compilerName(),
-				Component.translatable("hudder.general.compilertype"))
+		general.addOption(DropdownNGSMCConfigOption.builder(Hudder.config.compilerName(),
+				Component.translatable("hudder.general.compilertype"),
+				Compilers.keySet().stream().toList().stream().sorted().toList())
     		.setHoverComponent(Component.translatable("hudder.general.compilertype.tooltip"))
     		.setDefaultValue("hudder")
     		.setSaveOperation(b->Hudder.config.setCompilerName(b.toLowerCase()))
     		.setValidator(e->!Compilers.has(e.toLowerCase())?Component.translatable("hudder.general.compilertype.error"):null)
     		.build());
+		
 		general.addOption(DoubleNGSMCConfigOption.builder(config.scale, Component.translatable("hudder.general.scale"))
 				.setHoverComponent(Component.translatable("hudder.general.scale.tooltip"))
 				.setSaveOperation(b->config.scale=b.floatValue())

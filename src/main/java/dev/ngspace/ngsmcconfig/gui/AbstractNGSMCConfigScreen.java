@@ -164,9 +164,10 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		saveButton.active = error==null;
 		errorWidget.setMessage(stylizeErrorComponment(error));
 		
-        if (container!=null)
-        	container.extractRenderState(graphics, mouseX, mouseY, partialTick);
         super.extractRenderState(graphics, mouseX, mouseY, partialTick);
+
+        if (container!=null)
+	        container.extractOverlayRenderState(graphics, mouseX, mouseY, partialTick);
     }
 
 	private Component stylizeErrorComponment(Component error) {
