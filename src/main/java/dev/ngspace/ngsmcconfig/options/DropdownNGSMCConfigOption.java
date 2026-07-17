@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import dev.ngspace.ngsmcconfig.api.AbstractNGSMCConfigOptionBuilder;
-import dev.ngspace.ngsmcconfig.gui.DropdownNGSMCConfigWidget;
+import dev.ngspace.ngsmcconfig.gui.NGSMCConfigDropdownWidget;
 import dev.ngspace.ngsmcconfig.gui.NGSMCConfigEntry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -16,7 +16,7 @@ public class DropdownNGSMCConfigOption<T> extends AbstractNGSMCConfigOption<T> {
 
 	protected final List<T> options;
 	protected final Function<T, Component> valueText;
-	protected DropdownNGSMCConfigWidget<T> widget;
+	protected NGSMCConfigDropdownWidget<T> widget;
 
 	protected DropdownNGSMCConfigOption(T defaultValue, T value, Component text, Consumer<T> saveOperation,
 			Function<T, Component> validator, List<T> options, Function<T, Component> valueText) {
@@ -27,7 +27,7 @@ public class DropdownNGSMCConfigOption<T> extends AbstractNGSMCConfigOption<T> {
 
 	@Override
 	public NGSMCConfigEntry buildEntry() {
-		widget = new DropdownNGSMCConfigWidget<T>(0, 0, 100, 20, options, value, valueText, selectedValue -> {
+		widget = new NGSMCConfigDropdownWidget<T>(0, 0, 100, 20, options, value, valueText, selectedValue -> {
 			value = selectedValue;
 			edited = true;
 		});

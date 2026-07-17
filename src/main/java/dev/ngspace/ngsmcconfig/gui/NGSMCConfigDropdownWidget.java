@@ -20,7 +20,7 @@ import net.minecraft.network.chat.Component;
  * Button, CycleButton, or EditBox classes so its appearance can be restyled
  * without inheriting vanilla button rendering.
  */
-public class DropdownNGSMCConfigWidget<T> extends AbstractWidget implements NGSMCConfigOverlayWidget {
+public class NGSMCConfigDropdownWidget<T> extends AbstractWidget implements NGSMCConfigOverlayWidget {
 
 	protected static final int BORDER_COLOR = 0xFF9c9c9c;
 
@@ -34,7 +34,7 @@ public class DropdownNGSMCConfigWidget<T> extends AbstractWidget implements NGSM
 	protected T value;
 	protected boolean open;
 
-	public DropdownNGSMCConfigWidget(int x, int y, int width, int height, List<T> options, T value,
+	public NGSMCConfigDropdownWidget(int x, int y, int width, int height, List<T> options, T value,
 			Function<T, Component> valueText, Consumer<T> selectionOperation) {
 		super(x, y, width, height, Objects.requireNonNull(valueText).apply(value));
 		this.options = List.copyOf(options);

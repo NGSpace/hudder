@@ -16,10 +16,12 @@ import net.minecraft.util.Util;
 
 public abstract class AbstractNGSMCConfigScreen extends Screen {
 	
+	public static final int CATEGORY_PADDING = 8;
+	public static final int BUTTONS_WIDTH = 135;
+	
 	protected Screen parent;
 	protected List<NGSMCConfigCategory> categories;
-	protected NGSMCConfigOptionsListWidget container;
-	protected boolean createContainer;
+	protected NGSMCCategoryList categoryContainer;
 	protected boolean askBeforeUnsavedLeave;
 	
 	protected Button saveButton;
@@ -31,26 +33,27 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 	protected Runnable writeoperation;
 	protected URI docsUri;
 	protected File configfile;
+	protected final AbstractNGSMCConfigScreen root;
 
-	protected AbstractNGSMCConfigScreen(Screen parentScreen, List<NGSMCConfigCategory> categories, boolean createContainer,
-			Runnable writeoperation, URI docsUri, File configfile) {
+	protected AbstractNGSMCConfigScreen(Screen parent, List<NGSMCConfigCategory> categories,
+			Runnable writeoperation, URI docsUri, File configfile, AbstractNGSMCConfigScreen root) {
 		super(Component.literal("NGSMCConfig"));
 		this.categories = categories;
-		this.parent = parentScreen;
-		this.createContainer = createContainer;
+		this.parent = parent;
 		this.writeoperation = writeoperation;
 		this.docsUri = docsUri;
 		this.configfile = configfile;
+		this.root = root == null ? this : root;
 	}
 	
-	protected AbstractNGSMCConfigScreen(AbstractNGSMCConfigScreen parent, boolean createContainer) {
+	protected AbstractNGSMCConfigScreen(AbstractNGSMCConfigScreen parent, AbstractNGSMCConfigScreen root) {
 		super(Component.literal("NGSMCConfig"));
 		this.categories = parent.categories;
 		this.parent = parent;
-		this.createContainer = createContainer;
 		this.writeoperation = parent.writeoperation;
 		this.docsUri = parent.docsUri;
 		this.configfile = parent.configfile;
+		this.root = root == null ? this : root;
 	}
 	@Override
 	protected void init() {
@@ -93,19 +96,25 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		errorWidget = new StringWidget(stylizeErrorComponment(error), font);
 		errorWidget.setPosition(65, 0);
 		errorWidget.setSize(300, 20);
-//		errorWidget.alignLeft();
 		addRenderableWidget(errorWidget);
 		
-		if (createContainer) {
-			int width = Minecraft.getInstance().getWindow().getGuiScaledWidth();
-			int height = Minecraft.getInstance().getWindow().getGuiScaledHeight();
+		initCategoryButtons();
+	}
+
+	protected void initCategoryButtons() {
+		int height = Minecraft.getInstance().getWindow().getGuiScaledHeight();
+	
+		categoryContainer = new NGSMCCategoryList(Minecraft.getInstance(), BUTTONS_WIDTH, height-35, 35);
 		
-			container = new NGSMCConfigOptionsListWidget(Minecraft.getInstance(), width, height-35, 35);
-			
-			addRenderableWidget(container);
+		for (var category : categories) {
+			categoryContainer.addCategory(this, category, category == getSelectedCategory());
 		}
+		
+		addRenderableWidget(categoryContainer);
 	}
 	
+	public abstract NGSMCConfigCategory getSelectedCategory();
+
 	protected void save() {
 		for (var category : categories) {
 			for (var option : category.options()) {
@@ -153,21 +162,17 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 					Component.translatable("ngsmcconfig.confirmunsavedexit"),
 					Component.translatable("ngsmcconfig.confirmunsavedexit.text")));
 		else
-			this.minecraft.gui.setScreen(this.parent);
+			this.minecraft.gui.setScreen(this.root.parent);
 	}
 	
     @Override
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-		
 		Component error = getError();
 		
 		saveButton.active = error==null;
 		errorWidget.setMessage(stylizeErrorComponment(error));
 		
         super.extractRenderState(graphics, mouseX, mouseY, partialTick);
-
-        if (container!=null)
-	        container.extractOverlayRenderState(graphics, mouseX, mouseY, partialTick);
     }
 
 	private Component stylizeErrorComponment(Component error) {

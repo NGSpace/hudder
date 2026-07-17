@@ -5,20 +5,19 @@ import org.joml.Matrix3x2fStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public abstract class NGSMCConfigIcon {
-	
-	public abstract AbstractWidget build(int x, int y, int width, int height);
+
+
+	public abstract void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a,
+			int width, int height, int x, int y);
 	
 	/**
 	 * Uses GuiGraphicsExtractor.blitSprite(... TextureAtlasSprite sprite ...) to draw the given sprite on screen
@@ -39,37 +38,9 @@ public abstract class NGSMCConfigIcon {
 		}
 
 		@Override
-		public AbstractWidget build(int x, int y, int width, int height) {
-			return new NGSMCConfigSpriteIcon(x, y, width, height, sprite);
-		}
-		
-		protected class NGSMCConfigSpriteIcon extends AbstractWidget {
-
-			protected TextureAtlasSprite sprite;
-			protected int x;
-			protected int y;
-
-			public NGSMCConfigSpriteIcon(int x, int y, int width, int height, TextureAtlasSprite sprite) {
-				super(x, y, width, height, CommonComponents.EMPTY);
-				this.sprite = sprite;
-				this.x = x;
-				this.y = y;
-			}
-
-			@Override
-			protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-				graphics.blitSprite(
-		                RenderPipelines.GUI_TEXTURED,
-		                sprite,
-		                x,
-		                y,
-		                width,
-		                height
-		        );
-			}
-
-			@Override protected void updateWidgetNarration(NarrationElementOutput output) {/* */}
-			
+		public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, int width,
+				int height, int x, int y) {
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, x, y, width, height);
 		}
 	}
 	
@@ -87,30 +58,9 @@ public abstract class NGSMCConfigIcon {
 		}
 
 		@Override
-		public AbstractWidget build(int x, int y, int width, int height) {
-			return new NGSMCConfigTextureIcon(x, y, width, height, texture);
-		}
-		
-		protected class NGSMCConfigTextureIcon extends AbstractWidget {
-
-			protected Identifier texture;
-			protected int x;
-			protected int y;
-
-			public NGSMCConfigTextureIcon(int x, int y, int width, int height, Identifier texture) {
-				super(x, y, width, height, CommonComponents.EMPTY);
-				this.texture = texture;
-				this.x = x;
-				this.y = y;
-			}
-
-			@Override
-			protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-				graphics.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, 0, 0f, width, height, width, height);
-			}
-
-			@Override protected void updateWidgetNarration(NarrationElementOutput output) {/* */}
-			
+		public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, int width,
+				int height, int x, int y) {
+			graphics.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, 0, 0f, width, height, width, height);
 		}
 	}
 	
@@ -153,51 +103,16 @@ public abstract class NGSMCConfigIcon {
 
 		@Deprecated(forRemoval = false, since = "10.1.0")
 		@Override
-		public AbstractWidget build(int x, int y, int width, int height) {
-			return new NGSMCConfigItemStackIcon(x, y, width, height, height/16f, stack, font);
-		}
-		
-		@Deprecated(forRemoval = false, since = "10.1.0")
-		protected class NGSMCConfigItemStackIcon extends AbstractWidget {
-
-			@Deprecated(forRemoval = false, since = "10.1.0")
-			protected ItemStack stack;
-			@Deprecated(forRemoval = false, since = "10.1.0")
-			protected float scale;
-			@Deprecated(forRemoval = false, since = "10.1.0")
-			protected Font font;
-			@Deprecated(forRemoval = false, since = "10.1.0")
-			protected float x;
-			@Deprecated(forRemoval = false, since = "10.1.0")
-			protected float y;
-
-			@Deprecated(forRemoval = false, since = "10.1.0")
-			public NGSMCConfigItemStackIcon(int x, int y, int width, int height, float scale,
-					ItemStack stack, Font font) {
-				super(x, y, width, height, CommonComponents.EMPTY);
-				this.stack = stack;
-				this.font = font;
-				this.scale = scale;
-				this.x = x;
-				this.y = y;
-			}
-
-			@Deprecated(forRemoval = false, since = "10.1.0")
-			@Override
-			protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-				Matrix3x2fStack matrixStack = graphics.pose();
-	            matrixStack.pushMatrix();
-	            matrixStack.translate(x, y);
-	            matrixStack.scale(scale, scale);
-	            matrixStack.translate(-x, -y);
-	            graphics.item(stack, (int)x, (int)y);
-	            graphics.itemDecorations(font, stack, (int)x, (int)y);
-	            matrixStack.popMatrix();
-			}
-
-			@Deprecated(forRemoval = false, since = "10.1.0")
-			@Override protected void updateWidgetNarration(NarrationElementOutput output) {/* */}
-			
+		public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, int width,
+				int height, int x, int y) {
+			Matrix3x2fStack matrixStack = graphics.pose();
+            matrixStack.pushMatrix();
+            matrixStack.translate(x, y);
+            matrixStack.scale(height/16f, height/16f);
+            matrixStack.translate(-x, -y);
+            graphics.item(stack, x, y);
+            graphics.itemDecorations(font, stack, x, y);
+            matrixStack.popMatrix();
 		}
 	}
 }

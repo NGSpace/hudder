@@ -3,9 +3,6 @@ package dev.ngspace.hudder.config;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.utils.Compilers;
@@ -84,14 +81,13 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 				})
 				.build());
 		general.addOption(DropdownNGSMCConfigOption.builder(Hudder.config.compilerName(),
-				Component.translatable("hudder.general.compilertype"),
-				Compilers.keySet().stream().toList().stream().sorted().toList())
-    		.setHoverComponent(Component.translatable("hudder.general.compilertype.tooltip"))
-    		.setDefaultValue("hudder")
-    		.setSaveOperation(b->Hudder.config.setCompilerName(b.toLowerCase()))
-    		.setValidator(e->!Compilers.has(e.toLowerCase())?Component.translatable("hudder.general.compilertype.error"):null)
-    		.build());
-		
+					Component.translatable("hudder.general.compilertype"),
+					Compilers.keySet().stream().toList().stream().sorted().toList())
+	    		.setHoverComponent(Component.translatable("hudder.general.compilertype.tooltip"))
+	    		.setDefaultValue("hudder")
+	    		.setSaveOperation(b->Hudder.config.setCompilerName(b.toLowerCase()))
+	    		.setValidator(e->!Compilers.has(e.toLowerCase())?Component.translatable("hudder.general.compilertype.error"):null)
+	    		.build());
 		general.addOption(DoubleNGSMCConfigOption.builder(config.scale, Component.translatable("hudder.general.scale"))
 				.setHoverComponent(Component.translatable("hudder.general.scale.tooltip"))
 				.setSaveOperation(b->config.scale=b.floatValue())

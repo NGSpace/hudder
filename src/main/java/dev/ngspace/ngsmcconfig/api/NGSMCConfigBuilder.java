@@ -5,7 +5,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import dev.ngspace.ngsmcconfig.gui.NGSMCConfigCategorySelectionScreen;
+import dev.ngspace.ngsmcconfig.gui.NGSMCConfigOptionsScreen;
 import dev.ngspace.ngsmcconfig.options.AbstractNGSMCConfigOption;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -35,7 +35,7 @@ public class NGSMCConfigBuilder {
 	}
 	
 	public Screen build() {
-		return new NGSMCConfigCategorySelectionScreen(parent, categories, writeoperation, docsUri, configfile);
+		return new NGSMCConfigOptionsScreen(parent, categories, categories.get(0), writeoperation, docsUri, configfile, null);
 	}
 
 	public void setWriteOperation(Runnable writeoperation) {

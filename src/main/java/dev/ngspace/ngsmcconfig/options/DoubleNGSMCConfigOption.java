@@ -25,7 +25,7 @@ public class DoubleNGSMCConfigOption extends AbstractTextFieldNGSMCConfigOption<
 				try {
 					this.value = Double.parseDouble(val);
 					validnum = true;
-				} catch (NumberFormatException e) {
+				} catch (NumberFormatException _) {
 					validnum = false;
 					invalidnum = val;
 				}

@@ -6,8 +6,9 @@ import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.input.MouseButtonEvent;
 
 public class NGSMCConfigOptionsListWidget extends ContainerObjectSelectionList<NGSMCConfigEntry> {
-    public NGSMCConfigOptionsListWidget(Minecraft client, int width, int height, int y) {
-        super(client, width, height, y, 30);
+    public NGSMCConfigOptionsListWidget(Minecraft client, int width, int height, int x, int y) {
+        super(client, width-x, height, y, 30);
+        setPosition(x, y);
     }
     
     @Override
@@ -19,7 +20,7 @@ public class NGSMCConfigOptionsListWidget extends ContainerObjectSelectionList<N
     
     @Override
     public int getRowWidth() {
-    	return 300;
+    	return 290;
     }
 
 	public void extractOverlayRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
