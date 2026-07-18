@@ -8,6 +8,7 @@ import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 
 public class NGSMCConfigOptionsScreen extends AbstractNGSMCConfigScreen {
 
@@ -15,8 +16,9 @@ public class NGSMCConfigOptionsScreen extends AbstractNGSMCConfigScreen {
 	protected NGSMCConfigOptionsListWidget container;
 
 	public NGSMCConfigOptionsScreen(Screen parentScreen, List<NGSMCConfigCategory> categories,
-			NGSMCConfigCategory selectedCategory, Runnable writeoperation, URI wikiUri, File configfile, AbstractNGSMCConfigScreen root) {
-		super(parentScreen, categories, writeoperation, wikiUri, configfile, root);
+			NGSMCConfigCategory selectedCategory, Runnable writeoperation, URI wikiUri, File configfile,
+			AbstractNGSMCConfigScreen root, Component configButtonText) {
+		super(parentScreen, categories, writeoperation, wikiUri, configfile, root, configButtonText);
 		this.selectedCategory = selectedCategory;
 	}
 

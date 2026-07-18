@@ -24,24 +24,30 @@ public final class NGSMCScrollingText {
 
 	public static void render(GuiGraphicsExtractor graphics, Component text, int textX, int y, int textRight,
 			int height, int color, long marqueeStartTime, boolean centerText) {
-		if (textRight <= textX || height <= 0)
+		render(graphics, text, textX, y, textRight, height, color, marqueeStartTime, centerText, textX);
+	}
+
+	public static void render(GuiGraphicsExtractor graphics, Component text, int textX, int y, int textRight,
+			int height, int color, long marqueeStartTime, boolean centerText, int scrollingTextX) {
+		if (textRight <= textX || textRight <= scrollingTextX || height <= 0)
 			return;
 
 		Font font = Minecraft.getInstance().font;
 		int availableWidth = textRight - textX;
 		int renderedTextWidth = font.width(text);
 		int textWidth = renderedTextWidth - 1;
+		int drawX = centerText ? textX + (availableWidth - renderedTextWidth) / 2 : textX;
+		boolean fitsWithoutScrolling = textWidth <= availableWidth && drawX >= scrollingTextX;
 
-		graphics.enableScissor(textX, y, textRight, y + height);
-		if (textWidth <= availableWidth) {
-			int drawX = centerText ? textX + (availableWidth - renderedTextWidth) / 2 : textX;
+		graphics.enableScissor(scrollingTextX, y, textRight, y + height);
+		if (fitsWithoutScrolling) {
 			graphics.text(font, text, drawX, y + TEXT_Y_OFFSET, color);
 		} else {
 			long scrollingTime = Math.max(0L,
 					System.currentTimeMillis() - marqueeStartTime - MARQUEE_DELAY_MS);
 			int cycleWidth = textWidth + MARQUEE_GAP;
 			int offset = (int) ((scrollingTime * MARQUEE_SPEED / 1_000.0F) % cycleWidth);
-			int drawX = textX - offset;
+			drawX = scrollingTextX - offset;
 
 			graphics.text(font, text, drawX, y + TEXT_Y_OFFSET, color);
 			graphics.text(font, text, drawX + cycleWidth, y + TEXT_Y_OFFSET, color);

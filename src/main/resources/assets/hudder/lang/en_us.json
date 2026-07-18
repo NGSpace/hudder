@@ -5,7 +5,8 @@
 	"ngsmcconfig.back": "Quit",
 	"ngsmcconfig.save": "Save",
 	"ngsmcconfig.wiki": "Wiki",
-	"ngsmcconfig.config": "Open config",
+	"ngsmcconfig.config": "Show config",
+	"hudder.ngsmcconfig.config": "Show huds",
 	"ngsmcconfig.globalreset": "Reset All",
 
 	"ngsmcconfig.confirmreset": "Reset to default settings",

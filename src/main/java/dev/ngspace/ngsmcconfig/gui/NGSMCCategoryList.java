@@ -29,12 +29,6 @@ public class NGSMCCategoryList extends ContainerObjectSelectionList<NGSMCCategor
 		return getWidth();
 	}
 	
-	@Override
-	protected void extractListBackground(GuiGraphicsExtractor graphics) {
-		// TODO Auto-generated method stub
-		super.extractListBackground(graphics);
-	}
-	
 	public static class Entry extends ContainerObjectSelectionList.Entry<NGSMCCategoryList.Entry> {
 
 		private AbstractNGSMCConfigScreen screen;

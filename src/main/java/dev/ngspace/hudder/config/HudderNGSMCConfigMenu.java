@@ -37,6 +37,7 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 		});
 		builder.setDocsUri(URI.create("https://ngspace.dev/hudder"));
 		builder.setConfigFile(new File(HudFileUtils.FOLDER));
+		builder.setConfigButtonText(Component.translatable("hudder.ngsmcconfig.config"));
 		
 		
 		

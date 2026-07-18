@@ -25,19 +25,21 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 	protected List<NGSMCConfigCategory> categories;
 	protected NGSMCCategoryList categoryContainer;
 	
-	protected Button saveButton;
-	protected Button backButton;
+	protected NGSMCConfigButton saveButton;
+	protected NGSMCConfigButton backButton;
 	protected NGSMCConfigButton globalResetButton;
-	protected Button wikiButton;
-	protected Button configButton;
+	protected NGSMCConfigButton wikiButton;
+	protected NGSMCConfigButton configButton;
 	protected StringWidget errorWidget;
 	protected Runnable writeoperation;
 	protected URI docsUri;
 	protected File configfile;
 	protected final AbstractNGSMCConfigScreen root;
+	protected final Component configButtonText;
 
 	protected AbstractNGSMCConfigScreen(Screen parent, List<NGSMCConfigCategory> categories,
-			Runnable writeoperation, URI docsUri, File configfile, AbstractNGSMCConfigScreen root) {
+			Runnable writeoperation, URI docsUri, File configfile, AbstractNGSMCConfigScreen root,
+			Component configButtonText) {
 		super(Component.literal("NGSMCConfig"));
 		this.categories = categories;
 		this.parent = parent;
@@ -45,6 +47,7 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		this.docsUri = docsUri;
 		this.configfile = configfile;
 		this.root = root == null ? this : root;
+		this.configButtonText = configButtonText;
 	}
 	
 	protected AbstractNGSMCConfigScreen(AbstractNGSMCConfigScreen parent, AbstractNGSMCConfigScreen root) {
@@ -55,53 +58,85 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		this.docsUri = parent.docsUri;
 		this.configfile = parent.configfile;
 		this.root = root == null ? this : root;
+		this.configButtonText = parent.configButtonText;
 	}
 	@Override
 	protected void init() {
 		
-		initCategoryButtons();
-		
 		Component error = getError();
 		
-		backButton = Button.builder(Component.translatable("ngsmcconfig.back"), _->onClose())
-				.bounds(0, 0, 30, 20)
-				.build();
+		backButton = new NGSMCConfigButton(0, 0, BUTTONS_WIDTH/2, 20,
+				Component.translatable("ngsmcconfig.back"),
+				_->onClose(),
+				0xFFFFFFFF,
+				new NGSMCConfigIcon.SpriteIcon("items", "item/arrow"));
+		
+		backButton.setOutlineColor(0xFFa0a0a0);
+		backButton.setBackgroundColor(0x40000000);
+		backButton.setHoveredBackgroundColor(0x30FFFFFF);
 		addRenderableWidget(backButton);
 		
-		saveButton = Button.builder(Component.translatable("ngsmcconfig.save"), _->save())
-				.bounds(30, 0, 30, 20)
-				.build();
+		saveButton = new NGSMCConfigButton(BUTTONS_WIDTH/2, 0, BUTTONS_WIDTH/2+1, 20,
+				Component.translatable("ngsmcconfig.save"),
+				_->save(),
+				0xFFFFFFFF,
+				new NGSMCConfigIcon.SpriteIcon("gui", "pending_invite/accept"));
+
+		saveButton.setOutlineColor(0xFFa0a0a0);
+		saveButton.setBackgroundColor(0x40000000);
+		saveButton.setHoveredBackgroundColor(0x30FFFFFF);
+		saveButton.setDisabledIcon(new NGSMCConfigIcon.SpriteIcon("gui", "pending_invite/reject"));
+		
 		saveButton.active = error==null;
+		
 		addRenderableWidget(saveButton);
+		
+		initCategoryButtons();
 		
 		globalResetButton = new NGSMCConfigButton(0, height-BOTTOM_ROW_SIZE+1, BUTTONS_WIDTH, 20,
 				Component.translatable("ngsmcconfig.globalreset"), _->reset(), 0xFFdb3b3b,
 				new NGSMCConfigIcon.SpriteIcon("items", "item/flint_and_steel"));
+		
 		globalResetButton.setOutlineColor(0xFFdb3b3b);
 		globalResetButton.setCenterText(true);
+		globalResetButton.setBackgroundColor(0x22db3b3b);
+		globalResetButton.setFocusedBackgroundColor(0x22f96363);
+		globalResetButton.setHoveredBackgroundColor(0x22f97a7a);
+		
+		addRenderableWidget(globalResetButton);
 		
 		int resetBottom = height-BOTTOM_ROW_SIZE+globalResetButton.getHeight() + 1;
+		
+		if (docsUri!=null) {
+			wikiButton = new NGSMCConfigButton(0, resetBottom, BUTTONS_WIDTH/3, 20,
+					Component.translatable("ngsmcconfig.wiki"),
+					_->clickUrlAction(Minecraft.getInstance(), this, docsUri),
+					0xFFFFFFFF,
+					new NGSMCConfigIcon.SpriteIcon("items", "item/knowledge_book"));
+
+			wikiButton.setOutlineColor(0xFFa0a0a0);
+			wikiButton.setBackgroundColor(0x40000000);
+			wikiButton.setHoveredBackgroundColor(0x30FFFFFF);
+			addRenderableWidget(wikiButton);
+		}
 
 		if (configfile!=null) {
-			configButton = Button.builder(Component.translatable("ngsmcconfig.config"),
-					_->Util.getPlatform().openFile(configfile))
-					.bounds((docsUri!=null?BUTTONS_WIDTH/2:BUTTONS_WIDTH), resetBottom, BUTTONS_WIDTH/2+1, 20)
-					.build();
+			configButton = new NGSMCConfigButton(docsUri!=null?BUTTONS_WIDTH/3:BUTTONS_WIDTH, resetBottom,
+					(BUTTONS_WIDTH/3)*2, 20,
+					configButtonText,
+					_->Util.getPlatform().openFile(configfile),
+					0xFFFFFFFF,
+					new NGSMCConfigIcon.SpriteIcon("items", "item/writable_book"));
+
+			configButton.setOutlineColor(0xFFa0a0a0);
+			configButton.setBackgroundColor(0x40000000);
+			configButton.setHoveredBackgroundColor(0x30FFFFFF);
 			addRenderableWidget(configButton);
 		}
 		
-		if (docsUri!=null) {
-			wikiButton = Button.builder(Component.translatable("ngsmcconfig.wiki"),
-					_->clickUrlAction(Minecraft.getInstance(), this, docsUri))
-					.bounds(0, resetBottom, BUTTONS_WIDTH/2, 20)
-					.build();
-			addRenderableWidget(wikiButton);
-		}
-		addRenderableWidget(globalResetButton);
-		
 		errorWidget = new StringWidget(stylizeErrorComponment(error), font);
-		errorWidget.setPosition(65, 0);
-		errorWidget.setSize(300, 20);
+		errorWidget.setPosition(BUTTONS_WIDTH+2, 0);
+		errorWidget.setSize(width-BUTTONS_WIDTH-2, 20);
 		addRenderableWidget(errorWidget);
 	}
 

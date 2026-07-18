@@ -17,7 +17,8 @@ public class NGSMCConfigBuilder {
 	Runnable writeoperation = () -> {};
 	URI docsUri;
 	File configfile;
-	
+	Component configButtonText = Component.translatable("ngsmcconfig.config");
+
 	public NGSMCConfigBuilder(Screen parent) {
 		this.parent = parent;
 	}
@@ -35,7 +36,8 @@ public class NGSMCConfigBuilder {
 	}
 	
 	public Screen build() {
-		return new NGSMCConfigOptionsScreen(parent, categories, categories.get(0), writeoperation, docsUri, configfile, null);
+		return new NGSMCConfigOptionsScreen(parent, categories, categories.get(0), writeoperation, docsUri,
+				configfile, null, configButtonText);
 	}
 
 	public void setWriteOperation(Runnable writeoperation) {
@@ -52,5 +54,13 @@ public class NGSMCConfigBuilder {
 
 	public void removeCategory(NGSMCConfigCategory category) {
 		categories.remove(category);
+	}
+	
+	public Component getConfigButtonText() {
+		return configButtonText;
+	}
+
+	public void setConfigButtonText(Component configButtonText) {
+		this.configButtonText = configButtonText;
 	}
 }

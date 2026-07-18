@@ -3,6 +3,7 @@ package dev.ngspace.ngsmcconfig.gui;
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigIcon;
+import dev.ngspace.ngsmcconfig.api.NGSMCConfigIcon.SpriteIcon;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -14,6 +15,10 @@ public class NGSMCConfigButton extends Button {
 	private int outline = 0; // Nothin
 	private boolean centerText;
 	private final long marqueeStartTime;
+	private int backgroundColor = 0;// Completely clear background
+	private int focusedColor = 0x20FFFFFF;
+	private int hoveredcolor = 0;
+	private NGSMCConfigIcon disabledIcon;
 
 	public NGSMCConfigButton(int x, int y, int width, int height, Component message, OnPress onPress,
 			int textcolor) {
@@ -47,23 +52,27 @@ public class NGSMCConfigButton extends Button {
     	int y = getY();
     	
     	if (isHovered()) {
-    		graphics.fill(x, y, x+width, y+height, 0x30FFFFFF);
+    		graphics.fill(x, y, x+width, y+height, hoveredcolor);
 			graphics.requestCursor(CursorTypes.POINTING_HAND);
-    	}
-    	if (isFocused()) {
-    		graphics.fill(x+width-2, y, x+width, y+height, 0xFF00FFFF);
+    	} else if (isFocused()) {
+    		graphics.fill(x, y, x+width, y+height, focusedColor);
+    	} else {
+    		graphics.fill(x, y, x+width, y+height, backgroundColor);
     	}
     	
     	graphics.outline(x, y, width, height, outline);
     	
-		int textX = x + (icon!=null ? NGSMCScrollingText.ICON_TEXT_X_OFFSET
+		int textX = x + (icon!=null && !centerText ? NGSMCScrollingText.ICON_TEXT_X_OFFSET
+				: NGSMCScrollingText.PLAIN_TEXT_X_OFFSET);
+		int scrollingTextX = x + (icon!=null ? NGSMCScrollingText.ICON_TEXT_X_OFFSET
 				: NGSMCScrollingText.PLAIN_TEXT_X_OFFSET);
 		int textRight = x + width - NGSMCScrollingText.TEXT_RIGHT_PADDING;
 		NGSMCScrollingText.render(graphics, getMessage(), textX, y, textRight, height, textcolor,
-				marqueeStartTime, centerText);
-    	if (icon!=null)
+				marqueeStartTime, centerText, scrollingTextX);
+    	if (icon!=null&&isActive())
     		icon.extractRenderState(graphics, mouseX, mouseY, a, height-4, height-4, x+2, y+2);
-    	
+    	if (disabledIcon!=null&&!isActive())
+    		disabledIcon.extractRenderState(graphics, mouseX, mouseY, a, height-4, height-4, x+2, y+2);
 	}
 
 	public void setCenterText(boolean centerText) {
@@ -72,5 +81,21 @@ public class NGSMCConfigButton extends Button {
 
 	public void setOutlineColor(int color) {
 		this.outline = color;
+	}
+	
+	public void setBackgroundColor(int color) {
+		this.backgroundColor = color;
+	}
+	
+	public void setFocusedBackgroundColor(int color) {
+		this.focusedColor = color;
+	}
+	
+	public void setHoveredBackgroundColor(int color) {
+		this.hoveredcolor = color;
+	}
+
+	public void setDisabledIcon(NGSMCConfigIcon spriteIcon) {
+		this.disabledIcon = spriteIcon;
 	}
 }
