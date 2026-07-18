@@ -19,16 +19,23 @@ public final class NGSMCScrollingText {
 
 	public static void render(GuiGraphicsExtractor graphics, Component text, int textX, int y, int textRight,
 			int height, int color, long marqueeStartTime) {
+		render(graphics, text, textX, y, textRight, height, color, marqueeStartTime, false);
+	}
+
+	public static void render(GuiGraphicsExtractor graphics, Component text, int textX, int y, int textRight,
+			int height, int color, long marqueeStartTime, boolean centerText) {
 		if (textRight <= textX || height <= 0)
 			return;
 
 		Font font = Minecraft.getInstance().font;
 		int availableWidth = textRight - textX;
-		int textWidth = font.width(text)-1;
+		int renderedTextWidth = font.width(text);
+		int textWidth = renderedTextWidth - 1;
 
 		graphics.enableScissor(textX, y, textRight, y + height);
 		if (textWidth <= availableWidth) {
-			graphics.text(font, text, textX, y + TEXT_Y_OFFSET, color);
+			int drawX = centerText ? textX + (availableWidth - renderedTextWidth) / 2 : textX;
+			graphics.text(font, text, drawX, y + TEXT_Y_OFFSET, color);
 		} else {
 			long scrollingTime = Math.max(0L,
 					System.currentTimeMillis() - marqueeStartTime - MARQUEE_DELAY_MS);

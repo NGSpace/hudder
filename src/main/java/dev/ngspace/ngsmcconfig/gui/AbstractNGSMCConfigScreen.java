@@ -78,6 +78,7 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 				Component.translatable("ngsmcconfig.globalreset"), _->reset(), 0xFFdb3b3b,
 				new NGSMCConfigIcon.SpriteIcon("items", "item/flint_and_steel"));
 		globalResetButton.setOutlineColor(0xFFdb3b3b);
+		globalResetButton.setCenterText(true);
 		
 		int resetBottom = height-BOTTOM_ROW_SIZE+globalResetButton.getHeight() + 1;
 
