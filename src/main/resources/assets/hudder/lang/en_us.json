@@ -6,7 +6,7 @@
 	"ngsmcconfig.save": "Save",
 	"ngsmcconfig.wiki": "Wiki",
 	"ngsmcconfig.config": "Open config",
-	"ngsmcconfig.globalreset": "Reset",
+	"ngsmcconfig.globalreset": "Reset All",
 
 	"ngsmcconfig.confirmreset": "Reset to default settings",
 	"ngsmcconfig.confirmreset.text": "Are you sure you want to reset your entire config?",

@@ -5,6 +5,7 @@ import java.net.URI;
 import java.util.List;
 
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
+import dev.ngspace.ngsmcconfig.api.NGSMCConfigIcon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -15,8 +16,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Util;
 
 public abstract class AbstractNGSMCConfigScreen extends Screen {
-	
+
 	public static final int TOP_ROW_SIZE = 22;
+	public static final int BOTTOM_ROW_SIZE = 40;
 	public static final int BUTTONS_WIDTH = 135;
 	
 	protected Screen parent;
@@ -25,7 +27,7 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 	
 	protected Button saveButton;
 	protected Button backButton;
-	protected Button globalResetButton;
+	protected NGSMCConfigButton globalResetButton;
 	protected Button wikiButton;
 	protected Button configButton;
 	protected StringWidget errorWidget;
@@ -57,6 +59,8 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 	@Override
 	protected void init() {
 		
+		initCategoryButtons();
+		
 		Component error = getError();
 		
 		backButton = Button.builder(Component.translatable("ngsmcconfig.back"), _->onClose())
@@ -70,15 +74,17 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		saveButton.active = error==null;
 		addRenderableWidget(saveButton);
 		
-		globalResetButton = Button.builder(Component.translatable("ngsmcconfig.globalreset").withColor(0xdb3b3b),
-				_->reset())
-				.bounds(width-40, 0, 40, 20)
-				.build();
+		globalResetButton = new NGSMCConfigButton(0, height-BOTTOM_ROW_SIZE+1, BUTTONS_WIDTH, 20,
+				Component.translatable("ngsmcconfig.globalreset"), _->reset(), 0xFFdb3b3b,
+				new NGSMCConfigIcon.SpriteIcon("items", "item/flint_and_steel"));
+		globalResetButton.setOutlineColor(0xFFdb3b3b);
+		
+		int resetBottom = height-BOTTOM_ROW_SIZE+globalResetButton.getHeight() + 1;
 
 		if (configfile!=null) {
 			configButton = Button.builder(Component.translatable("ngsmcconfig.config"),
 					_->Util.getPlatform().openFile(configfile))
-					.bounds(width-(docsUri!=null?150:120), 0, 70, 20)
+					.bounds((docsUri!=null?BUTTONS_WIDTH/2:BUTTONS_WIDTH), resetBottom, BUTTONS_WIDTH/2+1, 20)
 					.build();
 			addRenderableWidget(configButton);
 		}
@@ -86,7 +92,7 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		if (docsUri!=null) {
 			wikiButton = Button.builder(Component.translatable("ngsmcconfig.wiki"),
 					_->clickUrlAction(Minecraft.getInstance(), this, docsUri))
-					.bounds(width-80, 0, 40, 20)
+					.bounds(0, resetBottom, BUTTONS_WIDTH/2, 20)
 					.build();
 			addRenderableWidget(wikiButton);
 		}
@@ -96,14 +102,13 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		errorWidget.setPosition(65, 0);
 		errorWidget.setSize(300, 20);
 		addRenderableWidget(errorWidget);
-		
-		initCategoryButtons();
 	}
 
 	protected void initCategoryButtons() {
 		int height = Minecraft.getInstance().getWindow().getGuiScaledHeight();
 	
-		categoryContainer = new NGSMCCategoryList(Minecraft.getInstance(), BUTTONS_WIDTH, height-TOP_ROW_SIZE, TOP_ROW_SIZE);
+		categoryContainer = new NGSMCCategoryList(Minecraft.getInstance(), BUTTONS_WIDTH,
+				height-TOP_ROW_SIZE-(configfile != null || wikiButton != null ? BOTTOM_ROW_SIZE : 0), TOP_ROW_SIZE);
 		
 		for (var category : categories) {
 			categoryContainer.addCategory(this, category, category == getSelectedCategory());
@@ -157,7 +162,7 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 	@Override
 	public void onClose() {
 		if (isEditedAndNotSaved())
-			minecraft.gui.setScreen(new ConfirmScreen(b->minecraft.gui.setScreen(b?parent:this),
+			minecraft.gui.setScreen(new ConfirmScreen(b->minecraft.gui.setScreen(b?root.parent:this),
 					Component.translatable("ngsmcconfig.confirmunsavedexit"),
 					Component.translatable("ngsmcconfig.confirmunsavedexit.text"),
 					Component.translatable("ngsmcconfig.confirmunsavedexit.yes"),
