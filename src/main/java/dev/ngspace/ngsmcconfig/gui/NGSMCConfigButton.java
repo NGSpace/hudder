@@ -3,7 +3,6 @@ package dev.ngspace.ngsmcconfig.gui;
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigIcon;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -14,6 +13,7 @@ public class NGSMCConfigButton extends Button {
 	private NGSMCConfigIcon icon;
 	private int textcolor;
 	private int outline = 0; // Nothin
+	private final long marqueeStartTime;
 
 	public NGSMCConfigButton(int x, int y, int width, int height, Component message, OnPress onPress,
 			int textcolor) {
@@ -24,6 +24,7 @@ public class NGSMCConfigButton extends Button {
 		super(x, y, width, height, message, onPress, Button.DEFAULT_NARRATION);
 		this.icon = icon;
 		this.textcolor = textcolor;
+		this.marqueeStartTime = System.currentTimeMillis();
 	}
 
 	@Override
@@ -43,7 +44,11 @@ public class NGSMCConfigButton extends Button {
     	
     	graphics.outline(x, y, width, height, outline);
     	
-    	graphics.text(Minecraft.getInstance().font, getMessage(), x+(icon!=null?20:2), y+7, textcolor);
+		int textX = x + (icon!=null ? NGSMCScrollingText.ICON_TEXT_X_OFFSET
+				: NGSMCScrollingText.PLAIN_TEXT_X_OFFSET);
+		int textRight = x + width - NGSMCScrollingText.TEXT_RIGHT_PADDING;
+		NGSMCScrollingText.render(graphics, getMessage(), textX, y, textRight, height, textcolor,
+				marqueeStartTime);
     	if (icon!=null)
     		icon.extractRenderState(graphics, mouseX, mouseY, a, height-4, height-4, x+2, y+2);
     	

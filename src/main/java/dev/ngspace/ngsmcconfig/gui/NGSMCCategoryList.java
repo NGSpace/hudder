@@ -8,7 +8,6 @@ import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigIcon;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
@@ -37,11 +36,6 @@ public class NGSMCCategoryList extends ContainerObjectSelectionList<NGSMCCategor
 	}
 	
 	public static class Entry extends ContainerObjectSelectionList.Entry<NGSMCCategoryList.Entry> {
-
-		private static final int TEXT_X_OFFSET = 20;
-		private static final int TEXT_RIGHT_PADDING = 4;
-		private static final long MARQUEE_DELAY_MS = 1000;
-		private static final float MARQUEE_SPEED = 20F;
 
 		private AbstractNGSMCConfigScreen screen;
 		private NGSMCConfigCategory category;
@@ -101,25 +95,11 @@ public class NGSMCCategoryList extends ContainerObjectSelectionList<NGSMCCategor
 		}
 		
 		private void renderCategoryTitle(GuiGraphicsExtractor graphics, int x, int y, int width, int height, int color) {
-			Font font = Minecraft.getInstance().font;
-			int textX = x + TEXT_X_OFFSET;
-			int textRight = x + width - TEXT_RIGHT_PADDING;
-			int availableWidth = Math.max(0, textRight - textX);
-			int titleWidth = font.width(category.title())-1;
+			int textX = x + NGSMCScrollingText.ICON_TEXT_X_OFFSET;
+			int textRight = x + width - NGSMCScrollingText.TEXT_RIGHT_PADDING;
 
-			graphics.enableScissor(textX, y, textRight, y + height);
-			if (titleWidth <= availableWidth) {
-				graphics.text(font, category.title(), textX, y + 7, color);
-			} else {
-				long scrollingTime = Math.max(0L, System.currentTimeMillis() - marqueeStartTime - MARQUEE_DELAY_MS);
-				int cycleWidth = titleWidth + 16;
-				int offset = (int) ((scrollingTime * MARQUEE_SPEED / 1_000.0F) % cycleWidth);
-				int drawX = textX - offset;
-
-				graphics.text(font, category.title(), drawX, y + 7, color);
-				graphics.text(font, category.title(), drawX + cycleWidth, y + 7, color);
-			}
-			graphics.disableScissor();
+			NGSMCScrollingText.render(graphics, category.title(), textX, y, textRight, height, color,
+					marqueeStartTime);
 		}
 
 		private void openCategory() {
