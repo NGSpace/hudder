@@ -14,9 +14,16 @@ base {
 }
 
 repositories {
-	maven {
-		name = "Terraformers"
-		url = "https://maven.gnomecraft.net/releases"
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = "Modrinth"
+				url = "https://api.modrinth.com/maven"
+			}
+		}
+		filter {
+			includeGroup "maven.modrinth"
+		}
 	}
 }
 configurations {
@@ -33,7 +40,7 @@ dependencies {
 	
 	provided "org.mozilla:rhino:${project.rhino_version}"
 	
-	compileOnly("com.terraformersmc:modmenu:${project.modmenu_version}")
+	compileOnly("maven.modrinth:modmenu:${project.modmenu_version}")
 }
 
 processResources {
