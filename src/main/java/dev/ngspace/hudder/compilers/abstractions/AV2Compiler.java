@@ -123,7 +123,7 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 			throws CompileException {
 		V2Runtime runtime = buildRuntimeSafe(Hudder.config, commands, pos, filename, null);
 		
-		boolean isMethod = !hasReturnValue(runtime);
+		boolean isMethod = !canReturnValue(runtime);
 		
 		if (isMethod) {
 			MethodHandler.methods.put(name, (_,state,_,type,_,charpos,vals) -> {
@@ -145,8 +145,8 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 			for (AV2RuntimeElement element : runtime.getElements()) {
 				if (element.returnsAValue()) temp = false;
 			}
-			if (temp) throw new CompileException("Main path in function \""+name
-					+"\" does not return a value!",pos.line(),pos.column());
+			if (temp) throw new CompileException("Function \""+name
+					+"\" does not always return a value!",pos.line(),pos.column());
 			functionHandler.bindFunction((IV2Function) (_,_,vals,line,charpos) -> {
 				if (vals.length<args.length) throw new ExecutionException("Not enough arguments", pos.line(), pos.column());
 				for (int i = 0;i<vals.length;i++) {
@@ -174,12 +174,22 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 			throw new CompileException(e);
 		}
 	}
-
-
+	
+	/**
+	 * 
+	 * @deprecated use canReturnValue
+	 */
+	@Deprecated(since = "10.1.0", forRemoval = false)
 	public boolean hasReturnValue(V2Runtime runtime) {
+		return canReturnValue(runtime);
+	}
+
+	public boolean canReturnValue(V2Runtime runtime) {
 		for (AV2RuntimeElement element : runtime.getElements()) {
 			if (element.returnsAValue()) return true;
-			if (element.getNestedRuntime()!=null&&hasReturnValue(element.getNestedRuntime())) return true;
+			if (element.getNestedRuntimes()!=null)
+				for (V2Runtime nestedRuntime : element.getNestedRuntimes())
+					if (canReturnValue(nestedRuntime)) return true;
 		}
 		return false;
 	}
@@ -199,4 +209,8 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 			throw new ExecutionException(e);
 		}
 	}
+	
+	public record CodeBlock(String code, String text, int starting_index, int ending_index) {}
+	
+	public record Instruction(byte instruction, String paremeter, int ending_index) {}
 }

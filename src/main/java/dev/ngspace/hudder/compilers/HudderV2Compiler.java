@@ -2,6 +2,7 @@ package dev.ngspace.hudder.compilers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.abstractions.AV2Compiler;
@@ -14,12 +15,14 @@ import dev.ngspace.hudder.v2runtime.V2Runtime;
 import dev.ngspace.hudder.v2runtime.runtime_elements.BreakV2RuntimeElement;
 import dev.ngspace.hudder.v2runtime.runtime_elements.ConditionV2RuntimeElement;
 import dev.ngspace.hudder.v2runtime.runtime_elements.ForV2RuntimeElement;
-import dev.ngspace.hudder.v2runtime.runtime_elements.IfV2RuntimeElement;
+import dev.ngspace.hudder.v2runtime.runtime_elements.IfElseV2RuntimeElement;
+import dev.ngspace.hudder.v2runtime.runtime_elements.IfElseV2RuntimeElement.Statement;
 import dev.ngspace.hudder.v2runtime.runtime_elements.MethodV2RuntimeElement;
 import dev.ngspace.hudder.v2runtime.runtime_elements.ReturnV2RuntimeElement;
 import dev.ngspace.hudder.v2runtime.runtime_elements.StringV2RuntimeElement;
 import dev.ngspace.hudder.v2runtime.runtime_elements.VariableV2RuntimeElement;
 import dev.ngspace.hudder.v2runtime.runtime_elements.WhileV2RuntimeElement;
+import net.minecraft.network.chat.Component;
 
 public class HudderV2Compiler extends AV2Compiler {
 	
@@ -28,6 +31,14 @@ public class HudderV2Compiler extends AV2Compiler {
 	public static final int CONDITION_STATE = 2;
 	public static final int METHOD_STATE = 3;
 	public static final int HASHTAG_STATE = 4;
+
+	public static final byte UNDEFINED_INSTRUCTION = 0x0;
+	public static final byte IF_INSTRUCTION = 0x1;
+	public static final byte WHILE_LOOP_INSTRUCTION = 0x2;
+	public static final byte DEFINE_INSTRUCTION = 0x3;
+	public static final byte FOR_LOOP_INSTRUCTION = 0x4;
+	public static final byte ELSE_IF_INSTRUCTION = 0x5;
+	public static final byte ELSE_INSTRUCTION = 0x6;
 
 	@Override public V2Runtime buildRuntime(HudderConfig info, String text, TextPos charPosition, String filename,
 			V2Runtime scope) throws CompileException, ExecutionException {
@@ -210,83 +221,83 @@ public class HudderV2Compiler extends AV2Compiler {
 					break;
 				}
 				case HASHTAG_STATE: {
-					/**
-					 * 0x0 - condition
-					 * 0x1 - if
-					 * 0x2 - while
-					 * 0x3 - def (functions and methods)
-					 * 0x5 - class //Not implemented
-					 */
-					byte command = 0x0;
 					compileState = TEXT_STATE;
-					for (;ind<text.length();ind++) {
-						if ((c = text.charAt(ind))=='\n') break;
-						if (command==0) {
-							if(c==' '&&elemBuilder.toString().equals("while")) {command=0x2;}
-							else if(c==' '&&elemBuilder.toString().equals("if")) {command=0x1;}
-							else if(c==' '&&elemBuilder.toString().equals("def")){command=0x3;}
-							else if(c==' '&&elemBuilder.toString().equals("for")){command=0x4;}
-							if (command!=0x0) {elemBuilder.setLength(0);continue;}
-						}
-						elemBuilder.append(c);
-					}
-					String cond = elemBuilder.toString();
-					elemBuilder.setLength(0);
-					StringBuilder instructions = new StringBuilder();
 					
-					if (ind+1<text.length()&&(text.charAt(ind+1)=='\t'||text.charAt(ind+1)==' ')) {
-						
-						ind++;
-						String initalIndent = checkIndentation(text,ind);
-						
-						for (;ind<text.length();ind++) {
-							if (ind+1<text.length()) {
-								String indent = checkIndentation(text,ind);
-								if (indent.startsWith(initalIndent)) {
-									ind+=initalIndent.length();
-									for (;ind<text.length();ind++) {
-										c = text.charAt(ind);
-										instructions.append(c);
-										if (c=='\n') break;
-									}
-								} else break;
-							}
-							
-						}
-						ind--;
-					}
-					if (ind!=text.length()&&text.charAt(ind)!='\n'&&text.charAt(ind)!='\r') ind--;
-					String cmds = instructions.toString();
+					Instruction instructions = getInstruction(text, ind);
+					ind = instructions.ending_index();
+					
+					CodeBlock codeBlock = getCodeBlock(text, ind);
+					ind = codeBlock.ending_index();
+
+					byte instruction_code = instructions.instruction();
+					String parameters = instructions.paremeter();
+					String block = codeBlock.code();
 					TextPos pos = getPosition(charPosition, savedind+1, "\n"+text);
 					
-					switch (command) {
-						case 0x4: {
-							String[] split = cond.split(" in ", 2);
-							if (split.length<2) throw new CompileException("Invalid for loop syntax: \"" + cond + "\"", pos);
+					switch (instruction_code) {
+						case FOR_LOOP_INSTRUCTION: {
+							String[] split = parameters.split(" in ", 2);
+							if (split.length<2) 
+								throw new CompileException("Invalid for loop syntax: \"" + parameters + "\"", pos);
 							String variablename = split[0];
 							String value = split[1];
 							elemBuilder.setLength(0);
-							runtime.addRuntimeElement(new ForV2RuntimeElement(info,variablename,value,cmds,this,
-									runtime,pos,filename));
+							runtime.addRuntimeElement(new ForV2RuntimeElement(info, variablename, value,
+									block, this, runtime, pos, filename));
 							break;
 						}
-						case 0x3: {
-							String[] builder = HudderUtils.processParemeters(cond);
+						case DEFINE_INSTRUCTION: {
+							String[] builder = HudderUtils.processParemeters(parameters);
 							String name = builder[0];
 							String[] args = Arrays.copyOfRange(builder, 1, builder.length);
-							defineFunctionOrMethod(cmds,args,name,pos,filename);
+							defineFunctionOrMethod(block,args,name,pos,filename);
 							elemBuilder.setLength(0);
 							break;
 						}
-						case 0x2: {
-							runtime.addRuntimeElement(new WhileV2RuntimeElement(info,cond,cmds,this,runtime,pos,
-									filename));
+						case WHILE_LOOP_INSTRUCTION: {
+							runtime.addRuntimeElement(new WhileV2RuntimeElement(info, parameters, block, this,
+									runtime, pos, filename));
 							break;
 						}
-						default://0x0 or 0x1
-							runtime.addRuntimeElement(new IfV2RuntimeElement(info,cond,cmds,this,runtime,pos,
-									filename));
+						case UNDEFINED_INSTRUCTION:
+							Hudder.showWarningToast(Component.literal("Undefined # instructions deprecated"),
+									Component.literal("Undefined # instructions are deprecated and will be "
+											+ "removed in a future version of Hudder, please use #if instead."));
+						case IF_INSTRUCTION:// If instuction
+							List<Statement> statements = new ArrayList<Statement>();
+							statements.add(new Statement(parameters, block, pos));
+							for (;ind<text.length();ind++) {
+								c = text.charAt(ind);
+								if (c=='#') {
+									savedind = ind;
+									pos = getPosition(charPosition, ind, "\n"+text);
+									ind++;
+									instructions = getInstruction(text, ind);
+									ind = instructions.ending_index();
+									if (instructions.instruction()!=ELSE_INSTRUCTION
+											&&instructions.instruction()!=ELSE_IF_INSTRUCTION) {
+										//We've gone deep into another hash instruction, go back.
+										ind = savedind;
+										break;
+									}
+									codeBlock = getCodeBlock(text, ind);
+									ind = codeBlock.ending_index();
+									parameters = instructions.paremeter();
+									block = codeBlock.code();
+									statements.add(new Statement(parameters, block, pos));
+								} else if (!Character.isWhitespace(c)) {
+									break;
+								}
+							}
+							ind--;
+							runtime.addRuntimeElement(new IfElseV2RuntimeElement(info,
+									statements.toArray(new Statement[statements.size()]),
+									runtime,
+									filename,
+									this));
 							break;
+						default:
+							throw new CompileException("Detached else/else if statment!", pos);
 					}
 					break;
 				}
@@ -305,6 +316,59 @@ public class HudderV2Compiler extends AV2Compiler {
 		}
 		
 		return runtime;
+	}
+	
+	public CodeBlock getCodeBlock(String text, int index) {
+		StringBuilder instructions = new StringBuilder();
+		int ind = index;
+		if (ind+1<text.length()&&(text.charAt(ind+1)=='\t'||text.charAt(ind+1)==' ')) {
+			
+			ind++;
+			String initalIndent = checkIndentation(text,ind);
+			
+			for (;ind<text.length();ind++) {
+				if (ind+1<text.length()) {
+					String indent = checkIndentation(text,ind);
+					if (indent.startsWith(initalIndent)) {
+						ind+=initalIndent.length();
+						for (;ind<text.length();ind++) {
+							char c = text.charAt(ind);
+							instructions.append(c);
+							if (c=='\n') break;
+						}
+					} else break;
+				}
+				
+			}
+			ind--;
+		}
+		
+		if (ind!=text.length()&&text.charAt(ind)!='\n'&&text.charAt(ind)!='\r') ind--;
+		
+		return new CodeBlock(instructions.toString(), text, index, ind);
+	}
+	
+	public Instruction getInstruction(String text, int index) {
+		byte instruction = 0x0;
+		char c;
+		int ind = index;
+//		ind++;
+		StringBuilder elemBuilder = new StringBuilder();
+		for (;ind<text.length();ind++) {
+			if ((c = text.charAt(ind))=='\n') break;
+			if (instruction==0) {
+				if(c==' '&&elemBuilder.toString().equals("while")) {instruction=WHILE_LOOP_INSTRUCTION;}
+				else if(c==' '&&elemBuilder.toString().equals("if")) {instruction=IF_INSTRUCTION;}
+				else if(c==' '&&elemBuilder.toString().equals("def")){instruction=DEFINE_INSTRUCTION;}
+				else if(c==' '&&elemBuilder.toString().equals("for")){instruction=FOR_LOOP_INSTRUCTION;}
+				else if(c==' '&&elemBuilder.toString().equals("else if")){instruction=ELSE_IF_INSTRUCTION;}
+				else if(c=='e'&&elemBuilder.toString().equals("els")&&
+						(text.charAt(ind+1)=='\n')){instruction=ELSE_INSTRUCTION;}
+				if (instruction!=UNDEFINED_INSTRUCTION) {elemBuilder.setLength(0);continue;}
+			}
+			elemBuilder.append(c);
+		}
+		return new Instruction(instruction, elemBuilder.toString(), ind);
 	}
 
 	private String checkIndentation(String text, int index) {

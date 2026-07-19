@@ -473,7 +473,7 @@ CaSE SenSitive CaSE SenSitive CaSE SenSitive
 		;return, -1;
 	oww no return value? too bad
 ||EXPECT||
-Main path in function "divide" does not return a value!
+Function "divide" does not always return a value!
 
 ||INPUT||Vertices
 r;mute;{vert=[10,10,
