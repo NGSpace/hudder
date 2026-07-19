@@ -9,6 +9,29 @@
 ||EXPECT||
 0
 
+||INPUT||Else
+{var=1}
+#if var==2
+	{var=1}
+#else
+	{var=2}
+{var}
+||EXPECT||
+1
+2
+
+||INPUT||Else and break
+{var=0}
+#while true
+	#if var<4
+		{var++}
+	#else
+		{break}
+{var}
+||EXPECT||
+0
+4
+
 ||INPUT||Lacking 0 in decimal point
 {var=.1}
 {var==0.1}

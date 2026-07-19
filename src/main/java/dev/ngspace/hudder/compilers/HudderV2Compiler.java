@@ -297,7 +297,7 @@ public class HudderV2Compiler extends AV2Compiler {
 									this));
 							break;
 						default:
-							throw new CompileException("Detached else/else if statment!", pos);
+							throw new CompileException("Detached else/else if statement!", pos);
 					}
 					break;
 				}
@@ -352,7 +352,6 @@ public class HudderV2Compiler extends AV2Compiler {
 		byte instruction = 0x0;
 		char c;
 		int ind = index;
-//		ind++;
 		StringBuilder elemBuilder = new StringBuilder();
 		for (;ind<text.length();ind++) {
 			if ((c = text.charAt(ind))=='\n') break;

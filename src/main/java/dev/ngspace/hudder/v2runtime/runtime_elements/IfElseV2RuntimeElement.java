@@ -28,8 +28,8 @@ public class IfElseV2RuntimeElement extends AV2RuntimeElement {
 			
 			AV2Value condition;
 			if (statement.condition()==null||statement.condition().isBlank()) {
-				if (i!=compiled_statements.length)
-					throw new CompileException("Detached else/else if statment!", statement.pos());
+				if (i<compiled_statements.length-1)
+					throw new CompileException("Detached else/else if statement!", statement.pos());
 				condition = null;
 			} else {
 				condition = compiler.getV2Value(code, statement.condition(),
