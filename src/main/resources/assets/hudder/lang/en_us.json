@@ -9,8 +9,10 @@
 	"hudder.ngsmcconfig.config": "Show huds",
 	"ngsmcconfig.globalreset": "Reset All",
 
-	"ngsmcconfig.confirmreset": "Reset to default settings",
+	"ngsmcconfig.confirmreset": "\u00A7cReset all to default settings",
 	"ngsmcconfig.confirmreset.text": "Are you sure you want to reset your entire config?",
+	"ngsmcconfig.confirmreset.yes": "\u00A74Yes, reset everything.",
+	"ngsmcconfig.confirmreset.no": "No, go back.",
 
 	"ngsmcconfig.confirmunsavedexit": "Unsaved changes",
 	"ngsmcconfig.confirmunsavedexit.text": "There are some unsaved changes, are you sure you want to leave and discard those unsaved changes?",
@@ -33,7 +35,7 @@
 	
 	"hudder.general.mainfile":"Hud",
 	"hudder.general.mainfile.tooltip":"Change the main hud file.\u00A77\nThe file must be located in the \u00A76.minecraft/config/Hudder\u00A77 folder.",
-	"hudder.general.mainfile.error":"File does not exist in the .minecraft/config/Hudder folder.",
+	"hudder.general.mainfile.error":"Hud does not exist in the huds folder.",
 
 	"hudder.general.compilertype": "Compiler type",
 	"hudder.general.compilertype.tooltip": "Change the type of compiler (ex hudder, js, pack).",

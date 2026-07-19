@@ -11,6 +11,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.components.StringWidget.TextOverflow;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -39,13 +40,14 @@ public class NGSMCConfigEntry extends ContainerObjectSelectionList.Entry<NGSMCCo
     		boolean renderlast) {
     	this.renderlast = renderlast;
         this.widget = widget;
+        this.option = option;
         resetButton = Button.builder(Component.translatable("ngsmcconfig.reset"), _->option.reset())
         		.size(40, 20).build();
-        text = new StringWidget(0, 0, 200, 20, title, Minecraft.getInstance().font) {
+        text = new StringWidget(0, 0, 210, 20, title, Minecraft.getInstance().font) {
         	@Override public void playDownSound(SoundManager soundManager) { /* Ugly noise */ }
         };
         text.active = true;
-        this.option = option;
+        text.setMaxWidth(text.getWidth(), TextOverflow.SCROLLING);
         children = widget==null ? Arrays.asList(text) : Arrays.asList(widget, resetButton, text);
     }
 

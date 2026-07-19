@@ -9,7 +9,7 @@ public final class NGSMCScrollingText {
 
 	public static final int ICON_TEXT_X_OFFSET = 20;
 	public static final int PLAIN_TEXT_X_OFFSET = 2;
-	public static final int TEXT_Y_OFFSET = 7;
+	public static final int TEXT_Y_OFFSET = 6;
 	public static final int TEXT_RIGHT_PADDING = 4;
 	public static final int MARQUEE_GAP = 16;
 	public static final long MARQUEE_DELAY_MS = 1000L;

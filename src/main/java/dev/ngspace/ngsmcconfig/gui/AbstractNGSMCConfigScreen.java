@@ -8,8 +8,8 @@ import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigIcon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.components.StringWidget.TextOverflow;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -93,7 +93,7 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		
 		initCategoryButtons();
 		
-		globalResetButton = new NGSMCConfigButton(0, height-BOTTOM_ROW_SIZE+1, BUTTONS_WIDTH, 20,
+		globalResetButton = new NGSMCConfigButton(0, height-(configfile != null || docsUri != null ? BOTTOM_ROW_SIZE : 20), BUTTONS_WIDTH, 20,
 				Component.translatable("ngsmcconfig.globalreset"), _->reset(), 0xFFdb3b3b,
 				new NGSMCConfigIcon.SpriteIcon("items", "item/flint_and_steel"));
 		
@@ -105,10 +105,11 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		
 		addRenderableWidget(globalResetButton);
 		
-		int resetBottom = height-BOTTOM_ROW_SIZE+globalResetButton.getHeight() + 1;
+		int resetBottom = height-BOTTOM_ROW_SIZE+globalResetButton.getHeight();
 		
 		if (docsUri!=null) {
-			wikiButton = new NGSMCConfigButton(0, resetBottom, BUTTONS_WIDTH/3, 20,
+			wikiButton = new NGSMCConfigButton(0, resetBottom,
+					configfile!=null ? BUTTONS_WIDTH/3 : BUTTONS_WIDTH, 20,
 					Component.translatable("ngsmcconfig.wiki"),
 					_->clickUrlAction(Minecraft.getInstance(), this, docsUri),
 					0xFFFFFFFF,
@@ -117,12 +118,15 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 			wikiButton.setOutlineColor(0xFFa0a0a0);
 			wikiButton.setBackgroundColor(0x40000000);
 			wikiButton.setHoveredBackgroundColor(0x30FFFFFF);
+			if (configfile==null)
+				wikiButton.setCenterText(true);
 			addRenderableWidget(wikiButton);
 		}
 
 		if (configfile!=null) {
-			configButton = new NGSMCConfigButton(docsUri!=null?BUTTONS_WIDTH/3:BUTTONS_WIDTH, resetBottom,
-					(BUTTONS_WIDTH/3)*2, 20,
+			configButton = new NGSMCConfigButton(
+					docsUri!=null?BUTTONS_WIDTH/3:0, resetBottom,
+					docsUri!=null?(BUTTONS_WIDTH/3)*2:BUTTONS_WIDTH, 20,
 					configButtonText,
 					_->Util.getPlatform().openFile(configfile),
 					0xFFFFFFFF,
@@ -131,12 +135,15 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 			configButton.setOutlineColor(0xFFa0a0a0);
 			configButton.setBackgroundColor(0x40000000);
 			configButton.setHoveredBackgroundColor(0x30FFFFFF);
+			if (docsUri==null)
+				configButton.setCenterText(true);
 			addRenderableWidget(configButton);
 		}
 		
 		errorWidget = new StringWidget(stylizeErrorComponment(error), font);
 		errorWidget.setPosition(BUTTONS_WIDTH+2, 0);
-		errorWidget.setSize(width-BUTTONS_WIDTH-2, 20);
+		errorWidget.setSize(width-BUTTONS_WIDTH-4, 20);
+		errorWidget.setMaxWidth(errorWidget.getWidth(), TextOverflow.SCROLLING);
 		addRenderableWidget(errorWidget);
 	}
 
@@ -144,7 +151,8 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		int height = Minecraft.getInstance().getWindow().getGuiScaledHeight();
 	
 		categoryContainer = new NGSMCCategoryList(Minecraft.getInstance(), BUTTONS_WIDTH,
-				height-TOP_ROW_SIZE-(configfile != null || wikiButton != null ? BOTTOM_ROW_SIZE : 0), TOP_ROW_SIZE);
+				height-TOP_ROW_SIZE-(configfile != null || wikiButton != null ? BOTTOM_ROW_SIZE+1 : 21),
+				TOP_ROW_SIZE);
 		
 		for (var category : categories) {
 			categoryContainer.addCategory(this, category, category == getSelectedCategory());
@@ -167,7 +175,9 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 	protected void reset() {
 		minecraft.gui.setScreen(new ConfirmScreen(b->{if (b) resetNoConf();minecraft.gui.setScreen(this);},
 				Component.translatable("ngsmcconfig.confirmreset"),
-				Component.translatable("ngsmcconfig.confirmreset.text")));
+				Component.translatable("ngsmcconfig.confirmreset.text"),
+				Component.translatable("ngsmcconfig.confirmreset.yes"),
+				Component.translatable("ngsmcconfig.confirmreset.no")));
 	}
 	protected void resetNoConf() {
 		for (var category : categories) {

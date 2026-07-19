@@ -30,7 +30,8 @@ public class NGSMCConfigBuilder {
 	public NGSMCConfigCategory createCategory(Component title, NGSMCConfigIcon icon) {
 		NGSMCConfigCategory category = new NGSMCConfigCategory(title,
 				new ArrayList<AbstractNGSMCConfigOption<?>>(),
-				icon);
+				icon,
+				null);
 		categories.add(category);
 		return category;
 	}
@@ -62,5 +63,17 @@ public class NGSMCConfigBuilder {
 
 	public void setConfigButtonText(Component configButtonText) {
 		this.configButtonText = configButtonText;
+	}
+
+	public void addCustomButton(Component title, NGSMCConfigIcon icon, Runnable runnable) {
+		
+		if (runnable==null)
+			throw new NullPointerException("Provided runnable for NGSMCConfig Custom Button must not be null!");
+		
+		NGSMCConfigCategory category = new NGSMCConfigCategory(title,
+				new ArrayList<AbstractNGSMCConfigOption<?>>(),
+				icon,
+				runnable);
+		categories.add(category);
 	}
 }

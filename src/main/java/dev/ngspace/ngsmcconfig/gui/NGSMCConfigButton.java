@@ -3,7 +3,6 @@ package dev.ngspace.ngsmcconfig.gui;
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigIcon;
-import dev.ngspace.ngsmcconfig.api.NGSMCConfigIcon.SpriteIcon;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -17,7 +16,7 @@ public class NGSMCConfigButton extends Button {
 	private final long marqueeStartTime;
 	private int backgroundColor = 0;// Completely clear background
 	private int focusedColor = 0x20FFFFFF;
-	private int hoveredcolor = 0;
+	private int hoveredcolor = 0x20FFFFFF;
 	private NGSMCConfigIcon disabledIcon;
 
 	public NGSMCConfigButton(int x, int y, int width, int height, Component message, OnPress onPress,
@@ -95,7 +94,16 @@ public class NGSMCConfigButton extends Button {
 		this.hoveredcolor = color;
 	}
 
-	public void setDisabledIcon(NGSMCConfigIcon spriteIcon) {
-		this.disabledIcon = spriteIcon;
+	public void setDisabledIcon(NGSMCConfigIcon icon) {
+		this.disabledIcon = icon;
+	}
+
+	public void setIcon(NGSMCConfigIcon icon) {
+		this.icon = icon;
+	}
+	
+	@Override
+	public boolean shouldTakeFocusAfterInteraction() {
+		return false;
 	}
 }
