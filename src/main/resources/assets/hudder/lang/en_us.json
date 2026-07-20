@@ -103,6 +103,6 @@
 	"hudder.safety_perf.disableWarnings": "Disable warnings",
 	"hudder.safety_perf.disableWarnings.tooltip": "\u00A74WARNINGS EXIST FOR A REASON!\nTHIS INCLUDES DEPRECIATION WARNINGS!\n\u00A7fDisables ALL warnings.",
 
-	"hudder.safety_perf.disableHudpackVersionCheck": "Disable Hudpack version checks",
+	"hudder.safety_perf.disableHudpackVersionCheck": "Bypass Hudpack version check",
 	"hudder.safety_perf.disableHudpackVersionCheck.tooltip": "Disables the version check preventing the running of unsupported hudpack versions.\nNote: Hudpacks are backwards-compatible so this is mostly for edge-cases and newer versions."
 }

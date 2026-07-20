@@ -43,7 +43,9 @@ public class NGSMCConfigEntry extends ContainerObjectSelectionList.Entry<NGSMCCo
         this.option = option;
         resetButton = Button.builder(Component.translatable("ngsmcconfig.reset"), _->option.reset())
         		.size(40, 20).build();
-        text = new StringWidget(0, 0, 210, 20, title, Minecraft.getInstance().font) {
+        text = new StringWidget(0, 0,
+        		NGSMCConfigOptionsListWidget.ROW_WIDTH-60-(widget==null?0:widget.getWidth()), 20,
+        				title, Minecraft.getInstance().font) {
         	@Override public void playDownSound(SoundManager soundManager) { /* Ugly noise */ }
         };
         text.active = true;

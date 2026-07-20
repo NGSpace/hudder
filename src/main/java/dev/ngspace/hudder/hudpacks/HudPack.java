@@ -15,12 +15,7 @@ import com.google.gson.Gson;
 import com.mojang.blaze3d.platform.NativeImage;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
-import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableConsumer;
-import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableFunction;
-import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.Binder;
 import dev.ngspace.hudder.compilers.HudPackCompiler;
-import dev.ngspace.hudder.compilers.utils.javascript.JavaScriptEngine;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.ngsmcconfig.options.AbstractNGSMCConfigOption;
@@ -38,16 +33,23 @@ public class HudPack {
 	private HudPackCompiler compiler;
 	private BufferedTexture[] bufferedtextures;
 	private Map<String, HudPackSettings> settings;
-	private Map<String, JavaScriptEngine> engines = new HashMap<String, JavaScriptEngine>();
 	
 	public HudPackPoint[] hudpackpoints;
+	public HudPackEngineManager engineManager;
 	public int format_version = 0;
+	public Map<String, byte[]> entries = new HashMap<String, byte[]>();
 	
 	public HudPack(String filepath, HudPackCompiler compiler) throws IOException, CompileException {
 		this.compiler = compiler;
+		this.engineManager = new HudPackEngineManager(this.compiler, this);
 		File file = new File(filepath);
 		try (EntryReaderConsumer reader = file.isDirectory() ? new EntryReaderConsumer.Directory(file) :
 				new EntryReaderConsumer.Zip(file)) {
+			for (String entry : reader.listEntries()) {
+				System.out.println(entry);
+				entries.put(entry, reader.readEntry(entry).readAllBytes());
+			}
+			System.out.println(entries.get("code/coords.js"));
 			processConfig(reader);
 			bufferTextures(reader, configYaml.texturesOrEmpty());
 			loadTextures();
@@ -67,7 +69,7 @@ public class HudPack {
 			HudPackPointConfig point = configYaml.points().get(i);
 	        try (InputStream in = reader.readEntry(point.path())) {
 				String point_code = new String(in.readAllBytes());
-				hudpackpoints[i] = new HudPackPoint(point, getOrCreateEngine(point.path(), point_code));
+				hudpackpoints[i] = new HudPackPoint(point, engineManager.getOrCreateEngine(point.path(), point_code));
 	        }
 		}
 	}
@@ -153,26 +155,5 @@ public class HudPack {
 
 	public void setSettingValue(String string, Object value) {
 		Hudder.config.getHudSettings("hudpacks",  Hudder.config.mainfile()).put(string, value);
-	}
-	
-	public JavaScriptEngine getOrCreateEngine(String hud, String point_code) {
-		if (!engines.containsKey(hud)) {
-			var engine = new JavaScriptEngine();
-			FunctionAndConsumerAPI.getInstance().applyFunctionsAndConsumers(new Binder() {
-				@Override
-				public void bindFunction(BindableFunction c, String... n) {
-					engine.bindFunction(e->c.invoke(compiler.elms, compiler, e), n);
-				}
-				
-				@Override
-				public void bindConsumer(BindableConsumer c, String... n) {
-					engine.bindConsumer(e->c.invoke(compiler.elms, compiler, e), n);
-				}
-			});
-			engine.bindFunction(e->getSettingValue(e[0].asString()), "getHudSetting");
-			engines.put(hud, engine);
-			engine.evaluateCode(point_code, hud);
-		}
-		return engines.get(hud);
 	}
 }
