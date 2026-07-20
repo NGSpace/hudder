@@ -48,6 +48,8 @@ public class HudderBuiltInVariables {
 		register(_->Hudder.config.removegui(), BOOLEAN, "removegui");
 		register(_->Hudder.config.removeeffects(), BOOLEAN, "removeeffects");
 		register(_->Hudder.config.limitrate(), BOOLEAN, "limitrate");
+		register(_->Hudder.config.disableHudpackVersionCheck(), BOOLEAN, "disable_hudpack_version_check");
+		register(_->Hudder.config.disableWarnings(), BOOLEAN, "disable_warnings");
 		
 		// Strings
 		register(_->Hudder.config.compilerName(), STRING, "compilertype");

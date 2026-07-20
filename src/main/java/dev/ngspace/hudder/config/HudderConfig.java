@@ -397,6 +397,14 @@ public class HudderConfig {
 	public boolean autorefresh() {
 	    return userSettings.autorefresh;
 	}
+	
+	public boolean disableHudpackVersionCheck() {
+		return userSettings.disableHudpackVersionCheck;
+	}
+
+	public boolean disableWarnings() {
+		return userSettings.disableWarnings;
+	}
 
 	public int configVersion() {
 	    return userSettings.config_version;

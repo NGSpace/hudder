@@ -95,8 +95,14 @@
 	"hudder.safety_perf.unsafeoperations.tooltip": "\u00A74WARNING - ONLY ENABLE IF YOU KNOW WHAT YOUR HUD DOES.\n\u00A7fEnabling this gives access to blocked features as well as removing certain limitations from existing ones (See Wiki for more information).",
 	
 	"hudder.safety_perf.limitrate": "Limit compiler rate",
-	"hudder.safety_perf.limitrate.tooltip": "\u00A74WARNING - THIS MAY CAUSE PERFORMANCE ISSUES.\n\u00A7fDisabling this will move hudder file compilation from running every client tick to running every frame.",
+	"hudder.safety_perf.limitrate.tooltip": "\u00A74WARNING - THIS MAY CAUSE PERFORMANCE ISSUES.\n\u00A7fToggling this will make the hud execute every frame instead of every tick (20 ticks per second).",
 		
 	"hudder.safety_perf.autorefresh": "Automatically refresh hud",
-	"hudder.safety_perf.autorefresh.tooltip": "Disabling this will stop your hud from updating with every change. Manual refreshes through the keybind will still function"
+	"hudder.safety_perf.autorefresh.tooltip": "Disabling this will stop your hud from updating with every change. Manual refreshes through the keybind still function",
+	
+	"hudder.safety_perf.disableWarnings": "Disable warnings",
+	"hudder.safety_perf.disableWarnings.tooltip": "\u00A74WARNINGS EXIST FOR A REASON!\nTHIS INCLUDES DEPRECIATION WARNINGS!\n\u00A7fDisables ALL warnings.",
+
+	"hudder.safety_perf.disableHudpackVersionCheck": "Disable Hudpack version checks",
+	"hudder.safety_perf.disableHudpackVersionCheck.tooltip": "Disables the version check preventing the running of unsupported hudpack versions.\nNote: Hudpacks are backwards-compatible so this is mostly for edge-cases and newer versions."
 }

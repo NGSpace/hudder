@@ -26,13 +26,14 @@ import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.ngsmcconfig.options.AbstractNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.BooleanNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.DoubleNGSMCConfigOption;
+import dev.ngspace.ngsmcconfig.options.DropdownNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.HexNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.StringNGSMCConfigOption;
 import net.minecraft.network.chat.Component;
 
 public class HudPack {
 	
-	public static final int MAXIMUM_SUPPORTED_FORMAT = 1;
+	public static final int MAXIMUM_SUPPORTED_FORMAT = 2;
 	private HudPackConfig configYaml;
 	private HudPackCompiler compiler;
 	private BufferedTexture[] bufferedtextures;
@@ -59,7 +60,7 @@ public class HudPack {
             configYaml = new Gson().fromJson(in, HudPackConfig.class);
         }
         format_version = configYaml.format_version();
-        if (format_version>MAXIMUM_SUPPORTED_FORMAT)
+        if (format_version>MAXIMUM_SUPPORTED_FORMAT&&!Hudder.config.disableHudpackVersionCheck())
         	throw new CompileException("Unsupported Hud pack format version: " + format_version, -1, -1);
 		hudpackpoints = new HudPackPoint[configYaml.points().size()];
 		for (int i = 0;i<hudpackpoints.length;i++) {
@@ -101,6 +102,16 @@ public class HudPack {
 
 	public AbstractNGSMCConfigOption<? extends Object> buildSetting(String setting) {
 		HudPackSettings v = settings.get(setting);
+		
+		if (format_version>1&&"dropdown".equals(v.type())) {
+			return DropdownNGSMCConfigOption.builder((String) getSettingValue(setting),
+					Component.literal(v.name()),
+					List.of(v.values()))
+				.setDefaultValue((String) v.default_value())
+				.setSaveOperation(val->setSettingValue(setting, val))
+				.build();
+		}
+		
 		return switch (v.type()) {
 			case "boolean": {
 				yield BooleanNGSMCConfigOption.builder(((Boolean) getSettingValue(setting)),
@@ -131,7 +142,7 @@ public class HudPack {
 					.build();
 			}
 			default:
-				throw new IllegalArgumentException("No setting called \"" + setting + '"');
+				throw new IllegalArgumentException("No setting of type \"" + v.type() + '"');
 		};
 	}
 

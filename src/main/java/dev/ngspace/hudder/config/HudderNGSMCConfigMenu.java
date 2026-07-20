@@ -189,6 +189,18 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 				.setSaveOperation(b->config.unsafeoperations=b)
 				.setDefaultValue(false)
 				.build());
+		safety_perf.addOption(BooleanNGSMCConfigOption.builder(config.disableWarnings,
+				Component.translatable("hudder.safety_perf.disableWarnings"))
+				.setHoverComponent(Component.translatable("hudder.safety_perf.disableWarnings.tooltip"))
+				.setSaveOperation(b->config.disableWarnings=b)
+				.setDefaultValue(false)
+				.build());
+		safety_perf.addOption(BooleanNGSMCConfigOption.builder(config.disableHudpackVersionCheck,
+				Component.translatable("hudder.safety_perf.disableHudpackVersionCheck"))
+				.setHoverComponent(Component.translatable("hudder.safety_perf.disableHudpackVersionCheck.tooltip"))
+				.setSaveOperation(b->config.disableHudpackVersionCheck=b)
+				.setDefaultValue(false)
+				.build());
 		
 		
 		
