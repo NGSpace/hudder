@@ -439,6 +439,9 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 			return new V2OppositeOperator(comp.getV2Value(runtime, value.substring(1), line, charpos),
 					line, charpos, value, comp);
 		
+		
+		
+		
 		// Fallback
 		throw new ExecutionException("Untokenizable variable: " + value, line, charpos);
 	}

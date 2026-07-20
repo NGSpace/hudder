@@ -1,6 +1,8 @@
 package dev.ngspace.hudder.api.functionsandconsumers;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.HashMap;
 
 import dev.ngspace.hudder.Hudder;
@@ -13,7 +15,16 @@ import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.main.HudCompilationManager;
 import dev.ngspace.hudder.utils.HudFileUtils;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.protocol.game.ServerboundClientCommandPacket;
+import net.minecraft.resources.Identifier;
+import net.minecraft.stats.Stat;
+import net.minecraft.stats.StatType;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
 
 public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 	public static Minecraft mc = Minecraft.getInstance();
@@ -31,6 +42,50 @@ public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 		binder.registerFunction((_,_,s)->new TranslatedItemStack(mc.player.getInventory().getItem(s[0].asInt())), "getItem");
 		
 		binder.registerFunction((_,_,s)->Hudder.config.savedVariables().get(s[0].asString()),"readValue");
+		
+		//Stats
+		
+		binder.registerFunction((_,_,s)->{
+			updateStats();
+			String blockId = s[0].asString();
+			var block = BuiltInRegistries.BLOCK.get(Identifier.parse(blockId));
+			if (block.isEmpty())
+				throw new ExecutionException("Unknown block ID: \"" + blockId + '"', 0, 0);
+			return mc.player.getStats().getValue(Stats.BLOCK_MINED, block.get().value());
+		}, "getTimesMinedStat");
+		
+		binder.registerFunction((_,_,s)->getItemStat(Stats.ITEM_CRAFTED, s[0].asString()),
+				"getTimesCraftedStat");
+		
+		binder.registerFunction((_,_,s)->getItemStat(Stats.ITEM_USED, s[0].asString()),
+				"getTimesUsedStat");
+		
+		binder.registerFunction((_,_,s)->getItemStat(Stats.ITEM_BROKEN, s[0].asString()),
+				"getTimesBrokenStat");
+		
+		binder.registerFunction((_,_,s)->getItemStat(Stats.ITEM_PICKED_UP, s[0].asString()),
+				"getTimesPickedUpStat");
+		
+		binder.registerFunction((_,_,s)->getItemStat(Stats.ITEM_DROPPED, s[0].asString()),
+				"getTimesDroppedStat");
+		
+		binder.registerFunction((_,_,s)->getEntityStat(Stats.ENTITY_KILLED, s[0].asString()),
+				"getTimesKilledStat");
+		
+		binder.registerFunction((_,_,s)->getEntityStat(Stats.ENTITY_KILLED_BY, s[0].asString()),
+				"getTimesKilledByStat");
+		
+		binder.registerFunction((_,_,s)->{
+			updateStats();
+			Identifier statId = Identifier.parse(s[0].asString());
+			ObjectArrayList<Stat<Identifier>> stats = new ObjectArrayList<>(Stats.CUSTOM.iterator());
+			
+			for (Stat<Identifier> stat : stats)
+				if (stat.getValue().equals(statId))
+					return mc.player.getStats().getValue(stat);
+			
+			throw new ExecutionException("Unknown custom stat ID: \"" + statId + '"', 0, 0);
+		}, "getCustomStat"); // https://minecraft.wiki/w/Statistics#List_of_custom_statistic_names
 		
 		//Compile
 		
@@ -70,5 +125,33 @@ public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 		binder.registerFunction((_,_,s)->mc.font.width(s[0].asString()), "strWidth", "strwidth");
 		binder.registerFunction((_,_,s)->s[0].get().toString(), "toString");
 		binder.registerUnsafeFunction((_,_,_)->new HashMap<Object, Object>(), "map");
+	}
+	
+	static Instant laststatsupdate = Instant.now();
+
+	public static void updateStats() {
+		Instant now = Instant.now();
+		var connection = mc.getConnection();
+		if (connection!=null&&Duration.between(laststatsupdate, now).toMillis()>1000) {
+			laststatsupdate = Instant.now();
+			connection.send(new ServerboundClientCommandPacket(ServerboundClientCommandPacket.
+					Action.REQUEST_STATS));
+		}
+	}
+
+	public static Object getItemStat(StatType<Item> stattype, String itemId) throws ExecutionException {
+		updateStats();
+		var item = BuiltInRegistries.ITEM.get(Identifier.parse(itemId));
+		if (item.isEmpty())
+			throw new ExecutionException("Unknown item ID: \"" + itemId + '"', -1, -1);
+		return mc.player.getStats().getValue(stattype, item.get().value());
+	}
+
+	public static Object getEntityStat(StatType<EntityType<?>> stattype, String entityId) throws ExecutionException {
+		updateStats();
+		var entity = BuiltInRegistries.ENTITY_TYPE.get(Identifier.parse(entityId));
+		if (entity.isEmpty())
+			throw new ExecutionException("Unknown entity ID: \"" + entityId + '"', -1, -1);
+		return mc.player.getStats().getValue(stattype, entity.get().value());
 	}
 }
