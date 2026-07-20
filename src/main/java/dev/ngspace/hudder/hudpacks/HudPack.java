@@ -21,6 +21,7 @@ import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.Binda
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.Binder;
 import dev.ngspace.hudder.compilers.HudPackCompiler;
 import dev.ngspace.hudder.compilers.utils.javascript.JavaScriptEngine;
+import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.ngsmcconfig.options.AbstractNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.BooleanNGSMCConfigOption;
@@ -31,6 +32,7 @@ import net.minecraft.network.chat.Component;
 
 public class HudPack {
 	
+	public static final int MAXIMUM_SUPPORTED_FORMAT = 1;
 	private HudPackConfig configYaml;
 	private HudPackCompiler compiler;
 	private BufferedTexture[] bufferedtextures;
@@ -40,7 +42,7 @@ public class HudPack {
 	public HudPackPoint[] hudpackpoints;
 	public int format_version = 0;
 	
-	public HudPack(String filepath, HudPackCompiler compiler) throws IOException {
+	public HudPack(String filepath, HudPackCompiler compiler) throws IOException, CompileException {
 		this.compiler = compiler;
 		File file = new File(filepath);
 		try (EntryReaderConsumer reader = file.isDirectory() ? new EntryReaderConsumer.Directory(file) :
@@ -52,11 +54,13 @@ public class HudPack {
 		}
 	}
 
-	private void processConfig(EntryReaderConsumer reader) throws IOException {
+	private void processConfig(EntryReaderConsumer reader) throws IOException, CompileException {
         try (InputStreamReader in = new InputStreamReader(reader.readEntry("pack.json"))) {
             configYaml = new Gson().fromJson(in, HudPackConfig.class);
         }
         format_version = configYaml.format_version();
+        if (format_version>MAXIMUM_SUPPORTED_FORMAT)
+        	throw new CompileException("Unsupported Hud pack format version: " + format_version, -1, -1);
 		hudpackpoints = new HudPackPoint[configYaml.points().size()];
 		for (int i = 0;i<hudpackpoints.length;i++) {
 			HudPackPointConfig point = configYaml.points().get(i);
