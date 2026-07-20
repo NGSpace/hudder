@@ -19,6 +19,7 @@ import dev.ngspace.hudder.v2runtime.values.operations.V2ClassPropertyCall;
 import dev.ngspace.hudder.v2runtime.values.operations.V2MathOperation;
 import dev.ngspace.hudder.v2runtime.values.operations.V2PostIncDecOperator;
 import dev.ngspace.hudder.v2runtime.values.operations.V2PreIncDecOperator;
+import dev.ngspace.hudder.v2runtime.values.operations.V2TernaryOperator;
 import dev.ngspace.hudder.v2runtime.values.operations.booloperations.V2Comparison;
 import dev.ngspace.hudder.v2runtime.values.operations.booloperations.V2LogicalAND;
 import dev.ngspace.hudder.v2runtime.values.operations.booloperations.V2LogicalOR;
@@ -74,6 +75,71 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 			}
 			// if it is wrapped then remove the first and last chars to unwrap and reprocess them.
 			if (isSafe) return comp.getV2Value(runtime, value.substring(1, value.length()-1), line, charpos);
+		}
+		
+		
+		
+		
+		if (value.startsWith("if ")) {
+			StringBuilder condition = new StringBuilder();
+			int index = 3;
+			int parentheses = 0;
+			for (;index<value.length();index++) {
+				char c = value.charAt(index);
+				if (c=='"') {
+					boolean escape = false;
+					condition.append(c);
+					index++;
+					for (;index<value.length();index++) {
+						c = value.charAt(index);
+						condition.append(c);
+						if (c=='"'&&!escape) {
+							break;
+						}
+						if (c=='\\'&&!escape) {
+							escape = true;
+						}
+					}
+					continue;
+				}
+				if (parentheses==0&&value.indexOf(" then ", index)==index) break;
+				if (c == '(') parentheses++;
+				if (c == ')') parentheses--;
+				
+				condition.append(c);
+			}
+			index+=5;
+			parentheses = 0;
+			StringBuilder firstvalue = new StringBuilder();
+			for (;index<value.length();index++) {
+				char c = value.charAt(index);
+				if (c=='"') {
+					boolean escape = false;
+					firstvalue.append(c);
+					index++;
+					for (;index<value.length();index++) {
+						c = value.charAt(index);
+						firstvalue.append(c);
+						if (c=='"'&&!escape) {
+							break;
+						}
+						if (c=='\\'&&!escape) {
+							escape = true;
+						}
+					}
+					continue;
+				}
+				if (parentheses==0&&value.indexOf(" else ", index)==index) break;
+				if (c == '(') parentheses++;
+				if (c == ')') parentheses--;
+				
+				firstvalue.append(c);
+			}
+			index+=6;
+			return new V2TernaryOperator(comp.getV2Value(runtime, condition.toString(), line, charpos),
+					comp.getV2Value(runtime, firstvalue.toString(), line, charpos),
+					comp.getV2Value(runtime, value.substring(index), line, charpos),
+					line, charpos, value, comp);
 		}
 		
 		
@@ -372,9 +438,6 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 		if (value.matches("![\\s\\S]+"))
 			return new V2OppositeOperator(comp.getV2Value(runtime, value.substring(1), line, charpos),
 					line, charpos, value, comp);
-		
-		
-		
 		
 		// Fallback
 		throw new ExecutionException("Untokenizable variable: " + value, line, charpos);

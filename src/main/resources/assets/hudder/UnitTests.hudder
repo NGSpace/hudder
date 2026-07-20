@@ -9,6 +9,30 @@
 ||EXPECT||
 0
 
+||INPUT||Ternary then parenthesses
+{then=false}
+{if ( then ) then -1 else -2}
+||EXPECT||
+false
+-2
+
+||INPUT||Ternary then quotes
+{if " then "==" else " then -1 else -2}
+||EXPECT||
+-2
+
+||INPUT||Ternary else parenthesses
+{else=false}
+{if true then ( else ) else -2}
+||EXPECT||
+false
+false
+
+||INPUT||Ternary else quotes
+{if true then " else r" else -2}
+||EXPECT||
+ else r
+
 ||INPUT||Else
 {var=1}
 #if var==2
