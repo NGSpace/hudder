@@ -4,6 +4,13 @@
 ||EXPECT||
 9
 
+||INPUT||Nested order of operations
+{2+3*4}
+{(2+3)*4}
+||EXPECT||
+14
+20
+
 ||INPUT||Math
 {(1+2)/3-1}
 ||EXPECT||

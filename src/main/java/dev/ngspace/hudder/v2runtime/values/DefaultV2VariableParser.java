@@ -254,7 +254,7 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 				}
 				if (isSafe) {
 					String funcName = value.substring(0, argStart);
-					if (funcName.matches("^[a-zA-Z0-9_-]*$")) {
+					if (funcName.matches("^[a-zA-Z0-9]+[a-zA-Z0-9_-]*$")) {
 						String parametersString = value.substring(argStart+1, value.length()-1);
 						String[] tokenizedArgs = HudderUtils.processParemeters(parametersString);
 						
