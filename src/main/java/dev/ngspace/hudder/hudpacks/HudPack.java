@@ -2,14 +2,10 @@ package dev.ngspace.hudder.hudpacks;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.commons.io.IOUtils;
 
 import com.google.gson.Gson;
 import com.mojang.blaze3d.platform.NativeImage;
@@ -48,37 +44,31 @@ public class HudPack {
 			for (String entry : reader.listEntries()) {
 				entries.put(entry, reader.readEntry(entry).readAllBytes());
 			}
-			processConfig(reader);
-			bufferTextures(reader, configYaml.texturesOrEmpty());
-			loadTextures();
-			loadSettings(configYaml.settingsOrEmpty());
 		}
+		processConfig();
+		bufferTextures(configYaml.texturesOrEmpty());
+		loadTextures();
+		loadSettings(configYaml.settingsOrEmpty());
 	}
 
-	private void processConfig(EntryReaderConsumer reader) throws IOException, CompileException {
-        try (InputStreamReader in = new InputStreamReader(reader.readEntry("pack.json"))) {
-            configYaml = new Gson().fromJson(in, HudPackConfig.class);
-        }
+	private void processConfig() throws CompileException {
+            configYaml = new Gson().fromJson(new String(entries.get("pack.json")), HudPackConfig.class);
         format_version = configYaml.format_version();
         if (format_version>MAXIMUM_SUPPORTED_FORMAT&&!Hudder.config.disableHudpackVersionCheck())
         	throw new CompileException("Unsupported Hud pack format version: " + format_version, -1, -1);
 		hudpackpoints = new HudPackPoint[configYaml.points().size()];
 		for (int i = 0;i<hudpackpoints.length;i++) {
 			HudPackPointConfig point = configYaml.points().get(i);
-	        try (InputStream in = reader.readEntry(point.path())) {
-				String point_code = new String(in.readAllBytes());
-				hudpackpoints[i] = new HudPackPoint(point, engineManager.getOrCreateEngine(point.path(), point_code));
-	        }
+			String point_code = new String(entries.get(point.path()));
+			hudpackpoints[i] = new HudPackPoint(point, engineManager.getOrCreateEngine(point.path(), point_code));
 		}
 	}
 	
-	private void bufferTextures(EntryReaderConsumer reader, List<String> textures) throws IOException {
+	private void bufferTextures(List<String> textures) {
 		this.bufferedtextures = new BufferedTexture[textures.size()];
 		for (int i = 0;i<textures.size();i++) {
 			String texture = textures.get(i);
-	        try (InputStream in = reader.readEntry(texture)) {
-	        	bufferedtextures[i] = new BufferedTexture(texture, IOUtils.toByteArray(in));
-	        }
+        	bufferedtextures[i] = new BufferedTexture(texture, entries.get(texture));
 		}
 	}
 

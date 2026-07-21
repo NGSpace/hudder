@@ -9,6 +9,7 @@ import java.util.Queue;
 import dev.ngspace.hudder.mixin.LevelRendererAccess;
 import dev.ngspace.hudder.mixin.ParticleManagerAccessor;
 import dev.ngspace.hudder.variables.HudderBuiltInVariables;
+import dev.ngspace.hudder.variables.advanced.PlayerInformation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
@@ -146,5 +147,14 @@ public class WorldData extends HudderBuiltInVariables {
 		
 		// Difficulty
 		register(_->ins.player.level().getDifficulty().getSerializedName(), STRING, "difficulty");
+		
+		// PlayerList
+		register(_->ins.getConnection().getListedOnlinePlayers()
+				.stream()
+				.map(p -> new PlayerInformation(p.getProfile().name(), p.getProfile().id(),
+						p.getTabListDisplayName().getString(), p.getTabListOrder(),
+						p.getTeam() != null ? p.getTeam().getName() : "", p.getGameMode().toString()))
+				.toList(),
+			STRING, "players_list");
 	}
 }
