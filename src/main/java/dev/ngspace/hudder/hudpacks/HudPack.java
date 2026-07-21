@@ -46,10 +46,8 @@ public class HudPack {
 		try (EntryReaderConsumer reader = file.isDirectory() ? new EntryReaderConsumer.Directory(file) :
 				new EntryReaderConsumer.Zip(file)) {
 			for (String entry : reader.listEntries()) {
-				System.out.println(entry);
 				entries.put(entry, reader.readEntry(entry).readAllBytes());
 			}
-			System.out.println(entries.get("code/coords.js"));
 			processConfig(reader);
 			bufferTextures(reader, configYaml.texturesOrEmpty());
 			loadTextures();
