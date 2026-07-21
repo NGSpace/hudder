@@ -103,6 +103,17 @@ public class NGSMCConfigEntry extends ContainerObjectSelectionList.Entry<NGSMCCo
 				&& overlayWidget.mouseClickedOverlay(event, doubleClick, overlayTop, overlayBottom);
 	}
 
+	public boolean mouseDraggedOverlay(MouseButtonEvent event, double dragX, double dragY, int overlayTop,
+			int overlayBottom) {
+		return renderlast && widget instanceof NGSMCConfigOverlayWidget overlayWidget
+				&& overlayWidget.mouseDraggedOverlay(event, dragX, dragY, overlayTop, overlayBottom);
+	}
+
+	public boolean mouseReleasedOverlay(MouseButtonEvent event, int overlayTop, int overlayBottom) {
+		return renderlast && widget instanceof NGSMCConfigOverlayWidget overlayWidget
+				&& overlayWidget.mouseReleasedOverlay(event, overlayTop, overlayBottom);
+	}
+
 	public boolean isOverlayOpen() {
 		return renderlast && widget instanceof NGSMCConfigOverlayWidget overlayWidget && overlayWidget.isOverlayOpen();
 	}

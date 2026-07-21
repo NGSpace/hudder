@@ -33,14 +33,41 @@ public class NGSMCConfigOptionsListWidget extends ContainerObjectSelectionList<N
 	@Override
 	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
 		for (NGSMCConfigEntry entry : children()) {
-			if (entry.mouseClickedOverlay(event, doubleClick, getY(), getBottom()))
+			if (entry.mouseClickedOverlay(event, doubleClick, getY(), getBottom())) {
+				closeAllOverlaysExcept(entry);
 				return true;
+			}
 		}
 
 		boolean handled = super.mouseClicked(event, doubleClick);
 		if (handled)
 			closeAllButFirstOpenOverlay();
 		return handled;
+	}
+
+	@Override
+	public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
+		for (NGSMCConfigEntry entry : children()) {
+			if (entry.mouseDraggedOverlay(event, dragX, dragY, getY(), getBottom()))
+				return true;
+		}
+		return super.mouseDragged(event, dragX, dragY);
+	}
+
+	@Override
+	public boolean mouseReleased(MouseButtonEvent event) {
+		for (NGSMCConfigEntry entry : children()) {
+			if (entry.mouseReleasedOverlay(event, getY(), getBottom()))
+				return true;
+		}
+		return super.mouseReleased(event);
+	}
+
+	private void closeAllOverlaysExcept(NGSMCConfigEntry keptEntry) {
+		for (NGSMCConfigEntry entry : children()) {
+			if (entry != keptEntry)
+				entry.closeOverlay();
+		}
 	}
 
 	private void closeAllButFirstOpenOverlay() {

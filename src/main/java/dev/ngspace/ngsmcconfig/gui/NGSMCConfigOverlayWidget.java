@@ -15,6 +15,15 @@ public interface NGSMCConfigOverlayWidget {
 
 	boolean mouseClickedOverlay(MouseButtonEvent event, boolean doubleClick, int overlayTop, int overlayBottom);
 
+	default boolean mouseDraggedOverlay(MouseButtonEvent event, double dragX, double dragY, int overlayTop,
+			int overlayBottom) {
+		return false;
+	}
+
+	default boolean mouseReleasedOverlay(MouseButtonEvent event, int overlayTop, int overlayBottom) {
+		return false;
+	}
+
 	boolean isOverlayOpen();
 
 	void closeOverlay();
