@@ -3,6 +3,7 @@ package dev.ngspace.hudder.config;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.function.Function;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.utils.Compilers;
@@ -26,6 +27,9 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 
 	public static Screen createMenu(Screen parent) {
 		HudderUserSettings config = Hudder.config.userSettings;
+		
+		Function<Boolean, Component> enabledDisabled = v -> Boolean.TRUE.equals(v) ? Component.translatable(
+				"hudder.ngsmcconfig.enabled") : Component.translatable("hudder.ngsmcconfig.disabled");
 		
 		var builder = new NGSMCConfigBuilder(parent);
 		builder.setWriteOperation(() -> {
@@ -66,6 +70,7 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 				.setHoverComponent(Component.translatable("hudder.general.enabled.tooltip"))
 				.setDefaultValue(true)
 				.setSaveOperation(b->config.enabled=b)
+				.setComponentProvider(enabledDisabled)
 				.build());
 		general.addOption(StringNGSMCConfigOption.builder(config.mainfile, Component.translatable("hudder.general.mainfile"))
 				.setHoverComponent(Component.translatable("hudder.general.mainfile.tooltip"))
@@ -107,11 +112,13 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 				.setHoverComponent(Component.translatable("hudder.text_rendering.shadow.tooltip"))
 				.setSaveOperation(b->config.shadow=b)
 				.setDefaultValue(true)
+				.setComponentProvider(enabledDisabled)
 				.build());
 		text_rendering.addOption(BooleanNGSMCConfigOption.builder(config.background, Component.translatable("hudder.text_rendering.background"))
 				.setHoverComponent(Component.translatable("hudder.text_rendering.background.tooltip"))
 				.setSaveOperation(b->config.background=b)
 				.setDefaultValue(true)
+				.setComponentProvider(enabledDisabled)
 				.build());
 		text_rendering.addOption(HexNGSMCConfigOption.builder(config.backgroundcolor,
 				Component.translatable("hudder.text_rendering.backgroundcolor"))
@@ -183,11 +190,13 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 				.setHoverComponent(Component.translatable("hudder.safety_perf.autorefresh.tooltip"))
 				.setSaveOperation(b->config.autorefresh=b)
 				.setDefaultValue(true)
+				.setComponentProvider(enabledDisabled)
 				.build());
 		safety_perf.addOption(BooleanNGSMCConfigOption.builder(config.unsafeoperations, Component.translatable("hudder.safety_perf.unsafeoperations"))
 				.setHoverComponent(Component.translatable("hudder.safety_perf.unsafeoperations.tooltip"))
 				.setSaveOperation(b->config.unsafeoperations=b)
 				.setDefaultValue(false)
+				.setComponentProvider(enabledDisabled)
 				.build());
 		safety_perf.addOption(BooleanNGSMCConfigOption.builder(config.disableWarnings,
 				Component.translatable("hudder.safety_perf.disableWarnings"))

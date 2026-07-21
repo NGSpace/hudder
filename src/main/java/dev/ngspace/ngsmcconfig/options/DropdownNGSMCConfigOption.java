@@ -6,11 +6,10 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import dev.ngspace.ngsmcconfig.api.AbstractNGSMCConfigOptionBuilder;
+import dev.ngspace.ngsmcconfig.api.AbstractFluentNGSMCConfigOptionBuilder;
 import dev.ngspace.ngsmcconfig.gui.NGSMCConfigDropdownWidget;
 import dev.ngspace.ngsmcconfig.gui.NGSMCConfigEntry;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 
 public class DropdownNGSMCConfigOption<T> extends AbstractNGSMCConfigOption<T> {
 
@@ -42,68 +41,32 @@ public class DropdownNGSMCConfigOption<T> extends AbstractNGSMCConfigOption<T> {
 			widget.setValue(value);
 	}
 
-	public static <T> Builder<T> builder(T value, Component name, List<T> options) {
-		return new Builder<T>(value, name, options);
+	public static <T> DropdownNGSMCConfigOptionBuilder<T> builder(T value, Component name, List<T> options) {
+		return new DropdownNGSMCConfigOptionBuilder<T>(value, name, options);
 	}
 
-	public static class Builder<T> extends AbstractNGSMCConfigOptionBuilder<T> {
+	public static class DropdownNGSMCConfigOptionBuilder<T> extends AbstractFluentNGSMCConfigOptionBuilder<T, DropdownNGSMCConfigOptionBuilder<T>> {
 
 		protected List<T> options;
 		protected Function<T, Component> valueText = value -> Component.literal(String.valueOf(value));
 
-		protected Builder(T value, Component name, List<T> options) {
+		protected DropdownNGSMCConfigOptionBuilder(T value, Component name, List<T> options) {
 			super(value, name);
 			this.options = List.copyOf(options);
 		}
 
-		public Builder<T> setOptions(List<T> options) {
+		public DropdownNGSMCConfigOptionBuilder<T> setOptions(List<T> options) {
 			this.options = List.copyOf(options);
 			return this;
 		}
 
 		@SafeVarargs
-		public final Builder<T> setOptions(T... options) {
+		public final DropdownNGSMCConfigOptionBuilder<T> setOptions(T... options) {
 			return setOptions(Arrays.asList(options));
 		}
 
-		public Builder<T> setValueText(Function<T, Component> valueText) {
+		public DropdownNGSMCConfigOptionBuilder<T> setValueText(Function<T, Component> valueText) {
 			this.valueText = Objects.requireNonNull(valueText);
-			return this;
-		}
-
-		@Override
-		public Builder<T> setValue(T value) {
-			super.setValue(value);
-			return this;
-		}
-
-		@Override
-		public Builder<T> setDefaultValue(T defaultValue) {
-			super.setDefaultValue(defaultValue);
-			return this;
-		}
-
-		@Override
-		public Builder<T> setName(Component name) {
-			super.setName(name);
-			return this;
-		}
-
-		@Override
-		public Builder<T> setSaveOperation(Consumer<T> saveOperation) {
-			super.setSaveOperation(saveOperation);
-			return this;
-		}
-
-		@Override
-		public Builder<T> setHoverComponent(MutableComponent hovercomponent) {
-			super.setHoverComponent(hovercomponent);
-			return this;
-		}
-
-		@Override
-		public Builder<T> setValidator(Function<T, Component> validator) {
-			super.setValidator(validator);
 			return this;
 		}
 
@@ -116,6 +79,11 @@ public class DropdownNGSMCConfigOption<T> extends AbstractNGSMCConfigOption<T> {
 			if (!options.contains(defaultValue))
 				throw new IllegalStateException("The default dropdown value must be present in its options");
 			return new DropdownNGSMCConfigOption<T>(defaultValue, value, name, saveOperation, validator, options, valueText);
+		}
+
+		@Override
+		protected DropdownNGSMCConfigOptionBuilder<T> self() {
+			return this;
 		}
 	}
 }

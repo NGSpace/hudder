@@ -3,7 +3,7 @@ package dev.ngspace.ngsmcconfig.options;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import dev.ngspace.ngsmcconfig.api.AbstractNGSMCConfigOptionBuilder;
+import dev.ngspace.ngsmcconfig.api.NGSMCConfigOptionBuilder;
 import net.minecraft.network.chat.Component;
 
 public class DoubleNGSMCConfigOption extends AbstractTextFieldNGSMCConfigOption<Double> {
@@ -34,8 +34,8 @@ public class DoubleNGSMCConfigOption extends AbstractTextFieldNGSMCConfigOption<
 		};
 	}
 	
-	public static AbstractNGSMCConfigOptionBuilder<Double> builder(double value, Component name) {
-		return new AbstractNGSMCConfigOptionBuilder<Double>(value, name) {
+	public static NGSMCConfigOptionBuilder<Double> builder(double value, Component name) {
+		return new NGSMCConfigOptionBuilder<Double>(value, name) {
 			@Override public AbstractNGSMCConfigOption<Double> build() {
 				return new DoubleNGSMCConfigOption(defaultValue, value, name, saveOperation, validator);
 			}

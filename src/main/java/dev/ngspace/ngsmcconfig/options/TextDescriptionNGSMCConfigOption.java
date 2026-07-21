@@ -1,6 +1,6 @@
 package dev.ngspace.ngsmcconfig.options;
 
-import dev.ngspace.ngsmcconfig.api.AbstractNGSMCConfigOptionBuilder;
+import dev.ngspace.ngsmcconfig.api.NGSMCConfigOptionBuilder;
 import dev.ngspace.ngsmcconfig.gui.NGSMCConfigEntry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -13,8 +13,8 @@ public class TextDescriptionNGSMCConfigOption extends AbstractNGSMCConfigOption<
 		
 	}
 
-	public static AbstractNGSMCConfigOptionBuilder<String> builder(Component name) {
-		return new AbstractNGSMCConfigOptionBuilder<String>("", name) {
+	public static NGSMCConfigOptionBuilder<String> builder(Component name) {
+		return new NGSMCConfigOptionBuilder<String>("", name) {
 			@Override public AbstractNGSMCConfigOption<String> build() {
 				return new TextDescriptionNGSMCConfigOption(name);
 			}

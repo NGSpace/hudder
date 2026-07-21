@@ -3,7 +3,7 @@ package dev.ngspace.ngsmcconfig.options;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import dev.ngspace.ngsmcconfig.api.AbstractNGSMCConfigOptionBuilder;
+import dev.ngspace.ngsmcconfig.api.NGSMCConfigOptionBuilder;
 import dev.ngspace.ngsmcconfig.gui.NGSMCConfigEntry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -45,7 +45,7 @@ public class HexNGSMCConfigOption extends AbstractNGSMCConfigOption<Integer> {
 			try {
 				this.value = Integer.parseUnsignedInt(val.substring(val.charAt(0)=='#' ? 1 : 2), 16);
 				validnum = true;
-			} catch (NumberFormatException | StringIndexOutOfBoundsException e) {
+			} catch (NumberFormatException | StringIndexOutOfBoundsException _) {
 				validnum = false;
 				invalidnum = val;
 			}
@@ -53,8 +53,8 @@ public class HexNGSMCConfigOption extends AbstractNGSMCConfigOption<Integer> {
 		return new NGSMCConfigEntry(widget, text, this);
 	}
 	
-	public static AbstractNGSMCConfigOptionBuilder<Integer> builder(int value, Component name) {
-		return new AbstractNGSMCConfigOptionBuilder<Integer>(value, name) {
+	public static NGSMCConfigOptionBuilder<Integer> builder(int value, Component name) {
+		return new NGSMCConfigOptionBuilder<Integer>(value, name) {
 			@Override public AbstractNGSMCConfigOption<Integer> build() {
 				return new HexNGSMCConfigOption(defaultValue, value, name, saveOperation, validator);
 			}
