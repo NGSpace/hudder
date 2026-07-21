@@ -15,6 +15,7 @@ import dev.ngspace.hudder.uielements.TextureElement;
 import dev.ngspace.hudder.uielements.TextureVerticesElement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.animal.equine.AbstractHorse;
 import net.minecraft.world.item.ItemStack;
@@ -51,7 +52,7 @@ public class HudderBuiltInMethods {private HudderBuiltInMethods() {}
 			int x = args[0].asInt();
 			int y = args[1].asInt();
 
-			String text = args[2].asString();
+			Component text = args[2].asComponent();
 			float scale = (float) (args.length>3 ? args[3].asDouble() : Hudder.config.scale());
 
 			int color = args.length>4 ? (int) args[4].asLong() : Hudder.config.color();

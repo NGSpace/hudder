@@ -152,7 +152,7 @@ public class WorldData extends HudderBuiltInVariables {
 		register(_->ins.getConnection().getListedOnlinePlayers()
 				.stream()
 				.map(p -> new PlayerInformation(p.getProfile().name(), p.getProfile().id(),
-						p.getTabListDisplayName().getString(), p.getTabListOrder(),
+						p.getTabListDisplayName(), p.getTabListOrder(),
 						p.getTeam() != null ? p.getTeam().getName() : "", p.getGameMode().toString()))
 				.toList(),
 			STRING, "players_list");

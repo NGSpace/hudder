@@ -1,7 +1,9 @@
 package dev.ngspace.hudder.utils;
 
+import dev.ngspace.hudder.api.variableregistry.ComponentWrapper;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
+import net.minecraft.network.chat.Component;
 
 /**
  * A wrapper to an Object with functions to convert to each type
@@ -91,6 +93,22 @@ public interface ObjectWrapper {
 		for (int i = 0;i<objarr.length;i++)
 			floatarr[i] = ((Number)objarr[i]).floatValue();//Unchecked casting but idc
 		return floatarr;
+	}
+	
+	
+
+	
+	
+	/**
+	 * Returns the current value of the Object in the form of a Boolean
+	 * @return The Object as a Boolean.
+	 * @throws CompileException - if failed to get value or convert it to Boolean.
+	 */
+	public default Component asComponent() throws ExecutionException {
+		Object value = get();
+		if (value instanceof Component comp) return comp;
+		if (value instanceof ComponentWrapper wrapper) return wrapper.component;
+		return Component.literal(String.valueOf(value));
 	}
 	
 	

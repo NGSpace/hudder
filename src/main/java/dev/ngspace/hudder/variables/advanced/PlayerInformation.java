@@ -2,19 +2,22 @@ package dev.ngspace.hudder.variables.advanced;
 
 import java.util.UUID;
 
+import dev.ngspace.hudder.api.variableregistry.ComponentWrapper;
+import net.minecraft.network.chat.Component;
+
 public class PlayerInformation {
 
 	public String gamemode;
-	public String displayname;
+	public ComponentWrapper displayname;
 	public String uuid;
 	public String username;
 	public int tabOrder;
 	public String teamname;
 
-	public PlayerInformation(String username, UUID uuid, String displayname, int tabOrder, String teamname, String gamemode) {
+	public PlayerInformation(String username, UUID uuid, Component displayname, int tabOrder, String teamname, String gamemode) {
 		this.username = username;
 		this.uuid = uuid.toString();
-		this.displayname = displayname;
+		this.displayname = new ComponentWrapper(displayname != null ? displayname : Component.literal(username));
 		this.tabOrder = tabOrder;
 		this.teamname = teamname;
 		this.gamemode = gamemode;

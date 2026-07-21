@@ -133,12 +133,14 @@ public class V2ClassPropertyCall extends AV2Value {
 			}
 		}
 		
+		// ValueGetter only returns values defined by the ValueGetter.
+		if (objValue instanceof ValueGetter getter) return getter.get(fieldName);
+		
 		try {
 			Field f = objClass.getDeclaredField(fieldName);
 			if (!isAccessible(f)) throw new ExecutionException("No property named \""+fieldName+"\" in type \"" +objClass.getSimpleName()+'"',line,charpos);
 			return f.get(objValue);
 		} catch (NoSuchFieldException e) {
-			if (objValue instanceof ValueGetter getter) return getter.get(fieldName);
 			if (Hudder.IS_DEBUG) e.printStackTrace();
 			throw new ExecutionException("No property named \""+fieldName+'"',line,charpos);
 		} catch (ReflectiveOperationException e) {
