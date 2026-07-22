@@ -33,7 +33,7 @@ dependencies {
 	
 	provided "org.mozilla:rhino:${project.rhino_version}"
 	
-	compileOnly("com.terraformersmc:modmenu:${project.modmenu_version}")
+	//compileOnly("com.terraformersmc:modmenu:${project.modmenu_version}")
 }
 
 processResources {

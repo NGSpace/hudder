@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.joml.Matrix3x2fStack;
 
-import com.mojang.blaze3d.PrimitiveTopology;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
