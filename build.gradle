@@ -38,7 +38,7 @@ dependencies {
 
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 	
-	provided "org.mozilla:rhino:${project.rhino_version}"
+	implementation(include("org.mozilla:rhino:${project.rhino_version}"))
 	
 	compileOnly("maven.modrinth:modmenu:${project.modmenu_version}")
 }
