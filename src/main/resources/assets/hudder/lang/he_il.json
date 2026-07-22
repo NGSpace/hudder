@@ -6,7 +6,7 @@
     "ngsmcconfig.save": "שמור",
     "ngsmcconfig.wiki": "וויקי",
     "ngsmcconfig.config": "פתח קובץ",
-    "ngsmcconfig.globalreset": "איפוס",
+    "ngsmcconfig.globalreset": "אפס הכל",
     "ngsmcconfig.confirmreset": "איפוס הגדרות Hudder",
     "ngsmcconfig.confirmreset.text": "האם אתה בטוח שאת/ה רוצה לאפס את כל ההגדרות שלך?",
     "ngsmcconfig.confirmunsavedexit": "שינויים לא שמורים",
@@ -78,5 +78,8 @@
     "hudder.advanced.removeeffects": "הסר תפרית אפקתים",
     "hudder.advanced.removeeffects.tooltip": "§4אזהרה - זה יהפוך את ההשפעות שלך HUD בלתי נראות עד להשבית.\n§fהאם ה-Hudder צריך להסתיר את ה-אפקטים.",
     "hudder.advanced.autorefresh": "עדקן Hud אוטומטית",
-    "hudder.advanced.autorefresh.tooltip": "ביטול זה ימנע מה-Hud שלך להתעדכן עם כל שינוי. רענון ידני דרך חיבור המקשים עדיין יפעל"
+    "hudder.advanced.autorefresh.tooltip": "ביטול זה ימנע מה-Hud שלך להתעדכן עם כל שינוי. רענון ידני דרך חיבור המקשים עדיין יפעל",
+    "hudder.ngsmcconfig.enabled": "מופעל",
+    "hudder.ngsmcconfig.disabled": "מושבת",
+    "hudder.ngsmcconfig.config": "הצג Huds"
 }
