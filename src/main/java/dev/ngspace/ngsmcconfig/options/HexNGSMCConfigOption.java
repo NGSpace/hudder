@@ -4,17 +4,17 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import dev.ngspace.ngsmcconfig.api.AbstractNGSMCConfigOptionBuilder;
+import dev.ngspace.ngsmcconfig.api.NGSMCConfigOptionBuilder;
+import dev.ngspace.ngsmcconfig.gui.NGSMCConfigColorPickerWidget;
 import dev.ngspace.ngsmcconfig.gui.NGSMCConfigEntry;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 
 public class HexNGSMCConfigOption extends AbstractNGSMCConfigOption<Integer> {
 
 	protected boolean validnum = true;
 	protected String invalidnum;
-	protected EditBox widget;
+	protected NGSMCConfigColorPickerWidget widget;
 	
 	protected HexNGSMCConfigOption(Integer defaultValue, Integer value, Component text, Consumer<Integer> saveOperation,
 			Function<Integer, Component> validator) {
@@ -29,32 +29,32 @@ public class HexNGSMCConfigOption extends AbstractNGSMCConfigOption<Integer> {
 
 	@Override
 	public NGSMCConfigEntry buildEntry() {
-		widget = new EditBox(Minecraft.getInstance().font, 0, 0, 100, 20, Component.literal("")) {
-			@Override
-			public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
-				guiGraphics.enableScissor(getX(), getY(), getRight()-20, getBottom());
-				super.extractWidgetRenderState(guiGraphics, i, j, f);
-				guiGraphics.disableScissor();
-				guiGraphics.fill(getRight()-20, getBottom()-20, getRight(), getBottom(), value);
-			}
-		};
+		widget = new NGSMCConfigColorPickerWidget(Minecraft.getInstance().font, 0, 0, 100, 20,
+				Component.literal(""), value);
 		widget.setMaxLength(10);
-		widget.setValue("#"+String.format("%1$08X",value));
+		widget.setColorAndText(value);
 		widget.setResponder(val->{
 			edited = true;
 			try {
 				this.value = Integer.parseUnsignedInt(val.substring(val.charAt(0)=='#' ? 1 : 2), 16);
+				if (!widget.isApplyingPickerColor())
+					widget.setColor(this.value);
 				validnum = true;
-			} catch (NumberFormatException | StringIndexOutOfBoundsException e) {
+			} catch (NumberFormatException | StringIndexOutOfBoundsException _) {
 				validnum = false;
 				invalidnum = val;
 			}
 		});
-		return new NGSMCConfigEntry(widget, text, this);
+		return new NGSMCConfigEntry(widget, text, this, true);
 	}
 	
-	public static AbstractNGSMCConfigOptionBuilder<Integer> builder(int value, Component name) {
-		return new AbstractNGSMCConfigOptionBuilder<Integer>(value, name) {
+	@SuppressWarnings({ "deprecation" })
+	public static AbstractNGSMCConfigOptionBuilder<Integer> builder(Integer value, Component name) {
+	    return fluentBuilder(value, name);
+	}
+	
+	public static NGSMCConfigOptionBuilder<Integer> fluentBuilder(int value, Component name) {
+		return new NGSMCConfigOptionBuilder<Integer>(value, name) {
 			@Override public AbstractNGSMCConfigOption<Integer> build() {
 				return new HexNGSMCConfigOption(defaultValue, value, name, saveOperation, validator);
 			}
@@ -65,7 +65,7 @@ public class HexNGSMCConfigOption extends AbstractNGSMCConfigOption<Integer> {
 	public void reset() {
 		edited = true;
 		value = defaultValue;
-    	if (widget!=null)
-    		widget.setValue("#"+String.format("%1$08X",value));
+		if (widget!=null)
+			widget.setColorAndText(value);
 	}
 }

@@ -21,6 +21,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
@@ -120,8 +121,15 @@ public class HudderRenderer implements HudElement {
     }
     
     
-
+    
 	public void renderTextLine(GuiGraphicsExtractor context, String text, int x, int y, int color, float scale, boolean shadow,
+			boolean background, int backgroundColor) {
+		renderTextLine(context, Component.literal(text), x, y, color, scale, shadow, background, backgroundColor);
+	}
+	
+	
+	
+	public void renderTextLine(GuiGraphicsExtractor context, Component text, int x, int y, int color, float scale, boolean shadow,
 			boolean background, int backgroundColor) {
         if (scale != 1.0f) {
             Matrix3x2fStack matrixStack = context.pose();
@@ -129,12 +137,12 @@ public class HudderRenderer implements HudElement {
             matrixStack.translate(x, y);
             matrixStack.scale(scale, scale);
             matrixStack.translate(-x, -y);
-    		if (background&&!"".equals(text))
+    		if (background&&!"".equals(text.getString()))
     			renderBlock(context,x-1,y-1,mc.font.width(text)+2,10,backgroundColor);
             context.text(mc.font, text, x, y, color, shadow);
             matrixStack.popMatrix();
         } else {
-    		if (background&&!"".equals(text))
+    		if (background&&!"".equals(text.getString()))
     			renderBlock(context,x-1,y-1,mc.font.width(text)+2,10,backgroundColor);
         	context.text(mc.font, text, x, y, color, shadow);
         }

@@ -10,7 +10,7 @@
 //		]
 //  }
 {
-	"hudder_version": "9.2.0",
+	"hudder_version": "10.1.0",
 	"number": {
 		"Performance": [
 			{
@@ -640,6 +640,11 @@
 				"name": "camera_detached",
 				"desc": "Whether the camera is detached from the player or not",
 				"version": "8.3.0"
+			},
+			{
+				"name": "is_singleplayer",
+				"desc": "Is the world the player is in a singleplayer world or a multiplayer world",
+				"version": "10.1.0"
 			}
 		],
 		"Player gamemode": [
@@ -694,6 +699,11 @@
 				"name": "ischatopen",
 				"desc": "Whether the chat screen is currently open",
 				"version": "9.2.0"
+			},
+			{
+				"name": "is_player_list_shown",
+				"desc": "is the player list (tab) shown",
+				"version": "10.1.0"
 			}
 		],
 		"Player movement": [
@@ -909,6 +919,16 @@
 				"name": "limitrate",
 				"desc": "Is limitrate enabled",
 				"version": "3.0.0"
+			},
+			{
+				"name": "disable_hudpack_version_check",
+				"desc": "Is hudder set to ignore hudpack version diffrences",
+				"version": "10.1.0"
+			},
+			{
+				"name": "disable_warnings",
+				"desc": "should hudder ignore warnings or not",
+				"version": "10.1.0"
 			}
 		]
 	},
@@ -1141,6 +1161,20 @@
 				"name": "active_effects",
 				"desc": "An array of all active effects",
 				"version": "9.2.0"
+			}
+		],
+		"Mods list": [
+			{
+				"name": "mods_list",
+				"desc": "An array of strings of all fabric mods, formatted as such: \"[ModID]:[ModVersion]\"",
+				"version": "10.1.0"
+			}
+		],
+		"Players list": [
+			{
+				"name": "players_list",
+				"desc": "returns array of PlayerInformation [Contains values: String gamemode, Component displayname, String uuid, String username, int tabOrder, String teammate {nullable}]",
+				"version": "10.1.0"
 			}
 		]
 	}

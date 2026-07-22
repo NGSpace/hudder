@@ -2,17 +2,25 @@
 	"ngsmcconfig.reset": "Reset",
 	"ngsmcconfig.true": "Yes",
 	"ngsmcconfig.false": "No",
-	"ngsmcconfig.back": "Back",
+	"hudder.ngsmcconfig.enabled": "Enabled",
+	"hudder.ngsmcconfig.disabled": "Disabled",
+	"ngsmcconfig.back": "Quit",
 	"ngsmcconfig.save": "Save",
 	"ngsmcconfig.wiki": "Wiki",
-	"ngsmcconfig.config": "Open config",
-	"ngsmcconfig.globalreset": "Reset",
+	"ngsmcconfig.config": "Show config",
+	"hudder.ngsmcconfig.config": "Show huds",
+	"ngsmcconfig.globalreset": "Reset All",
 
-	"ngsmcconfig.confirmreset": "Reset to default settings",
+	"ngsmcconfig.confirmreset": "\u00A7cReset all to default settings",
 	"ngsmcconfig.confirmreset.text": "Are you sure you want to reset your entire config?",
+	"ngsmcconfig.confirmreset.yes": "\u00A74Yes, reset everything.",
+	"ngsmcconfig.confirmreset.no": "No, go back.",
 
 	"ngsmcconfig.confirmunsavedexit": "Unsaved changes",
 	"ngsmcconfig.confirmunsavedexit.text": "There are some unsaved changes, are you sure you want to leave and discard those unsaved changes?",
+	
+	"ngsmcconfig.confirmunsavedexit.yes": "Quit without saving",
+	"ngsmcconfig.confirmunsavedexit.no": "Back to previous screen",
 	
 
 	"hudder.configkeybind": "Open Hudder settings",
@@ -29,7 +37,7 @@
 	
 	"hudder.general.mainfile":"Hud",
 	"hudder.general.mainfile.tooltip":"Change the main hud file.\u00A77\nThe file must be located in the \u00A76.minecraft/config/Hudder\u00A77 folder.",
-	"hudder.general.mainfile.error":"File does not exist in the .minecraft/config/Hudder folder.",
+	"hudder.general.mainfile.error":"Hud does not exist in the huds folder.",
 
 	"hudder.general.compilertype": "Compiler type",
 	"hudder.general.compilertype.tooltip": "Change the type of compiler (ex hudder, js, pack).",
@@ -43,10 +51,10 @@
 	"hudder.text_rendering.color":"Text Color",
 	"hudder.text_rendering.color.tooltip":"Change the color of the text.",
 
-	"hudder.text_rendering.backgroundcolor": "Background color",
+	"hudder.text_rendering.backgroundcolor": "Text Background color",
 	"hudder.text_rendering.backgroundcolor.tooltip": "Change the default color of the background.",
 
-	"hudder.text_rendering.background": "Background enabled",
+	"hudder.text_rendering.background": "Text Background",
 	"hudder.text_rendering.background.tooltip": "Whether should add a background to the text by default.",
 	
 	"hudder.text_rendering.shadow":"Text Shadow",
@@ -85,12 +93,18 @@
 	"hudder.safety_perf.method": "Method line buffer",
 	"hudder.safety_perf.method.tooltip": "Control the amount of lines to be trimmed before and after Methods.",
 	
-	"hudder.safety_perf.unsafeoperations": "Unsafe operations enabled",
+	"hudder.safety_perf.unsafeoperations": "Unsafe operations",
 	"hudder.safety_perf.unsafeoperations.tooltip": "\u00A74WARNING - ONLY ENABLE IF YOU KNOW WHAT YOUR HUD DOES.\n\u00A7fEnabling this gives access to blocked features as well as removing certain limitations from existing ones (See Wiki for more information).",
 	
-	"hudder.safety_perf.limitrate": "Limit compiler rate",
-	"hudder.safety_perf.limitrate.tooltip": "\u00A74WARNING - THIS MAY CAUSE PERFORMANCE ISSUES.\n\u00A7fDisabling this will move hudder file compilation from running every client tick to running every frame.",
+	"hudder.safety_perf.limitrate": "Limit compile frequency",
+	"hudder.safety_perf.limitrate.tooltip": "\u00A74WARNING - THIS MAY CAUSE PERFORMANCE ISSUES.\n\u00A7fToggling this will make the hud execute every frame instead of every tick (20 ticks per second).",
 		
-	"hudder.safety_perf.autorefresh": "Automatically refresh hud",
-	"hudder.safety_perf.autorefresh.tooltip": "Disabling this will stop your hud from updating with every change. Manual refreshes through the keybind will still function"
+	"hudder.safety_perf.autorefresh": "Automatic hud refresh",
+	"hudder.safety_perf.autorefresh.tooltip": "Disabling this will stop your hud from updating with every change. Manual refreshes through the keybind still function",
+	
+	"hudder.safety_perf.disableWarnings": "Disable warnings",
+	"hudder.safety_perf.disableWarnings.tooltip": "\u00A74WARNINGS EXIST FOR A REASON!\nTHIS INCLUDES DEPRECIATION WARNINGS!\n\u00A7fDisables ALL warnings.",
+
+	"hudder.safety_perf.disableHudpackVersionCheck": "Bypass Hudpack version check",
+	"hudder.safety_perf.disableHudpackVersionCheck.tooltip": "Disables the version check preventing the running of unsupported hudpack versions.\nNote: Hudpacks are backwards-compatible so this is mostly for edge-cases and newer versions."
 }

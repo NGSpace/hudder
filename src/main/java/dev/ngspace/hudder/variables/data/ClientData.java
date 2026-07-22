@@ -7,6 +7,7 @@ import static dev.ngspace.hudder.api.variableregistry.VariableTypes.STRING;
 
 import dev.ngspace.hudder.variables.HudderBuiltInVariables;
 import dev.ngspace.hudder.variables.advanced.Misc;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.dialog.DialogScreen;
@@ -29,12 +30,15 @@ public class ClientData extends HudderBuiltInVariables {
 		
 		// Resource packs
 		register(_->ins.getResourcePackRepository().getSelectedPacks().stream()
-					.filter(pack->!pack.isRequired())
-					.map(t -> t.getTitle().getString())
-					.toList(), OBJECT, "selectedresourcepacks");
+				.filter(pack->!pack.isRequired())
+				.map(t -> t.getTitle().getString())
+				.toList(), OBJECT, "selectedresourcepacks");
 		register(_->ins.getResourcePackRepository().getSelectedPacks().stream()
-					.map(t -> t.getTitle().getString())
-					.toList(), OBJECT, "selectedresourcepacks_unfiltered");
+				.map(t -> t.getTitle().getString())
+				.toList(), OBJECT, "selectedresourcepacks_unfiltered");
+		register(_->FabricLoader.getInstance().getAllMods().stream()
+				.map(mod-> mod.getMetadata().getId() + ":" + mod.getMetadata().getVersion())
+				.toList(), OBJECT, "mods_list");
 	}
 
 	private static void registerInputVariables() {
@@ -74,5 +78,8 @@ public class ClientData extends HudderBuiltInVariables {
 		register(_->ins.gui.screen() instanceof DialogScreen<?>, BOOLEAN, "isdialogopen");
 		register(_->ins.gui.screen() instanceof InventoryScreen
 		        || ins.gui.screen() instanceof CreativeModeInventoryScreen, BOOLEAN, "isinventoryopen");
+		register(_->ins.options.keyPlayerList.isDown()
+				&& (!ins.isLocalServer() || ins.player.connection.getListedOnlinePlayers().size() > 1),
+				BOOLEAN, "is_player_list_shown");
 	}
 }

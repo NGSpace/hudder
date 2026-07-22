@@ -19,6 +19,11 @@ import net.minecraft.client.ClientBrandRetriever;
 public class HudderBuiltInVariables {
 	protected HudderBuiltInVariables() {}
 	
+	
+//	private static final Comparator<PlayerScoreEntry> SCORE_DISPLAY_ORDER = Comparator.comparing(PlayerScoreEntry::value)
+//			.reversed()
+//			.thenComparing(PlayerScoreEntry::owner, String.CASE_INSENSITIVE_ORDER);
+	
 	public static void registerVariables() {
 		
 		DataVariableRegistry.registerVariable(new EffectData(), "active_effects");
@@ -28,6 +33,38 @@ public class HudderBuiltInVariables {
 		ClientData.registerVariables();
 		WorldData.registerVariables();
 		registerMiscVariables();
+		
+		
+		// Maybe later...
+//		register(_->{
+//			var ins = Minecraft.getInstance();
+//			
+//			Scoreboard scoreboard = ins.level.getScoreboard();
+//			
+//			var obj = scoreboard.getDisplayObjective(DisplaySlot.SIDEBAR);
+//			NumberFormat objectiveScoreFormat = obj.numberFormatOrDefault(StyledFormat.SIDEBAR_DEFAULT);
+//			
+//			@Environment(EnvType.CLIENT)
+//			record DisplayEntry(Component name, Component score, int scoreWidth) {
+//			}
+//
+//			DisplayEntry[] entriesToDisplay = scoreboard.listPlayerScores(obj)
+//				.stream()
+//				.filter(input -> !input.isHidden())
+//				.sorted(SCORE_DISPLAY_ORDER)
+//				.limit(15L)
+//				.map(score -> {
+//					PlayerTeam team = scoreboard.getPlayersTeam(score.owner());
+//					Component ownerName = score.ownerName();
+//					Component name = PlayerTeam.formatNameForTeam(team, ownerName);
+//					Component scoreString = score.formatValue(objectiveScoreFormat);
+//					int scoreWidth = ins.font.width(scoreString);
+//					return new DisplayEntry(name, scoreString, scoreWidth);
+//				})
+//				.toArray(DisplayEntry[]::new);
+//			
+//			return entriesToDisplay[3].name();
+//		}, VariableTypes.OBJECT, "scoreboard");
 	}
 
 	public static void register(DataVariable<?> variable, VariableTypes.Type<?> type, String... names) {
@@ -48,6 +85,8 @@ public class HudderBuiltInVariables {
 		register(_->Hudder.config.removegui(), BOOLEAN, "removegui");
 		register(_->Hudder.config.removeeffects(), BOOLEAN, "removeeffects");
 		register(_->Hudder.config.limitrate(), BOOLEAN, "limitrate");
+		register(_->Hudder.config.disableHudpackVersionCheck(), BOOLEAN, "disable_hudpack_version_check");
+		register(_->Hudder.config.disableWarnings(), BOOLEAN, "disable_warnings");
 		
 		// Strings
 		register(_->Hudder.config.compilerName(), STRING, "compilertype");

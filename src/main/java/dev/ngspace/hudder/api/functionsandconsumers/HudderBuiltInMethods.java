@@ -15,7 +15,7 @@ import dev.ngspace.hudder.uielements.TextureElement;
 import dev.ngspace.hudder.uielements.TextureVerticesElement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.animal.equine.AbstractHorse;
 import net.minecraft.world.item.ItemStack;
 
@@ -35,8 +35,8 @@ public class HudderBuiltInMethods {private HudderBuiltInMethods() {}
 		
 		//Textures
 		
-		api.registerConsumer((e,_,s)->e.addUIElement(new BuiltInTextureElement(Identifier.withDefaultNamespace(
-				s[0].asString().trim()), Identifier.withDefaultNamespace(s[1].asString().trim()), s[2].asInt(), s[3].asInt(), s[4].asInt(),s[5].asInt())), "drawTexture", "texture");
+		api.registerConsumer((e,_,s)->e.addUIElement(new BuiltInTextureElement(s[0].asIdentifier(),
+				s[1].asIdentifier(), s[2].asInt(), s[3].asInt(), s[4].asInt(),s[5].asInt())), "drawTexture", "texture");
 		
 		api.registerConsumer((e,_,s)-> e.addUIElement(new TextureElement(s[0].asString(),
 				s[1].asInt(),s[2].asInt(),s[3].asInt(),s[4].asInt())),
@@ -51,7 +51,7 @@ public class HudderBuiltInMethods {private HudderBuiltInMethods() {}
 			int x = args[0].asInt();
 			int y = args[1].asInt();
 
-			String text = args[2].asString();
+			Component text = args[2].asComponent();
 			float scale = (float) (args.length>3 ? args[3].asDouble() : Hudder.config.scale());
 
 			int color = args.length>4 ? (int) args[4].asLong() : Hudder.config.color();
@@ -94,8 +94,8 @@ public class HudderBuiltInMethods {private HudderBuiltInMethods() {}
 				(mc.player.getVehicle() instanceof AbstractHorse horse) ? horse.getBodyArmorItem() : ItemStack.EMPTY, s[2].asFloat(), false)),
 				"drawMountArmor", "mountarmor");
 		
-		api.registerConsumer((e,_,s)->e.addUIElement(new ItemElement(s[1].asInt(), s[2].asInt(),new ItemStack(BuiltInRegistries.ITEM.getValue(
-				Identifier.tryParse(s[0].asString()))),s[3].asFloat(), false)),"drawItem", "item");
+		api.registerConsumer((e,_,s)->e.addUIElement(new ItemElement(s[1].asInt(), s[2].asInt(),new ItemStack(
+				BuiltInRegistries.ITEM.getValue(s[0].asIdentifier())),s[3].asFloat(), false)),"drawItem", "item");
 
 		api.registerConsumer((e,_,s)->e.addUIElement(new ItemElement(s[0].asInt(),s[1].asInt(),mc.player.getInventory()
 				.getItem(mc.player.getInventory().getSelectedSlot()),s.length>2 ? s[2].asFloat() : 1, s.length<=3 || s[3].asBoolean())),"hand","selectedslot");

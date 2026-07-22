@@ -18,8 +18,9 @@ public class WhileV2RuntimeElement extends AV2RuntimeElement {
 	public WhileV2RuntimeElement(HudderConfig info, String condition, String cmds, AV2Compiler compiler,
 			V2Runtime runtime, TextPos charPosition, String filename) throws CompileException, ExecutionException {
 		this.charPosition = charPosition;
-		this.nestedRuntime = compiler.buildRuntime(info, cmds, new TextPos(charPosition.line(), 1), filename, runtime);
-		this.condition = compiler.getV2Value(nestedRuntime, condition, charPosition.line(), charPosition.column());
+		this.nestedRuntimes = new V2Runtime[] {compiler.buildRuntime(info, cmds,
+				new TextPos(charPosition.line(), 1), filename, runtime)};
+		this.condition = compiler.getV2Value(nestedRuntimes[0], condition, charPosition.line(), charPosition.column());
 	}
 	
 	@Override public boolean execute(CompileState meta, StringBuilder builder) throws ExecutionException {
@@ -30,7 +31,7 @@ public class WhileV2RuntimeElement extends AV2RuntimeElement {
 				if (s==Short.MAX_VALUE)
 					throw new ExecutionException("Max while loop reached: " + s, charPosition.line(), charPosition.column());
 			}
-			CompileState res = nestedRuntime.execute();
+			CompileState res = nestedRuntimes[0].execute();
 			meta.combineWithResult(res.toResult(), false);
 			if (res.hasReturned) meta.setReturnValue(res.returnValue);
 			if (res.hasBroken) break;
