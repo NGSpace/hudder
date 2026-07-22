@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import dev.ngspace.ngsmcconfig.api.AbstractFluentNGSMCConfigOptionBuilder;
+import dev.ngspace.ngsmcconfig.api.AbstractNGSMCConfigOptionBuilder;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigIcon;
 import dev.ngspace.ngsmcconfig.gui.NGSMCConfigButton;
 import dev.ngspace.ngsmcconfig.gui.NGSMCConfigEntry;
@@ -50,10 +51,14 @@ public class BooleanNGSMCConfigOption extends AbstractNGSMCConfigOption<Boolean>
     	widget.setMessage(componentProvider.apply(value));
         widget.setWidth(Math.clamp(Minecraft.getInstance().font.width(widget.getMessage())+24l, 20, 100));
 	}
+	
+	@SuppressWarnings({ "deprecation" })
+	public static AbstractNGSMCConfigOptionBuilder<Boolean> builder(boolean value, Component name) {
+	    return fluentBuilder(value, name);
+	}
 
-	public static BooleanNGSMCConfigOptionBuilder builder(boolean value, Component name) {
-		return new BooleanNGSMCConfigOptionBuilder(value, name) {
-		};
+	public static BooleanNGSMCConfigOptionBuilder fluentBuilder(boolean value, Component name) {
+		return new BooleanNGSMCConfigOptionBuilder(value, name);
 	}
 	
 	public static class BooleanNGSMCConfigOptionBuilder extends AbstractFluentNGSMCConfigOptionBuilder<Boolean,

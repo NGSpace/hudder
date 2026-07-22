@@ -41,7 +41,7 @@ public class DropdownNGSMCConfigOption<T> extends AbstractNGSMCConfigOption<T> {
 			widget.setValue(value);
 	}
 
-	public static <T> DropdownNGSMCConfigOptionBuilder<T> builder(T value, Component name, List<T> options) {
+	public static <T> DropdownNGSMCConfigOptionBuilder<T> fluentBuilder(T value, Component name, List<T> options) {
 		return new DropdownNGSMCConfigOptionBuilder<T>(value, name, options);
 	}
 
