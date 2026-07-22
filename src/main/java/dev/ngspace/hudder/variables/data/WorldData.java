@@ -156,5 +156,8 @@ public class WorldData extends HudderBuiltInVariables {
 						p.getTeam() != null ? p.getTeam().getName() : "", p.getGameMode().toString()))
 				.toList(),
 			STRING, "players_list");
+		
+		// Is Singleplayer
+		register(_->ins.hasSingleplayerServer(), BOOLEAN, "is_singleplayer");
 	}
 }

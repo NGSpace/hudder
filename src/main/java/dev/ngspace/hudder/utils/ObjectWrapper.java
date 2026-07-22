@@ -4,6 +4,7 @@ import dev.ngspace.hudder.api.variableregistry.ComponentWrapper;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
 /**
  * A wrapper to an Object with functions to convert to each type
@@ -100,15 +101,27 @@ public interface ObjectWrapper {
 	
 	
 	/**
-	 * Returns the current value of the Object in the form of a Boolean
-	 * @return The Object as a Boolean.
-	 * @throws CompileException - if failed to get value or convert it to Boolean.
+	 * Returns the current value of the Object in the form of a Component.
+	 * 
+	 * If the value is already a Component or a ComponentWrapper then return the Component itself
+	 * If the value is a String then return a literal of the value's toString().
+	 * 
+	 * @return The Object represented as a Component.
+	 * @throws CompileException - if failed to get value or convert it to Component.
 	 */
 	public default Component asComponent() throws ExecutionException {
 		Object value = get();
 		if (value instanceof Component comp) return comp;
 		if (value instanceof ComponentWrapper wrapper) return wrapper.component;
 		return Component.literal(String.valueOf(value));
+	}
+	
+	
+	
+	public default Identifier asIdentifier() throws ExecutionException {
+		Object value = get();
+		if (value instanceof Identifier comp) return comp;
+		return Identifier.parse(String.valueOf(value));
 	}
 	
 	
