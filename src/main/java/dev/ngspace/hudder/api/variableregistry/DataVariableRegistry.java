@@ -4,10 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Hudder's class for management of system variables
- * <br><br>
- * Use {@link #registerVariable(DataVariable, dev.ngspace.hudder.api.variableregistry.VariableTypes.Type, String...)}
- * to register variables
+ * Manages the registration and retrieval of Hudder system variables.
+ * <p>
+ * Variables are registered under one or more names and categorized by their
+ * associated {@link VariableTypes.Type}. Registered names are converted to
+ * lowercase before being stored.
+ * </p>
+ *
+ * @see #registerVariable(DataVariable, VariableTypes.Type, String...)
  */
 public class DataVariableRegistry {
 	private DataVariableRegistry() {}
@@ -18,17 +22,34 @@ public class DataVariableRegistry {
 	private static Map<String, DataVariable<?>> ObjectVariables = new HashMap<String, DataVariable<?>>();
 	private static Map<String, DataVariable<?>> AllVariables = new HashMap<String, DataVariable<?>>();
 	
+	/**
+	 * Registers an object variable under one or more names.
+	 * <p>
+	 * This is equivalent to registering the variable with
+	 * {@link VariableTypes#OBJECT}.
+	 * </p>
+	 *
+	 * @param variable the variable to register
+	 * @param names the names under which the variable will be registered
+	 * @see #registerVariable(DataVariable, VariableTypes.Type, String...)
+	 */
 	public static void registerVariable(DataVariable<Object> variable, String... names) {
 		registerVariable(variable, VariableTypes.OBJECT, names);
 	}
 	
 	/**
-	 * Registers a variable by the given names in the given variable type.
-	 * 
-	 * @param <T> - The type of object the variable returns
-	 * @param variable - The variable function
-	 * @param type - The type of variable (Make sure this matches with <T> to prevent issues)
-	 * @param names - The names of the variable
+	 * Registers a variable under one or more names using the specified variable
+	 * type.
+	 * <p>
+	 * Each supplied name is converted to lowercase and added to both the map for
+	 * the specified type and the map containing all variables. Registering another
+	 * variable with an existing name replaces the previous mapping for that name.
+	 * </p>
+	 *
+	 * @param <T> the value type represented by the specified variable type
+	 * @param variable the variable to register
+	 * @param type the category under which the variable will be registered
+	 * @param names the names under which the variable will be registered
 	 */
 	public static <T> void registerVariable(DataVariable<?> variable, VariableTypes.Type<T> type, String... names) {
 		Map<String, DataVariable<?>> typemap = ObjectVariables;
@@ -44,31 +65,89 @@ public class DataVariableRegistry {
 		}
 	}
 	
+	/**
+	 * Retrieves the value of a registered String variable.
+	 *
+	 * @param key the registered name of the variable
+	 * @return the variable's String value, or {@code null} if no String variable
+	 *         is registered under the given key
+	 * @throws ClassCastException if the variable returns a value that is not a
+	 *         String
+	 */
 	public static String getString(String key) {
 		var v = StringVariables.get(key);
 		return v==null ? null : (String) v.getValue(key);
 	}
+	/**
+	 * Retrieves the value of a registered numeric variable as a {@link Double}.
+	 *
+	 * @param key the registered name of the variable
+	 * @return the variable's value converted to a Double, or {@code null} if no
+	 *         numeric variable is registered under the given key
+	 * @throws ClassCastException if the variable returns a value that is not a
+	 *         {@link Number}
+	 */
 	public static Double getNumber(String key) {
 		var v = NumberVariables.get(key);
 		return v==null ? null : ((Number) v.getValue(key)).doubleValue();
 	}
+	/**
+	 * Retrieves the value of a registered Boolean variable.
+	 *
+	 * @param key the registered name of the variable
+	 * @return the variable's Boolean value, or {@code null} if no Boolean variable
+	 *         is registered under the given key
+	 * @throws ClassCastException if the variable returns a value that is not a
+	 *         Boolean
+	 */
 	public static Boolean getBoolean(String key) {
 		var v = BooleanVariables.get(key);
 		return v==null ? null : (Boolean) v.getValue(key);
 	}
+	/**
+	 * Retrieves the value of a registered object variable.
+	 *
+	 * @param key the registered name of the variable
+	 * @return the variable's value, or {@code null} if no object variable is
+	 *         registered under the given key
+	 */
 	public static Object getObject(String key) {
 		var v = ObjectVariables.get(key);
 		return v==null ? null : v.getValue(key);
 	}
+	/**
+	 * Retrieves the value of a registered variable regardless of its variable
+	 * type.
+	 *
+	 * @param key the registered name of the variable
+	 * @return the variable's value, or {@code null} if no variable is registered
+	 *         under the given key
+	 */
 	public static Object getAny(String key) {
 		var v = AllVariables.get(key);
 		return v==null ? null : v.getValue(key);
 	}
 	
+	/**
+	 * Checks whether a variable is registered under the given key.
+	 *
+	 * @param key the registered name to check
+	 * @return {@code true} if a variable is registered under the key;
+	 *         {@code false} otherwise
+	 */
 	public static boolean hasVariable(String key) {
 		return AllVariables.containsKey(key);
 	}
-
+	
+	/**
+	 * Returns the total number of registered variable names.
+	 * <p>
+	 * A variable registered under multiple names contributes one entry for each
+	 * distinct name.
+	 * </p>
+	 *
+	 * @return the number of entries in the variable registry
+	 */
 	public static int getTotalEntriesCount() {
 		return AllVariables.size();
 	}

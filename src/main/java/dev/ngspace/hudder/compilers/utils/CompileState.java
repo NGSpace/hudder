@@ -42,7 +42,7 @@ public class CompileState implements IUIElementManager {
 					try {
 						if (text.startsWith("\r\n")) text = text.substring(2);
 						if (text.endsWith("\r\n")) text = text.substring(0, text.length() - 2);
-					} catch (StringIndexOutOfBoundsException e) {
+					} catch (StringIndexOutOfBoundsException _) {
 						throw new IllegalArgumentException("Empty section \"" + pos + "\"");
 					}
 			else text = text.trim();

@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.v2runtime.V2Runtime;
 import dev.ngspace.hudder.v2runtime.values.AV2Value;
@@ -88,7 +89,7 @@ public class V2FunctionHandler {
 				if (args.length==1) return new RangedIterator(0, args[0].asInt());
 				return new RangedIterator(args[0].asInt(), args[1].asInt());
 			} catch (ExecutionException e) {
-				e.printStackTrace();
+				if (Hudder.IS_DEBUG) e.printStackTrace();
 				throw new IllegalArgumentException(e);
 			}
 		}, 1, 2, "range");

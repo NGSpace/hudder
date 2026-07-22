@@ -22,7 +22,7 @@
 		"issues": "https://github.com/NGSpace/hudder/issues"
 	},
 	"license": "MPL 2.0",
-	"icon": "assets/hudder/icon.png",
+	"icon": "assets/hudder/icon_pride.png",
 	"environment": "*",
 	"entrypoints": {
 		"client": ["dev.ngspace.hudder.Hudder"],

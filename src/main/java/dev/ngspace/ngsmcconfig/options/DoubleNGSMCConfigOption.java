@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import dev.ngspace.ngsmcconfig.api.AbstractNGSMCConfigOptionBuilder;
+import dev.ngspace.ngsmcconfig.api.NGSMCConfigOptionBuilder;
 import net.minecraft.network.chat.Component;
 
 public class DoubleNGSMCConfigOption extends AbstractTextFieldNGSMCConfigOption<Double> {
@@ -25,7 +26,7 @@ public class DoubleNGSMCConfigOption extends AbstractTextFieldNGSMCConfigOption<
 				try {
 					this.value = Double.parseDouble(val);
 					validnum = true;
-				} catch (NumberFormatException e) {
+				} catch (NumberFormatException _) {
 					validnum = false;
 					invalidnum = val;
 				}
@@ -34,8 +35,13 @@ public class DoubleNGSMCConfigOption extends AbstractTextFieldNGSMCConfigOption<
 		};
 	}
 	
+	@SuppressWarnings({ "deprecation" })
 	public static AbstractNGSMCConfigOptionBuilder<Double> builder(double value, Component name) {
-		return new AbstractNGSMCConfigOptionBuilder<Double>(value, name) {
+	    return fluentBuilder(value, name);
+	}
+	
+	public static NGSMCConfigOptionBuilder<Double> fluentBuilder(double value, Component name) {
+		return new NGSMCConfigOptionBuilder<Double>(value, name) {
 			@Override public AbstractNGSMCConfigOption<Double> build() {
 				return new DoubleNGSMCConfigOption(defaultValue, value, name, saveOperation, validator);
 			}

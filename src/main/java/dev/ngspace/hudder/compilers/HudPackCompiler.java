@@ -9,6 +9,7 @@ import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
 import dev.ngspace.hudder.config.HudderConfig;
+import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.hudpacks.HudPack;
 import dev.ngspace.hudder.hudpacks.HudPackHudState;
@@ -26,7 +27,7 @@ public class HudPackCompiler extends AHudCompiler<HudPack> {
 	}
 
 	@Override
-	public HudPack processFile(String filepath) {
+	public HudPack processFile(String filepath) throws CompileException {
 		elms.clear();
 		if (hudpacks.containsKey(filepath))
 			return hudpacks.get(filepath);
@@ -51,7 +52,7 @@ public class HudPackCompiler extends AHudCompiler<HudPack> {
 			}
 			return state.toResult(elms);
 		} catch (IOException e) {
-			e.printStackTrace();
+			if (Hudder.IS_DEBUG) e.printStackTrace();
 			return HudInformation.of(e.getMessage());
 		}
 	}
@@ -72,14 +73,18 @@ public class HudPackCompiler extends AHudCompiler<HudPack> {
 	@Override
 	public boolean setupHudSettings(NGSMCConfigCategory hudsettings) {
 		HudderConfig config = Hudder.config;
-		HudPack mainhudpack = processFile(config.mainfile());
-		
-		if (mainhudpack!=null
-				&&mainhudpack.hasSettings()) {
-			for (String setting : mainhudpack.getSettingsKeys()) {
-				hudsettings.addOption(mainhudpack.buildSetting(setting));
+		try {
+			HudPack mainhudpack = processFile(config.mainfile());
+			
+			if (mainhudpack!=null
+					&&mainhudpack.hasSettings()) {
+				for (String setting : mainhudpack.getSettingsKeys()) {
+					hudsettings.addOption(mainhudpack.buildSetting(setting));
+				}
+				return true;
 			}
-			return true;
+		} catch (CompileException e) {
+			e.printStackTrace();
 		}
 		
 		return false;

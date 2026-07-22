@@ -13,9 +13,11 @@ import java.util.zip.Checksum;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.Nullable;
 
 import com.mojang.blaze3d.platform.NativeImage;
 
+import dev.ngspace.hudder.Hudder;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.Identifier;
 
@@ -37,14 +39,15 @@ public class HudFileUtils {private HudFileUtils() {}
      * Read file to String
      * @param file - the file to read
      * @return The text in the file
+     * @throws IOException 
      */
-	public static String readFile(String file) {
+	public static String readFile(String file) throws IOException {
 		return reader.getCachedFileAsString(sanitize(FOLDER + file));
 	}
 	
     
     
-	public static byte[] readFileBytes(String file) {
+	public static byte[] readFileBytes(String file) throws IOException {
 		return reader.getCachedFile(sanitize(FOLDER + file));
 	}
 	
@@ -83,9 +86,10 @@ public class HudFileUtils {private HudFileUtils() {}
 	 * @param f - The name of the file
 	 * @return the filename provided
 	 * @throws SecurityException - If the provided filename is "dirty"
+	 * @throws IOException 
 	 */
-	public static String sanitize(String f) throws SecurityException {
-		if (!new File(f).getAbsolutePath().startsWith(FOLDER)) throwError(f);
+	public static String sanitize(String f) throws SecurityException, IOException {
+		if (!new File(f).getCanonicalPath().startsWith(FOLDER)) throwError(f);
 		int j = 0;
 		int k = 0;
 		for (int i = 0;i<f.length();i++) {
@@ -115,8 +119,10 @@ public class HudFileUtils {private HudFileUtils() {}
 	 * Sanitizes the provided relative path and then checks if it exists
 	 * @param file - the path
 	 * @return whether the file exists or not
+	 * @throws IOException 
+	 * @throws SecurityException 
 	 */
-	public static boolean exists(String file) {
+	public static boolean exists(String file) throws SecurityException, IOException {
 		if ("".equals(file)) return false;
 		return new File(sanitize(FOLDER + file)).exists();
 	}
@@ -148,8 +154,13 @@ public class HudFileUtils {private HudFileUtils() {}
 		}
 	}
 	
-	public static Identifier getTexture(String filename) {
-		sanitize(FOLDER + filename);
+	@Nullable public static Identifier getTexture(String filename) throws SecurityException {
+		try {
+			sanitize(FOLDER + filename);
+		} catch (IOException e) {
+			if (Hudder.IS_DEBUG) e.printStackTrace();
+			return null;
+		}
 		return Identifier.fromNamespaceAndPath("hudder",
 				String.valueOf(getCRC32Checksum(filename.trim().toLowerCase())));
 	}
@@ -197,7 +208,7 @@ public class HudFileUtils {private HudFileUtils() {}
 
 
 
-	public static void loadImage(NativeImage img, String path) {
+	public static void loadImage(NativeImage img, String path) throws SecurityException {
 		reader.loadImageToCache(img,getTexture(path));
 	}
 

@@ -30,6 +30,8 @@ public class HudderUserSettings {
     @Expose public boolean removeeffects = false;
 	@Expose public boolean limitrate = true;
 	@Expose public boolean autorefresh = true;
+	@Expose public boolean disableWarnings = false;
+	@Expose public boolean disableHudpackVersionCheck = false;
 	
 	@Expose public int config_version = HudderConfig.HUDDER_CONFIG_VERSION;
 
