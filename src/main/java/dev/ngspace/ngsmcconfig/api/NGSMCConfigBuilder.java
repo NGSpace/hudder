@@ -5,7 +5,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import dev.ngspace.ngsmcconfig.gui.NGSMCConfigCategorySelectionScreen;
+import dev.ngspace.ngsmcconfig.gui.NGSMCConfigOptionsScreen;
 import dev.ngspace.ngsmcconfig.options.AbstractNGSMCConfigOption;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -17,19 +17,28 @@ public class NGSMCConfigBuilder {
 	Runnable writeoperation = () -> {};
 	URI docsUri;
 	File configfile;
-	
+	Component configButtonText = Component.translatable("ngsmcconfig.config");
+
 	public NGSMCConfigBuilder(Screen parent) {
 		this.parent = parent;
 	}
 	
 	public NGSMCConfigCategory createCategory(Component title) {
-		NGSMCConfigCategory category = new NGSMCConfigCategory(title, new ArrayList<AbstractNGSMCConfigOption<?>>());
+		return createCategory(title, null);
+	}
+	
+	public NGSMCConfigCategory createCategory(Component title, NGSMCConfigIcon icon) {
+		NGSMCConfigCategory category = new NGSMCConfigCategory(title,
+				new ArrayList<AbstractNGSMCConfigOption<?>>(),
+				icon,
+				null);
 		categories.add(category);
 		return category;
 	}
 	
 	public Screen build() {
-		return new NGSMCConfigCategorySelectionScreen(parent, categories, writeoperation, docsUri, configfile);
+		return new NGSMCConfigOptionsScreen(parent, categories, categories.get(0), writeoperation, docsUri,
+				configfile, null, configButtonText);
 	}
 
 	public void setWriteOperation(Runnable writeoperation) {
@@ -46,5 +55,25 @@ public class NGSMCConfigBuilder {
 
 	public void removeCategory(NGSMCConfigCategory category) {
 		categories.remove(category);
+	}
+	
+	public Component getConfigButtonText() {
+		return configButtonText;
+	}
+
+	public void setConfigButtonText(Component configButtonText) {
+		this.configButtonText = configButtonText;
+	}
+
+	public void addCustomButton(Component title, NGSMCConfigIcon icon, Runnable runnable) {
+		
+		if (runnable==null)
+			throw new NullPointerException("Provided runnable for NGSMCConfig Custom Button must not be null!");
+		
+		NGSMCConfigCategory category = new NGSMCConfigCategory(title,
+				new ArrayList<AbstractNGSMCConfigOption<?>>(),
+				icon,
+				runnable);
+		categories.add(category);
 	}
 }

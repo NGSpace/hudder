@@ -17,7 +17,17 @@ public abstract class AV2RuntimeElement {
 	public abstract boolean execute(CompileState compileState, StringBuilder builder) throws ExecutionException;
 	
 	public boolean returnsAValue() {return false;}
+	/**
+	 * @deprecated use nestedRuntimes
+	 */
+	@Deprecated(since = "10.1.0", forRemoval = true)
 	protected V2Runtime nestedRuntime;
-
+	protected V2Runtime[] nestedRuntimes;
+	
+	/**
+	 * @deprecated use getNestedRuntimes()
+	 */
+	@Deprecated(since = "10.1.0", forRemoval = true)
 	public V2Runtime getNestedRuntime() {return nestedRuntime;}
+	public V2Runtime[] getNestedRuntimes() {return nestedRuntimes;}
 }

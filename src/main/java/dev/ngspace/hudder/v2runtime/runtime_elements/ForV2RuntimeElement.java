@@ -19,16 +19,16 @@ public class ForV2RuntimeElement extends AV2RuntimeElement {
 					throws CompileException, ExecutionException {
 		this.variablename = variablename;
 		this.condition = compiler.getV2Value(parentRuntime, value, charPosition.line(), charPosition.column());
-		this.nestedRuntime = compiler.buildRuntime(info, instructions, new TextPos(charPosition.line(), 1),
-				filename, parentRuntime);
+		this.nestedRuntimes = new V2Runtime[] {compiler.buildRuntime(info, instructions, new TextPos(charPosition.line(), 1),
+				filename, parentRuntime)};
 	}
 	
 	@Override
 	public boolean execute(CompileState compileState, StringBuilder builder) throws ExecutionException {
 		if (condition.get() instanceof Iterable<?> iterable) {
 			for (Object val : iterable) {
-				nestedRuntime.putScoped(variablename, val);
-				CompileState res = nestedRuntime.execute();
+				nestedRuntimes[0].putScoped(variablename, val);
+				CompileState res = nestedRuntimes[0].execute();
 				compileState.combineWithResult(res.toResult(), false);
 				if (res.hasReturned) compileState.setReturnValue(res.returnValue);
 				if (res.hasBroken) break;

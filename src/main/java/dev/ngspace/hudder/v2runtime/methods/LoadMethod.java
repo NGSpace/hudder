@@ -1,5 +1,7 @@
 package dev.ngspace.hudder.v2runtime.methods;
 
+import java.io.IOException;
+
 import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
 import dev.ngspace.hudder.compilers.abstractions.AV2Compiler;
 import dev.ngspace.hudder.compilers.utils.CompileState;
@@ -22,7 +24,7 @@ public class LoadMethod implements V2IMethod {
 		String file = null;
 		try {
 			file = args[0].asString();
-		} catch (Exception e) {
+		} catch (Exception _) {
 			file = args[0].toString(); //Against my better judgement I've decided this is for the best...
 		}
 		try {
@@ -36,6 +38,9 @@ public class LoadMethod implements V2IMethod {
 			throw new ExecutionException(e.getLocalizedMessage(), charpos.line(), charpos.column());
 		} catch (CompileException e) {
 			throw new ExecutionException(e.getFailureMessage() +"\nRun Failed for hud file " + file, charpos);
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new ExecutionException(e);
 		}
 	}
 }

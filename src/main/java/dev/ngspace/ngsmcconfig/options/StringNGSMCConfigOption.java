@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import dev.ngspace.ngsmcconfig.api.AbstractNGSMCConfigOptionBuilder;
+import dev.ngspace.ngsmcconfig.api.NGSMCConfigOptionBuilder;
 import net.minecraft.network.chat.Component;
 
 public class StringNGSMCConfigOption extends AbstractTextFieldNGSMCConfigOption<String> {
@@ -17,11 +18,16 @@ public class StringNGSMCConfigOption extends AbstractTextFieldNGSMCConfigOption<
 		};
 	}
 
+	@SuppressWarnings({ "deprecation" })
 	public static AbstractNGSMCConfigOptionBuilder<String> builder(String value, Component name) {
-		return new AbstractNGSMCConfigOptionBuilder<String>(value, name) {
-			@Override public AbstractNGSMCConfigOption<String> build() {
-				return new StringNGSMCConfigOption(defaultValue, value, name, saveOperation, validator);
-			}
-		};
+	    return fluentBuilder(value, name);
+	}
+
+	public static NGSMCConfigOptionBuilder<String> fluentBuilder(String value, Component name) {
+	    return new NGSMCConfigOptionBuilder<String>(value, name) {
+	        @Override public AbstractNGSMCConfigOption<String> build() {
+	            return new StringNGSMCConfigOption(defaultValue, value, name, saveOperation, validator);
+	        }
+	    };
 	}
 }
