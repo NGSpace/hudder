@@ -10,7 +10,6 @@
 	"ngsmcconfig.config": "Show config",
 	"hudder.ngsmcconfig.config": "Show huds",
 	"ngsmcconfig.globalreset": "Reset All",
-	"ngsmcconfig.alpha": "Alpha: %s",
 
 	"ngsmcconfig.confirmreset": "\u00A7cReset all to default settings",
 	"ngsmcconfig.confirmreset.text": "Are you sure you want to reset your entire config?",
