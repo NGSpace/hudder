@@ -1,6 +1,8 @@
 package dev.ngspace.hudder.hudderv3;
 
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 
 import dev.ngspace.hudder.compilers.utils.HudInformation;
 import dev.ngspace.hudder.config.HudderConfig;
@@ -42,6 +44,58 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 	public void appendToBuilderAndPop() {
 		appendToBuilder();
 		pop();
+	}
+
+	public void appendToBuilder() {
+		Label append = new Label();
+		Label convert_to_object = new Label();
+		
+		int value_index = astore();
+		aload(value_index);
+		methodVisitor.visitTypeInsn(Opcodes.INSTANCEOF, Type.getInternalName(Number.class));
+		methodVisitor.visitJumpInsn(Opcodes.IFNE, append);
+
+		aloadDouble(value_index);
+		
+		methodVisitor.visitLdcInsn(1);
+		methodVisitor.visitInsn(Opcodes.DREM);
+		methodVisitor.visitLdcInsn(0);
+		methodVisitor.visitJumpInsn(Opcodes.IFNE, convert_to_object);
+
+
+		methodVisitor.visitTypeInsn(
+		    Opcodes.CHECKCAST,
+		    Type.getInternalName(Number.class)
+		);
+		
+		methodVisitor.visitMethodInsn(
+				Opcodes.INVOKEVIRTUAL,
+				"java/lang/Number",
+				"longValue",
+				"()J",
+				false
+		);
+		methodVisitor.visitMethodInsn(
+				Opcodes.INVOKESTATIC,
+				"java/lang/Long",
+				"valueOf",
+				"(J)Ljava/lang/Long;",
+				false
+		);
+		methodVisitor.visitJumpInsn(Opcodes.GOTO, append);
+		
+		methodVisitor.visitLabel(convert_to_object);
+		methodVisitor.visitMethodInsn(
+				Opcodes.INVOKESTATIC,
+				"java/lang/Double",
+				"valueOf",
+				"(D)Ljava/lang/Double;",
+				false
+		);
+		
+		methodVisitor.visitLabel(append);
+		methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, STRING_BUILDER, "append",
+				"(Ljava/lang/Object;)L"+STRING_BUILDER+";", false);
 	}
 
 

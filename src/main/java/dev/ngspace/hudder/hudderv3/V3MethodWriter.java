@@ -39,6 +39,11 @@ public class V3MethodWriter {
 	}
 	public void aloadDouble(int index) {
 		methodVisitor.visitVarInsn(Opcodes.ALOAD, index);
+
+		methodVisitor.visitTypeInsn(
+		    Opcodes.CHECKCAST,
+		    Type.getInternalName(Number.class)
+		);
 		
 		methodVisitor.visitMethodInsn(
 				Opcodes.INVOKEVIRTUAL,
@@ -108,11 +113,6 @@ public class V3MethodWriter {
 	public void callDataVariableRegistry() {
 		methodVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, VAR_REGISTRY, "getAny",
 				"(Ljava/lang/String;)Ljava/lang/Object;", false);
-	}
-
-	public void appendToBuilder() {
-		methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, STRING_BUILDER, "append",
-				"(Ljava/lang/Object;)L"+STRING_BUILDER+";", false);
 	}
 
 	public void callStatic(Class<?> clazz, String name, String descriptor, boolean isInterface) {
@@ -190,7 +190,8 @@ public class V3MethodWriter {
 		for (int i = 0;i<values.length;i++) {
 			aload(builder_index);
 			aload(value_indexes[i]);
-			appendToBuilder();
+			methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, STRING_BUILDER, "append",
+					"(Ljava/lang/Object;)L"+STRING_BUILDER+";", false);
 			pop();
 		}
 		
@@ -201,20 +202,15 @@ public class V3MethodWriter {
 		methodVisitor.visitLabel(mathOperation);
 		
 		ArrayList<Character> final_operations = new ArrayList<Character>();
-		
-		int second_pass_size = 0;
 
 		aloadDouble(value_indexes[0]);
 		for (int i = 0;i<operations.length;i++) {
 			aloadDouble(value_indexes[i+1]);
 			if (operations[i]=='*') {
-				second_pass_size++;
 				methodVisitor.visitInsn(Opcodes.DMUL);
 			} else if (operations[i]=='/') {
-				second_pass_size++;
 				methodVisitor.visitInsn(Opcodes.DDIV);
 			} else if (operations[i]=='%') {
-				second_pass_size++;
 				methodVisitor.visitInsn(Opcodes.DREM);
 			} else {
 				final_operations.add(operations[i]);
@@ -224,15 +220,12 @@ public class V3MethodWriter {
 		for (int i = final_operations.size()-1;i>=0;i--) {
 			if (final_operations.get(i)=='+') {
 				final_operations.remove(i);
-				second_pass_size++;
 				methodVisitor.visitInsn(Opcodes.DADD);
 			} else if (final_operations.get(i)=='-') {
 				final_operations.remove(i);
-				second_pass_size++;
 				methodVisitor.visitInsn(Opcodes.DSUB);
 			}
 		}
-		
 
 		methodVisitor.visitMethodInsn(
 				Opcodes.INVOKESTATIC,

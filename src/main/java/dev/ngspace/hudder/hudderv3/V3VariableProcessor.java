@@ -54,7 +54,10 @@ public class V3VariableProcessor {
 				}
 			}
 			// if it is wrapped then remove the first and last chars to unwrap and reprocess them.
-			if (isSafe) {parseVariable(methodWriter, value.substring(1, value.length()-1), comp);}
+			if (isSafe) {
+				parseVariable(methodWriter, value.substring(1, value.length()-1), comp);
+				return;
+			}
 		}
 		
 		
