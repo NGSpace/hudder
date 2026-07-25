@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.common.collect.ImmutableSet;
-
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.HudPackCompiler;
 import dev.ngspace.hudder.compilers.HudderV2Compiler;
@@ -48,7 +46,8 @@ public class Compilers {private Compilers() {}
 	
 	public static void registerCompiler(String name, AHudCompiler<?> compiler) {
 		registeredcompilers.put(name.toLowerCase(), compiler);
-		Hudder.config.readAndUpdateConfig();
+		if (Hudder.config!=null)
+			Hudder.config.readAndUpdateConfig();
 	}
 	
 	public static boolean has(String name) {
@@ -56,7 +55,7 @@ public class Compilers {private Compilers() {}
 	}
 
 	public static Set<String> keySet() {
-		return ImmutableSet.copyOf(registeredcompilers.keySet());
+		return Set.copyOf(registeredcompilers.keySet());
 	}
 	
 	
