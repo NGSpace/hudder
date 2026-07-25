@@ -5,16 +5,17 @@ import java.util.HashMap;
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
 import dev.ngspace.hudder.compilers.abstractions.AV2Compiler;
+import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.v2runtime.V2Runtime;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
 public class HudderUnitTest {
-	public final AV2Compiler compiler;
+	public final AVarTextCompiler compiler;
 	public final String texttocompile;
 	public final String expectation;
-	public HudderUnitTest(String texttocompile, AV2Compiler compiler, String topleftexpectation) {
+	public HudderUnitTest(String texttocompile, AVarTextCompiler compiler, String topleftexpectation) {
 		this.compiler = compiler;
 		this.texttocompile = texttocompile;
 		this.expectation = topleftexpectation.replace('&', '\u00A7');
@@ -31,7 +32,8 @@ public class HudderUnitTest {
 				AV2Compiler.tempVariables = new HashMap<String, Object>();
 			}
 			AHudCompiler.variables.clear();
-			text = compiler.compileAndExecute(info, texttocompile, "Unit Tests").TopLeftText();
+			compiler.compileFile(texttocompile, "Unit Tests");
+			text = compiler.execute(info, texttocompile, "Unit Tests").TopLeftText();
 		} catch (Exception e) {
 			e.printStackTrace();
 			text = e.getMessage();

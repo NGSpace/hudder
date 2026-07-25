@@ -16,7 +16,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.compilers.HudderV2Compiler;
+import dev.ngspace.hudder.compilers.HudderV3Compiler;
 import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
 import dev.ngspace.hudder.compilers.utils.Compilers;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
@@ -40,7 +40,7 @@ public class HudderConfig {
 	
 	
 	
-    public HudderUnitTester hudderTester = new HudderUnitTester(new HudderV2Compiler());
+    public HudderUnitTester hudderTester = new HudderUnitTester(new HudderV3Compiler());
     public Minecraft mc = Minecraft.getInstance();
 	
     

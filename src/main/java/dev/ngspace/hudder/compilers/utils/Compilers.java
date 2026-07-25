@@ -7,6 +7,7 @@ import java.util.Set;
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.HudPackCompiler;
 import dev.ngspace.hudder.compilers.HudderV2Compiler;
+import dev.ngspace.hudder.compilers.HudderV3Compiler;
 import dev.ngspace.hudder.compilers.JavaScriptCompiler;
 import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
 
@@ -21,6 +22,7 @@ public class Compilers {private Compilers() {}
 		registeredcompilers.put("hudder", hudderV2Compiler);
 		registeredcompilers.put("js", new JavaScriptCompiler());
 		registeredcompilers.put("pack", new HudPackCompiler());
+		registeredcompilers.put("hudderv3", new HudderV3Compiler());
 	}
 	
 	public static AHudCompiler<?> getCompilerFromName(String name) throws IllegalArgumentException {
