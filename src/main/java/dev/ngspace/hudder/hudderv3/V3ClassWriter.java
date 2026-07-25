@@ -38,6 +38,12 @@ public class V3ClassWriter {
 	public V3ExecuteMethodWriter createExecuteMethod() {
 		return new V3ExecuteMethodWriter(this);
 	}
+	
+	public V3MethodWriter createMethod(String name, Class<?>[] parameters, Class<?> returntype, String signature,
+			String[] exceptions) {
+		return new V3MethodWriter(this, name, parameters, returntype, signature, exceptions);
+	}
+	
 	public Class<?> toClass() {
 		classWriter.visitEnd();
 		byte[] bytecode = classWriter.toByteArray();
@@ -50,6 +56,6 @@ public class V3ClassWriter {
 		}
 		ByteArrayClassLoader classLoader = new ByteArrayClassLoader(getClass().getClassLoader());
 		
-		return classLoader.define(classname, bytecode);
+		return classLoader.define(classname.replace('/', '.'), bytecode);
 	}
 }

@@ -1,6 +1,11 @@
 package dev.ngspace.hudder.compilers;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+
+import org.objectweb.asm.Label;
+import org.objectweb.asm.Opcodes;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
@@ -9,6 +14,7 @@ import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.hudderv3.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.V3ExecuteMethodWriter;
+import dev.ngspace.hudder.hudderv3.V3MethodWriter;
 import dev.ngspace.hudder.hudderv3.V3VariableProcessor;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 	
@@ -16,17 +22,21 @@ public class HudderV3Compiler extends AVarTextCompiler {
 	
 	public static final int TEXT_STATE = 0;
 	public static final int VARIABLE_STATE = 1;
+	public static final int CONDITION_STATE = 2;
+	
+	public V3VariableProcessor variableProcessor = new V3VariableProcessor();
 	
 	@Override
 	public HudInformation execute(HudderConfig info, String text, String filename) throws ExecutionException {
 		
-		V3ClassWriter classWriter = new V3ClassWriter("DynamicClass");
+		V3ClassWriter classWriter = new V3ClassWriter("dev/ngspace/hudder/hudderv3/GeneratedClass");
 		classWriter.createDummyInit();
 		V3ExecuteMethodWriter executeMethod = classWriter.createExecuteMethod();
 		
 		StringBuilder elemBuilder = new StringBuilder();
 		
 		int bracketscount = 0;
+		int conditionsCount = 0;
 
 		boolean safeappend = false;
 		int savedind = 0;
@@ -51,6 +61,12 @@ public class HudderV3Compiler extends AVarTextCompiler {
 						continue;
 					}
 					switch (c) {
+						case '%':
+							compileState = CONDITION_STATE;
+							executeMethod.appendStringConstant(elemBuilder.toString());
+							elemBuilder.setLength(0);
+							savedind = ind;
+							break;
 						case '{':
 							compileState = VARIABLE_STATE;
 							executeMethod.appendStringConstant(elemBuilder.toString());
@@ -65,6 +81,81 @@ public class HudderV3Compiler extends AVarTextCompiler {
 						default:
 							elemBuilder.append(c);
 					}
+					break;
+				}
+				case CONDITION_STATE: {
+					StringBuilder conditionOrValue = new StringBuilder();
+					ArrayList<String> conds = new ArrayList<String>();
+					
+					boolean quotes = false;
+					boolean escaped = false;
+					
+					for (;ind<text.length();ind++) {
+						c = text.charAt(ind);
+						
+						if (quotes) {
+							conditionOrValue.append(c);
+							if (c=='\\') {
+								escaped = true;
+								continue;
+							}
+							if (c=='"'&&!escaped) quotes = false;
+							escaped = false;
+							continue;
+						}
+						
+						if (c=='"') quotes = true;
+						
+						if (c==',') {
+							conds.add(conditionOrValue.toString());
+							conditionOrValue.setLength(0);
+						} else if (c=='%') {
+							conds.add(conditionOrValue.toString());
+							V3MethodWriter writer = classWriter.createMethod("condition"+conditionsCount,
+									new Class<?>[0],
+									Object.class,
+									null,
+									new String[0]);
+							
+							for (int i = 0;i<conds.size();i+=2) {
+								Label elseLabel = new Label();
+								if (i!=conds.size()) {
+									variableProcessor.parseVariable(writer, conds.get(i), this);
+									writer.loadConstant(true);// The other value
+									
+									writer.methodVisitor.visitJumpInsn(Opcodes.IF_ACMPNE, elseLabel);
+									
+									variableProcessor.parseVariable(writer, conds.get(i+1), this);
+								}
+								
+								writer.addAReturn();
+								writer.putLabel(elseLabel);
+								
+								i++;
+							}
+							if (conds.size()%2==1)
+								variableProcessor.parseVariable(writer, conds.get(conds.size()-1), this);
+							else
+								writer.loadConstant("");
+							writer.end(Opcodes.ARETURN);
+							
+							executeMethod.aload(0);
+							
+							executeMethod.callSelf("condition"+conditionsCount, "()Ljava/lang/Object;", false);
+							executeMethod.appendToBuilderAndPop();
+							
+//							runtime.addRuntimeElement(new ConditionV2RuntimeElement(
+//									conds.toArray(new String[conds.size()]), this, info, filename));
+							
+							
+							compileState = TEXT_STATE;
+							conditionsCount++;
+							break;
+						} else {
+							conditionOrValue.append(c);
+						}
+					}
+					
 					break;
 				}
 				case VARIABLE_STATE: {
@@ -86,9 +177,8 @@ public class HudderV3Compiler extends AVarTextCompiler {
 							if ("break".equalsIgnoreCase(elemBuilder.toString().trim())) {
 								throw new UnsupportedOperationException("break not supported");
 							} else {
-								V3VariableProcessor.parseVariable(executeMethod, elemBuilder.toString(), this);
-								int endresult = executeMethod.store();
-								executeMethod.pop();
+								variableProcessor.parseVariable(executeMethod, elemBuilder.toString(), this);
+								int endresult = executeMethod.astore();
 								executeMethod.loadBuilder();
 								executeMethod.aload(endresult);
 								executeMethod.appendToBuilderAndPop();
