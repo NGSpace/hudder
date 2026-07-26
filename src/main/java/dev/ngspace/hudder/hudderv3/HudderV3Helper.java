@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
+import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableConsumer;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableFunction;
 import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
 import dev.ngspace.hudder.exceptions.ExecutionException;
@@ -14,6 +15,7 @@ import dev.ngspace.hudder.utils.ObjectWrapper;
 
 public class HudderV3Helper {
 	public static Map<String, BindableFunction> api_functions = new HashMap<String, BindableFunction>();
+	public static Map<String, BindableConsumer> api_consumers = new HashMap<String, BindableConsumer>();
 
 	private HudderV3Helper() {}
 	
@@ -49,7 +51,13 @@ public class HudderV3Helper {
 	
 	public static Object callApiFunction(String name, ArrayElementManager uiManager,
 			AVarTextCompiler compiler, Object... values) throws ExecutionException {
-		return api_functions.get(name).invoke(uiManager, compiler,
+		return api_functions.get(name.toLowerCase().trim()).invoke(uiManager, compiler,
 				Stream.of(values).map(ImplObjectWrapper::new).toList().toArray(new ObjectWrapper[0]));
+	}
+	
+	public static void callApiConsumer(String name, ArrayElementManager uiManager,
+			AVarTextCompiler compiler, Object... values) throws ExecutionException {
+		api_consumers.get(name.toLowerCase().trim()).invoke(uiManager, compiler,
+				ImplObjectWrapper.fromArray(values));
 	}
 }

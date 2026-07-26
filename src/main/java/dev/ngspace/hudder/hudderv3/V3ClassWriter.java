@@ -106,27 +106,34 @@ public class V3ClassWriter implements Binder {
 	}
 	@Override
 	public void bindConsumer(BindableConsumer cons, String... names) {
-		
+		for (String name : names) {
+			HudderV3Helper.api_consumers.put(name, cons);
+		}
 	}
 	@Override
 	public void bindFunction(BindableFunction cons, String... names) {
 		for (String name : names) {
 			HudderV3Helper.api_functions.put(name, cons);
-			V3MethodWriter writer = createMethod("api_function_" + name,
-					new Class<?>[] {String.class, Object[].class},
-					Object.class,
-					null, new String[] {
-						"dev/ngspace/hudder/exceptions/ExecutionException"
-					});
-			writer.loadConstant(name);
-			writer.aload(0);
-			writer.getField("uimanager", ArrayElementManager.class);
-			writer.aload(0);
-			writer.getField("v3compiler", HudderV3Compiler.class);
-			writer.aload(1);
-			writer.aload(2);
-			writer.callStatic(HudderV3Helper.class, "callApiFunction",
-					"(Ljava/lang/String;Ldev/ngspace/hudder/api/functionsandconsumers/ArrayElementManager;Ldev/ngspace/hudder/compilers/abstractions/AVarTextCompiler;[Ljava/lang/Object;)Ljava/lang/Object;", false);
 		}
 	}
+	
+//	public void initFunctionApiMethod() {
+//		V3MethodWriter writer = createMethod("api_function_" + name,
+//				new Class<?>[] {String.class, Object[].class},
+//				Object.class,
+//				null, new String[] {
+//					"dev/ngspace/hudder/exceptions/ExecutionException"
+//				});
+//		writer.loadConstant(name);
+//		writer.aload(0);
+//		writer.getField("uimanager", ArrayElementManager.class);
+//		writer.aload(0);
+//		writer.getField("v3compiler", HudderV3Compiler.class);
+//		writer.aload(1);
+//		writer.aload(2);
+//		writer.callStatic(HudderV3Helper.class, "callApiFunction",
+//				"(Ljava/lang/String;Ldev/ngspace/hudder/api/functionsandconsumers/ArrayElementManager;Ldev/ngspace/hudder/compilers/abstractions/AVarTextCompiler;[Ljava/lang/Object;)Ljava/lang/Object;", false);
+//		
+//		writer.end(Opcodes.ARETURN);
+//	}
 }

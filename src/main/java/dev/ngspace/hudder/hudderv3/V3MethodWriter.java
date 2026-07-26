@@ -94,6 +94,9 @@ public class V3MethodWriter {
 				false
 		);
 	}
+	public void loadConstantUnsafe(int constant) {
+		methodVisitor.visitLdcInsn(constant);
+	}
 	public void loadConstant(boolean constant) {
 		methodVisitor.visitLdcInsn(constant);
 		//Convert to Object
@@ -185,7 +188,7 @@ public class V3MethodWriter {
 		
 		for (int i = 0;i<values.length;i++) {
 			Label isNumber = new Label();
-			processor.parseVariable(this, values[i], comp);
+			processor.parseVariable(this, values[i], comp).visitMethod(this);
 			value_indexes[i] = astore();
 			aload(value_indexes[i]);
 			methodVisitor.visitTypeInsn(Opcodes.INSTANCEOF, Type.getInternalName(Number.class));

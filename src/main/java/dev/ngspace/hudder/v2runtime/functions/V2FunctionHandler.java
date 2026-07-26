@@ -23,6 +23,13 @@ public class V2FunctionHandler {
 
 	public void bindAllAPIFunctions() {
 		
+		
+		//String manipulation
+
+		bindFunctionDep((_,_,args,_,_)->args[0].asString()+args[1].asString(),2,2,"Use \"[string].concat([string])\" function", "concat");
+		bindFunctionDep((_,_,args,_,_)->args[0].asString().substring(args[1].asInt(),args[2].asInt()),3,3,"Use \"[string].substring([number], [number])\" function","substring");
+		bindFunctionDep((_,_,args,_,_)->args[0].asString().repeat(args[1].asInt()),2,2,"Use \"[string].repeat([number])\" function", "multiplystring", "repeat");
+		
 		//Type casting
 		
 		bindFunction(new DoubleV2Function(), 1, "int", "num", "number", "double");
@@ -140,7 +147,7 @@ public class V2FunctionHandler {
 	
 	
 	
-	public class RangedIterator implements Iterator<Integer> {
+	public static class RangedIterator implements Iterator<Integer> {
 		
 		private int index;
 		private int end;

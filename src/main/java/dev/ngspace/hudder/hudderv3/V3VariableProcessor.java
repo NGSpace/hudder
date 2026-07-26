@@ -3,14 +3,22 @@ package dev.ngspace.hudder.hudderv3;
 import java.util.Arrays;
 
 import dev.ngspace.hudder.compilers.HudderV3Compiler;
-import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
 import dev.ngspace.hudder.exceptions.ExecutionException;
+import dev.ngspace.hudder.hudderv3.v3variableinstructions.FunctionCallVariableVisitor;
+import dev.ngspace.hudder.hudderv3.v3variableinstructions.SystemVariableVisitor;
+import dev.ngspace.hudder.hudderv3.v3variableinstructions.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.v3variableinstructions.constants.BooleanVariableVisitor;
+import dev.ngspace.hudder.hudderv3.v3variableinstructions.constants.NumberVariableVisitor;
+import dev.ngspace.hudder.hudderv3.v3variableinstructions.constants.StringVariableVisitor;
+import dev.ngspace.hudder.hudderv3.v3variableinstructions.modifiable.DynamicVariableVisitor;
+import dev.ngspace.hudder.hudderv3.v3variableinstructions.modifiable.SetVariableVisitor;
+import dev.ngspace.hudder.hudderv3.v3variableinstructions.operations.MathVariableVisitor;
+import dev.ngspace.hudder.hudderv3.v3variableinstructions.operations.booloperations.ComparisionVariableVisitor;
 import dev.ngspace.hudder.utils.HudderUtils;
-import dev.ngspace.hudder.v2runtime.values.V2FunctionVar;
 
 public class V3VariableProcessor {
 
-	public void parseVariable(V3MethodWriter methodWriter, String valuee, HudderV3Compiler comp) throws ExecutionException {
+	public VariableVisitor parseVariable(V3MethodWriter methodWriter, String valuee, HudderV3Compiler comp) throws ExecutionException {
 
 		String value = valuee.trim();
 		
@@ -57,8 +65,7 @@ public class V3VariableProcessor {
 			}
 			// if it is wrapped then remove the first and last chars to unwrap and reprocess them.
 			if (isSafe) {
-				parseVariable(methodWriter, value.substring(1, value.length()-1), comp);
-				return;
+				return parseVariable(methodWriter, value.substring(1, value.length()-1), comp);
 			}
 		}
 		
@@ -67,31 +74,21 @@ public class V3VariableProcessor {
 		// Double constant
 		// Accepts the following formats: "0x(0-F)+", "#(0-F)+", "(0-9)+", "(0-9)*.(0-9)+"
 		if (value.matches("((0x|#)[\\daAbBcCdDeEfF]+|[-+]?\\d*(\\.?(\\d+)?))")) {
-			if (value.startsWith("0x")) {
-				methodWriter.loadConstant(Integer.parseUnsignedInt(value.substring(2), 16));
-				return;
-			} else if (value.startsWith("#")) {
-				methodWriter.loadConstant(Integer.parseUnsignedInt(value.substring(1), 16));
-				return;
-			} else {
-				methodWriter.loadConstant(Double.parseDouble(value));
-				return;
-			}
+			return new NumberVariableVisitor(comp, value);
 		}
 		
 		
 		
 		// Boolean constants
-		if (value.equalsIgnoreCase("false")) {methodWriter.loadConstant(false);return;}
-		if (value.equalsIgnoreCase("true")) {methodWriter.loadConstant(true);return;}
+		if (value.equalsIgnoreCase("false")) {return new BooleanVariableVisitor(comp,false);}
+		if (value.equalsIgnoreCase("true")) {return new BooleanVariableVisitor(comp,true);}
 		
 		
 		
 		// String constant
 		String temp = string(value);
 		if (temp!=null) {
-			methodWriter.loadConstant(temp);
-			return;
+			return new StringVariableVisitor(comp, temp);
 		}
 		
 		
@@ -116,15 +113,7 @@ public class V3VariableProcessor {
 				}
 			}
 			if (valid) {
-				parseVariable(methodWriter, setValues[1], comp);
-				int valueindex = methodWriter.astore();
-				methodWriter.aload(0);
-				methodWriter.loadConstant(setValues[0]);
-				methodWriter.aload(valueindex);
-				methodWriter.call(AVarTextCompiler.class, "put", "(Ljava/lang/String;Ljava/lang/Object;)V",
-						false);
-				methodWriter.aload(valueindex);
-				return;
+				return new SetVariableVisitor(comp, setValues[0], setValues[1]);
 			}
 		}
 		
@@ -135,18 +124,12 @@ public class V3VariableProcessor {
 		
 		// System variable
 		if (matchesVariableRegex&&comp.isSystemVariable(value.toLowerCase())) {
-			methodWriter.callDataVariableRegistry(value.toLowerCase());
-			return;
+			return new SystemVariableVisitor(comp, value);
 		}
 		
 		// Dynamic variable
 		if (matchesVariableRegex) {
-			methodWriter.aload(0);
-			methodWriter.loadConstant(value.toLowerCase());
-			methodWriter.call(AVarTextCompiler.class, "get", "(Ljava/lang/String;)Ljava/lang/Object;", false);
-			int index = methodWriter.astore();
-			methodWriter.aload(index);
-			return;
+			return new DynamicVariableVisitor(comp, value);
 		}
 		
 		
@@ -179,16 +162,8 @@ public class V3VariableProcessor {
 					String funcName = value.substring(0, argStart);
 					if (funcName.matches("^[a-zA-Z0-9]+[a-zA-Z0-9_-]*$")) {
 						String parametersString = value.substring(argStart+1, value.length()-1);
-						String[] tokenizedArgs = HudderUtils.processParemeters(parametersString);
-						
-						int[] value_indecies = new int[tokenizedArgs.length];
-						for (int i = 0;i<tokenizedArgs.length;i++) {
-							parseVariable(methodWriter, tokenizedArgs[i], comp);
-							value_indecies[i] = methodWriter.astore();
-						}
-						
-						return;
-//						return new V2FunctionVar(runtime, comp, funcName, tokenizedArgs, line, charpos, value);
+						return new FunctionCallVariableVisitor(funcName, comp,
+								HudderUtils.processParemeters(parametersString));
 					}
 				}
 			}
@@ -216,22 +191,7 @@ public class V3VariableProcessor {
 				}
 			}
 			if (parenthesses==0) {
-				parseVariable(methodWriter, v[0].trim(), comp);
-				int val1index = methodWriter.astore();
-				parseVariable(methodWriter, v[1].trim(), comp);
-				int val2index = methodWriter.astore();
-				methodWriter.aload(val1index);
-				methodWriter.aload(val2index);
-				methodWriter.loadConstant(operator);
-				methodWriter.callStatic(HudderV3Helper.class, "compare",
-						"(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/String;)Z", false);
-			    methodWriter.callStatic(
-						Boolean.class,
-						"valueOf",
-						"(Z)Ljava/lang/Boolean;",
-						false
-					);
-				return;
+				return new ComparisionVariableVisitor(comp, v[0], v[1], operator);
 			}
 		}
 			
@@ -292,9 +252,7 @@ public class V3VariableProcessor {
 		}
 		if (values.length>0) {
 			values = addToArray(values, mathvalue.toString());
-			methodWriter.complexMath(this, comp, values, operations);
-			return;
-//			return new V2MathOperation(values, operations, line, charpos, value, comp);
+			return new MathVariableVisitor(values, operations, comp);
 		}
 
 		throw new ExecutionException("Untokenizable variable: " + value, -1, -1);
