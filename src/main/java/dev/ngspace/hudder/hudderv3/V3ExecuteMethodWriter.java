@@ -47,27 +47,28 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 	}
 
 	public void appendToBuilder() {
+		Label end = new Label();
 		Label append = new Label();
-		Label convert_to_object = new Label();
+		Label append_double = new Label();
 		
 		int value_index = astore();
 		aload(value_index);
 		methodVisitor.visitTypeInsn(Opcodes.INSTANCEOF, Type.getInternalName(Number.class));
-		methodVisitor.visitJumpInsn(Opcodes.IFNE, append);
+		methodVisitor.visitJumpInsn(Opcodes.IFEQ, append);
 
 		aloadDouble(value_index);
 		
-		methodVisitor.visitLdcInsn(1);
+		methodVisitor.visitLdcInsn(1d);
 		methodVisitor.visitInsn(Opcodes.DREM);
-		methodVisitor.visitLdcInsn(0);
-		methodVisitor.visitJumpInsn(Opcodes.IFNE, convert_to_object);
+		methodVisitor.visitLdcInsn(0d);
+		methodVisitor.visitInsn(Opcodes.DCMPG);
+		methodVisitor.visitJumpInsn(Opcodes.IFNE, append_double);
 
-
-		methodVisitor.visitTypeInsn(
-		    Opcodes.CHECKCAST,
-		    Type.getInternalName(Number.class)
-		);
-		
+		aload(value_index);
+	    methodVisitor.visitTypeInsn(
+	            Opcodes.CHECKCAST,
+	            Type.getInternalName(Number.class)
+	    );
 		methodVisitor.visitMethodInsn(
 				Opcodes.INVOKEVIRTUAL,
 				"java/lang/Number",
@@ -75,27 +76,27 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 				"()J",
 				false
 		);
-		methodVisitor.visitMethodInsn(
-				Opcodes.INVOKESTATIC,
-				"java/lang/Long",
-				"valueOf",
-				"(J)Ljava/lang/Long;",
-				false
-		);
-		methodVisitor.visitJumpInsn(Opcodes.GOTO, append);
+		int long_index = lstore();
+		loadBuilder();
+		lload(long_index);
+		methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, STRING_BUILDER, "append",
+				"(J)L"+STRING_BUILDER+";", false);
+		methodVisitor.visitJumpInsn(Opcodes.GOTO, end);
 		
-		methodVisitor.visitLabel(convert_to_object);
-		methodVisitor.visitMethodInsn(
-				Opcodes.INVOKESTATIC,
-				"java/lang/Double",
-				"valueOf",
-				"(D)Ljava/lang/Double;",
-				false
-		);
-		
-		methodVisitor.visitLabel(append);
+		methodVisitor.visitLabel(append_double);
+		loadBuilder();
+		aload(value_index);
 		methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, STRING_BUILDER, "append",
 				"(Ljava/lang/Object;)L"+STRING_BUILDER+";", false);
+		methodVisitor.visitJumpInsn(Opcodes.GOTO, end);
+
+		methodVisitor.visitLabel(append);
+		loadBuilder();
+		aload(value_index);
+		methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, STRING_BUILDER, "append",
+				"(Ljava/lang/Object;)L"+STRING_BUILDER+";", false);
+		
+		methodVisitor.visitLabel(end);
 	}
 
 

@@ -8,6 +8,7 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 
 import dev.ngspace.hudder.Hudder;
+import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
 import dev.ngspace.hudder.config.HudderConfig;
@@ -30,8 +31,10 @@ public class HudderV3Compiler extends AVarTextCompiler {
 	public HudInformation execute(HudderConfig info, String text, String filename) throws ExecutionException {
 		
 		V3ClassWriter classWriter = new V3ClassWriter("dev/ngspace/hudder/hudderv3/GeneratedClass");
-		classWriter.createDummyInit();
+		classWriter.createInit();
 		V3ExecuteMethodWriter executeMethod = classWriter.createExecuteMethod();
+		
+		FunctionAndConsumerAPI.getInstance().applyFunctionsAndConsumers(classWriter);
 		
 		StringBuilder elemBuilder = new StringBuilder();
 		
@@ -115,7 +118,9 @@ public class HudderV3Compiler extends AVarTextCompiler {
 									new Class<?>[0],
 									Object.class,
 									null,
-									new String[0]);
+									new String[] {
+											"dev/ngspace/hudder/exceptions/ExecutionException"
+										});
 							
 							for (int i = 0;i<conds.size();i+=2) {
 								Label elseLabel = new Label();
@@ -143,9 +148,6 @@ public class HudderV3Compiler extends AVarTextCompiler {
 							
 							executeMethod.callSelf("condition"+conditionsCount, "()Ljava/lang/Object;", false);
 							executeMethod.appendToBuilderAndPop();
-							
-//							runtime.addRuntimeElement(new ConditionV2RuntimeElement(
-//									conds.toArray(new String[conds.size()]), this, info, filename));
 							
 							
 							compileState = TEXT_STATE;
@@ -208,7 +210,7 @@ public class HudderV3Compiler extends AVarTextCompiler {
 		Class<?> dynamicClass = classWriter.toClass();
 		
 		try {
-			Object instance = dynamicClass.getDeclaredConstructor().newInstance();
+			Object instance = dynamicClass.getDeclaredConstructor(getClass()).newInstance(this);
 			Method method = dynamicClass.getMethod("execute", HudderConfig.class, String.class, String.class);
 
 

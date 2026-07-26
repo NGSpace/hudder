@@ -33,9 +33,20 @@ public class V3MethodWriter {
 				signature, exceptions);
 		methodVisitor.visitCode();
 	}
-	
+
+	public void getField(String name, Class<?> type) {
+		methodVisitor.visitFieldInsn(Opcodes.GETFIELD, classWriter.classname,
+				name, Type.getDescriptor(type));
+	}
+
 	public void aload(int index) {
 		methodVisitor.visitVarInsn(Opcodes.ALOAD, index);
+	}
+	public void lload(int index) {
+		methodVisitor.visitVarInsn(Opcodes.LLOAD, index);
+	}
+	public void dload(int index) {
+		methodVisitor.visitVarInsn(Opcodes.DLOAD, index);
 	}
 	public void aloadDouble(int index) {
 		methodVisitor.visitVarInsn(Opcodes.ALOAD, index);
@@ -97,6 +108,16 @@ public class V3MethodWriter {
 	
 	public int astore() {
 		methodVisitor.visitVarInsn(Opcodes.ASTORE, ++variableindex);
+		return variableindex;
+	}
+	
+	public int lstore() {
+		methodVisitor.visitVarInsn(Opcodes.LSTORE, ++variableindex);
+		return variableindex;
+	}
+	
+	public int dstore() {
+		methodVisitor.visitVarInsn(Opcodes.DSTORE, ++variableindex);
 		return variableindex;
 	}
 	

@@ -1,10 +1,20 @@
 package dev.ngspace.hudder.hudderv3;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Stream;
 
+import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
+import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableFunction;
+import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
 import dev.ngspace.hudder.exceptions.ExecutionException;
+import dev.ngspace.hudder.utils.ImplObjectWrapper;
+import dev.ngspace.hudder.utils.ObjectWrapper;
 
 public class HudderV3Helper {
+	public static Map<String, BindableFunction> api_functions = new HashMap<String, BindableFunction>();
+
 	private HudderV3Helper() {}
 	
 	public static boolean compare(Object val1, Object val2, String comparisonOperator) throws ExecutionException {
@@ -19,12 +29,6 @@ public class HudderV3Helper {
 		boolean areNums = false;
 		double dou1 = 0;
 		double dou2 = 0;
-//		if (val1 instanceof Number num) {
-//			dou1 = num.doubleValue();
-//			boolean otherhasval = other.hasValue();
-//			if (!otherhasval) dou2 = other.asDouble();
-//			if (val2 instanceof Number||!otherhasval) areNums = true;
-//		}
 		if (val1 instanceof Number num1) {
 			dou1 = num1.doubleValue();
 			if (val2 instanceof Number num2) {
@@ -41,5 +45,11 @@ public class HudderV3Helper {
 			case "<"  -> dou1< dou2;
 			default -> throw new IllegalArgumentException("Unknown comparasion operator: " + comparisonOperator);
 		};
+	}
+	
+	public static Object callApiFunction(String name, ArrayElementManager uiManager,
+			AVarTextCompiler compiler, Object... values) throws ExecutionException {
+		return api_functions.get(name).invoke(uiManager, compiler,
+				Stream.of(values).map(ImplObjectWrapper::new).toList().toArray(new ObjectWrapper[0]));
 	}
 }

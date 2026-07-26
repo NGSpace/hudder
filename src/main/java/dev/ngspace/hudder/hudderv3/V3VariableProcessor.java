@@ -5,6 +5,8 @@ import java.util.Arrays;
 import dev.ngspace.hudder.compilers.HudderV3Compiler;
 import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
 import dev.ngspace.hudder.exceptions.ExecutionException;
+import dev.ngspace.hudder.utils.HudderUtils;
+import dev.ngspace.hudder.v2runtime.values.V2FunctionVar;
 
 public class V3VariableProcessor {
 
@@ -145,6 +147,51 @@ public class V3VariableProcessor {
 			int index = methodWriter.astore();
 			methodWriter.aload(index);
 			return;
+		}
+		
+		
+		// Function variable
+		if (!value.startsWith("(")&&value.endsWith(")")) {
+			// Same thing as before except we start reading at the first instance of a '(' char instead of at index 0.
+			int argStart = value.indexOf("(");
+			boolean isSafe = false;
+			boolean quotes = false;
+//			boolean backslash = false;
+			int parenthesses = 0;
+			if (argStart!=-1) {
+				isSafe = true;
+				for (int i = argStart;i<value.length();i++) {
+					char c = value.charAt(i);
+					if (c=='"') {
+						quotes = !quotes;
+					}
+					if (quotes) {
+						continue;
+					}
+					if (c=='(') parenthesses++;
+					if (c==')') parenthesses--;
+					if (parenthesses==0) {
+						isSafe = i+1==value.length();
+						break;
+					}
+				}
+				if (isSafe) {
+					String funcName = value.substring(0, argStart);
+					if (funcName.matches("^[a-zA-Z0-9]+[a-zA-Z0-9_-]*$")) {
+						String parametersString = value.substring(argStart+1, value.length()-1);
+						String[] tokenizedArgs = HudderUtils.processParemeters(parametersString);
+						
+						int[] value_indecies = new int[tokenizedArgs.length];
+						for (int i = 0;i<tokenizedArgs.length;i++) {
+							parseVariable(methodWriter, tokenizedArgs[i], comp);
+							value_indecies[i] = methodWriter.astore();
+						}
+						
+						return;
+//						return new V2FunctionVar(runtime, comp, funcName, tokenizedArgs, line, charpos, value);
+					}
+				}
+			}
 		}
 
 		//Comparing values
