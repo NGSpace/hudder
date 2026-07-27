@@ -1,6 +1,6 @@
-package dev.ngspace.hudder.hudderv3.v3variableinstructions;
+package dev.ngspace.hudder.hudderv3.instructions.variables;
 
-import dev.ngspace.hudder.compilers.HudderV3Compiler;
+import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.hudderv3.V3MethodWriter;
 
@@ -8,7 +8,7 @@ public class SystemVariableVisitor extends VariableVisitor {
 
 	public String value;
 
-	public SystemVariableVisitor(HudderV3Compiler comp, String variable) {
+	public SystemVariableVisitor(AV3Compiler comp, String variable) {
 		super(comp);
 		this.value = variable;
 	}

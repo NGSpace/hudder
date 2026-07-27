@@ -1,15 +1,15 @@
-package dev.ngspace.hudder.hudderv3.v3variableinstructions.constants;
+package dev.ngspace.hudder.hudderv3.instructions.variables.constants;
 
-import dev.ngspace.hudder.compilers.HudderV3Compiler;
+import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.hudderv3.V3MethodWriter;
-import dev.ngspace.hudder.hudderv3.v3variableinstructions.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
 
 public class BooleanVariableVisitor extends VariableVisitor {
 
 	private boolean value;
 
-	public BooleanVariableVisitor(HudderV3Compiler comp, boolean value) {
+	public BooleanVariableVisitor(AV3Compiler comp, boolean value) {
 		super(comp);
 		this.value = value;
 	}

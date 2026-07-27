@@ -1,7 +1,7 @@
 package dev.ngspace.hudder.compilers;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
@@ -9,9 +9,9 @@ import org.objectweb.asm.Type;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
-import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
-import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
-import dev.ngspace.hudder.compilers.utils.HudInformation;
+import dev.ngspace.hudder.compilers.abstractions.AV2Compiler.CodeBlock;
+import dev.ngspace.hudder.compilers.abstractions.AV2Compiler.Instruction;
+import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
@@ -19,29 +19,34 @@ import dev.ngspace.hudder.hudderv3.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.V3ExecuteMethodWriter;
 import dev.ngspace.hudder.hudderv3.V3MethodWriter;
 import dev.ngspace.hudder.hudderv3.V3VariableProcessor;
-import dev.ngspace.hudder.hudderv3.v3variableinstructions.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.MethodExecutionInstruction;
+import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
 import dev.ngspace.hudder.utils.HudderUtils;
-import dev.ngspace.hudder.v2runtime.functions.HudderFunctions;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
+import net.minecraft.network.chat.Component;
 	
-public class HudderV3Compiler extends AVarTextCompiler {
+public class HudderV3Compiler extends AV3Compiler {
 	
 	public static final int TEXT_STATE = 0;
 	public static final int VARIABLE_STATE = 1;
 	public static final int CONDITION_STATE = 2;
 	public static final int METHOD_STATE = 3;
-	
-	public V3VariableProcessor variableProcessor = new V3VariableProcessor();
+	public static final int HASHTAG_STATE = 4;
+
+	public static final byte UNDEFINED_INSTRUCTION = 0x0;
+	public static final byte IF_INSTRUCTION = 0x1;
+	public static final byte WHILE_LOOP_INSTRUCTION = 0x2;
+	public static final byte DEFINE_INSTRUCTION = 0x3;
+	public static final byte FOR_LOOP_INSTRUCTION = 0x4;
+	public static final byte ELSE_IF_INSTRUCTION = 0x5;
+	public static final byte ELSE_INSTRUCTION = 0x6;
 	
 	@Override
-	public HudInformation execute(HudderConfig info, String text, String filename) throws ExecutionException {
+	public boolean compile(V3ExecuteMethodWriter executeMethod, V3ClassWriter classWriter, HudderConfig info,
+			String text, String filename) throws ExecutionException {
 		
-		V3ClassWriter classWriter = new V3ClassWriter("dev/ngspace/hudder/hudderv3/GeneratedClass");
-		classWriter.createInit();
-		V3ExecuteMethodWriter executeMethod = classWriter.createExecuteMethod();
-		
-		FunctionAndConsumerAPI.getInstance().applyFunctionsAndConsumers(classWriter);
-		HudderFunctions.bindAllAPIFunctions(classWriter);
+		Label end = new Label();
+		boolean returns_value = false;
 		
 		StringBuilder elemBuilder = new StringBuilder();
 		
@@ -93,6 +98,12 @@ public class HudderV3Compiler extends AVarTextCompiler {
 							savedind = ind;
 						    quotesafe = false;
 						    backslashsafe = false;
+							break;
+						case '#':
+							compileState = HASHTAG_STATE;
+							executeMethod.appendStringConstant(elemBuilder.toString());
+							elemBuilder.setLength(0);
+							savedind = ind;
 							break;
 						case '&':
 							elemBuilder.append('\u00A7');
@@ -194,7 +205,7 @@ public class HudderV3Compiler extends AVarTextCompiler {
 						bracketscount--;
 						if (bracketscount==0) {
 							if ("break".equalsIgnoreCase(elemBuilder.toString().trim())) {
-								throw new UnsupportedOperationException("break not supported");
+								executeMethod.jumpto(end);
 							} else {
 								parseVariable(elemBuilder.toString()).visitMethod(executeMethod);
 								int endresult = executeMethod.astore();
@@ -264,26 +275,7 @@ public class HudderV3Compiler extends AVarTextCompiler {
 								}
 								break;
 							default:
-								executeMethod.loadConstantUnsafe(builder.length-1);
-								executeMethod.methodVisitor.visitTypeInsn(Opcodes.ANEWARRAY,
-										Type.getInternalName(Object.class));
-								int array_index = executeMethod.astore();
-								for (int i = 1;i<builder.length;i++) {
-									parseVariable(builder[i]).visitMethod(executeMethod);
-									int value_index = executeMethod.astore();
-									executeMethod.aload(array_index);
-									executeMethod.loadConstantUnsafe(i-1);
-									executeMethod.aload(value_index);
-									executeMethod.methodVisitor.visitInsn(Opcodes.AASTORE);
-								}
-								executeMethod.loadConstant(builder[0]);
-								executeMethod.aload(0);
-								executeMethod.getField("uimanager", ArrayElementManager.class);
-								executeMethod.aload(0);
-								executeMethod.getField("v3compiler", HudderV3Compiler.class);
-								executeMethod.aload(array_index);
-								executeMethod.callStatic(HudderV3Helper.class, "callApiConsumer",
-										"(Ljava/lang/String;Ldev/ngspace/hudder/api/functionsandconsumers/ArrayElementManager;Ldev/ngspace/hudder/compilers/abstractions/AVarTextCompiler;[Ljava/lang/Object;)V", false);
+								new MethodExecutionInstruction(this, builder).visit(executeMethod, classWriter);
 						}
 						if (builder.length==2&&name.equals("return")) {
 							throw new UnsupportedOperationException("NO METHOD NO RETURN");
@@ -292,6 +284,86 @@ public class HudderV3Compiler extends AVarTextCompiler {
 						elemBuilder.setLength(0);
 						cleanup = true;
 						cleanup_amount = Hudder.config.methodBuffer()/2;
+					}
+					break;
+				}
+				case HASHTAG_STATE: {
+					compileState = TEXT_STATE;
+					
+					Instruction instructions = getInstruction(text, ind);
+					ind = instructions.ending_index();
+					
+					CodeBlock codeBlock = getCodeBlock(text, ind);
+					ind = codeBlock.ending_index();
+
+					byte instruction_code = instructions.instruction();
+					String parameters = instructions.paremeter();
+					String block = codeBlock.code();
+					
+					switch (instruction_code) {
+//						case FOR_LOOP_INSTRUCTION: {
+//							String[] split = parameters.split(" in ", 2);
+//							if (split.length<2) 
+//								throw new CompileException("Invalid for loop syntax: \"" + parameters + "\"", pos);
+//							String variablename = split[0];
+//							String value = split[1];
+//							elemBuilder.setLength(0);
+//							runtime.addRuntimeElement(new ForV2RuntimeElement(info, variablename, value,
+//									block, this, runtime, pos, filename));
+//							break;
+//						}
+						case DEFINE_INSTRUCTION: {
+							String[] builder = HudderUtils.processParemeters(parameters);
+							String name = builder[0];
+							String[] args = Arrays.copyOfRange(builder, 1, builder.length);
+							defineFunctionOrMethod(classWriter,block, args, info, name,filename);
+							elemBuilder.setLength(0);
+							break;
+						}
+//						case WHILE_LOOP_INSTRUCTION: {
+//							runtime.addRuntimeElement(new WhileV2RuntimeElement(info, parameters, block, this,
+//									runtime, pos, filename));
+//							break;
+//						}
+						case UNDEFINED_INSTRUCTION:
+							Hudder.showWarningToast(Component.literal("Undefined # instructions deprecated"),
+									Component.literal("Undefined # instructions are deprecated and will be "
+											+ "removed in a future version of Hudder, please use #if instead."));
+//						case IF_INSTRUCTION:// If instuction
+//							List<Statement> statements = new ArrayList<Statement>();
+//							statements.add(new Statement(parameters, block, pos));
+//							for (;ind<text.length();ind++) {
+//								c = text.charAt(ind);
+//								if (c=='#') {
+//									savedind = ind;
+//									pos = getPosition(charPosition, ind, "\n"+text);
+//									ind++;
+//									instructions = getInstruction(text, ind);
+//									ind = instructions.ending_index();
+//									if (instructions.instruction()!=ELSE_INSTRUCTION
+//											&&instructions.instruction()!=ELSE_IF_INSTRUCTION) {
+//										//We've gone deep into another hash instruction, go back.
+//										ind = savedind;
+//										break;
+//									}
+//									codeBlock = getCodeBlock(text, ind);
+//									ind = codeBlock.ending_index();
+//									parameters = instructions.paremeter();
+//									block = codeBlock.code();
+//									statements.add(new Statement(parameters, block, pos));
+//								} else if (!Character.isWhitespace(c)) {
+//									break;
+//								}
+//							}
+//							ind--;
+//							runtime.addRuntimeElement(new IfElseV2RuntimeElement(info,
+//									statements.toArray(new Statement[statements.size()]),
+//									runtime,
+//									filename,
+//									this));
+//							break;
+						default:
+							throw new ExecutionException("Detached else/else if statement!", -1, -1);
 					}
 					break;
 				}
@@ -309,25 +381,78 @@ public class HudderV3Compiler extends AVarTextCompiler {
 			throw new ExecutionException(getCompilerErrorMessage(compileState), pos.line(), pos.column());
 		}
 		
-		executeMethod.end();
-
-		Class<?> dynamicClass = classWriter.toClass();
+		executeMethod.putLabel(end);
 		
-		try {
-			Object instance = dynamicClass.getDeclaredConstructor(getClass()).newInstance(this);
-			Method method = dynamicClass.getMethod("execute", HudderConfig.class, String.class, String.class);
-
-
-			return (HudInformation) method.invoke(instance, info, text, filename);
-		} catch (ReflectiveOperationException e) {
-			e.printStackTrace();
-		}
-		return HudInformation.of("failed");
+		executeMethod.end();
+		
+		return returns_value;
 	}
 
 	@Override
 	public boolean setupHudSettings(NGSMCConfigCategory hudsettings) {
 		return false;
+	}
+	
+	public CodeBlock getCodeBlock(String text, int index) {
+		StringBuilder instructions = new StringBuilder();
+		int ind = index;
+		if (ind+1<text.length()&&(text.charAt(ind+1)=='\t'||text.charAt(ind+1)==' ')) {
+			
+			ind++;
+			String initalIndent = checkIndentation(text,ind);
+			
+			for (;ind<text.length();ind++) {
+				if (ind+1<text.length()) {
+					String indent = checkIndentation(text,ind);
+					if (indent.startsWith(initalIndent)) {
+						ind+=initalIndent.length();
+						for (;ind<text.length();ind++) {
+							char c = text.charAt(ind);
+							instructions.append(c);
+							if (c=='\n') break;
+						}
+					} else break;
+				}
+				
+			}
+			ind--;
+		}
+		
+		if (ind!=text.length()&&text.charAt(ind)!='\n'&&text.charAt(ind)!='\r') ind--;
+		
+		return new CodeBlock(instructions.toString(), text, index, ind);
+	}
+	
+	public Instruction getInstruction(String text, int index) {
+		byte instruction = 0x0;
+		char c;
+		int ind = index;
+		StringBuilder elemBuilder = new StringBuilder();
+		for (;ind<text.length();ind++) {
+			if ((c = text.charAt(ind))=='\n') break;
+			if (instruction==0) {
+				if(c==' '&&elemBuilder.toString().equals("while")) {instruction=WHILE_LOOP_INSTRUCTION;}
+				else if(c==' '&&elemBuilder.toString().equals("if")) {instruction=IF_INSTRUCTION;}
+				else if(c==' '&&elemBuilder.toString().equals("def")){instruction=DEFINE_INSTRUCTION;}
+				else if(c==' '&&elemBuilder.toString().equals("for")){instruction=FOR_LOOP_INSTRUCTION;}
+				else if(c==' '&&elemBuilder.toString().equals("else if")){instruction=ELSE_IF_INSTRUCTION;}
+				else if(c=='e'&&elemBuilder.toString().equals("els")&&
+						(text.charAt(ind+1)=='\n')){instruction=ELSE_INSTRUCTION;}
+				if (instruction!=UNDEFINED_INSTRUCTION) {elemBuilder.setLength(0);continue;}
+			}
+			elemBuilder.append(c);
+		}
+		return new Instruction(instruction, elemBuilder.toString(), ind);
+	}
+
+	private String checkIndentation(String text, int index) {
+		StringBuilder b = new StringBuilder();
+		for (;index<text.length();index++) {
+			char c = text.charAt(index);
+			if (!(c==' '||c=='\t')) break;
+			b.append(c);
+		}
+		return b.toString();
 	}
 
 	public String getCompilerErrorMessage(int compileState) {
@@ -347,10 +472,6 @@ public class HudderV3Compiler extends AVarTextCompiler {
 			}
 		}
 		return str;
-	}
-
-	public VariableVisitor parseVariable(String string) throws ExecutionException {
-		return variableProcessor.parseVariable(string, this);
 	}
 	
 }

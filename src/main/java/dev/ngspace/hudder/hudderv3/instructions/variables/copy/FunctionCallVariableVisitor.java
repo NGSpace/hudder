@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.hudderv3.v3variableinstructions;
+package dev.ngspace.hudder.hudderv3.instructions.variables.copy;
 
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;

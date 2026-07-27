@@ -1,10 +1,10 @@
-package dev.ngspace.hudder.hudderv3.v3variableinstructions.operations.booloperations;
+package dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations;
 
-import dev.ngspace.hudder.compilers.HudderV3Compiler;
+import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.V3MethodWriter;
-import dev.ngspace.hudder.hudderv3.v3variableinstructions.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
 
 public class ComparisionVariableVisitor extends VariableVisitor {
 	
@@ -12,7 +12,7 @@ public class ComparisionVariableVisitor extends VariableVisitor {
 	private String val1;
 	private String val2;
 	private String operator;
-	public ComparisionVariableVisitor(HudderV3Compiler comp, String val1, String val2, String operator) {
+	public ComparisionVariableVisitor(AV3Compiler comp, String val1, String val2, String operator) {
 		super(comp);
 		this.val1 = val1;
 		this.val2 = val2;

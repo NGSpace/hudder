@@ -1,17 +1,17 @@
-package dev.ngspace.hudder.hudderv3.v3variableinstructions.modifiable;
+package dev.ngspace.hudder.hudderv3.instructions.variables.modifiable;
 
-import dev.ngspace.hudder.compilers.HudderV3Compiler;
+import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.hudderv3.V3MethodWriter;
-import dev.ngspace.hudder.hudderv3.v3variableinstructions.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
 
 public class SetVariableVisitor extends VariableVisitor {
 
 	private final String variable_name;
 	private final String value;
 
-	public SetVariableVisitor(HudderV3Compiler comp, String variable_name, String value) {
+	public SetVariableVisitor(AV3Compiler comp, String variable_name, String value) {
 		super(comp);
 		this.variable_name = variable_name;
 		this.value = value;

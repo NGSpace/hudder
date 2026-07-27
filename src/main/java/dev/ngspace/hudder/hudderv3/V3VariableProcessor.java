@@ -3,22 +3,23 @@ package dev.ngspace.hudder.hudderv3;
 import java.util.Arrays;
 
 import dev.ngspace.hudder.compilers.HudderV3Compiler;
+import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.exceptions.ExecutionException;
-import dev.ngspace.hudder.hudderv3.v3variableinstructions.FunctionCallVariableVisitor;
-import dev.ngspace.hudder.hudderv3.v3variableinstructions.SystemVariableVisitor;
-import dev.ngspace.hudder.hudderv3.v3variableinstructions.VariableVisitor;
-import dev.ngspace.hudder.hudderv3.v3variableinstructions.constants.BooleanVariableVisitor;
-import dev.ngspace.hudder.hudderv3.v3variableinstructions.constants.NumberVariableVisitor;
-import dev.ngspace.hudder.hudderv3.v3variableinstructions.constants.StringVariableVisitor;
-import dev.ngspace.hudder.hudderv3.v3variableinstructions.modifiable.DynamicVariableVisitor;
-import dev.ngspace.hudder.hudderv3.v3variableinstructions.modifiable.SetVariableVisitor;
-import dev.ngspace.hudder.hudderv3.v3variableinstructions.operations.MathVariableVisitor;
-import dev.ngspace.hudder.hudderv3.v3variableinstructions.operations.booloperations.ComparisionVariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.FunctionCallVariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.SystemVariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.constants.BooleanVariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.constants.NumberVariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.constants.StringVariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.modifiable.DynamicVariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.modifiable.SetVariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.operations.MathVariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations.ComparisionVariableVisitor;
 import dev.ngspace.hudder.utils.HudderUtils;
 
 public class V3VariableProcessor {
 
-	public VariableVisitor parseVariable(String valuee, HudderV3Compiler comp) throws ExecutionException {
+	public VariableVisitor parseVariable(String valuee, AV3Compiler comp) throws ExecutionException {
 
 		String value = valuee.trim();
 		

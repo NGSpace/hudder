@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.hudderv3.v3variableinstructions;
+package dev.ngspace.hudder.hudderv3.instructions.variables.copy;
 
 import dev.ngspace.hudder.compilers.HudderV3Compiler;
 import dev.ngspace.hudder.exceptions.ExecutionException;

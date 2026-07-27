@@ -55,6 +55,10 @@ public class HudderV3Helper {
 				Stream.of(values).map(ImplObjectWrapper::new).toList().toArray(new ObjectWrapper[0]));
 	}
 	
+	public static boolean hasApiConsumer(String name) {
+		return api_consumers.containsKey(name.toLowerCase().trim());
+	}
+	
 	public static void callApiConsumer(String name, ArrayElementManager uiManager,
 			AVarTextCompiler compiler, Object... values) throws ExecutionException {
 		api_consumers.get(name.toLowerCase().trim()).invoke(uiManager, compiler,

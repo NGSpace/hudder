@@ -1,16 +1,16 @@
-package dev.ngspace.hudder.hudderv3.v3variableinstructions.modifiable;
+package dev.ngspace.hudder.hudderv3.instructions.variables.modifiable;
 
-import dev.ngspace.hudder.compilers.HudderV3Compiler;
+import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.hudderv3.V3MethodWriter;
-import dev.ngspace.hudder.hudderv3.v3variableinstructions.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
 
 public class DynamicVariableVisitor extends VariableVisitor {
 
 	public String value;
 
-	public DynamicVariableVisitor(HudderV3Compiler comp, String variable) {
+	public DynamicVariableVisitor(AV3Compiler comp, String variable) {
 		super(comp);
 		this.value = variable;
 	}

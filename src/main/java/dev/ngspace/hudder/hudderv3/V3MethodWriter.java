@@ -9,7 +9,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
-import dev.ngspace.hudder.compilers.HudderV3Compiler;
+import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 
 public class V3MethodWriter {
@@ -223,6 +223,10 @@ public class V3MethodWriter {
 		methodVisitor.visitLabel(label);
 	}
 
+	public void jumpto(Label end) {
+		methodVisitor.visitJumpInsn(Opcodes.GOTO, end);
+	}
+
 	public void end() {
 		end(Opcodes.RETURN);
 	}
@@ -234,7 +238,7 @@ public class V3MethodWriter {
 		methodVisitor.visitEnd();
 	}
 
-	public void complexMath(HudderV3Compiler comp, String[] values, char[] operations) throws ExecutionException {
+	public void complexMath(AV3Compiler comp, String[] values, char[] operations) throws ExecutionException {
 		int[] value_indexes = new int[values.length];
 		// Is String
 		methodVisitor.visitLdcInsn(false);

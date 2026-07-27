@@ -85,8 +85,8 @@ public class V3ClassWriter implements Binder {
 		methodVisitor.visitEnd();
 	}
 	
-	public V3ExecuteMethodWriter createExecuteMethod() {
-		return new V3ExecuteMethodWriter(this);
+	public V3ExecuteMethodWriter createExecuteMethod(String name, Class<?>[] classes) {
+		return new V3ExecuteMethodWriter(this, name, classes);
 	}
 	
 	public V3MethodWriter createMethod(String name, Class<?>[] parameters, Class<?> returntype, String signature,
