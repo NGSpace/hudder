@@ -142,12 +142,12 @@ public class HudderV3Compiler extends AVarTextCompiler {
 							for (int i = 0;i<conds.size();i+=2) {
 								Label elseLabel = new Label();
 								if (i!=conds.size()) {
-									variableProcessor.parseVariable(writer, conds.get(i), this);
+									parseVariable(conds.get(i)).visitMethod(executeMethod);
 									writer.loadConstant(true);// The other value
 									
 									writer.methodVisitor.visitJumpInsn(Opcodes.IF_ACMPNE, elseLabel);
 									
-									variableProcessor.parseVariable(writer, conds.get(i+1), this);
+									parseVariable(conds.get(i+1)).visitMethod(executeMethod);
 								}
 								
 								writer.addAReturn();
@@ -156,7 +156,7 @@ public class HudderV3Compiler extends AVarTextCompiler {
 								i++;
 							}
 							if (conds.size()%2==1)
-								variableProcessor.parseVariable(writer, conds.get(conds.size()-1), this);
+								parseVariable(conds.get(conds.size()-1)).visitMethod(executeMethod);
 							else
 								writer.loadConstant("");
 							writer.end(Opcodes.ARETURN);
@@ -196,7 +196,7 @@ public class HudderV3Compiler extends AVarTextCompiler {
 							if ("break".equalsIgnoreCase(elemBuilder.toString().trim())) {
 								throw new UnsupportedOperationException("break not supported");
 							} else {
-								variableProcessor.parseVariable(executeMethod, elemBuilder.toString(), this);
+								parseVariable(elemBuilder.toString()).visitMethod(executeMethod);
 								int endresult = executeMethod.astore();
 								executeMethod.loadBuilder();
 								executeMethod.aload(endresult);
@@ -231,30 +231,63 @@ public class HudderV3Compiler extends AVarTextCompiler {
 					}
 					if (compileState!=METHOD_STATE) {
 						String[] builder = HudderUtils.processParemeters(elemBuilder.toString());
-						if (builder.length==2&&builder[0].toLowerCase().trim().equals("return")) {
+						String name = builder[0].toLowerCase().trim();
+						switch (name) {
+							case "return":
+								throw new UnsupportedOperationException("NO METHOD NO RETURN");
+							case "topleft":
+								executeMethod.selected_builder_index = executeMethod.topleft_builder_index;
+								if (builder.length>1) {
+									parseVariable(builder[1]).visitMethod(executeMethod);
+									executeMethod.astore(executeMethod.topleft_scale_index);
+								}
+								break;
+							case "topright":
+								executeMethod.selected_builder_index = executeMethod.topright_builder_index;
+								if (builder.length>1) {
+									parseVariable(builder[1]).visitMethod(executeMethod);
+									executeMethod.astore(executeMethod.topright_scale_index);
+								}
+								break;
+							case "bottomleft":
+								executeMethod.selected_builder_index = executeMethod.bottomleft_builder_index;
+								if (builder.length>1) {
+									parseVariable(builder[1]).visitMethod(executeMethod);
+									executeMethod.astore(executeMethod.bottomleft_scale_index);
+								}
+								break;
+							case "bottomright":
+								executeMethod.selected_builder_index = executeMethod.bottomright_builder_index;
+								if (builder.length>1) {
+									parseVariable(builder[1]).visitMethod(executeMethod);
+									executeMethod.astore(executeMethod.bottomright_scale_index);
+								}
+								break;
+							default:
+								executeMethod.loadConstantUnsafe(builder.length-1);
+								executeMethod.methodVisitor.visitTypeInsn(Opcodes.ANEWARRAY,
+										Type.getInternalName(Object.class));
+								int array_index = executeMethod.astore();
+								for (int i = 1;i<builder.length;i++) {
+									parseVariable(builder[i]).visitMethod(executeMethod);
+									int value_index = executeMethod.astore();
+									executeMethod.aload(array_index);
+									executeMethod.loadConstantUnsafe(i-1);
+									executeMethod.aload(value_index);
+									executeMethod.methodVisitor.visitInsn(Opcodes.AASTORE);
+								}
+								executeMethod.loadConstant(builder[0]);
+								executeMethod.aload(0);
+								executeMethod.getField("uimanager", ArrayElementManager.class);
+								executeMethod.aload(0);
+								executeMethod.getField("v3compiler", HudderV3Compiler.class);
+								executeMethod.aload(array_index);
+								executeMethod.callStatic(HudderV3Helper.class, "callApiConsumer",
+										"(Ljava/lang/String;Ldev/ngspace/hudder/api/functionsandconsumers/ArrayElementManager;Ldev/ngspace/hudder/compilers/abstractions/AVarTextCompiler;[Ljava/lang/Object;)V", false);
+						}
+						if (builder.length==2&&name.equals("return")) {
 							throw new UnsupportedOperationException("NO METHOD NO RETURN");
 //							runtime.addRuntimeElement(new ReturnV2RuntimeElement(builder[1],this,runtime,line,charpos));
-						} else {
-							executeMethod.loadConstantUnsafe(builder.length-1);
-							executeMethod.methodVisitor.visitTypeInsn(Opcodes.ANEWARRAY,
-									Type.getInternalName(Object.class));
-							int array_index = executeMethod.astore();
-							for (int i = 1;i<builder.length;i++) {
-								variableProcessor.parseVariable(executeMethod, builder[i], this);
-								int value_index = executeMethod.astore();
-								executeMethod.aload(array_index);
-								executeMethod.loadConstantUnsafe(i-1);
-								executeMethod.aload(value_index);
-								executeMethod.methodVisitor.visitInsn(Opcodes.AASTORE);
-							}
-							executeMethod.loadConstant(builder[0]);
-							executeMethod.aload(0);
-							executeMethod.getField("uimanager", ArrayElementManager.class);
-							executeMethod.aload(0);
-							executeMethod.getField("v3compiler", HudderV3Compiler.class);
-							executeMethod.aload(array_index);
-							executeMethod.callStatic(HudderV3Helper.class, "callApiConsumer",
-									"(Ljava/lang/String;Ldev/ngspace/hudder/api/functionsandconsumers/ArrayElementManager;Ldev/ngspace/hudder/compilers/abstractions/AVarTextCompiler;[Ljava/lang/Object;)V", false);
 						}
 						elemBuilder.setLength(0);
 						cleanup = true;
@@ -317,7 +350,7 @@ public class HudderV3Compiler extends AVarTextCompiler {
 	}
 
 	public VariableVisitor parseVariable(String string) throws ExecutionException {
-		return variableProcessor.parseVariable(null, string, this);
+		return variableProcessor.parseVariable(string, this);
 	}
 	
 }

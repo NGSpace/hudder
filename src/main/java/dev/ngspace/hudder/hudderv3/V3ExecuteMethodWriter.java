@@ -4,10 +4,26 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
+import dev.ngspace.hudder.Hudder;
+import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
 import dev.ngspace.hudder.config.HudderConfig;
 
 public class V3ExecuteMethodWriter extends V3MethodWriter {
+
+	// Builders
+	public int topleft_builder_index;
+	public int topright_builder_index;
+	public int bottomleft_builder_index;
+	public int bottomright_builder_index;
+	
+	public int selected_builder_index;
+	
+	// Scale
+	public int topleft_scale_index;
+	public int topright_scale_index;
+	public int bottomleft_scale_index;
+	public int bottomright_scale_index;
 
 	public V3ExecuteMethodWriter(V3ClassWriter classWriter) {
 		super(classWriter, "execute",
@@ -22,11 +38,28 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 		variableindex+=3; // the parameters
 		
 		
-		// Create StringBuilder
-		methodVisitor.visitTypeInsn(Opcodes.NEW, STRING_BUILDER);
-		methodVisitor.visitInsn(Opcodes.DUP);
-		methodVisitor.visitMethodInsn(Opcodes.INVOKESPECIAL, STRING_BUILDER, "<init>", "()V", false);
-		methodVisitor.visitVarInsn(Opcodes.ASTORE, ++variableindex);
+		// Create the StringBuilders
+		initStringBuilder();
+		topleft_builder_index = astore();
+		initStringBuilder();
+		topright_builder_index = astore();
+		initStringBuilder();
+		bottomleft_builder_index = astore();
+		initStringBuilder();
+		bottomright_builder_index = astore();
+		
+		// Define the scales
+		loadConstant(Hudder.config.scale());
+		topleft_scale_index = astore();
+		loadConstant(Hudder.config.scale());
+		topright_scale_index = astore();
+		loadConstant(Hudder.config.scale());
+		bottomleft_scale_index = astore();
+		loadConstant(Hudder.config.scale());
+		bottomright_scale_index = astore();
+		
+		// Default to topleft
+		selected_builder_index = topleft_builder_index;
 	}
 
 
@@ -101,13 +134,38 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 
 
 
+	private void callToString() {
+		methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, STRING_BUILDER, "toString", "()Ljava/lang/String;", false);
+	}
+
+
+
 	@Override
 	public void end() {
 		// Return HudInformation.of(StringBuilder)
-		methodVisitor.visitVarInsn(Opcodes.ALOAD, 4);
-		methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, STRING_BUILDER, "toString", "()Ljava/lang/String;", false);
-		methodVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, "dev/ngspace/hudder/compilers/utils/HudInformation", "of",
-				"(Ljava/lang/String;)Ldev/ngspace/hudder/compilers/utils/HudInformation;", false);
+		methodVisitor.visitTypeInsn(Opcodes.NEW, Type.getInternalName(HudInformation.class));
+		methodVisitor.visitInsn(Opcodes.DUP);
+		aload(topleft_builder_index);
+		callToString();
+		aloadFloat(topleft_scale_index);
+		aload(bottomleft_builder_index);
+		callToString();
+		aloadFloat(topleft_scale_index);
+		aload(topright_builder_index);
+		callToString();
+		aloadFloat(topleft_scale_index);
+		aload(bottomright_builder_index);
+		callToString();
+		aloadFloat(topleft_scale_index);
+		aload(0);
+		getField("uimanager", ArrayElementManager.class);
+		call(ArrayElementManager.class, "toUIElementArray", "()[Ldev/ngspace/hudder/uielements/AUIElement;", false);
+//		methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, STRING_BUILDER, "toString", "()Ljava/lang/String;", false);
+
+		methodVisitor.visitMethodInsn(Opcodes.INVOKESPECIAL, Type.getInternalName(HudInformation.class),
+				"<init>", "(Ljava/lang/String;FLjava/lang/String;FLjava/lang/String;FLjava/lang/String;F[Ldev/ngspace/hudder/uielements/AUIElement;)V", false);
+//		methodVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, "dev/ngspace/hudder/compilers/utils/HudInformation", "of",
+//				"(Ljava/lang/String;)Ldev/ngspace/hudder/compilers/utils/HudInformation;", false);
 		
 		
 		super.end(Opcodes.ARETURN);

@@ -18,7 +18,7 @@ import dev.ngspace.hudder.utils.HudderUtils;
 
 public class V3VariableProcessor {
 
-	public VariableVisitor parseVariable(V3MethodWriter methodWriter, String valuee, HudderV3Compiler comp) throws ExecutionException {
+	public VariableVisitor parseVariable(String valuee, HudderV3Compiler comp) throws ExecutionException {
 
 		String value = valuee.trim();
 		
@@ -65,7 +65,7 @@ public class V3VariableProcessor {
 			}
 			// if it is wrapped then remove the first and last chars to unwrap and reprocess them.
 			if (isSafe) {
-				return parseVariable(methodWriter, value.substring(1, value.length()-1), comp);
+				return parseVariable(value.substring(1, value.length()-1), comp);
 			}
 		}
 		
@@ -124,12 +124,12 @@ public class V3VariableProcessor {
 		
 		// System variable
 		if (matchesVariableRegex&&comp.isSystemVariable(value.toLowerCase())) {
-			return new SystemVariableVisitor(comp, value);
+			return new SystemVariableVisitor(comp, value.toLowerCase());
 		}
 		
 		// Dynamic variable
 		if (matchesVariableRegex) {
-			return new DynamicVariableVisitor(comp, value);
+			return new DynamicVariableVisitor(comp, value.toLowerCase());
 		}
 		
 		

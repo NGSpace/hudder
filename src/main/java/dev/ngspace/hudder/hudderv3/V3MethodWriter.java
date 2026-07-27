@@ -34,9 +34,35 @@ public class V3MethodWriter {
 		methodVisitor.visitCode();
 	}
 
+
+
+	public void initStringBuilder() {
+		newAndDup(StringBuilder.class);
+		invokeSpecial(StringBuilder.class, "<init>", "()V", false);
+	}
+
 	public void getField(String name, Class<?> type) {
 		methodVisitor.visitFieldInsn(Opcodes.GETFIELD, classWriter.classname,
 				name, Type.getDescriptor(type));
+	}
+
+	public void putField(String name, Class<?> type) {
+		methodVisitor.visitFieldInsn(Opcodes.PUTFIELD, classWriter.classname,
+				name, Type.getDescriptor(type));
+	}
+
+
+
+	public void newAndDup(Class<?> type) {
+		methodVisitor.visitTypeInsn(Opcodes.NEW, Type.getInternalName(type));
+		methodVisitor.visitInsn(Opcodes.DUP);
+	}
+
+
+
+	public void invokeSpecial(Class<StringBuilder> type, String name, String sign, boolean isInterface) {
+		methodVisitor.visitMethodInsn(Opcodes.INVOKESPECIAL, Type.getInternalName(type), name, sign,
+				isInterface);
 	}
 
 	public void aload(int index) {
@@ -64,6 +90,22 @@ public class V3MethodWriter {
 				false
 		);
 	}
+	public void aloadFloat(int index) {
+		methodVisitor.visitVarInsn(Opcodes.ALOAD, index);
+
+		methodVisitor.visitTypeInsn(
+		    Opcodes.CHECKCAST,
+		    Type.getInternalName(Number.class)
+		);
+		
+		methodVisitor.visitMethodInsn(
+				Opcodes.INVOKEVIRTUAL,
+				"java/lang/Number",
+				"floatValue",
+				"()F",
+				false
+		);
+	}
 	
 	public void loadConstant(Object constant) {
 		methodVisitor.visitLdcInsn(constant);
@@ -83,6 +125,21 @@ public class V3MethodWriter {
 			);
 		}
 	}
+	public void loadConstant(float constant) {
+		if (constant%1==0) {
+			loadConstant((long)constant);
+		} else {
+			methodVisitor.visitLdcInsn(constant);
+			//Convert to Object
+			methodVisitor.visitMethodInsn(
+					Opcodes.INVOKESTATIC,
+					"java/lang/Float",
+					"valueOf",
+					"(F)Ljava/lang/Float;",
+					false
+			);
+		}
+	}
 	public void loadConstant(long constant) {
 		methodVisitor.visitLdcInsn(constant);
 		//Convert to Object
@@ -94,7 +151,7 @@ public class V3MethodWriter {
 				false
 		);
 	}
-	public void loadConstantUnsafe(int constant) {
+	public void loadConstantUnsafe(Object constant) {
 		methodVisitor.visitLdcInsn(constant);
 	}
 	public void loadConstant(boolean constant) {
@@ -114,13 +171,12 @@ public class V3MethodWriter {
 		return variableindex;
 	}
 	
-	public int lstore() {
-		methodVisitor.visitVarInsn(Opcodes.LSTORE, ++variableindex);
-		return variableindex;
+	public void astore(int index) {
+		methodVisitor.visitVarInsn(Opcodes.ASTORE, index);
 	}
 	
-	public int dstore() {
-		methodVisitor.visitVarInsn(Opcodes.DSTORE, ++variableindex);
+	public int lstore() {
+		methodVisitor.visitVarInsn(Opcodes.LSTORE, ++variableindex);
 		return variableindex;
 	}
 	
@@ -178,8 +234,7 @@ public class V3MethodWriter {
 		methodVisitor.visitEnd();
 	}
 
-	public void complexMath(V3VariableProcessor processor, HudderV3Compiler comp, String[] values,
-			char[] operations) throws ExecutionException {
+	public void complexMath(HudderV3Compiler comp, String[] values, char[] operations) throws ExecutionException {
 		int[] value_indexes = new int[values.length];
 		// Is String
 		methodVisitor.visitLdcInsn(false);
@@ -188,7 +243,7 @@ public class V3MethodWriter {
 		
 		for (int i = 0;i<values.length;i++) {
 			Label isNumber = new Label();
-			processor.parseVariable(this, values[i], comp).visitMethod(this);
+			comp.parseVariable(values[i]).visitMethod(this);
 			value_indexes[i] = astore();
 			aload(value_indexes[i]);
 			methodVisitor.visitTypeInsn(Opcodes.INSTANCEOF, Type.getInternalName(Number.class));
@@ -206,9 +261,7 @@ public class V3MethodWriter {
 		methodVisitor.visitJumpInsn(Opcodes.IFEQ, mathOperation);
 
 		// Create StringBuilder
-		methodVisitor.visitTypeInsn(Opcodes.NEW, STRING_BUILDER);
-		methodVisitor.visitInsn(Opcodes.DUP);
-		methodVisitor.visitMethodInsn(Opcodes.INVOKESPECIAL, STRING_BUILDER, "<init>", "()V", false);
+		initStringBuilder();
 		int builder_index = astore();
 		
 		for (int i = 0;i<values.length;i++) {
