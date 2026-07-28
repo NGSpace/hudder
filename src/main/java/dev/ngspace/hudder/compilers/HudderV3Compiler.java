@@ -307,7 +307,8 @@ public class HudderV3Compiler extends AV3Compiler {
 							break;
 						}
 						case WHILE_LOOP_INSTRUCTION: {
-							new WhileInstruction(parameters, block, this, info, filename);
+							new WhileInstruction(parameters, block, this, info, filename)
+									.visit(executeMethod, classWriter);
 //							runtime.addRuntimeElement(new WhileV2RuntimeElement(info, parameters, block, this,
 //									runtime, pos, filename));
 							break;

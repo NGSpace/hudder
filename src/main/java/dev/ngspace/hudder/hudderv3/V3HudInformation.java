@@ -9,7 +9,6 @@ public class V3HudInformation {
 	
 	public V3HudInformation(Object return_value, String TopLeftText, float TLScale, String BottomLeftText, float BLScale,
 		String TopRightText, float TRScale, String BottomRightText, float BRScale, AUIElement[] elements) {
-		System.out.println(return_value);
 		this.hudInformation = new HudInformation(TopLeftText, TLScale, BottomLeftText, BLScale, TopRightText,
 				TRScale, BottomRightText, BRScale, elements);
 		this.return_value = return_value;
