@@ -38,7 +38,6 @@ public class WhileInstruction extends Instruction {
 		methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFEQ, end);
 		
 		comp.compile(methodWriter, classWriter, info, block, filename, end);
-		methodWriter.pop();
 		
 		methodWriter.jumpto(start);
 		

@@ -68,7 +68,7 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 	public void appendStringConstant(String string) {
 		loadBuilder();
 		loadConstant(string);
-		appendToBuilder();
+		appendToBuilderAndPop();
 	}
 	
 	public void loadBuilder() {

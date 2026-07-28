@@ -161,7 +161,7 @@ public class HudderV3Compiler extends AV3Compiler {
 							
 							executeMethod.putLabel(conditionend);
 							
-							executeMethod.appendToBuilder();
+							executeMethod.appendToBuilderAndPop();
 							
 							compileState = TEXT_STATE;
 							conditionsCount++;
@@ -193,9 +193,6 @@ public class HudderV3Compiler extends AV3Compiler {
 								executeMethod.jumpto(breakLabel);
 							} else {
 								parseVariable(elemBuilder.toString()).visitMethod(executeMethod);
-								int endresult = executeMethod.astore();
-								executeMethod.loadBuilder();
-								executeMethod.aload(endresult);
 								executeMethod.appendToBuilderAndPop();
 							}
 							elemBuilder.setLength(0);

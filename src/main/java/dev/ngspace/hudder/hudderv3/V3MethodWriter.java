@@ -227,7 +227,7 @@ public class V3MethodWriter {
 	
 	public int lstore() {
 		methodVisitor.visitVarInsn(Opcodes.LSTORE, ++variableindex);
-		return variableindex;
+		return variableindex++;
 	}
 	
 	
