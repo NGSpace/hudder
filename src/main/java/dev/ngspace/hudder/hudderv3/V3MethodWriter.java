@@ -70,7 +70,7 @@ public class V3MethodWriter {
 	}
 
 	public void getField(String name, Class<?> owner, Class<?> type) {
-		methodVisitor.visitFieldInsn(Opcodes.GETFIELD, Type.getDescriptor(owner),
+		methodVisitor.visitFieldInsn(Opcodes.GETFIELD, Type.getInternalName(owner),
 				name, Type.getDescriptor(type));
 	}
 
@@ -80,7 +80,7 @@ public class V3MethodWriter {
 	}
 
 	public void putField(String name, Class<?> owner, Class<?> type) {
-		methodVisitor.visitFieldInsn(Opcodes.GETFIELD, Type.getDescriptor(owner),
+		methodVisitor.visitFieldInsn(Opcodes.GETFIELD, Type.getInternalName(owner),
 				name, Type.getDescriptor(type));
 	}
 
