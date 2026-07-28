@@ -15,7 +15,7 @@ public class NumberVariableVisitor extends VariableVisitor {
 	}
 
 	@Override
-	public void visitMethod(V3MethodWriter methodWriter) throws ExecutionException {
+	public void visit(V3MethodWriter methodWriter) throws ExecutionException {
 		if (value.startsWith("0x")) {
 			methodWriter.loadConstant(Integer.parseUnsignedInt(value.substring(2), 16));
 		} else if (value.startsWith("#")) {

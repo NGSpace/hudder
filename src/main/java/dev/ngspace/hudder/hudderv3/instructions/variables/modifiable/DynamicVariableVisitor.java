@@ -8,23 +8,32 @@ import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
 
 public class DynamicVariableVisitor extends VariableVisitor {
 
-	public String value;
+	public String variable;
 
 	public DynamicVariableVisitor(AV3Compiler comp, String variable) {
 		super(comp);
-		this.value = variable;
+		this.variable = variable;
 	}
 
 	@Override
-	public void visitMethod(V3MethodWriter methodWriter) throws ExecutionException {
-		if (methodWriter.hasVariable(value.toLowerCase())) {
-			methodWriter.getVariable(value.toLowerCase());
+	public void visit(V3MethodWriter methodWriter) throws ExecutionException {
+		if (methodWriter.hasVariable(variable.toLowerCase())) {
+			methodWriter.getVariable(variable.toLowerCase());
 		} else {
 			methodWriter.aload(0);
-			methodWriter.loadConstant(value.toLowerCase());
+			methodWriter.loadConstant(variable.toLowerCase());
 			methodWriter.call(AVarTextCompiler.class, "get", "(Ljava/lang/String;)Ljava/lang/Object;", false);
 		}
 	}
 	
-	
+	@Override
+	public void visitSetValue(V3MethodWriter methodWriter) {
+		int valueindex = methodWriter.astore();
+		methodWriter.aload(0);
+		methodWriter.loadConstant(variable.toLowerCase());
+		methodWriter.aload(valueindex);
+		methodWriter.call(AVarTextCompiler.class, "put", "(Ljava/lang/String;Ljava/lang/Object;)V",
+				false);
+		methodWriter.aload(valueindex);
+	}
 }

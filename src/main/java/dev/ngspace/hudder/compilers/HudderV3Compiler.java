@@ -145,11 +145,11 @@ public class HudderV3Compiler extends AV3Compiler {
 							for (int i = 0;i<conds.size()-1;i++) {
 								Label elseLabel = new Label();
 								if (i!=conds.size()) {
-									parseVariable(conds.get(i)).visitMethod(executeMethod);
+									parseVariable(conds.get(i)).visit(executeMethod);
 									executeMethod.booleanValue();
 									executeMethod.methodVisitor.visitJumpInsn(Opcodes.IFEQ, elseLabel);
 	
-									parseVariable(conds.get(i+1)).visitMethod(executeMethod);
+									parseVariable(conds.get(i+1)).visit(executeMethod);
 								}
 								
 								executeMethod.jumpto(conditionend);
@@ -158,7 +158,7 @@ public class HudderV3Compiler extends AV3Compiler {
 							}
 							
 							if (conds.size()%2==1)
-								parseVariable(conds.get(conds.size()-1)).visitMethod(executeMethod);
+								parseVariable(conds.get(conds.size()-1)).visit(executeMethod);
 							else
 								executeMethod.loadConstant("");
 							
@@ -195,7 +195,7 @@ public class HudderV3Compiler extends AV3Compiler {
 							if ("break".equalsIgnoreCase(elemBuilder.toString().trim())) {
 								executeMethod.jumpto(breakLabel);
 							} else {
-								parseVariable(elemBuilder.toString()).visitMethod(executeMethod);
+								parseVariable(elemBuilder.toString()).visit(executeMethod);
 								executeMethod.appendToBuilderAndPop();
 							}
 							elemBuilder.setLength(0);
@@ -231,34 +231,34 @@ public class HudderV3Compiler extends AV3Compiler {
 						switch (name) {
 							case "return":
 								returns_value = true;
-								parseVariable(builder[1]).visitMethod(executeMethod);
+								parseVariable(builder[1]).visit(executeMethod);
 								executeMethod.astore(executeMethod.return_value_index);
 								executeMethod.jumpto(executeMethod.finalLabel);
 							case "topleft":
 								executeMethod.selected_builder_index = executeMethod.topleft_builder_index;
 								if (builder.length>1) {
-									parseVariable(builder[1]).visitMethod(executeMethod);
+									parseVariable(builder[1]).visit(executeMethod);
 									executeMethod.astore(executeMethod.topleft_scale_index);
 								}
 								break;
 							case "topright":
 								executeMethod.selected_builder_index = executeMethod.topright_builder_index;
 								if (builder.length>1) {
-									parseVariable(builder[1]).visitMethod(executeMethod);
+									parseVariable(builder[1]).visit(executeMethod);
 									executeMethod.astore(executeMethod.topright_scale_index);
 								}
 								break;
 							case "bottomleft":
 								executeMethod.selected_builder_index = executeMethod.bottomleft_builder_index;
 								if (builder.length>1) {
-									parseVariable(builder[1]).visitMethod(executeMethod);
+									parseVariable(builder[1]).visit(executeMethod);
 									executeMethod.astore(executeMethod.bottomleft_scale_index);
 								}
 								break;
 							case "bottomright":
 								executeMethod.selected_builder_index = executeMethod.bottomright_builder_index;
 								if (builder.length>1) {
-									parseVariable(builder[1]).visitMethod(executeMethod);
+									parseVariable(builder[1]).visit(executeMethod);
 									executeMethod.astore(executeMethod.bottomright_scale_index);
 								}
 								break;
@@ -308,8 +308,6 @@ public class HudderV3Compiler extends AV3Compiler {
 						case WHILE_LOOP_INSTRUCTION: {
 							new WhileInstruction(parameters, block, this, info, filename)
 									.visit(executeMethod, classWriter, breakLabel);
-//							runtime.addRuntimeElement(new WhileV2RuntimeElement(info, parameters, block, this,
-//									runtime, pos, filename));
 							break;
 						}
 						case UNDEFINED_INSTRUCTION:
@@ -343,12 +341,7 @@ public class HudderV3Compiler extends AV3Compiler {
 							}
 							ind--;
 							new IfElseInstuction(statements.toArray(new Statement[statements.size()]),
-									filename, this, info).visit(executeMethod, classWriter, breakLabel);;
-//							runtime.addRuntimeElement(new IfElseV2RuntimeElement(info,
-//									statements.toArray(new Statement[statements.size()]),
-//									runtime,
-//									filename,
-//									this));
+									filename, this, info).visit(executeMethod, classWriter, breakLabel);
 							break;
 						default:
 							throw new ExecutionException("Detached else/else if statement!", -1, -1);

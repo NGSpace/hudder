@@ -102,6 +102,9 @@ public class V3MethodWriter {
 		methodVisitor.visitMethodInsn(Opcodes.INVOKESPECIAL, Type.getInternalName(type), name, sign,
 				isInterface);
 	}
+	public void callInit(Class<?> type, String sign) {
+		callSpecial(type, "<init>", sign, false);
+	}
 
 
 
@@ -224,6 +227,10 @@ public class V3MethodWriter {
 	public void astore(int index) {
 		methodVisitor.visitVarInsn(Opcodes.ASTORE, index);
 	}
+
+	public void aastore() {
+		methodVisitor.visitInsn(Opcodes.AASTORE);
+	}
 	
 	public int lstore() {
 		methodVisitor.visitVarInsn(Opcodes.LSTORE, ++variableindex);
@@ -302,7 +309,7 @@ public class V3MethodWriter {
 		
 		for (int i = 0;i<values.length;i++) {
 			Label isNumber = new Label();
-			comp.parseVariable(values[i]).visitMethod(this);
+			comp.parseVariable(values[i]).visit(this);
 			value_indexes[i] = astore();
 			aload(value_indexes[i]);
 			methodVisitor.visitTypeInsn(Opcodes.INSTANCEOF, Type.getInternalName(Number.class));
@@ -381,5 +388,12 @@ public class V3MethodWriter {
 		loadConstant(exception);
 		callSpecial(RuntimeException.class, "<init>", "(Ljava/lang/String;)V", false);
 		methodVisitor.visitInsn(Opcodes.ATHROW);
+	}
+
+
+
+	public void newArray(Class<?> type) {
+		methodVisitor.visitTypeInsn(Opcodes.ANEWARRAY,
+				Type.getInternalName(type));
 	}
 }

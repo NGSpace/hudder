@@ -30,16 +30,15 @@ public class MethodExecutionInstruction extends Instruction {
 		Label end = new Label();
 		
 		executeMethod.loadConstantUnsafe(builder.length-1);
-		executeMethod.methodVisitor.visitTypeInsn(Opcodes.ANEWARRAY,
-				Type.getInternalName(Object.class));
+		executeMethod.newArray(Object.class);
 		int array_index = executeMethod.astore();
 		for (int i = 1;i<builder.length;i++) {
-			comp.parseVariable(builder[i]).visitMethod(executeMethod);
+			comp.parseVariable(builder[i]).visit(executeMethod);
 			int value_index = executeMethod.astore();
 			executeMethod.aload(array_index);
 			executeMethod.loadConstantUnsafe(i-1);
 			executeMethod.aload(value_index);
-			executeMethod.methodVisitor.visitInsn(Opcodes.AASTORE);
+			executeMethod.aastore();
 		}
 		executeMethod.loadConstant(builder[0].trim());
 		executeMethod.callStatic(HudderV3Helper.class, "hasApiConsumer", "(Ljava/lang/String;)Z", false);

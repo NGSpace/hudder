@@ -24,7 +24,7 @@ public class FunctionCallVariableVisitor extends VariableVisitor {
 	}
 
 	@Override
-	public void visitMethod(V3MethodWriter methodWriter) throws ExecutionException {
+	public void visit(V3MethodWriter methodWriter) throws ExecutionException {
 		Label user_defined = new Label();
 		Label end = new Label();
 		
@@ -33,7 +33,7 @@ public class FunctionCallVariableVisitor extends VariableVisitor {
 				Type.getInternalName(Object.class));
 		int array_index = methodWriter.astore();
 		for (int i = 0;i<args.length;i++) {
-			comp.parseVariable(args[i]).visitMethod(methodWriter);
+			comp.parseVariable(args[i]).visit(methodWriter);
 			int value_index = methodWriter.astore();
 			methodWriter.aload(array_index);
 			methodWriter.loadConstantUnsafe(i);

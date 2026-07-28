@@ -35,7 +35,7 @@ public class WhileInstruction extends Instruction {
 		Label end = new Label();
 		
 		methodWriter.putLabel(start);
-		condition.visitMethod(methodWriter);
+		condition.visit(methodWriter);
 		methodWriter.booleanValue();
 		methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFEQ, end);
 		

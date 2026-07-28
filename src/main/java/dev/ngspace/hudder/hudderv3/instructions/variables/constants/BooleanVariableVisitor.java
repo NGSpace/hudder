@@ -15,7 +15,7 @@ public class BooleanVariableVisitor extends VariableVisitor {
 	}
 
 	@Override
-	public void visitMethod(V3MethodWriter methodWriter) throws ExecutionException {
+	public void visit(V3MethodWriter methodWriter) throws ExecutionException {
 		methodWriter.loadConstant(value);
 	}
 	

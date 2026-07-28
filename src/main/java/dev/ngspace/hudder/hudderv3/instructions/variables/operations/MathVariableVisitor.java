@@ -17,7 +17,7 @@ public class MathVariableVisitor extends VariableVisitor {
 	}
 
 	@Override
-	public void visitMethod(V3MethodWriter writer) throws ExecutionException {
+	public void visit(V3MethodWriter writer) throws ExecutionException {
 		writer.complexMath(comp, values, operations);
 	}
 	

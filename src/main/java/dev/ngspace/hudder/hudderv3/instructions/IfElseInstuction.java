@@ -50,7 +50,7 @@ public class IfElseInstuction extends Instruction {
 			Label nextcondition = new Label();
 			
 			if (statement.condition()!=null) {
-				statement.condition().visitMethod(methodWriter);
+				statement.condition().visit(methodWriter);
 				methodWriter.booleanValue();
 				methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFEQ, nextcondition);
 			}

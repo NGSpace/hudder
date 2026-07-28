@@ -7,6 +7,7 @@ import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.hudderv3.instructions.variables.FunctionCallVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.SystemVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.constants.ArrayConstantVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.constants.BooleanVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.constants.NumberVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.constants.StringVariableVisitor;
@@ -15,6 +16,7 @@ import dev.ngspace.hudder.hudderv3.instructions.variables.modifiable.SetVariable
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.MathVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations.ComparisionVariableVisitor;
 import dev.ngspace.hudder.utils.HudderUtils;
+import dev.ngspace.hudder.v2runtime.values.constants.V2Array;
 
 public class V3VariableProcessor {
 
@@ -89,6 +91,18 @@ public class V3VariableProcessor {
 		String temp = string(value);
 		if (temp!=null) {
 			return new StringVariableVisitor(comp, temp);
+		}
+		
+		
+		
+		// Array constant
+		// Accepts the follow format: "[(any char)]"
+		if (value.matches("\\[[\\s\\S]*\\]")) {
+			
+			// Sends the text between the square brackets to HudderUtils.processParemeters to tokenize the values.
+			
+			return new ArrayConstantVariableVisitor(HudderUtils.processParemeters(value.substring(1, value.length()-1).replace("\n", "")),
+					comp);
 		}
 		
 		

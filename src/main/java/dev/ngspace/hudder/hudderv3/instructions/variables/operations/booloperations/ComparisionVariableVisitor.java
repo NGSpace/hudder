@@ -19,10 +19,10 @@ public class ComparisionVariableVisitor extends VariableVisitor {
 		this.operator = operator;
 	}
 	@Override
-	public void visitMethod(V3MethodWriter methodWriter) throws ExecutionException {
-		comp.parseVariable(val1).visitMethod(methodWriter);
+	public void visit(V3MethodWriter methodWriter) throws ExecutionException {
+		comp.parseVariable(val1).visit(methodWriter);
 		int val1index = methodWriter.astore();
-		comp.parseVariable(val2).visitMethod(methodWriter);
+		comp.parseVariable(val2).visit(methodWriter);
 		int val2index = methodWriter.astore();
 		methodWriter.aload(val1index);
 		methodWriter.aload(val2index);
