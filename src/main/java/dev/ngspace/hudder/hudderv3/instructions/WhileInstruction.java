@@ -37,7 +37,10 @@ public class WhileInstruction extends Instruction {
 		methodWriter.booleanValue();
 		methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFEQ, end);
 		
-		comp.compile(methodWriter, classWriter, info, block, filename);
+		comp.compile(methodWriter, classWriter, info, block, filename, end);
+		methodWriter.pop();
+		
+		methodWriter.jumpto(start);
 		
 		methodWriter.putLabel(end);
 		

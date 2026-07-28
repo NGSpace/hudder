@@ -150,6 +150,7 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 
 
 	public void addExecuteAReturn() {
+		putLabel(finalLabel);
 		methodVisitor.visitTypeInsn(Opcodes.NEW, Type.getInternalName(V3HudInformation.class));
 		methodVisitor.visitInsn(Opcodes.DUP);
 		aload(return_value_index);

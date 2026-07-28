@@ -23,6 +23,7 @@ public class V3MethodWriter {
 	public MethodVisitor methodVisitor;
 	public int variableindex = 0;
 	public String methodName;
+	public Label finalLabel = new Label();
 	public Map<String, Integer> variables = new HashMap<String, Integer>();
 
 	public V3MethodWriter(V3ClassWriter classWriter, String name, Class<?>[] parameters, Class<?> returntype, String signature,
@@ -281,12 +282,13 @@ public class V3MethodWriter {
 	}
 
 	public void end(int Opcode) {
+		putLabel(finalLabel);
 		methodVisitor.visitInsn(Opcode);
 		
 		endNoInsn();
 	}
 
-	public void endNoInsn() {
+	protected void endNoInsn() {
 		methodVisitor.visitMaxs(0, 0);
 		methodVisitor.visitEnd();
 	}

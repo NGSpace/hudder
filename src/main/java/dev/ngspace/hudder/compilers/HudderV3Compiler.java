@@ -39,9 +39,8 @@ public class HudderV3Compiler extends AV3Compiler {
 	
 	@Override
 	public boolean compile(V3ExecuteMethodWriter executeMethod, V3ClassWriter classWriter, HudderConfig info,
-			String text, String filename) throws ExecutionException {
+			String text, String filename, Label breakLabel) throws ExecutionException {
 		
-		Label end = new Label();
 		boolean returns_value = false;
 		
 		StringBuilder elemBuilder = new StringBuilder();
@@ -191,7 +190,7 @@ public class HudderV3Compiler extends AV3Compiler {
 						bracketscount--;
 						if (bracketscount==0) {
 							if ("break".equalsIgnoreCase(elemBuilder.toString().trim())) {
-								executeMethod.jumpto(end);
+								executeMethod.jumpto(breakLabel);
 							} else {
 								parseVariable(elemBuilder.toString()).visitMethod(executeMethod);
 								int endresult = executeMethod.astore();
@@ -234,8 +233,7 @@ public class HudderV3Compiler extends AV3Compiler {
 								returns_value = true;
 								parseVariable(builder[1]).visitMethod(executeMethod);
 								executeMethod.astore(executeMethod.return_value_index);
-//								executeMethod.jumpto(end);
-								executeMethod.addExecuteAReturn();
+								executeMethod.jumpto(executeMethod.finalLabel);
 							case "topleft":
 								executeMethod.selected_builder_index = executeMethod.topleft_builder_index;
 								if (builder.length>1) {
@@ -368,8 +366,6 @@ public class HudderV3Compiler extends AV3Compiler {
 			var pos = getPosition(savedind, text);
 			throw new ExecutionException(getCompilerErrorMessage(compileState), pos.line(), pos.column());
 		}
-		
-		executeMethod.putLabel(end);
 		
 		return returns_value;
 	}

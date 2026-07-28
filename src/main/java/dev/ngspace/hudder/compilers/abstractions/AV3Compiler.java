@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
@@ -41,8 +42,11 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 				String.class
 			});
 		
-		compile(executeMethod, classWriter, info, processedfile, filename);
+		Label end = new Label();
 		
+		compile(executeMethod, classWriter, info, processedfile, filename, end);
+		
+		executeMethod.putLabel(end);
 		executeMethod.end();
 		
 		Class<?> dynamicClass = classWriter.toClass();
@@ -65,7 +69,7 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 	}
 	
 	public abstract boolean compile(V3ExecuteMethodWriter executeMethod, V3ClassWriter classWriter, HudderConfig info,
-			String text, String filename) throws ExecutionException;
+			String text, String filename, Label end) throws ExecutionException;
 	
 
 	public void defineFunctionOrMethod(V3ClassWriter writer, String commands, String[] args, HudderConfig info,
@@ -90,8 +94,10 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 			method.storeVariable(args[i].toLowerCase().trim());
 			method.storeVariable("arg" + (i+1));
 		}
-		
-		boolean hasReturn = compile(method, writer, info, commands, filename);
+
+		Label end = new Label();
+		boolean hasReturn = compile(method, writer, info, commands, filename, end);
+		method.putLabel(end);
 		method.end();
 		
 		if (!hasReturn)
