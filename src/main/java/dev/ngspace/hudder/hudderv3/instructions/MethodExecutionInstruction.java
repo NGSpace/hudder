@@ -25,7 +25,7 @@ public class MethodExecutionInstruction extends Instruction {
 	}
 
 	@Override
-	public void visit(V3ExecuteMethodWriter executeMethod, V3ClassWriter classWriter) throws ExecutionException {
+	public void visit(V3ExecuteMethodWriter executeMethod, V3ClassWriter classWriter, Label breaklabel) throws ExecutionException {
 		Label user_defined = new Label();
 		Label end = new Label();
 		

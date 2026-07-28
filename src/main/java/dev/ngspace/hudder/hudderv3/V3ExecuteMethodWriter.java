@@ -26,6 +26,11 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 	// Return value
 	public int return_value_index;
 
+	public int disabled_builder_index;
+	
+	private boolean builder_disabled;
+	private int previous_builder_index;
+
 	public V3ExecuteMethodWriter(V3ClassWriter classWriter, String name, Class<?>[] args) {
 		super(classWriter, name,
 				args, V3HudInformation.class, null, new String[] {
@@ -44,6 +49,8 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 		bottomleft_builder_index = astore();
 		initStringBuilder();
 		bottomright_builder_index = astore();
+		initStringBuilder();
+		disabled_builder_index = astore();
 		
 		// Default to topleft
 		selected_builder_index = topleft_builder_index;
@@ -66,7 +73,6 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 
 
 	public void appendStringConstant(String string) {
-		loadBuilder();
 		loadConstant(string);
 		appendToBuilderAndPop();
 	}
@@ -173,6 +179,26 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 				"<init>", "(Ljava/lang/Object;Ljava/lang/String;FLjava/lang/String;FLjava/lang/String;FLjava/lang/String;F[Ldev/ngspace/hudder/uielements/AUIElement;)V", false);
 		
 		addAReturn();
+	}
+
+
+
+	public void setBuilderDisabled(boolean b) {
+		builder_disabled = b;
+		if (builder_disabled) {
+			if (selected_builder_index!=disabled_builder_index) {
+				previous_builder_index = selected_builder_index;
+			}
+			selected_builder_index = disabled_builder_index;
+		} else {
+			selected_builder_index = previous_builder_index;
+		}
+	}
+
+
+
+	public boolean isBuilderDisabled() {
+		return builder_disabled;
 	}
 	
 }

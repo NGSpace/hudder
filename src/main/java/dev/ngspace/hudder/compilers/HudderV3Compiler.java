@@ -2,6 +2,7 @@ package dev.ngspace.hudder.compilers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
@@ -14,10 +15,12 @@ import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.hudderv3.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.V3ExecuteMethodWriter;
+import dev.ngspace.hudder.hudderv3.instructions.IfElseInstuction;
+import dev.ngspace.hudder.hudderv3.instructions.IfElseInstuction.Statement;
 import dev.ngspace.hudder.hudderv3.instructions.MethodExecutionInstruction;
 import dev.ngspace.hudder.hudderv3.instructions.WhileInstruction;
 import dev.ngspace.hudder.utils.HudderUtils;
-import dev.ngspace.hudder.v2runtime.runtime_elements.WhileV2RuntimeElement;
+import dev.ngspace.hudder.v2runtime.runtime_elements.IfElseV2RuntimeElement;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 import net.minecraft.network.chat.Component;
 	
@@ -260,7 +263,8 @@ public class HudderV3Compiler extends AV3Compiler {
 								}
 								break;
 							default:
-								new MethodExecutionInstruction(this, builder).visit(executeMethod, classWriter);
+								new MethodExecutionInstruction(this, builder).visit(executeMethod, classWriter,
+										breakLabel);
 						}
 						elemBuilder.setLength(0);
 						cleanup = true;
@@ -303,7 +307,7 @@ public class HudderV3Compiler extends AV3Compiler {
 						}
 						case WHILE_LOOP_INSTRUCTION: {
 							new WhileInstruction(parameters, block, this, info, filename)
-									.visit(executeMethod, classWriter);
+									.visit(executeMethod, classWriter, breakLabel);
 //							runtime.addRuntimeElement(new WhileV2RuntimeElement(info, parameters, block, this,
 //									runtime, pos, filename));
 							break;
@@ -312,39 +316,40 @@ public class HudderV3Compiler extends AV3Compiler {
 							Hudder.showWarningToast(Component.literal("Undefined # instructions deprecated"),
 									Component.literal("Undefined # instructions are deprecated and will be "
 											+ "removed in a future version of Hudder, please use #if instead."));
-//						case IF_INSTRUCTION:// If instuction
-//							List<Statement> statements = new ArrayList<Statement>();
-//							statements.add(new Statement(parameters, block, pos));
-//							for (;ind<text.length();ind++) {
-//								c = text.charAt(ind);
-//								if (c=='#') {
-//									savedind = ind;
-//									pos = getPosition(charPosition, ind, "\n"+text);
-//									ind++;
-//									instructions = getInstruction(text, ind);
-//									ind = instructions.ending_index();
-//									if (instructions.instruction()!=ELSE_INSTRUCTION
-//											&&instructions.instruction()!=ELSE_IF_INSTRUCTION) {
-//										//We've gone deep into another hash instruction, go back.
-//										ind = savedind;
-//										break;
-//									}
-//									codeBlock = getCodeBlock(text, ind);
-//									ind = codeBlock.ending_index();
-//									parameters = instructions.paremeter();
-//									block = codeBlock.code();
-//									statements.add(new Statement(parameters, block, pos));
-//								} else if (!Character.isWhitespace(c)) {
-//									break;
-//								}
-//							}
-//							ind--;
+						case IF_INSTRUCTION:// If instuction
+							List<Statement> statements = new ArrayList<Statement>();
+							statements.add(new Statement(parameters, block));
+							for (;ind<text.length();ind++) {
+								c = text.charAt(ind);
+								if (c=='#') {
+									savedind = ind;
+									ind++;
+									instructions = getInstruction(text, ind);
+									ind = instructions.ending_index();
+									if (instructions.instruction()!=ELSE_INSTRUCTION
+											&&instructions.instruction()!=ELSE_IF_INSTRUCTION) {
+										//We've gone deep into another hash instruction, go back.
+										ind = savedind;
+										break;
+									}
+									codeBlock = getCodeBlock(text, ind);
+									ind = codeBlock.ending_index();
+									parameters = instructions.paremeter();
+									block = codeBlock.code();
+									statements.add(new Statement(parameters, block));
+								} else if (!Character.isWhitespace(c)) {
+									break;
+								}
+							}
+							ind--;
+							new IfElseInstuction(statements.toArray(new Statement[statements.size()]),
+									filename, this, info).visit(executeMethod, classWriter, breakLabel);;
 //							runtime.addRuntimeElement(new IfElseV2RuntimeElement(info,
 //									statements.toArray(new Statement[statements.size()]),
 //									runtime,
 //									filename,
 //									this));
-//							break;
+							break;
 						default:
 							throw new ExecutionException("Detached else/else if statement!", -1, -1);
 					}

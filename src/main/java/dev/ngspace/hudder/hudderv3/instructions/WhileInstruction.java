@@ -28,7 +28,9 @@ public class WhileInstruction extends Instruction {
 	}
 
 	@Override
-	public void visit(V3ExecuteMethodWriter methodWriter, V3ClassWriter classWriter) throws ExecutionException {
+	public void visit(V3ExecuteMethodWriter methodWriter, V3ClassWriter classWriter, Label breaklabel) throws ExecutionException {
+		boolean builderdisabled = methodWriter.isBuilderDisabled();
+		methodWriter.setBuilderDisabled(true);
 		Label start = new Label();
 		Label end = new Label();
 		
@@ -42,6 +44,8 @@ public class WhileInstruction extends Instruction {
 		methodWriter.jumpto(start);
 		
 		methodWriter.putLabel(end);
+		
+		methodWriter.setBuilderDisabled(builderdisabled);
 		
 	}
 	
