@@ -1,5 +1,6 @@
 package dev.ngspace.hudder.compilers.abstractions;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,6 +43,8 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 		
 		compile(executeMethod, classWriter, info, processedfile, filename);
 		
+		executeMethod.end();
+		
 		Class<?> dynamicClass = classWriter.toClass();
 		
 		try {
@@ -50,6 +53,10 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 
 
 			return ((V3HudInformation) method.invoke(instance, info, processedfile, filename)).hudInformation;
+		} catch (InvocationTargetException e) {
+			if (e.getTargetException() instanceof RuntimeException re)
+				throw re;
+			e.printStackTrace();
 		} catch (ReflectiveOperationException e) {
 			e.printStackTrace();
 		}
@@ -85,6 +92,7 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 		}
 		
 		boolean hasReturn = compile(method, writer, info, commands, filename);
+		method.end();
 		
 		if (!hasReturn)
 			user_methods.put(name, finalname);

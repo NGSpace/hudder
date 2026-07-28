@@ -143,6 +143,13 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 
 	@Override
 	public void end() {
+		addExecuteAReturn();
+		endNoInsn();
+	}
+
+
+
+	public void addExecuteAReturn() {
 		methodVisitor.visitTypeInsn(Opcodes.NEW, Type.getInternalName(V3HudInformation.class));
 		methodVisitor.visitInsn(Opcodes.DUP);
 		aload(return_value_index);
@@ -164,7 +171,7 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 		methodVisitor.visitMethodInsn(Opcodes.INVOKESPECIAL, Type.getInternalName(V3HudInformation.class),
 				"<init>", "(Ljava/lang/Object;Ljava/lang/String;FLjava/lang/String;FLjava/lang/String;FLjava/lang/String;F[Ldev/ngspace/hudder/uielements/AUIElement;)V", false);
 		
-		super.end(Opcodes.ARETURN);
+		addAReturn();
 	}
 	
 }

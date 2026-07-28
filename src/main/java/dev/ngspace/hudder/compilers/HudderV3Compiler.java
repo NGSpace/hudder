@@ -14,9 +14,10 @@ import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.hudderv3.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.V3ExecuteMethodWriter;
-import dev.ngspace.hudder.hudderv3.V3MethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.MethodExecutionInstruction;
+import dev.ngspace.hudder.hudderv3.instructions.WhileInstruction;
 import dev.ngspace.hudder.utils.HudderUtils;
+import dev.ngspace.hudder.v2runtime.runtime_elements.WhileV2RuntimeElement;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 import net.minecraft.network.chat.Component;
 	
@@ -231,7 +232,10 @@ public class HudderV3Compiler extends AV3Compiler {
 						switch (name) {
 							case "return":
 								returns_value = true;
-								executeMethod.jumpto(end);
+								parseVariable(builder[1]).visitMethod(executeMethod);
+								executeMethod.astore(executeMethod.return_value_index);
+//								executeMethod.jumpto(end);
+								executeMethod.addExecuteAReturn();
 							case "topleft":
 								executeMethod.selected_builder_index = executeMethod.topleft_builder_index;
 								if (builder.length>1) {
@@ -302,11 +306,12 @@ public class HudderV3Compiler extends AV3Compiler {
 							elemBuilder.setLength(0);
 							break;
 						}
-//						case WHILE_LOOP_INSTRUCTION: {
+						case WHILE_LOOP_INSTRUCTION: {
+							new WhileInstruction(parameters, block, this, info, filename);
 //							runtime.addRuntimeElement(new WhileV2RuntimeElement(info, parameters, block, this,
 //									runtime, pos, filename));
-//							break;
-//						}
+							break;
+						}
 						case UNDEFINED_INSTRUCTION:
 							Hudder.showWarningToast(Component.literal("Undefined # instructions deprecated"),
 									Component.literal("Undefined # instructions are deprecated and will be "
@@ -364,8 +369,6 @@ public class HudderV3Compiler extends AV3Compiler {
 		}
 		
 		executeMethod.putLabel(end);
-		
-		executeMethod.end();
 		
 		return returns_value;
 	}

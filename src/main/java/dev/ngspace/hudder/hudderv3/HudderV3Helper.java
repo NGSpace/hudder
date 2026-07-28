@@ -50,13 +50,13 @@ public class HudderV3Helper {
 	}
 	
 	public static boolean hasApiFunction(String name) {
-		return api_functions.containsKey(name.toLowerCase().trim());
+		return api_functions.containsKey(name);
 	}
 	
 	
 	public static Object callApiFunction(String name, ArrayElementManager uiManager,
 			AVarTextCompiler compiler, Object... values) throws ExecutionException {
-		return api_functions.get(name.toLowerCase().trim()).invoke(uiManager, compiler,
+		return api_functions.get(name).invoke(uiManager, compiler,
 				Stream.of(values).map(ImplObjectWrapper::new).toList().toArray(new ObjectWrapper[0]));
 	}
 	

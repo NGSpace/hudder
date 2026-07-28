@@ -11,12 +11,10 @@ public class DynamicClass extends AVarTextCompiler {
 	@Override
 	public HudInformation execute(HudderConfig info, String processedfile, String filename) throws ExecutionException {
 		StringBuilder builder = new StringBuilder();
-		builder.append(api_function_help(10, "str"));
+		if (true) {
+			throw new RuntimeException("fuckall");
+		}
 		return HudInformation.of(builder.toString());
-	}
-	
-	public Object api_function_help(Object... objects) {
-		return "fuckall";
 	}
 
 	@Override

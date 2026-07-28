@@ -61,7 +61,7 @@ public class V3MethodWriter {
 
 	public void initStringBuilder() {
 		newAndDup(StringBuilder.class);
-		invokeSpecial(StringBuilder.class, "<init>", "()V", false);
+		callSpecial(StringBuilder.class, "<init>", "()V", false);
 	}
 
 	public void getField(String name, Class<?> type) {
@@ -97,7 +97,7 @@ public class V3MethodWriter {
 
 
 
-	public void invokeSpecial(Class<StringBuilder> type, String name, String sign, boolean isInterface) {
+	public void callSpecial(Class<?> type, String name, String sign, boolean isInterface) {
 		methodVisitor.visitMethodInsn(Opcodes.INVOKESPECIAL, Type.getInternalName(type), name, sign,
 				isInterface);
 	}
@@ -283,6 +283,10 @@ public class V3MethodWriter {
 	public void end(int Opcode) {
 		methodVisitor.visitInsn(Opcode);
 		
+		endNoInsn();
+	}
+
+	public void endNoInsn() {
 		methodVisitor.visitMaxs(0, 0);
 		methodVisitor.visitEnd();
 	}
@@ -366,5 +370,14 @@ public class V3MethodWriter {
 		);
 		
 		methodVisitor.visitLabel(end);
+	}
+
+
+
+	public void throwRuntimeException(String exception) {
+		newAndDup(RuntimeException.class);
+		loadConstant(exception);
+		callSpecial(RuntimeException.class, "<init>", "(Ljava/lang/String;)V", false);
+		methodVisitor.visitInsn(Opcodes.ATHROW);
 	}
 }
