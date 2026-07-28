@@ -41,12 +41,12 @@ public class MethodExecutionInstruction extends Instruction {
 			executeMethod.aload(value_index);
 			executeMethod.methodVisitor.visitInsn(Opcodes.AASTORE);
 		}
-		executeMethod.loadConstant(builder[0]);
+		executeMethod.loadConstant(builder[0].trim());
 		executeMethod.callStatic(HudderV3Helper.class, "hasApiConsumer", "(Ljava/lang/String;)Z", false);
 		executeMethod.methodVisitor.visitJumpInsn(Opcodes.IFEQ, user_defined);
 		
 		// API method
-		executeMethod.loadConstant(builder[0]);
+		executeMethod.loadConstant(builder[0].trim());
 		executeMethod.aload(0);
 		executeMethod.getField("uimanager", ArrayElementManager.class);
 		executeMethod.aload(0);
@@ -58,13 +58,13 @@ public class MethodExecutionInstruction extends Instruction {
 		
 		// User method
 		executeMethod.putLabel(user_defined);
-		if (comp.user_methods.containsKey(builder[0])) {
+		if (comp.user_methods.containsKey(builder[0].trim())) {
 			executeMethod.aload(0);
 			executeMethod.aload(1);
 			executeMethod.aload(2);
 			executeMethod.aload(3);
 			executeMethod.aload(array_index);
-			executeMethod.callSelf(comp.user_methods.get(builder[0]), "(Ldev/ngspace/hudder/config/HudderConfig;"
+			executeMethod.callSelf(comp.user_methods.get(builder[0].trim()), "(Ldev/ngspace/hudder/config/HudderConfig;"
 					+ "Ljava/lang/String;"
 					+ "Ljava/lang/String;"
 					+ "[Ljava/lang/Object;)"

@@ -17,11 +17,13 @@ public class DynamicVariableVisitor extends VariableVisitor {
 
 	@Override
 	public void visitMethod(V3MethodWriter methodWriter) throws ExecutionException {
-		methodWriter.aload(0);
-		methodWriter.loadConstant(value.toLowerCase());
-		methodWriter.call(AVarTextCompiler.class, "get", "(Ljava/lang/String;)Ljava/lang/Object;", false);
-		int index = methodWriter.astore();
-		methodWriter.aload(index);
+		if (methodWriter.hasVariable(value.toLowerCase())) {
+			methodWriter.getVariable(value.toLowerCase());
+		} else {
+			methodWriter.aload(0);
+			methodWriter.loadConstant(value.toLowerCase());
+			methodWriter.call(AVarTextCompiler.class, "get", "(Ljava/lang/String;)Ljava/lang/Object;", false);
+		}
 	}
 	
 	

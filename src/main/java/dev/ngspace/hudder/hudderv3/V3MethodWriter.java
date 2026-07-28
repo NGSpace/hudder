@@ -1,7 +1,9 @@
 package dev.ngspace.hudder.hudderv3;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
@@ -21,6 +23,7 @@ public class V3MethodWriter {
 	public MethodVisitor methodVisitor;
 	public int variableindex = 0;
 	public String methodName;
+	public Map<String, Integer> variables = new HashMap<String, Integer>();
 
 	public V3MethodWriter(V3ClassWriter classWriter, String name, Class<?>[] parameters, Class<?> returntype, String signature,
 			String[] exceptions) {
@@ -32,6 +35,26 @@ public class V3MethodWriter {
 						List.of(parameters).stream().map(Type::getType).toList().toArray(new Type[0])),
 				signature, exceptions);
 		methodVisitor.visitCode();
+	}
+	
+	
+
+	public int defineVariable(String name) {
+		methodVisitor.visitInsn(Opcodes.ACONST_NULL);
+		int index = astore();
+		variables.put(name, index);
+		return index;
+	}
+	public boolean hasVariable(String name) {
+		return variables.containsKey(name);
+	}
+	
+	public void storeVariable(String name) {
+		astore(variables.get(name));
+	}
+	
+	public void getVariable(String name) {
+		aload(variables.get(name));
 	}
 
 
@@ -46,8 +69,18 @@ public class V3MethodWriter {
 				name, Type.getDescriptor(type));
 	}
 
+	public void getField(String name, Class<?> owner, Class<?> type) {
+		methodVisitor.visitFieldInsn(Opcodes.GETFIELD, Type.getDescriptor(owner),
+				name, Type.getDescriptor(type));
+	}
+
 	public void putField(String name, Class<?> type) {
 		methodVisitor.visitFieldInsn(Opcodes.PUTFIELD, classWriter.classname,
+				name, Type.getDescriptor(type));
+	}
+
+	public void putField(String name, Class<?> owner, Class<?> type) {
+		methodVisitor.visitFieldInsn(Opcodes.GETFIELD, Type.getDescriptor(owner),
 				name, Type.getDescriptor(type));
 	}
 
@@ -55,6 +88,10 @@ public class V3MethodWriter {
 
 	public void newAndDup(Class<?> type) {
 		methodVisitor.visitTypeInsn(Opcodes.NEW, Type.getInternalName(type));
+		dup();
+	}
+	
+	public void dup() {
 		methodVisitor.visitInsn(Opcodes.DUP);
 	}
 
@@ -63,6 +100,18 @@ public class V3MethodWriter {
 	public void invokeSpecial(Class<StringBuilder> type, String name, String sign, boolean isInterface) {
 		methodVisitor.visitMethodInsn(Opcodes.INVOKESPECIAL, Type.getInternalName(type), name, sign,
 				isInterface);
+	}
+
+
+
+	public void booleanValue() {
+		methodVisitor.visitMethodInsn(
+				Opcodes.INVOKEVIRTUAL,
+				"java/lang/Boolean",
+				"booleanValue",
+				"()Z",
+				false
+		);
 	}
 
 	public void aload(int index) {

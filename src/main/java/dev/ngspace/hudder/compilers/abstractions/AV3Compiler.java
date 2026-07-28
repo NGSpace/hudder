@@ -4,6 +4,8 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.objectweb.asm.Opcodes;
+
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
 import dev.ngspace.hudder.config.HudderConfig;
@@ -71,13 +73,23 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 			Object[].class
 		});
 		
+		for (int i = 0;i<args.length;i++) {
+			method.defineVariable(args[i].toLowerCase().trim());
+			method.defineVariable("arg" + (i+1));
+			method.aload(4);
+			method.loadConstantUnsafe(i);
+			method.methodVisitor.visitInsn(Opcodes.AALOAD);
+			method.dup();
+			method.storeVariable(args[i].toLowerCase().trim());
+			method.storeVariable("arg" + (i+1));
+		}
 		
 		boolean hasReturn = compile(method, writer, info, commands, filename);
 		
 		if (!hasReturn)
 			user_methods.put(name, finalname);
-//		else
-//			user_functions.add(name);
+		else
+			user_functions.put(name, finalname);
 		
 	}
 

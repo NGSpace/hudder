@@ -72,7 +72,7 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 	}
 	
 	public void loadBuilder() {
-		aload(4);
+		aload(selected_builder_index);
 	}
 
 	public void appendToBuilderAndPop() {

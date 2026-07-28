@@ -1,5 +1,6 @@
 package dev.ngspace.hudder.hudderv3.instructions.variables;
 
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
@@ -8,6 +9,7 @@ import dev.ngspace.hudder.compilers.HudderV3Compiler;
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
+import dev.ngspace.hudder.hudderv3.V3HudInformation;
 import dev.ngspace.hudder.hudderv3.V3MethodWriter;
 
 public class FunctionCallVariableVisitor extends VariableVisitor {
@@ -23,8 +25,10 @@ public class FunctionCallVariableVisitor extends VariableVisitor {
 
 	@Override
 	public void visitMethod(V3MethodWriter methodWriter) throws ExecutionException {
-		int[] value_indecies = new int[args.length];
-		methodWriter.loadConstantUnsafe(value_indecies.length);
+		Label user_defined = new Label();
+		Label end = new Label();
+		
+		methodWriter.loadConstantUnsafe(args.length);
 		methodWriter.methodVisitor.visitTypeInsn(Opcodes.ANEWARRAY,
 				Type.getInternalName(Object.class));
 		int array_index = methodWriter.astore();
@@ -36,6 +40,11 @@ public class FunctionCallVariableVisitor extends VariableVisitor {
 			methodWriter.aload(value_index);
 			methodWriter.methodVisitor.visitInsn(Opcodes.AASTORE);
 		}
+		
+		methodWriter.loadConstant(funcName);
+		methodWriter.callStatic(HudderV3Helper.class, "hasApiFunction", "(Ljava/lang/String;)Z", false);
+		methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFEQ, user_defined);
+		
 		methodWriter.loadConstant(funcName);
 		methodWriter.aload(0);
 		methodWriter.getField("uimanager", ArrayElementManager.class);
@@ -44,6 +53,27 @@ public class FunctionCallVariableVisitor extends VariableVisitor {
 		methodWriter.aload(array_index);
 		methodWriter.callStatic(HudderV3Helper.class, "callApiFunction",
 				"(Ljava/lang/String;Ldev/ngspace/hudder/api/functionsandconsumers/ArrayElementManager;Ldev/ngspace/hudder/compilers/abstractions/AVarTextCompiler;[Ljava/lang/Object;)Ljava/lang/Object;", false);
+//		methodWriter.pop();
+		methodWriter.jumpto(end);
+		
+		// User method
+		methodWriter.putLabel(user_defined);
+//		System.out.println(HudderV3Helper.hasApiFunction(funcName));
+		if (comp.user_functions.containsKey(funcName)) {
+			methodWriter.aload(0);
+			methodWriter.aload(1);
+			methodWriter.aload(2);
+			methodWriter.aload(3);
+			methodWriter.aload(array_index);
+			methodWriter.callSelf(comp.user_functions.get(funcName), "(Ldev/ngspace/hudder/config/HudderConfig;"
+					+ "Ljava/lang/String;"
+					+ "Ljava/lang/String;"
+					+ "[Ljava/lang/Object;)"
+					+ Type.getDescriptor(V3HudInformation.class), false);
+			methodWriter.getField("return_value", V3HudInformation.class, Object.class);
+		}
+		
+		methodWriter.putLabel(end);
 		
 	}
 	

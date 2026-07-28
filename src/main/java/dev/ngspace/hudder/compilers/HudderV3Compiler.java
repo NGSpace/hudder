@@ -5,22 +5,17 @@ import java.util.Arrays;
 
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.compilers.abstractions.AV2Compiler.CodeBlock;
 import dev.ngspace.hudder.compilers.abstractions.AV2Compiler.Instruction;
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.ExecutionException;
-import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.V3ExecuteMethodWriter;
 import dev.ngspace.hudder.hudderv3.V3MethodWriter;
-import dev.ngspace.hudder.hudderv3.V3VariableProcessor;
 import dev.ngspace.hudder.hudderv3.instructions.MethodExecutionInstruction;
-import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
 import dev.ngspace.hudder.utils.HudderUtils;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 import net.minecraft.network.chat.Component;
@@ -142,41 +137,31 @@ public class HudderV3Compiler extends AV3Compiler {
 							conditionOrValue.setLength(0);
 						} else if (c=='%') {
 							conds.add(conditionOrValue.toString());
-							V3MethodWriter writer = classWriter.createMethod("condition"+conditionsCount,
-									new Class<?>[0],
-									Object.class,
-									null,
-									new String[] {
-											"dev/ngspace/hudder/exceptions/ExecutionException"
-										});
+							Label conditionend = new Label();
 							
-							for (int i = 0;i<conds.size();i+=2) {
+							for (int i = 0;i<conds.size()-1;i++) {
 								Label elseLabel = new Label();
 								if (i!=conds.size()) {
 									parseVariable(conds.get(i)).visitMethod(executeMethod);
-									writer.loadConstant(true);// The other value
-									
-									writer.methodVisitor.visitJumpInsn(Opcodes.IF_ACMPNE, elseLabel);
-									
+									executeMethod.booleanValue();
+									executeMethod.methodVisitor.visitJumpInsn(Opcodes.IFEQ, elseLabel);
+	
 									parseVariable(conds.get(i+1)).visitMethod(executeMethod);
 								}
 								
-								writer.addAReturn();
-								writer.putLabel(elseLabel);
-								
+								executeMethod.jumpto(conditionend);
+								executeMethod.putLabel(elseLabel);
 								i++;
 							}
+							
 							if (conds.size()%2==1)
 								parseVariable(conds.get(conds.size()-1)).visitMethod(executeMethod);
 							else
-								writer.loadConstant("");
-							writer.end(Opcodes.ARETURN);
+								executeMethod.loadConstant("");
 							
-							executeMethod.aload(0);
+							executeMethod.putLabel(conditionend);
 							
-							executeMethod.callSelf("condition"+conditionsCount, "()Ljava/lang/Object;", false);
-							executeMethod.appendToBuilderAndPop();
-							
+							executeMethod.appendToBuilder();
 							
 							compileState = TEXT_STATE;
 							conditionsCount++;
@@ -245,7 +230,8 @@ public class HudderV3Compiler extends AV3Compiler {
 						String name = builder[0].toLowerCase().trim();
 						switch (name) {
 							case "return":
-								throw new UnsupportedOperationException("NO METHOD NO RETURN");
+								returns_value = true;
+								executeMethod.jumpto(end);
 							case "topleft":
 								executeMethod.selected_builder_index = executeMethod.topleft_builder_index;
 								if (builder.length>1) {
@@ -276,10 +262,6 @@ public class HudderV3Compiler extends AV3Compiler {
 								break;
 							default:
 								new MethodExecutionInstruction(this, builder).visit(executeMethod, classWriter);
-						}
-						if (builder.length==2&&name.equals("return")) {
-							throw new UnsupportedOperationException("NO METHOD NO RETURN");
-//							runtime.addRuntimeElement(new ReturnV2RuntimeElement(builder[1],this,runtime,line,charpos));
 						}
 						elemBuilder.setLength(0);
 						cleanup = true;
