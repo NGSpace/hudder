@@ -49,6 +49,11 @@ public class HudderV3Helper {
 		};
 	}
 	
+	public static String cleanDouble(double d) {
+	    if(d == (long) d) return Long.toString((long)d);
+	    else return Double.toString((long)d);
+	}
+	
 	public static boolean hasApiFunction(String name) {
 		return api_functions.containsKey(name);
 	}

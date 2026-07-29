@@ -21,7 +21,6 @@ import dev.ngspace.hudder.hudderv3.instructions.IfElseInstuction.Statement;
 import dev.ngspace.hudder.hudderv3.instructions.MethodExecutionInstruction;
 import dev.ngspace.hudder.hudderv3.instructions.WhileInstruction;
 import dev.ngspace.hudder.utils.HudderUtils;
-import dev.ngspace.hudder.v2runtime.runtime_elements.ForV2RuntimeElement;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 import net.minecraft.network.chat.Component;
 	
@@ -50,7 +49,6 @@ public class HudderV3Compiler extends AV3Compiler {
 		StringBuilder elemBuilder = new StringBuilder();
 		
 		int bracketscount = 0;
-		int conditionsCount = 0;
 
 		boolean quotesafe = false;
 		boolean backslashsafe = false;
@@ -168,7 +166,6 @@ public class HudderV3Compiler extends AV3Compiler {
 							executeMethod.appendToBuilderAndPop();
 							
 							compileState = TEXT_STATE;
-							conditionsCount++;
 							break;
 						} else {
 							conditionOrValue.append(c);

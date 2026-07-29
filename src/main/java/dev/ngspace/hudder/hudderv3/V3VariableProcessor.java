@@ -1,6 +1,7 @@
 package dev.ngspace.hudder.hudderv3;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.exceptions.ExecutionException;
@@ -14,9 +15,18 @@ import dev.ngspace.hudder.hudderv3.instructions.variables.constants.StringVariab
 import dev.ngspace.hudder.hudderv3.instructions.variables.modifiable.ArrayReadVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.modifiable.DynamicVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.modifiable.SetVariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.modifiable.TemporaryVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.MathVariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.operations.PostIncDecVariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.operations.PreIncDecVariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.operations.TernaryVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations.ComparisionVariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations.LogicalAndVariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations.LogicalOrVariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations.NegateVariableVisitor;
 import dev.ngspace.hudder.utils.HudderUtils;
+import dev.ngspace.hudder.v2runtime.values.modifiable.V2TempDynamicVar;
+import dev.ngspace.hudder.v2runtime.values.operations.V2TernaryOperator;
 
 public class V3VariableProcessor {
 
@@ -69,6 +79,68 @@ public class V3VariableProcessor {
 			if (isSafe) {
 				return parseVariable(value.substring(1, value.length()-1), comp);
 			}
+		}
+		
+		
+		
+		
+		if (value.startsWith("if ")) {
+			StringBuilder condition = new StringBuilder();
+			int index = 3;
+			int parentheses = 0;
+			for (;index<value.length();index++) {
+				char c = value.charAt(index);
+				if (c=='"') {
+					boolean escape = false;
+					condition.append(c);
+					index++;
+					for (;index<value.length();index++) {
+						c = value.charAt(index);
+						condition.append(c);
+						if (c=='"'&&!escape) {
+							break;
+						}
+						if (c=='\\'&&!escape) {
+							escape = true;
+						}
+					}
+					continue;
+				}
+				if (parentheses==0&&value.indexOf(" then ", index)==index) break;
+				if (c == '(') parentheses++;
+				if (c == ')') parentheses--;
+				
+				condition.append(c);
+			}
+			index+=5;
+			parentheses = 0;
+			StringBuilder firstvalue = new StringBuilder();
+			for (;index<value.length();index++) {
+				char c = value.charAt(index);
+				if (c=='"') {
+					boolean escape = false;
+					firstvalue.append(c);
+					index++;
+					for (;index<value.length();index++) {
+						c = value.charAt(index);
+						firstvalue.append(c);
+						if (c=='"'&&!escape) {
+							break;
+						}
+						if (c=='\\'&&!escape) {
+							escape = true;
+						}
+					}
+					continue;
+				}
+				if (parentheses==0&&value.indexOf(" else ", index)==index) break;
+				if (c == '(') parentheses++;
+				if (c == ')') parentheses--;
+				
+				firstvalue.append(c);
+			}
+			index+=6;
+			return new TernaryVariableVisitor(comp, condition.toString(), firstvalue.toString(), value.substring(index));
 		}
 		
 		
@@ -148,6 +220,12 @@ public class V3VariableProcessor {
 		
 		
 		
+		// Temp dynamic variable
+		// Is it a variable name that starts with _?
+		if (value.matches("_[A-Za-z\\d_]*")) return new TemporaryVariableVisitor(comp, value);
+		
+		
+		
 		// Read Array
 		// Accepts the following format: "(any char)+(space)?[(any char)]".
 		if (value.matches(".+ *\\[.+\\]"))
@@ -189,6 +267,20 @@ public class V3VariableProcessor {
 				}
 			}
 		}
+		
+		
+		
+		//Logical OR operator
+		VariableVisitor[] orValues = logicalOperator('|', value, comp);
+		if (orValues.length>1)
+			return new LogicalOrVariableVisitor(orValues, comp);
+		
+		
+		
+		//Logical AND operator
+		VariableVisitor[] andvalues = logicalOperator('&', value, comp);
+		if (andvalues.length>1)
+			return new LogicalAndVariableVisitor(andvalues, comp);
 
 		//Comparing values
 		String operator = getOperator(value);
@@ -214,6 +306,19 @@ public class V3VariableProcessor {
 			if (parenthesses==0) {
 				return new ComparisionVariableVisitor(comp, v[0], v[1], operator);
 			}
+		}
+
+		
+		// Post Increase and Decrease Operator
+		if (value.matches("[\\s\\S]+(\\+\\+|--)")) {
+			return new PostIncDecVariableVisitor(value.substring(0,value.length()-2), comp,
+					"+".equals(value.substring(value.length()-1)));
+		}
+		
+		// Pre Increase and Decrease Operator
+		if (value.matches("(\\+\\+|--)[\\s\\S]+")) {
+			return new PreIncDecVariableVisitor(value.substring(2), comp,
+					"+".equals(value.substring(0, 1)));
 		}
 			
 			
@@ -275,8 +380,66 @@ public class V3VariableProcessor {
 			values = addToArray(values, mathvalue.toString());
 			return new MathVariableVisitor(values, operations, comp);
 		}
-
+		
+		
+		
+		
+		// ! Operator
+		if (value.matches("![\\s\\S]+"))
+			return new NegateVariableVisitor(comp, value.substring(1));
+		
+		
+		
+		
+		// Fallback
 		throw new ExecutionException("Untokenizable variable: " + value, -1, -1);
+	}
+	
+	
+	
+	private VariableVisitor[] logicalOperator(char op, String value, AV3Compiler comp) throws ExecutionException {
+		VariableVisitor[] values = new VariableVisitor[0];
+		StringBuilder builder = new StringBuilder();
+		for (int i = 0;i<value.length();i++) {
+			char c = value.charAt(i);
+			if (c=='"'&&builder.isEmpty()) {
+				boolean safe = false;
+				i++;
+				builder.append(c);
+				for (;i<value.length();i++) {
+					c = value.charAt(i);
+					if (c=='\\'&&!safe) safe = true; else {
+						safe = false;
+						builder.append(c);
+						if (c=='"'&&!safe) break;
+					}
+				}
+				continue;
+			}
+			if (c=='('&&builder.isEmpty()) {
+				int parentheses = 1;
+				i++;
+				for (;i<value.length();i++) {
+					c = value.charAt(i);
+					if (c=='(') parentheses++;
+					if (c==')') parentheses--;
+					if (parentheses==0) break;
+					builder.append(c);
+				}
+				continue;
+			}
+			if (c==op&&i+1<value.length()&&value.charAt(i+1)==op) {
+				i++;
+				values = addToArray(values, comp.parseVariable(builder.toString()));
+				builder.setLength(0);
+				continue;
+			}
+			
+			builder.append(c);
+		}
+		if (!Objects.equals(value, builder.toString()))
+			return addToArray(values, comp.parseVariable(builder.toString()));
+		else return values;
 	}
 	
 	private static String string(String value) {

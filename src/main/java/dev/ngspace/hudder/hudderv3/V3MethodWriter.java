@@ -1,6 +1,5 @@
 package dev.ngspace.hudder.hudderv3;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,8 +10,6 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
-import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
-import dev.ngspace.hudder.exceptions.ExecutionException;
 
 public class V3MethodWriter {
 	
@@ -98,12 +95,24 @@ public class V3MethodWriter {
 
 
 
+	public void dup2() {
+		methodVisitor.visitInsn(Opcodes.DUP2);
+	}
+
+
+
 	public void callSpecial(Class<?> type, String name, String sign, boolean isInterface) {
 		methodVisitor.visitMethodInsn(Opcodes.INVOKESPECIAL, Type.getInternalName(type), name, sign,
 				isInterface);
 	}
 	public void callInit(Class<?> type, String sign) {
 		callSpecial(type, "<init>", sign, false);
+	}
+
+
+
+	public void checkcast(Class<?> type) {
+	    methodVisitor.visitTypeInsn(Opcodes.CHECKCAST, Type.getInternalName(type));
 	}
 
 
@@ -126,6 +135,18 @@ public class V3MethodWriter {
 				"java/lang/Number",
 				"intValue",
 				"()I",
+				false
+		);
+	}
+
+
+
+	public void doubleValue() {
+		methodVisitor.visitMethodInsn(
+				Opcodes.INVOKEVIRTUAL,
+				"java/lang/Number",
+				"doubleValue",
+				"()D",
 				false
 		);
 	}
@@ -183,19 +204,17 @@ public class V3MethodWriter {
 		methodVisitor.visitLdcInsn(constant);
 	}
 	public void loadConstant(double constant) {
-		if (constant%1==0) {
-			loadConstant((long)constant);
-		} else {
-			methodVisitor.visitLdcInsn(constant);
-			//Convert to Object
-			methodVisitor.visitMethodInsn(
-					Opcodes.INVOKESTATIC,
-					"java/lang/Double",
-					"valueOf",
-					"(D)Ljava/lang/Double;",
-					false
-			);
-		}
+		methodVisitor.visitLdcInsn(constant);
+		// Preserve Double values even when they have no fractional part. V2 represents
+		// every numeric literal as a Double, and functions such as str() expose that
+		// distinction through Double.toString() (for example, str(10) -> "10.0").
+		methodVisitor.visitMethodInsn(
+				Opcodes.INVOKESTATIC,
+				"java/lang/Double",
+				"valueOf",
+				"(D)Ljava/lang/Double;",
+				false
+		);
 	}
 	public void loadConstant(float constant) {
 		if (constant%1==0) {
@@ -236,6 +255,12 @@ public class V3MethodWriter {
 				"(Z)Ljava/lang/Boolean;",
 				false
 			);
+	}
+
+
+
+	public void nullConstant() {
+		methodVisitor.visitInsn(Opcodes.ACONST_NULL);
 	}
 	
 	public int astore() {
@@ -329,87 +354,6 @@ public class V3MethodWriter {
 	protected void endNoInsn() {
 		methodVisitor.visitMaxs(0, 0);
 		methodVisitor.visitEnd();
-	}
-
-	public void complexMath(AV3Compiler comp, String[] values, char[] operations) throws ExecutionException {
-		int[] value_indexes = new int[values.length];
-		// Is String
-		methodVisitor.visitLdcInsn(false);
-		methodVisitor.visitVarInsn(Opcodes.ISTORE, ++variableindex);
-		int is_string_index = variableindex;
-		
-		for (int i = 0;i<values.length;i++) {
-			Label isNumber = new Label();
-			comp.parseVariable(values[i]).visit(this);
-			value_indexes[i] = astore();
-			aload(value_indexes[i]);
-			methodVisitor.visitTypeInsn(Opcodes.INSTANCEOF, Type.getInternalName(Number.class));
-			methodVisitor.visitJumpInsn(Opcodes.IFNE, isNumber);
-
-			methodVisitor.visitLdcInsn(true);
-			methodVisitor.visitVarInsn(Opcodes.ISTORE, is_string_index);
-			
-			methodVisitor.visitLabel(isNumber);
-		}
-		
-		methodVisitor.visitVarInsn(Opcodes.ILOAD, is_string_index);
-		Label mathOperation = new Label();
-		Label end = new Label();
-		methodVisitor.visitJumpInsn(Opcodes.IFEQ, mathOperation);
-
-		// Create StringBuilder
-		initStringBuilder();
-		int builder_index = astore();
-		
-		for (int i = 0;i<values.length;i++) {
-			aload(builder_index);
-			aload(value_indexes[i]);
-			methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, STRING_BUILDER, "append",
-					"(Ljava/lang/Object;)L"+STRING_BUILDER+";", false);
-			pop();
-		}
-		
-		aload(builder_index);
-		call(StringBuilder.class, "toString", "()Ljava/lang/String;", false);
-		methodVisitor.visitJumpInsn(Opcodes.GOTO, end);
-		
-		methodVisitor.visitLabel(mathOperation);
-		
-		ArrayList<Character> final_operations = new ArrayList<Character>();
-
-		aloadDouble(value_indexes[0]);
-		for (int i = 0;i<operations.length;i++) {
-			aloadDouble(value_indexes[i+1]);
-			if (operations[i]=='*') {
-				methodVisitor.visitInsn(Opcodes.DMUL);
-			} else if (operations[i]=='/') {
-				methodVisitor.visitInsn(Opcodes.DDIV);
-			} else if (operations[i]=='%') {
-				methodVisitor.visitInsn(Opcodes.DREM);
-			} else {
-				final_operations.add(operations[i]);
-			}
-		}
-		
-		for (int i = final_operations.size()-1;i>=0;i--) {
-			if (final_operations.get(i)=='+') {
-				final_operations.remove(i);
-				methodVisitor.visitInsn(Opcodes.DADD);
-			} else if (final_operations.get(i)=='-') {
-				final_operations.remove(i);
-				methodVisitor.visitInsn(Opcodes.DSUB);
-			}
-		}
-
-		methodVisitor.visitMethodInsn(
-				Opcodes.INVOKESTATIC,
-				"java/lang/Double",
-				"valueOf",
-				"(D)Ljava/lang/Double;",
-				false
-		);
-		
-		methodVisitor.visitLabel(end);
 	}
 
 

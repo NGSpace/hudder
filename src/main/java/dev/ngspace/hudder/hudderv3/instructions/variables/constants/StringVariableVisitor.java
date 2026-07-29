@@ -7,7 +7,7 @@ import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
 
 public class StringVariableVisitor extends VariableVisitor {
 
-	private String value;
+	public String value;
 
 	public StringVariableVisitor(AV3Compiler comp, String value) {
 		super(comp);

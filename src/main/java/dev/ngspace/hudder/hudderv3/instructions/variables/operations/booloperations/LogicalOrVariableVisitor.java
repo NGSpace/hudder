@@ -1,0 +1,41 @@
+package dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations;
+
+import org.objectweb.asm.Label;
+import org.objectweb.asm.Opcodes;
+
+import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
+import dev.ngspace.hudder.exceptions.ExecutionException;
+import dev.ngspace.hudder.hudderv3.V3MethodWriter;
+import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
+
+public class LogicalOrVariableVisitor extends VariableVisitor {
+
+	private VariableVisitor[] values;
+
+	public LogicalOrVariableVisitor(VariableVisitor[] values, AV3Compiler comp) {
+		super(comp);
+		this.values = values;
+	}
+
+	@Override
+	public void visit(V3MethodWriter methodWriter) throws ExecutionException {
+		Label end = new Label();
+		Label true_value = new Label();
+		
+		for (int i = 0;i<values.length;i++) {
+			values[i].visit(methodWriter);
+			methodWriter.checkcast(Boolean.class);
+			methodWriter.booleanValue();
+			methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFNE, true_value);
+		}
+		methodWriter.loadConstant(false);
+		methodWriter.jumpto(end);
+		
+		methodWriter.putLabel(true_value);
+		
+		methodWriter.loadConstant(true);
+		
+		methodWriter.putLabel(end);
+	}
+	
+}
