@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.exceptions.ExecutionException;
+import dev.ngspace.hudder.hudderv3.instructions.ArrayReadVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.FunctionCallVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.SystemVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
@@ -144,6 +145,13 @@ public class V3VariableProcessor {
 		if (matchesVariableRegex) {
 			return new DynamicVariableVisitor(comp, value.toLowerCase());
 		}
+		
+		
+		
+		// Read Array
+		// Accepts the following format: "(any char)+(space)?[(any char)]".
+		if (value.matches(".+ *\\[.+\\]"))
+			return new ArrayReadVariableVisitor(comp, value);
 		
 		
 		// Function variable

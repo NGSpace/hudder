@@ -2,7 +2,6 @@ package dev.ngspace.hudder.hudderv3;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -119,6 +118,18 @@ public class V3MethodWriter {
 		);
 	}
 
+
+
+	public void intValue() {
+		methodVisitor.visitMethodInsn(
+				Opcodes.INVOKEVIRTUAL,
+				"java/lang/Number",
+				"intValue",
+				"()I",
+				false
+		);
+	}
+
 	public void aload(int index) {
 		methodVisitor.visitVarInsn(Opcodes.ALOAD, index);
 	}
@@ -127,6 +138,9 @@ public class V3MethodWriter {
 	}
 	public void dload(int index) {
 		methodVisitor.visitVarInsn(Opcodes.DLOAD, index);
+	}
+	public void aaload() {
+		methodVisitor.visitInsn(Opcodes.AALOAD);
 	}
 	public void aloadDouble(int index) {
 		methodVisitor.visitVarInsn(Opcodes.ALOAD, index);

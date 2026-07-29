@@ -1,7 +1,5 @@
 package dev.ngspace.hudder.hudderv3;
 
-import java.util.Iterator;
-
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
