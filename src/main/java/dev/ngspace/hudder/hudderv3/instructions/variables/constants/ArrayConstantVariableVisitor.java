@@ -25,7 +25,7 @@ public class ArrayConstantVariableVisitor extends VariableVisitor {
 		methodWriter.callInit(ArrayList.class, "(I)V");
 		for (int i = 0;i<values.length;i++) {
 			methodWriter.dup();
-			values[0].visit(methodWriter);
+			values[i].visit(methodWriter);
 			methodWriter.call(ArrayList.class, "add", "(Ljava/lang/Object;)Z", false);
 			methodWriter.pop();// Add returns a boolean, burn it.
 		}
