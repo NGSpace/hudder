@@ -16,7 +16,6 @@ import dev.ngspace.hudder.hudderv3.instructions.variables.modifiable.SetVariable
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.MathVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations.ComparisionVariableVisitor;
 import dev.ngspace.hudder.utils.HudderUtils;
-import dev.ngspace.hudder.v2runtime.values.constants.V2Array;
 
 public class V3VariableProcessor {
 

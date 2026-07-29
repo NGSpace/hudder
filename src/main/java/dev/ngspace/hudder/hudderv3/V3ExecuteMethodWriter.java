@@ -1,5 +1,7 @@
 package dev.ngspace.hudder.hudderv3;
 
+import java.util.Iterator;
+
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
@@ -26,6 +28,7 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 	// Return value
 	public int return_value_index;
 
+	public int mute_builder_index;
 	public int disabled_builder_index;
 	
 	private boolean builder_disabled;
@@ -51,6 +54,8 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 		bottomright_builder_index = astore();
 		initStringBuilder();
 		disabled_builder_index = astore();
+		initStringBuilder();
+		mute_builder_index = astore();
 		
 		// Default to topleft
 		selected_builder_index = topleft_builder_index;

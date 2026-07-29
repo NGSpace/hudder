@@ -15,12 +15,13 @@ import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.hudderv3.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.V3ExecuteMethodWriter;
+import dev.ngspace.hudder.hudderv3.instructions.ForInstruction;
 import dev.ngspace.hudder.hudderv3.instructions.IfElseInstuction;
 import dev.ngspace.hudder.hudderv3.instructions.IfElseInstuction.Statement;
 import dev.ngspace.hudder.hudderv3.instructions.MethodExecutionInstruction;
 import dev.ngspace.hudder.hudderv3.instructions.WhileInstruction;
 import dev.ngspace.hudder.utils.HudderUtils;
-import dev.ngspace.hudder.v2runtime.runtime_elements.IfElseV2RuntimeElement;
+import dev.ngspace.hudder.v2runtime.runtime_elements.ForV2RuntimeElement;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 import net.minecraft.network.chat.Component;
 	
@@ -234,6 +235,9 @@ public class HudderV3Compiler extends AV3Compiler {
 								parseVariable(builder[1]).visit(executeMethod);
 								executeMethod.astore(executeMethod.return_value_index);
 								executeMethod.jumpto(executeMethod.finalLabel);
+							case "mute":
+								executeMethod.selected_builder_index = executeMethod.mute_builder_index;
+								break;
 							case "topleft":
 								executeMethod.selected_builder_index = executeMethod.topleft_builder_index;
 								if (builder.length>1) {
@@ -286,17 +290,17 @@ public class HudderV3Compiler extends AV3Compiler {
 					String block = codeBlock.code();
 					
 					switch (instruction_code) {
-//						case FOR_LOOP_INSTRUCTION: {
-//							String[] split = parameters.split(" in ", 2);
-//							if (split.length<2) 
-//								throw new CompileException("Invalid for loop syntax: \"" + parameters + "\"", pos);
-//							String variablename = split[0];
-//							String value = split[1];
-//							elemBuilder.setLength(0);
-//							runtime.addRuntimeElement(new ForV2RuntimeElement(info, variablename, value,
-//									block, this, runtime, pos, filename));
-//							break;
-//						}
+						case FOR_LOOP_INSTRUCTION: {
+							String[] split = parameters.split(" in ", 2);
+							if (split.length<2) 
+								throw new ExecutionException("Invalid for loop syntax: \"" + parameters + "\"", -1, -1);
+							String variablename = split[0];
+							String value = split[1];
+							elemBuilder.setLength(0);
+							new ForInstruction(variablename, value, block, this, info, filename)
+									.visit(executeMethod, classWriter, breakLabel);
+							break;
+						}
 						case DEFINE_INSTRUCTION: {
 							String[] builder = HudderUtils.processParemeters(parameters);
 							String name = builder[0];

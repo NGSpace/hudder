@@ -2,6 +2,7 @@ package dev.ngspace.hudder.hudderv3;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -250,6 +251,13 @@ public class V3MethodWriter {
 	public void callDataVariableRegistry() {
 		methodVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, VAR_REGISTRY, "getAny",
 				"(Ljava/lang/String;)Ljava/lang/Object;", false);
+	}
+
+
+
+	public void callInterface(Class<?> clazz, String name, String descriptor) {
+		methodVisitor.visitMethodInsn(Opcodes.INVOKEINTERFACE, Type.getInternalName(clazz), name, descriptor,
+				true);
 	}
 
 	public void callStatic(Class<?> clazz, String name, String descriptor, boolean isInterface) {
