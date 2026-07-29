@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.exceptions.ExecutionException;
-import dev.ngspace.hudder.hudderv3.instructions.ArrayReadVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.FunctionCallVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.SystemVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
@@ -12,6 +11,7 @@ import dev.ngspace.hudder.hudderv3.instructions.variables.constants.ArrayConstan
 import dev.ngspace.hudder.hudderv3.instructions.variables.constants.BooleanVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.constants.NumberVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.constants.StringVariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.modifiable.ArrayReadVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.modifiable.DynamicVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.modifiable.SetVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.MathVariableVisitor;

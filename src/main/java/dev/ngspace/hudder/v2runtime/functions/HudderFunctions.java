@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.w3c.dom.ls.LSOutput;
+
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableFunction;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.Binder;
@@ -37,7 +39,6 @@ public class HudderFunctions {
 		}, 1, "int", "num", "number", "double");
 		bindFunction(binder, (_,_,args) -> {
 
-			
 			Object value = args[0].get();
 			
 			if (args.length==2&&(boolean) args[1].get()&&value instanceof Number num)

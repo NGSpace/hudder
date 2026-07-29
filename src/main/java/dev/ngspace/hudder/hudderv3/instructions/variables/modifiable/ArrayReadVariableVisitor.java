@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.hudderv3.instructions;
+package dev.ngspace.hudder.hudderv3.instructions.variables.modifiable;
 
 import java.util.List;
 
@@ -90,7 +90,7 @@ public class ArrayReadVariableVisitor extends VariableVisitor {
 		indexValue.visit(methodWriter);
 		methodWriter.intValue();
 		methodWriter.dup();
-		int index_index = methodWriter.astore();
+		int index_index = methodWriter.istore();
 		methodWriter.methodVisitor.visitInsn(Opcodes.ISUB);
 		methodWriter.dup();
 		methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFEQ, add);
@@ -102,7 +102,7 @@ public class ArrayReadVariableVisitor extends VariableVisitor {
 		methodWriter.putLabel(set);
 
 		methodWriter.aload(list_index);
-		methodWriter.aload(index_index);
+		methodWriter.iload(index_index);
 		methodWriter.aload(value_index);
 		methodWriter.callInterface(List.class, "set", "(ILjava/lang/Object;)Ljava/lang/Object;");
 		methodWriter.pop();
@@ -117,5 +117,7 @@ public class ArrayReadVariableVisitor extends VariableVisitor {
 		methodWriter.pop();
 		
 		methodWriter.putLabel(end);
+		
+		methodWriter.aload(value_index);
 	}
 }

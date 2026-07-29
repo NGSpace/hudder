@@ -139,6 +139,10 @@ public class V3MethodWriter {
 	public void dload(int index) {
 		methodVisitor.visitVarInsn(Opcodes.DLOAD, index);
 	}
+	public void iload(int index) {
+		methodVisitor.visitVarInsn(Opcodes.ILOAD, index);
+	}
+	
 	public void aaload() {
 		methodVisitor.visitInsn(Opcodes.AALOAD);
 	}
@@ -236,6 +240,11 @@ public class V3MethodWriter {
 	
 	public int astore() {
 		methodVisitor.visitVarInsn(Opcodes.ASTORE, ++variableindex);
+		return variableindex;
+	}
+		
+	public int istore() {
+		methodVisitor.visitVarInsn(Opcodes.ISTORE, ++variableindex);
 		return variableindex;
 	}
 	
