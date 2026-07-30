@@ -56,6 +56,7 @@ public class IfElseInstuction extends Instruction {
 			}
 			
 			comp.compile(methodWriter, classWriter, info, statement.code(), filename, breaklabel);
+			methodWriter.jumpto(end);
 			
 			methodWriter.putLabel(nextcondition);
 		}

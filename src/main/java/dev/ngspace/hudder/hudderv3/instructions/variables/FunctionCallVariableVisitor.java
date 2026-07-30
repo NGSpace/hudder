@@ -41,11 +41,11 @@ public class FunctionCallVariableVisitor extends VariableVisitor {
 			methodWriter.methodVisitor.visitInsn(Opcodes.AASTORE);
 		}
 		
-		methodWriter.loadConstant(funcName.toLowerCase().trim());
+		methodWriter.loadConstant(funcName);
 		methodWriter.callStatic(HudderV3Helper.class, "hasApiFunction", "(Ljava/lang/String;)Z", false);
 		methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFEQ, user_defined);
 		
-		methodWriter.loadConstant(funcName.toLowerCase().trim());
+		methodWriter.loadConstant(funcName);
 		methodWriter.aload(0);
 		methodWriter.getField("uimanager", ArrayElementManager.class);
 		methodWriter.aload(0);

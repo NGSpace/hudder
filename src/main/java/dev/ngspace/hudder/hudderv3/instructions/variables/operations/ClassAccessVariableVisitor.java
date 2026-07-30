@@ -2,6 +2,7 @@ package dev.ngspace.hudder.hudderv3.instructions.variables.operations;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.exceptions.ExecutionException;
+import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.V3MethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
 import dev.ngspace.hudder.utils.HudderUtils;
@@ -14,9 +15,11 @@ public class ClassAccessVariableVisitor extends VariableVisitor {
 	private VariableVisitor[] functionCallArgs;
 	private String funcName = "";
 	private String fieldName = "";
+	private final String classObjectName;
 
-	protected ClassAccessVariableVisitor(AV3Compiler comp, String classyobjname, String prop) throws ExecutionException {
+	public ClassAccessVariableVisitor(AV3Compiler comp, String classyobjname, String prop) throws ExecutionException {
 		super(comp);
+		this.classObjectName = classyobjname;
 		this.classobj = comp.parseVariable(classyobjname);
 		if (!prop.startsWith("(")&&prop.endsWith(")")) {
 			int argStart = prop.indexOf("(");
@@ -45,8 +48,39 @@ public class ClassAccessVariableVisitor extends VariableVisitor {
 
 	@Override
 	public void visit(V3MethodWriter methodWriter) throws ExecutionException {
-		// TODO Auto-generated method stub
-		
+		classobj.visit(methodWriter);
+		int classObjectIndex = methodWriter.astore();
+
+		if (!isFunctionCall) {
+			methodWriter.aload(classObjectIndex);
+			methodWriter.loadConstant(classObjectName);
+			methodWriter.loadConstant(fieldName);
+			methodWriter.callStatic(HudderV3Helper.class, "getClassProperty",
+					"(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Object;", false);
+			return;
+		}
+
+		methodWriter.loadConstantUnsafe(functionCallArgs.length);
+		methodWriter.newArray(Object.class);
+		int parametersIndex = methodWriter.astore();
+		for (int i = 0; i < functionCallArgs.length; i++) {
+			methodWriter.aload(parametersIndex);
+			methodWriter.loadConstantUnsafe(i);
+			functionCallArgs[i].visit(methodWriter);
+			methodWriter.aastore();
+		}
+		methodWriter.aload(classObjectIndex);
+		methodWriter.loadConstant(classObjectName);
+		methodWriter.loadConstant(funcName);
+		methodWriter.aload(parametersIndex);
+		methodWriter.callStatic(HudderV3Helper.class, "callClassMethod",
+				"(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/Object;",
+				false);
+	}
+
+	@Override
+	public void visitSetValue(V3MethodWriter methodWriter) throws ExecutionException {
+		throw new ExecutionException("Can't change the value of a ClassPropertyCall", -1, -1);
 	}
 	
 }

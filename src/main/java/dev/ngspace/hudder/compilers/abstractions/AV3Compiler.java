@@ -60,9 +60,13 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 		} catch (InvocationTargetException e) {
 			if (e.getTargetException() instanceof RuntimeException re)
 				throw re;
+			if (e.getTargetException() instanceof ExecutionException re)
+				throw re;
 			e.printStackTrace();
+//			return HudInformation.of(e.getTargetException());
 		} catch (ReflectiveOperationException e) {
 			e.printStackTrace();
+//			return HudInformation.of(e.);
 		}
 		
 		return HudInformation.of("failed");
