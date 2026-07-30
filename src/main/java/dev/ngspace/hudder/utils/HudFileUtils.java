@@ -89,7 +89,8 @@ public class HudFileUtils {private HudFileUtils() {}
 	 * @throws IOException 
 	 */
 	public static String sanitize(String f) throws SecurityException, IOException {
-		if (!new File(f).getCanonicalPath().startsWith(FOLDER)) throwError(f);
+		if (!new File(f).getCanonicalFile().toPath().startsWith(new File(FOLDER).getCanonicalFile().toPath()))
+			throwError(f);
 		int j = 0;
 		int k = 0;
 		for (int i = 0;i<f.length();i++) {
