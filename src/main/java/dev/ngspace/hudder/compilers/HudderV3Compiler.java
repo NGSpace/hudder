@@ -20,6 +20,8 @@ import dev.ngspace.hudder.hudderv3.instructions.IfElseInstuction;
 import dev.ngspace.hudder.hudderv3.instructions.IfElseInstuction.Statement;
 import dev.ngspace.hudder.hudderv3.instructions.MethodExecutionInstruction;
 import dev.ngspace.hudder.hudderv3.instructions.WhileInstruction;
+import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.constants.StringVariableVisitor;
 import dev.ngspace.hudder.utils.HudderUtils;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 import net.minecraft.network.chat.Component;
@@ -148,7 +150,12 @@ public class HudderV3Compiler extends AV3Compiler {
 									executeMethod.booleanValue();
 									executeMethod.methodVisitor.visitJumpInsn(Opcodes.IFEQ, elseLabel);
 	
-									parseVariable(conds.get(i+1)).visit(executeMethod);
+									VariableVisitor variable = parseVariable(conds.get(i+1));
+									if (variable instanceof StringVariableVisitor st) {
+										compile(executeMethod, classWriter, info, st.value, filename, breakLabel);
+										executeMethod.loadConstant("");
+									} else
+										variable.visit(executeMethod);
 								}
 								
 								executeMethod.jumpto(conditionend);
