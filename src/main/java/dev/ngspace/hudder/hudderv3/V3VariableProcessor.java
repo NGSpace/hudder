@@ -25,8 +25,6 @@ import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperati
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations.LogicalOrVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations.NegateVariableVisitor;
 import dev.ngspace.hudder.utils.HudderUtils;
-import dev.ngspace.hudder.v2runtime.values.modifiable.V2TempDynamicVar;
-import dev.ngspace.hudder.v2runtime.values.operations.V2TernaryOperator;
 
 public class V3VariableProcessor {
 

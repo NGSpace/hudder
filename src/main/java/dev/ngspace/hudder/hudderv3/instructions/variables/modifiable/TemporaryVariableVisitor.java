@@ -1,5 +1,7 @@
 package dev.ngspace.hudder.hudderv3.instructions.variables.modifiable;
 
+import java.util.Map;
+
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
 import dev.ngspace.hudder.exceptions.ExecutionException;
@@ -12,31 +14,33 @@ public class TemporaryVariableVisitor extends VariableVisitor {
 
 	public TemporaryVariableVisitor(AV3Compiler comp, String variable) {
 		super(comp);
-		this.variable = variable;
+		this.variable = variable.toLowerCase();
 	}
 
 	@Override
 	public void visit(V3MethodWriter methodWriter) throws ExecutionException {
-		if (methodWriter.hasVariable(variable.toLowerCase())) {
-			methodWriter.getVariable(variable.toLowerCase());
+		if (methodWriter.hasVariable(variable)) {
+			methodWriter.getVariable(variable);
 		} else {
-			methodWriter.nullConstant();
+			methodWriter.getStaticField("tempVariables", AVarTextCompiler.class, Map.class);
+			methodWriter.loadConstant(variable);
+			methodWriter.call(Map.class, "get", "(Ljava/lang/Object;)Ljava/lang/Object;", false);
 		}
 	}
 	
 	@Override
 	public void visitSetValue(V3MethodWriter methodWriter) {
-//		int valueindex = methodWriter.astore();
-		methodWriter.dup();
-		if (!methodWriter.hasVariable(variable.toLowerCase())) {
-			methodWriter.defineVariable(variable.toLowerCase());
+		if (methodWriter.hasVariable(variable)) {
+			methodWriter.dup();
+			methodWriter.storeVariable(variable);
+		} else {
+			int index = methodWriter.astore();
+			methodWriter.getStaticField("tempVariables", AVarTextCompiler.class, Map.class);
+			methodWriter.loadConstant(variable);
+			methodWriter.aload(index);
+			methodWriter.call(Map.class, "set", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", false);
+			methodWriter.pop();
+			methodWriter.aload(index);
 		}
-		methodWriter.storeVariable(variable.toLowerCase());
-//		methodWriter.aload(0);
-//		methodWriter.loadConstant(variable.toLowerCase());
-//		methodWriter.aload(valueindex);
-//		methodWriter.call(AVarTextCompiler.class, "put", "(Ljava/lang/String;Ljava/lang/Object;)V",
-//				false);
-//		methodWriter.aload(valueindex);
 	}
 }

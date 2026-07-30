@@ -72,13 +72,23 @@ public class V3MethodWriter {
 				name, Type.getDescriptor(type));
 	}
 
+	public void getStaticField(String name, Class<?> owner, Class<?> type) {
+		methodVisitor.visitFieldInsn(Opcodes.GETSTATIC, Type.getInternalName(owner),
+				name, Type.getDescriptor(type));
+	}
+
 	public void putField(String name, Class<?> type) {
 		methodVisitor.visitFieldInsn(Opcodes.PUTFIELD, classWriter.classname,
 				name, Type.getDescriptor(type));
 	}
 
 	public void putField(String name, Class<?> owner, Class<?> type) {
-		methodVisitor.visitFieldInsn(Opcodes.GETFIELD, Type.getInternalName(owner),
+		methodVisitor.visitFieldInsn(Opcodes.PUTFIELD, Type.getInternalName(owner),
+				name, Type.getDescriptor(type));
+	}
+
+	public void putStaticField(String name, Class<?> type) {
+		methodVisitor.visitFieldInsn(Opcodes.PUTSTATIC, classWriter.classname,
 				name, Type.getDescriptor(type));
 	}
 
@@ -321,11 +331,6 @@ public class V3MethodWriter {
 	public void callSelf(String name, String descriptor, boolean isInterface) {
 		methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, classWriter.classname, name, descriptor,
 				isInterface);
-	}
-
-	public void getStatic(Class<?> clazz, String name, Class<?> type) {
-		methodVisitor.visitFieldInsn(Opcodes.GETSTATIC, Type.getInternalName(clazz), name,
-				Type.getInternalName(type));
 	}
 
 	public void addAReturn() {
