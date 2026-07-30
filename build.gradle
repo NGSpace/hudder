@@ -40,7 +40,7 @@ dependencies {
 	
 	implementation(include("org.mozilla:rhino:${project.rhino_version}"))
 	
-	compileOnly("maven.modrinth:modmenu:${project.modmenu_version}")
+	//compileOnly("maven.modrinth:modmenu:${project.modmenu_version}")
 }
 
 processResources {

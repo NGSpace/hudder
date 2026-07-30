@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLScancode;
 
 import com.sun.management.OperatingSystemMXBean;
 
@@ -119,10 +119,10 @@ public class Misc {private Misc() {}
 		ArrayList<String> keyNames = new ArrayList<String>();
 		HashMap<String, Integer> keys = new HashMap<String, Integer>();
 		
-	    for (Field field : GLFW.class.getFields()) {
+	    for (Field field : SDLScancode.class.getFields()) {
 	    	try {
-	    		if (field.getName().startsWith("GLFW_KEY_")&&field.canAccess(null)) {
-	    			String keyname = field.getName().substring(9).toLowerCase();
+	    		if (field.getName().startsWith("SDL_SCANCODE_")&&field.canAccess(null)) {
+	    			String keyname = field.getName().substring(13).toLowerCase();
 	    			keyNames.add("key_" + keyname);
 	    			keys.put(keyname,field.getInt(null));
 	    		}
