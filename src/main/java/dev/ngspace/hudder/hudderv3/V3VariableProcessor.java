@@ -3,8 +3,9 @@ package dev.ngspace.hudder.hudderv3;
 import java.util.Arrays;
 import java.util.Objects;
 
+import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
-import dev.ngspace.hudder.exceptions.ExecutionException;
+import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.instructions.variables.FunctionCallVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.SystemVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
@@ -29,12 +30,12 @@ import dev.ngspace.hudder.utils.HudderUtils;
 
 public class V3VariableProcessor {
 
-	public VariableVisitor parseVariable(String valuee, AV3Compiler comp) throws ExecutionException {
+	public VariableVisitor parseVariable(String valuee, AV3Compiler comp) throws CompileException {
 
 		String value = valuee.trim();
 		
 		// Empty variable
-		if (value.isBlank()) throw new ExecutionException("Unknown variable: empty variable", -1, -1);
+		if (value.isBlank()) throw new CompileException("Unknown variable: empty variable", -1, -1);
 		
 		
 		
@@ -208,7 +209,7 @@ public class V3VariableProcessor {
 		boolean matchesVariableRegex = value.matches("[A-Za-z\\d][A-Za-z\\d_]*");
 		
 		// System variable
-		if (matchesVariableRegex&&comp.isSystemVariable(value.toLowerCase())) {
+		if (matchesVariableRegex&&DataVariableRegistry.hasVariable(value.toLowerCase())) {
 			return new SystemVariableVisitor(comp, value.toLowerCase());
 		}
 		
@@ -443,12 +444,12 @@ public class V3VariableProcessor {
 		
 		
 		// Fallback
-		throw new ExecutionException("Untokenizable variable: " + value, -1, -1);
+		throw new CompileException("Untokenizable variable: " + value, -1, -1);
 	}
 	
 	
 	
-	private VariableVisitor[] logicalOperator(char op, String value, AV3Compiler comp) throws ExecutionException {
+	private VariableVisitor[] logicalOperator(char op, String value, AV3Compiler comp) throws CompileException {
 		VariableVisitor[] values = new VariableVisitor[0];
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0;i<value.length();i++) {

@@ -3,7 +3,7 @@ package dev.ngspace.hudder.hudderv3.instructions.variables.operations;
 import org.objectweb.asm.Opcodes;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
-import dev.ngspace.hudder.exceptions.ExecutionException;
+import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.V3MethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
 
@@ -13,14 +13,14 @@ public class PostIncDecVariableVisitor extends VariableVisitor {
 	private boolean increase;
 
 	public PostIncDecVariableVisitor(String string, AV3Compiler comp, boolean increase)
-			throws ExecutionException {
+			throws CompileException {
 		super(comp);
 		this.value = comp.parseVariable(string);
 		this.increase = increase;
 	}
 
 	@Override
-	public void visit(V3MethodWriter methodWriter) throws ExecutionException {
+	public void visit(V3MethodWriter methodWriter) throws CompileException {
 		value.visit(methodWriter);
 		methodWriter.checkcast(Number.class);
 		methodWriter.doubleValue();

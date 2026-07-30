@@ -5,7 +5,7 @@ import org.objectweb.asm.Opcodes;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.config.HudderConfig;
-import dev.ngspace.hudder.exceptions.ExecutionException;
+import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.V3ExecuteMethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
@@ -18,7 +18,7 @@ public class IfElseInstuction extends Instruction {
 	private HudderConfig info;
 	
 	public IfElseInstuction(Statement[] statements, String filename, AV3Compiler compiler, HudderConfig info)
-			throws ExecutionException {
+			throws CompileException {
 		compiled_statements = new CompiledStatement[statements.length];
 		this.filename = filename;
 		this.comp = compiler;
@@ -29,7 +29,7 @@ public class IfElseInstuction extends Instruction {
 			VariableVisitor condition;
 			if (statement.condition()==null||statement.condition().isBlank()) {
 				if (i<compiled_statements.length-1)
-					throw new ExecutionException("Detached else/else if statement!", -1, -1);
+					throw new CompileException("Detached else/else if statement!", -1, -1);
 				condition = null;
 			} else {
 				condition = compiler.parseVariable(statement.condition());
@@ -40,7 +40,7 @@ public class IfElseInstuction extends Instruction {
 	
 	@Override
 	public void visit(V3ExecuteMethodWriter methodWriter, V3ClassWriter classWriter,
-			Label breaklabel) throws ExecutionException {
+			Label breaklabel) throws CompileException {
 		boolean builderdisabled = methodWriter.isBuilderDisabled();
 		methodWriter.setBuilderDisabled(true);
 		

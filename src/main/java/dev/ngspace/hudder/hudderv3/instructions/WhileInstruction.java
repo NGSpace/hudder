@@ -5,7 +5,7 @@ import org.objectweb.asm.Opcodes;
 
 import dev.ngspace.hudder.compilers.HudderV3Compiler;
 import dev.ngspace.hudder.config.HudderConfig;
-import dev.ngspace.hudder.exceptions.ExecutionException;
+import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.V3ExecuteMethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
@@ -19,7 +19,7 @@ public class WhileInstruction extends Instruction {
 	private String filename;
 
 	public WhileInstruction(String condition, String block, HudderV3Compiler comp,
-			HudderConfig info, String filename) throws ExecutionException {
+			HudderConfig info, String filename) throws CompileException {
 		this.comp = comp;
 		this.condition = comp.parseVariable(condition);
 		this.block = block;
@@ -28,7 +28,8 @@ public class WhileInstruction extends Instruction {
 	}
 
 	@Override
-	public void visit(V3ExecuteMethodWriter methodWriter, V3ClassWriter classWriter, Label breaklabel) throws ExecutionException {
+	public void visit(V3ExecuteMethodWriter methodWriter, V3ClassWriter classWriter, Label breaklabel)
+			throws CompileException {
 		boolean builderdisabled = methodWriter.isBuilderDisabled();
 		methodWriter.setBuilderDisabled(true);
 		Label start = new Label();

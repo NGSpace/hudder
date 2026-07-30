@@ -7,7 +7,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
-import dev.ngspace.hudder.exceptions.ExecutionException;
+import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.V3MethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
 
@@ -16,7 +16,7 @@ public class ArrayReadVariableVisitor extends VariableVisitor {
 	private VariableVisitor indexValue;
 	private VariableVisitor array;
 
-	public ArrayReadVariableVisitor(AV3Compiler comp, String value) throws ExecutionException {
+	public ArrayReadVariableVisitor(AV3Compiler comp, String value) throws CompileException {
 		super(comp);
 		int indexstart = value.lastIndexOf('[');
 		String index = value.substring(indexstart+1,value.length()-1);
@@ -25,7 +25,7 @@ public class ArrayReadVariableVisitor extends VariableVisitor {
 	}
 
 	@Override
-	public void visit(V3MethodWriter methodWriter) throws ExecutionException {
+	public void visit(V3MethodWriter methodWriter) throws CompileException {
 		Label normalarray = new Label();
 		Label end = new Label();
 		
@@ -70,7 +70,7 @@ public class ArrayReadVariableVisitor extends VariableVisitor {
 		} else list.set(index, value);
 	 */
 	@Override
-	public void visitSetValue(V3MethodWriter methodWriter) throws ExecutionException {
+	public void visitSetValue(V3MethodWriter methodWriter) throws CompileException {
 		Label end = new Label();
 		Label add = new Label();
 		Label set = new Label();

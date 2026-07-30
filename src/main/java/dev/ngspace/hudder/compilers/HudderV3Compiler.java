@@ -12,7 +12,7 @@ import dev.ngspace.hudder.compilers.abstractions.AV2Compiler.CodeBlock;
 import dev.ngspace.hudder.compilers.abstractions.AV2Compiler.Instruction;
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.config.HudderConfig;
-import dev.ngspace.hudder.exceptions.ExecutionException;
+import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.V3ExecuteMethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.ForInstruction;
@@ -44,7 +44,7 @@ public class HudderV3Compiler extends AV3Compiler {
 	
 	@Override
 	public boolean compile(V3ExecuteMethodWriter executeMethod, V3ClassWriter classWriter, HudderConfig info,
-			String text, String filename, Label breakLabel) throws ExecutionException {
+			String text, String filename, Label breakLabel) throws CompileException {
 		
 		boolean returns_value = false;
 		
@@ -297,7 +297,7 @@ public class HudderV3Compiler extends AV3Compiler {
 						case FOR_LOOP_INSTRUCTION: {
 							String[] split = parameters.split(" in ", 2);
 							if (split.length<2) 
-								throw new ExecutionException("Invalid for loop syntax: \"" + parameters + "\"", -1, -1);
+								throw new CompileException("Invalid for loop syntax: \"" + parameters + "\"", -1, -1);
 							String variablename = split[0];
 							String value = split[1];
 							elemBuilder.setLength(0);
@@ -352,13 +352,13 @@ public class HudderV3Compiler extends AV3Compiler {
 									filename, this, info).visit(executeMethod, classWriter, breakLabel);
 							break;
 						default:
-							throw new ExecutionException("Detached else/else if statement!", -1, -1);
+							throw new CompileException("Detached else/else if statement!", -1, -1);
 					}
 					break;
 				}
 				default: {
 					var pos = getPosition(savedind, text);
-					throw new ExecutionException("Unknown compile state: " + compileState, pos.line(), pos.column());
+					throw new CompileException("Unknown compile state: " + compileState, pos.line(), pos.column());
 				}
 			}
 		}
@@ -367,7 +367,7 @@ public class HudderV3Compiler extends AV3Compiler {
 		
 		if (compileState!=0) {
 			var pos = getPosition(savedind, text);
-			throw new ExecutionException(getCompilerErrorMessage(compileState), pos.line(), pos.column());
+			throw new CompileException(getCompilerErrorMessage(compileState), pos.line(), pos.column());
 		}
 		
 		return returns_value;

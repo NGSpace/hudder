@@ -1,7 +1,7 @@
 package dev.ngspace.hudder.hudderv3.instructions.variables.operations;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
-import dev.ngspace.hudder.exceptions.ExecutionException;
+import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.V3MethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
@@ -17,7 +17,7 @@ public class ClassAccessVariableVisitor extends VariableVisitor {
 	private String fieldName = "";
 	private final String classObjectName;
 
-	public ClassAccessVariableVisitor(AV3Compiler comp, String classyobjname, String prop) throws ExecutionException {
+	public ClassAccessVariableVisitor(AV3Compiler comp, String classyobjname, String prop) throws CompileException {
 		super(comp);
 		this.classObjectName = classyobjname;
 		this.classobj = comp.parseVariable(classyobjname);
@@ -41,13 +41,13 @@ public class ClassAccessVariableVisitor extends VariableVisitor {
 		}
 		if (!isFunctionCall) fieldName = prop;
 		for (String forbidden : forbiddenValuesAndFunctions) {
-			if (forbidden.equals(funcName)) throw new ExecutionException("No function named \""+funcName+'"',-1,-1);
-			if (forbidden.equals(fieldName)) throw new ExecutionException("No property named \""+fieldName+'"',-1,-1);
+			if (forbidden.equals(funcName)) throw new CompileException("No function named \""+funcName+'"',-1,-1);
+			if (forbidden.equals(fieldName)) throw new CompileException("No property named \""+fieldName+'"',-1,-1);
 		}
 	}
 
 	@Override
-	public void visit(V3MethodWriter methodWriter) throws ExecutionException {
+	public void visit(V3MethodWriter methodWriter) throws CompileException {
 		classobj.visit(methodWriter);
 		int classObjectIndex = methodWriter.astore();
 
@@ -76,11 +76,6 @@ public class ClassAccessVariableVisitor extends VariableVisitor {
 		methodWriter.callStatic(HudderV3Helper.class, "callClassMethod",
 				"(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/Object;",
 				false);
-	}
-
-	@Override
-	public void visitSetValue(V3MethodWriter methodWriter) throws ExecutionException {
-		throw new ExecutionException("Can't change the value of a ClassPropertyCall", -1, -1);
 	}
 	
 }

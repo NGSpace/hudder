@@ -7,7 +7,7 @@ import org.objectweb.asm.Opcodes;
 
 import dev.ngspace.hudder.compilers.HudderV3Compiler;
 import dev.ngspace.hudder.config.HudderConfig;
-import dev.ngspace.hudder.exceptions.ExecutionException;
+import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.V3ExecuteMethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
@@ -22,7 +22,7 @@ public class ForInstruction extends Instruction {
 	private VariableVisitor value;
 
 	public ForInstruction(String variable_name, String value, String block, HudderV3Compiler comp,
-			HudderConfig info, String filename) throws ExecutionException {
+			HudderConfig info, String filename) throws CompileException {
 		this.variable_name = variable_name;
 		this.value = comp.parseVariable(value);
 		this.block = block;
@@ -33,7 +33,7 @@ public class ForInstruction extends Instruction {
 
 	@Override
 	public void visit(V3ExecuteMethodWriter methodWriter, V3ClassWriter classWriter, Label breaklabel)
-			throws ExecutionException {
+			throws CompileException {
 		boolean builderdisabled = methodWriter.isBuilderDisabled();
 		methodWriter.setBuilderDisabled(true);
 		Label start = new Label();

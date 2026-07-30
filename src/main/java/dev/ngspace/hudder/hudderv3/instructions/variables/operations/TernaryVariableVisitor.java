@@ -4,7 +4,7 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
-import dev.ngspace.hudder.exceptions.ExecutionException;
+import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.V3MethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
 
@@ -15,7 +15,7 @@ public class TernaryVariableVisitor extends VariableVisitor {
 	private VariableVisitor falsevalue;
 
 	public TernaryVariableVisitor(AV3Compiler comp, String condition, String truevalue, String falsevalue)
-			throws ExecutionException {
+			throws CompileException {
 		super(comp);
 		this.condition = comp.parseVariable(condition);
 		this.truevalue = comp.parseVariable(truevalue);
@@ -23,7 +23,7 @@ public class TernaryVariableVisitor extends VariableVisitor {
 	}
 
 	@Override
-	public void visit(V3MethodWriter methodWriter) throws ExecutionException {
+	public void visit(V3MethodWriter methodWriter) throws CompileException {
 		Label end = new Label();
 		Label label = new Label();
 		

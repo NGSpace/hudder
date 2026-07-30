@@ -22,7 +22,9 @@ public class V3ClassWriter implements Binder {
 		this.classname = classname;
 		classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
 		classWriter.visit(Opcodes.V25, Opcodes.ACC_PUBLIC, classname, null,
-				"dev/ngspace/hudder/compilers/abstractions/AVarTextCompiler", null);
+				"dev/ngspace/hudder/compilers/abstractions/AVarTextCompiler", new String[] {
+						Type.getInternalName(GeneratedCompiler.class)
+				});
 	    
 	    initPublicField("uimanager", ArrayElementManager.class);
 	}

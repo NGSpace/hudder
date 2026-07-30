@@ -3,7 +3,7 @@ package dev.ngspace.hudder.hudderv3.instructions.variables.constants;
 import java.util.ArrayList;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
-import dev.ngspace.hudder.exceptions.ExecutionException;
+import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.V3MethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
 
@@ -11,7 +11,7 @@ public class ArrayConstantVariableVisitor extends VariableVisitor {
 
 	private VariableVisitor[] values;
 
-	public ArrayConstantVariableVisitor(String[] strings, AV3Compiler comp) throws ExecutionException {
+	public ArrayConstantVariableVisitor(String[] strings, AV3Compiler comp) throws CompileException {
 		super(comp);
 		values = new VariableVisitor[strings.length];
 		for (int i = 0;i<strings.length;i++)
@@ -19,7 +19,7 @@ public class ArrayConstantVariableVisitor extends VariableVisitor {
 	}
 
 	@Override
-	public void visit(V3MethodWriter methodWriter) throws ExecutionException {
+	public void visit(V3MethodWriter methodWriter) throws CompileException {
 		methodWriter.newAndDup(ArrayList.class);
 		methodWriter.loadConstantUnsafe(values.length);
 		methodWriter.callInit(ArrayList.class, "(I)V");
