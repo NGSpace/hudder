@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.hudderv3.instructions;
+package dev.ngspace.hudder.hudderv3.instructions.compiler;
 
 import java.util.Iterator;
 
@@ -53,7 +53,7 @@ public class ForInstruction extends Instruction {
 		methodWriter.callInterface(Iterator.class, "next", "()Ljava/lang/Object;");
 		methodWriter.storeVariable(variable_name);
 		
-		comp.compile(methodWriter, classWriter, info, block, filename, end);
+		comp.compile(info, block, filename).writeInstructions(methodWriter, classWriter, breaklabel);
 		
 		methodWriter.jumpto(start);
 		

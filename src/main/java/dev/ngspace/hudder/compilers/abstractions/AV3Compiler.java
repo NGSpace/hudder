@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
@@ -16,6 +15,7 @@ import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.hudderv3.GeneratedCompiler;
+import dev.ngspace.hudder.hudderv3.TokenizedCodeBlock;
 import dev.ngspace.hudder.hudderv3.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.V3ExecuteMethodWriter;
 import dev.ngspace.hudder.hudderv3.V3VariableProcessor;
@@ -62,7 +62,7 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 		
 		Label end = new Label();
 		
-		compile(executeMethod, classWriter, Hudder.config, text, filepath, end);
+		compile(Hudder.config, text, filepath).writeInstructions(executeMethod, classWriter, end);
 		
 		executeMethod.putLabel(end);
 		executeMethod.end();
@@ -87,43 +87,13 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 		return cache.get(processedfile).generatedCompiler().execute(info, processedfile, filename).hudInformation;
 	}
 	
-	public abstract boolean compile(V3ExecuteMethodWriter executeMethod, V3ClassWriter classWriter, HudderConfig info,
-			String text, String filename, Label end) throws CompileException;
+	public abstract TokenizedCodeBlock compile(HudderConfig info, String text, String filename)
+			throws CompileException;
 	
 
 	public void defineFunctionOrMethod(V3ClassWriter writer, String commands, String[] args, HudderConfig info,
 			String name, String filename)
 			throws CompileException {
-		user_defines_count++;
-		String finalname = "user_" + name + "_" + user_defines_count;
-		var method = writer.createExecuteMethod(finalname, new Class<?>[] {
-			HudderConfig.class,
-			String.class,
-			String.class,
-			Object[].class
-		});
-		
-		for (int i = 0;i<args.length;i++) {
-			method.defineVariable(args[i].toLowerCase().trim());
-			method.defineVariable("arg" + (i+1));
-			method.aload(4);
-			method.loadConstantUnsafe(i);
-			method.methodVisitor.visitInsn(Opcodes.AALOAD);
-			method.dup();
-			method.storeVariable(args[i].toLowerCase().trim());
-			method.storeVariable("arg" + (i+1));
-		}
-
-		Label end = new Label();
-		boolean hasReturn = compile(method, writer, info, commands, filename, end);
-		method.putLabel(end);
-		method.end();
-		
-		if (!hasReturn)
-			user_methods.put(name, finalname);
-		else
-			user_functions.put(name, finalname);
-		
 	}
 
 	public VariableVisitor parseVariable(String string) throws CompileException {

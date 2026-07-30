@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.hudderv3.instructions;
+package dev.ngspace.hudder.hudderv3.instructions.compiler;
 
 
 import org.objectweb.asm.Label;
@@ -14,12 +14,12 @@ import dev.ngspace.hudder.hudderv3.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.V3ExecuteMethodWriter;
 import dev.ngspace.hudder.hudderv3.V3HudInformation;
 
-public class MethodExecutionInstruction extends Instruction {
+public class DMethodExecutionInstruction extends Instruction {
 	
 	public String[] builder;
 	private AV3Compiler comp;
 
-	public MethodExecutionInstruction(AV3Compiler comp, String[] builder) {
+	public DMethodExecutionInstruction(AV3Compiler comp, String[] builder) {
 		this.builder = builder;
 		this.comp = comp;
 	}

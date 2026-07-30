@@ -4,24 +4,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
-
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.abstractions.AV2Compiler.CodeBlock;
 import dev.ngspace.hudder.compilers.abstractions.AV2Compiler.Instruction;
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
-import dev.ngspace.hudder.hudderv3.V3ClassWriter;
-import dev.ngspace.hudder.hudderv3.V3ExecuteMethodWriter;
-import dev.ngspace.hudder.hudderv3.instructions.ForInstruction;
-import dev.ngspace.hudder.hudderv3.instructions.IfElseInstuction;
-import dev.ngspace.hudder.hudderv3.instructions.IfElseInstuction.Statement;
-import dev.ngspace.hudder.hudderv3.instructions.MethodExecutionInstruction;
-import dev.ngspace.hudder.hudderv3.instructions.WhileInstruction;
-import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
-import dev.ngspace.hudder.hudderv3.instructions.variables.constants.StringVariableVisitor;
+import dev.ngspace.hudder.hudderv3.TokenizedCodeBlock;
+import dev.ngspace.hudder.hudderv3.instructions.compiler.ConditionInstruction;
+import dev.ngspace.hudder.hudderv3.instructions.compiler.DefineInstruction;
+import dev.ngspace.hudder.hudderv3.instructions.compiler.ForInstruction;
+import dev.ngspace.hudder.hudderv3.instructions.compiler.IfElseInstuction;
+import dev.ngspace.hudder.hudderv3.instructions.compiler.IfElseInstuction.Statement;
+import dev.ngspace.hudder.hudderv3.instructions.compiler.MethodExecutionInstruction;
+import dev.ngspace.hudder.hudderv3.instructions.compiler.VariableInstruction;
+import dev.ngspace.hudder.hudderv3.instructions.compiler.WhileInstruction;
 import dev.ngspace.hudder.utils.HudderUtils;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 import net.minecraft.network.chat.Component;
@@ -43,10 +40,9 @@ public class HudderV3Compiler extends AV3Compiler {
 	public static final byte ELSE_INSTRUCTION = 0x6;
 	
 	@Override
-	public boolean compile(V3ExecuteMethodWriter executeMethod, V3ClassWriter classWriter, HudderConfig info,
-			String text, String filename, Label breakLabel) throws CompileException {
+	public TokenizedCodeBlock compile(HudderConfig info, String text, String filename) throws CompileException {
 		
-		boolean returns_value = false;
+		TokenizedCodeBlock finalCodeBlock = new TokenizedCodeBlock(this);
 		
 		StringBuilder elemBuilder = new StringBuilder();
 		
@@ -79,20 +75,20 @@ public class HudderV3Compiler extends AV3Compiler {
 					switch (c) {
 						case '%':
 							compileState = CONDITION_STATE;
-							executeMethod.appendStringConstant(elemBuilder.toString());
+							finalCodeBlock.appendStringConstant(elemBuilder.toString());
 							elemBuilder.setLength(0);
 							savedind = ind;
 							break;
 						case '{':
 							compileState = VARIABLE_STATE;
-							executeMethod.appendStringConstant(elemBuilder.toString());
+							finalCodeBlock.appendStringConstant(elemBuilder.toString());
 							elemBuilder.setLength(0);
 							bracketscount = 1;
 							savedind = ind;
 							break;
 						case ';':
 							compileState = METHOD_STATE;
-							executeMethod.appendStringConstant(trimMethod(elemBuilder.toString()));
+							finalCodeBlock.appendStringConstant(trimMethod(elemBuilder.toString()));
 							elemBuilder.setLength(0);
 							savedind = ind;
 						    quotesafe = false;
@@ -100,7 +96,7 @@ public class HudderV3Compiler extends AV3Compiler {
 							break;
 						case '#':
 							compileState = HASHTAG_STATE;
-							executeMethod.appendStringConstant(elemBuilder.toString());
+							finalCodeBlock.appendStringConstant(elemBuilder.toString());
 							elemBuilder.setLength(0);
 							savedind = ind;
 							break;
@@ -141,37 +137,7 @@ public class HudderV3Compiler extends AV3Compiler {
 							conditionOrValue.setLength(0);
 						} else if (c=='%') {
 							conds.add(conditionOrValue.toString());
-							Label conditionend = new Label();
-							
-							for (int i = 0;i<conds.size()-1;i++) {
-								Label elseLabel = new Label();
-								if (i!=conds.size()) {
-									parseVariable(conds.get(i)).visit(executeMethod);
-									executeMethod.booleanValue();
-									executeMethod.methodVisitor.visitJumpInsn(Opcodes.IFEQ, elseLabel);
-	
-									VariableVisitor variable = parseVariable(conds.get(i+1));
-									if (variable instanceof StringVariableVisitor st) {
-										compile(executeMethod, classWriter, info, st.value, filename, breakLabel);
-										executeMethod.loadConstant("");
-									} else
-										variable.visit(executeMethod);
-								}
-								
-								executeMethod.jumpto(conditionend);
-								executeMethod.putLabel(elseLabel);
-								i++;
-							}
-							
-							if (conds.size()%2==1)
-								parseVariable(conds.get(conds.size()-1)).visit(executeMethod);
-							else
-								executeMethod.loadConstant("");
-							
-							executeMethod.putLabel(conditionend);
-							
-							executeMethod.appendToBuilderAndPop();
-							
+							finalCodeBlock.addInstruction(new ConditionInstruction(info, filename, conds, this));
 							compileState = TEXT_STATE;
 							break;
 						} else {
@@ -197,12 +163,7 @@ public class HudderV3Compiler extends AV3Compiler {
 					} else if (c=='}') {
 						bracketscount--;
 						if (bracketscount==0) {
-							if ("break".equalsIgnoreCase(elemBuilder.toString().trim())) {
-								executeMethod.jumpto(breakLabel);
-							} else {
-								parseVariable(elemBuilder.toString()).visit(executeMethod);
-								executeMethod.appendToBuilderAndPop();
-							}
+							finalCodeBlock.addInstruction(new VariableInstruction(this, elemBuilder.toString()));
 							elemBuilder.setLength(0);
 							compileState = TEXT_STATE;
 						} else elemBuilder.append(c);
@@ -232,48 +193,7 @@ public class HudderV3Compiler extends AV3Compiler {
 					}
 					if (compileState!=METHOD_STATE) {
 						String[] builder = HudderUtils.processParemeters(elemBuilder.toString());
-						String name = builder[0].toLowerCase().trim();
-						switch (name) {
-							case "return":
-								returns_value = true;
-								parseVariable(builder[1]).visit(executeMethod);
-								executeMethod.astore(executeMethod.return_value_index);
-								executeMethod.jumpto(executeMethod.finalLabel);
-							case "mute":
-								executeMethod.selected_builder_index = executeMethod.mute_builder_index;
-								break;
-							case "topleft":
-								executeMethod.selected_builder_index = executeMethod.topleft_builder_index;
-								if (builder.length>1) {
-									parseVariable(builder[1]).visit(executeMethod);
-									executeMethod.astore(executeMethod.topleft_scale_index);
-								}
-								break;
-							case "topright":
-								executeMethod.selected_builder_index = executeMethod.topright_builder_index;
-								if (builder.length>1) {
-									parseVariable(builder[1]).visit(executeMethod);
-									executeMethod.astore(executeMethod.topright_scale_index);
-								}
-								break;
-							case "bottomleft":
-								executeMethod.selected_builder_index = executeMethod.bottomleft_builder_index;
-								if (builder.length>1) {
-									parseVariable(builder[1]).visit(executeMethod);
-									executeMethod.astore(executeMethod.bottomleft_scale_index);
-								}
-								break;
-							case "bottomright":
-								executeMethod.selected_builder_index = executeMethod.bottomright_builder_index;
-								if (builder.length>1) {
-									parseVariable(builder[1]).visit(executeMethod);
-									executeMethod.astore(executeMethod.bottomright_scale_index);
-								}
-								break;
-							default:
-								new MethodExecutionInstruction(this, builder).visit(executeMethod, classWriter,
-										breakLabel);
-						}
+						finalCodeBlock.addInstruction(new MethodExecutionInstruction(builder, this));
 						elemBuilder.setLength(0);
 						cleanup = true;
 						cleanup_amount = Hudder.config.methodBuffer()/2;
@@ -301,21 +221,20 @@ public class HudderV3Compiler extends AV3Compiler {
 							String variablename = split[0];
 							String value = split[1];
 							elemBuilder.setLength(0);
-							new ForInstruction(variablename, value, block, this, info, filename)
-									.visit(executeMethod, classWriter, breakLabel);
+							finalCodeBlock.addInstruction(new ForInstruction(variablename, value, block,
+									this, info, filename));
 							break;
 						}
 						case DEFINE_INSTRUCTION: {
 							String[] builder = HudderUtils.processParemeters(parameters);
 							String name = builder[0];
 							String[] args = Arrays.copyOfRange(builder, 1, builder.length);
-							defineFunctionOrMethod(classWriter,block, args, info, name,filename);
+							finalCodeBlock.addInstruction(new DefineInstruction(block, args, info, name, filename, this));
 							elemBuilder.setLength(0);
 							break;
 						}
 						case WHILE_LOOP_INSTRUCTION: {
-							new WhileInstruction(parameters, block, this, info, filename)
-									.visit(executeMethod, classWriter, breakLabel);
+							finalCodeBlock.addInstruction(new WhileInstruction(parameters, block, this, info, filename));
 							break;
 						}
 						case UNDEFINED_INSTRUCTION:
@@ -348,8 +267,8 @@ public class HudderV3Compiler extends AV3Compiler {
 								}
 							}
 							ind--;
-							new IfElseInstuction(statements.toArray(new Statement[statements.size()]),
-									filename, this, info).visit(executeMethod, classWriter, breakLabel);
+							finalCodeBlock.addInstruction(new IfElseInstuction(statements.toArray(new Statement[statements.size()]),
+									filename, this, info));
 							break;
 						default:
 							throw new CompileException("Detached else/else if statement!", -1, -1);
@@ -363,14 +282,14 @@ public class HudderV3Compiler extends AV3Compiler {
 			}
 		}
 
-		executeMethod.appendStringConstant(elemBuilder.toString());
+		finalCodeBlock.appendStringConstant(elemBuilder.toString());
 		
 		if (compileState!=0) {
 			var pos = getPosition(savedind, text);
 			throw new CompileException(getCompilerErrorMessage(compileState), pos.line(), pos.column());
 		}
 		
-		return returns_value;
+		return finalCodeBlock;
 	}
 
 	@Override

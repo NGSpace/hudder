@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.hudderv3.instructions;
+package dev.ngspace.hudder.hudderv3.instructions.compiler;
 
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
@@ -55,7 +55,7 @@ public class IfElseInstuction extends Instruction {
 				methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFEQ, nextcondition);
 			}
 			
-			comp.compile(methodWriter, classWriter, info, statement.code(), filename, breaklabel);
+			comp.compile(info, statement.code(), filename).writeInstructions(methodWriter, classWriter, breaklabel);
 			methodWriter.jumpto(end);
 			
 			methodWriter.putLabel(nextcondition);

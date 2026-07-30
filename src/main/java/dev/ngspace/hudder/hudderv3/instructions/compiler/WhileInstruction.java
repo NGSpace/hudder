@@ -1,9 +1,9 @@
-package dev.ngspace.hudder.hudderv3.instructions;
+package dev.ngspace.hudder.hudderv3.instructions.compiler;
 
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 
-import dev.ngspace.hudder.compilers.HudderV3Compiler;
+import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.V3ClassWriter;
@@ -12,14 +12,15 @@ import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
 
 public class WhileInstruction extends Instruction {
 
-	private HudderV3Compiler comp;
+	private AV3Compiler comp;
 	private VariableVisitor condition;
 	private String block;
 	private HudderConfig info;
 	private String filename;
 
-	public WhileInstruction(String condition, String block, HudderV3Compiler comp,
+	public WhileInstruction(String condition, String block, AV3Compiler comp,
 			HudderConfig info, String filename) throws CompileException {
+		System.out.println(comp);
 		this.comp = comp;
 		this.condition = comp.parseVariable(condition);
 		this.block = block;
@@ -40,7 +41,7 @@ public class WhileInstruction extends Instruction {
 		methodWriter.booleanValue();
 		methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFEQ, end);
 		
-		comp.compile(methodWriter, classWriter, info, block, filename, end);
+		comp.compile(info, block, filename).writeInstructions(methodWriter, classWriter, breaklabel);
 		
 		methodWriter.jumpto(start);
 		

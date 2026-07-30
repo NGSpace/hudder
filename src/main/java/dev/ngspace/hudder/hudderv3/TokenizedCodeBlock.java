@@ -7,7 +7,8 @@ import org.objectweb.asm.Label;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.exceptions.CompileException;
-import dev.ngspace.hudder.hudderv3.instructions.Instruction;
+import dev.ngspace.hudder.hudderv3.instructions.compiler.Instruction;
+import dev.ngspace.hudder.hudderv3.instructions.compiler.StringInstruction;
 
 public class TokenizedCodeBlock {
 	
@@ -31,5 +32,18 @@ public class TokenizedCodeBlock {
 		for (Instruction ins : instructions) {
 			ins.visit(methodWriter, classWriter, breakLabel);
 		}
+	}
+
+	public void appendStringConstant(String string) {
+		addInstruction(new StringInstruction(string));
+	}
+	
+	public boolean returnsValue() {
+		for (Instruction ins : instructions) {
+			if (ins.returnsValue()) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
