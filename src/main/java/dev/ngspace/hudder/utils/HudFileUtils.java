@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import com.mojang.blaze3d.platform.NativeImage;
 
 import dev.ngspace.hudder.Hudder;
+import dev.ngspace.hudder.main.HudCompilationManager;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.Identifier;
 
@@ -176,6 +177,7 @@ public class HudFileUtils {private HudFileUtils() {}
 		reader.clearCache();
 		loadResources(new File(FOLDER), "");
 		for (var listener : reloadResourcesListeners) listener.run();
+		HudCompilationManager.isFirstRunSinceCacheClear = true; // Reset the clock
 	}
 
 

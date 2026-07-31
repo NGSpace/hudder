@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.v2runtime.functions;
+package dev.ngspace.hudder.hudderv3;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,10 +8,11 @@ import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableFunction;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.Binder;
 import dev.ngspace.hudder.exceptions.ExecutionException;
+import dev.ngspace.hudder.v2runtime.functions.RngV2Function;
 import dev.ngspace.hudder.v2runtime.functions.V2FunctionHandler.RangedIterator;
 
-public class HudderFunctions {
-	private HudderFunctions() {/* */}
+public class HudderAPIFunctions {
+	private HudderAPIFunctions() {/* */}
 
 	public static void bindAllAPIFunctions(Binder binder) {
 		

@@ -14,13 +14,14 @@ import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.hudderv3.GeneratedCompiler;
+import dev.ngspace.hudder.hudderv3.HudderAPIFunctions;
+import dev.ngspace.hudder.hudderv3.HudderAPIMethods;
 import dev.ngspace.hudder.hudderv3.TokenizedCodeBlock;
 import dev.ngspace.hudder.hudderv3.V3VariableProcessor;
 import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.asm.V3ExecuteMethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
 import dev.ngspace.hudder.utils.HudFileUtils;
-import dev.ngspace.hudder.v2runtime.functions.HudderFunctions;
 
 public abstract class AV3Compiler extends AVarTextCompiler {
 	
@@ -47,7 +48,8 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 		classWriter.createInit();
 		
 		FunctionAndConsumerAPI.getInstance().applyFunctionsAndConsumers(classWriter);
-		HudderFunctions.bindAllAPIFunctions(classWriter);
+		HudderAPIFunctions.bindAllAPIFunctions(classWriter);
+		HudderAPIMethods.bindAllAPIMethods(classWriter);
 		
 		V3ExecuteMethodWriter executeMethod = classWriter.createExecuteMethod("execute", new Class<?>[] {
 				HudderConfig.class,
