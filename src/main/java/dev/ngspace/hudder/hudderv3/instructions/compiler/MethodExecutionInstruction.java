@@ -113,7 +113,12 @@ public class MethodExecutionInstruction extends Instruction {
 	}
 	
 	@Override
-	public boolean returnsValue() {
+	public boolean canReturnValue() {
+		return doesReturnValue();
+	}
+	
+	@Override
+	public boolean doesReturnValue() {
 		return "return".equals(builder[0]);
 	}
 }

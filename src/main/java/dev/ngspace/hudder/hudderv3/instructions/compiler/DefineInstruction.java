@@ -18,6 +18,7 @@ public class DefineInstruction extends Instruction {
 	private String[] args;
 	private HudderConfig info;
 	private String name;
+	private String finalname;
 	private String filename;
 	private AV3Compiler comp;
 
@@ -28,13 +29,12 @@ public class DefineInstruction extends Instruction {
 		this.name = name;
 		this.filename = filename;
 		this.comp = comp;
+		finalname = "user_" + name + "_" + ++user_defines_count;
 	}
 
 	@Override
 	public void visit(V3ExecuteMethodWriter methodWriter, V3ClassWriter writer, Label breaklabel)
 			throws CompileException {
-		user_defines_count++;
-		String finalname = "user_" + name + "_" + user_defines_count;
 		var method = writer.createExecuteMethod(finalname, new Class<?>[] {
 			HudderConfig.class,
 			String.class,
@@ -55,11 +55,15 @@ public class DefineInstruction extends Instruction {
 
 		Label end = new Label();
 		TokenizedCodeBlock tokenizedBlock = comp.compile(info, block, filename);
-		tokenizedBlock.writeInstructions(methodWriter, writer, breaklabel);
+		tokenizedBlock.writeInstructions(method, writer, end);
 		method.putLabel(end);
 		method.end();
 		
-		if (!tokenizedBlock.returnsValue())
+		if (tokenizedBlock.canReturnValue()!=tokenizedBlock.doesReturnValue()) {
+			throw new CompileException("Function \""+name+"\" does not always return a value!",-1,-1);
+		}
+		
+		if (!tokenizedBlock.canReturnValue())
 			comp.user_methods.put(name, finalname);
 		else
 			comp.user_functions.put(name, finalname);

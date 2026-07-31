@@ -38,9 +38,18 @@ public class TokenizedCodeBlock {
 		addInstruction(new StringInstruction(string));
 	}
 	
-	public boolean returnsValue() {
+	public boolean canReturnValue() {
 		for (Instruction ins : instructions) {
-			if (ins.returnsValue()) {
+			if (ins.canReturnValue()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean doesReturnValue() {
+		for (Instruction ins : instructions) {
+			if (ins.doesReturnValue()) {
 				return true;
 			}
 		}

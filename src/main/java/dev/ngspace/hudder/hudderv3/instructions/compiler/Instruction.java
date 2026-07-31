@@ -10,7 +10,11 @@ public abstract class Instruction {
 	public abstract void visit(V3ExecuteMethodWriter methodWriter, V3ClassWriter classWriter,
 			Label breaklabel) throws CompileException;
 	
-	public boolean returnsValue() {
+	public boolean canReturnValue() {
+		return false;
+	}
+	
+	public boolean doesReturnValue() {
 		return false;
 	}
 }

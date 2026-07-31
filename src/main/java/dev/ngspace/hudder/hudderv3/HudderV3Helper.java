@@ -68,7 +68,6 @@ public class HudderV3Helper {
 	}
 	
 	public static boolean hasApiFunction(String name) {
-		System.out.println(name);
 		return api_functions.containsKey(name);
 	}
 	

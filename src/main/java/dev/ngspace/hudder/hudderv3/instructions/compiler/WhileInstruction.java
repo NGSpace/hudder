@@ -6,26 +6,20 @@ import org.objectweb.asm.Opcodes;
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
+import dev.ngspace.hudder.hudderv3.TokenizedCodeBlock;
 import dev.ngspace.hudder.hudderv3.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.V3ExecuteMethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
 
 public class WhileInstruction extends Instruction {
 
-	private AV3Compiler comp;
 	private VariableVisitor condition;
-	private String block;
-	private HudderConfig info;
-	private String filename;
-
+	private TokenizedCodeBlock codeblock;
+	
 	public WhileInstruction(String condition, String block, AV3Compiler comp,
 			HudderConfig info, String filename) throws CompileException {
-		System.out.println(comp);
-		this.comp = comp;
 		this.condition = comp.parseVariable(condition);
-		this.block = block;
-		this.info = info;
-		this.filename = filename;
+		this.codeblock = comp.compile(info, block, filename);
 	}
 
 	@Override
@@ -41,14 +35,23 @@ public class WhileInstruction extends Instruction {
 		methodWriter.booleanValue();
 		methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFEQ, end);
 		
-		comp.compile(info, block, filename).writeInstructions(methodWriter, classWriter, breaklabel);
+		codeblock.writeInstructions(methodWriter, classWriter, end);
 		
 		methodWriter.jumpto(start);
 		
 		methodWriter.putLabel(end);
 		
 		methodWriter.setBuilderDisabled(builderdisabled);
-		
+	}
+	
+	@Override
+	public boolean canReturnValue() {
+		return codeblock.canReturnValue();
+	}
+	
+	@Override
+	public boolean doesReturnValue() {
+		return codeblock.doesReturnValue();
 	}
 	
 }

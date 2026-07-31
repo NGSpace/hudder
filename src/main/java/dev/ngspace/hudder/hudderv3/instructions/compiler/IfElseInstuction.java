@@ -6,6 +6,7 @@ import org.objectweb.asm.Opcodes;
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
+import dev.ngspace.hudder.hudderv3.TokenizedCodeBlock;
 import dev.ngspace.hudder.hudderv3.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.V3ExecuteMethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
@@ -13,16 +14,12 @@ import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
 public class IfElseInstuction extends Instruction {
 
 	private CompiledStatement[] compiled_statements;
-	private String filename;
 	private AV3Compiler comp;
-	private HudderConfig info;
 	
 	public IfElseInstuction(Statement[] statements, String filename, AV3Compiler compiler, HudderConfig info)
 			throws CompileException {
 		compiled_statements = new CompiledStatement[statements.length];
-		this.filename = filename;
 		this.comp = compiler;
-		this.info = info;
 		for (int i = 0;i<compiled_statements.length;i++) {
 			Statement statement = statements[i];
 			
@@ -34,7 +31,8 @@ public class IfElseInstuction extends Instruction {
 			} else {
 				condition = compiler.parseVariable(statement.condition());
 			}
-			compiled_statements[i] = new CompiledStatement(condition, statement.codeblock());
+			compiled_statements[i] = new CompiledStatement(condition,
+					comp.compile(info, statement.codeblock(), filename));
 		}
 	}
 	
@@ -55,7 +53,7 @@ public class IfElseInstuction extends Instruction {
 				methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFEQ, nextcondition);
 			}
 			
-			comp.compile(info, statement.code(), filename).writeInstructions(methodWriter, classWriter, breaklabel);
+			statement.code().writeInstructions(methodWriter, classWriter, breaklabel);
 			methodWriter.jumpto(end);
 			
 			methodWriter.putLabel(nextcondition);
@@ -66,6 +64,27 @@ public class IfElseInstuction extends Instruction {
 		methodWriter.setBuilderDisabled(builderdisabled);
 	}
 	
+	@Override
+	public boolean canReturnValue() {
+		for (int i = 0;i<compiled_statements.length;i++) {
+			CompiledStatement statement = compiled_statements[i];
+			if (statement.code().canReturnValue())
+				return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean doesReturnValue() {
+		for (int i = 0;i<compiled_statements.length;i++) {
+			CompiledStatement statement = compiled_statements[i];
+			if (!statement.code().doesReturnValue())
+				return false;
+		}
+		// If there is no else then in case the condition falls through it will not return a value
+		return compiled_statements[compiled_statements.length-1].condition()==null;
+	}
+	
 	public static record Statement(String condition, String codeblock) {}
-	public static record CompiledStatement(VariableVisitor condition, String code) {}
+	public static record CompiledStatement(VariableVisitor condition, TokenizedCodeBlock code) {}
 }

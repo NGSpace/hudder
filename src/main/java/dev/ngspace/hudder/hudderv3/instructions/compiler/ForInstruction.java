@@ -8,16 +8,14 @@ import org.objectweb.asm.Opcodes;
 import dev.ngspace.hudder.compilers.HudderV3Compiler;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
+import dev.ngspace.hudder.hudderv3.TokenizedCodeBlock;
 import dev.ngspace.hudder.hudderv3.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.V3ExecuteMethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
 
 public class ForInstruction extends Instruction {
 
-	private String block;
-	private HudderV3Compiler comp;
-	private HudderConfig info;
-	private String filename;
+	private TokenizedCodeBlock block;
 	private String variable_name;
 	private VariableVisitor value;
 
@@ -25,10 +23,7 @@ public class ForInstruction extends Instruction {
 			HudderConfig info, String filename) throws CompileException {
 		this.variable_name = variable_name;
 		this.value = comp.parseVariable(value);
-		this.block = block;
-		this.comp = comp;
-		this.info = info;
-		this.filename = filename;
+		this.block = comp.compile(info, block, filename);
 	}
 
 	@Override
@@ -53,14 +48,23 @@ public class ForInstruction extends Instruction {
 		methodWriter.callInterface(Iterator.class, "next", "()Ljava/lang/Object;");
 		methodWriter.storeVariable(variable_name);
 		
-		comp.compile(info, block, filename).writeInstructions(methodWriter, classWriter, breaklabel);
+		block.writeInstructions(methodWriter, classWriter, end);
 		
 		methodWriter.jumpto(start);
 		
 		methodWriter.putLabel(end);
 		
 		methodWriter.setBuilderDisabled(builderdisabled);
-		
+	}
+	
+	@Override
+	public boolean canReturnValue() {
+		return block.canReturnValue();
+	}
+	
+	@Override
+	public boolean doesReturnValue() {
+		return block.doesReturnValue();
 	}
 	
 }
