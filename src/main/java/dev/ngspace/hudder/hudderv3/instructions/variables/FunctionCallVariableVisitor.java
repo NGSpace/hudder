@@ -10,7 +10,7 @@ import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.V3HudInformation;
-import dev.ngspace.hudder.hudderv3.V3MethodWriter;
+import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
 
 public class FunctionCallVariableVisitor extends VariableVisitor {
 

@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.hudderv3;
+package dev.ngspace.hudder.hudderv3.asm;
 
 import java.util.HashMap;
 import java.util.List;
@@ -299,16 +299,6 @@ public class V3MethodWriter {
 	
 	public void pop() {
 		methodVisitor.visitInsn(Opcodes.POP);
-	}
-
-	public void callDataVariableRegistry(String variable) {
-		loadConstant(variable.toLowerCase());
-		callDataVariableRegistry();
-	}
-
-	public void callDataVariableRegistry() {
-		methodVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, VAR_REGISTRY, "getAny",
-				"(Ljava/lang/String;)Ljava/lang/Object;", false);
 	}
 
 

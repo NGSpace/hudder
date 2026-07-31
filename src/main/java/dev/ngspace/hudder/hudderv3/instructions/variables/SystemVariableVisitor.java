@@ -1,8 +1,9 @@
 package dev.ngspace.hudder.hudderv3.instructions.variables;
 
+import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.exceptions.CompileException;
-import dev.ngspace.hudder.hudderv3.V3MethodWriter;
+import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
 
 public class SystemVariableVisitor extends VariableVisitor {
 
@@ -15,7 +16,8 @@ public class SystemVariableVisitor extends VariableVisitor {
 
 	@Override
 	public void visit(V3MethodWriter methodWriter) throws CompileException {
-		methodWriter.callDataVariableRegistry(value.toLowerCase());
+		methodWriter.loadConstant(value.toLowerCase());
+		methodWriter.callStatic(DataVariableRegistry.class, "getAny", "(Ljava/lang/String;)Ljava/lang/Object;", false);
 	}
 	
 }

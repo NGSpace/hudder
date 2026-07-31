@@ -7,7 +7,7 @@ import org.objectweb.asm.Type;
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
-import dev.ngspace.hudder.hudderv3.V3MethodWriter;
+import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
 
 public class MathVariableVisitor extends VariableVisitor {
@@ -94,13 +94,7 @@ public class MathVariableVisitor extends VariableVisitor {
 			writer.methodVisitor.visitInsn(additive_operation == '+' ? Opcodes.DADD : Opcodes.DSUB);
 		}
 
-		writer.methodVisitor.visitMethodInsn(
-				Opcodes.INVOKESTATIC,
-				"java/lang/Double",
-				"valueOf",
-				"(D)Ljava/lang/Double;",
-				false
-		);
+		writer.callStatic(Double.class, "valueOf", "(D)Ljava/lang/Double;", false);
 		
 		writer.putLabel(end);
 	}

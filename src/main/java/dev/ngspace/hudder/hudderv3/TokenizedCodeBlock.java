@@ -7,6 +7,7 @@ import org.objectweb.asm.Label;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.exceptions.CompileException;
+import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.instructions.compiler.Instruction;
 import dev.ngspace.hudder.hudderv3.instructions.compiler.StringInstruction;
 

@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.hudderv3;
+package dev.ngspace.hudder.hudderv3.asm;
 
 public class ByteArrayClassLoader extends ClassLoader {
 
