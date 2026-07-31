@@ -1,7 +1,5 @@
 package dev.ngspace.hudder.compilers.abstractions;
 
-import java.io.Closeable;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,10 +30,7 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 	public Map<String, CachedCompiler> cache = new HashMap<String, CachedCompiler>();
 	
 	protected AV3Compiler() {
-		HudFileUtils.addReloadResourcesListener(()->{
-			for(CachedCompiler c:cache.values()) c.close();
-			cache.clear();
-		});
+		HudFileUtils.addReloadResourcesListener(cache::clear);
 	}
 	
 	public V3VariableProcessor variableProcessor = new V3VariableProcessor();
@@ -109,9 +104,5 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 	
 	
 
-	public static record CachedCompiler(Object compiledhud, GeneratedCompiler generatedCompiler, CompileException exception) implements Closeable{
-		@Override
-		public void close() throws IOException {
-		}
-	}
+	public static record CachedCompiler(Object compiledhud, GeneratedCompiler generatedCompiler, CompileException exception) {}
 }
