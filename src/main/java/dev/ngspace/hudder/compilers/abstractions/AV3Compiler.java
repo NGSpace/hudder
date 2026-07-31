@@ -25,10 +25,9 @@ import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.hudder.v2runtime.functions.HudderFunctions;
 
 public abstract class AV3Compiler extends AVarTextCompiler {
+	
 	public Map<String, String> user_methods = new HashMap<String, String>();
 	public Map<String, String> user_functions = new HashMap<String, String>();
-	int user_defines_count = 0;
-
 	
 	public Map<String, CachedCompiler> cache = new HashMap<String, CachedCompiler>();
 	
@@ -113,7 +112,6 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 	public static record CachedCompiler(Object compiledhud, GeneratedCompiler generatedCompiler, CompileException exception) implements Closeable{
 		@Override
 		public void close() throws IOException {
-			/* Right now the v3 can cause memory leaks because it loads classes but never unloads and deletes them */
 		}
 	}
 }

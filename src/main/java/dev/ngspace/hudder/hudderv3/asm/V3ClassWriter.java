@@ -9,6 +9,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
+import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableConsumer;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableFunction;
@@ -18,8 +19,10 @@ import dev.ngspace.hudder.hudderv3.GeneratedCompiler;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 
 public class V3ClassWriter implements Binder {
+	
 	public ClassWriter classWriter;
 	public String classname;
+	
 	public V3ClassWriter(String classname) {
 		this.classname = classname;
 		classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
@@ -91,7 +94,7 @@ public class V3ClassWriter implements Binder {
 	public Class<?> toClass() {
 		classWriter.visitEnd();
 		byte[] bytecode = classWriter.toByteArray();
-		if (!new File("hudderv3output.class").exists()) {
+		if ((!new File("hudderv3output.class").exists())&&Hudder.IS_DEBUG) {
 			try (FileOutputStream writer = new FileOutputStream(new File("hudderv3output.class"))) {
 				writer.write(bytecode);
 			} catch (IOException e) {
