@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.hudderv3;
+package dev.ngspace.hudder.hudderv3.asm;
 
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
@@ -6,8 +6,7 @@ import org.objectweb.asm.Type;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
-import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
-import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
+import dev.ngspace.hudder.hudderv3.V3HudInformation;
 
 public class V3ExecuteMethodWriter extends V3MethodWriter {
 

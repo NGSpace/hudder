@@ -16,7 +16,6 @@ import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.Binde
 import dev.ngspace.hudder.compilers.HudderV3Compiler;
 import dev.ngspace.hudder.hudderv3.GeneratedCompiler;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
-import dev.ngspace.hudder.hudderv3.V3ExecuteMethodWriter;
 
 public class V3ClassWriter implements Binder {
 	public ClassWriter classWriter;

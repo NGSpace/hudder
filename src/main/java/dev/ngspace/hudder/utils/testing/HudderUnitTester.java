@@ -69,11 +69,11 @@ public class HudderUnitTester {
 				result.append(failedtest.getKey().getFailureMessage());
 			}
 		}
-		result.append(Component.literal(milliseconds(!failed, start, end, failedtests.size(), UnitTests.size())));
+		result.append(Component.literal(output(!failed, start, end, failedtests.size(), UnitTests.size())));
 		return result;
 	}
 
-	private String milliseconds(boolean success, Instant start, Instant end, int failedcount, int testscount) {
+	protected String output(boolean success, Instant start, Instant end, int failedcount, int testscount) {
 		double v = Duration.between(start, end).toNanos()/1000000d;
 		double res = (int) (v*1000);
 		res/=1000;

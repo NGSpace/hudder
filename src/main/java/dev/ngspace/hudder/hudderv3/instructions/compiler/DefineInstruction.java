@@ -7,8 +7,8 @@ import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.TokenizedCodeBlock;
-import dev.ngspace.hudder.hudderv3.V3ExecuteMethodWriter;
 import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
+import dev.ngspace.hudder.hudderv3.asm.V3ExecuteMethodWriter;
 
 public class DefineInstruction extends Instruction {
 	

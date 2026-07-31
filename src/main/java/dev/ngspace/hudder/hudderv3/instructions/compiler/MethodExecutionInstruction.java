@@ -9,9 +9,9 @@ import dev.ngspace.hudder.compilers.HudderV3Compiler;
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
-import dev.ngspace.hudder.hudderv3.V3ExecuteMethodWriter;
 import dev.ngspace.hudder.hudderv3.V3HudInformation;
 import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
+import dev.ngspace.hudder.hudderv3.asm.V3ExecuteMethodWriter;
 
 public class MethodExecutionInstruction extends Instruction {
 	
