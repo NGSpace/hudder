@@ -6,6 +6,7 @@ import java.util.List;
 import org.objectweb.asm.Label;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
+import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.asm.V3ExecuteMethodWriter;
@@ -36,8 +37,8 @@ public class TokenizedCodeBlock {
 		}
 	}
 
-	public void appendStringConstant(String string) {
-		addInstruction(new StringInstruction(string));
+	public void appendStringConstant(String string, TextPos pos) {
+		addInstruction(new StringInstruction(string, pos));
 	}
 	
 	public boolean canReturnValue() {

@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import org.mozilla.javascript.ScriptableObject;
 
@@ -23,7 +22,6 @@ import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.utils.ImplObjectWrapper;
 import dev.ngspace.hudder.utils.NoAccess;
-import dev.ngspace.hudder.utils.ObjectWrapper;
 import dev.ngspace.hudder.utils.ValueGetter;
 
 public class HudderV3Helper {
@@ -72,20 +70,20 @@ public class HudderV3Helper {
 	}
 	
 	
-	public static Object callApiFunction(String name, ArrayElementManager uiManager,
+	public static Object callApiFunction(String name, int line, int col, ArrayElementManager uiManager,
 			AVarTextCompiler compiler, Object... values) throws ExecutionException {
 		return api_functions.get(name).invoke(uiManager, compiler,
-				Stream.of(values).map(ImplObjectWrapper::new).toList().toArray(new ObjectWrapper[0]));
+				ImplObjectWrapper.fromArray(values, line, col));
 	}
 	
 	public static boolean hasApiConsumer(String name) {
 		return api_consumers.containsKey(name);
 	}
 	
-	public static void callApiConsumer(String name, ArrayElementManager uiManager,
+	public static void callApiConsumer(String name, int line, int col, ArrayElementManager uiManager,
 			AVarTextCompiler compiler, Object... values) throws ExecutionException {
 		api_consumers.get(name).invoke(uiManager, compiler,
-				ImplObjectWrapper.fromArray(values));
+				ImplObjectWrapper.fromArray(values, line, col));
 	}
 
 	public static Object getClassProperty(Object object, String objectExpression, String fieldName)

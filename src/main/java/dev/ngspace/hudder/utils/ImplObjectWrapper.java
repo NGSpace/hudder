@@ -8,9 +8,19 @@ import dev.ngspace.hudder.exceptions.ExecutionException;
 public class ImplObjectWrapper<T> implements ObjectWrapper {
 	
 	private T object;
+	private int line;
+	private int col;
 
 	public ImplObjectWrapper(T object) {
 		this.object = object;
+		this.line = -1;
+		this.col = -1;
+	}
+
+	public ImplObjectWrapper(T object, int line, int col) {
+		this.object = object;
+		this.line = line;
+		this.col = col;
 	}
 
 	@Override
@@ -31,12 +41,15 @@ public class ImplObjectWrapper<T> implements ObjectWrapper {
 	public <E> E asType(Class<E> clazz) throws ExecutionException {
 		Object get = get();
 		if (clazz.isInstance(get)) return clazz.cast(get);
-		throw new ClassCastException("Can not cast value of type " + get.getClass().getSimpleName()
-				+ " to " + clazz.getSimpleName());
+		throw new ExecutionException("Can not cast value of type " + get.getClass().getSimpleName()
+				+ " to " + clazz.getSimpleName(), line, col);
+	}
+
+	public static <T> ObjectWrapper[] fromArray(T[] values, int line, int col) {
+		return Stream.of(values).map(o->new ImplObjectWrapper<>(o, line, col)).toList().toArray(new ObjectWrapper[0]);
 	}
 
 	public static <T> ObjectWrapper[] fromArray(T[] values) {
-		return Stream.of(values).map(ImplObjectWrapper<T>::new).toList().toArray(new ObjectWrapper[0]);
+		return Stream.of(values).map(ImplObjectWrapper::new).toList().toArray(new ObjectWrapper[0]);
 	}
-	
 }

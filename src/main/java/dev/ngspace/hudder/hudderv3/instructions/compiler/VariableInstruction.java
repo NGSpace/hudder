@@ -4,6 +4,7 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
+import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.asm.V3ExecuteMethodWriter;
@@ -16,7 +17,8 @@ public class VariableInstruction extends Instruction {
 	public String variable;
 	public VariableVisitor visitor;
 	
-	public VariableInstruction(AV3Compiler comp, String variable) throws CompileException {
+	public VariableInstruction(AV3Compiler comp, String variable, TextPos pos) throws CompileException {
+		super(pos);
 		this.comp = comp;
 		this.variable = variable;
 		this.visitor = comp.parseVariable(variable);

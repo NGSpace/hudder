@@ -10,6 +10,8 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
+import dev.ngspace.hudder.compilers.utils.TextPos;
+import dev.ngspace.hudder.exceptions.ExecutionException;
 
 public class V3MethodWriter {
 	
@@ -357,6 +359,20 @@ public class V3MethodWriter {
 		newAndDup(RuntimeException.class);
 		loadConstant(exception);
 		callSpecial(RuntimeException.class, "<init>", "(Ljava/lang/String;)V", false);
+		methodVisitor.visitInsn(Opcodes.ATHROW);
+	}
+
+
+
+	public void throwExecutionException(String exception, TextPos pos) {
+		throwExecutionException(exception, pos.line(), pos.column());
+	}
+	public void throwExecutionException(String exception, int line, int col) {
+		newAndDup(ExecutionException.class);
+		loadConstant(exception);
+		loadConstantUnsafe(line);
+		loadConstantUnsafe(col);
+		callSpecial(ExecutionException.class, "<init>", "(Ljava/lang/String;II)V", false);
 		methodVisitor.visitInsn(Opcodes.ATHROW);
 	}
 

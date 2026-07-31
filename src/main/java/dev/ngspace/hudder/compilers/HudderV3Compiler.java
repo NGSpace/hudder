@@ -7,6 +7,7 @@ import java.util.List;
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.abstractions.AV2Compiler.CodeBlock;
 import dev.ngspace.hudder.compilers.abstractions.AV2Compiler.Instruction;
+import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
@@ -40,7 +41,7 @@ public class HudderV3Compiler extends AV3Compiler {
 	public static final byte ELSE_INSTRUCTION = 0x6;
 	
 	@Override
-	public TokenizedCodeBlock compile(HudderConfig info, String text, String filename) throws CompileException {
+	public TokenizedCodeBlock compile(HudderConfig info, String text, String filename, TextPos offset) throws CompileException {
 		
 		TokenizedCodeBlock finalCodeBlock = new TokenizedCodeBlock(this);
 		
@@ -75,20 +76,20 @@ public class HudderV3Compiler extends AV3Compiler {
 					switch (c) {
 						case '%':
 							compileState = CONDITION_STATE;
-							finalCodeBlock.appendStringConstant(elemBuilder.toString());
+							finalCodeBlock.appendStringConstant(elemBuilder.toString(), getPosition(offset, savedind, text));
 							elemBuilder.setLength(0);
 							savedind = ind;
 							break;
 						case '{':
 							compileState = VARIABLE_STATE;
-							finalCodeBlock.appendStringConstant(elemBuilder.toString());
+							finalCodeBlock.appendStringConstant(elemBuilder.toString(), getPosition(offset, savedind, text));
 							elemBuilder.setLength(0);
 							bracketscount = 1;
 							savedind = ind;
 							break;
 						case ';':
 							compileState = METHOD_STATE;
-							finalCodeBlock.appendStringConstant(trimMethod(elemBuilder.toString()));
+							finalCodeBlock.appendStringConstant(trimMethod(elemBuilder.toString()), getPosition(offset, savedind, text));
 							elemBuilder.setLength(0);
 							savedind = ind;
 						    quotesafe = false;
@@ -96,7 +97,7 @@ public class HudderV3Compiler extends AV3Compiler {
 							break;
 						case '#':
 							compileState = HASHTAG_STATE;
-							finalCodeBlock.appendStringConstant(elemBuilder.toString());
+							finalCodeBlock.appendStringConstant(elemBuilder.toString(), getPosition(offset, savedind, text));
 							elemBuilder.setLength(0);
 							savedind = ind;
 							break;
@@ -137,7 +138,8 @@ public class HudderV3Compiler extends AV3Compiler {
 							conditionOrValue.setLength(0);
 						} else if (c=='%') {
 							conds.add(conditionOrValue.toString());
-							finalCodeBlock.addInstruction(new ConditionInstruction(info, filename, conds, this));
+							finalCodeBlock.addInstruction(new ConditionInstruction(info, filename, conds, this,
+									getPosition(offset, savedind, text)));
 							compileState = TEXT_STATE;
 							break;
 						} else {
@@ -163,7 +165,8 @@ public class HudderV3Compiler extends AV3Compiler {
 					} else if (c=='}') {
 						bracketscount--;
 						if (bracketscount==0) {
-							finalCodeBlock.addInstruction(new VariableInstruction(this, elemBuilder.toString()));
+							finalCodeBlock.addInstruction(new VariableInstruction(this, elemBuilder.toString(),
+									getPosition(offset, savedind, text)));
 							elemBuilder.setLength(0);
 							compileState = TEXT_STATE;
 						} else elemBuilder.append(c);
@@ -193,7 +196,7 @@ public class HudderV3Compiler extends AV3Compiler {
 					}
 					if (compileState!=METHOD_STATE) {
 						String[] builder = HudderUtils.processParemeters(elemBuilder.toString());
-						finalCodeBlock.addInstruction(new MethodExecutionInstruction(builder, this));
+						finalCodeBlock.addInstruction(new MethodExecutionInstruction(builder, this, getPosition(offset, savedind, text)));
 						elemBuilder.setLength(0);
 						cleanup = true;
 						cleanup_amount = Hudder.config.methodBuffer()/2;
@@ -202,6 +205,7 @@ public class HudderV3Compiler extends AV3Compiler {
 				}
 				case HASHTAG_STATE: {
 					compileState = TEXT_STATE;
+					var pos = getPosition(offset, savedind, text);
 					
 					Instruction instructions = getInstruction(text, ind);
 					ind = instructions.ending_index();
@@ -222,19 +226,21 @@ public class HudderV3Compiler extends AV3Compiler {
 							String value = split[1];
 							elemBuilder.setLength(0);
 							finalCodeBlock.addInstruction(new ForInstruction(variablename, value, block,
-									this, info, filename));
+									this, info, filename, pos));
 							break;
 						}
 						case DEFINE_INSTRUCTION: {
 							String[] builder = HudderUtils.processParemeters(parameters);
 							String name = builder[0];
 							String[] args = Arrays.copyOfRange(builder, 1, builder.length);
-							finalCodeBlock.addInstruction(new DefineInstruction(block, args, info, name, filename, this));
+							finalCodeBlock.addInstruction(new DefineInstruction(block, args, info, name,
+									filename, this, pos));
 							elemBuilder.setLength(0);
 							break;
 						}
 						case WHILE_LOOP_INSTRUCTION: {
-							finalCodeBlock.addInstruction(new WhileInstruction(parameters, block, this, info, filename));
+							finalCodeBlock.addInstruction(new WhileInstruction(parameters, block, this, info,
+									filename, pos));
 							break;
 						}
 						case UNDEFINED_INSTRUCTION:
@@ -268,7 +274,7 @@ public class HudderV3Compiler extends AV3Compiler {
 							}
 							ind--;
 							finalCodeBlock.addInstruction(new IfElseInstuction(statements.toArray(new Statement[statements.size()]),
-									filename, this, info));
+									filename, this, info, pos));
 							break;
 						default:
 							throw new CompileException("Detached else/else if statement!", -1, -1);
@@ -276,17 +282,17 @@ public class HudderV3Compiler extends AV3Compiler {
 					break;
 				}
 				default: {
-					var pos = getPosition(savedind, text);
-					throw new CompileException("Unknown compile state: " + compileState, pos.line(), pos.column());
+					var pos = getPosition(offset, savedind, text);
+					throw new CompileException("Unknown compile state: " + compileState, pos);
 				}
 			}
 		}
 
-		finalCodeBlock.appendStringConstant(elemBuilder.toString());
+		finalCodeBlock.appendStringConstant(elemBuilder.toString(), getPosition(offset, text.length()-1, text));
 		
 		if (compileState!=0) {
-			var pos = getPosition(savedind, text);
-			throw new CompileException(getCompilerErrorMessage(compileState), pos.line(), pos.column());
+			var pos = getPosition(offset, text.length()-1, text);
+			throw new CompileException(getCompilerErrorMessage(compileState), pos);
 		}
 		
 		return finalCodeBlock;
@@ -359,10 +365,14 @@ public class HudderV3Compiler extends AV3Compiler {
 		return b.toString();
 	}
 
+
 	public String getCompilerErrorMessage(int compileState) {
 		StringBuilder strb = new StringBuilder();
 		strb.append(switch(compileState) {
 			case VARIABLE_STATE -> "Expected '}'";
+			case CONDITION_STATE -> "Expected '%'";
+			case METHOD_STATE -> "Expected ';'";
+			case HASHTAG_STATE -> "Expected end of HASHTAG_STATE";
 			default -> "An unknown error has occurred";
 		});
 		return strb.toString();

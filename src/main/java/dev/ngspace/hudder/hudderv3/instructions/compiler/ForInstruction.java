@@ -5,7 +5,8 @@ import java.util.Iterator;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 
-import dev.ngspace.hudder.compilers.HudderV3Compiler;
+import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
+import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.TokenizedCodeBlock;
@@ -19,11 +20,12 @@ public class ForInstruction extends Instruction {
 	private String variable_name;
 	private VariableVisitor value;
 
-	public ForInstruction(String variable_name, String value, String block, HudderV3Compiler comp,
-			HudderConfig info, String filename) throws CompileException {
+	public ForInstruction(String variable_name, String value, String block, AV3Compiler comp,
+			HudderConfig info, String filename, TextPos pos) throws CompileException {
+		super(pos);
 		this.variable_name = variable_name;
 		this.value = comp.parseVariable(value);
-		this.block = comp.compile(info, block, filename);
+		this.block = comp.compile(info, block, filename, pos);
 	}
 
 	@Override

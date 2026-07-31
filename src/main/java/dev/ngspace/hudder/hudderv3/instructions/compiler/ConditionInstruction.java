@@ -7,6 +7,7 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
+import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.TokenizedCodeBlock;
@@ -19,8 +20,9 @@ public class ConditionInstruction extends Instruction {
 	
 	private List<ConditionBranch> branches = new ArrayList<>();
 	
-	public ConditionInstruction(HudderConfig info, String filename, List<String> conds, AV3Compiler comp)
-			throws CompileException {
+	public ConditionInstruction(HudderConfig info, String filename, List<String> conds, AV3Compiler comp,
+			TextPos pos) throws CompileException {
+		super(pos);
 		for (int i = 0; i + 1 < conds.size(); i += 2) {
 			VariableVisitor condition = comp.parseVariable(conds.get(i));
 			
@@ -31,13 +33,13 @@ public class ConditionInstruction extends Instruction {
 		}
 	}
 	
-	private static ConditionBranch prepareValue(VariableVisitor condition, HudderConfig info, String filename,
+	private ConditionBranch prepareValue(VariableVisitor condition, HudderConfig info, String filename,
 			String source, AV3Compiler comp) throws CompileException {
 		
 		VariableVisitor variable = comp.parseVariable(source);
 		
 		TokenizedCodeBlock compiledBlock = variable instanceof StringVariableVisitor string
-				? comp.compile(info, string.value, filename)
+				? comp.compile(info, string.value, filename, pos)
 				: null;
 		
 		return new ConditionBranch(condition, variable, compiledBlock);

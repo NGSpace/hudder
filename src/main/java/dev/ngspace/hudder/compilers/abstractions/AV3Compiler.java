@@ -10,6 +10,7 @@ import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
+import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
@@ -66,7 +67,7 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 		executeMethod.callSpecial(ArrayElementManager.class, "<init>", "()V", false);
 		executeMethod.putField("uimanager", ArrayElementManager.class);
 		
-		compile(Hudder.config, text, filepath).writeInstructions(executeMethod, classWriter, end);
+		compile(Hudder.config, text, filepath, new TextPos(1, 0)).writeInstructions(executeMethod, classWriter, end);
 		
 		executeMethod.putLabel(end);
 		executeMethod.end();
@@ -91,7 +92,7 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 		return cache.get(processedfile).generatedCompiler().execute(info, processedfile, filename).hudInformation;
 	}
 	
-	public abstract TokenizedCodeBlock compile(HudderConfig info, String text, String filename)
+	public abstract TokenizedCodeBlock compile(HudderConfig info, String text, String filename, TextPos offset)
 			throws CompileException;
 	
 

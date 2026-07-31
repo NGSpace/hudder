@@ -4,6 +4,7 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
+import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.TokenizedCodeBlock;
@@ -22,7 +23,9 @@ public class DefineInstruction extends Instruction {
 	private String filename;
 	private AV3Compiler comp;
 
-	public DefineInstruction(String block, String[] args, HudderConfig info, String name, String filename, AV3Compiler comp) {
+	public DefineInstruction(String block, String[] args, HudderConfig info, String name, String filename,
+			AV3Compiler comp, TextPos pos) {
+		super(pos);
 		this.block = block;
 		this.args = args;
 		this.info = info;
@@ -54,13 +57,13 @@ public class DefineInstruction extends Instruction {
 		}
 
 		Label end = new Label();
-		TokenizedCodeBlock tokenizedBlock = comp.compile(info, block, filename);
+		TokenizedCodeBlock tokenizedBlock = comp.compile(info, block, filename, pos);
 		tokenizedBlock.writeInstructions(method, writer, end);
 		method.putLabel(end);
 		method.end();
 		
 		if (tokenizedBlock.canReturnValue()!=tokenizedBlock.doesReturnValue()) {
-			throw new CompileException("Function \""+name+"\" does not always return a value!",-1,-1);
+			throw new CompileException("Function \""+name+"\" does not always return a value!",pos);
 		}
 		
 		if (!tokenizedBlock.canReturnValue())

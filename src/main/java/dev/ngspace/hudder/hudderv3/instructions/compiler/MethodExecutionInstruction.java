@@ -7,6 +7,7 @@ import org.objectweb.asm.Type;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.compilers.HudderV3Compiler;
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
+import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.V3HudInformation;
@@ -18,7 +19,8 @@ public class MethodExecutionInstruction extends Instruction {
 	private String[] builder;
 	AV3Compiler comp;
 
-	public MethodExecutionInstruction(String[] builder, AV3Compiler comp) {
+	public MethodExecutionInstruction(String[] builder, AV3Compiler comp, TextPos pos) {
+		super(pos);
 		this.builder = builder;
 		this.comp = comp;
 	}
@@ -78,19 +80,21 @@ public class MethodExecutionInstruction extends Instruction {
 					methodWriter.aload(value_index);
 					methodWriter.aastore();
 				}
-				methodWriter.loadConstant(builder[0].trim());
+				methodWriter.loadConstant(builder[0].toLowerCase().trim());
 				methodWriter.callStatic(HudderV3Helper.class, "hasApiConsumer", "(Ljava/lang/String;)Z", false);
 				methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFEQ, user_defined);
 				
 				// API method
 				methodWriter.loadConstant(builder[0].toLowerCase().trim());
+				methodWriter.loadConstantUnsafe(pos.line());
+				methodWriter.loadConstantUnsafe(pos.column());
 				methodWriter.aload(0);
 				methodWriter.getField("uimanager", ArrayElementManager.class);
 				methodWriter.aload(0);
 				methodWriter.getField("v3compiler", HudderV3Compiler.class);
 				methodWriter.aload(array_index);
 				methodWriter.callStatic(HudderV3Helper.class, "callApiConsumer",
-						"(Ljava/lang/String;Ldev/ngspace/hudder/api/functionsandconsumers/ArrayElementManager;Ldev/ngspace/hudder/compilers/abstractions/AVarTextCompiler;[Ljava/lang/Object;)V", false);
+						"(Ljava/lang/String;IILdev/ngspace/hudder/api/functionsandconsumers/ArrayElementManager;Ldev/ngspace/hudder/compilers/abstractions/AVarTextCompiler;[Ljava/lang/Object;)V", false);
 				methodWriter.jumpto(end);
 				
 				// User method
@@ -108,7 +112,7 @@ public class MethodExecutionInstruction extends Instruction {
 							+ Type.getDescriptor(V3HudInformation.class), false);
 					methodWriter.pop();
 				} else {
-					throw new CompileException("Unknown method \"" + builder[0] + '"', -1, -1);
+					methodWriter.throwExecutionException("Unknown method \"" + builder[0] + '"', pos);
 				}
 				
 				methodWriter.putLabel(end);

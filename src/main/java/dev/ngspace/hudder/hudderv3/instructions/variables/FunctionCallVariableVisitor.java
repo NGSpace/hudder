@@ -41,18 +41,20 @@ public class FunctionCallVariableVisitor extends VariableVisitor {
 			methodWriter.methodVisitor.visitInsn(Opcodes.AASTORE);
 		}
 		
-		methodWriter.loadConstant(funcName);
+		methodWriter.loadConstant(funcName.toLowerCase().trim());
 		methodWriter.callStatic(HudderV3Helper.class, "hasApiFunction", "(Ljava/lang/String;)Z", false);
 		methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFEQ, user_defined);
 		
-		methodWriter.loadConstant(funcName);
+		methodWriter.loadConstant(funcName.toLowerCase().trim());
+		methodWriter.loadConstantUnsafe(-1);
+		methodWriter.loadConstantUnsafe(-1);// TODO set this to real values
 		methodWriter.aload(0);
 		methodWriter.getField("uimanager", ArrayElementManager.class);
 		methodWriter.aload(0);
 		methodWriter.getField("v3compiler", HudderV3Compiler.class);
 		methodWriter.aload(array_index);
 		methodWriter.callStatic(HudderV3Helper.class, "callApiFunction",
-				"(Ljava/lang/String;Ldev/ngspace/hudder/api/functionsandconsumers/ArrayElementManager;Ldev/ngspace/hudder/compilers/abstractions/AVarTextCompiler;[Ljava/lang/Object;)Ljava/lang/Object;", false);
+				"(Ljava/lang/String;IILdev/ngspace/hudder/api/functionsandconsumers/ArrayElementManager;Ldev/ngspace/hudder/compilers/abstractions/AVarTextCompiler;[Ljava/lang/Object;)Ljava/lang/Object;", false);
 		methodWriter.jumpto(end);
 		
 		// User method
