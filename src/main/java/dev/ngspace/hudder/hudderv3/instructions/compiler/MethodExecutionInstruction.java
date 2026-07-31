@@ -31,6 +31,7 @@ public class MethodExecutionInstruction extends Instruction {
 				comp.parseVariable(builder[1]).visit(methodWriter);
 				methodWriter.astore(methodWriter.return_value_index);
 				methodWriter.jumpto(methodWriter.finalLabel);
+				break;
 			case "mute":
 				methodWriter.selected_builder_index = methodWriter.mute_builder_index;
 				break;
@@ -82,7 +83,7 @@ public class MethodExecutionInstruction extends Instruction {
 				methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFEQ, user_defined);
 				
 				// API method
-				methodWriter.loadConstant(builder[0].trim());
+				methodWriter.loadConstant(builder[0].toLowerCase().trim());
 				methodWriter.aload(0);
 				methodWriter.getField("uimanager", ArrayElementManager.class);
 				methodWriter.aload(0);
@@ -94,18 +95,20 @@ public class MethodExecutionInstruction extends Instruction {
 				
 				// User method
 				methodWriter.putLabel(user_defined);
-				if (comp.user_methods.containsKey(builder[0].trim())) {
+				if (comp.user_methods.containsKey(builder[0].toLowerCase().trim())) {
 					methodWriter.aload(0);
 					methodWriter.aload(1);
 					methodWriter.aload(2);
 					methodWriter.aload(3);
 					methodWriter.aload(array_index);
-					methodWriter.callSelf(comp.user_methods.get(builder[0].trim()), "(Ldev/ngspace/hudder/config/HudderConfig;"
+					methodWriter.callSelf(comp.user_methods.get(builder[0].toLowerCase().trim()), "(Ldev/ngspace/hudder/config/HudderConfig;"
 							+ "Ljava/lang/String;"
 							+ "Ljava/lang/String;"
 							+ "[Ljava/lang/Object;)"
 							+ Type.getDescriptor(V3HudInformation.class), false);
 					methodWriter.pop();
+				} else {
+					throw new CompileException("Unknown method \"" + builder[0] + '"', -1, -1);
 				}
 				
 				methodWriter.putLabel(end);

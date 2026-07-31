@@ -108,13 +108,13 @@ public class V3ClassWriter implements Binder {
 	@Override
 	public void bindConsumer(BindableConsumer cons, String... names) {
 		for (String name : names) {
-			HudderV3Helper.api_consumers.put(name, cons);
+			HudderV3Helper.api_consumers.put(name.toLowerCase(), cons);
 		}
 	}
 	@Override
 	public void bindFunction(BindableFunction cons, String... names) {
 		for (String name : names) {
-			HudderV3Helper.api_functions.put(name, cons);
+			HudderV3Helper.api_functions.put(name.toLowerCase(), cons);
 		}
 	}
 }
