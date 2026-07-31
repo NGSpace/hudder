@@ -35,8 +35,9 @@ public class ForInstruction extends Instruction {
 		methodWriter.setBuilderDisabled(true);
 		Label start = new Label();
 		Label end = new Label();
-		methodWriter.defineVariable(variable_name);
-		
+		String localVariableName = variable_name.toLowerCase();
+		Integer previousVariableIndex = methodWriter.defineScopedVariable(localVariableName);
+
 		value.visit(methodWriter);
 		methodWriter.callInterface(Iterable.class, "iterator", "()Ljava/util/Iterator;");
 		int iterator_index = methodWriter.astore();
@@ -48,14 +49,16 @@ public class ForInstruction extends Instruction {
 
 		methodWriter.aload(iterator_index);
 		methodWriter.callInterface(Iterator.class, "next", "()Ljava/lang/Object;");
-		methodWriter.storeVariable(variable_name);
+		methodWriter.storeVariable(localVariableName);
 		
 		block.writeInstructions(methodWriter, classWriter, end);
 		
 		methodWriter.jumpto(start);
 		
 		methodWriter.putLabel(end);
-		
+		// The slot is valid only on control-flow paths that enter this loop.
+		// Do not let later instructions resolve the same dynamic name to it.
+		methodWriter.restoreScopedVariable(localVariableName, previousVariableIndex);
 		methodWriter.setBuilderDisabled(builderdisabled);
 	}
 	

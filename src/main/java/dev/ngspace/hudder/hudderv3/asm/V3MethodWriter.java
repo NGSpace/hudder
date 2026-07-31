@@ -39,14 +39,32 @@ public class V3MethodWriter {
 	
 	
 
-	public int defineVariable(String name) {
+	public void defineVariable(String name) {
 		methodVisitor.visitInsn(Opcodes.ACONST_NULL);
 		int index = astore();
 		variables.put(name, index);
-		return index;
 	}
 	public boolean hasVariable(String name) {
 		return variables.containsKey(name);
+	}
+
+	/**
+	 * Defines a local variable for a lexical scope and returns the local slot that
+	 * was previously associated with the same name, if any.
+	 */
+	public Integer defineScopedVariable(String name) {
+		Integer previousIndex = variables.get(name);
+		defineVariable(name);
+		return previousIndex;
+	}
+
+	/** Restores the name mapping that existed before defineScopedVariable. */
+	public void restoreScopedVariable(String name, Integer previousIndex) {
+		if (previousIndex == null) {
+			variables.remove(name);
+		} else {
+			variables.put(name, previousIndex);
+		}
 	}
 	
 	public void storeVariable(String name) {
