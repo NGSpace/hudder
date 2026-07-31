@@ -41,6 +41,7 @@ public class ArrayReadVariableVisitor extends VariableVisitor {
 		        Type.getInternalName(List.class)
 		);
 		indexValue.visit(methodWriter);
+		methodWriter.checkcast(Number.class);
 		methodWriter.intValue();
 		methodWriter.callInterface(List.class, "get", "(I)Ljava/lang/Object;");
 		
@@ -53,6 +54,7 @@ public class ArrayReadVariableVisitor extends VariableVisitor {
 		        Type.getDescriptor(Object[].class)
 		);
 		indexValue.visit(methodWriter);
+		methodWriter.checkcast(Number.class);
 		methodWriter.intValue();
 		methodWriter.aaload();
 		
@@ -88,6 +90,7 @@ public class ArrayReadVariableVisitor extends VariableVisitor {
 		
 		methodWriter.callInterface(List.class, "size", "()I");
 		indexValue.visit(methodWriter);
+		methodWriter.checkcast(Number.class);
 		methodWriter.intValue();
 		methodWriter.dup();
 		int index_index = methodWriter.istore();
