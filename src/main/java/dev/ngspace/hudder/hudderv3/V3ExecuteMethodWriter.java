@@ -168,13 +168,13 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 		aloadFloat(topleft_scale_index);
 		aload(bottomleft_builder_index);
 		callToString();
-		aloadFloat(topleft_scale_index);
+		aloadFloat(bottomleft_scale_index);
 		aload(topright_builder_index);
 		callToString();
-		aloadFloat(topleft_scale_index);
+		aloadFloat(topright_scale_index);
 		aload(bottomright_builder_index);
 		callToString();
-		aloadFloat(topleft_scale_index);
+		aloadFloat(bottomright_scale_index);
 		aload(0);
 		getField("uimanager", ArrayElementManager.class);
 		call(ArrayElementManager.class, "toUIElementArray", "()[Ldev/ngspace/hudder/uielements/AUIElement;", false);

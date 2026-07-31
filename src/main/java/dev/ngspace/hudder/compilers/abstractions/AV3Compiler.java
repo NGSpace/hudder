@@ -9,6 +9,7 @@ import java.util.Map;
 import org.objectweb.asm.Label;
 
 import dev.ngspace.hudder.Hudder;
+import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
 import dev.ngspace.hudder.config.HudderConfig;
@@ -61,6 +62,13 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 			});
 		
 		Label end = new Label();
+		
+		// Init UIElements field
+	    
+		executeMethod.aload(0);
+		executeMethod.newAndDup(ArrayElementManager.class);
+		executeMethod.callSpecial(ArrayElementManager.class, "<init>", "()V", false);
+		executeMethod.putField("uimanager", ArrayElementManager.class);
 		
 		compile(Hudder.config, text, filepath).writeInstructions(executeMethod, classWriter, end);
 		

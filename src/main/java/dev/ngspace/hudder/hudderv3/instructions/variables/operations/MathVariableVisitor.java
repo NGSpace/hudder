@@ -1,7 +1,5 @@
 package dev.ngspace.hudder.hudderv3.instructions.variables.operations;
 
-import java.util.ArrayList;
-
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
@@ -74,30 +72,26 @@ public class MathVariableVisitor extends VariableVisitor {
 		
 		writer.putLabel(mathOperation);
 		
-		ArrayList<Character> final_operations = new ArrayList<Character>();
-
+		int operation_index = 0;
 		writer.aloadDouble(value_indexes[0]);
-		for (int i = 0;i<operations.length;i++) {
-			writer.aloadDouble(value_indexes[i+1]);
-			if (operations[i]=='*') {
-				writer.methodVisitor.visitInsn(Opcodes.DMUL);
-			} else if (operations[i]=='/') {
-				writer.methodVisitor.visitInsn(Opcodes.DDIV);
-			} else if (operations[i]=='%') {
-				writer.methodVisitor.visitInsn(Opcodes.DREM);
-			} else {
-				final_operations.add(operations[i]);
-			}
+		while (operation_index < operations.length && isMultiplicative(operations[operation_index])) {
+			writer.aloadDouble(value_indexes[operation_index + 1]);
+			visitMultiplicativeOperation(writer, operations[operation_index]);
+			operation_index++;
 		}
-		
-		for (int i = final_operations.size()-1;i>=0;i--) {
-			if (final_operations.get(i)=='+') {
-				final_operations.remove(i);
-				writer.methodVisitor.visitInsn(Opcodes.DADD);
-			} else if (final_operations.get(i)=='-') {
-				final_operations.remove(i);
-				writer.methodVisitor.visitInsn(Opcodes.DSUB);
+
+		while (operation_index < operations.length) {
+			char additive_operation = operations[operation_index];
+			operation_index++;
+
+			writer.aloadDouble(value_indexes[operation_index]);
+			while (operation_index < operations.length && isMultiplicative(operations[operation_index])) {
+				writer.aloadDouble(value_indexes[operation_index + 1]);
+				visitMultiplicativeOperation(writer, operations[operation_index]);
+				operation_index++;
 			}
+
+			writer.methodVisitor.visitInsn(additive_operation == '+' ? Opcodes.DADD : Opcodes.DSUB);
 		}
 
 		writer.methodVisitor.visitMethodInsn(
@@ -111,4 +105,18 @@ public class MathVariableVisitor extends VariableVisitor {
 		writer.putLabel(end);
 	}
 	
+	private static boolean isMultiplicative(char operation) {
+		return operation == '*' || operation == '/' || operation == '%';
+	}
+
+	private static void visitMultiplicativeOperation(V3MethodWriter writer, char operation) {
+		if (operation == '*') {
+			writer.methodVisitor.visitInsn(Opcodes.DMUL);
+		} else if (operation == '/') {
+			writer.methodVisitor.visitInsn(Opcodes.DDIV);
+		} else {
+			writer.methodVisitor.visitInsn(Opcodes.DREM);
+		}
+	}
+
 }

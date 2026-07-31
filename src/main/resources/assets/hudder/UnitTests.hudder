@@ -553,6 +553,20 @@ r;mute;{vert=[10,10,
 ||EXPECT||
 r
 
+||INPUT||Unset dynamic variable fallback
+{missingVariable}
+||EXPECT||
+missingvariable
+
+||INPUT||Addition and subtraction
+{10-3-2}
+{1-2+3}
+{20-2*3-4}
+||EXPECT||
+5
+2
+10
+
 ||INPUT||Newlines
 
 

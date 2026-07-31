@@ -72,16 +72,6 @@ public class V3ClassWriter implements Binder {
 		methodVisitor.visitFieldInsn(Opcodes.PUTFIELD, classname, "v3compiler",
 				Type.getDescriptor(HudderV3Compiler.class));
 		
-		// Init UIElements field
-	    
-		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
-		methodVisitor.visitTypeInsn(Opcodes.NEW, Type.getInternalName(ArrayElementManager.class));
-		methodVisitor.visitInsn(Opcodes.DUP);
-		methodVisitor.visitMethodInsn(Opcodes.INVOKESPECIAL, Type.getInternalName(ArrayElementManager.class),
-				"<init>", "()V", false);
-		methodVisitor.visitFieldInsn(Opcodes.PUTFIELD, classname, "uimanager",
-				Type.getDescriptor(ArrayElementManager.class));
-		
 		methodVisitor.visitInsn(Opcodes.RETURN);
 		methodVisitor.visitMaxs(0, 0);
 		methodVisitor.visitEnd();
