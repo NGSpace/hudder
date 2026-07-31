@@ -54,13 +54,14 @@ public class ConditionInstruction extends Instruction {
 			
 			if (branch.condition() != null) {
 				branch.condition().visit(methodWriter);
+				methodWriter.checkcast(Boolean.class);
 				methodWriter.booleanValue();
 				
 				methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFEQ, elseLabel);
 			}
 			
-			if (branch.compiledBlock() != null) {
-				branch.compiledBlock().writeInstructions(methodWriter, classWriter, breaklabel);
+			if (branch.codeBlock() != null) {
+				branch.codeBlock().writeInstructions(methodWriter, classWriter, breaklabel);
 				
 				methodWriter.loadConstant("");
 			} else {
@@ -78,6 +79,21 @@ public class ConditionInstruction extends Instruction {
 	}
 	
 	private record ConditionBranch(VariableVisitor condition, VariableVisitor variable,
-			TokenizedCodeBlock compiledBlock) {
+			TokenizedCodeBlock codeBlock) {}
+	
+	@Override
+	public boolean canReturnValue() {
+		for (ConditionBranch branch : branches)
+			if (branch.codeBlock() != null && branch.codeBlock().canReturnValue())
+				return true;
+		return false;
+	}
+
+	@Override
+	public boolean doesReturnValue() {
+		for (ConditionBranch branch : branches)
+			if (branch.codeBlock() == null || !branch.codeBlock().doesReturnValue())
+				return false;
+		return branches.get(branches.size() - 1).condition() == null;
 	}
 }

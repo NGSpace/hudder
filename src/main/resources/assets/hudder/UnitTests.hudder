@@ -521,6 +521,13 @@ CaSE SenSitive CaSE SenSitive CaSE SenSitive
 ||EXPECT||
 2 -1
 
+||INPUT||Conditions and Return
+#def func, bool
+	%bool, ";return, 10;", ";return, 0;"%
+{func(true)} {func(false)}
+||EXPECT||
+10 0
+
 ||INPUT||Uncertain function
 #def divide, num1, num2
 	#if num2==0
