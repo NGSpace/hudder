@@ -32,7 +32,7 @@ public class DefineInstruction extends Instruction {
 		this.name = name;
 		this.filename = filename;
 		this.comp = comp;
-		finalname = "user_" + name + "_" + ++user_defines_count;
+		finalname = "user_" + name + "_" + (++user_defines_count);
 	}
 
 	@Override
