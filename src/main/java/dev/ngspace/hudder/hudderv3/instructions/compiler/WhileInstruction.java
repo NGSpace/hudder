@@ -53,7 +53,7 @@ public class WhileInstruction extends Instruction {
 	
 	@Override
 	public boolean doesReturnValue() {
-		return codeblock.doesReturnValue();
+		return false;
 	}
 	
 }

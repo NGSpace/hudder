@@ -69,7 +69,7 @@ public class ForInstruction extends Instruction {
 	
 	@Override
 	public boolean doesReturnValue() {
-		return block.doesReturnValue();
+		return false;
 	}
 	
 }

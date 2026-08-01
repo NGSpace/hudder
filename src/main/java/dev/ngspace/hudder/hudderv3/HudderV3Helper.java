@@ -39,30 +39,33 @@ public class HudderV3Helper {
 			else throw new ExecutionException("Can not compare null values using the "+comparisonOperator+" operator.",
 					-1, -1);
 		}
-		boolean areNums = false;
-		double dou1 = 0;
-		double dou2 = 0;
 		if (val1 instanceof Number num1) {
-			dou1 = num1.doubleValue();
+			double dou1 = num1.doubleValue();
 			if (val2 instanceof Number num2) {
-				dou2 = num2.doubleValue();
-				areNums = true;
+				double dou2 = num2.doubleValue();
+				return switch (comparisonOperator) {
+					case "==" -> dou1==dou2;
+					case "!=" -> dou1!=dou2;
+					case ">=" -> dou1>=dou2;
+					case "<=" -> dou1<=dou2;
+					case ">"  -> dou1> dou2;
+					case "<"  -> dou1< dou2;
+					default -> throw new IllegalArgumentException("Unknown comparasion operator: " + comparisonOperator);
+				};
 			}
 		}
 		return switch (comparisonOperator) {
-			case "==" -> areNums ? dou1==dou2 :  Objects.equals(val1, val2);
-			case "!=" -> areNums ? dou1!=dou2 : !Objects.equals(val1, val2);
-			case ">=" -> dou1>=dou2;
-			case "<=" -> dou1<=dou2;
-			case ">"  -> dou1> dou2;
-			case "<"  -> dou1< dou2;
-			default -> throw new IllegalArgumentException("Unknown comparasion operator: " + comparisonOperator);
+			case "==" ->  Objects.equals(val1, val2);
+			case "!=" -> !Objects.equals(val1, val2);
+			default -> throw new IllegalArgumentException("Unknown comparasion operator \""
+					+ comparisonOperator + "\" for values of type: \"" + val1.getClass().getSimpleName()
+					+ "\" and \"" + val2.getClass().getSimpleName() + '"');
 		};
 	}
 	
 	public static String cleanDouble(double d) {
-	    if(d == (long) d) return Long.toString((long)d);
-	    else return Double.toString((long)d);
+	    if(d % 1 == 0) return Long.toString((long)d);
+	    else return Double.toString(d);
 	}
 	
 	public static boolean hasApiFunction(String name) {

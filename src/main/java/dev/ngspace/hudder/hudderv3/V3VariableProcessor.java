@@ -35,7 +35,7 @@ public class V3VariableProcessor {
 		String value = valuee.trim();
 		
 		// Empty variable
-		if (value.isBlank()) throw new CompileException("Unknown variable: empty variable", -1, -1);
+		if (value.isBlank()) throw new CompileException("Empty variable", -1, -1);
 		
 		
 		
@@ -547,7 +547,7 @@ public class V3VariableProcessor {
 	private static boolean isCondition(String key) {
 		int i = key.indexOf('=');
 		if (i==-1&&!key.contains(">")&&!key.contains("<")) return false;
-		if (i==key.length()) return false;
+		if (i==key.length()-1) return false;
 		if (i==0) return false;
 		char pre = key.charAt(i-1);
 		return pre=='<'||pre=='>'||pre=='!'||key.charAt(i+1)=='=';

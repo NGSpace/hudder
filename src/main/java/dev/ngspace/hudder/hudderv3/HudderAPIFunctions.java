@@ -126,7 +126,7 @@ public class HudderAPIFunctions {
 	}
 
 	public static String cleanDouble(double d) {
-	    if(d == (long) d) return Long.toString((long)d);
-	    else return Double.toString((long)d);
+	    if(d%1==0) return Long.toString((long)d);
+	    else return Double.toString(d);
 	}
 }
