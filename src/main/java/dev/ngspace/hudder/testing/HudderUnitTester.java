@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.utils.testing;
+package dev.ngspace.hudder.testing;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -14,8 +14,9 @@ import org.apache.commons.io.IOUtils;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
+import dev.ngspace.hudder.compilers.utils.Compilers;
 import dev.ngspace.hudder.config.HudderConfig;
-import dev.ngspace.hudder.utils.testing.HudderUnitTest.HudderUnitTestResult;
+import dev.ngspace.hudder.testing.HudderTestReader.Result;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
@@ -25,9 +26,11 @@ public class HudderUnitTester {
 	
 	public HudderUnitTester(AVarTextCompiler compiler) {this.compiler=compiler;}
 	
-	public void load(InputStream inputStream) throws IOException {load(IOUtils.toString(inputStream, UTF_8));}
+	public void loadLegacy(InputStream inputStream, String filename) throws IOException {
+		loadLegacy(IOUtils.toString(inputStream, UTF_8), filename);
+	}
 	
-	public void load(String contents) {
+	public void loadLegacy(String contents, String filename) {
 	    String[] conds = ("\n"+contents).split("\\n\\n\\|\\|INPUT\\|\\|");
 	    for (String st : conds) {
 	    	if (st.isBlank()) continue;
@@ -35,14 +38,34 @@ public class HudderUnitTester {
 	    	String[] inputandExpectation = content[1].split("\\n\\|\\|EXPECT\\|\\|\\n");
 	    	if (UnitTests.containsKey(content[0]))
 	    		Hudder.alert("Repeating key: " + content[0]);
-	    	UnitTests.put(content[0], new HudderUnitTest(inputandExpectation[0], compiler, inputandExpectation[1]));
+	    	UnitTests.put(content[0], new HudderUnitTest(inputandExpectation[0], inputandExpectation[1], filename));
 	    }
+	    HudderUnitTestingCommand.UnitTestsSuggestionProvider.suggestions = new ArrayList<String>(UnitTests.keySet());
+	}
+	
+	public void loadModern(InputStream inputStream, String filename) throws IOException {
+		loadModern(IOUtils.toString(inputStream, UTF_8), filename);
+	}
+	
+	public void loadModern(String contents, String filename) {
+	    String[] conds = contents.split("\\|TEST:");
+	    for (String st : conds) {
+	    	if (st.isBlank()) continue;
+	    	Result result = HudderTestReader.process(st);
+	    	UnitTests.put(result.getString("name"), new HudderUnitTest(result.input(), result.output(), filename));
+	    }
+	}
+	
+	
+	public void updateSuggestions() {
 	    HudderUnitTestingCommand.UnitTestsSuggestionProvider.suggestions = new ArrayList<String>(UnitTests.keySet());
 	}
 	
 	
 	
-	public HudderUnitTestResult test(HudderConfig info, String name) {return UnitTests.get(name).test(info);}
+	public HudderUnitTestResult test(HudderConfig info, String name) {
+		return UnitTests.get(name).test(compiler,info);
+	}
 	
 	
 	
@@ -54,7 +77,7 @@ public class HudderUnitTester {
 		for (String name : UnitTests.keySet()) {
 			var testresult = test(config, name);
 			result.append("\n").append(testresult.toText(name));
-			if (!testresult.isSucessful) {
+			if (!testresult.isSucessful()) {
 				failed = true;
 				failedtests.put(testresult, name);
 			}
@@ -64,7 +87,12 @@ public class HudderUnitTester {
 			result.append(Component.literal("\n\nFailed the following tests: ").withColor(0xff0000));
 			for (var failedtest : failedtests.entrySet()) {
 				result.append("\n\n");
-				result.append(Component.literal(failedtest.getValue()).withColor(0xff0000));
+				result.append(Component.literal(failedtest.getValue())
+						.withColor(0xff0000));
+				result.append(Component.literal(" @ ")
+						.withColor(0x0fa1fc));
+				result.append(Component.literal(failedtest.getKey().filename())
+						.withColor(0xFFFFFF));
 				result.append(":");
 				result.append(failedtest.getKey().getFailureMessage());
 			}
@@ -78,6 +106,6 @@ public class HudderUnitTester {
 		double res = (int) (v*1000);
 		res/=1000;
 		return "\n\n" + (success? "Successful, " : "") + "took "+ res + "ms. Passed "
-				+ (testscount-failedcount) + "/" + testscount + " tests.";
+				+ (testscount-failedcount) + "/" + testscount + " tests using " + Compilers.getNameFromCompiler(compiler);
 	}
 }

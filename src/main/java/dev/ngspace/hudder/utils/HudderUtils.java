@@ -50,6 +50,17 @@ public class HudderUtils {private HudderUtils() {}
 		tokenizedParemeters = addToArray(tokenizedParemeters, parameterBuilder.toString());
 		return tokenizedParemeters;
 	}
+	
+	public static String checkIndentation(String text, int index) {
+		StringBuilder b = new StringBuilder();
+		for (;index<text.length();index++) {
+			char c = text.charAt(index);
+			if (!(c==' '||c=='\t')) break;
+			b.append(c);
+		}
+		return b.toString();
+	}
+	
 	private static <T> T[] addToArray(T[] arr, T t) {
 		T[] newarr = java.util.Arrays.copyOf(arr, arr.length+1);
 		newarr[arr.length] = t;

@@ -12,6 +12,7 @@ import dev.ngspace.hudder.compilers.HudderV2Compiler;
 import dev.ngspace.hudder.compilers.HudderV3Compiler;
 import dev.ngspace.hudder.compilers.JavaScriptCompiler;
 import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
+import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
 
 /**
  * Provides a central registry for HUD compilers.
@@ -179,6 +180,10 @@ public class Compilers {
 	public static CompilerEntry getEntryFromName(String name) {
 		return findEntryFromName(name).orElseThrow(() -> getNoCompilerException(name, "name"));
 	}
+
+	public static String getNameFromCompiler(AVarTextCompiler compiler) {
+		return findNameFromCompiler(compiler).orElseThrow(() -> getNoCompilerException(compiler.getClass().getCanonicalName(), "type"));
+	}
 	
 	/**
 	 * Attempts to find a compiler entry by its internal name.
@@ -240,6 +245,16 @@ public class Compilers {
 	public static Optional<AHudCompiler<?>> findCompilerFromDisplayName(String displayName) {
 		
 		return findEntryFromDisplayName(displayName).map(CompilerEntry::compiler);
+	}
+	
+	public static Optional<CompilerEntry> findEntryFromCompiler(AVarTextCompiler compiler) {
+		return registeredcompilers.entrySet().stream()
+				.filter(entry -> entry.getValue().compiler().getClass().isInstance(compiler)).findFirst()
+				.map(entry -> toEntry(entry.getKey(), entry.getValue()));
+	}
+
+	public static Optional<String> findNameFromCompiler(AVarTextCompiler compiler) {
+		return findEntryFromCompiler(compiler).map(CompilerEntry::name);
 	}
 	
 	/**

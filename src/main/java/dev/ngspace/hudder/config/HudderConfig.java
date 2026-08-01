@@ -16,7 +16,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.compilers.HudderV3Compiler;
 import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
 import dev.ngspace.hudder.compilers.utils.Compilers;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
@@ -24,7 +23,6 @@ import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.hudder.utils.NoAccess;
-import dev.ngspace.hudder.utils.testing.HudderUnitTester;
 import net.minecraft.client.Minecraft;
 
 public class HudderConfig {
@@ -40,7 +38,6 @@ public class HudderConfig {
 	
 	
 	
-    public HudderUnitTester hudderTester = new HudderUnitTester(new HudderV3Compiler());
     public Minecraft mc = Minecraft.getInstance();
 	
     
