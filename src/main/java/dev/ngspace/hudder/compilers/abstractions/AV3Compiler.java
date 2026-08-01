@@ -44,52 +44,73 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 			if (cachehit.exception!=null) throw cachehit.exception;
 			return;
 		}
-		
-		V3ClassWriter classWriter = new V3ClassWriter("dev/ngspace/hudder/hudderv3/GeneratedClass");
-		classWriter.createInit();
-		
-		FunctionAndConsumerAPI.getInstance().applyFunctionsAndConsumers(classWriter);
-		HudderAPIFunctions.bindAllAPIFunctions(classWriter);
-		HudderAPIMethods.bindAllAPIMethods(classWriter);
-		
-		V3ExecuteMethodWriter executeMethod = classWriter.createExecuteMethod("execute", new Class<?>[] {
-				HudderConfig.class,
-				String.class,
-				String.class
-			});
-		
-		Label end = new Label();
-		
-		// Init UIElements field
-	    
-		executeMethod.aload(0);
-		executeMethod.newAndDup(ArrayElementManager.class);
-		executeMethod.callSpecial(ArrayElementManager.class, "<init>", "()V", false);
-		executeMethod.putField("uimanager", ArrayElementManager.class);
-		
-		compile(Hudder.config, text, filepath, new TextPos(1, 0)).writeInstructions(executeMethod, classWriter, end);
-		
-		executeMethod.putLabel(end);
-		executeMethod.end();
-		
-		Class<?> dynamicClass = classWriter.toClass();
-		
-		
 		try {
+		
+			V3ClassWriter classWriter = new V3ClassWriter("dev/ngspace/hudder/hudderv3/GeneratedClass");
+			classWriter.createInit();
+			
+			FunctionAndConsumerAPI.getInstance().applyFunctionsAndConsumers(classWriter);
+			HudderAPIFunctions.bindAllAPIFunctions(classWriter);
+			HudderAPIMethods.bindAllAPIMethods(classWriter);
+			
+			V3ExecuteMethodWriter executeMethod = classWriter.createExecuteMethod("execute", new Class<?>[] {
+					HudderConfig.class,
+					String.class,
+					String.class
+				});
+			
+			Label end = new Label();
+			
+			// Init UIElements field
+		    
+			executeMethod.aload(0);
+			executeMethod.newAndDup(ArrayElementManager.class);
+			executeMethod.callSpecial(ArrayElementManager.class, "<init>", "()V", false);
+			executeMethod.putField("uimanager", ArrayElementManager.class);
+			
+			compile(Hudder.config, text, filepath, new TextPos(1, 0)).writeInstructions(executeMethod, classWriter, end);
+			
+			executeMethod.putLabel(end);
+			executeMethod.end();
+		
+			Class<?> dynamicClass = classWriter.toClass();
+			
 			Object instance = dynamicClass.getDeclaredConstructor(getClass()).newInstance(this);
 			cache.put(text, new CachedCompiler(instance, (GeneratedCompiler) instance, null));
 		} catch (InvocationTargetException e) {
 			if (e.getTargetException() instanceof RuntimeException re)
 				throw re;
 			e.printStackTrace();
-		} catch (ReflectiveOperationException e) {
+		} catch (ClassFormatError e) {
+			// The compilation manager does not handle Verifier errors and will crash the game which is bad.
 			e.printStackTrace();
-		}
+			throw new RuntimeException(e);
+		} catch (VerifyError e) {
+			// The compilation manager does not handle Verifier errors and will crash the game which is bad.
+			e.printStackTrace();
+			String msg = e.getMessage();
+			throw new RuntimeException(msg.substring(0, msg.indexOf('\n')+1) +
+					'\n' +
+					msg.substring(msg.indexOf("@"), msg.indexOf("Current Frame")));
+		} catch (CompileException e) {
+			cache.put(text, new CachedCompiler(null,null,e));
+			throw e;
+		} catch (Exception e) {
+			var ne = new CompileException(e.toString(),-1, -1, e);
+			cache.put(text, new CachedCompiler(null,null,ne));
+			throw ne;
+		} 
 	}
 
 	@Override
 	public HudInformation execute(HudderConfig info, String processedfile, String filename) throws ExecutionException {
-		return cache.get(processedfile).generatedCompiler().execute(info, processedfile, filename).hudInformation;
+		try {
+			return cache.get(processedfile).generatedCompiler().execute(info, processedfile, filename).hudInformation;
+		} catch (VerifyError e) {
+			// The compilation manager does not handle Verifier errors and will crash the game which is bad.
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
 	}
 	
 	public abstract TokenizedCodeBlock compile(HudderConfig info, String text, String filename, TextPos offset)
