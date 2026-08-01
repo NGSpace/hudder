@@ -18,8 +18,9 @@ public class BooleanNGSMCConfigOption extends AbstractNGSMCConfigOption<Boolean>
 
 	protected BooleanNGSMCConfigOption(Boolean defaultValue, Boolean value, Component text,
 			Consumer<Boolean> saveOperation, Function<Boolean, Component> validator,
-			Function<Boolean, Component> componentProvider) {
-		super(defaultValue, value, text, saveOperation, validator);
+			Function<Boolean, Component> componentProvider,
+			Function<Boolean, Component> warning) {
+		super(defaultValue, value, text, saveOperation, validator, warning);
 		this.componentProvider = componentProvider;
 	}
 
@@ -76,7 +77,8 @@ public class BooleanNGSMCConfigOption extends AbstractNGSMCConfigOption<Boolean>
 		}
 
 		@Override public AbstractNGSMCConfigOption<Boolean> build() {
-			return new BooleanNGSMCConfigOption(defaultValue, value, name, saveOperation, validator, componentProvider);
+			return new BooleanNGSMCConfigOption(defaultValue, value, name, saveOperation, validator,
+					componentProvider, warning);
 		}
 
 		@Override

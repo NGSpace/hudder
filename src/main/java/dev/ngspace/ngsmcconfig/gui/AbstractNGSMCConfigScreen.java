@@ -140,7 +140,7 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 			addRenderableWidget(configButton);
 		}
 		
-		errorWidget = new StringWidget(stylizeErrorComponment(error), font);
+		errorWidget = new StringWidget(stylizeErrorWarningComponment(getWarning(), error), font);
 		errorWidget.setPosition(BUTTONS_WIDTH+2, 0);
 		errorWidget.setSize(width-BUTTONS_WIDTH-4, 20);
 		errorWidget.setMaxWidth(errorWidget.getWidth(), TextOverflow.SCROLLING);
@@ -197,6 +197,16 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		}
 		return null;
 	}
+	protected Component getWarning() {
+		for (var category : categories) {
+			for (var option : category.options()) {
+				var error = option.getWarning();
+				if (error!=null)
+					return error;
+			}
+		}
+		return null;
+	}
 	protected boolean isEditedAndNotSaved() {
 		for (var category : categories)
 			for (var option : category.options())
@@ -222,12 +232,16 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		Component error = getError();
 		
 		saveButton.active = error==null;
-		errorWidget.setMessage(stylizeErrorComponment(error));
+		errorWidget.setMessage(stylizeErrorWarningComponment(getWarning(), error));
 		
         super.extractRenderState(graphics, mouseX, mouseY, partialTick);
     }
 
-	private Component stylizeErrorComponment(Component error) {
-		return error!=null?error.plainCopy().withColor(0xFF0000):Component.literal("");
+	protected static Component stylizeErrorWarningComponment(Component warning, Component error) {
+		if (error!=null)
+			return error.plainCopy().withColor(0xFF0000);
+		else if (warning!=null)
+			return warning.plainCopy().withColor(0xFFFF00);
+		return Component.literal("");
 	}
 }

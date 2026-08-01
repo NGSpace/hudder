@@ -3,10 +3,12 @@ package dev.ngspace.hudder.config;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Comparator;
 import java.util.function.Function;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.utils.Compilers;
+import dev.ngspace.hudder.compilers.utils.Compilers.CompilerEntry;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigBuilder;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
@@ -86,13 +88,20 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 					return null;
 				})
 				.build());
-		general.addOption(DropdownNGSMCConfigOption.fluentBuilder(Hudder.config.compilerName(),
+		general.addOption(DropdownNGSMCConfigOption.fluentBuilder(Compilers.getDisplayNameFromCompilerName(Hudder.config.compilerName()),
 					Component.translatable("hudder.general.compilertype"),
-					Compilers.keySet().stream().toList().stream().sorted().toList())
+					Compilers.entries().stream()
+						.sorted(Comparator.comparing(CompilerEntry::unstable)
+								.thenComparing(CompilerEntry::displayname, String.CASE_INSENSITIVE_ORDER))
+						.map(e->e.displayname())
+						.toList())
 	    		.setHoverComponent(Component.translatable("hudder.general.compilertype.tooltip"))
-	    		.setDefaultValue("hudder")
-	    		.setSaveOperation(b->Hudder.config.setCompilerName(b.toLowerCase()))
-	    		.setValidator(e->!Compilers.has(e.toLowerCase())?Component.translatable("hudder.general.compilertype.error"):null)
+	    		.setDefaultValue("Hudder")
+	    		.setSaveOperation(b->Hudder.config.setCompilerName(Compilers.getCompilerNameFromDisplayname(b)))
+	    		.setValidator(e->Compilers.hasCompilerFromDisplayName(e)
+	    				? null : Component.translatable("hudder.general.compilertype.error"))
+	    		.setWarningProvider(e->Compilers.getEntryFromDisplayName(e).unstable()
+	    				? Component.translatable("hudder.general.compilertype.unstable_warning", e): null)
 	    		.build());
 		general.addOption(DoubleNGSMCConfigOption.fluentBuilder(config.scale, Component.translatable("hudder.general.scale"))
 				.setHoverComponent(Component.translatable("hudder.general.scale.tooltip"))

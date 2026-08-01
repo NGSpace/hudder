@@ -10,7 +10,7 @@ import net.minecraft.network.chat.Component;
 public class TextDescriptionNGSMCConfigOption extends AbstractNGSMCConfigOption<String> {
 	
 	protected TextDescriptionNGSMCConfigOption(Component text) {
-		super("", "", text, _->{}, _->null);
+		super("", "", text, _->{}, _->null,_->null);
 		
 	}
 

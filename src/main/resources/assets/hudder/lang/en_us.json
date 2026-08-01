@@ -42,6 +42,7 @@
 	"hudder.general.compilertype": "Compiler type",
 	"hudder.general.compilertype.tooltip": "Change the type of compiler (ex hudder, js, pack).",
 	"hudder.general.compilertype.error":"Invalid compiler type.",
+	"hudder.general.compilertype.unstable_warning":"The compiler %s is unstable and not advised to be used.",
 	
 	"hudder.general.scale":"Scale",
 	"hudder.general.scale.tooltip":"Control the default scale of Hud Elements and text.\n\u00A77This can be overriden by elements specifying the size on their own.",
@@ -102,7 +103,7 @@
 	"hudder.safety_perf.autorefresh": "Automatic hud refresh",
 	"hudder.safety_perf.autorefresh.tooltip": "Disabling this will stop your hud from updating with every change. Manual refreshes through the keybind still function",
 	
-	"hudder.safety_perf.disableWarnings": "Disable warnings",
+	"hudder.safety_perf.disableWarnings": "Disable warning toasts",
 	"hudder.safety_perf.disableWarnings.tooltip": "\u00A74WARNINGS EXIST FOR A REASON!\nTHIS INCLUDES DEPRECIATION WARNINGS!\n\u00A7fDisables ALL warnings.",
 
 	"hudder.safety_perf.disableHudpackVersionCheck": "Bypass Hudpack version check",

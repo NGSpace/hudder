@@ -18,8 +18,8 @@ public class DropdownNGSMCConfigOption<T> extends AbstractNGSMCConfigOption<T> {
 	protected NGSMCConfigDropdownWidget<T> widget;
 
 	protected DropdownNGSMCConfigOption(T defaultValue, T value, Component text, Consumer<T> saveOperation,
-			Function<T, Component> validator, List<T> options, Function<T, Component> valueText) {
-		super(defaultValue, value, text, saveOperation, validator);
+			Function<T, Component> validator, Function<T, Component> warning, List<T> options, Function<T, Component> valueText) {
+		super(defaultValue, value, text, saveOperation, validator, warning);
 		this.options = List.copyOf(options);
 		this.valueText = valueText;
 	}
@@ -78,7 +78,8 @@ public class DropdownNGSMCConfigOption<T> extends AbstractNGSMCConfigOption<T> {
 				throw new IllegalStateException("The current dropdown value must be present in its options");
 			if (!options.contains(defaultValue))
 				throw new IllegalStateException("The default dropdown value must be present in its options");
-			return new DropdownNGSMCConfigOption<T>(defaultValue, value, name, saveOperation, validator, options, valueText);
+			return new DropdownNGSMCConfigOption<T>(defaultValue, value, name, saveOperation, validator,
+					warning, options, valueText);
 		}
 
 		@Override

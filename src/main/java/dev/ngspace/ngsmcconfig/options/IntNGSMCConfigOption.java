@@ -13,8 +13,8 @@ public class IntNGSMCConfigOption extends AbstractTextFieldNGSMCConfigOption<Int
 	protected String invalidnum;
 	
 	protected IntNGSMCConfigOption(Integer defaultValue, Integer value, Component text, Consumer<Integer> saveOperation,
-			Function<Integer, Component> validator) {
-		super(defaultValue, value, text, saveOperation, validator);
+			Function<Integer, Component> validator, Function<Integer, Component> warning) {
+		super(defaultValue, value, text, saveOperation, validator, warning);
 		this.validator = val->{
 			if (!validnum)
 				return Component.literal("Invalid number: \"" + invalidnum + "\"");
@@ -43,7 +43,7 @@ public class IntNGSMCConfigOption extends AbstractTextFieldNGSMCConfigOption<Int
 	public static NGSMCConfigOptionBuilder<Integer> fluentBuilder(int value, Component name) {
 		return new NGSMCConfigOptionBuilder<Integer>(value, name) {
 			@Override public AbstractNGSMCConfigOption<Integer> build() {
-				return new IntNGSMCConfigOption(defaultValue, value, name, saveOperation, validator);
+				return new IntNGSMCConfigOption(defaultValue, value, name, saveOperation, validator, warning);
 			}
 		};
 	}
