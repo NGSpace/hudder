@@ -24,6 +24,8 @@ public class HudCompilationManager implements EndTick {
     
     public static String LastFailMessage = "";
     
+    public static boolean isFirstRunSinceCacheClear = true;
+    
     
 	public void compile(DeltaTracker f) {
 		result = null;
@@ -34,6 +36,7 @@ public class HudCompilationManager implements EndTick {
     			for (Consumer<AHudCompiler<?>> con : precomplistners)  con.accept(Hudder.config.getCompiler());
     			result = Hudder.config.compileMainHud();
     			for (Consumer<AHudCompiler<?>> con : postcomplistners) con.accept(Hudder.config.getCompiler());
+    			isFirstRunSinceCacheClear = false;
     		}
 		} catch (CompileException e) {
 			LastFailMessage = "Compiler error: " + e.getFailureMessage();

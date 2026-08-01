@@ -14,7 +14,6 @@ import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
-import dev.ngspace.hudder.main.HudCompilationManager;
 import dev.ngspace.hudder.v2runtime.V2Runtime;
 import dev.ngspace.hudder.v2runtime.functions.IV2Function;
 import dev.ngspace.hudder.v2runtime.functions.V2FunctionHandler;
@@ -28,38 +27,14 @@ import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 	
 	public Map<String, V2Runtime> runtimes = new HashMap<String, V2Runtime>();
-	public static Map<String, Object> tempVariables = new HashMap<String, Object>();
 	public MethodHandler methodHandler = new MethodHandler();
 	public V2FunctionHandler functionHandler = new V2FunctionHandler();
 	protected IV2VariableParser variableParser = new DefaultV2VariableParser();
 	public boolean SYSTEM_VARIABLES_ENABLED = true;
 	
 	protected AV2Compiler() {
-		HudCompilationManager.addPreCompilerListener(_ -> tempVariables.clear());
 		FunctionAndConsumerAPI.getInstance().applyFunctionsAndConsumers(this);
 	}
-	
-	
-	/**
-	 * Returns the temporary variables.
-	 * 
-	 * <br><br>
-	 * 
-	 * Temporary variables get deleted every hud compiliation.
-	 * @param key - the name of the variable
-	 * @return the value of the variable or null if it is not set
-	 */
-	public Object getTempVariable(String key) {return tempVariables.get(key);}
-	/**
-	 * Sets the value of a temporary variable.
-	 * 
-	 * <br><br>
-	 * 
-	 * Temporary variables get deleted every hud compiliation.
-	 * @param key - the name of the variable
-	 * @param value - the new value of the variable
-	 */
-	public void putTemp(String key, Object value) {tempVariables.put(key, value);}
 	
 	
 	

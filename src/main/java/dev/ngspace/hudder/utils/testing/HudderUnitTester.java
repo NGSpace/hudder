@@ -13,17 +13,17 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.compilers.abstractions.AV2Compiler;
+import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.utils.testing.HudderUnitTest.HudderUnitTestResult;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
 public class HudderUnitTester {
-	public AV2Compiler compiler;
+	public AVarTextCompiler compiler;
 	public Map<String, HudderUnitTest> UnitTests = new HashMap<String, HudderUnitTest>();
 	
-	public HudderUnitTester(AV2Compiler compiler) {this.compiler=compiler;}
+	public HudderUnitTester(AVarTextCompiler compiler) {this.compiler=compiler;}
 	
 	public void load(InputStream inputStream) throws IOException {load(IOUtils.toString(inputStream, UTF_8));}
 	
@@ -69,11 +69,11 @@ public class HudderUnitTester {
 				result.append(failedtest.getKey().getFailureMessage());
 			}
 		}
-		result.append(Component.literal(milliseconds(!failed, start, end, failedtests.size(), UnitTests.size())));
+		result.append(Component.literal(output(!failed, start, end, failedtests.size(), UnitTests.size())));
 		return result;
 	}
 
-	private String milliseconds(boolean success, Instant start, Instant end, int failedcount, int testscount) {
+	protected String output(boolean success, Instant start, Instant end, int failedcount, int testscount) {
 		double v = Duration.between(start, end).toNanos()/1000000d;
 		double res = (int) (v*1000);
 		res/=1000;
