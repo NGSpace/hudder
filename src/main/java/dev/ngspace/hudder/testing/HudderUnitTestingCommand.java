@@ -21,7 +21,6 @@ import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.api.variableregistry.VariableTypes;
-import dev.ngspace.hudder.compilers.HudderV3Compiler;
 import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
 import dev.ngspace.hudder.compilers.utils.Compilers;
 import dev.ngspace.hudder.utils.HudFileUtils;
@@ -134,18 +133,26 @@ public class HudderUnitTestingCommand implements ClientCommandRegistrationCallba
 		if (Hudder.config.getCompiler() instanceof AVarTextCompiler comp)
 			hudderTester.compiler = comp;
 		String[] tests = {
-			"arithmetic_and_math.tests",
-			"booleans_and_conditions.tests",
-			"strings_and_text.tests",
-			"arrays_and_collections.tests",
-			"variables_and_types.tests",
-			"control_flow.tests",
-			"functions_and_methods.tests",
-			"java_and_external_apis.tests",
-			"misc.tests"
+			"arithmetic_and_math.hud",
+			"booleans_and_conditions.hud",
+			"strings_and_text.hud",
+			"arrays_and_collections.hud",
+			"variables_and_types.hud",
+			"control_flow.hud",
+			"functions_and_methods.hud",
+			"java_and_external_apis.hud",
+			"misc.hud"
 		};
-		for (String test : tests)
-			hudderTester.loadModern(getClass().getResourceAsStream(TESTS_FOLDER + test), test);
+		for (String test : tests) {
+			boolean shouldTest = false;
+			for (String format : hudderTester.compiler.getSupportedFileFormats()) {
+				if (test.endsWith('.' + format)) {
+					shouldTest = true;
+				}
+			}
+			if (shouldTest)
+				hudderTester.loadModern(getClass().getResourceAsStream(TESTS_FOLDER + test), test);
+		}
 		hudderTester.updateSuggestions();
 	}
 

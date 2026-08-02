@@ -1,5 +1,6 @@
 package dev.ngspace.hudder.compilers;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -90,4 +91,14 @@ public class HudPackCompiler extends AHudCompiler<HudPack> {
 		return false;
 	}
 	
+	@Override
+	public String[] getSupportedFileFormats() {
+		return new String[] {"zip"};
+	}
+	
+	@Override
+	public boolean isValidFilePath(String filepath) {
+		File file = new File(HudFileUtils.FOLDER + filepath);
+		return file.isDirectory() ? new File(HudFileUtils.FOLDER + filepath+"/pack.json").exists() : super.isValidFilePath(filepath);
+	}
 }

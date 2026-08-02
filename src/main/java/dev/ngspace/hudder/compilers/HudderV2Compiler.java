@@ -391,4 +391,9 @@ public class HudderV2Compiler extends AV2Compiler {
 		});
 		return strb.toString();
 	}
+	
+	@Override
+	public String[] getSupportedFileFormats() {
+		return new String[] {"hud"};
+	}
 }

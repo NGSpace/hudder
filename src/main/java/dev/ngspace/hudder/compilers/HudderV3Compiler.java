@@ -388,4 +388,8 @@ public class HudderV3Compiler extends AV3Compiler {
 		return str;
 	}
 	
+	@Override
+	public String[] getSupportedFileFormats() {
+		return new String[] {"hud"};
+	}
 }

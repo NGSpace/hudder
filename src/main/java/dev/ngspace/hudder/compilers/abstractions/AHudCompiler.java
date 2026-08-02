@@ -77,4 +77,15 @@ public abstract class AHudCompiler<T> {
 			throws CompileException, ExecutionException, IOException {
 		return execute(config, processFile(filepath), filename);
 	}
+	
+	public String[] getSupportedFileFormats() {
+		return new String[0];// By default, none;
+	}
+	
+	public boolean isValidFilePath(String filepath) {
+		for (String format : getSupportedFileFormats())
+			if (filepath.endsWith('.'+format))
+				return true;
+		return false;
+	}
 }

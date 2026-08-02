@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Comparator;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 import dev.ngspace.hudder.Hudder;
@@ -65,7 +66,8 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 				config.mainfile),
 				new NGSMCConfigIcon.SpriteIcon("items", "item/amethyst_shard"));
 		
-		
+		AtomicReference<String> comp = new AtomicReference<String>(
+				Compilers.getDisplayNameFromCompilerName(Hudder.config.compilerName()));
 		
 		/* General */
 		general.addOption(BooleanNGSMCConfigOption.fluentBuilder(config.enabled, Component.translatable("hudder.general.enabled"))
@@ -87,6 +89,12 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 					}
 					return null;
 				})
+				.setWarningProvider(file->{
+					if (Compilers.getEntryFromDisplayName(comp.get()).unstable())
+						return Component.translatable("hudder.general.compilertype.unstable_warning", comp.get());
+					return Compilers.getCompilerFromDisplayname(comp.get()).isValidFilePath(file)?null:
+						Component.translatable("hudder.general.mainfile.unsupportedformat",comp.get(),file);
+				})
 				.build());
 		general.addOption(DropdownNGSMCConfigOption.fluentBuilder(Compilers.getDisplayNameFromCompilerName(Hudder.config.compilerName()),
 					Component.translatable("hudder.general.compilertype"),
@@ -98,8 +106,11 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 	    		.setHoverComponent(Component.translatable("hudder.general.compilertype.tooltip"))
 	    		.setDefaultValue("Hudder")
 	    		.setSaveOperation(b->Hudder.config.setCompilerName(Compilers.getCompilerNameFromDisplayname(b)))
-	    		.setValidator(e->Compilers.hasCompilerFromDisplayName(e)
-	    				? null : Component.translatable("hudder.general.compilertype.error"))
+	    		.setValidator(e->{
+	    			comp.set(e);
+	    			return Compilers.hasCompilerFromDisplayName(e)
+	    					? null : Component.translatable("hudder.general.compilertype.error");
+	    		})
 	    		.setWarningProvider(e->Compilers.getEntryFromDisplayName(e).unstable()
 	    				? Component.translatable("hudder.general.compilertype.unstable_warning", e): null)
 	    		.build());
