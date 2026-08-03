@@ -134,7 +134,7 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> {
 			Component edit = Component.translatable("hudder.mainfile.editbutton");
 			
 			this.editbutton = new NGSMCConfigButton(0, 0, Minecraft.getInstance().font.width(edit)+20, 14, edit,
-					_->{}, 0xFFFFFFFF, true);
+					_->{}, 0xFFFFFFFF, false);
 			editbutton.setIcon(new NGSMCConfigIcon.SpriteIcon("items", "item/writable_book"));
 			editbutton.setOutlineColor(0xFFFFFFFF);
 			this.filepath = filepath;

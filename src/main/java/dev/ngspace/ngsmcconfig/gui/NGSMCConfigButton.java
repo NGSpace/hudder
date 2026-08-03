@@ -50,6 +50,8 @@ public class NGSMCConfigButton extends Button {
     	int height = getHeight();
     	int y = getY();
     	
+    	NGSMCConfigIcon currenticon = isActive() ? icon : disabledIcon;
+    	
     	if (isHovered()) {
     		graphics.fill(x, y, x+width, y+height, hoveredcolor);
 			graphics.requestCursor(CursorTypes.POINTING_HAND);
@@ -61,20 +63,16 @@ public class NGSMCConfigButton extends Button {
     	
     	graphics.outline(x, y, width, height, outline);
     	
-//    	System.out.println(height/16f);
-    	
-		int textX = (int) (x + (icon!=null ? NGSMCScrollingText.ICON_TEXT_X_OFFSET*(height/16f)
+		int textX = (int) (x + (currenticon!=null ? NGSMCScrollingText.ICON_TEXT_X_OFFSET*(height/16f)
 				: NGSMCScrollingText.PLAIN_TEXT_X_OFFSET));
 		if (centerText) textX = x;
-		int scrollingTextX = (int) (x + (icon!=null ? NGSMCScrollingText.ICON_TEXT_X_OFFSET*(height/16f)
+		int scrollingTextX = (int) (x + (currenticon!=null ? NGSMCScrollingText.ICON_TEXT_X_OFFSET*(height/16f)
 				: NGSMCScrollingText.PLAIN_TEXT_X_OFFSET));
 		int textRight = centerText ? x + width : x + width - NGSMCScrollingText.TEXT_RIGHT_PADDING;
 		NGSMCScrollingText.render(graphics, getMessage(), textX, y+1, textRight, height, textcolor,
 				marqueeStartTime, centerText, scrollingTextX);
-    	if (icon!=null&&isActive())
-    		icon.extractRenderState(graphics, mouseX, mouseY, a, height-4, height-4, x+2, y+2);
-    	if (disabledIcon!=null&&!isActive())
-    		disabledIcon.extractRenderState(graphics, mouseX, mouseY, a, height-4, height-4, x+2, y+2);
+    	if (currenticon!=null)
+    		currenticon.extractRenderState(graphics, mouseX, mouseY, a, height-4, height-4, x+2, y+2);
 	}
 
 	public void setCenterText(boolean centerText) {

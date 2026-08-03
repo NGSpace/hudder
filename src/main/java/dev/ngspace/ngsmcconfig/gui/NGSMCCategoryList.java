@@ -89,7 +89,7 @@ public class NGSMCCategoryList extends ContainerObjectSelectionList<NGSMCCategor
 		}
 		
 		private void renderCategoryTitle(GuiGraphicsExtractor graphics, int x, int y, int width, int height, int color) {
-			int textX = x + NGSMCScrollingText.ICON_TEXT_X_OFFSET;
+			int textX = x + 20;
 			int textRight = x + width - NGSMCScrollingText.TEXT_RIGHT_PADDING;
 
 			NGSMCScrollingText.render(graphics, category.title(), textX, y, textRight, height, color,
