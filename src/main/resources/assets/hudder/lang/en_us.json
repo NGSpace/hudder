@@ -42,7 +42,7 @@
 	"hudder.mainfile.doesntexist":"Hud %s does not exist in the huds folder.",
 	"hudder.mainfile.noselection":"No hud selected.",
 	"hudder.mainfile.unsupportedformat":"%s does not support the file format of hud \"%s\"",
-	"hudder.mainfile.noknowncompilers": " - No registered compiler support this hud",
+	"hudder.mainfile.noknowncompilers": " - No compilers support this hud",
 
 	"hudder.general.compilertype": "Compiler type",
 	"hudder.general.compilertype.tooltip": "Change the type of compiler (ex hudder, js, pack).",

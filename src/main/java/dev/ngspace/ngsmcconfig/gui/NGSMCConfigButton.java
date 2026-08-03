@@ -3,6 +3,7 @@ package dev.ngspace.ngsmcconfig.gui;
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigIcon;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -44,7 +45,7 @@ public class NGSMCConfigButton extends Button {
 	}
 
 	@Override
-	protected void extractContents(final GuiGraphicsExtractor graphics, final int mouseX, final int mouseY, final float a) {
+	public void extractContents(final GuiGraphicsExtractor graphics, final int mouseX, final int mouseY, final float a) {
     	int x = getX();
     	int width = getWidth();
     	int height = getHeight();
