@@ -138,9 +138,10 @@ public class Hudder implements ClientModInitializer {
 		ClientCommandRegistrationCallback.EVENT.register(new HudderUnitTestingCommand());
 
 		
-		HudFileUtils.makeDefaultHud();
 		HudderBuiltInMethods.registerMethods(FunctionAndConsumerAPI.getInstance());
 		HudderBuiltInFunctions.registerFunction(FunctionAndConsumerAPI.getInstance());
+		if (!new File(HudFileUtils.FOLDER).exists())
+			HudFileUtils.makeDefaultHud();
 		ClientTickEvents.START_CLIENT_TICK.register(new HudderTickEvent());
 		
 		Hudder.log("Loading variables.");
