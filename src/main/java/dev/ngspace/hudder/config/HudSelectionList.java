@@ -8,6 +8,7 @@ import java.util.function.UnaryOperator;
 import dev.ngspace.hudder.compilers.utils.Compilers;
 import dev.ngspace.hudder.config.HudSelectionList.HudEntry;
 import dev.ngspace.hudder.utils.HudFileUtils;
+import dev.ngspace.ngsmcconfig.api.NGSMCConfigIcon;
 import dev.ngspace.ngsmcconfig.gui.NGSMCConfigButton;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -105,8 +106,8 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> {
 		public String filepath;
 		public String[] compilers;
 		public File file;
-
 		public NGSMCConfigButton editbutton;
+		
 		public static int EDIT_BUTTON_WIDTH = 40;
 		public static UnaryOperator<Style> COMPILER_TEXT_STYLE = t->t.withItalic(true).withColor(ChatFormatting.GRAY);
 		
@@ -130,8 +131,11 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> {
 					component.append(Component.translatable("hudder.mainfile.noknowncompilers").withStyle(COMPILER_TEXT_STYLE));
 				}
 			}
-			this.editbutton = new NGSMCConfigButton(0, 0, EDIT_BUTTON_WIDTH, 14, Component.literal("Edit"),
+			Component edit = Component.translatable("hudder.mainfile.editbutton");
+			
+			this.editbutton = new NGSMCConfigButton(0, 0, Minecraft.getInstance().font.width(edit)+20, 14, edit,
 					_->{}, 0xFFFFFFFF, true);
+			editbutton.setIcon(new NGSMCConfigIcon.SpriteIcon("items", "item/writable_book"));
 			editbutton.setOutlineColor(0xFFFFFFFF);
 			this.filepath = filepath;
 			this.compilers = compilers;

@@ -9,7 +9,6 @@ public final class NGSMCScrollingText {
 
 	public static final int ICON_TEXT_X_OFFSET = 20;
 	public static final int PLAIN_TEXT_X_OFFSET = 2;
-	public static final int TEXT_Y_OFFSET = 6;
 	public static final int TEXT_RIGHT_PADDING = 4;
 	public static final int MARQUEE_GAP = 16;
 	public static final long MARQUEE_DELAY_MS = 1000L;
@@ -37,11 +36,12 @@ public final class NGSMCScrollingText {
 		int renderedTextWidth = font.width(text);
 		int textWidth = renderedTextWidth - 1;
 		int drawX = centerText ? textX + (availableWidth - renderedTextWidth) / 2 : textX;
+		int drawY = y + (height - font.lineHeight) / 2;
 		boolean fitsWithoutScrolling = textWidth <= availableWidth && drawX >= scrollingTextX;
 
 		graphics.enableScissor(scrollingTextX, y, textRight, y + height);
 		if (fitsWithoutScrolling) {
-			graphics.text(font, text, drawX, y + TEXT_Y_OFFSET, color);
+			graphics.text(font, text, drawX, drawY, color);
 		} else {
 			long scrollingTime = Math.max(0L,
 					System.currentTimeMillis() - marqueeStartTime - MARQUEE_DELAY_MS);
@@ -49,8 +49,8 @@ public final class NGSMCScrollingText {
 			int offset = (int) ((scrollingTime * MARQUEE_SPEED / 1_000.0F) % cycleWidth);
 			drawX = scrollingTextX - offset;
 
-			graphics.text(font, text, drawX, y + TEXT_Y_OFFSET, color);
-			graphics.text(font, text, drawX + cycleWidth, y + TEXT_Y_OFFSET, color);
+			graphics.text(font, text, drawX, drawY, color);
+			graphics.text(font, text, drawX + cycleWidth, drawY, color);
 		}
 		graphics.disableScissor();
 	}

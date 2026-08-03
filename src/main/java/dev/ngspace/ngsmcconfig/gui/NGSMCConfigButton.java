@@ -3,7 +3,6 @@ package dev.ngspace.ngsmcconfig.gui;
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigIcon;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -62,12 +61,15 @@ public class NGSMCConfigButton extends Button {
     	
     	graphics.outline(x, y, width, height, outline);
     	
-		int textX = x + (icon!=null && !centerText ? NGSMCScrollingText.ICON_TEXT_X_OFFSET
-				: NGSMCScrollingText.PLAIN_TEXT_X_OFFSET);
-		int scrollingTextX = x + (icon!=null ? NGSMCScrollingText.ICON_TEXT_X_OFFSET
-				: NGSMCScrollingText.PLAIN_TEXT_X_OFFSET);
-		int textRight = x + width - NGSMCScrollingText.TEXT_RIGHT_PADDING;
-		NGSMCScrollingText.render(graphics, getMessage(), textX, y, textRight, height, textcolor,
+//    	System.out.println(height/16f);
+    	
+		int textX = (int) (x + (icon!=null ? NGSMCScrollingText.ICON_TEXT_X_OFFSET*(height/16f)
+				: NGSMCScrollingText.PLAIN_TEXT_X_OFFSET));
+		if (centerText) textX = x;
+		int scrollingTextX = (int) (x + (icon!=null ? NGSMCScrollingText.ICON_TEXT_X_OFFSET*(height/16f)
+				: NGSMCScrollingText.PLAIN_TEXT_X_OFFSET));
+		int textRight = centerText ? x + width : x + width - NGSMCScrollingText.TEXT_RIGHT_PADDING;
+		NGSMCScrollingText.render(graphics, getMessage(), textX, y+1, textRight, height, textcolor,
 				marqueeStartTime, centerText, scrollingTextX);
     	if (icon!=null&&isActive())
     		icon.extractRenderState(graphics, mouseX, mouseY, a, height-4, height-4, x+2, y+2);
