@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 
+import com.mojang.blaze3d.platform.cursor.CursorTypes;
+
 import dev.ngspace.hudder.compilers.utils.Compilers;
 import dev.ngspace.hudder.config.HudSelectionList.HudEntry;
 import dev.ngspace.hudder.utils.HudFileUtils;
@@ -25,14 +27,15 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> {
 	private HudderUserSettings config;
 	public String comp;
 	
-	// There are more formats but those are the only ones that matter, as far as I am aware minecraft
-	// only supports those formats
+	// There are more formats but those are the only ones that matter, as far as I
+	// am aware minecraft only supports those formats
 	private static final Set<String> IMAGE_EXTENSIONS = Set.of("png", "jpg", "jpeg");
-
+	
 	public HudSelectionList(Minecraft minecraft, File folder, HudderUserSettings config) {
 		super(minecraft, 0, 0, 0, 18);
 		this.config = config;
-		comp = Compilers.findEntryFromName(config.compilername).orElse(Compilers.getEntryFromName("hudder")).displayname();
+		comp = Compilers.findEntryFromName(config.compilername).orElse(Compilers.getEntryFromName("hudder"))
+				.displayname();
 		
 		addEntry(new TitleEntry(Component.translatable("hudder.mainfile.title"),
 				Component.translatable("hudder.mainfile.subtitle")), 24);
@@ -45,21 +48,17 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> {
 			addEntry(name, hud, Compilers.getSupportedCompilersForFilepath(name), name.equals(config.mainfile));
 		}
 		var selected = getSelected();
-		if (selected==null)
-			addEntry(config.mainfile, new File(config.mainfile), Compilers.getSupportedCompilersForFilepath(config.mainfile), true);
-		
-		setScrollAmount(0); // I don like how it scrolls for me, disgusting, vile even...
-		
+		if (selected == null)
+			addEntry(config.mainfile, new File(config.mainfile),
+					Compilers.getSupportedCompilersForFilepath(config.mainfile), true);
 	}
 	
 	private static boolean isEmptyOrImagesOnly(File directory) {
 		File[] contents = directory.listFiles();
-
-		// Do not treat an unreadable directory as empty.
-		if (contents == null) {
+		
+		if (contents == null)
 			return false;
-		}
-
+		
 		for (File file : contents) {
 			if (file.isDirectory()) {
 				if (!isEmptyOrImagesOnly(file)) {
@@ -69,19 +68,18 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> {
 				return false;
 			}
 		}
-
-		// Also returns true when the directory is empty.
+		
 		return true;
 	}
-
+	
 	private static boolean isImage(File file) {
 		String name = file.getName();
 		int dot = name.lastIndexOf('.');
-
+		
 		if (dot < 0 || dot == name.length() - 1) {
 			return false;
 		}
-
+		
 		String extension = name.substring(dot + 1).toLowerCase();
 		return IMAGE_EXTENSIONS.contains(extension);
 	}
@@ -92,14 +90,20 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> {
 		if (isSelected)
 			setSelected(entry);
 	}
-    
-    @Override protected void extractListBackground(GuiGraphicsExtractor guiGraphics) {/* It ugly ;_; */}
-    
-    @Override
-    public int getRowWidth() {
-    	return 290;
-    }
-
+	
+	@Override
+	protected void scrollToEntry(HudEntry entry) {
+		/* I don like how it scrolls for me, disgusting, vile even... */}
+		
+	@Override
+	protected void extractListBackground(GuiGraphicsExtractor guiGraphics) {
+		/* It ugly ;_; */}
+		
+	@Override
+	public int getRowWidth() {
+		return 290;
+	}
+	
 	public static class HudEntry extends ObjectSelectionList.Entry<HudEntry> {
 		
 		public MutableComponent component;
@@ -109,87 +113,88 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> {
 		public NGSMCConfigButton editbutton;
 		
 		public static int EDIT_BUTTON_WIDTH = 40;
-		public static UnaryOperator<Style> COMPILER_TEXT_STYLE = t->t.withItalic(true).withColor(ChatFormatting.GRAY);
+		public static UnaryOperator<Style> COMPILER_TEXT_STYLE = t -> t.withItalic(true).withColor(ChatFormatting.GRAY);
 		
-		protected HudEntry() {}
+		protected HudEntry() {
+		}
 		
 		public HudEntry(String filepath, String[] compilers, File file) {
 			this.file = file;
-			if (filepath!=null) {
+			if (filepath != null) {
 				this.component = Component.literal(filepath);
-				if (compilers.length>0) {
+				if (compilers.length > 0) {
 					component.append(Component.literal(" - ").withStyle(COMPILER_TEXT_STYLE));
-					for (int i = 0;i<compilers.length;i++) {
+					for (int i = 0; i < compilers.length; i++) {
 						if (i > 0) {
 							String separator = i == compilers.length - 1 ? " and " : ", ";
 							component.append(Component.literal(separator).withStyle(COMPILER_TEXT_STYLE));
 						}
-						component.append(Component.literal(
-								Compilers.getDisplayNameFromCompilerName(compilers[i])).withStyle(COMPILER_TEXT_STYLE));
+						component.append(Component.literal(Compilers.getDisplayNameFromCompilerName(compilers[i]))
+								.withStyle(COMPILER_TEXT_STYLE));
 					}
 				} else {
-					component.append(Component.translatable("hudder.mainfile.noknowncompilers").withStyle(COMPILER_TEXT_STYLE));
+					component.append(
+							Component.translatable("hudder.mainfile.noknowncompilers").withStyle(COMPILER_TEXT_STYLE));
 				}
 			}
 			Component edit = Component.translatable("hudder.mainfile.editbutton");
 			
-			this.editbutton = new NGSMCConfigButton(0, 0, Minecraft.getInstance().font.width(edit)+20, 14, edit,
-					_->{}, 0xFFFFFFFF, false);
+			this.editbutton = new NGSMCConfigButton(0, 0, Minecraft.getInstance().font.width(edit) + 20, 14, edit,
+					_ -> {
+					}, 0xFFFFFFFF, false);
 			editbutton.setIcon(new NGSMCConfigIcon.SpriteIcon("items", "item/writable_book"));
 			editbutton.setOutlineColor(0xFFFFFFFF);
 			this.filepath = filepath;
 			this.compilers = compilers;
 			
-			
 		}
-
+		
 		@Override
 		public Component getNarration() {
 			return component;
 		}
-
+		
 		@Override
 		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
-			graphics.text(Minecraft.getInstance().font, component, getX()+4, getY()+4, 0xFFFFFFFF);
-			editbutton.setPosition(getContentRight()-editbutton.getWidth(), getContentY());
+			graphics.text(Minecraft.getInstance().font, component, getX() + 4, getY() + 4, 0xFFFFFFFF);
+			if (editbutton.isMouseOver(mouseX, mouseY))
+				graphics.requestCursor(CursorTypes.POINTING_HAND);
+			editbutton.setPosition(getContentRight() - editbutton.getWidth(), getContentY());
 			editbutton.extractContents(graphics, mouseX, mouseY, a);
 		}
+		
 		@Override
 		public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
 			double mouseX = event.x();
 			double mouseY = event.y();
-
-			boolean clickedEdit =
-					event.button() == 0 &&
-					filepath != null &&
-					mouseX >= getContentRight() - EDIT_BUTTON_WIDTH &&
-					mouseX < getContentRight() &&
-					mouseY >= getContentY() &&
-					mouseY < getContentBottom();
-
+			
+			boolean clickedEdit = event.button() == 0 && filepath != null
+					&& mouseX >= getContentRight() - EDIT_BUTTON_WIDTH && mouseX < getContentRight()
+					&& mouseY >= getContentY() && mouseY < getContentBottom();
+			
 			if (clickedEdit) {
 				Util.getPlatform().openFile(file);
 				return true;
 			}
-
+			
 			return super.mouseClicked(event, doubleClick);
 		}
-
+		
 		public boolean canSelect() {
 			return true;
 		}
 	}
 	
 	public static class TitleEntry extends HudEntry {
-
+		
 		public Component subtitle;
 		float scale = 1.2f;
-
+		
 		public TitleEntry(Component title, Component subtitle) {
 			this.component = title.plainCopy().withStyle(t -> t.withBold(true));
 			this.subtitle = subtitle.plainCopy().withStyle(t -> t.withItalic(true));
 		}
-
+		
 		@Override
 		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered,
 				float delta) {
@@ -203,11 +208,11 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> {
 			
 			drawCenteredScaled(graphics, component, centerX, startY, 0xFFFFFFFF, scale);
 			
-			drawCenteredScaled(graphics, subtitle, centerX, startY + scaledLineHeight, 0xFFC3C3C3, scale-.3f);
+			drawCenteredScaled(graphics, subtitle, centerX, startY + scaledLineHeight, 0xFFC3C3C3, scale - .3f);
 		}
 		
-		public void drawCenteredScaled(GuiGraphicsExtractor graphics, Component text, float centerX, float y,
-				int color, float scale) {
+		public void drawCenteredScaled(GuiGraphicsExtractor graphics, Component text, float centerX, float y, int color,
+				float scale) {
 			var font = Minecraft.getInstance().font;
 			
 			float scaledWidth = font.width(text) * scale;
@@ -236,28 +241,26 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> {
 	
 	@Override
 	public void setSelected(HudEntry entry) {
-	    if (entry == null || entry.canSelect()) {
-	        super.setSelected(entry);
-	    }
+		if (entry == null || entry.canSelect()) {
+			super.setSelected(entry);
+		}
 	}
-
+	
 	public void save() {
 		var selected = getSelected();
-		if (selected==null)
+		if (selected == null)
 			return;
 		config.mainfile = selected.filepath;
 	}
 	
 	public void reset() {
-		setSelected(children().stream()
-				.filter(entry->entry.filepath.equals("hud.hud"))
-				.findFirst()
+		setSelected(children().stream().filter(entry -> entry.filepath.equals("hud.hud")).findFirst()
 				.orElse(children().get(0)));
 	}
 	
 	public Component error() {
 		var selected = getSelected();
-		if (selected==null)
+		if (selected == null)
 			return Component.translatable("hudder.mainfile.noselection");
 		try {
 			if (!HudFileUtils.exists(selected.filepath))
@@ -270,8 +273,8 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> {
 	
 	public Component warning() {
 		var selected = getSelected();
-		String file = selected!=null?selected.filepath:"";
-		return Compilers.getCompilerFromDisplayname(comp).isValidFilePath(file)?null:
-			Component.translatable("hudder.mainfile.unsupportedformat",comp,file);
+		String file = selected != null ? selected.filepath : "";
+		return Compilers.getCompilerFromDisplayname(comp).isValidFilePath(file) ? null
+				: Component.translatable("hudder.mainfile.unsupportedformat", comp, file);
 	}
 }
