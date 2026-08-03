@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Comparator;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 import dev.ngspace.hudder.Hudder;
@@ -19,7 +18,6 @@ import dev.ngspace.ngsmcconfig.options.DoubleNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.DropdownNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.HexNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.IntNGSMCConfigOption;
-import dev.ngspace.ngsmcconfig.options.StringNGSMCConfigOption;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -48,6 +46,15 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 		
 		
 		
+		// Huds
+		// NGSMCConfig changes the size and position anyways
+		var widget = new HudSelectionList(Minecraft.getInstance(), new File(HudFileUtils.FOLDER), config);
+		builder.addCustomWidgetCategory(Component.translatable("hudder.mainfile"),
+				new NGSMCConfigIcon.SpriteIcon("items", "item/map"),
+				widget, widget::save, widget::reset, widget::error, widget::warning);
+		
+		
+		
 		// General
 		NGSMCConfigCategory general = builder.createCategory(Component.translatable("hudder.general"),
 				new NGSMCConfigIcon.SpriteIcon("items", "item/compass_00"));
@@ -66,9 +73,6 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 				config.mainfile),
 				new NGSMCConfigIcon.SpriteIcon("items", "item/amethyst_shard"));
 		
-		AtomicReference<String> comp = new AtomicReference<String>(
-				Compilers.getDisplayNameFromCompilerName(Hudder.config.compilerName()));
-		
 		/* General */
 		general.addOption(BooleanNGSMCConfigOption.fluentBuilder(config.enabled, Component.translatable("hudder.general.enabled"))
 				.setHoverComponent(Component.translatable("hudder.general.enabled.tooltip"))
@@ -76,26 +80,26 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 				.setSaveOperation(b->config.enabled=b)
 				.setComponentProvider(enabledDisabled)
 				.build());
-		general.addOption(StringNGSMCConfigOption.fluentBuilder(config.mainfile, Component.translatable("hudder.general.mainfile"))
-				.setHoverComponent(Component.translatable("hudder.general.mainfile.tooltip"))
-				.setDefaultValue("hud.hud")
-				.setSaveOperation(s->config.mainfile=s)
-				.setValidator(val->{
-					try {
-						if (!HudFileUtils.exists(val))
-							return Component.translatable("hudder.general.mainfile.error");
-					} catch (SecurityException | IOException e) {
-						e.printStackTrace();
-					}
-					return null;
-				})
-				.setWarningProvider(file->{
-					if (Compilers.getEntryFromDisplayName(comp.get()).unstable())
-						return Component.translatable("hudder.general.compilertype.unstable_warning", comp.get());
-					return Compilers.getCompilerFromDisplayname(comp.get()).isValidFilePath(file)?null:
-						Component.translatable("hudder.general.mainfile.unsupportedformat",comp.get(),file);
-				})
-				.build());
+//		general.addOption(StringNGSMCConfigOption.fluentBuilder(config.mainfile, Component.translatable("hudder.general.mainfile"))
+//				.setHoverComponent(Component.translatable("hudder.general.mainfile.tooltip"))
+//				.setDefaultValue("hud.hud")
+//				.setSaveOperation(s->config.mainfile=s)
+//				.setValidator(val->{
+//					try {
+//						if (!HudFileUtils.exists(val))
+//							return Component.translatable("hudder.general.mainfile.error");
+//					} catch (SecurityException | IOException e) {
+//						e.printStackTrace();
+//					}
+//					return null;
+//				})
+//				.setWarningProvider(file->{
+//					if (Compilers.getEntryFromDisplayName(comp.get()).unstable())
+//						return Component.translatable("hudder.general.compilertype.unstable_warning", comp.get());
+//					return Compilers.getCompilerFromDisplayname(comp.get()).isValidFilePath(file)?null:
+//						Component.translatable("hudder.general.mainfile.unsupportedformat",comp.get(),file);
+//				})
+//				.build());
 		general.addOption(DropdownNGSMCConfigOption.fluentBuilder(Compilers.getDisplayNameFromCompilerName(Hudder.config.compilerName()),
 					Component.translatable("hudder.general.compilertype"),
 					Compilers.entries().stream()
@@ -107,7 +111,7 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 	    		.setDefaultValue("Hudder")
 	    		.setSaveOperation(b->Hudder.config.setCompilerName(Compilers.getCompilerNameFromDisplayname(b)))
 	    		.setValidator(e->{
-	    			comp.set(e);
+	    			widget.comp = e;
 	    			return Compilers.hasCompilerFromDisplayName(e)
 	    					? null : Component.translatable("hudder.general.compilertype.error");
 	    		})

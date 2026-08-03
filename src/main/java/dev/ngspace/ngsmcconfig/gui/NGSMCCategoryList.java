@@ -97,6 +97,10 @@ public class NGSMCCategoryList extends ContainerObjectSelectionList<NGSMCCategor
 		}
 
 		private void openCategory() {
+			if (category.customWidget()!=null) {
+				Minecraft.getInstance().gui.setScreen(new NGSMCConfigOptionsWidgetScreen(screen, category, screen.root));
+				return;
+			}
 			if (category.customAction()!=null) {
 				category.customAction().run();
 				return;

@@ -34,11 +34,15 @@
 	
 	"hudder.general.enabled":"Enabled",
 	"hudder.general.enabled.tooltip":"Whether Hudder should be enabled or not.",
-	
-	"hudder.general.mainfile":"Hud",
-	"hudder.general.mainfile.tooltip":"Change the main hud file.\u00A77\nThe file must be located in the \u00A76.minecraft/config/Hudder\u00A77 folder.",
-	"hudder.general.mainfile.error":"Hud does not exist in the huds folder.",
-	"hudder.general.mainfile.unsupportedformat":"%s does not support the file format of file %s",
+
+	"hudder.mainfile":"Huds",
+	"hudder.mainfile.title":"Available huds",
+	"hudder.mainfile.subtitle":"Select",
+	"hudder.mainfile.tooltip":"Change the main hud file.\u00A77\nThe file must be located in the \u00A76.minecraft/config/Hudder\u00A77 folder.",
+	"hudder.mainfile.doesntexist":"Hud %s does not exist in the huds folder.",
+	"hudder.mainfile.noselection":"No hud selected.",
+	"hudder.mainfile.unsupportedformat":"%s does not support the file format of hud \"%s\"",
+	"hudder.mainfile.noknowncompilers": " - No registered compiler support this hud",
 
 	"hudder.general.compilertype": "Compiler type",
 	"hudder.general.compilertype.tooltip": "Change the type of compiler (ex hudder, js, pack).",

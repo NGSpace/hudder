@@ -2,6 +2,7 @@ package dev.ngspace.hudder.compilers.utils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -255,6 +256,13 @@ public class Compilers {
 
 	public static Optional<String> findNameFromCompiler(AVarTextCompiler compiler) {
 		return findEntryFromCompiler(compiler).map(CompilerEntry::name);
+	}
+
+	public static String[] getSupportedCompilersForFilepath(String filepath) {
+		return registeredcompilers.entrySet().stream()
+				.filter(entry -> entry.getValue().compiler().isValidFilePath(filepath))
+				.map(Entry::getKey)
+				.toArray(String[]::new);
 	}
 	
 	/**
