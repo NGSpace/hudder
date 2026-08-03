@@ -254,7 +254,7 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> {
 	}
 	
 	public void reset() {
-		setSelected(children().stream().filter(entry -> entry.filepath.equals("hud.hud")).findFirst()
+		setSelected(children().stream().filter(entry -> "hud.hud".equals(entry.filepath)).findFirst()
 				.orElse(children().get(0)));
 	}
 	
