@@ -120,9 +120,6 @@ public class V3ClassWriter implements Binder {
 		for (String name : names) {
 			String func = "api_function_" + name.toLowerCase();
 
-			// The registry is global, but generated methods belong to this class writer.
-			// Keep first-registration-wins semantics without suppressing wrappers in
-			// every GeneratedClass created after the first one.
 			HudderV3Helper.api_functions.putIfAbsent(func, cons);
 			if (!generatedApiFunctions.add(func)) {
 				continue;

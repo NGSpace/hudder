@@ -24,14 +24,14 @@ public class FunctionCallVariableVisitor extends VariableVisitor {
 		this.args = args;
 		this.funcName = funcName;
 		this.pos = pos;
-		this.apiCall = HudderV3Helper.api_functions.containsKey(funcName);
+		this.apiCall = HudderV3Helper.api_functions.containsKey("api_function_" + funcName.toLowerCase().trim());
 	}
 
 	@Override
 	public void visit(V3MethodWriter methodWriter) throws CompileException {
 		methodWriter.loadConstantUnsafe(args.length);
 		methodWriter.methodVisitor.visitTypeInsn(Opcodes.ANEWARRAY,
-				Type.getInternalName(apiCall ? Object.class : ObjectWrapper.class));
+				Type.getInternalName(apiCall ? ObjectWrapper.class: Object.class));
 		int array_index = methodWriter.astore();
 		for (int i = 0;i<args.length;i++) {
 			comp.parseVariable(args[i]).visit(methodWriter);
@@ -45,7 +45,7 @@ public class FunctionCallVariableVisitor extends VariableVisitor {
 			if (apiCall) {
 				methodWriter.loadConstantUnsafe(pos.line());
 				methodWriter.loadConstantUnsafe(pos.column());
-				methodWriter.call(ImplObjectWrapper.class, "<init>", "(Ljava/lang/Object;II)V", false);
+				methodWriter.callSpecial(ImplObjectWrapper.class, "<init>", "(Ljava/lang/Object;II)V", false);
 			}
 			methodWriter.methodVisitor.visitInsn(Opcodes.AASTORE);
 		}

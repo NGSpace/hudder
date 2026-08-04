@@ -28,10 +28,8 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 	public int return_value_index;
 
 	public int mute_builder_index;
-	public int disabled_builder_index;
 	
 	private boolean builder_disabled;
-	private int previous_builder_index;
 
 	public V3ExecuteMethodWriter(V3ClassWriter classWriter, String name, Class<?>[] args) {
 		super(classWriter, name,
@@ -51,8 +49,6 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 		bottomleft_builder_index = astore();
 		initStringBuilder();
 		bottomright_builder_index = astore();
-		initStringBuilder();
-		disabled_builder_index = astore();
 		initStringBuilder();
 		mute_builder_index = astore();
 		
@@ -77,22 +73,33 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 
 
 	public void appendStringConstant(String string) {
+		if (isBuilderDisabled()) {
+			return;
+		}
 		loadBuilder();
 		loadConstant(string);
 		call(StringBuilder.class, "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;", false);
 		pop();
 	}
 	
-	public void loadBuilder() {
+	private void loadBuilder() {
 		aload(selected_builder_index);
 	}
 
 	public void appendToBuilderAndPop() {
+		if (isBuilderDisabled()) {
+			pop();
+			return;
+		}
 		appendToBuilder();
 		pop();
 	}
 
 	public void appendToBuilder() {
+		if (isBuilderDisabled()) {
+			pop();
+			return;
+		}
 		Label end = new Label();
 		Label append = new Label();
 		Label append_double = new Label();
@@ -191,14 +198,6 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 
 	public void setBuilderDisabled(boolean b) {
 		builder_disabled = b;
-		if (builder_disabled) {
-			if (selected_builder_index!=disabled_builder_index) {
-				previous_builder_index = selected_builder_index;
-			}
-			selected_builder_index = disabled_builder_index;
-		} else {
-			selected_builder_index = previous_builder_index;
-		}
 	}
 
 
