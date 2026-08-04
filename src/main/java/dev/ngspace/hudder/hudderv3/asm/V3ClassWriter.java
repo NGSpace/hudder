@@ -26,6 +26,7 @@ public class V3ClassWriter implements Binder {
 	public String classname;
 	public V3MethodWriter init;
 	private final Set<String> generatedApiFunctions = new HashSet<>();
+	private final Set<String> generatedApiConsumers = new HashSet<>();
 	
 	public V3ClassWriter(String classname) {
 		this.classname = classname;
@@ -112,9 +113,36 @@ public class V3ClassWriter implements Binder {
 	@Override
 	public void bindConsumer(BindableConsumer cons, String... names) {
 		for (String name : names) {
-			HudderV3Helper.api_consumers.put(name.toLowerCase(), cons);
+			String func = "api_consumer_" + name.toLowerCase();
+
+			HudderV3Helper.api_consumers.putIfAbsent(func, cons);
+			if (!generatedApiConsumers.add(func)) {
+				continue;
+			}
+			initPublicField(func, BindableConsumer.class);
+			init.aload(0);
+			init.loadConstant(func);
+			init.callStatic(HudderV3Helper.class, "getApiConsumer", "(Ljava/lang/String;)"
+					+ "Ldev/ngspace/hudder/api/functionsandconsumers/FunctionAndConsumerAPI$BindableConsumer;",
+					false);
+			init.putField(func, BindableConsumer.class);
+			
+			V3MethodWriter apiwrapper = createMethod(func,
+					new Class<?>[] {ObjectWrapper[].class},
+					null, null, null);
+			apiwrapper.aload(0);
+			apiwrapper.getField(func, BindableConsumer.class);
+			apiwrapper.aload(0);
+			apiwrapper.getField("uimanager", ArrayElementManager.class);
+			apiwrapper.aload(0);
+			apiwrapper.getField("v3compiler", HudderV3Compiler.class);
+			apiwrapper.aload(1);
+			apiwrapper.callInterface(BindableConsumer.class, "invoke",
+					"(Ldev/ngspace/hudder/api/functionsandconsumers/IUIElementManager;Ldev/ngspace/hudder/compilers/abstractions/AHudCompiler;[Ldev/ngspace/hudder/utils/ObjectWrapper;)V");
+			apiwrapper.end(Opcodes.RETURN);
 		}
 	}
+	
 	@Override
 	public void bindFunction(BindableFunction cons, String... names) {
 		for (String name : names) {

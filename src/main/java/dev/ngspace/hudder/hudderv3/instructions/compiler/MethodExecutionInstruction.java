@@ -4,8 +4,6 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
-import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
-import dev.ngspace.hudder.compilers.HudderV3Compiler;
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
@@ -13,16 +11,21 @@ import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.V3HudInformation;
 import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.asm.V3ExecuteMethodWriter;
+import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
+import dev.ngspace.hudder.utils.ImplObjectWrapper;
+import dev.ngspace.hudder.utils.ObjectWrapper;
 
 public class MethodExecutionInstruction extends Instruction {
 	
 	private String[] builder;
 	AV3Compiler comp;
+	private boolean apiCall;
 
 	public MethodExecutionInstruction(String[] builder, AV3Compiler comp, TextPos pos) {
 		super(pos);
 		this.builder = builder;
 		this.comp = comp;
+		this.apiCall = HudderV3Helper.api_consumers.containsKey("api_consumer_" + builder[0].toLowerCase().trim());
 	}
 
 	@Override
@@ -70,56 +73,57 @@ public class MethodExecutionInstruction extends Instruction {
 				}
 				break;
 			default:
-				Label user_defined = new Label();
-				Label end = new Label();
-				
 				methodWriter.loadConstantUnsafe(builder.length-1);
-				methodWriter.newArray(Object.class);
+				methodWriter.methodVisitor.visitTypeInsn(Opcodes.ANEWARRAY,
+						Type.getInternalName(apiCall ? ObjectWrapper.class: Object.class));
 				int array_index = methodWriter.astore();
 				for (int i = 1;i<builder.length;i++) {
 					comp.parseVariable(builder[i], pos).visit(methodWriter);
 					int value_index = methodWriter.astore();
 					methodWriter.aload(array_index);
 					methodWriter.loadConstantUnsafe(i-1);
+					if (apiCall) {
+						methodWriter.newAndDup(ImplObjectWrapper.class);
+					}
 					methodWriter.aload(value_index);
-					methodWriter.aastore();
+					if (apiCall) {
+						methodWriter.loadConstantUnsafe(pos.line());
+						methodWriter.loadConstantUnsafe(pos.column());
+						methodWriter.callSpecial(ImplObjectWrapper.class, "<init>", "(Ljava/lang/Object;II)V", false);
+					}
+					methodWriter.methodVisitor.visitInsn(Opcodes.AASTORE);
 				}
-				methodWriter.loadConstant(builder[0].toLowerCase().trim());
-				methodWriter.callStatic(HudderV3Helper.class, "hasApiConsumer", "(Ljava/lang/String;)Z", false);
-				methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFEQ, user_defined);
 				
-				// API method
-				methodWriter.loadConstant(builder[0].toLowerCase().trim());
-				methodWriter.loadConstantUnsafe(pos.line());
-				methodWriter.loadConstantUnsafe(pos.column());
-				methodWriter.aload(0);
-				methodWriter.getField("uimanager", ArrayElementManager.class);
-				methodWriter.aload(0);
-				methodWriter.getField("v3compiler", HudderV3Compiler.class);
-				methodWriter.aload(array_index);
-				methodWriter.callStatic(HudderV3Helper.class, "callApiConsumer",
-						"(Ljava/lang/String;IILdev/ngspace/hudder/api/functionsandconsumers/ArrayElementManager;Ldev/ngspace/hudder/compilers/abstractions/AVarTextCompiler;[Ljava/lang/Object;)V", false);
-				methodWriter.jumpto(end);
-				
-				// User method
-				methodWriter.putLabel(user_defined);
-				if (comp.user_methods.containsKey(builder[0].toLowerCase().trim())) {
-					methodWriter.aload(0);
-					methodWriter.aload(1);
-					methodWriter.aload(2);
-					methodWriter.aload(3);
-					methodWriter.aload(array_index);
-					methodWriter.callSelf(comp.user_methods.get(builder[0].toLowerCase().trim()), "(Ldev/ngspace/hudder/config/HudderConfig;"
-							+ "Ljava/lang/String;"
-							+ "Ljava/lang/String;"
-							+ "[Ljava/lang/Object;)"
-							+ Type.getDescriptor(V3HudInformation.class), false);
-					methodWriter.pop();
+				if (apiCall) {
+					visitApiCall(methodWriter, array_index);
 				} else {
-					methodWriter.throwExecutionException("Unknown method \"" + builder[0] + '"', pos);
+					visitUserConsumer(methodWriter, array_index);
 				}
-				
-				methodWriter.putLabel(end);
+		}
+	}
+	
+	protected void visitApiCall(V3MethodWriter methodWriter, int array_index) {
+		methodWriter.aload(0);
+		methodWriter.aload(array_index);
+		methodWriter.callSelf("api_consumer_"+builder[0].toLowerCase().trim(),
+				"([Ldev/ngspace/hudder/utils/ObjectWrapper;)V", false);
+	}
+	
+	protected void visitUserConsumer(V3MethodWriter methodWriter, int array_index) {
+		if (comp.user_methods.containsKey(builder[0].toLowerCase().trim())) {
+			methodWriter.aload(0);
+			methodWriter.aload(1);
+			methodWriter.aload(2);
+			methodWriter.aload(3);
+			methodWriter.aload(array_index);
+			methodWriter.callSelf(comp.user_methods.get(builder[0].toLowerCase().trim()), "(Ldev/ngspace/hudder/config/HudderConfig;"
+					+ "Ljava/lang/String;"
+					+ "Ljava/lang/String;"
+					+ "[Ljava/lang/Object;)"
+					+ Type.getDescriptor(V3HudInformation.class), false);
+			methodWriter.pop();
+		} else {
+			methodWriter.throwRuntimeException("Unknown method: " + builder[0]);
 		}
 	}
 	

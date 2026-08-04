@@ -81,6 +81,9 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 			if (e.getTargetException() instanceof RuntimeException re)
 				throw re;
 			e.printStackTrace();
+			var ne = new CompileException(e.getTargetException().toString(),-1, -1, e.getTargetException());
+			cache.put(text, new CachedCompiler(null,null,ne));
+			throw ne;
 		} catch (ClassFormatError e) {
 			// The compilation manager does not handle Verifier errors and will crash the game which is bad.
 			e.printStackTrace();

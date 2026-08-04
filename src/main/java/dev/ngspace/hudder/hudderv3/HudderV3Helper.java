@@ -68,13 +68,12 @@ public class HudderV3Helper {
 	    else return Double.toString(d);
 	}
 	
-	public static boolean hasApiFunction(String name) {
-		return api_functions.containsKey(name);
-	}
-	
-	
+
 	public static BindableFunction getApiFunction(String name) {
 		return api_functions.get(name);
+	}
+	public static BindableConsumer getApiConsumer(String name) {
+		return api_consumers.get(name);
 	}
 	
 	public static boolean hasApiConsumer(String name) {
