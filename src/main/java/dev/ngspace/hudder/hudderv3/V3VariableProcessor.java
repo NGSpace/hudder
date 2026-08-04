@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
+import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.instructions.variables.FunctionCallVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.SystemVariableVisitor;
@@ -30,7 +31,7 @@ import dev.ngspace.hudder.utils.HudderUtils;
 
 public class V3VariableProcessor {
 
-	public VariableVisitor parseVariable(String valuee, AV3Compiler comp) throws CompileException {
+	public VariableVisitor parseVariable(String valuee, AV3Compiler comp, TextPos pos) throws CompileException {
 
 		String value = valuee.trim();
 		
@@ -77,7 +78,7 @@ public class V3VariableProcessor {
 			}
 			// if it is wrapped then remove the first and last chars to unwrap and reprocess them.
 			if (isSafe) {
-				return parseVariable(value.substring(1, value.length()-1), comp);
+				return parseVariable(value.substring(1, value.length()-1), comp, pos);
 			}
 		}
 		
@@ -262,7 +263,7 @@ public class V3VariableProcessor {
 					if (funcName.matches("^[a-zA-Z0-9]+[a-zA-Z0-9_-]*$")) {
 						String parametersString = value.substring(argStart+1, value.length()-1);
 						return new FunctionCallVariableVisitor(funcName, comp,
-								HudderUtils.processParemeters(parametersString));
+								HudderUtils.processParemeters(parametersString), pos);
 					}
 				}
 			}
@@ -271,14 +272,14 @@ public class V3VariableProcessor {
 		
 		
 		//Logical OR operator
-		VariableVisitor[] orValues = logicalOperator('|', value, comp);
+		VariableVisitor[] orValues = logicalOperator('|', value, comp, pos);
 		if (orValues.length>1)
 			return new LogicalOrVariableVisitor(orValues, comp);
 		
 		
 		
 		//Logical AND operator
-		VariableVisitor[] andvalues = logicalOperator('&', value, comp);
+		VariableVisitor[] andvalues = logicalOperator('&', value, comp, pos);
 		if (andvalues.length>1)
 			return new LogicalAndVariableVisitor(andvalues, comp);
 
@@ -449,7 +450,7 @@ public class V3VariableProcessor {
 	
 	
 	
-	private VariableVisitor[] logicalOperator(char op, String value, AV3Compiler comp) throws CompileException {
+	private VariableVisitor[] logicalOperator(char op, String value, AV3Compiler comp, TextPos pos) throws CompileException {
 		VariableVisitor[] values = new VariableVisitor[0];
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0;i<value.length();i++) {
@@ -482,7 +483,7 @@ public class V3VariableProcessor {
 			}
 			if (c==op&&i+1<value.length()&&value.charAt(i+1)==op) {
 				i++;
-				values = addToArray(values, comp.parseVariable(builder.toString()));
+				values = addToArray(values, parseVariable(builder.toString(), comp, pos));
 				builder.setLength(0);
 				continue;
 			}
@@ -490,7 +491,7 @@ public class V3VariableProcessor {
 			builder.append(c);
 		}
 		if (!Objects.equals(value, builder.toString()))
-			return addToArray(values, comp.parseVariable(builder.toString()));
+			return addToArray(values, parseVariable(builder.toString(), comp, pos));
 		else return values;
 	}
 	

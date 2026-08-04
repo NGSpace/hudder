@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
@@ -17,11 +16,13 @@ import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.Binde
 import dev.ngspace.hudder.compilers.HudderV3Compiler;
 import dev.ngspace.hudder.hudderv3.GeneratedCompiler;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
+import dev.ngspace.hudder.utils.ObjectWrapper;
 
 public class V3ClassWriter implements Binder {
 	
 	public ClassWriter classWriter;
 	public String classname;
+	public V3MethodWriter init;
 	
 	public V3ClassWriter(String classname) {
 		this.classname = classname;
@@ -58,12 +59,13 @@ public class V3ClassWriter implements Binder {
 	    ).visitEnd();
 
 		
-		MethodVisitor methodVisitor = classWriter.visitMethod(Opcodes.ACC_PUBLIC, "<init>",
-				"(Ldev/ngspace/hudder/compilers/HudderV3Compiler;)V", null, null);
-		methodVisitor.visitCode();
+//		init = classWriter.visitMethod(Opcodes.ACC_PUBLIC, "<init>",
+//				"(Ldev/ngspace/hudder/compilers/HudderV3Compiler;)V", null, null);
+		init = createMethod("<init>", new Class<?>[] {HudderV3Compiler.class}, null, null, null);
+//		init.visitCode();
 
-		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
-		methodVisitor.visitMethodInsn(
+		init.aload(0);
+		init.methodVisitor.visitMethodInsn(
 		        Opcodes.INVOKESPECIAL,
 		        "dev/ngspace/hudder/compilers/abstractions/AVarTextCompiler",
 		        "<init>",
@@ -72,14 +74,10 @@ public class V3ClassWriter implements Binder {
 		);
 		
 		// Init v3compiler field
-		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
-		methodVisitor.visitVarInsn(Opcodes.ALOAD, 1);
-		methodVisitor.visitFieldInsn(Opcodes.PUTFIELD, classname, "v3compiler",
+		init.aload(0);
+		init.aload(1);
+		init.methodVisitor.visitFieldInsn(Opcodes.PUTFIELD, classname, "v3compiler",
 				Type.getDescriptor(HudderV3Compiler.class));
-		
-		methodVisitor.visitInsn(Opcodes.RETURN);
-		methodVisitor.visitMaxs(0, 0);
-		methodVisitor.visitEnd();
 	}
 	
 	public V3ExecuteMethodWriter createExecuteMethod(String name, Class<?>[] classes) {
@@ -92,6 +90,9 @@ public class V3ClassWriter implements Binder {
 	}
 	
 	public Class<?> toClass() {
+		
+		init.end(Opcodes.RETURN);
+		
 		classWriter.visitEnd();
 		byte[] bytecode = classWriter.toByteArray();
 		if ((!new File("hudderv3output.class").exists())&&Hudder.IS_DEBUG) {
@@ -114,7 +115,33 @@ public class V3ClassWriter implements Binder {
 	@Override
 	public void bindFunction(BindableFunction cons, String... names) {
 		for (String name : names) {
-			HudderV3Helper.api_functions.put(name.toLowerCase(), cons);
+			String func = "api_function_" + name.toLowerCase();
+			if (HudderV3Helper.api_functions.containsKey(func)) {
+				// V3 Doesn't have the luxury of overriding api functions
+				return;
+			}
+			HudderV3Helper.api_functions.put(func, cons);
+			initPublicField(func, BindableFunction.class);
+			init.aload(0);
+			init.loadConstant(func);
+			init.callStatic(HudderV3Compiler.class, "getApiFunction", "(Ljava/lang/String;)"
+					+ "Ldev/ngspace/hudder/api/functionsandconsumers/FunctionAndConsumerAPI$BindableFunction;",
+					false);
+			init.putField(func, BindableFunction.class);
+			
+			V3MethodWriter apiwrapper = createMethod(func,
+					new Class<?>[] {ObjectWrapper[].class},
+					Object.class, null, null);
+			apiwrapper.aload(0);
+			apiwrapper.getField(func, BindableFunction.class);
+			apiwrapper.aload(0);
+			apiwrapper.getField("uimanager", ArrayElementManager.class);
+			apiwrapper.aload(0);
+			apiwrapper.getField("v3compiler", HudderV3Compiler.class);
+			apiwrapper.aload(1);
+			apiwrapper.callInterface(BindableFunction.class, "invoke",
+					"(Ldev/ngspace/hudder/api/functionsandconsumers/IUIElementManager;Ldev/ngspace/hudder/compilers/abstractions/AHudCompiler;[Ldev/ngspace/hudder/utils/ObjectWrapper;)Ljava/lang/Object;");
+			apiwrapper.end(Opcodes.ARETURN);
 		}
 	}
 }

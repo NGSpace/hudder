@@ -73,10 +73,8 @@ public class HudderV3Helper {
 	}
 	
 	
-	public static Object callApiFunction(String name, int line, int col, ArrayElementManager uiManager,
-			AVarTextCompiler compiler, Object... values) throws ExecutionException {
-		return api_functions.get(name).invoke(uiManager, compiler,
-				ImplObjectWrapper.fromArray(values, line, col));
+	public static BindableFunction getApiFunction(String name) {
+		return api_functions.get(name);
 	}
 	
 	public static boolean hasApiConsumer(String name) {

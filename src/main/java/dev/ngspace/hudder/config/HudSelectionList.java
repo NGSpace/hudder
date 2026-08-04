@@ -20,7 +20,6 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.util.Util;
 
 public class HudSelectionList extends ObjectSelectionList<HudEntry> {
 	

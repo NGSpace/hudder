@@ -20,7 +20,7 @@ public class V3MethodWriter {
 	
 	public V3ClassWriter classWriter;
 	public MethodVisitor methodVisitor;
-	public int variableindex = 0;
+	public int variableindex = 5;
 	public String methodName;
 	public Label finalLabel = new Label();
 	public Map<String, Integer> variables = new HashMap<String, Integer>();
@@ -31,7 +31,7 @@ public class V3MethodWriter {
 		this.methodName = name;
 		
 		this.methodVisitor = classWriter.classWriter.visitMethod(Opcodes.ACC_PUBLIC, name,
-				Type.getMethodDescriptor(Type.getType(returntype),
+				Type.getMethodDescriptor(returntype==null?Type.VOID_TYPE:Type.getType(returntype),
 						List.of(parameters).stream().map(Type::getType).toList().toArray(new Type[0])),
 				signature, exceptions);
 		methodVisitor.visitCode();

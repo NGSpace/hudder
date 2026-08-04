@@ -96,6 +96,7 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 			cache.put(text, new CachedCompiler(null,null,e));
 			throw e;
 		} catch (Exception e) {
+			e.printStackTrace();
 			var ne = new CompileException(e.toString(),-1, -1, e);
 			cache.put(text, new CachedCompiler(null,null,ne));
 			throw ne;
@@ -121,9 +122,17 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 			String name, String filename)
 			throws CompileException {
 	}
-
+	
+	/**
+	 * @deprecated
+	 */
+	@Deprecated(since = "10.2.0", forRemoval = true)
 	public VariableVisitor parseVariable(String string) throws CompileException {
-		return variableProcessor.parseVariable(string, this);
+		return parseVariable(string, new TextPos(-1, -1));
+	}
+
+	public VariableVisitor parseVariable(String string, TextPos pos) throws CompileException {
+		return variableProcessor.parseVariable(string, this, pos);
 	}
 	
 	
