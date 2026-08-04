@@ -104,7 +104,7 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> {
 		return 290;
 	}
 	
-	public static class HudEntry extends ObjectSelectionList.Entry<HudEntry> {
+	public class HudEntry extends ObjectSelectionList.Entry<HudEntry> {
 		
 		public MutableComponent component;
 		public String filepath;
@@ -115,8 +115,7 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> {
 		public static int EDIT_BUTTON_WIDTH = 40;
 		public static UnaryOperator<Style> COMPILER_TEXT_STYLE = t -> t.withItalic(true).withColor(ChatFormatting.GRAY);
 		
-		protected HudEntry() {
-		}
+		protected HudEntry() {}
 		
 		public HudEntry(String filepath, String[] compilers, File file) {
 			this.file = file;
@@ -173,7 +172,13 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> {
 					&& mouseY >= getContentY() && mouseY < getContentBottom();
 			
 			if (clickedEdit) {
-				Util.getPlatform().openFile(file);
+				for (String compiler : compilers) {
+					if (compiler.equals(config.compilername)) {
+						Compilers.getCompilerFromName(config.compilername).edit(file);
+						return true;
+					}
+				}
+				Compilers.getCompilerFromDisplayname(comp).edit(file);
 				return true;
 			}
 			
@@ -185,7 +190,7 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> {
 		}
 	}
 	
-	public static class TitleEntry extends HudEntry {
+	public class TitleEntry extends HudEntry {
 		
 		public Component subtitle;
 		float scale = 1.2f;

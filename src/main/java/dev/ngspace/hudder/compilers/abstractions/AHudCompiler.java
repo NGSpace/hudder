@@ -1,5 +1,6 @@
 package dev.ngspace.hudder.compilers.abstractions;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +10,7 @@ import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
+import net.minecraft.util.Util;
 
 /**
  * Defines the common operations required to process and execute HUD files.
@@ -87,5 +89,9 @@ public abstract class AHudCompiler<T> {
 			if (filepath.endsWith('.'+format))
 				return true;
 		return false;
+	}
+	
+	public void edit(File file) {
+		Util.getPlatform().openFile(file);
 	}
 }
