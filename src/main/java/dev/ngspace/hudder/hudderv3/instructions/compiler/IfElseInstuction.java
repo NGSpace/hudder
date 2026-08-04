@@ -31,7 +31,7 @@ public class IfElseInstuction extends Instruction {
 					throw new CompileException("Detached else/else if statement!", -1, -1);
 				condition = null;
 			} else {
-				condition = compiler.parseVariable(statement.condition());
+				condition = compiler.parseVariable(statement.condition(), pos);
 			}
 			compiled_statements[i] = new CompiledStatement(condition,
 					comp.compile(info, statement.codeblock(), filename, pos));

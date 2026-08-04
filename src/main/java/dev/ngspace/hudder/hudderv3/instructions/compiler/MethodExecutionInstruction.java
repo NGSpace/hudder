@@ -30,38 +30,42 @@ public class MethodExecutionInstruction extends Instruction {
 			throws CompileException {
 		switch (builder[0]) {
 			case "return":
-				comp.parseVariable(builder[1]).visit(methodWriter);
+				comp.parseVariable(builder[1], pos).visit(methodWriter);
 				methodWriter.astore(methodWriter.return_value_index);
 				methodWriter.jumpto(methodWriter.finalLabel);
 				break;
 			case "mute":
-				methodWriter.selected_builder_index = methodWriter.mute_builder_index;
+				methodWriter.setMuted(true);
 				break;
 			case "topleft":
+				methodWriter.setMuted(false);
 				methodWriter.selected_builder_index = methodWriter.topleft_builder_index;
 				if (builder.length>1) {
-					comp.parseVariable(builder[1]).visit(methodWriter);
+					comp.parseVariable(builder[1], pos).visit(methodWriter);
 					methodWriter.astore(methodWriter.topleft_scale_index);
 				}
 				break;
 			case "topright":
+				methodWriter.setMuted(false);
 				methodWriter.selected_builder_index = methodWriter.topright_builder_index;
 				if (builder.length>1) {
-					comp.parseVariable(builder[1]).visit(methodWriter);
+					comp.parseVariable(builder[1], pos).visit(methodWriter);
 					methodWriter.astore(methodWriter.topright_scale_index);
 				}
 				break;
 			case "bottomleft":
+				methodWriter.setMuted(false);
 				methodWriter.selected_builder_index = methodWriter.bottomleft_builder_index;
 				if (builder.length>1) {
-					comp.parseVariable(builder[1]).visit(methodWriter);
+					comp.parseVariable(builder[1], pos).visit(methodWriter);
 					methodWriter.astore(methodWriter.bottomleft_scale_index);
 				}
 				break;
 			case "bottomright":
+				methodWriter.setMuted(false);
 				methodWriter.selected_builder_index = methodWriter.bottomright_builder_index;
 				if (builder.length>1) {
-					comp.parseVariable(builder[1]).visit(methodWriter);
+					comp.parseVariable(builder[1], pos).visit(methodWriter);
 					methodWriter.astore(methodWriter.bottomright_scale_index);
 				}
 				break;
@@ -73,7 +77,7 @@ public class MethodExecutionInstruction extends Instruction {
 				methodWriter.newArray(Object.class);
 				int array_index = methodWriter.astore();
 				for (int i = 1;i<builder.length;i++) {
-					comp.parseVariable(builder[i]).visit(methodWriter);
+					comp.parseVariable(builder[i], pos).visit(methodWriter);
 					int value_index = methodWriter.astore();
 					methodWriter.aload(array_index);
 					methodWriter.loadConstantUnsafe(i-1);

@@ -24,7 +24,7 @@ public class ForInstruction extends Instruction {
 			HudderConfig info, String filename, TextPos pos) throws CompileException {
 		super(pos);
 		this.variable_name = variable_name;
-		this.value = comp.parseVariable(value);
+		this.value = comp.parseVariable(value, pos);
 		this.block = comp.compile(info, block, filename, pos);
 	}
 

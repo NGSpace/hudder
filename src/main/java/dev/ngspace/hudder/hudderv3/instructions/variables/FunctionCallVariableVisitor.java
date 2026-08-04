@@ -34,7 +34,7 @@ public class FunctionCallVariableVisitor extends VariableVisitor {
 				Type.getInternalName(apiCall ? ObjectWrapper.class: Object.class));
 		int array_index = methodWriter.astore();
 		for (int i = 0;i<args.length;i++) {
-			comp.parseVariable(args[i]).visit(methodWriter);
+			comp.parseVariable(args[i], pos).visit(methodWriter);
 			int value_index = methodWriter.astore();
 			methodWriter.aload(array_index);
 			methodWriter.loadConstantUnsafe(i);

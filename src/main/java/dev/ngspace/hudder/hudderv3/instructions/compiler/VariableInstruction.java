@@ -21,7 +21,7 @@ public class VariableInstruction extends Instruction {
 		super(pos);
 		this.comp = comp;
 		this.variable = variable;
-		this.visitor = comp.parseVariable(variable);
+		this.visitor = comp.parseVariable(variable, pos);
 	}
 
 	@Override

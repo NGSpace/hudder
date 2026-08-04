@@ -26,10 +26,9 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 	
 	// Return value
 	public int return_value_index;
-
-	public int mute_builder_index;
 	
 	private boolean builder_disabled;
+	private boolean muted;
 
 	public V3ExecuteMethodWriter(V3ClassWriter classWriter, String name, Class<?>[] args) {
 		super(classWriter, name,
@@ -49,8 +48,6 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 		bottomleft_builder_index = astore();
 		initStringBuilder();
 		bottomright_builder_index = astore();
-		initStringBuilder();
-		mute_builder_index = astore();
 		
 		// Default to topleft
 		selected_builder_index = topleft_builder_index;
@@ -73,7 +70,7 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 
 
 	public void appendStringConstant(String string) {
-		if (isBuilderDisabled()) {
+		if (shouldNotApppendToBuilder()) {
 			return;
 		}
 		loadBuilder();
@@ -87,7 +84,7 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 	}
 
 	public void appendToBuilderAndPop() {
-		if (isBuilderDisabled()) {
+		if (shouldNotApppendToBuilder()) {
 			pop();
 			return;
 		}
@@ -96,7 +93,7 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 	}
 
 	public void appendToBuilder() {
-		if (isBuilderDisabled()) {
+		if (shouldNotApppendToBuilder()) {
 			pop();
 			return;
 		}
@@ -199,11 +196,25 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 	public void setBuilderDisabled(boolean b) {
 		builder_disabled = b;
 	}
+	
+	public void setMuted(boolean b) {
+		muted = b;
+	}
 
-
-
+	
+	
 	public boolean isBuilderDisabled() {
 		return builder_disabled;
+	}
+
+	public boolean isMuted() {
+		return muted;
+	}
+	
+	
+
+	public boolean shouldNotApppendToBuilder() {
+		return isBuilderDisabled() || isMuted();
 	}
 	
 }

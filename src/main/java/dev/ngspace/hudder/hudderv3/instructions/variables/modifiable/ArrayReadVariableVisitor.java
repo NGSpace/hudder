@@ -36,10 +36,7 @@ public class ArrayReadVariableVisitor extends VariableVisitor {
 		methodWriter.methodVisitor.visitTypeInsn(Opcodes.INSTANCEOF, Type.getInternalName(List.class));
 		methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFEQ, normalarray);
 		
-		methodWriter.methodVisitor.visitTypeInsn(
-		        Opcodes.CHECKCAST,
-		        Type.getInternalName(List.class)
-		);
+		methodWriter.checkcast(List.class);
 		indexValue.visit(methodWriter);
 		methodWriter.checkcast(Number.class);
 		methodWriter.intValue();
@@ -48,11 +45,8 @@ public class ArrayReadVariableVisitor extends VariableVisitor {
 		methodWriter.jumpto(end);
 
 		methodWriter.putLabel(normalarray);
-		
-		methodWriter.methodVisitor.visitTypeInsn(
-		        Opcodes.CHECKCAST,
-		        Type.getDescriptor(Object[].class)
-		);
+
+		methodWriter.checkcast(Object[].class);
 		indexValue.visit(methodWriter);
 		methodWriter.checkcast(Number.class);
 		methodWriter.intValue();
@@ -62,15 +56,6 @@ public class ArrayReadVariableVisitor extends VariableVisitor {
 	}
 	
 	
-	// Should translate to:
-	/*
-	 * 	List list = (List)array;
-		if (list.size()-index.intValue()==0) {
-			list.add(value);
-		} else if (index>list.size()) {
-			throw new ExecutionException("You can't set value " + index + " of array before all previous points are set",line,charpos);
-		} else list.set(index, value);
-	 */
 	@Override
 	public void visitSetValue(V3MethodWriter methodWriter) throws CompileException {
 		Label end = new Label();
@@ -80,11 +65,8 @@ public class ArrayReadVariableVisitor extends VariableVisitor {
 		int value_index = methodWriter.astore();
 		
 		array.visit(methodWriter);
-		
-		methodWriter.methodVisitor.visitTypeInsn(
-		        Opcodes.CHECKCAST,
-		        Type.getInternalName(List.class)
-		);
+
+		methodWriter.checkcast(List.class);
 		methodWriter.dup();
 		int list_index = methodWriter.astore();
 		
