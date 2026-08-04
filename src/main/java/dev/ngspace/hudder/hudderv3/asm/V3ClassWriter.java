@@ -27,6 +27,8 @@ public class V3ClassWriter implements Binder {
 	public V3MethodWriter init;
 	private final Set<String> generatedApiFunctions = new HashSet<>();
 	private final Set<String> generatedApiConsumers = new HashSet<>();
+	private final Set<String> calledApiConsumers = new HashSet<>();
+	private final Set<String> calledApiFunctions = new HashSet<>();
 	
 	public V3ClassWriter(String classname) {
 		this.classname = classname;
@@ -63,10 +65,7 @@ public class V3ClassWriter implements Binder {
 	    ).visitEnd();
 
 		
-//		init = classWriter.visitMethod(Opcodes.ACC_PUBLIC, "<init>",
-//				"(Ldev/ngspace/hudder/compilers/HudderV3Compiler;)V", null, null);
 		init = createMethod("<init>", new Class<?>[] {HudderV3Compiler.class}, null, null, null);
-//		init.visitCode();
 
 		init.aload(0);
 		init.methodVisitor.visitMethodInsn(
@@ -102,6 +101,9 @@ public class V3ClassWriter implements Binder {
 	
 	public Class<?> toClass() {
 		
+		loadFunctions();
+		loadConsumers();
+		
 		init.end(Opcodes.RETURN);
 		
 		classWriter.visitEnd();
@@ -117,12 +119,41 @@ public class V3ClassWriter implements Binder {
 		
 		return classLoader.define(classname.replace('/', '.'), bytecode);
 	}
-	@Override
-	public void bindConsumer(BindableConsumer cons, String... names) {
-		for (String name : names) {
+	private void loadFunctions() {
+		for (String name : calledApiFunctions) {
+			String func = "api_function_" + name.toLowerCase();
+
+			if (!generatedApiFunctions.add(func)) {
+				continue;
+			}
+			initPublicField(func, BindableFunction.class);
+			init.aload(0);
+			init.loadConstant(func);
+			init.callStatic(HudderV3Helper.class, "getApiFunction", "(Ljava/lang/String;)"
+					+ "Ldev/ngspace/hudder/api/functionsandconsumers/FunctionAndConsumerAPI$BindableFunction;",
+					false);
+			init.putField(func, BindableFunction.class);
+			
+			V3MethodWriter apiwrapper = createMethod(func,
+					new Class<?>[] {ObjectWrapper[].class},
+					Object.class, null, null);
+			apiwrapper.aload(0);
+			apiwrapper.getField(func, BindableFunction.class);
+			apiwrapper.aload(0);
+			apiwrapper.getField("uimanager", ArrayElementManager.class);
+			apiwrapper.aload(0);
+			apiwrapper.getField("v3compiler", HudderV3Compiler.class);
+			apiwrapper.aload(1);
+			apiwrapper.callInterface(BindableFunction.class, "invoke",
+					"(Ldev/ngspace/hudder/api/functionsandconsumers/IUIElementManager;Ldev/ngspace/hudder/compilers/abstractions/AHudCompiler;[Ldev/ngspace/hudder/utils/ObjectWrapper;)Ljava/lang/Object;");
+			apiwrapper.end(Opcodes.ARETURN);
+		}
+	}
+	
+	public void loadConsumers() {
+		for (String name : calledApiConsumers) {
 			String func = "api_consumer_" + name.toLowerCase();
 
-			HudderV3Helper.api_consumers.putIfAbsent(func, cons);
 			if (!generatedApiConsumers.add(func)) {
 				continue;
 			}
@@ -149,37 +180,26 @@ public class V3ClassWriter implements Binder {
 			apiwrapper.end(Opcodes.RETURN);
 		}
 	}
+
+	@Override
+	public void bindConsumer(BindableConsumer cons, String... names) {
+		for (String name : names) {
+			HudderV3Helper.api_consumers.putIfAbsent("api_consumer_" + name.toLowerCase(), cons);
+		}
+	}
 	
 	@Override
 	public void bindFunction(BindableFunction cons, String... names) {
 		for (String name : names) {
-			String func = "api_function_" + name.toLowerCase();
-
-			HudderV3Helper.api_functions.putIfAbsent(func, cons);
-			if (!generatedApiFunctions.add(func)) {
-				continue;
-			}
-			initPublicField(func, BindableFunction.class);
-			init.aload(0);
-			init.loadConstant(func);
-			init.callStatic(HudderV3Helper.class, "getApiFunction", "(Ljava/lang/String;)"
-					+ "Ldev/ngspace/hudder/api/functionsandconsumers/FunctionAndConsumerAPI$BindableFunction;",
-					false);
-			init.putField(func, BindableFunction.class);
-			
-			V3MethodWriter apiwrapper = createMethod(func,
-					new Class<?>[] {ObjectWrapper[].class},
-					Object.class, null, null);
-			apiwrapper.aload(0);
-			apiwrapper.getField(func, BindableFunction.class);
-			apiwrapper.aload(0);
-			apiwrapper.getField("uimanager", ArrayElementManager.class);
-			apiwrapper.aload(0);
-			apiwrapper.getField("v3compiler", HudderV3Compiler.class);
-			apiwrapper.aload(1);
-			apiwrapper.callInterface(BindableFunction.class, "invoke",
-					"(Ldev/ngspace/hudder/api/functionsandconsumers/IUIElementManager;Ldev/ngspace/hudder/compilers/abstractions/AHudCompiler;[Ldev/ngspace/hudder/utils/ObjectWrapper;)Ljava/lang/Object;");
-			apiwrapper.end(Opcodes.ARETURN);
+			HudderV3Helper.api_functions.putIfAbsent("api_function_" + name.toLowerCase(), cons);
 		}
+	}
+	
+	public void loadApiFunction(String name) {
+		calledApiFunctions.add(name);
+	}
+	
+	public void loadApiConsumer(String name) {
+		calledApiConsumers.add(name);
 	}
 }

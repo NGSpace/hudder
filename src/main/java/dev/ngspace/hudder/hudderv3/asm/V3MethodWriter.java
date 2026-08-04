@@ -180,6 +180,15 @@ public class V3MethodWriter {
 				false
 		);
 	}
+	public void floatValue() {
+		methodVisitor.visitMethodInsn(
+				Opcodes.INVOKEVIRTUAL,
+				"java/lang/Number",
+				"floatValue",
+				"()F",
+				false
+		);
+	}
 
 	public void aload(int index) {
 		methodVisitor.visitVarInsn(Opcodes.ALOAD, index);
@@ -309,6 +318,9 @@ public class V3MethodWriter {
 	public int fstore() {
 		methodVisitor.visitVarInsn(Opcodes.FSTORE, ++variableindex);
 		return variableindex;
+	}
+	public void fstore(int index) {
+		methodVisitor.visitVarInsn(Opcodes.FSTORE, index);
 	}
 	
 	public void astore(int index) {

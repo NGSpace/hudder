@@ -29,9 +29,13 @@ public class FunctionCallVariableVisitor extends VariableVisitor {
 
 	@Override
 	public void visit(V3MethodWriter methodWriter) throws CompileException {
+		
+		if (apiCall) {
+			methodWriter.classWriter.loadApiFunction(funcName.toLowerCase().trim());
+		}
+		
 		methodWriter.loadConstantUnsafe(args.length);
-		methodWriter.methodVisitor.visitTypeInsn(Opcodes.ANEWARRAY,
-				Type.getInternalName(apiCall ? ObjectWrapper.class: Object.class));
+		methodWriter.newArray(apiCall ? ObjectWrapper.class: Object.class);
 		int array_index = methodWriter.astore();
 		for (int i = 0;i<args.length;i++) {
 			comp.parseVariable(args[i], pos).visit(methodWriter);

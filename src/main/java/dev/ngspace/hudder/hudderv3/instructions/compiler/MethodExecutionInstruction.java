@@ -45,7 +45,9 @@ public class MethodExecutionInstruction extends Instruction {
 				methodWriter.selected_builder_index = methodWriter.topleft_builder_index;
 				if (builder.length>1) {
 					comp.parseVariable(builder[1], pos).visit(methodWriter);
-					methodWriter.astore(methodWriter.topleft_scale_index);
+					methodWriter.checkcast(Number.class);
+					methodWriter.floatValue();
+					methodWriter.fstore(methodWriter.topleft_scale_index);
 				}
 				break;
 			case "topright":
@@ -53,7 +55,9 @@ public class MethodExecutionInstruction extends Instruction {
 				methodWriter.selected_builder_index = methodWriter.topright_builder_index;
 				if (builder.length>1) {
 					comp.parseVariable(builder[1], pos).visit(methodWriter);
-					methodWriter.astore(methodWriter.topright_scale_index);
+					methodWriter.checkcast(Number.class);
+					methodWriter.floatValue();
+					methodWriter.fstore(methodWriter.topright_scale_index);
 				}
 				break;
 			case "bottomleft":
@@ -61,7 +65,9 @@ public class MethodExecutionInstruction extends Instruction {
 				methodWriter.selected_builder_index = methodWriter.bottomleft_builder_index;
 				if (builder.length>1) {
 					comp.parseVariable(builder[1], pos).visit(methodWriter);
-					methodWriter.astore(methodWriter.bottomleft_scale_index);
+					methodWriter.checkcast(Number.class);
+					methodWriter.floatValue();
+					methodWriter.fstore(methodWriter.bottomleft_scale_index);
 				}
 				break;
 			case "bottomright":
@@ -69,10 +75,15 @@ public class MethodExecutionInstruction extends Instruction {
 				methodWriter.selected_builder_index = methodWriter.bottomright_builder_index;
 				if (builder.length>1) {
 					comp.parseVariable(builder[1], pos).visit(methodWriter);
-					methodWriter.astore(methodWriter.bottomright_scale_index);
+					methodWriter.checkcast(Number.class);
+					methodWriter.floatValue();
+					methodWriter.fstore(methodWriter.bottomright_scale_index);
 				}
 				break;
 			default:
+				
+				classWriter.loadApiConsumer(builder[0].toLowerCase().trim());
+				
 				methodWriter.loadConstantUnsafe(builder.length-1);
 				methodWriter.methodVisitor.visitTypeInsn(Opcodes.ANEWARRAY,
 						Type.getInternalName(apiCall ? ObjectWrapper.class: Object.class));
