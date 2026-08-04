@@ -3,8 +3,6 @@ package dev.ngspace.hudder.hudderv3.instructions.variables;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
-import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
-import dev.ngspace.hudder.compilers.HudderV3Compiler;
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
@@ -19,32 +17,32 @@ public class FunctionCallVariableVisitor extends VariableVisitor {
 	private final String[] args;
 	private final String funcName;
 	private final TextPos pos;
-	private final boolean apicall;
+	private final boolean apiCall;
 	
 	public FunctionCallVariableVisitor(String funcName, AV3Compiler comp, String[] args, TextPos pos) {
 		super(comp);
 		this.args = args;
 		this.funcName = funcName;
 		this.pos = pos;
-		this.apicall = comp.user_functions.containsKey(funcName);
+		this.apiCall = HudderV3Helper.api_functions.containsKey(funcName);
 	}
 
 	@Override
 	public void visit(V3MethodWriter methodWriter) throws CompileException {
 		methodWriter.loadConstantUnsafe(args.length);
 		methodWriter.methodVisitor.visitTypeInsn(Opcodes.ANEWARRAY,
-				Type.getInternalName(apicall ? ObjectWrapper[].class : Object.class));
+				Type.getInternalName(apiCall ? Object.class : ObjectWrapper.class));
 		int array_index = methodWriter.astore();
 		for (int i = 0;i<args.length;i++) {
 			comp.parseVariable(args[i]).visit(methodWriter);
 			int value_index = methodWriter.astore();
 			methodWriter.aload(array_index);
 			methodWriter.loadConstantUnsafe(i);
-			if (apicall) {
+			if (apiCall) {
 				methodWriter.newAndDup(ImplObjectWrapper.class);
 			}
 			methodWriter.aload(value_index);
-			if (apicall) {
+			if (apiCall) {
 				methodWriter.loadConstantUnsafe(pos.line());
 				methodWriter.loadConstantUnsafe(pos.column());
 				methodWriter.call(ImplObjectWrapper.class, "<init>", "(Ljava/lang/Object;II)V", false);
@@ -52,27 +50,18 @@ public class FunctionCallVariableVisitor extends VariableVisitor {
 			methodWriter.methodVisitor.visitInsn(Opcodes.AASTORE);
 		}
 		
-		if (apicall) {
-			visitUserFunction(methodWriter, array_index);
-		} else {
+		if (apiCall) {
 			visitApiCall(methodWriter, array_index);
+		} else {
+			visitUserFunction(methodWriter, array_index);
 		}
 	}
 	
 	protected void visitApiCall(V3MethodWriter methodWriter, int array_index) {
-//		methodWriter.loadConstant(funcName.toLowerCase().trim());
-//		methodWriter.loadConstantUnsafe(-1);
-//		methodWriter.loadConstantUnsafe(-1);
-//		methodWriter.aload(0);
-//		methodWriter.getField("uimanager", ArrayElementManager.class);
-//		methodWriter.aload(0);
-//		methodWriter.getField("v3compiler", HudderV3Compiler.class);
 		methodWriter.aload(0);
 		methodWriter.aload(array_index);
 		methodWriter.callSelf("api_function_"+funcName.toLowerCase().trim(),
 				"([Ldev/ngspace/hudder/utils/ObjectWrapper;)Ljava/lang/Object;", false);
-//		methodWriter.callStatic(HudderV3Helper.class, "callApiFunction",
-//				"(Ljava/lang/String;IILdev/ngspace/hudder/api/functionsandconsumers/ArrayElementManager;Ldev/ngspace/hudder/compilers/abstractions/AVarTextCompiler;[Ljava/lang/Object;)Ljava/lang/Object;", false);
 	}
 	
 	protected void visitUserFunction(V3MethodWriter methodWriter, int array_index) {

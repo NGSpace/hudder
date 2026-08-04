@@ -89,9 +89,10 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 			// The compilation manager does not handle Verifier errors and will crash the game which is bad.
 			e.printStackTrace();
 			String msg = e.getMessage();
+			int frame = msg.indexOf("Current Frame");
 			throw new RuntimeException(msg.substring(0, msg.indexOf('\n')+1) +
 					'\n' +
-					msg.substring(msg.indexOf("@"), msg.indexOf("Current Frame")));
+					msg.substring(msg.indexOf("@"), frame==-1?msg.length():frame));
 		} catch (CompileException e) {
 			cache.put(text, new CachedCompiler(null,null,e));
 			throw e;

@@ -3,6 +3,8 @@ package dev.ngspace.hudder.hudderv3.asm;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
@@ -23,6 +25,7 @@ public class V3ClassWriter implements Binder {
 	public ClassWriter classWriter;
 	public String classname;
 	public V3MethodWriter init;
+	private final Set<String> generatedApiFunctions = new HashSet<>();
 	
 	public V3ClassWriter(String classname) {
 		this.classname = classname;
@@ -116,15 +119,18 @@ public class V3ClassWriter implements Binder {
 	public void bindFunction(BindableFunction cons, String... names) {
 		for (String name : names) {
 			String func = "api_function_" + name.toLowerCase();
-			if (HudderV3Helper.api_functions.containsKey(func)) {
-				// V3 Doesn't have the luxury of overriding api functions
-				return;
+
+			// The registry is global, but generated methods belong to this class writer.
+			// Keep first-registration-wins semantics without suppressing wrappers in
+			// every GeneratedClass created after the first one.
+			HudderV3Helper.api_functions.putIfAbsent(func, cons);
+			if (!generatedApiFunctions.add(func)) {
+				continue;
 			}
-			HudderV3Helper.api_functions.put(func, cons);
 			initPublicField(func, BindableFunction.class);
 			init.aload(0);
 			init.loadConstant(func);
-			init.callStatic(HudderV3Compiler.class, "getApiFunction", "(Ljava/lang/String;)"
+			init.callStatic(HudderV3Helper.class, "getApiFunction", "(Ljava/lang/String;)"
 					+ "Ldev/ngspace/hudder/api/functionsandconsumers/FunctionAndConsumerAPI$BindableFunction;",
 					false);
 			init.putField(func, BindableFunction.class);
