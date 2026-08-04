@@ -39,7 +39,7 @@ public class V3ClassWriter implements Binder {
 	    initPublicField("uimanager", ArrayElementManager.class);
 	}
 	
-	private void initPublicField(String name, Class<?> type) {
+	public void initPublicField(String name, Class<?> type) {
 		classWriter.newField(classname, name, Type.getDescriptor(type));
 		
 	    classWriter.visitField(
@@ -76,6 +76,13 @@ public class V3ClassWriter implements Binder {
 		        "()V",
 		        false
 		);
+		
+		// Init UIElements field
+	    
+		init.aload(0);
+		init.newAndDup(ArrayElementManager.class);
+		init.callSpecial(ArrayElementManager.class, "<init>", "()V", false);
+		init.putField("uimanager", ArrayElementManager.class);
 		
 		// Init v3compiler field
 		init.aload(0);

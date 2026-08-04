@@ -53,14 +53,14 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 		selected_builder_index = topleft_builder_index;
 		
 		// Define the scales
-		loadConstant(Hudder.config.scale());
-		topleft_scale_index = astore();
-		loadConstant(Hudder.config.scale());
-		topright_scale_index = astore();
-		loadConstant(Hudder.config.scale());
-		bottomleft_scale_index = astore();
-		loadConstant(Hudder.config.scale());
-		bottomright_scale_index = astore();
+		loadConstantUnsafe(Hudder.config.scale());
+		topleft_scale_index = fstore();
+		loadConstantUnsafe(Hudder.config.scale());
+		topright_scale_index = fstore();
+		loadConstantUnsafe(Hudder.config.scale());
+		bottomleft_scale_index = fstore();
+		loadConstantUnsafe(Hudder.config.scale());
+		bottomright_scale_index = fstore();
 		
 		// Return value
 		methodVisitor.visitInsn(Opcodes.ACONST_NULL);
@@ -172,16 +172,16 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 		aload(return_value_index);
 		aload(topleft_builder_index);
 		callToString();
-		aloadFloat(topleft_scale_index);
+		fload(topleft_scale_index);
 		aload(bottomleft_builder_index);
 		callToString();
-		aloadFloat(bottomleft_scale_index);
+		fload(bottomleft_scale_index);
 		aload(topright_builder_index);
 		callToString();
-		aloadFloat(topright_scale_index);
+		fload(topright_scale_index);
 		aload(bottomright_builder_index);
 		callToString();
-		aloadFloat(bottomright_scale_index);
+		fload(bottomright_scale_index);
 		aload(0);
 		getField("uimanager", ArrayElementManager.class);
 		call(ArrayElementManager.class, "toUIElementArray", "()[Ldev/ngspace/hudder/uielements/AUIElement;", false);

@@ -2,6 +2,7 @@ package dev.ngspace.hudder.compilers.abstractions;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.objectweb.asm.Label;
@@ -61,12 +62,9 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 			
 			Label end = new Label();
 			
-			// Init UIElements field
-		    
 			executeMethod.aload(0);
-			executeMethod.newAndDup(ArrayElementManager.class);
-			executeMethod.callSpecial(ArrayElementManager.class, "<init>", "()V", false);
-			executeMethod.putField("uimanager", ArrayElementManager.class);
+			executeMethod.getField("uimanager", ArrayElementManager.class);
+			executeMethod.callInterface(List.class, "clear", "()V");
 			
 			compile(Hudder.config, text, filepath, new TextPos(1, 0)).writeInstructions(executeMethod, classWriter, end);
 			

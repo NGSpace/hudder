@@ -33,6 +33,9 @@ public class TokenizedCodeBlock {
 	public void writeInstructions(V3ExecuteMethodWriter methodWriter, V3ClassWriter classWriter,
 			Label breakLabel) throws CompileException {
 		for (Instruction ins : instructions) {
+			Label instruction_start = new Label();
+			methodWriter.putLabel(instruction_start);
+			methodWriter.methodVisitor.visitLineNumber(ins.pos.line(), instruction_start);
 			ins.visit(methodWriter, classWriter, breakLabel);
 		}
 	}
