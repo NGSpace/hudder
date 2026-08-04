@@ -133,20 +133,6 @@ public class V3ClassWriter implements Binder {
 					+ "Ldev/ngspace/hudder/api/functionsandconsumers/FunctionAndConsumerAPI$BindableFunction;",
 					false);
 			init.putField(func, BindableFunction.class);
-			
-			V3MethodWriter apiwrapper = createMethod(func,
-					new Class<?>[] {ObjectWrapper[].class},
-					Object.class, null, null);
-			apiwrapper.aload(0);
-			apiwrapper.getField(func, BindableFunction.class);
-			apiwrapper.aload(0);
-			apiwrapper.getField("uimanager", ArrayElementManager.class);
-			apiwrapper.aload(0);
-			apiwrapper.getField("v3compiler", HudderV3Compiler.class);
-			apiwrapper.aload(1);
-			apiwrapper.callInterface(BindableFunction.class, "invoke",
-					"(Ldev/ngspace/hudder/api/functionsandconsumers/IUIElementManager;Ldev/ngspace/hudder/compilers/abstractions/AHudCompiler;[Ldev/ngspace/hudder/utils/ObjectWrapper;)Ljava/lang/Object;");
-			apiwrapper.end(Opcodes.ARETURN);
 		}
 	}
 	
@@ -164,20 +150,6 @@ public class V3ClassWriter implements Binder {
 					+ "Ldev/ngspace/hudder/api/functionsandconsumers/FunctionAndConsumerAPI$BindableConsumer;",
 					false);
 			init.putField(func, BindableConsumer.class);
-			
-			V3MethodWriter apiwrapper = createMethod(func,
-					new Class<?>[] {ObjectWrapper[].class},
-					null, null, null);
-			apiwrapper.aload(0);
-			apiwrapper.getField(func, BindableConsumer.class);
-			apiwrapper.aload(0);
-			apiwrapper.getField("uimanager", ArrayElementManager.class);
-			apiwrapper.aload(0);
-			apiwrapper.getField("v3compiler", HudderV3Compiler.class);
-			apiwrapper.aload(1);
-			apiwrapper.callInterface(BindableConsumer.class, "invoke",
-					"(Ldev/ngspace/hudder/api/functionsandconsumers/IUIElementManager;Ldev/ngspace/hudder/compilers/abstractions/AHudCompiler;[Ldev/ngspace/hudder/utils/ObjectWrapper;)V");
-			apiwrapper.end(Opcodes.RETURN);
 		}
 	}
 

@@ -3,6 +3,9 @@ package dev.ngspace.hudder.hudderv3.instructions.variables;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
+import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
+import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableFunction;
+import dev.ngspace.hudder.compilers.HudderV3Compiler;
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
@@ -32,6 +35,12 @@ public class FunctionCallVariableVisitor extends VariableVisitor {
 		
 		if (apiCall) {
 			methodWriter.classWriter.loadApiFunction(funcName.toLowerCase().trim());
+			methodWriter.aload(0);
+			methodWriter.getField("api_function_"+funcName.toLowerCase().trim(), BindableFunction.class);
+			methodWriter.aload(0);
+			methodWriter.getField("uimanager", ArrayElementManager.class);
+			methodWriter.aload(0);
+			methodWriter.getField("v3compiler", HudderV3Compiler.class);
 		}
 		
 		methodWriter.loadConstantUnsafe(args.length);
@@ -62,10 +71,9 @@ public class FunctionCallVariableVisitor extends VariableVisitor {
 	}
 	
 	protected void visitApiCall(V3MethodWriter methodWriter, int array_index) {
-		methodWriter.aload(0);
 		methodWriter.aload(array_index);
-		methodWriter.callSelf("api_function_"+funcName.toLowerCase().trim(),
-				"([Ldev/ngspace/hudder/utils/ObjectWrapper;)Ljava/lang/Object;", false);
+		methodWriter.callInterface(BindableFunction.class, "invoke",
+				"(Ldev/ngspace/hudder/api/functionsandconsumers/IUIElementManager;Ldev/ngspace/hudder/compilers/abstractions/AHudCompiler;[Ldev/ngspace/hudder/utils/ObjectWrapper;)Ljava/lang/Object;");
 	}
 	
 	protected void visitUserFunction(V3MethodWriter methodWriter, int array_index) {

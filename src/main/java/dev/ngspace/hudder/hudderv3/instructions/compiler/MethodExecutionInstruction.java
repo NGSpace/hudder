@@ -4,6 +4,9 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
+import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
+import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableConsumer;
+import dev.ngspace.hudder.compilers.HudderV3Compiler;
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
@@ -81,8 +84,17 @@ public class MethodExecutionInstruction extends Instruction {
 				}
 				break;
 			default:
+
 				
-				classWriter.loadApiConsumer(builder[0].toLowerCase().trim());
+				if (apiCall) {
+					methodWriter.classWriter.loadApiConsumer(builder[0].toLowerCase().trim());
+					methodWriter.aload(0);
+					methodWriter.getField("api_consumer_"+builder[0].toLowerCase().trim(), BindableConsumer.class);
+					methodWriter.aload(0);
+					methodWriter.getField("uimanager", ArrayElementManager.class);
+					methodWriter.aload(0);
+					methodWriter.getField("v3compiler", HudderV3Compiler.class);
+				}
 				
 				methodWriter.loadConstantUnsafe(builder.length-1);
 				methodWriter.methodVisitor.visitTypeInsn(Opcodes.ANEWARRAY,
@@ -114,10 +126,10 @@ public class MethodExecutionInstruction extends Instruction {
 	}
 	
 	protected void visitApiCall(V3MethodWriter methodWriter, int array_index) {
-		methodWriter.aload(0);
 		methodWriter.aload(array_index);
-		methodWriter.callSelf("api_consumer_"+builder[0].toLowerCase().trim(),
-				"([Ldev/ngspace/hudder/utils/ObjectWrapper;)V", false);
+		methodWriter.callInterface(BindableConsumer.class, "invoke",
+				"(Ldev/ngspace/hudder/api/functionsandconsumers/IUIElementManager;Ldev/ngspace/hudder/compilers/abstractions/AHudCompiler;[Ldev/ngspace/hudder/utils/ObjectWrapper;)V");
+
 	}
 	
 	protected void visitUserConsumer(V3MethodWriter methodWriter, int array_index) {
