@@ -165,6 +165,7 @@ public class Hudder implements ClientModInitializer {
 				e.printStackTrace();
 			}
 		});
+		ClientLifecycleEvents.CLIENT_STOPPING.register(_ -> Compilers.shutdownAll());
         
         // Make sure the FPS variable is updated once every compilation instead of every time a number variable is used
         var mc = Minecraft.getInstance();

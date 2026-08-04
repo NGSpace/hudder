@@ -460,6 +460,16 @@ public class Compilers {
 		return registeredcompilers.values().stream().map(CompilerInstance::compiler)
 				.collect(Collectors.toUnmodifiableSet());
 	}
+
+	/**
+	 * Stops all registered compiler executors.
+	 *
+	 * <p>This should be called when the Minecraft client begins shutting down so
+	 * idle compiler workers do not remain parked after the game has closed.</p>
+	 */
+	public static void shutdownAll() {
+		compilers().forEach(AHudCompiler::shutdown);
+	}
 	
 	/**
 	 * Returns an immutable snapshot of all compiler registry entries.

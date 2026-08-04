@@ -29,7 +29,12 @@ public abstract class AHudCompiler<T> {
 	 */
 	public static Map<String, Object> variables = new HashMap<String, Object>();
 	protected final ExecutorService hudCompilerExecutor =
-	        Executors.newSingleThreadExecutor(r -> new Thread(r, "hud-compiler"));
+	        Executors.newSingleThreadExecutor(r -> {
+	        	Thread thread = new Thread(r, "hud-compiler");
+	        	// Compilation work must never keep the Minecraft JVM alive during exit.
+	        	thread.setDaemon(true);
+	        	return thread;
+	        });
 	private final AtomicBoolean hudCompiling = new AtomicBoolean(false);
 	
 	/**
@@ -116,6 +121,15 @@ public abstract class AHudCompiler<T> {
 			e.printStackTrace();
 	        throw new CompileException(e.getMessage(),-1,-1,e);
 		}
+	}
+
+	/**
+	 * Stops pending compiler work and releases this compiler's worker thread.
+	 *
+	 * <p>This method is safe to call more than once.</p>
+	 */
+	public void shutdown() {
+		hudCompilerExecutor.shutdownNow();
 	}
 	
 	public String[] getSupportedFileFormats() {
