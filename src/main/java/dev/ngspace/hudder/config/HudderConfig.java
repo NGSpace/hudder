@@ -68,7 +68,7 @@ public class HudderConfig {
 	 * @throws IOException
 	 */
 	public HudInformation compileMainHud() throws CompileException, ExecutionException, IOException {
-		if (getCompiler()!=null) return getCompiler().processAndExecute(this, mainfile(), mainfile());
+		if (getCompiler()!=null) return getCompiler().processAndExecuteSafe(this, mainfile(), mainfile());
 		else throw new CompileException("There is no Compiler!", -1, -1);
 	}
 

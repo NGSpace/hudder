@@ -4,6 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import dev.ngspace.hudder.compilers.utils.HudInformation;
 import dev.ngspace.hudder.config.HudderConfig;
@@ -23,6 +28,9 @@ public abstract class AHudCompiler<T> {
 	 * Contains globally available compiler variables, indexed by name.
 	 */
 	public static Map<String, Object> variables = new HashMap<String, Object>();
+	protected final ExecutorService hudCompilerExecutor =
+	        Executors.newSingleThreadExecutor(r -> new Thread(r, "hud-compiler"));
+	private final AtomicBoolean hudCompiling = new AtomicBoolean(false);
 	
 	/**
 	 * Processes a HUD file into the representation used by this compiler.
@@ -78,6 +86,36 @@ public abstract class AHudCompiler<T> {
 	public HudInformation processAndExecute(HudderConfig config, String filepath, String filename)
 			throws CompileException, ExecutionException, IOException {
 		return execute(config, processFile(filepath), filename);
+	}
+	
+
+	public HudInformation processAndExecuteSafe(HudderConfig config, String filepath, String filename)
+			throws CompileException, ExecutionException, IOException {
+		
+	    // Immediately reject the call if another HUD is still being processed.
+	    if (!hudCompiling.compareAndSet(false, true)) {
+	        throw new CompileException("Hud still processing",-1,-1);
+	    }
+		
+	    var compilation = hudCompilerExecutor.submit(() -> {
+	    	try {
+	    		return processFile(filepath);
+	    	} finally {
+		        hudCompiling.set(false);
+			}
+	    });
+
+	    try {
+			return execute(config, compilation.get(1000, TimeUnit.MILLISECONDS), filename);
+	    } catch (TimeoutException _) {
+	        throw new CompileException("Hud still processing",-1,-1);
+	    } catch (InterruptedException e) {
+	        Thread.currentThread().interrupt();
+	        throw new IOException("Interrupted while waiting for Hud to finish processing", e);
+	    } catch (java.util.concurrent.ExecutionException e) {
+			e.printStackTrace();
+	        throw new CompileException(e.getMessage(),-1,-1,e);
+		}
 	}
 	
 	public String[] getSupportedFileFormats() {
