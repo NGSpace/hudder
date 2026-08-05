@@ -30,18 +30,17 @@ import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperati
 import dev.ngspace.hudder.utils.HudderUtils;
 
 public class V3VariableProcessor {
-
+	
 	public VariableVisitor parseVariable(String valuee, AV3Compiler comp, TextPos pos) throws CompileException {
-
+		
 		String value = valuee.trim();
 		
 		// Empty variable
-		if (value.isBlank()) throw new CompileException("Empty variable", -1, -1);
-		
-		
+		if (value.isBlank())
+			throw new CompileException("Empty variable", -1, -1);
 		
 		// Is wrapped in parenthesses? get rid of em!
-		if (value.startsWith("(")&&value.endsWith(")")) {
+		if (value.startsWith("(") && value.endsWith(")")) {
 			
 			// Assume that it's good
 			boolean isSafe = true;
@@ -50,218 +49,225 @@ public class V3VariableProcessor {
 			boolean backslash = false;
 			
 			// Count how deep the parenthesses
-			// NOTE it is initalized at 0 but since the first char is always going to be (, it will become one.
+			// NOTE it is initalized at 0 but since the first char is always going to be (,
+			// it will become one.
 			int layers = 0;
 			
-			for (int i=0;i<value.length();i++) {
+			for (int i = 0; i < value.length(); i++) {
 				char c = value.charAt(i);
 				
 				if (quotes) {
 					if (!backslash) {
-						if (c=='"') quotes = false;
-						if (c=='\\') {backslash = !backslash;continue;}
+						if (c == '"')
+							quotes = false;
+						if (c == '\\') {
+							backslash = !backslash;
+							continue;
+						}
 					}
 					backslash = false;
 					continue;
 				}
-
-				if (c=='"') quotes = true;
-				if (c=='(') layers++; // Layer up
-				if (c==')') layers--; // Layer down
 				
-				if (layers==0) { // We reached the closing parenthesses of the first (.
+				if (c == '"')
+					quotes = true;
+				if (c == '(')
+					layers++; // Layer up
+				if (c == ')')
+					layers--; // Layer down
 					
-					// Is there more chars to read? if so then the string is not wrapped and therefore shouldn't be unwrapped.
-					isSafe = i+1==value.length();
+				if (layers == 0) { // We reached the closing parenthesses of the first (.
+					
+					// Is there more chars to read? if so then the string is not wrapped and
+					// therefore shouldn't be unwrapped.
+					isSafe = i + 1 == value.length();
 					break;
 				}
 			}
-			// if it is wrapped then remove the first and last chars to unwrap and reprocess them.
+			// if it is wrapped then remove the first and last chars to unwrap and reprocess
+			// them.
 			if (isSafe) {
-				return parseVariable(value.substring(1, value.length()-1), comp, pos);
+				return parseVariable(value.substring(1, value.length() - 1), comp, pos);
 			}
 		}
-		
-		
-		
 		
 		if (value.startsWith("if ")) {
 			StringBuilder condition = new StringBuilder();
 			int index = 3;
 			int parentheses = 0;
-			for (;index<value.length();index++) {
+			for (; index < value.length(); index++) {
 				char c = value.charAt(index);
-				if (c=='"') {
+				if (c == '"') {
 					boolean escape = false;
 					condition.append(c);
 					index++;
-					for (;index<value.length();index++) {
+					for (; index < value.length(); index++) {
 						c = value.charAt(index);
 						condition.append(c);
-						if (c=='"'&&!escape) {
+						if (c == '"' && !escape) {
 							break;
 						}
-						if (c=='\\'&&!escape) {
+						if (c == '\\' && !escape) {
 							escape = true;
 						}
 					}
 					continue;
 				}
-				if (parentheses==0&&value.indexOf(" then ", index)==index) break;
-				if (c == '(') parentheses++;
-				if (c == ')') parentheses--;
+				if (parentheses == 0 && value.indexOf(" then ", index) == index)
+					break;
+				if (c == '(')
+					parentheses++;
+				if (c == ')')
+					parentheses--;
 				
 				condition.append(c);
 			}
-			index+=5;
+			index += 5;
 			parentheses = 0;
 			StringBuilder firstvalue = new StringBuilder();
-			for (;index<value.length();index++) {
+			for (; index < value.length(); index++) {
 				char c = value.charAt(index);
-				if (c=='"') {
+				if (c == '"') {
 					boolean escape = false;
 					firstvalue.append(c);
 					index++;
-					for (;index<value.length();index++) {
+					for (; index < value.length(); index++) {
 						c = value.charAt(index);
 						firstvalue.append(c);
-						if (c=='"'&&!escape) {
+						if (c == '"' && !escape) {
 							break;
 						}
-						if (c=='\\'&&!escape) {
+						if (c == '\\' && !escape) {
 							escape = true;
 						}
 					}
 					continue;
 				}
-				if (parentheses==0&&value.indexOf(" else ", index)==index) break;
-				if (c == '(') parentheses++;
-				if (c == ')') parentheses--;
+				if (parentheses == 0 && value.indexOf(" else ", index) == index)
+					break;
+				if (c == '(')
+					parentheses++;
+				if (c == ')')
+					parentheses--;
 				
 				firstvalue.append(c);
 			}
-			index+=6;
-			return new TernaryVariableVisitor(comp, condition.toString(), firstvalue.toString(), value.substring(index));
+			index += 6;
+			return new TernaryVariableVisitor(comp, condition.toString(), firstvalue.toString(), value.substring(index),
+					pos);
 		}
-		
-		
 		
 		// Double constant
-		// Accepts the following formats: "0x(0-F)+", "#(0-F)+", "(0-9)+", "(0-9)*.(0-9)+"
+		// Accepts the following formats: "0x(0-F)+", "#(0-F)+", "(0-9)+",
+		// "(0-9)*.(0-9)+"
 		if (value.matches("((0x|#)[\\daAbBcCdDeEfF]+|[-+]?\\d*(\\.?(\\d+)?))")) {
-			return new NumberVariableVisitor(comp, value);
+			return new NumberVariableVisitor(comp, value, pos);
 		}
 		
-		
-		
 		// Boolean constants
-		if (value.equalsIgnoreCase("false")) {return new BooleanVariableVisitor(comp,false);}
-		if (value.equalsIgnoreCase("true")) {return new BooleanVariableVisitor(comp,true);}
-		
-		
+		if (value.equalsIgnoreCase("false")) {
+			return new BooleanVariableVisitor(comp, false, pos);
+		}
+		if (value.equalsIgnoreCase("true")) {
+			return new BooleanVariableVisitor(comp, true, pos);
+		}
 		
 		// String constant
 		String temp = string(value);
-		if (temp!=null) {
-			return new StringVariableVisitor(comp, temp);
+		if (temp != null) {
+			return new StringVariableVisitor(comp, temp, pos);
 		}
-		
-		
 		
 		// Array constant
 		// Accepts the follow format: "[(any char)]"
 		if (value.matches("\\[[\\s\\S]*\\]")) {
 			
-			// Sends the text between the square brackets to HudderUtils.processParemeters to tokenize the values.
+			// Sends the text between the square brackets to HudderUtils.processParemeters
+				// to tokenize the values.
 			
-			return new ArrayConstantVariableVisitor(HudderUtils.processParemeters(value.substring(1, value.length()-1).replace("\n", "")),
-					comp);
+			return new ArrayConstantVariableVisitor(
+					HudderUtils.processParemeters(value.substring(1, value.length() - 1).replace("\n", "")), comp, pos);
 		}
 		
-		
-		
 		// Set variable
-		String[] setValues = value.split("=",2);// Split at the first '='
+		String[] setValues = value.split("=", 2);// Split at the first '='
 		// Make sure it's not a condition!
-		if (setValues.length==2&&!isCondition(value)) {
+		if (setValues.length == 2 && !isCondition(value)) {
 			
 			boolean valid = true;
 			
 			boolean escaped = false;
-			for (int i = 0;i<setValues[0].length();i++) {
+			for (int i = 0; i < setValues[0].length(); i++) {
 				char c = setValues[0].charAt(i);
-				if (c=='\\') {
+				if (c == '\\') {
 					escaped = true;
 				}
-				if (escaped) continue;
-				if (c=='"') {
+				if (escaped)
+					continue;
+				if (c == '"') {
 					valid = false;
 					break;
 				}
 			}
 			if (valid) {
-				return new SetVariableVisitor(comp, setValues[0], setValues[1]);
+				return new SetVariableVisitor(comp, setValues[0], setValues[1], pos);
 			}
 		}
-		
-
 		
 		// Is it a variable name that does not start with _?
 		boolean matchesVariableRegex = value.matches("[A-Za-z\\d][A-Za-z\\d_]*");
 		
 		// System variable
-		if (matchesVariableRegex&&DataVariableRegistry.hasVariable(value.toLowerCase())) {
-			return new SystemVariableVisitor(comp, value.toLowerCase());
+		if (matchesVariableRegex && DataVariableRegistry.hasVariable(value.toLowerCase())) {
+			return new SystemVariableVisitor(comp, value.toLowerCase(), pos);
 		}
 		
 		// Dynamic variable
 		if (matchesVariableRegex) {
-			return new DynamicVariableVisitor(comp, value.toLowerCase());
+			return new DynamicVariableVisitor(comp, value.toLowerCase(), pos);
 		}
-		
-		
 		
 		// Temp dynamic variable
 		// Is it a variable name that starts with _?
-		if (value.matches("_[A-Za-z\\d_]*")) return new TemporaryVariableVisitor(comp, value);
-		
-		
-		
+		if (value.matches("_[A-Za-z\\d_]*"))
+			return new TemporaryVariableVisitor(comp, value, pos);
+			
 		// Read Array
 		// Accepts the following format: "(any char)+(space)?[(any char)]".
 		if (value.matches(".+ *\\[.+\\]"))
-			return new ArrayReadVariableVisitor(comp, value);
-		
+			return new ArrayReadVariableVisitor(comp, value, pos);
 		
 		// Function variable
-		if (!value.startsWith("(")&&value.endsWith(")")) {
-			// Same thing as before except we start reading at the first instance of a '(' char instead of at index 0.
+		if (!value.startsWith("(") && value.endsWith(")")) {
+			// Same thing as before except we start reading at the first instance of a '('
+			// char instead of at index 0.
 			int argStart = value.indexOf("(");
 			boolean isSafe = false;
 			boolean quotes = false;
-//			boolean backslash = false;
 			int parenthesses = 0;
-			if (argStart!=-1) {
+			if (argStart != -1) {
 				isSafe = true;
-				for (int i = argStart;i<value.length();i++) {
+				for (int i = argStart; i < value.length(); i++) {
 					char c = value.charAt(i);
-					if (c=='"') {
+					if (c == '"') {
 						quotes = !quotes;
 					}
 					if (quotes) {
 						continue;
 					}
-					if (c=='(') parenthesses++;
-					if (c==')') parenthesses--;
-					if (parenthesses==0) {
-						isSafe = i+1==value.length();
+					if (c == '(')
+						parenthesses++;
+					if (c == ')')
+						parenthesses--;
+					if (parenthesses == 0) {
+						isSafe = i + 1 == value.length();
 						break;
 					}
 				}
 				if (isSafe) {
 					String funcName = value.substring(0, argStart);
 					if (funcName.matches("^[a-zA-Z0-9]+[a-zA-Z0-9_-]*$")) {
-						String parametersString = value.substring(argStart+1, value.length()-1);
+						String parametersString = value.substring(argStart + 1, value.length() - 1);
 						return new FunctionCallVariableVisitor(funcName, comp,
 								HudderUtils.processParemeters(parametersString), pos);
 					}
@@ -269,90 +275,91 @@ public class V3VariableProcessor {
 			}
 		}
 		
-		
-		
-		//Logical OR operator
+		// Logical OR operator
 		VariableVisitor[] orValues = logicalOperator('|', value, comp, pos);
-		if (orValues.length>1)
-			return new LogicalOrVariableVisitor(orValues, comp);
+		if (orValues.length > 1)
+			return new LogicalOrVariableVisitor(orValues, comp, pos);
 		
-		
-		
-		//Logical AND operator
+		// Logical AND operator
 		VariableVisitor[] andvalues = logicalOperator('&', value, comp, pos);
-		if (andvalues.length>1)
-			return new LogicalAndVariableVisitor(andvalues, comp);
-
-		//Comparing values
+		if (andvalues.length > 1)
+			return new LogicalAndVariableVisitor(andvalues, comp, pos);
+		
+		// Comparing values
 		String operator = getOperator(value);
-		if (operator!=null) {
+		if (operator != null) {
 			int parenthesses = 0;
 			boolean quotes = false;
 			boolean backslash = false;
-			String[] v = value.split(operator,2);
+			String[] v = value.split(operator, 2);
 			for (char c : v[0].trim().toCharArray()) {
 				if (quotes) {
 					if (!backslash) {
-						if (c=='"')
+						if (c == '"')
 							quotes = false;
-						if (c=='\\')
+						if (c == '\\')
 							backslash = true;
 					}
 				} else {
-					if (c=='"') quotes = true;
-					if (c=='(') parenthesses++;
-					if (c==')') parenthesses--;
+					if (c == '"')
+						quotes = true;
+					if (c == '(')
+						parenthesses++;
+					if (c == ')')
+						parenthesses--;
 				}
 			}
-			if (parenthesses==0) {
-				return new ComparisionVariableVisitor(comp, v[0], v[1], operator);
+			if (parenthesses == 0) {
+				return new ComparisionVariableVisitor(comp, v[0], v[1], operator, pos);
 			}
 		}
-
 		
 		// Post Increase and Decrease Operator
 		if (value.matches("[\\s\\S]+(\\+\\+|--)")) {
-			return new PostIncDecVariableVisitor(value.substring(0,value.length()-2), comp,
-					"+".equals(value.substring(value.length()-1)));
+			return new PostIncDecVariableVisitor(value.substring(0, value.length() - 2), comp,
+					"+".equals(value.substring(value.length() - 1)), pos);
 		}
 		
 		// Pre Increase and Decrease Operator
 		if (value.matches("(\\+\\+|--)[\\s\\S]+")) {
-			return new PreIncDecVariableVisitor(value.substring(2), comp,
-					"+".equals(value.substring(0, 1)));
+			return new PreIncDecVariableVisitor(value.substring(2), comp, "+".equals(value.substring(0, 1)), pos);
 		}
-			
-			
-		//Math operation
+		
+		// Math operation
 		String[] values = new String[0];
 		StringBuilder mathvalue = new StringBuilder();
 		char[] operations = new char[0];
-		for (int i = 0;i<value.length();i++) {
+		for (int i = 0; i < value.length(); i++) {
 			char c = value.charAt(i);
-			if (c=='"'&&mathvalue.isEmpty()) {
+			if (c == '"' && mathvalue.isEmpty()) {
 				boolean safe = false;
 				i++;
 				mathvalue.append(c);
-				for (;i<value.length();i++) {
+				for (; i < value.length(); i++) {
 					c = value.charAt(i);
-					if (c=='\\'&&!safe) {safe = true;mathvalue.append(c);} else {
+					if (c == '\\' && !safe) {
+						safe = true;
+						mathvalue.append(c);
+					} else {
 						safe = false;
 						mathvalue.append(c);
-						if (c=='"'&&!safe) break;
+						if (c == '"' && !safe)
+							break;
 					}
 				}
 				continue;
 			}
-			if (c=='(') {
+			if (c == '(') {
 				int parentheses = 1;
 				mathvalue.append(c);
 				i++;
-				for (;i<value.length();i++) {
+				for (; i < value.length(); i++) {
 					c = value.charAt(i);
-					if (c=='(') parentheses++;
-					if (c==')') {
+					if (c == '(')
+						parentheses++;
+					if (c == ')') {
 						parentheses--;
-						if (parentheses==0) {
+						if (parentheses == 0) {
 							mathvalue.append(c);
 							break;
 						}
@@ -361,12 +368,12 @@ public class V3VariableProcessor {
 				}
 				continue;
 			}
-			if (c=='+'||c=='-'||c=='*'||c=='/'||c=='%') {
-				if (mathvalue.toString().isBlank()&&c=='-') {
+			if (c == '+' || c == '-' || c == '*' || c == '/' || c == '%') {
+				if (mathvalue.toString().isBlank() && c == '-') {
 					mathvalue.append(c);
 					continue;
 				}
-				if (mathvalue.toString().isBlank()) {//Do not trigger
+				if (mathvalue.toString().isBlank()) {// Do not trigger
 					values = new String[0];
 					break;
 				}
@@ -377,47 +384,52 @@ public class V3VariableProcessor {
 			}
 			mathvalue.append(c);
 		}
-		if (values.length>0) {
+		if (values.length > 0) {
 			values = addToArray(values, mathvalue.toString());
-			return new MathVariableVisitor(values, operations, comp);
+			return new MathVariableVisitor(values, operations, comp, pos);
 		}
-
-
-
+		
 		// Class
 		String classyobjname = "";
 		String functionOrObject = "";
-		for (int i=1;i<value.length(); i++) {
-			char c = value.charAt(value.length()-i);
-			if (c==')') {
+		for (int i = 1; i < value.length(); i++) {
+			char c = value.charAt(value.length() - i);
+			if (c == ')') {
 				int parentheses = 0;
-				for (;i<value.length()+1; i++) {
-					c = value.charAt(value.length()-i);
-					if (c==')') parentheses++;
-					if (c=='(') parentheses--;
+				for (; i < value.length() + 1; i++) {
+					c = value.charAt(value.length() - i);
+					if (c == ')')
+						parentheses++;
+					if (c == '(')
+						parentheses--;
 					functionOrObject = c + functionOrObject;
-					if (parentheses==0) break;
+					if (parentheses == 0)
+						break;
 				}
 				continue;
 			}
-
-			if (c=='"') {
+			
+			if (c == '"') {
 				boolean isnotescaped = false;
-				for (;i<value.length()+1; i++) {
-					c = value.charAt(value.length()-i);
+				for (; i < value.length() + 1; i++) {
+					c = value.charAt(value.length() - i);
 					functionOrObject = c + functionOrObject;
-					if (i+2<value.length()+1) isnotescaped = value.charAt(value.length()-i) == '\\';
-					if (c=='"'&&!(i+1<value.length()+1&&value.charAt(value.length()-i)=='\\')&&isnotescaped) break;
+					if (i + 2 < value.length() + 1)
+						isnotescaped = value.charAt(value.length() - i) == '\\';
+					if (c == '"' && !(i + 1 < value.length() + 1 && value.charAt(value.length() - i) == '\\')
+							&& isnotescaped)
+						break;
 				}
 				continue;
 			}
-
-			if (c=='.') {
-				classyobjname = value.substring(0,value.length()-i);
-				for (int j=1;j<classyobjname.length(); j++) {
-					char cc = classyobjname.charAt(classyobjname.length()-j);
-					if (Character.isDigit(cc)) continue;
-					if (cc=='*'||cc=='+'||cc=='-'||cc=='/'||cc=='%') {
+			
+			if (c == '.') {
+				classyobjname = value.substring(0, value.length() - i);
+				for (int j = 1; j < classyobjname.length(); j++) {
+					char cc = classyobjname.charAt(classyobjname.length() - j);
+					if (Character.isDigit(cc))
+						continue;
+					if (cc == '*' || cc == '+' || cc == '-' || cc == '/' || cc == '%') {
 						classyobjname = "";
 						functionOrObject = "";
 						break;
@@ -429,59 +441,58 @@ public class V3VariableProcessor {
 			}
 			functionOrObject = c + functionOrObject;
 		}
-
-		if (!Objects.equals(functionOrObject, value)&&!"".equals(classyobjname)) {
-			return new ClassAccessVariableVisitor(comp, classyobjname, functionOrObject);
+		
+		if (!Objects.equals(functionOrObject, value) && !"".equals(classyobjname)) {
+			return new ClassAccessVariableVisitor(comp, classyobjname, functionOrObject, pos);
 		}
-		
-		
-		
 		
 		// ! Operator
 		if (value.matches("![\\s\\S]+"))
-			return new NegateVariableVisitor(comp, value.substring(1));
-		
-		
-		
+			return new NegateVariableVisitor(comp, value.substring(1), pos);
 		
 		// Fallback
 		throw new CompileException("Untokenizable variable: " + value, -1, -1);
 	}
 	
-	
-	
-	private VariableVisitor[] logicalOperator(char op, String value, AV3Compiler comp, TextPos pos) throws CompileException {
+	private VariableVisitor[] logicalOperator(char op, String value, AV3Compiler comp, TextPos pos)
+			throws CompileException {
 		VariableVisitor[] values = new VariableVisitor[0];
 		StringBuilder builder = new StringBuilder();
-		for (int i = 0;i<value.length();i++) {
+		for (int i = 0; i < value.length(); i++) {
 			char c = value.charAt(i);
-			if (c=='"'&&builder.isEmpty()) {
+			if (c == '"' && builder.isEmpty()) {
 				boolean safe = false;
 				i++;
 				builder.append(c);
-				for (;i<value.length();i++) {
+				for (; i < value.length(); i++) {
 					c = value.charAt(i);
-					if (c=='\\'&&!safe) safe = true; else {
+					if (c == '\\' && !safe)
+						safe = true;
+					else {
 						safe = false;
 						builder.append(c);
-						if (c=='"'&&!safe) break;
+						if (c == '"' && !safe)
+							break;
 					}
 				}
 				continue;
 			}
-			if (c=='('&&builder.isEmpty()) {
+			if (c == '(' && builder.isEmpty()) {
 				int parentheses = 1;
 				i++;
-				for (;i<value.length();i++) {
+				for (; i < value.length(); i++) {
 					c = value.charAt(i);
-					if (c=='(') parentheses++;
-					if (c==')') parentheses--;
-					if (parentheses==0) break;
+					if (c == '(')
+						parentheses++;
+					if (c == ')')
+						parentheses--;
+					if (parentheses == 0)
+						break;
 					builder.append(c);
 				}
 				continue;
 			}
-			if (c==op&&i+1<value.length()&&value.charAt(i+1)==op) {
+			if (c == op && i + 1 < value.length() && value.charAt(i + 1) == op) {
 				i++;
 				values = addToArray(values, parseVariable(builder.toString(), comp, pos));
 				builder.setLength(0);
@@ -492,65 +503,76 @@ public class V3VariableProcessor {
 		}
 		if (!Objects.equals(value, builder.toString()))
 			return addToArray(values, parseVariable(builder.toString(), comp, pos));
-		else return values;
+		else
+			return values;
 	}
 	
 	private static String string(String value) {
-		//Maybe String :)
-		if (!value.startsWith("\"")||!value.endsWith("\"")) return null;
+		// Maybe String :)
+		if (!value.startsWith("\"") || !value.endsWith("\""))
+			return null;
 		
-		//Probably String :D
-		value = value.substring(1,value.length()-1);
+		// Probably String :D
+		value = value.substring(1, value.length() - 1);
 		StringBuilder string = new StringBuilder();
 		
 		boolean safe = false;
-		for (int i = 0;i<value.length();i++) {
+		for (int i = 0; i < value.length(); i++) {
 			char c = value.charAt(i);
-			if (c=='n'&&safe) {
+			if (c == 'n' && safe) {
 				string.append('\n');
 				continue;
 			}
-			if (c=='\\'&&!safe) safe = true;
+			if (c == '\\' && !safe)
+				safe = true;
 			else {
-				if (c=='"'&&!safe) return null; //Not String ;_;
+				if (c == '"' && !safe)
+					return null; // Not String ;_;
 				safe = false;
 				string.append(c);
 			}
 		}
-		//String! :D
+		// String! :D
 		return string.toString();
 	}
 	
-	
-	
 	private static <T> T[] addToArray(T[] arr, T t) {
-		T[] newarr = Arrays.copyOf(arr, arr.length+1);
-		newarr[arr.length] = t;
-		return newarr;
-	}
-	private static char[] addToArray(char[] arr, char t) {
-		char[] newarr = Arrays.copyOf(arr, arr.length+1);
+		T[] newarr = Arrays.copyOf(arr, arr.length + 1);
 		newarr[arr.length] = t;
 		return newarr;
 	}
 	
-
+	private static char[] addToArray(char[] arr, char t) {
+		char[] newarr = Arrays.copyOf(arr, arr.length + 1);
+		newarr[arr.length] = t;
+		return newarr;
+	}
+	
 	private static String getOperator(String condString) {
-		if (condString.contains("==")) return "==";
-		if (condString.contains("!=")) return "!=";
-		if (condString.contains(">=")) return ">=";
-		if (condString.contains("<=")) return "<=";
-		if (condString.contains(">" )) return ">" ;
-		if (condString.contains("<" )) return "<" ;
+		if (condString.contains("=="))
+			return "==";
+		if (condString.contains("!="))
+			return "!=";
+		if (condString.contains(">="))
+			return ">=";
+		if (condString.contains("<="))
+			return "<=";
+		if (condString.contains(">"))
+			return ">";
+		if (condString.contains("<"))
+			return "<";
 		return null;
 	}
 	
 	private static boolean isCondition(String key) {
 		int i = key.indexOf('=');
-		if (i==-1&&!key.contains(">")&&!key.contains("<")) return false;
-		if (i==key.length()-1) return false;
-		if (i==0) return false;
-		char pre = key.charAt(i-1);
-		return pre=='<'||pre=='>'||pre=='!'||key.charAt(i+1)=='=';
+		if (i == -1 && !key.contains(">") && !key.contains("<"))
+			return false;
+		if (i == key.length() - 1)
+			return false;
+		if (i == 0)
+			return false;
+		char pre = key.charAt(i - 1);
+		return pre == '<' || pre == '>' || pre == '!' || key.charAt(i + 1) == '=';
 	}
 }

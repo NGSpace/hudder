@@ -116,20 +116,9 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 	public abstract TokenizedCodeBlock compile(HudderConfig info, String text, String filename, TextPos offset)
 			throws CompileException;
 	
-	
-	/**
-	 * @deprecated
-	 */
-	@Deprecated(since = "10.2.0", forRemoval = true)
-	public VariableVisitor parseVariable(String string) throws CompileException {
-		return parseVariable(string, new TextPos(-1, -1));
-	}
-
 	public VariableVisitor parseVariable(String string, TextPos pos) throws CompileException {
 		return variableProcessor.parseVariable(string, this, pos);
 	}
-	
-	
 
 	public static record CachedCompiler(Object compiledhud, GeneratedCompiler generatedCompiler, CompileException exception) {}
 }

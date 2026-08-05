@@ -3,6 +3,7 @@ package dev.ngspace.hudder.hudderv3.instructions.variables.constants;
 import java.util.ArrayList;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
+import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
@@ -11,11 +12,11 @@ public class ArrayConstantVariableVisitor extends VariableVisitor {
 
 	private VariableVisitor[] values;
 
-	public ArrayConstantVariableVisitor(String[] strings, AV3Compiler comp) throws CompileException {
-		super(comp);
+	public ArrayConstantVariableVisitor(String[] strings, AV3Compiler comp, TextPos pos) throws CompileException {
+		super(comp, pos);
 		values = new VariableVisitor[strings.length];
 		for (int i = 0;i<strings.length;i++)
-			values[i] = comp.parseVariable(strings[i]);
+			values[i] = comp.parseVariable(strings[i], pos);
 	}
 
 	@Override

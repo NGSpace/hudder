@@ -7,6 +7,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
+import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
@@ -16,12 +17,12 @@ public class ArrayReadVariableVisitor extends VariableVisitor {
 	private VariableVisitor indexValue;
 	private VariableVisitor array;
 
-	public ArrayReadVariableVisitor(AV3Compiler comp, String value) throws CompileException {
-		super(comp);
+	public ArrayReadVariableVisitor(AV3Compiler comp, String value, TextPos pos) throws CompileException {
+		super(comp, pos);
 		int indexstart = value.lastIndexOf('[');
 		String index = value.substring(indexstart+1,value.length()-1);
-		indexValue = comp.parseVariable(index);
-		array = comp.parseVariable(value.substring(0, indexstart));
+		indexValue = comp.parseVariable(index, pos);
+		array = comp.parseVariable(value.substring(0, indexstart), pos);
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
+import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
@@ -15,8 +16,8 @@ public class MathVariableVisitor extends VariableVisitor {
 	private final String[] values;
 	private final char[] operations;
 	
-	public MathVariableVisitor(String[] values, char[] operations, AV3Compiler comp) {
-		super(comp);
+	public MathVariableVisitor(String[] values, char[] operations, AV3Compiler comp, TextPos pos) {
+		super(comp, pos);
 		this.values = values;
 		this.operations = operations;
 	}
@@ -30,7 +31,7 @@ public class MathVariableVisitor extends VariableVisitor {
 		
 		for (int i = 0;i<values.length;i++) {
 			Label isNumber = new Label();
-			comp.parseVariable(values[i]).visit(writer);
+			comp.parseVariable(values[i], pos).visit(writer);
 			value_indexes[i] = writer.astore();
 			writer.aload(value_indexes[i]);
 			writer.methodVisitor.visitTypeInsn(Opcodes.INSTANCEOF, Type.getInternalName(Number.class));

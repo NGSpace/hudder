@@ -19,14 +19,12 @@ public class FunctionCallVariableVisitor extends VariableVisitor {
 
 	private final String[] args;
 	private final String funcName;
-	private final TextPos pos;
 	private final boolean apiCall;
 	
 	public FunctionCallVariableVisitor(String funcName, AV3Compiler comp, String[] args, TextPos pos) {
-		super(comp);
+		super(comp, pos);
 		this.args = args;
 		this.funcName = funcName;
-		this.pos = pos;
 		this.apiCall = HudderV3Helper.api_functions.containsKey("api_function_" + funcName.toLowerCase().trim());
 	}
 
@@ -92,7 +90,6 @@ public class FunctionCallVariableVisitor extends VariableVisitor {
 			methodWriter.getField("return_value", V3HudInformation.class, Object.class);
 		} else {
 			throw new CompileException("Unknown function: " + funcName, pos);
-//			methodWriter.throwRuntimeException("Unknown function: " + funcName);
 		}
 	}
 	
