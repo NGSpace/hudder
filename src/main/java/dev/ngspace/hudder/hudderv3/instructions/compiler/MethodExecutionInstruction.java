@@ -132,21 +132,23 @@ public class MethodExecutionInstruction extends Instruction {
 
 	}
 	
-	protected void visitUserConsumer(V3MethodWriter methodWriter, int array_index) {
-		if (comp.user_methods.containsKey(builder[0].toLowerCase().trim())) {
+	protected void visitUserConsumer(V3MethodWriter methodWriter, int array_index) throws CompileException {
+		if (methodWriter.classWriter.user_methods.containsKey(builder[0].toLowerCase().trim())) {
 			methodWriter.aload(0);
 			methodWriter.aload(1);
 			methodWriter.aload(2);
 			methodWriter.aload(3);
 			methodWriter.aload(array_index);
-			methodWriter.callSelf(comp.user_methods.get(builder[0].toLowerCase().trim()), "(Ldev/ngspace/hudder/config/HudderConfig;"
+			methodWriter.callSelf(methodWriter.classWriter.user_methods.get(builder[0].toLowerCase().trim()),
+					"(Ldev/ngspace/hudder/config/HudderConfig;"
 					+ "Ljava/lang/String;"
 					+ "Ljava/lang/String;"
 					+ "[Ljava/lang/Object;)"
 					+ Type.getDescriptor(V3HudInformation.class), false);
 			methodWriter.pop();
 		} else {
-			methodWriter.throwRuntimeException("Unknown method: " + builder[0]);
+			throw new CompileException("Unknown method: " + builder[0], pos);
+//			methodWriter.throwExecutionException("Unknown method: " + builder[0], pos);
 		}
 	}
 	

@@ -118,8 +118,15 @@ public abstract class AHudCompiler<T> {
 	        Thread.currentThread().interrupt();
 	        throw new IOException("Interrupted while waiting for Hud to finish processing", e);
 	    } catch (java.util.concurrent.ExecutionException e) {
+	    	if (e.getCause() instanceof CompileException ex)
+	    		throw ex;
+	    	if (e.getCause() instanceof ExecutionException ex)
+	    		throw ex;
+	    	if (e.getCause() instanceof IOException ex)
+	    		throw ex;
 			e.printStackTrace();
-	        throw new CompileException(e.getMessage(),-1,-1,e);
+			var ex = e.getCause() != null ? e.getCause() : e;
+	        throw new CompileException(ex.getMessage(),-1,-1,ex);
 		}
 	}
 

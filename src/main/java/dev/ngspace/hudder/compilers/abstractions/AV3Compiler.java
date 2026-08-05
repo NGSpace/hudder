@@ -27,9 +27,6 @@ import dev.ngspace.hudder.utils.HudFileUtils;
 
 public abstract class AV3Compiler extends AVarTextCompiler {
 	
-	public Map<String, String> user_methods = new HashMap<String, String>();
-	public Map<String, String> user_functions = new HashMap<String, String>();
-	
 	public Map<String, CachedCompiler> cache = new HashMap<String, CachedCompiler>();
 	
 	protected AV3Compiler() {
@@ -66,7 +63,7 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 			executeMethod.getField("uimanager", ArrayElementManager.class);
 			executeMethod.callInterface(List.class, "clear", "()V");
 			
-			compile(Hudder.config, text, filepath, new TextPos(1, 0)).writeInstructions(executeMethod, classWriter, end);
+			compile(Hudder.config, text, filepath, new TextPos(0, 0)).writeInstructions(executeMethod, classWriter, end);
 			
 			executeMethod.putLabel(end);
 			executeMethod.end();
@@ -119,11 +116,6 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 	public abstract TokenizedCodeBlock compile(HudderConfig info, String text, String filename, TextPos offset)
 			throws CompileException;
 	
-
-	public void defineFunctionOrMethod(V3ClassWriter writer, String commands, String[] args, HudderConfig info,
-			String name, String filename)
-			throws CompileException {
-	}
 	
 	/**
 	 * @deprecated

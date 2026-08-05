@@ -28,7 +28,7 @@ public class IfElseInstuction extends Instruction {
 			VariableVisitor condition;
 			if (statement.condition()==null||statement.condition().isBlank()) {
 				if (i<compiled_statements.length-1)
-					throw new CompileException("Detached else/else if statement!", -1, -1);
+					throw new CompileException("Detached else/else if statement!", pos);
 				condition = null;
 			} else {
 				condition = compiler.parseVariable(statement.condition(), pos);

@@ -76,21 +76,23 @@ public class FunctionCallVariableVisitor extends VariableVisitor {
 				"(Ldev/ngspace/hudder/api/functionsandconsumers/IUIElementManager;Ldev/ngspace/hudder/compilers/abstractions/AHudCompiler;[Ldev/ngspace/hudder/utils/ObjectWrapper;)Ljava/lang/Object;");
 	}
 	
-	protected void visitUserFunction(V3MethodWriter methodWriter, int array_index) {
-		if (comp.user_functions.containsKey(funcName)) {
+	protected void visitUserFunction(V3MethodWriter methodWriter, int array_index) throws CompileException {
+		if (methodWriter.classWriter.user_functions.containsKey(funcName)) {
 			methodWriter.aload(0);
 			methodWriter.aload(1);
 			methodWriter.aload(2);
 			methodWriter.aload(3);
 			methodWriter.aload(array_index);
-			methodWriter.callSelf(comp.user_functions.get(funcName), "(Ldev/ngspace/hudder/config/HudderConfig;"
+			methodWriter.callSelf(methodWriter.classWriter.user_functions.get(funcName),
+					"(Ldev/ngspace/hudder/config/HudderConfig;"
 					+ "Ljava/lang/String;"
 					+ "Ljava/lang/String;"
 					+ "[Ljava/lang/Object;)"
 					+ Type.getDescriptor(V3HudInformation.class), false);
 			methodWriter.getField("return_value", V3HudInformation.class, Object.class);
 		} else {
-			methodWriter.throwRuntimeException("Unknown function: " + funcName);
+			throw new CompileException("Unknown function: " + funcName, pos);
+//			methodWriter.throwRuntimeException("Unknown function: " + funcName);
 		}
 	}
 	

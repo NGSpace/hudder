@@ -20,7 +20,7 @@ public class WhileInstruction extends Instruction {
 	public WhileInstruction(String condition, String block, AV3Compiler comp,
 			HudderConfig info, String filename, TextPos pos) throws CompileException {
 		super(pos);
-		this.condition = comp.parseVariable(condition);
+		this.condition = comp.parseVariable(condition, pos);
 		this.codeblock = comp.compile(info, block, filename, pos);
 	}
 

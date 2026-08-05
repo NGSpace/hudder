@@ -221,7 +221,7 @@ public class HudderV3Compiler extends AV3Compiler {
 						case FOR_LOOP_INSTRUCTION: {
 							String[] split = parameters.split(" in ", 2);
 							if (split.length<2) 
-								throw new CompileException("Invalid for loop syntax: \"" + parameters + "\"", -1, -1);
+								throw new CompileException("Invalid for loop syntax: \"" + parameters + "\"", pos);
 							String variablename = split[0];
 							String value = split[1];
 							elemBuilder.setLength(0);
@@ -277,7 +277,7 @@ public class HudderV3Compiler extends AV3Compiler {
 									filename, this, info, pos));
 							break;
 						default:
-							throw new CompileException("Detached else/else if statement!", -1, -1);
+							throw new CompileException("Detached else/else if statement!", pos);
 					}
 					break;
 				}

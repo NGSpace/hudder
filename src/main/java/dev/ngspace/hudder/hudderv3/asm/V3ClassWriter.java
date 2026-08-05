@@ -3,7 +3,9 @@ package dev.ngspace.hudder.hudderv3.asm;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.objectweb.asm.ClassWriter;
@@ -28,6 +30,9 @@ public class V3ClassWriter implements Binder {
 	private final Set<String> generatedApiConsumers = new HashSet<>();
 	private final Set<String> calledApiConsumers = new HashSet<>();
 	private final Set<String> calledApiFunctions = new HashSet<>();
+	
+	public Map<String, String> user_methods = new HashMap<String, String>();
+	public Map<String, String> user_functions = new HashMap<String, String>();
 	
 	public V3ClassWriter(String classname) {
 		this.classname = classname;
