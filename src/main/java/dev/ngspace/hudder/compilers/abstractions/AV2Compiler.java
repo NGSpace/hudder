@@ -102,7 +102,7 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 		
 		if (isMethod) {
 			MethodHandler.methods.put(name, (_,state,_,type,_,charpos,vals) -> {
-				if (vals.length<args.length) throw new ExecutionException("Not enough arguments", pos.line(), pos.column());
+				if (vals.length<args.length) throw new ExecutionException("Not enough arguments", pos);
 				for (int i = 0;i<vals.length;i++) {
 					Object v = vals[i].get();
 					runtime.putScoped("arg"+(i+1), v);
@@ -121,9 +121,9 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 				if (element.returnsAValue()) temp = false;
 			}
 			if (temp) throw new CompileException("Function \""+name
-					+"\" does not always return a value!",pos.line(),pos.column());
+					+"\" does not always return a value!",pos);
 			functionHandler.bindFunction((IV2Function) (_,_,vals,line,charpos) -> {
-				if (vals.length<args.length) throw new ExecutionException("Not enough arguments", pos.line(), pos.column());
+				if (vals.length<args.length) throw new ExecutionException("Not enough arguments", pos);
 				for (int i = 0;i<vals.length;i++) {
 					Object v = vals[i].get();
 					runtime.putScoped("arg"+(i+1), v);

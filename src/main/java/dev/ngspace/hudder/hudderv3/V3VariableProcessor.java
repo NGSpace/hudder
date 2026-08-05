@@ -37,7 +37,7 @@ public class V3VariableProcessor {
 		
 		// Empty variable
 		if (value.isBlank())
-			throw new CompileException("Empty variable", -1, -1);
+			throw new CompileException("Empty variable", pos);
 		
 		// Is wrapped in parenthesses? get rid of em!
 		if (value.startsWith("(") && value.endsWith(")")) {
@@ -451,7 +451,7 @@ public class V3VariableProcessor {
 			return new NegateVariableVisitor(comp, value.substring(1), pos);
 		
 		// Fallback
-		throw new CompileException("Untokenizable variable: " + value, -1, -1);
+		throw new CompileException("Untokenizable variable: " + value, pos);
 	}
 	
 	private VariableVisitor[] logicalOperator(char op, String value, AV3Compiler comp, TextPos pos)
