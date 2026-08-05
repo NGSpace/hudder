@@ -33,7 +33,7 @@ import net.minecraft.util.CommonColors;
 public class HudderUnitTestingCommand implements ClientCommandRegistrationCallback {
 	
 	public static final String TESTS_FOLDER = HudFileUtils.ASSETS + "tests/";
-    public HudderUnitTester hudderTester = new HudderUnitTester(Compilers.hudderV2Compiler);
+    public HudderUnitTester hudderTester = new HudderUnitTester(Compilers.hudderV3Compiler);
 	
 	public HudderUnitTestingCommand() {
 		try {

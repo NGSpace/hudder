@@ -40,7 +40,7 @@ import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
  * </p>
  */
 public class Compilers {
-	
+
 	/**
 	 * Prevents this utility class from being instantiated.
 	 */
@@ -58,6 +58,7 @@ public class Compilers {
 	 * </p>
 	 */
 	public static final HudderV2Compiler hudderV2Compiler = new HudderV2Compiler();
+	public static final HudderV3Compiler hudderV3Compiler = new HudderV3Compiler();
 	
 	/**
 	 * Registers the compilers included with Hudder.
@@ -73,7 +74,7 @@ public class Compilers {
 		put("hudder", "Hudder", false, hudderV2Compiler);
 		put("js", "JavaScript", false, new JavaScriptCompiler());
 		put("pack", "Hudpack", false, new HudPackCompiler());
-		put("hudderv3", "Hudder V3 (Exp)", true, new HudderV3Compiler());
+		put("hudderv3", "Hudder V3 (Exp)", true, hudderV3Compiler);
 	}
 	
 	/**
