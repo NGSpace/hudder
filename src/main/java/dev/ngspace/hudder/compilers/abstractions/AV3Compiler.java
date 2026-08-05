@@ -80,7 +80,7 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 			cache.put(text, new CachedCompiler(null,null,ne));
 			throw ne;
 		} catch (ClassFormatError e) {
-			// The compilation manager does not handle Verifier errors and will crash the game which is bad.
+			// The compilation manager does not handle JVM errors and will crash the game which is bad.
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		} catch (VerifyError e) {
@@ -116,9 +116,13 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 	public abstract TokenizedCodeBlock compile(HudderConfig info, String text, String filename, TextPos offset)
 			throws CompileException;
 	
+	
+	
 	public VariableVisitor parseVariable(String string, TextPos pos) throws CompileException {
 		return variableProcessor.parseVariable(string, this, pos);
 	}
-
+	
+	
+	
 	public static record CachedCompiler(Object compiledhud, GeneratedCompiler generatedCompiler, CompileException exception) {}
 }

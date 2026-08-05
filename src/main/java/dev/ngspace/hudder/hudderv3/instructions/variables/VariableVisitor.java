@@ -19,4 +19,12 @@ public abstract class VariableVisitor {
 	public void visitSetValue(V3MethodWriter methodWriter) throws CompileException {
 		throw new CompileException("Setting a value to this variable is not supported", -1, -1);
 	}
+	
+	public boolean isConstant() {
+		return false;
+	}
+	
+	public Object getConstantValue() {
+		return null;
+	}
 }

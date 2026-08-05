@@ -8,22 +8,32 @@ import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
 
 public class NumberVariableVisitor extends VariableVisitor {
 
-	private String value;
+	private double value;
 
 	public NumberVariableVisitor(AV3Compiler comp, String value, TextPos pos) {
 		super(comp, pos);
-		this.value = value;
+		if (value.startsWith("0x")) {
+			this.value = Integer.parseUnsignedInt(value.substring(2), 16);
+		} else if (value.startsWith("#")) {
+			this.value = Integer.parseUnsignedInt(value.substring(1), 16);
+		} else {
+			this.value = Double.parseDouble(value);
+		}
 	}
 
 	@Override
 	public void visit(V3MethodWriter methodWriter) throws CompileException {
-		if (value.startsWith("0x")) {
-			methodWriter.loadConstant((double)Integer.parseUnsignedInt(value.substring(2), 16));
-		} else if (value.startsWith("#")) {
-			methodWriter.loadConstant((double)Integer.parseUnsignedInt(value.substring(1), 16));
-		} else {
-			methodWriter.loadConstant(Double.parseDouble(value));
-		}
+		methodWriter.loadConstant(value);
+	}
+
+	@Override
+	public boolean isConstant() {
+		return true;
+	}
+	
+	@Override
+	public Object getConstantValue() {
+		return value;
 	}
 	
 }

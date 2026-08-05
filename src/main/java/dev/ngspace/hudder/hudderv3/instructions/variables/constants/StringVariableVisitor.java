@@ -19,5 +19,14 @@ public class StringVariableVisitor extends VariableVisitor {
 	public void visit(V3MethodWriter methodWriter) throws CompileException {
 		methodWriter.loadConstant(value);
 	}
+
+	@Override
+	public boolean isConstant() {
+		return true;
+	}
 	
+	@Override
+	public Object getConstantValue() {
+		return value;
+	}
 }

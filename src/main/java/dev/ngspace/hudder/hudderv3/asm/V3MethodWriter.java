@@ -322,7 +322,9 @@ public class V3MethodWriter {
 	public void fstore(int index) {
 		methodVisitor.visitVarInsn(Opcodes.FSTORE, index);
 	}
-	
+	public void istore(int index) {
+		methodVisitor.visitVarInsn(Opcodes.ISTORE, index);
+	}
 	public void astore(int index) {
 		methodVisitor.visitVarInsn(Opcodes.ASTORE, index);
 	}
