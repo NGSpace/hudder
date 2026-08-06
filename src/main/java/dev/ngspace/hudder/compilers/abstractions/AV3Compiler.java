@@ -44,7 +44,7 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 		}
 		try {
 		
-			V3ClassWriter classWriter = new V3ClassWriter("dev/ngspace/hudder/hudderv3/GeneratedClass");
+			V3ClassWriter classWriter = new V3ClassWriter("dev/ngspace/hudder/hudderv3/GeneratedClass", filepath);
 			classWriter.createInit();
 			
 			FunctionAndConsumerAPI.getInstance().applyFunctionsAndConsumers(classWriter);

@@ -34,14 +34,15 @@ public class V3ClassWriter implements Binder {
 	public Map<String, String> user_methods = new HashMap<String, String>();
 	public Map<String, String> user_functions = new HashMap<String, String>();
 	
-	public V3ClassWriter(String classname) {
+	public V3ClassWriter(String classname, String debugfilename) {
 		this.classname = classname;
 		classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
 		classWriter.visit(Opcodes.V25, Opcodes.ACC_PUBLIC, classname, null,
 				"dev/ngspace/hudder/compilers/abstractions/AVarTextCompiler", new String[] {
 						Type.getInternalName(GeneratedCompiler.class)
 				});
-	    
+		classWriter.visitSource(debugfilename, null);
+		
 	    initPublicField("uimanager", ArrayElementManager.class);
 	}
 	
