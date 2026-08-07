@@ -3,7 +3,6 @@ package dev.ngspace.hudder.hudderv3.asm;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -120,11 +119,9 @@ public class V3ClassWriter {
 				e.printStackTrace();
 			} 
 		}
-		try {
-			return MethodHandles.lookup().defineHiddenClass(bytecode, false).lookupClass();
-		} catch (IllegalAccessException e) {
-			throw new IllegalStateException("Failed to define generated v3 hidden class", e);
-		}
+		ByteArrayClassLoader classLoader = new ByteArrayClassLoader(getClass().getClassLoader());
+		
+		return classLoader.define(classname.replace('/', '.'), bytecode);
 	}
 	private void loadFunctions() {
 		for (String name : calledApiFunctions) {
