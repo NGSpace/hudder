@@ -4,6 +4,7 @@ package dev.ngspace.hudder.utils;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -92,28 +93,18 @@ public class HudFileUtils {private HudFileUtils() {}
 	 */
 	public static String sanitize(String f) throws SecurityException, IOException {
 		if (!new File(f).getCanonicalFile().toPath().startsWith(new File(FOLDER).getCanonicalFile().toPath()))
-			throwError(f);
+			throw new FileNotFoundException(f + " (No such file or directory)");
 		int j = 0;
 		int k = 0;
 		for (int i = 0;i<f.length();i++) {
 			char c = f.charAt(i);
 			if (c=='.') j++;
 			else if (c=='/'||c=='\\') {
-				if (j==2&&k==0) throwError(f);
+				if (j==2&&k==0) throw new FileNotFoundException(f + " (No such file or directory)");
 				k = 0;
 			} else {j = 0;k++;}
 		}
 		return f;
-	}
-	
-	
-	
-	/**
-	 * Throw fake IO error.
-	 * @param file - the filename to add to the error
-	 */
-	private static final void throwError(String file) {
-		throw new SecurityException(file + " (No such file or directory)");
 	}
 	
 	
@@ -220,7 +211,7 @@ public class HudFileUtils {private HudFileUtils() {}
 
 
 	public static boolean imageLoaded(Identifier id) {
-		return reader.savedImages.containsKey(id);
+		return reader.imageLoaded(id);
 	}
 	
 	

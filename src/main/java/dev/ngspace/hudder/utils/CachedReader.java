@@ -129,4 +129,8 @@ public class CachedReader {
 		}
 		
 	}
+
+	public boolean imageLoaded(Identifier id) {
+		return savedImages.containsKey(id) || unregisteredImages.containsKey(id);
+	}
 }
