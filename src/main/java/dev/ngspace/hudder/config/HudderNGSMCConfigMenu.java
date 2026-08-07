@@ -66,8 +66,8 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 						IOUtils.copy(input, output);
 					}
 				} catch (IOException e) {
-					Hudder.showWarningToast(Component.literal("Hudder is deprecating global variables!"),
-							Component.literal("Please stop using them as they'll stop working in a future release."));
+					Hudder.showWarningToast(Component.literal("Failed to copy hud"),
+							Component.literal("Failed to copy hud file"));
 					if (Hudder.IS_DEBUG) e.printStackTrace();
 				} finally {
 					HudderTickEvent.TEMP_DISABLE = false;
