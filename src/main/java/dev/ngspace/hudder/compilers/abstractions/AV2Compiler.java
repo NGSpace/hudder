@@ -1,5 +1,6 @@
 package dev.ngspace.hudder.compilers.abstractions;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -188,4 +189,11 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 	public record CodeBlock(String code, String text, int starting_index, int ending_index) {}
 	
 	public record Instruction(byte instruction, String paremeter, int ending_index) {}
+	
+	@Override
+	public void resetState() throws IOException {
+		SYSTEM_VARIABLES_ENABLED = true;
+		runtimes.clear();
+		super.resetState();
+	}
 }

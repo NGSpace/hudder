@@ -156,7 +156,6 @@ public class MethodExecutionInstruction extends Instruction {
 			methodWriter.pop();
 		} else {
 			throw new CompileException("Unknown method: " + builder[0], pos);
-//			methodWriter.throwExecutionException("Unknown method: " + builder[0], pos);
 		}
 	}
 	

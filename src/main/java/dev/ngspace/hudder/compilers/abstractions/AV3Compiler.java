@@ -1,5 +1,6 @@
 package dev.ngspace.hudder.compilers.abstractions;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +25,6 @@ import dev.ngspace.hudder.hudderv3.V3VariableProcessor;
 import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.asm.V3ExecuteMethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
-import dev.ngspace.hudder.utils.HudFileUtils;
 
 public abstract class AV3Compiler extends AVarTextCompiler {
 	
@@ -33,10 +33,6 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 	public V3VariableProcessor variableProcessor = new ImplV3VariableProcessor();
 
 	public boolean system_variables = true;
-	
-	protected AV3Compiler() {
-		HudFileUtils.addReloadResourcesListener(cache::clear);
-	}
 	
 	@Override
 	public void compileFile(String text, String filepath) throws CompileException {
@@ -138,4 +134,11 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 
 
 	public static record CachedCompiler(Object compiledhud, GeneratedCompiler generatedCompiler, CompileException exception) {}
+	
+	@Override
+	public void resetState() throws IOException {
+		system_variables = true;
+		cache.clear();
+		super.resetState();
+	}
 }

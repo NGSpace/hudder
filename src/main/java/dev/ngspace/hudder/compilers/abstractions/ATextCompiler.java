@@ -19,20 +19,9 @@ public abstract class ATextCompiler extends AHudCompiler<String> {
 	public void compileFile(String text, String filepath) throws CompileException {}
 	
 	protected TextPos getPosition(int ind, String string) {
-		int line = 0;
-		int charpos = 0;
-		
-		for (int i = 0;i<ind;i++) {
-			if (string.charAt(i)=='\n') {
-				line++;
-				charpos = 0;
-				continue;
-			}
-			charpos++;
-		}
-		return new TextPos(line, charpos);
+		return getPosition(new TextPos(0, 0), ind, string);
 	}
-	protected TextPos getPosition(TextPos charPosition, int ind, String j) {
+	protected TextPos getPosition(TextPos charPosition, int ind, String text) {
 		int line = charPosition.line();
 		int charpos = charPosition.column();
 		if (line==-1||charpos==-1) {
@@ -41,7 +30,7 @@ public abstract class ATextCompiler extends AHudCompiler<String> {
 		}
 		
 		for (int i = 0;i<ind;i++) {
-			if (j.charAt(i)=='\n') {
+			if (text.charAt(i)=='\n') {
 				line++;
 				charpos = 0;
 				continue;

@@ -153,4 +153,8 @@ public abstract class AHudCompiler<T> {
 	public void edit(File file) {
 		Util.getPlatform().openFile(file);
 	}
+	
+	public void resetState() throws IOException {
+		variables.clear();
+	}
 }
