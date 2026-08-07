@@ -1,5 +1,7 @@
 package dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations;
 
+import java.util.List;
+
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 
@@ -11,9 +13,9 @@ import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
 
 public class LogicalOrVariableVisitor extends VariableVisitor {
 
-	private VariableVisitor[] values;
+	private List<VariableVisitor> values;
 
-	public LogicalOrVariableVisitor(VariableVisitor[] values, AV3Compiler comp, TextPos pos) {
+	public LogicalOrVariableVisitor(List<VariableVisitor> values, AV3Compiler comp, TextPos pos) {
 		super(comp, pos);
 		this.values = values;
 	}
@@ -23,8 +25,8 @@ public class LogicalOrVariableVisitor extends VariableVisitor {
 		Label end = new Label();
 		Label true_value = new Label();
 		
-		for (int i = 0;i<values.length;i++) {
-			values[i].visit(methodWriter);
+		for (int i = 0;i<values.size();i++) {
+			values.get(i).visit(methodWriter);
 			methodWriter.checkcast(Boolean.class);
 			methodWriter.booleanValue();
 			methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFNE, true_value);

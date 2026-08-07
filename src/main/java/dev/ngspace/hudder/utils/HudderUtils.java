@@ -1,5 +1,8 @@
 package dev.ngspace.hudder.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class HudderUtils {private HudderUtils() {}
 	
 	public static String[] processParemeters(String strtoprocess) {
@@ -9,11 +12,11 @@ public class HudderUtils {private HudderUtils() {}
 		int squareparentheses = 0;
 
 		StringBuilder parameterBuilder = new StringBuilder();
-		String[] tokenizedParemeters = new String[0];
+	    List<String> parameters = new ArrayList<String>();
 		for (int i = 0;i<strtoprocess.length();i++) {
 			char c = strtoprocess.charAt(i);
 			if (c==','&&parentheses==0&&squareparentheses==0) {
-				tokenizedParemeters = addToArray(tokenizedParemeters, parameterBuilder.toString());
+				parameters.add(parameterBuilder.toString());
 				parameterBuilder.setLength(0);
 				continue;
 			}
@@ -47,8 +50,8 @@ public class HudderUtils {private HudderUtils() {}
 			
 			parameterBuilder.append(c);
 		}
-		tokenizedParemeters = addToArray(tokenizedParemeters, parameterBuilder.toString());
-		return tokenizedParemeters;
+		parameters.add(parameterBuilder.toString());
+		return parameters.toArray(String[]::new);
 	}
 	
 	public static String checkIndentation(String text, int index) {
@@ -59,11 +62,5 @@ public class HudderUtils {private HudderUtils() {}
 			b.append(c);
 		}
 		return b.toString();
-	}
-	
-	private static <T> T[] addToArray(T[] arr, T t) {
-		T[] newarr = java.util.Arrays.copyOf(arr, arr.length+1);
-		newarr[arr.length] = t;
-		return newarr;
 	}
 }

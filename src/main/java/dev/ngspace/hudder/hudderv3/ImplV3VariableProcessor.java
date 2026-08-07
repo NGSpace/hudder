@@ -1,6 +1,7 @@
 package dev.ngspace.hudder.hudderv3;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
@@ -277,13 +278,13 @@ public class ImplV3VariableProcessor implements V3VariableProcessor {
 		}
 		
 		// Logical OR operator
-		VariableVisitor[] orValues = logicalOperator('|', value, comp, pos);
-		if (orValues.length > 1)
+		List<VariableVisitor> orValues = logicalOperator('|', value, comp, pos);
+		if (orValues.size() > 1)
 			return new LogicalOrVariableVisitor(orValues, comp, pos);
 		
 		// Logical AND operator
-		VariableVisitor[] andvalues = logicalOperator('&', value, comp, pos);
-		if (andvalues.length > 1)
+		List<VariableVisitor> andvalues = logicalOperator('&', value, comp, pos);
+		if (andvalues.size() > 1)
 			return new LogicalAndVariableVisitor(andvalues, comp, pos);
 		
 		// Comparing values
@@ -327,9 +328,9 @@ public class ImplV3VariableProcessor implements V3VariableProcessor {
 		}
 		
 		// Math operation
-		String[] values = new String[0];
+		List<String> values = new ArrayList<String>();
 		StringBuilder mathvalue = new StringBuilder();
-		char[] operations = new char[0];
+		ArrayList<Character> operations = new ArrayList<Character>();
 		for (int i = 0; i < value.length(); i++) {
 			char c = value.charAt(i);
 			if (c == '"' && mathvalue.isEmpty()) {
@@ -375,18 +376,18 @@ public class ImplV3VariableProcessor implements V3VariableProcessor {
 					continue;
 				}
 				if (mathvalue.toString().isBlank()) {// Do not trigger
-					values = new String[0];
+					values = null;
 					break;
 				}
-				values = addToArray(values, mathvalue.toString());
-				operations = addToArray(operations, c);
+				values.add(mathvalue.toString());
+				operations.add(c);
 				mathvalue.setLength(0);
 				continue;
 			}
 			mathvalue.append(c);
 		}
-		if (values.length > 0) {
-			values = addToArray(values, mathvalue.toString());
+		if (values==null||!values.isEmpty()) {
+			values.add(mathvalue.toString());
 			return new MathVariableVisitor(values, operations, comp, pos);
 		}
 		
@@ -455,9 +456,9 @@ public class ImplV3VariableProcessor implements V3VariableProcessor {
 		throw new CompileException("Untokenizable variable: " + value, pos);
 	}
 	
-	private VariableVisitor[] logicalOperator(char op, String value, AV3Compiler comp, TextPos pos)
+	private List<VariableVisitor> logicalOperator(char op, String value, AV3Compiler comp, TextPos pos)
 			throws CompileException {
-		VariableVisitor[] values = new VariableVisitor[0];
+		List<VariableVisitor> values = new ArrayList<VariableVisitor>();
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0; i < value.length(); i++) {
 			char c = value.charAt(i);
@@ -495,16 +496,17 @@ public class ImplV3VariableProcessor implements V3VariableProcessor {
 			}
 			if (c == op && i + 1 < value.length() && value.charAt(i + 1) == op) {
 				i++;
-				values = addToArray(values, parseVariable(builder.toString(), comp, pos));
+				values.add(parseVariable(builder.toString(), comp, pos));
 				builder.setLength(0);
 				continue;
 			}
 			
 			builder.append(c);
 		}
-		if (!Objects.equals(value, builder.toString()))
-			return addToArray(values, parseVariable(builder.toString(), comp, pos));
-		else
+		if (!Objects.equals(value, builder.toString())) {
+			values.add(parseVariable(builder.toString(), comp, pos));
+			return values;
+		} else
 			return values;
 	}
 	
@@ -535,18 +537,6 @@ public class ImplV3VariableProcessor implements V3VariableProcessor {
 		}
 		// String! :D
 		return string.toString();
-	}
-	
-	private static <T> T[] addToArray(T[] arr, T t) {
-		T[] newarr = Arrays.copyOf(arr, arr.length + 1);
-		newarr[arr.length] = t;
-		return newarr;
-	}
-	
-	private static char[] addToArray(char[] arr, char t) {
-		char[] newarr = Arrays.copyOf(arr, arr.length + 1);
-		newarr[arr.length] = t;
-		return newarr;
 	}
 	
 	private static String getOperator(String condString) {
