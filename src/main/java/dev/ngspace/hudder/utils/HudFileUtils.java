@@ -206,7 +206,7 @@ public class HudFileUtils {private HudFileUtils() {}
 		if (image!=null) {
 			ByteArrayOutputStream output = new ByteArrayOutputStream();
 			ImageIO.write(image, "PNG", output);
-			reader.loadImageToCache(new ByteArrayInputStream(output.toByteArray()),getTexture(path));
+			reader.markImageForRegisteration(new ByteArrayInputStream(output.toByteArray()),getTexture(path));
 		}
 		return image!=null;
 	}
@@ -214,12 +214,19 @@ public class HudFileUtils {private HudFileUtils() {}
 
 
 	public static void loadImage(NativeImage img, String path) throws SecurityException {
-		reader.loadImageToCache(img,getTexture(path));
+		reader.markImageForRegisteration(img,getTexture(path));
 	}
 
 
 
 	public static boolean imageLoaded(Identifier id) {
 		return reader.savedImages.containsKey(id);
+	}
+	
+	
+	
+	public static void loadMarkedResources() {
+		// This is to ensure texture loading is always on the render thread
+		reader.loadUnregisteredImagesToTextureManager();
 	}
 }

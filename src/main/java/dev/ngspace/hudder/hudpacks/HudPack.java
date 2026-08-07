@@ -109,7 +109,6 @@ public class HudPack {
 				.setSaveOperation(val->setSettingValue(setting, val))
 				.build();
 		}
-		
 		return switch (v.type()) {
 			case "boolean": {
 				yield BooleanNGSMCConfigOption.fluentBuilder(((Boolean) getSettingValue(setting)),
