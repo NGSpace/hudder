@@ -45,6 +45,8 @@ public class HudderV3Compiler extends AV3Compiler {
 		
 		TokenizedCodeBlock finalCodeBlock = new TokenizedCodeBlock(this);
 		
+		TextPosTracker posTracker = new TextPosTracker(text, offset);
+		
 		StringBuilder elemBuilder = new StringBuilder();
 		
 		int bracketscount = 0;
@@ -73,23 +75,24 @@ public class HudderV3Compiler extends AV3Compiler {
 						safeappend = !safeappend;
 						continue;
 					}
+					posTracker.nextCharacter();
 					switch (c) {
 						case '%':
 							compileState = CONDITION_STATE;
-							finalCodeBlock.appendStringConstant(elemBuilder.toString(), getPosition(offset, savedind, text));
+							finalCodeBlock.appendStringConstant(elemBuilder.toString(), posTracker.get());
 							elemBuilder.setLength(0);
 							savedind = ind;
 							break;
 						case '{':
 							compileState = VARIABLE_STATE;
-							finalCodeBlock.appendStringConstant(elemBuilder.toString(), getPosition(offset, savedind, text));
+							finalCodeBlock.appendStringConstant(elemBuilder.toString(), posTracker.get());
 							elemBuilder.setLength(0);
 							bracketscount = 1;
 							savedind = ind;
 							break;
 						case ';':
 							compileState = METHOD_STATE;
-							finalCodeBlock.appendStringConstant(trimMethod(elemBuilder.toString()), getPosition(offset, savedind, text));
+							finalCodeBlock.appendStringConstant(trimMethod(elemBuilder.toString()), posTracker.get());
 							elemBuilder.setLength(0);
 							savedind = ind;
 						    quotesafe = false;
@@ -97,7 +100,7 @@ public class HudderV3Compiler extends AV3Compiler {
 							break;
 						case '#':
 							compileState = HASHTAG_STATE;
-							finalCodeBlock.appendStringConstant(elemBuilder.toString(), getPosition(offset, savedind, text));
+							finalCodeBlock.appendStringConstant(elemBuilder.toString(), posTracker.get());
 							elemBuilder.setLength(0);
 							savedind = ind;
 							break;
@@ -139,7 +142,7 @@ public class HudderV3Compiler extends AV3Compiler {
 						} else if (c=='%') {
 							conds.add(conditionOrValue.toString());
 							finalCodeBlock.addInstruction(new ConditionInstruction(info, filename, conds, this,
-									getPosition(offset, savedind, text)));
+									 posTracker.goToAndGet(savedind)));
 							compileState = TEXT_STATE;
 							break;
 						} else {
@@ -166,7 +169,7 @@ public class HudderV3Compiler extends AV3Compiler {
 						bracketscount--;
 						if (bracketscount==0) {
 							finalCodeBlock.addInstruction(new VariableInstruction(this, elemBuilder.toString(),
-									getPosition(offset, savedind, text)));
+									posTracker.goToAndGet(savedind)));
 							elemBuilder.setLength(0);
 							compileState = TEXT_STATE;
 						} else elemBuilder.append(c);
@@ -196,7 +199,7 @@ public class HudderV3Compiler extends AV3Compiler {
 					}
 					if (compileState!=METHOD_STATE) {
 						String[] builder = HudderUtils.processParemeters(elemBuilder.toString());
-						finalCodeBlock.addInstruction(new MethodExecutionInstruction(builder, this, getPosition(offset, savedind, text)));
+						finalCodeBlock.addInstruction(new MethodExecutionInstruction(builder, this, posTracker.goToAndGet(savedind)));
 						elemBuilder.setLength(0);
 						cleanup = true;
 						cleanup_amount = Hudder.config.methodBuffer()/2;
@@ -205,7 +208,7 @@ public class HudderV3Compiler extends AV3Compiler {
 				}
 				case HASHTAG_STATE: {
 					compileState = TEXT_STATE;
-					var pos = getPosition(offset, savedind, text);
+					var pos = posTracker.goToAndGet(savedind);
 					
 					Instruction instructions = getInstruction(text, ind);
 					ind = instructions.ending_index();
@@ -282,17 +285,16 @@ public class HudderV3Compiler extends AV3Compiler {
 					break;
 				}
 				default: {
-					var pos = getPosition(offset, savedind, text);
+					var pos = posTracker.goToAndGet(savedind);
 					throw new CompileException("Unknown compile state: " + compileState, pos);
 				}
 			}
 		}
-
-		finalCodeBlock.appendStringConstant(elemBuilder.toString(), getPosition(offset, text.length()-1, text));
+		
+		finalCodeBlock.appendStringConstant(elemBuilder.toString(), posTracker.goToAndGet(text.length()-1));
 		
 		if (compileState!=0) {
-			var pos = getPosition(offset, text.length()-1, text);
-			throw new CompileException(getCompilerErrorMessage(compileState), pos);
+			throw new CompileException(getCompilerErrorMessage(compileState), posTracker.goToAndGet(text.length()-1));
 		}
 		
 		return finalCodeBlock;
