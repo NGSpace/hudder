@@ -41,7 +41,9 @@ public class TokenizedCodeBlock {
 	}
 
 	public void appendStringConstant(String string, TextPos pos) {
-		addInstruction(new StringInstruction(string, pos));
+		if (!string.isEmpty()) {
+			addInstruction(new StringInstruction(string, pos));
+		}
 	}
 	
 	public boolean canReturnValue() {

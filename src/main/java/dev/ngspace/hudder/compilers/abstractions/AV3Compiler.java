@@ -11,6 +11,9 @@ import org.objectweb.asm.Label;
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
+import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableConsumer;
+import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableFunction;
+import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.Binder;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
 import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.config.HudderConfig;
@@ -19,6 +22,7 @@ import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.hudderv3.GeneratedCompiler;
 import dev.ngspace.hudder.hudderv3.HudderAPIFunctions;
 import dev.ngspace.hudder.hudderv3.HudderAPIMethods;
+import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.ImplV3VariableProcessor;
 import dev.ngspace.hudder.hudderv3.TokenizedCodeBlock;
 import dev.ngspace.hudder.hudderv3.V3VariableProcessor;
@@ -26,13 +30,19 @@ import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.asm.V3ExecuteMethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
 
-public abstract class AV3Compiler extends AVarTextCompiler {
+public abstract class AV3Compiler extends AVarTextCompiler implements Binder {
 	
 	public Map<String, CachedCompiler> cache = new HashMap<String, CachedCompiler>();
 	
 	public V3VariableProcessor variableProcessor = new ImplV3VariableProcessor();
 
 	public boolean system_variables = true;
+	
+	protected AV3Compiler() {
+		FunctionAndConsumerAPI.getInstance().applyFunctionsAndConsumers(this);
+		HudderAPIFunctions.bindAllAPIFunctions(this);
+		HudderAPIMethods.bindAllAPIMethods(this);
+	}
 	
 	@Override
 	public void compileFile(String text, String filepath) throws CompileException {
@@ -43,12 +53,9 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 		}
 		try {
 		
-			V3ClassWriter classWriter = new V3ClassWriter("dev/ngspace/hudder/hudderv3/GeneratedClass", filepath);
+			V3ClassWriter classWriter = new V3ClassWriter("dev/ngspace/hudder/hudderv3/GeneratedClass",
+					filepath);
 			classWriter.createInit();
-			
-			FunctionAndConsumerAPI.getInstance().applyFunctionsAndConsumers(classWriter);
-			HudderAPIFunctions.bindAllAPIFunctions(classWriter);
-			HudderAPIMethods.bindAllAPIMethods(classWriter);
 			
 			V3ExecuteMethodWriter executeMethod = classWriter.createExecuteMethod("execute", new Class<?>[] {
 					HudderConfig.class,
@@ -140,5 +147,19 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 		system_variables = true;
 		cache.clear();
 		super.resetState();
+	}
+
+	@Override
+	public void bindConsumer(BindableConsumer cons, String... names) {
+		for (String name : names) {
+			HudderV3Helper.api_consumers.putIfAbsent("api_consumer_" + name.toLowerCase(), cons);
+		}
+	}
+	
+	@Override
+	public void bindFunction(BindableFunction cons, String... names) {
+		for (String name : names) {
+			HudderV3Helper.api_functions.putIfAbsent("api_function_" + name.toLowerCase(), cons);
+		}
 	}
 }

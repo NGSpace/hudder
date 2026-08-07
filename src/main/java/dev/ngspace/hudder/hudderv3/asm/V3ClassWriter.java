@@ -16,12 +16,11 @@ import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableConsumer;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableFunction;
-import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.Binder;
 import dev.ngspace.hudder.compilers.HudderV3Compiler;
 import dev.ngspace.hudder.hudderv3.GeneratedCompiler;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 
-public class V3ClassWriter implements Binder {
+public class V3ClassWriter {
 	
 	public ClassWriter classWriter;
 	public String classname;
@@ -155,20 +154,6 @@ public class V3ClassWriter implements Binder {
 					+ "Ldev/ngspace/hudder/api/functionsandconsumers/FunctionAndConsumerAPI$BindableConsumer;",
 					false);
 			init.putField(func, BindableConsumer.class);
-		}
-	}
-
-	@Override
-	public void bindConsumer(BindableConsumer cons, String... names) {
-		for (String name : names) {
-			HudderV3Helper.api_consumers.putIfAbsent("api_consumer_" + name.toLowerCase(), cons);
-		}
-	}
-	
-	@Override
-	public void bindFunction(BindableFunction cons, String... names) {
-		for (String name : names) {
-			HudderV3Helper.api_functions.putIfAbsent("api_function_" + name.toLowerCase(), cons);
 		}
 	}
 	
