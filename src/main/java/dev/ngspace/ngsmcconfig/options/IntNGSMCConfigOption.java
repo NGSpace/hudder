@@ -35,7 +35,10 @@ public class IntNGSMCConfigOption extends AbstractTextFieldNGSMCConfigOption<Int
 		};
 	}
 	
-	@SuppressWarnings({ "deprecation" })
+	/**
+	 * @deprecated
+	 */
+	@Deprecated(since = "10.1.0", forRemoval = true)
 	public static AbstractNGSMCConfigOptionBuilder<Integer> builder(int value, Component name) {
 	    return fluentBuilder(value, name);
 	}

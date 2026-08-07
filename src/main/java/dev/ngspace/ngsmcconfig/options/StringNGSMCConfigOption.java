@@ -17,8 +17,11 @@ public class StringNGSMCConfigOption extends AbstractTextFieldNGSMCConfigOption<
 			return true;
 		};
 	}
-
-	@SuppressWarnings({ "deprecation" })
+	
+	/**
+	 * @deprecated
+	 */
+	@Deprecated(since = "10.1.0", forRemoval = true)
 	public static AbstractNGSMCConfigOptionBuilder<String> builder(String value, Component name) {
 	    return fluentBuilder(value, name);
 	}

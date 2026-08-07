@@ -80,26 +80,6 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 				.setSaveOperation(b->config.enabled=b)
 				.setComponentProvider(enabledDisabled)
 				.build());
-//		general.addOption(StringNGSMCConfigOption.fluentBuilder(config.mainfile, Component.translatable("hudder.general.mainfile"))
-//				.setHoverComponent(Component.translatable("hudder.general.mainfile.tooltip"))
-//				.setDefaultValue("hud.hud")
-//				.setSaveOperation(s->config.mainfile=s)
-//				.setValidator(val->{
-//					try {
-//						if (!HudFileUtils.exists(val))
-//							return Component.translatable("hudder.general.mainfile.error");
-//					} catch (SecurityException | IOException e) {
-//						e.printStackTrace();
-//					}
-//					return null;
-//				})
-//				.setWarningProvider(file->{
-//					if (Compilers.getEntryFromDisplayName(comp.get()).unstable())
-//						return Component.translatable("hudder.general.compilertype.unstable_warning", comp.get());
-//					return Compilers.getCompilerFromDisplayname(comp.get()).isValidFilePath(file)?null:
-//						Component.translatable("hudder.general.mainfile.unsupportedformat",comp.get(),file);
-//				})
-//				.build());
 		general.addOption(DropdownNGSMCConfigOption.fluentBuilder(Compilers.getDisplayNameFromCompilerName(Hudder.config.compilerName()),
 					Component.translatable("hudder.general.compilertype"),
 					Compilers.entries().stream()

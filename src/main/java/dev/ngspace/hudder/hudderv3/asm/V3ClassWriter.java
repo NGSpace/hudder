@@ -22,6 +22,8 @@ import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 
 public class V3ClassWriter {
 	
+	public static final ByteArrayClassLoader V3_CLASS_LOADER = new ByteArrayClassLoader(V3ClassWriter.class.getClassLoader());
+	
 	public ClassWriter classWriter;
 	public String classname;
 	public V3MethodWriter init;
@@ -119,9 +121,8 @@ public class V3ClassWriter {
 				e.printStackTrace();
 			} 
 		}
-		ByteArrayClassLoader classLoader = new ByteArrayClassLoader(getClass().getClassLoader());
 		
-		return classLoader.define(classname.replace('/', '.'), bytecode);
+		return V3_CLASS_LOADER.define(classname.replace('/', '.'), bytecode);
 	}
 	private void loadFunctions() {
 		for (String name : calledApiFunctions) {

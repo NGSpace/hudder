@@ -13,8 +13,11 @@ public class TextDescriptionNGSMCConfigOption extends AbstractNGSMCConfigOption<
 		super("", "", text, _->{}, _->null,_->null);
 		
 	}
-
-	@SuppressWarnings({ "deprecation" })
+	
+	/**
+	 * @deprecated
+	 */
+	@Deprecated(since = "10.1.0", forRemoval = true)
 	public static AbstractNGSMCConfigOptionBuilder<String> builder(Component name) {
 	    return fluentBuilder(name);
 	}

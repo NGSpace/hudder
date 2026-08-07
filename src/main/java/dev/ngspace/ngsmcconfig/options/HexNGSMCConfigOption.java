@@ -48,7 +48,10 @@ public class HexNGSMCConfigOption extends AbstractNGSMCConfigOption<Integer> {
 		return new NGSMCConfigEntry(widget, text, this, true);
 	}
 	
-	@SuppressWarnings({ "deprecation" })
+	/**
+	 * @deprecated
+	 */
+	@Deprecated(since = "10.1.0", forRemoval = true)
 	public static AbstractNGSMCConfigOptionBuilder<Integer> builder(Integer value, Component name) {
 	    return fluentBuilder(value, name);
 	}

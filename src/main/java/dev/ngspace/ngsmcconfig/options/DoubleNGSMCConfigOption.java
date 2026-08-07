@@ -35,7 +35,10 @@ public class DoubleNGSMCConfigOption extends AbstractTextFieldNGSMCConfigOption<
 		};
 	}
 	
-	@SuppressWarnings({ "deprecation" })
+	/**
+	 * @deprecated
+	 */
+	@Deprecated(since = "10.1.0", forRemoval = true)
 	public static AbstractNGSMCConfigOptionBuilder<Double> builder(double value, Component name) {
 	    return fluentBuilder(value, name);
 	}

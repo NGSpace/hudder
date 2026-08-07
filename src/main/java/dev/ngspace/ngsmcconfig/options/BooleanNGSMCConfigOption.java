@@ -53,7 +53,10 @@ public class BooleanNGSMCConfigOption extends AbstractNGSMCConfigOption<Boolean>
         widget.setWidth(Math.clamp(Minecraft.getInstance().font.width(widget.getMessage())+24l, 20, 100));
 	}
 	
-	@SuppressWarnings({ "deprecation" })
+	/**
+	 * @deprecated
+	 */
+	@Deprecated(since = "10.1.0", forRemoval = true)
 	public static AbstractNGSMCConfigOptionBuilder<Boolean> builder(boolean value, Component name) {
 	    return fluentBuilder(value, name);
 	}
