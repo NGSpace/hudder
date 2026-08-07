@@ -2,8 +2,10 @@ package dev.ngspace.ngsmcconfig.api;
 
 import java.io.File;
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import dev.ngspace.ngsmcconfig.gui.NGSMCConfigEntry;
@@ -22,6 +24,7 @@ public class NGSMCConfigBuilder {
 	URI docsUri;
 	File configfile;
 	Component configButtonText = Component.translatable("ngsmcconfig.config");
+	Consumer<List<Path>> dragAndDrop = _->{};
 
 	public NGSMCConfigBuilder(Screen parent) {
 		this.parent = parent;
@@ -71,13 +74,13 @@ public class NGSMCConfigBuilder {
 		
 		if (category.customWidget()!=null) {
 			return new NGSMCConfigOptionsWidgetScreen(parent, categories, category, writeoperation, docsUri,
-					configfile, null, configButtonText);
+					configfile, null, configButtonText, dragAndDrop);
 		}
 		if (category.customAction()!=null) {
 			category.customAction().run();
 		}
 		return new NGSMCConfigOptionsScreen(parent, categories, category, writeoperation, docsUri,
-				configfile, null, configButtonText);
+				configfile, null, configButtonText, dragAndDrop);
 	}
 
 	public void setWriteOperation(Runnable writeoperation) {
@@ -102,6 +105,10 @@ public class NGSMCConfigBuilder {
 
 	public void setConfigButtonText(Component configButtonText) {
 		this.configButtonText = configButtonText;
+	}
+	
+	public void setDragAndDropConsumer(Consumer<List<Path>> dragAndDrop) {
+		this.dragAndDrop = dragAndDrop;
 	}
 
 	public void addCustomButton(Component title, NGSMCConfigIcon icon, Runnable runnable) {

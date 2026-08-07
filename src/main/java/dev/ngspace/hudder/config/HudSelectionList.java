@@ -10,6 +10,7 @@ import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import dev.ngspace.hudder.compilers.utils.Compilers;
 import dev.ngspace.hudder.config.HudSelectionList.HudEntry;
 import dev.ngspace.hudder.utils.HudFileUtils;
+import dev.ngspace.hudder.utils.ResourceReloadListener;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigIcon;
 import dev.ngspace.ngsmcconfig.gui.NGSMCConfigButton;
 import net.minecraft.ChatFormatting;
@@ -21,24 +22,32 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 
-public class HudSelectionList extends ObjectSelectionList<HudEntry> {
+public class HudSelectionList extends ObjectSelectionList<HudEntry> implements ResourceReloadListener {
 	
 	private HudderUserSettings config;
 	public String comp;
+	public File source;
 	
 	// There are more formats but those are the only ones that matter, as far as I
 	// am aware minecraft only supports those formats
 	private static final Set<String> IMAGE_EXTENSIONS = Set.of("png", "jpg", "jpeg");
 	
-	public HudSelectionList(Minecraft minecraft, File folder, HudderUserSettings config) {
+	public HudSelectionList(Minecraft minecraft, File source, HudderUserSettings config) {
 		super(minecraft, 0, 0, 0, 18);
 		this.config = config;
+		this.source = source;
 		comp = Compilers.findEntryFromName(config.compilername).orElse(Compilers.getEntryFromName("hudder"))
 				.displayname();
 		
 		addEntry(new TitleEntry(Component.translatable("hudder.mainfile.title"),
 				Component.translatable("hudder.mainfile.subtitle")), 24);
 		
+		loadHuds(source);
+		
+		HudFileUtils.addReloadResourcesListener(this);
+	}
+	
+	private void loadHuds(File folder) {
 		for (File hud : folder.listFiles()) {
 			if (hud.isDirectory() && isEmptyOrImagesOnly(hud)) {
 				continue;
@@ -46,12 +55,12 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> {
 			String name = hud.getName();
 			addEntry(name, hud, Compilers.getSupportedCompilersForFilepath(name), name.equals(config.mainfile));
 		}
-		var selected = getSelected();
-		if (selected == null)
-			addEntry(config.mainfile, new File(config.mainfile),
-					Compilers.getSupportedCompilersForFilepath(config.mainfile), true);
+//		var selected = getSelected();
+//		if (selected == null)
+//			addEntry(config.mainfile, new File(config.mainfile),
+//					Compilers.getSupportedCompilersForFilepath(config.mainfile), true);
 	}
-	
+
 	private static boolean isEmptyOrImagesOnly(File directory) {
 		File[] contents = directory.listFiles();
 		
@@ -280,5 +289,11 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> {
 		String file = selected != null ? selected.filepath : "";
 		return Compilers.getCompilerFromDisplayname(comp).isValidFilePath(file) ? null
 				: Component.translatable("hudder.mainfile.unsupportedformat", comp, file);
+	}
+
+	@Override
+	public void run() throws IOException {
+		clearEntries();
+		loadHuds(source);
 	}
 }

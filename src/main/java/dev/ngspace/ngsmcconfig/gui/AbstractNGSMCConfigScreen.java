@@ -2,7 +2,9 @@ package dev.ngspace.ngsmcconfig.gui;
 
 import java.io.File;
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.function.Consumer;
 
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigIcon;
@@ -34,12 +36,13 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 	protected Runnable writeoperation;
 	protected URI docsUri;
 	protected File configfile;
+	protected Consumer<List<Path>> dragAndDrop;
 	protected final AbstractNGSMCConfigScreen root;
 	protected final Component configButtonText;
 
 	protected AbstractNGSMCConfigScreen(Screen parent, List<NGSMCConfigCategory> categories,
 			Runnable writeoperation, URI docsUri, File configfile, AbstractNGSMCConfigScreen root,
-			Component configButtonText) {
+			Component configButtonText, Consumer<List<Path>> dragAndDrop) {
 		super(Component.literal("NGSMCConfig"));
 		this.categories = categories;
 		this.parent = parent;
@@ -48,6 +51,7 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		this.configfile = configfile;
 		this.root = root == null ? this : root;
 		this.configButtonText = configButtonText;
+		this.dragAndDrop = dragAndDrop;
 	}
 	
 	protected AbstractNGSMCConfigScreen(AbstractNGSMCConfigScreen parent, AbstractNGSMCConfigScreen root) {
@@ -59,6 +63,7 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		this.configfile = parent.configfile;
 		this.root = root == null ? this : root;
 		this.configButtonText = parent.configButtonText;
+		this.dragAndDrop = parent.dragAndDrop;
 	}
 	@Override
 	protected void init() {
@@ -213,6 +218,11 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 				if (option.edited)
 					return option.edited;
 		return false;
+	}
+	
+	@Override
+	public void onFilesDrop(List<Path> files) {
+		dragAndDrop.accept(files);
 	}
 	
 	@Override

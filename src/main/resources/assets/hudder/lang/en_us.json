@@ -37,7 +37,7 @@
 
 	"hudder.mainfile":"Huds",
 	"hudder.mainfile.title":"Available huds",
-	"hudder.mainfile.subtitle":"Select or edit a hud",
+	"hudder.mainfile.subtitle":"Select, edit or drag&drop a hud",
 	"hudder.mainfile.tooltip":"Change the main hud file.\u00A77\nThe file must be located in the \u00A76.minecraft/config/Hudder\u00A77 folder.",
 	"hudder.mainfile.doesntexist":"Hud %s does not exist in the huds folder.",
 	"hudder.mainfile.noselection":"No hud selected.",

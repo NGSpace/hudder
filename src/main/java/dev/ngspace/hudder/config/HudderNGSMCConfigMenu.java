@@ -1,14 +1,20 @@
 package dev.ngspace.hudder.config;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.function.Function;
+
+import org.apache.commons.io.IOUtils;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.utils.Compilers;
 import dev.ngspace.hudder.compilers.utils.Compilers.CompilerEntry;
+import dev.ngspace.hudder.main.HudderTickEvent;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigBuilder;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
@@ -52,6 +58,22 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 		builder.addCustomWidgetCategory(Component.translatable("hudder.mainfile"),
 				new NGSMCConfigIcon.SpriteIcon("items", "item/map"),
 				widget, widget::save, widget::reset, widget::error, widget::warning);
+		builder.setDragAndDropConsumer(files->{
+			for (Path p : files) {
+				HudderTickEvent.TEMP_DISABLE = true;
+				try (var input = new FileInputStream(p.toFile())) {
+					try (var output = new FileOutputStream(new File(HudFileUtils.FOLDER + p.getFileName()))) {
+						IOUtils.copy(input, output);
+					}
+				} catch (IOException e) {
+					Hudder.showWarningToast(Component.literal("Hudder is deprecating global variables!"),
+							Component.literal("Please stop using them as they'll stop working in a future release."));
+					if (Hudder.IS_DEBUG) e.printStackTrace();
+				} finally {
+					HudderTickEvent.TEMP_DISABLE = false;
+				}
+			}
+		});
 		
 		
 		
