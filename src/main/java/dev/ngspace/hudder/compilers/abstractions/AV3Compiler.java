@@ -18,6 +18,7 @@ import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.hudderv3.GeneratedCompiler;
 import dev.ngspace.hudder.hudderv3.HudderAPIFunctions;
 import dev.ngspace.hudder.hudderv3.HudderAPIMethods;
+import dev.ngspace.hudder.hudderv3.ImplV3VariableProcessor;
 import dev.ngspace.hudder.hudderv3.TokenizedCodeBlock;
 import dev.ngspace.hudder.hudderv3.V3VariableProcessor;
 import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
@@ -29,11 +30,13 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 	
 	public Map<String, CachedCompiler> cache = new HashMap<String, CachedCompiler>();
 	
+	public V3VariableProcessor variableProcessor = new ImplV3VariableProcessor();
+
+	public boolean system_variables = true;
+	
 	protected AV3Compiler() {
 		HudFileUtils.addReloadResourcesListener(cache::clear);
 	}
-	
-	public V3VariableProcessor variableProcessor = new V3VariableProcessor();
 	
 	@Override
 	public void compileFile(String text, String filepath) throws CompileException {
@@ -124,5 +127,15 @@ public abstract class AV3Compiler extends AVarTextCompiler {
 	
 	
 	
+	public V3VariableProcessor getVariableProcessor() {
+		return variableProcessor;
+	}
+
+	public void setVariableProcessor(V3VariableProcessor variableProcessor) {
+		this.variableProcessor = variableProcessor;
+	}
+
+
+
 	public static record CachedCompiler(Object compiledhud, GeneratedCompiler generatedCompiler, CompileException exception) {}
 }

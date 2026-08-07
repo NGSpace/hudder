@@ -29,16 +29,24 @@ public class MethodExecutionInstruction extends Instruction {
 		this.builder = builder;
 		this.comp = comp;
 		this.apiCall = HudderV3Helper.api_consumers.containsKey("api_consumer_" + builder[0].toLowerCase().trim());
+		
+		if ("no_sys_var".equalsIgnoreCase(builder[0].trim())) {
+			comp.system_variables = false;
+		} else if ("sys_var".equalsIgnoreCase(builder[0].trim())) {
+			comp.system_variables = true;
+		}
 	}
 
 	@Override
 	public void visit(V3ExecuteMethodWriter methodWriter, V3ClassWriter classWriter, Label breaklabel)
 			throws CompileException {
-		switch (builder[0]) {
+		switch (builder[0].toLowerCase().trim()) {
 			case "return":
 				comp.parseVariable(builder[1], pos).visit(methodWriter);
 				methodWriter.astore(methodWriter.return_value_index);
 				methodWriter.jumpto(methodWriter.finalLabel);
+				break;
+			case "no_sys_var", "sys_var":
 				break;
 			case "mute":
 				methodWriter.setMuted(true);
