@@ -55,10 +55,6 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 			String name = hud.getName();
 			addEntry(name, hud, Compilers.getSupportedCompilersForFilepath(name), name.equals(config.mainfile));
 		}
-//		var selected = getSelected();
-//		if (selected == null)
-//			addEntry(config.mainfile, new File(config.mainfile),
-//					Compilers.getSupportedCompilersForFilepath(config.mainfile), true);
 	}
 
 	private static boolean isEmptyOrImagesOnly(File directory) {
