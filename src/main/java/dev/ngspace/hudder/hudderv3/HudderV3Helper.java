@@ -174,11 +174,11 @@ public class HudderV3Helper {
 
 		Class<?> objectClass = object.getClass();
 		if (objectClass.isPrimitive()) {
-			throw new ExecutionException("Can not read properties of Numbers, Booleans and Chars : "
-					+ objectExpression, -1, -1);
+			throw new SecurityException("Can not read properties of Numbers, Booleans and Chars : "
+					+ objectExpression);
 		}
 		if (!HudderConfig.isAccessible(objectClass)) {
-			throw new ExecutionException("Access to this type is not allowed", -1, -1);
+			throw new SecurityException("Access to this type is not allowed");
 		}
 		return objectClass;
 	}

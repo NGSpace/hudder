@@ -28,7 +28,7 @@ public class MethodExecutionInstruction extends Instruction {
 		super(pos);
 		this.builder = builder;
 		this.comp = comp;
-		this.apiCall = HudderV3Helper.api_consumers.containsKey("api_consumer_" + builder[0].toLowerCase().trim());
+		this.apiCall = HudderV3Helper.api_consumers.containsKey("api_consumer_" + builder[0].trim());
 		
 		if ("no_sys_var".equalsIgnoreCase(builder[0].trim())) {
 			comp.system_variables = false;
@@ -95,9 +95,9 @@ public class MethodExecutionInstruction extends Instruction {
 
 				
 				if (apiCall) {
-					methodWriter.classWriter.loadApiConsumer(builder[0].toLowerCase().trim());
+					methodWriter.classWriter.loadApiConsumer(builder[0].trim());
 					methodWriter.aload(0);
-					methodWriter.getField("api_consumer_"+builder[0].toLowerCase().trim(), BindableConsumer.class);
+					methodWriter.getField("api_consumer_"+builder[0].trim(), BindableConsumer.class);
 					methodWriter.aload(0);
 					methodWriter.getField("uimanager", ArrayElementManager.class);
 					methodWriter.aload(0);
@@ -141,13 +141,13 @@ public class MethodExecutionInstruction extends Instruction {
 	}
 	
 	protected void visitUserConsumer(V3MethodWriter methodWriter, int array_index) throws CompileException {
-		if (methodWriter.classWriter.user_methods.containsKey(builder[0].toLowerCase().trim())) {
+		if (methodWriter.classWriter.user_methods.containsKey(builder[0].trim())) {
 			methodWriter.aload(0);
 			methodWriter.aload(1);
 			methodWriter.aload(2);
 			methodWriter.aload(3);
 			methodWriter.aload(array_index);
-			methodWriter.callSelf(methodWriter.classWriter.user_methods.get(builder[0].toLowerCase().trim()),
+			methodWriter.callSelf(methodWriter.classWriter.user_methods.get(builder[0].trim()),
 					"(Ldev/ngspace/hudder/config/HudderConfig;"
 					+ "Ljava/lang/String;"
 					+ "Ljava/lang/String;"

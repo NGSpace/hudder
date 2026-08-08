@@ -19,6 +19,24 @@ END_TEST;
 
 |TEST:
 
+@name=No system variables 
+@mode=normal
+
+input:
+	;no_sys_var;
+	{fps=10}
+end_input;
+
+output:
+	10
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
 @name=Variable Registry
 @mode=normal
 

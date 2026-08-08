@@ -124,7 +124,7 @@ public class V3ClassWriter {
 	}
 	private void loadFunctions() {
 		for (String name : calledApiFunctions) {
-			String func = "api_function_" + name.toLowerCase();
+			String func = "api_function_" + name;
 
 			if (!generatedApiFunctions.add(func)) {
 				continue;
@@ -141,7 +141,7 @@ public class V3ClassWriter {
 	
 	public void loadConsumers() {
 		for (String name : calledApiConsumers) {
-			String func = "api_consumer_" + name.toLowerCase();
+			String func = "api_consumer_" + name;
 
 			if (!generatedApiConsumers.add(func)) {
 				continue;

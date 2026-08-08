@@ -17,6 +17,7 @@ import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
 import dev.ngspace.hudder.compilers.utils.Compilers;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.testing.HudderTestReader.Result;
+import dev.ngspace.hudder.testing.HudderUnitTest.Mode;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
@@ -38,7 +39,8 @@ public class HudderUnitTester {
 	    	String[] inputandExpectation = content[1].split("\\n\\|\\|EXPECT\\|\\|\\n");
 	    	if (UnitTests.containsKey(content[0]))
 	    		Hudder.alert("Repeating key: " + content[0]);
-	    	UnitTests.put(content[0], new HudderUnitTest(inputandExpectation[0], inputandExpectation[1], filename));
+	    	UnitTests.put(content[0], new HudderUnitTest(inputandExpectation[0], inputandExpectation[1],
+	    			filename, Map.of(), Mode.NORMAL));
 	    }
 	    HudderUnitTestingCommand.UnitTestsSuggestionProvider.suggestions = new ArrayList<String>(UnitTests.keySet());
 	}
@@ -52,7 +54,8 @@ public class HudderUnitTester {
 	    for (String st : conds) {
 	    	if (st.isBlank()) continue;
 	    	Result result = HudderTestReader.process(st);
-	    	UnitTests.put(result.getString("name"), new HudderUnitTest(result.input(), result.output(), filename));
+	    	UnitTests.put(result.getString("name"), new HudderUnitTest(result.input(), result.output(),
+	    			filename, result.metadata(), Mode.valueOf(result.getString("mode").toUpperCase())));
 	    }
 	}
 	

@@ -25,16 +25,16 @@ public class FunctionCallVariableVisitor extends VariableVisitor {
 		super(comp, pos);
 		this.args = args;
 		this.funcName = funcName;
-		this.apiCall = HudderV3Helper.api_functions.containsKey("api_function_" + funcName.toLowerCase().trim());
+		this.apiCall = HudderV3Helper.api_functions.containsKey("api_function_" + funcName.trim());
 	}
 
 	@Override
 	public void visit(V3MethodWriter methodWriter) throws CompileException {
 		
 		if (apiCall) {
-			methodWriter.classWriter.loadApiFunction(funcName.toLowerCase().trim());
+			methodWriter.classWriter.loadApiFunction(funcName.trim());
 			methodWriter.aload(0);
-			methodWriter.getField("api_function_"+funcName.toLowerCase().trim(), BindableFunction.class);
+			methodWriter.getField("api_function_"+funcName.trim(), BindableFunction.class);
 			methodWriter.aload(0);
 			methodWriter.getField("uimanager", ArrayElementManager.class);
 			methodWriter.aload(0);

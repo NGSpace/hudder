@@ -173,7 +173,8 @@ END_TEST;
 |TEST:
 
 @name=Uncertain function
-@mode=normal
+@mode=error
+@exception_type=CompileException
 
 input:
 	#def divide, num1, num2
