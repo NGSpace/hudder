@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.function.Function;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import dev.ngspace.hudder.Hudder;
@@ -60,10 +61,22 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 				widget, widget::save, widget::reset, widget::error, widget::warning);
 		builder.setDragAndDropConsumer(files->{
 			for (Path p : files) {
-				HudderTickEvent.TEMP_DISABLE = true;
-				try (var input = new FileInputStream(p.toFile())) {
-					try (var output = new FileOutputStream(new File(HudFileUtils.FOLDER + p.getFileName()))) {
-						IOUtils.copy(input, output);
+				try {
+					HudderTickEvent.TEMP_DISABLE = true;
+					File dest = new File(HudFileUtils.FOLDER + p.getFileName());
+					
+					if (p.toFile().exists()) {
+						throw new IOException("Hud already exists");
+					}
+					
+					if (p.toFile().isDirectory()) {
+						FileUtils.copyDirectory(p.toFile(), dest);
+					} else {
+						try (var input = new FileInputStream(p.toFile())) {
+							try (var output = new FileOutputStream(dest)) {
+								IOUtils.copy(input, output);
+							}
+						}
 					}
 				} catch (IOException e) {
 					Hudder.showWarningToast(Component.literal("Failed to copy hud"),

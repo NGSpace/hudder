@@ -172,8 +172,7 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 			double mouseY = event.y();
 			
 			boolean clickedEdit = event.button() == 0 && filepath != null
-					&& mouseX >= getContentRight() - EDIT_BUTTON_WIDTH && mouseX < getContentRight()
-					&& mouseY >= getContentY() && mouseY < getContentBottom();
+					&& editbutton.isMouseOver(mouseX, mouseY);
 			
 			if (clickedEdit) {
 				for (String compiler : compilers) {
