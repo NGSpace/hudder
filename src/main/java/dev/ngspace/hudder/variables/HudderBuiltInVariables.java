@@ -8,6 +8,7 @@ import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.variableregistry.DataVariable;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.api.variableregistry.VariableTypes;
+import dev.ngspace.hudder.main.HudCompilationManager;
 import dev.ngspace.hudder.variables.advanced.EffectData;
 import dev.ngspace.hudder.variables.data.ClientData;
 import dev.ngspace.hudder.variables.data.ComputerData;
@@ -87,6 +88,7 @@ public class HudderBuiltInVariables {
 		register(_->Hudder.config.limitrate(), BOOLEAN, "limitrate");
 		register(_->Hudder.config.disableHudpackVersionCheck(), BOOLEAN, "disable_hudpack_version_check");
 		register(_->Hudder.config.disableWarnings(), BOOLEAN, "disable_warnings");
+		register(_->HudCompilationManager.isFirstRunSinceCacheClear, BOOLEAN, "first_execution");
 		
 		// Strings
 		register(_->Hudder.config.compilerName(), STRING, "compilertype");
