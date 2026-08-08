@@ -34,4 +34,9 @@ public class JavaScriptCompiler extends AScriptingLanguageCompiler {
 	public boolean setupHudSettings(NGSMCConfigCategory hudsettings) {
 		return false;
 	}
+	
+	@Override
+	public String[] getSupportedFileFormats() {
+		return new String[] {"js"};
+	}
 }

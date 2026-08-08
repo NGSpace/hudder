@@ -1,0 +1,102 @@
+|TEST:
+
+@name=For loops in array
+@mode=normal
+
+input:
+	;mute;
+	{j=""}
+	#for i in [0,1,2,3,4,5,6,"7",8,9,10]
+		{j=j+i}
+	;topleft;
+	{j}
+end_input;
+
+output:
+	012345678910
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Predefined array creation
+@mode=normal
+
+input:
+	{array(3)}
+	{array(3,1)}
+	{r=array(2,"r")}
+	{r[1]="t"}
+	{r}
+end_input;
+
+output:
+	[0, 0, 0]
+	[1.0, 1.0, 1.0]
+	[r, r]
+	t
+	[r, t]
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Multi Line Arrays
+@mode=normal
+
+input:
+	{[1,
+	1]}
+end_input;
+
+output:
+	[1.0, 1.0]
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Array length
+@mode=normal
+
+input:
+	{length([1,"4"])}
+end_input;
+
+output:
+	2
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=2D Arrays
+@mode=normal
+
+input:
+	{2darr=[[0,1],[2,3]]}
+	{2darr[1][0]}
+	{2darr[1][1]=4}
+	{2darr}
+end_input;
+
+output:
+	[[0.0, 1.0], [2.0, 3.0]]
+	2
+	4
+	[[0.0, 1.0], [2.0, 4.0]]
+end_output;
+
+END_TEST;

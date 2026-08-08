@@ -1,7 +1,6 @@
 package dev.ngspace.hudder.utils;
 
 import java.util.Collection;
-import java.util.stream.Stream;
 
 import dev.ngspace.hudder.exceptions.ExecutionException;
 
@@ -46,10 +45,16 @@ public class ImplObjectWrapper<T> implements ObjectWrapper {
 	}
 
 	public static <T> ObjectWrapper[] fromArray(T[] values, int line, int col) {
-		return Stream.of(values).map(o->new ImplObjectWrapper<>(o, line, col)).toList().toArray(new ObjectWrapper[0]);
+	    ObjectWrapper[] result = new ObjectWrapper[values.length];
+
+	    for (int i = 0; i < values.length; i++) {
+	        result[i] = new ImplObjectWrapper<>(values[i], line, col);
+	    }
+
+	    return result;
 	}
 
 	public static <T> ObjectWrapper[] fromArray(T[] values) {
-		return Stream.of(values).map(ImplObjectWrapper::new).toList().toArray(new ObjectWrapper[0]);
+		return fromArray(values, -1, -1);
 	}
 }

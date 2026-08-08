@@ -19,7 +19,8 @@ public class StringInstruction extends Instruction {
 	@Override
 	public void visit(V3ExecuteMethodWriter methodWriter, V3ClassWriter classWriter, Label breaklabel)
 			throws CompileException {
-		methodWriter.appendStringConstant(string);
+		if (!string.isEmpty())
+			methodWriter.appendStringConstant(string);
 	}
 	
 }

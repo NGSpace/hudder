@@ -3,9 +3,12 @@ package dev.ngspace.hudder.hudderv3.asm;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
@@ -13,28 +16,36 @@ import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableConsumer;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableFunction;
-import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.Binder;
 import dev.ngspace.hudder.compilers.HudderV3Compiler;
 import dev.ngspace.hudder.hudderv3.GeneratedCompiler;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 
-public class V3ClassWriter implements Binder {
+public class V3ClassWriter {
 	
 	public ClassWriter classWriter;
 	public String classname;
+	public V3MethodWriter init;
+	private final Set<String> generatedApiFunctions = new HashSet<>();
+	private final Set<String> generatedApiConsumers = new HashSet<>();
+	private final Set<String> calledApiConsumers = new HashSet<>();
+	private final Set<String> calledApiFunctions = new HashSet<>();
 	
-	public V3ClassWriter(String classname) {
+	public Map<String, String> user_methods = new HashMap<String, String>();
+	public Map<String, String> user_functions = new HashMap<String, String>();
+	
+	public V3ClassWriter(String classname, String debugfilename) {
 		this.classname = classname;
 		classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
 		classWriter.visit(Opcodes.V25, Opcodes.ACC_PUBLIC, classname, null,
 				"dev/ngspace/hudder/compilers/abstractions/AVarTextCompiler", new String[] {
 						Type.getInternalName(GeneratedCompiler.class)
 				});
-	    
+		classWriter.visitSource(debugfilename, null);
+		
 	    initPublicField("uimanager", ArrayElementManager.class);
 	}
 	
-	private void initPublicField(String name, Class<?> type) {
+	public void initPublicField(String name, Class<?> type) {
 		classWriter.newField(classname, name, Type.getDescriptor(type));
 		
 	    classWriter.visitField(
@@ -58,12 +69,10 @@ public class V3ClassWriter implements Binder {
 	    ).visitEnd();
 
 		
-		MethodVisitor methodVisitor = classWriter.visitMethod(Opcodes.ACC_PUBLIC, "<init>",
-				"(Ldev/ngspace/hudder/compilers/HudderV3Compiler;)V", null, null);
-		methodVisitor.visitCode();
+		init = createMethod("<init>", new Class<?>[] {HudderV3Compiler.class}, null, null, null);
 
-		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
-		methodVisitor.visitMethodInsn(
+		init.aload(0);
+		init.methodVisitor.visitMethodInsn(
 		        Opcodes.INVOKESPECIAL,
 		        "dev/ngspace/hudder/compilers/abstractions/AVarTextCompiler",
 		        "<init>",
@@ -71,15 +80,18 @@ public class V3ClassWriter implements Binder {
 		        false
 		);
 		
-		// Init v3compiler field
-		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
-		methodVisitor.visitVarInsn(Opcodes.ALOAD, 1);
-		methodVisitor.visitFieldInsn(Opcodes.PUTFIELD, classname, "v3compiler",
-				Type.getDescriptor(HudderV3Compiler.class));
+		// Init UIElements field
+	    
+		init.aload(0);
+		init.newAndDup(ArrayElementManager.class);
+		init.callSpecial(ArrayElementManager.class, "<init>", "()V", false);
+		init.putField("uimanager", ArrayElementManager.class);
 		
-		methodVisitor.visitInsn(Opcodes.RETURN);
-		methodVisitor.visitMaxs(0, 0);
-		methodVisitor.visitEnd();
+		// Init v3compiler field
+		init.aload(0);
+		init.aload(1);
+		init.methodVisitor.visitFieldInsn(Opcodes.PUTFIELD, classname, "v3compiler",
+				Type.getDescriptor(HudderV3Compiler.class));
 	}
 	
 	public V3ExecuteMethodWriter createExecuteMethod(String name, Class<?>[] classes) {
@@ -92,6 +104,12 @@ public class V3ClassWriter implements Binder {
 	}
 	
 	public Class<?> toClass() {
+		
+		loadFunctions();
+		loadConsumers();
+		
+		init.end(Opcodes.RETURN);
+		
 		classWriter.visitEnd();
 		byte[] bytecode = classWriter.toByteArray();
 		if ((!new File("hudderv3output.class").exists())&&Hudder.IS_DEBUG) {
@@ -101,20 +119,48 @@ public class V3ClassWriter implements Binder {
 				e.printStackTrace();
 			} 
 		}
-		ByteArrayClassLoader classLoader = new ByteArrayClassLoader(getClass().getClassLoader());
 		
-		return classLoader.define(classname.replace('/', '.'), bytecode);
+		return new ByteArrayClassLoader(getClass().getClassLoader()).define(classname.replace('/', '.'), bytecode);
 	}
-	@Override
-	public void bindConsumer(BindableConsumer cons, String... names) {
-		for (String name : names) {
-			HudderV3Helper.api_consumers.put(name.toLowerCase(), cons);
+	private void loadFunctions() {
+		for (String name : calledApiFunctions) {
+			String func = "api_function_" + name;
+
+			if (!generatedApiFunctions.add(func)) {
+				continue;
+			}
+			initPublicField(func, BindableFunction.class);
+			init.aload(0);
+			init.loadConstant(func);
+			init.callStatic(HudderV3Helper.class, "getApiFunction", "(Ljava/lang/String;)"
+					+ "Ldev/ngspace/hudder/api/functionsandconsumers/FunctionAndConsumerAPI$BindableFunction;",
+					false);
+			init.putField(func, BindableFunction.class);
 		}
 	}
-	@Override
-	public void bindFunction(BindableFunction cons, String... names) {
-		for (String name : names) {
-			HudderV3Helper.api_functions.put(name.toLowerCase(), cons);
+	
+	public void loadConsumers() {
+		for (String name : calledApiConsumers) {
+			String func = "api_consumer_" + name;
+
+			if (!generatedApiConsumers.add(func)) {
+				continue;
+			}
+			initPublicField(func, BindableConsumer.class);
+			init.aload(0);
+			init.loadConstant(func);
+			init.callStatic(HudderV3Helper.class, "getApiConsumer", "(Ljava/lang/String;)"
+					+ "Ldev/ngspace/hudder/api/functionsandconsumers/FunctionAndConsumerAPI$BindableConsumer;",
+					false);
+			init.putField(func, BindableConsumer.class);
 		}
+	}
+	
+	public void loadApiFunction(String name) {
+		calledApiFunctions.add(name);
+	}
+	
+	public void loadApiConsumer(String name) {
+		calledApiConsumers.add(name);
 	}
 }

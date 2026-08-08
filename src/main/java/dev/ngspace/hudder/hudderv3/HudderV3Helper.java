@@ -68,15 +68,12 @@ public class HudderV3Helper {
 	    else return Double.toString(d);
 	}
 	
-	public static boolean hasApiFunction(String name) {
-		return api_functions.containsKey(name);
+
+	public static BindableFunction getApiFunction(String name) {
+		return api_functions.get(name);
 	}
-	
-	
-	public static Object callApiFunction(String name, int line, int col, ArrayElementManager uiManager,
-			AVarTextCompiler compiler, Object... values) throws ExecutionException {
-		return api_functions.get(name).invoke(uiManager, compiler,
-				ImplObjectWrapper.fromArray(values, line, col));
+	public static BindableConsumer getApiConsumer(String name) {
+		return api_consumers.get(name);
 	}
 	
 	public static boolean hasApiConsumer(String name) {
@@ -177,11 +174,11 @@ public class HudderV3Helper {
 
 		Class<?> objectClass = object.getClass();
 		if (objectClass.isPrimitive()) {
-			throw new ExecutionException("Can not read properties of Numbers, Booleans and Chars : "
-					+ objectExpression, -1, -1);
+			throw new SecurityException("Can not read properties of Numbers, Booleans and Chars : "
+					+ objectExpression);
 		}
 		if (!HudderConfig.isAccessible(objectClass)) {
-			throw new ExecutionException("Access to this type is not allowed", -1, -1);
+			throw new SecurityException("Access to this type is not allowed");
 		}
 		return objectClass;
 	}

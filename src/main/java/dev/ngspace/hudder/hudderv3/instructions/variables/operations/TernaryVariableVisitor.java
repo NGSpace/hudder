@@ -4,6 +4,7 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
+import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
@@ -14,12 +15,12 @@ public class TernaryVariableVisitor extends VariableVisitor {
 	private VariableVisitor truevalue;
 	private VariableVisitor falsevalue;
 
-	public TernaryVariableVisitor(AV3Compiler comp, String condition, String truevalue, String falsevalue)
-			throws CompileException {
-		super(comp);
-		this.condition = comp.parseVariable(condition);
-		this.truevalue = comp.parseVariable(truevalue);
-		this.falsevalue = comp.parseVariable(falsevalue);
+	public TernaryVariableVisitor(AV3Compiler comp, String condition, String truevalue, String falsevalue,
+			TextPos pos) throws CompileException {
+		super(comp, pos);
+		this.condition = comp.parseVariable(condition, pos);
+		this.truevalue = comp.parseVariable(truevalue, pos);
+		this.falsevalue = comp.parseVariable(falsevalue, pos);
 	}
 
 	@Override

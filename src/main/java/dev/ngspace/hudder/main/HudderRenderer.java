@@ -13,6 +13,7 @@ import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.uielements.AUIElement;
+import dev.ngspace.hudder.utils.HudFileUtils;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -66,6 +67,7 @@ public class HudderRenderer implements HudElement {
 	
 	protected void renderHudInformation(GuiGraphicsExtractor context, Font renderer, HudInformation text, HudderConfig info,
 			DeltaTracker delta) {
+		HudFileUtils.loadMarkedResources();
         int color = info.color();
         int bgcolor = info.backgroundcolor();
         boolean shadow = info.shadow();

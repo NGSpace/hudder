@@ -24,7 +24,7 @@ public class ConditionInstruction extends Instruction {
 			TextPos pos) throws CompileException {
 		super(pos);
 		for (int i = 0; i + 1 < conds.size(); i += 2) {
-			VariableVisitor condition = comp.parseVariable(conds.get(i));
+			VariableVisitor condition = comp.parseVariable(conds.get(i), pos);
 			
 			branches.add(prepareValue(condition, info, filename, conds.get(i + 1), comp));
 		}
@@ -36,7 +36,7 @@ public class ConditionInstruction extends Instruction {
 	private ConditionBranch prepareValue(VariableVisitor condition, HudderConfig info, String filename,
 			String source, AV3Compiler comp) throws CompileException {
 		
-		VariableVisitor variable = comp.parseVariable(source);
+		VariableVisitor variable = comp.parseVariable(source, pos);
 		
 		TokenizedCodeBlock compiledBlock = variable instanceof StringVariableVisitor string
 				? comp.compile(info, string.value, filename, pos)

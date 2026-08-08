@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.utils.testing;
+package dev.ngspace.hudder.testing;
 
 public class JavaTestObject {
 	

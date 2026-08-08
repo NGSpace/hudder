@@ -2,6 +2,7 @@ package dev.ngspace.hudder.hudderv3.instructions.variables.modifiable;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
+import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
@@ -10,8 +11,8 @@ public class DynamicVariableVisitor extends VariableVisitor {
 
 	public String variable;
 
-	public DynamicVariableVisitor(AV3Compiler comp, String variable) {
-		super(comp);
+	public DynamicVariableVisitor(AV3Compiler comp, String variable, TextPos pos) {
+		super(comp, pos);
 		this.variable = variable;
 	}
 
