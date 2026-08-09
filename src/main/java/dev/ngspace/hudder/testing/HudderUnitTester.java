@@ -27,24 +27,6 @@ public class HudderUnitTester {
 	
 	public HudderUnitTester(AVarTextCompiler compiler) {this.compiler=compiler;}
 	
-	public void loadLegacy(InputStream inputStream, String filename) throws IOException {
-		loadLegacy(IOUtils.toString(inputStream, UTF_8), filename);
-	}
-	
-	public void loadLegacy(String contents, String filename) {
-	    String[] conds = ("\n"+contents).split("\\n\\n\\|\\|INPUT\\|\\|");
-	    for (String st : conds) {
-	    	if (st.isBlank()) continue;
-	    	String[] content = st.split("\n",2);
-	    	String[] inputandExpectation = content[1].split("\\n\\|\\|EXPECT\\|\\|\\n");
-	    	if (UnitTests.containsKey(content[0]))
-	    		Hudder.alert("Repeating key: " + content[0]);
-	    	UnitTests.put(content[0], new HudderUnitTest(inputandExpectation[0], inputandExpectation[1],
-	    			filename, Map.of(), Mode.NORMAL));
-	    }
-	    HudderUnitTestingCommand.UnitTestsSuggestionProvider.suggestions = new ArrayList<String>(UnitTests.keySet());
-	}
-	
 	public void loadModern(InputStream inputStream, String filename) throws IOException {
 		loadModern(IOUtils.toString(inputStream, UTF_8), filename);
 	}
@@ -54,6 +36,8 @@ public class HudderUnitTester {
 	    for (String st : conds) {
 	    	if (st.isBlank()) continue;
 	    	Result result = HudderTestReader.process(st);
+	    	if (UnitTests.containsKey(result.getString("name")))
+	    		Hudder.alert("Repeating key: " + result.getString("name"));
 	    	UnitTests.put(result.getString("name"), new HudderUnitTest(result.input(), result.output(),
 	    			filename, result.metadata(), Mode.valueOf(result.getString("mode").toUpperCase())));
 	    }

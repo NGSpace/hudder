@@ -33,7 +33,39 @@ import net.minecraft.util.CommonColors;
 public class HudderUnitTestingCommand implements ClientCommandRegistrationCallback {
 	
 	public static final String TESTS_FOLDER = HudFileUtils.ASSETS + "tests/";
-    public HudderUnitTester hudderTester = new HudderUnitTester(Compilers.hudderV3Compiler);
+    private HudderUnitTester hudderTester = new HudderUnitTester(Compilers.hudderV3Compiler);
+    public static List<TestProvider> test_providers = new ArrayList<TestProvider>();
+    
+    @FunctionalInterface
+    public static interface TestProvider {
+    	public void addTests(HudderUnitTester tester) throws IOException;
+    }
+    
+    private static final String[] tests = {
+		"arithmetic_and_math.hud",
+		"booleans_and_conditions.hud",
+		"strings_and_text.hud",
+		"arrays_and_collections.hud",
+		"variables_and_types.hud",
+		"control_flow.hud",
+		"functions_and_methods.hud",
+		"java_and_external_apis.hud",
+		"misc.hud"
+	};
+    static {
+		test_providers.add(e->{
+			for (String test : tests) {
+				boolean shouldTest = false;
+				for (String format : e.compiler.getSupportedFileFormats()) {
+					if (test.endsWith('.' + format)) {
+						shouldTest = true;
+					}
+				}
+				if (shouldTest)
+					e.loadModern(Hudder.class.getResourceAsStream(TESTS_FOLDER + test), test);
+			}
+		});
+    }
 	
 	public HudderUnitTestingCommand() {
 		try {
@@ -109,54 +141,19 @@ public class HudderUnitTestingCommand implements ClientCommandRegistrationCallba
 								Component.literal("Could not reload unit tests").withColor(CommonColors.RED));
 					}
 					return 1;
-				}))
-				
-				.then(literal("load_tests").then(argument("path", StringArgumentType.string()).executes(context -> {
-					try {
-						String path = StringArgumentType.getString(context, "path");
-						hudderTester
-								.loadModern(getClass().getResourceAsStream(TESTS_FOLDER+path), path);
-						hudderTester.updateSuggestions();
-						context.getSource().sendFeedback(
-								Component.literal("Succesfully loaded tests").withColor(CommonColors.GREEN));
-					} catch (Exception e) {
-						Hudder.error("Could not load unit tests");
-						e.printStackTrace();
-						context.getSource().sendFeedback(
-								Component.literal("Could not load unit tests").withColor(CommonColors.RED));
-					}
-					return 1;
-				}))));
+				})));
 	}
 	
 	private void loadTests() throws IOException {
 		if (Hudder.config.getCompiler() instanceof AVarTextCompiler comp)
 			hudderTester.compiler = comp;
-		String[] tests = {
-			"arithmetic_and_math.hud",
-			"booleans_and_conditions.hud",
-			"strings_and_text.hud",
-			"arrays_and_collections.hud",
-			"variables_and_types.hud",
-			"control_flow.hud",
-			"functions_and_methods.hud",
-			"java_and_external_apis.hud",
-			"misc.hud"
-		};
-		for (String test : tests) {
-			boolean shouldTest = false;
-			for (String format : hudderTester.compiler.getSupportedFileFormats()) {
-				if (test.endsWith('.' + format)) {
-					shouldTest = true;
-				}
-			}
-			if (shouldTest)
-				hudderTester.loadModern(getClass().getResourceAsStream(TESTS_FOLDER + test), test);
-		}
+		hudderTester.UnitTests.clear();
+		for (TestProvider provider : test_providers)
+			provider.addTests(hudderTester);
 		hudderTester.updateSuggestions();
 	}
 
-	class UnitTestsSuggestionProvider implements SuggestionProvider<FabricClientCommandSource> {
+	public static class UnitTestsSuggestionProvider implements SuggestionProvider<FabricClientCommandSource> {
 		public static List<String> suggestions;
 		
 		@Override
