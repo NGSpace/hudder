@@ -51,6 +51,7 @@ public class IfElseInstuction extends Instruction {
 			
 			if (statement.condition()!=null) {
 				statement.condition().visit(methodWriter);
+				methodWriter.checkcast(Boolean.class);
 				methodWriter.booleanValue();
 				methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFEQ, nextcondition);
 			}
