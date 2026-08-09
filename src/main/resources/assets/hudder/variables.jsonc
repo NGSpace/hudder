@@ -648,7 +648,8 @@
 			},
 			{
 				"name": "first_execution",
-				"desc": "Whether this current execution is the first
+				"desc": "Whether this current execution is the first time this hud ran (Resets when clearing cache)",
+				"version": "10.2.0"
 			}
 		],
 		"Player gamemode": [
