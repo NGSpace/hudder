@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.utils.testing;
+package dev.ngspace.hudder.testing;
 
 import dev.ngspace.hudder.utils.NoAccess;
 

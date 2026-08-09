@@ -4,6 +4,7 @@ package dev.ngspace.hudder.utils;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import com.mojang.blaze3d.platform.NativeImage;
 
 import dev.ngspace.hudder.Hudder;
+import dev.ngspace.hudder.compilers.utils.Compilers;
 import dev.ngspace.hudder.main.HudCompilationManager;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.Identifier;
@@ -30,8 +32,8 @@ public class HudFileUtils {private HudFileUtils() {}
 	public static final String FABRIC_CONFIG_FOLDER = FabricLoader.getInstance().getConfigDir().toString();
 	public static final String FOLDER = FABRIC_CONFIG_FOLDER + File.separator + "hudder" + File.separator;
     public static final String ASSETS = "/assets/hudder/";
-    public static final String[] DEFAULT_HUDS = {"tutorial.hud", "hand.hud", "armorside.hud", "hud.hud", "basic.hud",
-    		"hud.js", "hotbar.js", "worldtime.js"};
+    public static final String[] DEFAULT_HUDS = {"hand.hud", "armorside.hud", "hud.hud", "basic.hud",
+    		"hud.js", "hotbar.js"};
     public static final String[] DEFAULT_TEXTURES = {"pointer.png","selection.png"};
 	
     
@@ -91,28 +93,18 @@ public class HudFileUtils {private HudFileUtils() {}
 	 */
 	public static String sanitize(String f) throws SecurityException, IOException {
 		if (!new File(f).getCanonicalFile().toPath().startsWith(new File(FOLDER).getCanonicalFile().toPath()))
-			throwError(f);
+			throw new FileNotFoundException(f + " (No such file or directory)");
 		int j = 0;
 		int k = 0;
 		for (int i = 0;i<f.length();i++) {
 			char c = f.charAt(i);
 			if (c=='.') j++;
 			else if (c=='/'||c=='\\') {
-				if (j==2&&k==0) throwError(f);
+				if (j==2&&k==0) throw new FileNotFoundException(f + " (No such file or directory)");
 				k = 0;
 			} else {j = 0;k++;}
 		}
 		return f;
-	}
-	
-	
-	
-	/**
-	 * Throw fake IO error.
-	 * @param file - the filename to add to the error
-	 */
-	private static final void throwError(String file) {
-		throw new SecurityException(file + " (No such file or directory)");
 	}
 	
 	
@@ -176,6 +168,7 @@ public class HudFileUtils {private HudFileUtils() {}
 	public static void reloadResources() throws IOException {
 		reader.clearCache();
 		loadResources(new File(FOLDER), "");
+		for (var comp : Compilers.compilers()) comp.resetState();
 		for (var listener : reloadResourcesListeners) listener.run();
 		HudCompilationManager.isFirstRunSinceCacheClear = true; // Reset the clock
 	}
@@ -204,7 +197,7 @@ public class HudFileUtils {private HudFileUtils() {}
 		if (image!=null) {
 			ByteArrayOutputStream output = new ByteArrayOutputStream();
 			ImageIO.write(image, "PNG", output);
-			reader.loadImageToCache(new ByteArrayInputStream(output.toByteArray()),getTexture(path));
+			reader.markImageForRegisteration(new ByteArrayInputStream(output.toByteArray()),getTexture(path));
 		}
 		return image!=null;
 	}
@@ -212,12 +205,19 @@ public class HudFileUtils {private HudFileUtils() {}
 
 
 	public static void loadImage(NativeImage img, String path) throws SecurityException {
-		reader.loadImageToCache(img,getTexture(path));
+		reader.markImageForRegisteration(img,getTexture(path));
 	}
 
 
 
 	public static boolean imageLoaded(Identifier id) {
-		return reader.savedImages.containsKey(id);
+		return reader.imageLoaded(id);
+	}
+	
+	
+	
+	public static void loadMarkedResources() {
+		// This is to ensure texture loading is always on the render thread
+		reader.loadUnregisteredImagesToTextureManager();
 	}
 }

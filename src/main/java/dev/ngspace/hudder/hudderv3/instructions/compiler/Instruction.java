@@ -9,7 +9,7 @@ import dev.ngspace.hudder.hudderv3.asm.V3ExecuteMethodWriter;
 
 public abstract class Instruction {
 	
-	protected TextPos pos;
+	public TextPos pos;
 
 	protected Instruction(TextPos pos) {
 		this.pos = pos;

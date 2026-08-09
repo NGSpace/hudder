@@ -1,5 +1,6 @@
 package dev.ngspace.hudder.compilers.abstractions;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,4 +61,11 @@ public abstract class AVarTextCompiler extends ATextCompiler {
 	 * @param value - the new value of the variable
 	 */
 	public void putTemp(String key, Object value) {tempVariables.put(key, value);}
+	
+	@Override
+	public void resetState() throws IOException {
+		tempVariables.clear();
+		super.resetState();
+	}
+	
 }

@@ -20,7 +20,7 @@ public class V3MethodWriter {
 	
 	public V3ClassWriter classWriter;
 	public MethodVisitor methodVisitor;
-	public int variableindex = 0;
+	public int variableindex = 5;
 	public String methodName;
 	public Label finalLabel = new Label();
 	public Map<String, Integer> variables = new HashMap<String, Integer>();
@@ -31,7 +31,7 @@ public class V3MethodWriter {
 		this.methodName = name;
 		
 		this.methodVisitor = classWriter.classWriter.visitMethod(Opcodes.ACC_PUBLIC, name,
-				Type.getMethodDescriptor(Type.getType(returntype),
+				Type.getMethodDescriptor(returntype==null?Type.VOID_TYPE:Type.getType(returntype),
 						List.of(parameters).stream().map(Type::getType).toList().toArray(new Type[0])),
 				signature, exceptions);
 		methodVisitor.visitCode();
@@ -180,6 +180,15 @@ public class V3MethodWriter {
 				false
 		);
 	}
+	public void floatValue() {
+		methodVisitor.visitMethodInsn(
+				Opcodes.INVOKEVIRTUAL,
+				"java/lang/Number",
+				"floatValue",
+				"()F",
+				false
+		);
+	}
 
 	public void aload(int index) {
 		methodVisitor.visitVarInsn(Opcodes.ALOAD, index);
@@ -189,6 +198,9 @@ public class V3MethodWriter {
 	}
 	public void dload(int index) {
 		methodVisitor.visitVarInsn(Opcodes.DLOAD, index);
+	}
+	public void fload(int index) {
+		methodVisitor.visitVarInsn(Opcodes.FLOAD, index);
 	}
 	public void iload(int index) {
 		methodVisitor.visitVarInsn(Opcodes.ILOAD, index);
@@ -302,7 +314,17 @@ public class V3MethodWriter {
 		methodVisitor.visitVarInsn(Opcodes.ISTORE, ++variableindex);
 		return variableindex;
 	}
-	
+
+	public int fstore() {
+		methodVisitor.visitVarInsn(Opcodes.FSTORE, ++variableindex);
+		return variableindex;
+	}
+	public void fstore(int index) {
+		methodVisitor.visitVarInsn(Opcodes.FSTORE, index);
+	}
+	public void istore(int index) {
+		methodVisitor.visitVarInsn(Opcodes.ISTORE, index);
+	}
 	public void astore(int index) {
 		methodVisitor.visitVarInsn(Opcodes.ASTORE, index);
 	}

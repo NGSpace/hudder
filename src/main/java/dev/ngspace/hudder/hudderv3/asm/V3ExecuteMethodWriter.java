@@ -26,12 +26,9 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 	
 	// Return value
 	public int return_value_index;
-
-	public int mute_builder_index;
-	public int disabled_builder_index;
 	
 	private boolean builder_disabled;
-	private int previous_builder_index;
+	private boolean muted;
 
 	public V3ExecuteMethodWriter(V3ClassWriter classWriter, String name, Class<?>[] args) {
 		super(classWriter, name,
@@ -51,23 +48,19 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 		bottomleft_builder_index = astore();
 		initStringBuilder();
 		bottomright_builder_index = astore();
-		initStringBuilder();
-		disabled_builder_index = astore();
-		initStringBuilder();
-		mute_builder_index = astore();
 		
 		// Default to topleft
 		selected_builder_index = topleft_builder_index;
 		
 		// Define the scales
-		loadConstant(Hudder.config.scale());
-		topleft_scale_index = astore();
-		loadConstant(Hudder.config.scale());
-		topright_scale_index = astore();
-		loadConstant(Hudder.config.scale());
-		bottomleft_scale_index = astore();
-		loadConstant(Hudder.config.scale());
-		bottomright_scale_index = astore();
+		loadConstantUnsafe(Hudder.config.scale());
+		topleft_scale_index = fstore();
+		loadConstantUnsafe(Hudder.config.scale());
+		topright_scale_index = fstore();
+		loadConstantUnsafe(Hudder.config.scale());
+		bottomleft_scale_index = fstore();
+		loadConstantUnsafe(Hudder.config.scale());
+		bottomright_scale_index = fstore();
 		
 		// Return value
 		methodVisitor.visitInsn(Opcodes.ACONST_NULL);
@@ -77,20 +70,33 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 
 
 	public void appendStringConstant(String string) {
+		if (shouldNotApppendToBuilder()) {
+			return;
+		}
+		loadBuilder();
 		loadConstant(string);
-		appendToBuilderAndPop();
+		call(StringBuilder.class, "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;", false);
+		pop();
 	}
 	
-	public void loadBuilder() {
+	private void loadBuilder() {
 		aload(selected_builder_index);
 	}
 
 	public void appendToBuilderAndPop() {
+		if (shouldNotApppendToBuilder()) {
+			pop();
+			return;
+		}
 		appendToBuilder();
 		pop();
 	}
 
 	public void appendToBuilder() {
+		if (shouldNotApppendToBuilder()) {
+			pop();
+			return;
+		}
 		Label end = new Label();
 		Label append = new Label();
 		Label append_double = new Label();
@@ -166,16 +172,16 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 		aload(return_value_index);
 		aload(topleft_builder_index);
 		callToString();
-		aloadFloat(topleft_scale_index);
+		fload(topleft_scale_index);
 		aload(bottomleft_builder_index);
 		callToString();
-		aloadFloat(bottomleft_scale_index);
+		fload(bottomleft_scale_index);
 		aload(topright_builder_index);
 		callToString();
-		aloadFloat(topright_scale_index);
+		fload(topright_scale_index);
 		aload(bottomright_builder_index);
 		callToString();
-		aloadFloat(bottomright_scale_index);
+		fload(bottomright_scale_index);
 		aload(0);
 		getField("uimanager", ArrayElementManager.class);
 		call(ArrayElementManager.class, "toUIElementArray", "()[Ldev/ngspace/hudder/uielements/AUIElement;", false);
@@ -189,20 +195,27 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 
 	public void setBuilderDisabled(boolean b) {
 		builder_disabled = b;
-		if (builder_disabled) {
-			if (selected_builder_index!=disabled_builder_index) {
-				previous_builder_index = selected_builder_index;
-			}
-			selected_builder_index = disabled_builder_index;
-		} else {
-			selected_builder_index = previous_builder_index;
-		}
+	}
+	
+	public void setMuted(boolean b) {
+		muted = b;
 	}
 
-
-
+	
+	
 	public boolean isBuilderDisabled() {
 		return builder_disabled;
 	}
+
+	public boolean isMuted() {
+		return muted;
+	}
+	
+	
+
+	public boolean shouldNotApppendToBuilder() {
+		return isBuilderDisabled() || isMuted();
+	}
+
 	
 }

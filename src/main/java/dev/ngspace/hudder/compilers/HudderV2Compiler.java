@@ -303,7 +303,7 @@ public class HudderV2Compiler extends AV2Compiler {
 				}
 				default: {
 					var pos = getPosition(charPosition, savedind, text);
-					throw new CompileException("Unknown compile state: " + compileState, pos.line(), pos.column());
+					throw new CompileException("Unknown compile state: " + compileState, pos);
 				}
 			}
 		}
@@ -312,7 +312,7 @@ public class HudderV2Compiler extends AV2Compiler {
 		
 		if (compileState!=0) {
 			var pos = getPosition(charPosition, savedind, text);
-			throw new CompileException(getCompilerErrorMessage(compileState), pos.line(), pos.column());
+			throw new CompileException(getCompilerErrorMessage(compileState), pos);
 		}
 		
 		return runtime;
@@ -390,5 +390,10 @@ public class HudderV2Compiler extends AV2Compiler {
 			default -> "An unknown error has occurred";
 		});
 		return strb.toString();
+	}
+	
+	@Override
+	public String[] getSupportedFileFormats() {
+		return new String[] {"hud"};
 	}
 }

@@ -19,12 +19,13 @@ import dev.ngspace.ngsmcconfig.options.BooleanNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.DoubleNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.DropdownNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.HexNGSMCConfigOption;
+import dev.ngspace.ngsmcconfig.options.IntNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.StringNGSMCConfigOption;
 import net.minecraft.network.chat.Component;
 
 public class HudPack {
 	
-	public static final int MAXIMUM_SUPPORTED_FORMAT = 2;
+	public static final int MAXIMUM_SUPPORTED_FORMAT = 3;
 	private HudPackConfig configYaml;
 	private HudPackCompiler compiler;
 	private BufferedTexture[] bufferedtextures;
@@ -92,7 +93,7 @@ public class HudPack {
 
 	public AbstractNGSMCConfigOption<? extends Object> buildSetting(String setting) {
 		HudPackSettings v = settings.get(setting);
-		
+
 		if (format_version>1&&"dropdown".equals(v.type())) {
 			return DropdownNGSMCConfigOption.fluentBuilder((String) getSettingValue(setting),
 					Component.literal(v.name()),
@@ -101,7 +102,13 @@ public class HudPack {
 				.setSaveOperation(val->setSettingValue(setting, val))
 				.build();
 		}
-		
+		if (format_version>2&&"integer".equals(v.type())) {
+			return IntNGSMCConfigOption.fluentBuilder(((Number) getSettingValue(setting)).intValue(),
+					Component.literal(v.name()))
+				.setDefaultValue(((Number) v.default_value()).intValue())
+				.setSaveOperation(val->setSettingValue(setting, val))
+				.build();
+		}
 		return switch (v.type()) {
 			case "boolean": {
 				yield BooleanNGSMCConfigOption.fluentBuilder(((Boolean) getSettingValue(setting)),

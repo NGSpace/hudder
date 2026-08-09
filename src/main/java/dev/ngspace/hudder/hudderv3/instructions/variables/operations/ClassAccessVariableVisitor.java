@@ -1,6 +1,7 @@
 package dev.ngspace.hudder.hudderv3.instructions.variables.operations;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
+import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
@@ -17,10 +18,11 @@ public class ClassAccessVariableVisitor extends VariableVisitor {
 	private String fieldName = "";
 	private final String classObjectName;
 
-	public ClassAccessVariableVisitor(AV3Compiler comp, String classyobjname, String prop) throws CompileException {
-		super(comp);
+	public ClassAccessVariableVisitor(AV3Compiler comp, String classyobjname, String prop, TextPos pos)
+			throws CompileException {
+		super(comp, pos);
 		this.classObjectName = classyobjname;
-		this.classobj = comp.parseVariable(classyobjname);
+		this.classobj = comp.parseVariable(classyobjname, pos);
 		if (!prop.startsWith("(")&&prop.endsWith(")")) {
 			int argStart = prop.indexOf("(");
 			if (argStart!=-1) {
@@ -33,7 +35,7 @@ public class ClassAccessVariableVisitor extends VariableVisitor {
 					functionCallArgs = new VariableVisitor[tokenizedArgs.length];
 					
 					for (int i=0;i<functionCallArgs.length;i++) 
-						functionCallArgs[i] = comp.parseVariable(tokenizedArgs[i]);
+						functionCallArgs[i] = comp.parseVariable(tokenizedArgs[i], pos);
 					
 					this.isFunctionCall = true;
 				}
@@ -41,8 +43,8 @@ public class ClassAccessVariableVisitor extends VariableVisitor {
 		}
 		if (!isFunctionCall) fieldName = prop;
 		for (String forbidden : forbiddenValuesAndFunctions) {
-			if (forbidden.equals(funcName)) throw new CompileException("No function named \""+funcName+'"',-1,-1);
-			if (forbidden.equals(fieldName)) throw new CompileException("No property named \""+fieldName+'"',-1,-1);
+			if (forbidden.equals(funcName)) throw new CompileException("No function named \""+funcName+'"',pos);
+			if (forbidden.equals(fieldName)) throw new CompileException("No property named \""+fieldName+'"',pos);
 		}
 	}
 

@@ -16,8 +16,8 @@ public abstract class AbstractTextFieldNGSMCConfigOption<T> extends AbstractNGSM
 	EditBox widget;
 
 	protected AbstractTextFieldNGSMCConfigOption(T defaultValue, T value, Component text, Consumer<T> saveOperation,
-			Function<T, Component> validator) {
-		super(defaultValue, value, text, saveOperation, validator);
+			Function<T, Component> validator, Function<T, Component> warning) {
+		super(defaultValue, value, text, saveOperation, validator, warning);
 	}
 
 	@Override

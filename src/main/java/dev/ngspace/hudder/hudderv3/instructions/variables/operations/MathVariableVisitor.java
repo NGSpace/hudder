@@ -1,10 +1,13 @@
 package dev.ngspace.hudder.hudderv3.instructions.variables.operations;
 
+import java.util.List;
+
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
+import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
@@ -12,25 +15,25 @@ import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
 
 public class MathVariableVisitor extends VariableVisitor {
 
-	private final String[] values;
-	private final char[] operations;
+	private final List<String> values;
+	private final List<Character> operations;
 	
-	public MathVariableVisitor(String[] values, char[] operations, AV3Compiler comp) {
-		super(comp);
+	public MathVariableVisitor(List<String> values, List<Character> operations, AV3Compiler comp, TextPos pos) {
+		super(comp, pos);
 		this.values = values;
 		this.operations = operations;
 	}
 
 	@Override
 	public void visit(V3MethodWriter writer) throws CompileException {
-		int[] value_indexes = new int[values.length];
+		int[] value_indexes = new int[values.size()];
 		// Is String
 		writer.loadConstantUnsafe(false);
 		int is_string_index = writer.istore();
 		
-		for (int i = 0;i<values.length;i++) {
+		for (int i = 0;i<values.size();i++) {
 			Label isNumber = new Label();
-			comp.parseVariable(values[i]).visit(writer);
+			comp.parseVariable(values.get(i), pos).visit(writer);
 			value_indexes[i] = writer.astore();
 			writer.aload(value_indexes[i]);
 			writer.methodVisitor.visitTypeInsn(Opcodes.INSTANCEOF, Type.getInternalName(Number.class));
@@ -51,7 +54,7 @@ public class MathVariableVisitor extends VariableVisitor {
 		writer.initStringBuilder();
 		int builder_index = writer.astore();
 		
-		for (int i = 0;i<values.length;i++) {
+		for (int i = 0;i<values.size();i++) {
 			Label append = new Label();
 			writer.aload(builder_index);
 			writer.aload(value_indexes[i]);
@@ -74,20 +77,20 @@ public class MathVariableVisitor extends VariableVisitor {
 		
 		int operation_index = 0;
 		writer.aloadDouble(value_indexes[0]);
-		while (operation_index < operations.length && isMultiplicative(operations[operation_index])) {
+		while (operation_index < operations.size() && isMultiplicative(operations.get(operation_index))) {
 			writer.aloadDouble(value_indexes[operation_index + 1]);
-			visitMultiplicativeOperation(writer, operations[operation_index]);
+			visitMultiplicativeOperation(writer, operations.get(operation_index));
 			operation_index++;
 		}
 
-		while (operation_index < operations.length) {
-			char additive_operation = operations[operation_index];
+		while (operation_index < operations.size()) {
+			char additive_operation = operations.get(operation_index);
 			operation_index++;
 
 			writer.aloadDouble(value_indexes[operation_index]);
-			while (operation_index < operations.length && isMultiplicative(operations[operation_index])) {
+			while (operation_index < operations.size() && isMultiplicative(operations.get(operation_index))) {
 				writer.aloadDouble(value_indexes[operation_index + 1]);
-				visitMultiplicativeOperation(writer, operations[operation_index]);
+				visitMultiplicativeOperation(writer, operations.get(operation_index));
 				operation_index++;
 			}
 

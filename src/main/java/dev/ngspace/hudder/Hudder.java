@@ -22,8 +22,8 @@ import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.main.HudCompilationManager;
 import dev.ngspace.hudder.main.HudderRenderer;
 import dev.ngspace.hudder.main.HudderTickEvent;
+import dev.ngspace.hudder.testing.HudderUnitTestingCommand;
 import dev.ngspace.hudder.utils.HudFileUtils;
-import dev.ngspace.hudder.utils.testing.HudderUnitTestingCommand;
 import dev.ngspace.hudder.variables.HudderBuiltInVariables;
 import dev.ngspace.hudder.variables.advanced.Misc;
 import net.fabricmc.api.ClientModInitializer;
@@ -138,9 +138,10 @@ public class Hudder implements ClientModInitializer {
 		ClientCommandRegistrationCallback.EVENT.register(new HudderUnitTestingCommand());
 
 		
-		HudFileUtils.makeDefaultHud();
 		HudderBuiltInMethods.registerMethods(FunctionAndConsumerAPI.getInstance());
 		HudderBuiltInFunctions.registerFunction(FunctionAndConsumerAPI.getInstance());
+		if (!new File(HudFileUtils.FOLDER).exists())
+			HudFileUtils.makeDefaultHud();
 		ClientTickEvents.START_CLIENT_TICK.register(new HudderTickEvent());
 		
 		Hudder.log("Loading variables.");
@@ -164,6 +165,7 @@ public class Hudder implements ClientModInitializer {
 				e.printStackTrace();
 			}
 		});
+		ClientLifecycleEvents.CLIENT_STOPPING.register(_ -> Compilers.shutdownAll());
         
         // Make sure the FPS variable is updated once every compilation instead of every time a number variable is used
         var mc = Minecraft.getInstance();

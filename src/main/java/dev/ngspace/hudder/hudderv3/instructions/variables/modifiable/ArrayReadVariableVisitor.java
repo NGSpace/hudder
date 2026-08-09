@@ -7,6 +7,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
+import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
@@ -16,12 +17,12 @@ public class ArrayReadVariableVisitor extends VariableVisitor {
 	private VariableVisitor indexValue;
 	private VariableVisitor array;
 
-	public ArrayReadVariableVisitor(AV3Compiler comp, String value) throws CompileException {
-		super(comp);
+	public ArrayReadVariableVisitor(AV3Compiler comp, String value, TextPos pos) throws CompileException {
+		super(comp, pos);
 		int indexstart = value.lastIndexOf('[');
 		String index = value.substring(indexstart+1,value.length()-1);
-		indexValue = comp.parseVariable(index);
-		array = comp.parseVariable(value.substring(0, indexstart));
+		indexValue = comp.parseVariable(index, pos);
+		array = comp.parseVariable(value.substring(0, indexstart), pos);
 	}
 
 	@Override
@@ -36,10 +37,7 @@ public class ArrayReadVariableVisitor extends VariableVisitor {
 		methodWriter.methodVisitor.visitTypeInsn(Opcodes.INSTANCEOF, Type.getInternalName(List.class));
 		methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFEQ, normalarray);
 		
-		methodWriter.methodVisitor.visitTypeInsn(
-		        Opcodes.CHECKCAST,
-		        Type.getInternalName(List.class)
-		);
+		methodWriter.checkcast(List.class);
 		indexValue.visit(methodWriter);
 		methodWriter.checkcast(Number.class);
 		methodWriter.intValue();
@@ -48,11 +46,8 @@ public class ArrayReadVariableVisitor extends VariableVisitor {
 		methodWriter.jumpto(end);
 
 		methodWriter.putLabel(normalarray);
-		
-		methodWriter.methodVisitor.visitTypeInsn(
-		        Opcodes.CHECKCAST,
-		        Type.getDescriptor(Object[].class)
-		);
+
+		methodWriter.checkcast(Object[].class);
 		indexValue.visit(methodWriter);
 		methodWriter.checkcast(Number.class);
 		methodWriter.intValue();
@@ -62,15 +57,6 @@ public class ArrayReadVariableVisitor extends VariableVisitor {
 	}
 	
 	
-	// Should translate to:
-	/*
-	 * 	List list = (List)array;
-		if (list.size()-index.intValue()==0) {
-			list.add(value);
-		} else if (index>list.size()) {
-			throw new ExecutionException("You can't set value " + index + " of array before all previous points are set",line,charpos);
-		} else list.set(index, value);
-	 */
 	@Override
 	public void visitSetValue(V3MethodWriter methodWriter) throws CompileException {
 		Label end = new Label();
@@ -80,11 +66,8 @@ public class ArrayReadVariableVisitor extends VariableVisitor {
 		int value_index = methodWriter.astore();
 		
 		array.visit(methodWriter);
-		
-		methodWriter.methodVisitor.visitTypeInsn(
-		        Opcodes.CHECKCAST,
-		        Type.getInternalName(List.class)
-		);
+
+		methodWriter.checkcast(List.class);
 		methodWriter.dup();
 		int list_index = methodWriter.astore();
 		

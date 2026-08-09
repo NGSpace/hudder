@@ -8,6 +8,7 @@ public class ExecutionException extends Exception {
 	public final int line;
 	public final int col;
 	
+	public ExecutionException(String string) {this(string, -1, -1);}
 	public ExecutionException(String string, int line, int col) {super(string);this.line = line;this.col = col;}
 	public ExecutionException(String string, TextPos pos) {this(string, pos.line(), pos.column());}
 	public ExecutionException(String string, int line, int col, Throwable e) {

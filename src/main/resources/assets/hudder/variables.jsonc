@@ -10,7 +10,7 @@
 //		]
 //  }
 {
-	"hudder_version": "10.1.0",
+	"hudder_version": "10.2.0",
 	"number": {
 		"Performance": [
 			{
@@ -645,6 +645,10 @@
 				"name": "is_singleplayer",
 				"desc": "Is the world the player is in a singleplayer world or a multiplayer world",
 				"version": "10.1.0"
+			},
+			{
+				"name": "first_execution",
+				"desc": "Whether this current execution is the first
 			}
 		],
 		"Player gamemode": [

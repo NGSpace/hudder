@@ -24,6 +24,7 @@ public class CachedReader {
 	HashMap<String, byte[]> savedFiles = new HashMap<String, byte[]>();
 	HashMap<String, String> savedFilesStrings = new HashMap<String, String>();
 	HashMap<Identifier, DynamicTexture> savedImages = new HashMap<Identifier, DynamicTexture>();
+	HashMap<Identifier, NativeImage> unregisteredImages = new HashMap<Identifier, NativeImage>();
 	
 	
 
@@ -51,13 +52,25 @@ public class CachedReader {
 	
 	
 	
-	public boolean loadImageToCache(InputStream inputStream, Identifier id) throws IOException {
-		return loadImageToCache(NativeImage.read(inputStream), id);
+	public void markImageForRegisteration(InputStream inputStream, Identifier id) throws IOException {
+		markImageForRegisteration(NativeImage.read(inputStream), id);
 	}
 	
 	
 	
-	public boolean loadImageToCache(NativeImage img, Identifier id) {
+	public void markImageForRegisteration(NativeImage img, Identifier id) {
+		unregisteredImages.put(id, img);
+	}
+
+	public void loadUnregisteredImagesToTextureManager() {
+		if (unregisteredImages.isEmpty())
+			return;
+		for (var entry : unregisteredImages.entrySet())
+			loadImageToTextureManager(entry.getValue(), entry.getKey());
+		unregisteredImages.clear();
+	}
+
+	public void loadImageToTextureManager(NativeImage img, Identifier id) {
 		if (savedImages.containsKey(id)) {
 			mc.getTextureManager().release(id);
 			savedImages.get(id).close();
@@ -67,7 +80,6 @@ public class CachedReader {
 		mc.getTextureManager().register(id, tex);
 		
 		savedImages.put(id,tex);
-		return true;
 	}
 	
 	
@@ -116,5 +128,9 @@ public class CachedReader {
 			return Files.readAllBytes(file.toPath());
 		}
 		
+	}
+
+	public boolean imageLoaded(Identifier id) {
+		return savedImages.containsKey(id) || unregisteredImages.containsKey(id);
 	}
 }

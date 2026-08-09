@@ -28,7 +28,7 @@ public class V2TempDynamicVar extends AV2Value {
 	@Override public double asDouble() throws ExecutionException {
 		try {
 			return super.asDouble();
-		} catch (Exception e) {
+		} catch (Exception _) {
 			return 0;
 		}
 	}

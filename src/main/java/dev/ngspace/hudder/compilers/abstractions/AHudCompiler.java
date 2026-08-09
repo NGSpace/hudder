@@ -1,14 +1,21 @@
 package dev.ngspace.hudder.compilers.abstractions;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import dev.ngspace.hudder.compilers.utils.HudInformation;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
+import net.minecraft.util.Util;
 
 /**
  * Defines the common operations required to process and execute HUD files.
@@ -21,6 +28,14 @@ public abstract class AHudCompiler<T> {
 	 * Contains globally available compiler variables, indexed by name.
 	 */
 	public static Map<String, Object> variables = new HashMap<String, Object>();
+	protected final ExecutorService hudCompilerExecutor =
+	        Executors.newSingleThreadExecutor(r -> {
+	        	Thread thread = new Thread(r, "hud-compiler");
+	        	// Compilation work must never keep the Minecraft JVM alive during exit.
+	        	thread.setDaemon(true);
+	        	return thread;
+	        });
+	private final AtomicBoolean hudCompiling = new AtomicBoolean(false);
 	
 	/**
 	 * Processes a HUD file into the representation used by this compiler.
@@ -76,5 +91,70 @@ public abstract class AHudCompiler<T> {
 	public HudInformation processAndExecute(HudderConfig config, String filepath, String filename)
 			throws CompileException, ExecutionException, IOException {
 		return execute(config, processFile(filepath), filename);
+	}
+	
+
+	public HudInformation processAndExecuteSafe(HudderConfig config, String filepath, String filename)
+			throws CompileException, ExecutionException, IOException {
+		
+	    // Immediately reject the call if another HUD is still being processed.
+	    if (!hudCompiling.compareAndSet(false, true)) {
+	        throw new CompileException("Hud still processing",-1,-1);
+	    }
+		
+	    var compilation = hudCompilerExecutor.submit(() -> {
+	    	try {
+	    		return processFile(filepath);
+	    	} finally {
+		        hudCompiling.set(false);
+			}
+	    });
+
+	    try {
+			return execute(config, compilation.get(1000, TimeUnit.MILLISECONDS), filename);
+	    } catch (TimeoutException _) {
+	        throw new CompileException("Hud still processing",-1,-1);
+	    } catch (InterruptedException e) {
+	        Thread.currentThread().interrupt();
+	        throw new IOException("Interrupted while waiting for Hud to finish processing", e);
+	    } catch (java.util.concurrent.ExecutionException e) {
+	    	if (e.getCause() instanceof CompileException ex)
+	    		throw ex;
+	    	if (e.getCause() instanceof ExecutionException ex)
+	    		throw ex;
+	    	if (e.getCause() instanceof IOException ex)
+	    		throw ex;
+			e.printStackTrace();
+			var ex = e.getCause() != null ? e.getCause() : e;
+	        throw new CompileException(ex.getMessage(),-1,-1,ex);
+		}
+	}
+
+	/**
+	 * Stops pending compiler work and releases this compiler's worker thread.
+	 *
+	 * <p>This method is safe to call more than once.</p>
+	 */
+	public void shutdown() {
+		hudCompilerExecutor.shutdownNow();
+	}
+	
+	public String[] getSupportedFileFormats() {
+		return new String[0];// By default, none;
+	}
+	
+	public boolean isValidFilePath(String filepath) {
+		for (String format : getSupportedFileFormats())
+			if (filepath.endsWith('.'+format))
+				return true;
+		return false;
+	}
+	
+	public void edit(File file) {
+		Util.getPlatform().openFile(file);
+	}
+	
+	public void resetState() throws IOException {
+		variables.clear();
 	}
 }

@@ -2,11 +2,17 @@ package dev.ngspace.ngsmcconfig.api;
 
 import java.io.File;
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
+import dev.ngspace.ngsmcconfig.gui.NGSMCConfigEntry;
 import dev.ngspace.ngsmcconfig.gui.NGSMCConfigOptionsScreen;
+import dev.ngspace.ngsmcconfig.gui.NGSMCConfigOptionsWidgetScreen;
 import dev.ngspace.ngsmcconfig.options.AbstractNGSMCConfigOption;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
@@ -18,6 +24,7 @@ public class NGSMCConfigBuilder {
 	URI docsUri;
 	File configfile;
 	Component configButtonText = Component.translatable("ngsmcconfig.config");
+	Consumer<List<Path>> dragAndDrop = _->{};
 
 	public NGSMCConfigBuilder(Screen parent) {
 		this.parent = parent;
@@ -31,14 +38,49 @@ public class NGSMCConfigBuilder {
 		NGSMCConfigCategory category = new NGSMCConfigCategory(title,
 				new ArrayList<AbstractNGSMCConfigOption<?>>(),
 				icon,
+				null,
 				null);
 		categories.add(category);
 		return category;
 	}
+
+	public void addCustomWidgetCategory(Component title, NGSMCConfigIcon icon, AbstractWidget widget,
+			Runnable save, Runnable reset, Supplier<Component> error, Supplier<Component> warning) {
+		NGSMCConfigCategory category = new NGSMCConfigCategory(title,
+				new ArrayList<AbstractNGSMCConfigOption<?>>(),
+				icon,
+				null,
+				widget);
+		category.addOption(new AbstractNGSMCConfigOption<String>(null, null, null, _->save.run(),
+				_->error.get(), _->warning.get()) {
+
+			@Override
+			public NGSMCConfigEntry buildEntry() {
+				return null;
+			}
+
+			@Override
+			public void reset() {
+				reset.run();
+			}
+		});
+		
+		
+		categories.add(category);
+	}
 	
 	public Screen build() {
-		return new NGSMCConfigOptionsScreen(parent, categories, categories.get(0), writeoperation, docsUri,
-				configfile, null, configButtonText);
+		var category = categories.get(0);
+		
+		if (category.customWidget()!=null) {
+			return new NGSMCConfigOptionsWidgetScreen(parent, categories, category, writeoperation, docsUri,
+					configfile, null, configButtonText, dragAndDrop);
+		}
+		if (category.customAction()!=null) {
+			category.customAction().run();
+		}
+		return new NGSMCConfigOptionsScreen(parent, categories, category, writeoperation, docsUri,
+				configfile, null, configButtonText, dragAndDrop);
 	}
 
 	public void setWriteOperation(Runnable writeoperation) {
@@ -64,6 +106,10 @@ public class NGSMCConfigBuilder {
 	public void setConfigButtonText(Component configButtonText) {
 		this.configButtonText = configButtonText;
 	}
+	
+	public void setDragAndDropConsumer(Consumer<List<Path>> dragAndDrop) {
+		this.dragAndDrop = dragAndDrop;
+	}
 
 	public void addCustomButton(Component title, NGSMCConfigIcon icon, Runnable runnable) {
 		
@@ -73,7 +119,8 @@ public class NGSMCConfigBuilder {
 		NGSMCConfigCategory category = new NGSMCConfigCategory(title,
 				new ArrayList<AbstractNGSMCConfigOption<?>>(),
 				icon,
-				runnable);
+				runnable,
+				null);
 		categories.add(category);
 	}
 }

@@ -1,0 +1,95 @@
+|TEST:
+
+@name=Function API test function
+@mode=normal
+
+input:
+	{FunctionAPITestingFunction("1")=="1"}
+end_input;
+
+output:
+	true
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Method API test method
+@mode=normal
+
+input:
+	;MethodAPITestingMethod, "1";
+	{methodvalue}
+end_input;
+
+output:
+	1
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=No Access Class
+@mode=error
+@exception_type=SecurityException
+
+input:
+	{JavaTestNoAccess.ImportantDataHolder}
+end_input;
+
+output:
+	Access to this type is not allowed
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Java Classes
+@mode=normal
+
+input:
+	;mute;
+	{javaobject=JavaObjectAccess}
+	;topleft;
+	{javaobject.field}
+	{javaobject.getField()}
+	{javaobject.setField(10)}
+	{javaobject.field}
+	{javaobject.getField()}
+end_input;
+
+output:
+	69
+	69
+	null
+	10
+	10
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Misc Functions
+@mode=normal
+
+input:
+	{exists("hud.hud")} {strwidth("hud")}
+end_input;
+
+output:
+	true 18
+end_output;
+
+END_TEST;

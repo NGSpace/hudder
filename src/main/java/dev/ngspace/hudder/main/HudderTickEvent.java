@@ -24,6 +24,8 @@ public class HudderTickEvent implements StartTick {
 	
     private WatchService watcherService;
     
+    public static boolean TEMP_DISABLE = false;
+    
     public HudderTickEvent() {
 		try {
 			watcherService = FileSystems.getDefault().newWatchService();
@@ -59,7 +61,7 @@ public class HudderTickEvent implements StartTick {
     	try {
     		if (watcherService==null) return;
     		WatchKey wk = watcherService.poll();
-        	if (!Hudder.config.enabled()||!Hudder.config.autorefresh()) return;
+        	if (!Hudder.config.enabled()||!Hudder.config.autorefresh()||TEMP_DISABLE) return;
 			if (wk!=null) {
 				for (WatchEvent<?> event : wk.pollEvents()) {
 				    Path changed = (Path) event.context();

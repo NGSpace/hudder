@@ -18,8 +18,9 @@ public class BooleanNGSMCConfigOption extends AbstractNGSMCConfigOption<Boolean>
 
 	protected BooleanNGSMCConfigOption(Boolean defaultValue, Boolean value, Component text,
 			Consumer<Boolean> saveOperation, Function<Boolean, Component> validator,
-			Function<Boolean, Component> componentProvider) {
-		super(defaultValue, value, text, saveOperation, validator);
+			Function<Boolean, Component> componentProvider,
+			Function<Boolean, Component> warning) {
+		super(defaultValue, value, text, saveOperation, validator, warning);
 		this.componentProvider = componentProvider;
 	}
 
@@ -52,7 +53,10 @@ public class BooleanNGSMCConfigOption extends AbstractNGSMCConfigOption<Boolean>
         widget.setWidth(Math.clamp(Minecraft.getInstance().font.width(widget.getMessage())+24l, 20, 100));
 	}
 	
-	@SuppressWarnings({ "deprecation" })
+	/**
+	 * @deprecated
+	 */
+	@Deprecated(since = "10.1.0", forRemoval = true)
 	public static AbstractNGSMCConfigOptionBuilder<Boolean> builder(boolean value, Component name) {
 	    return fluentBuilder(value, name);
 	}
@@ -76,7 +80,8 @@ public class BooleanNGSMCConfigOption extends AbstractNGSMCConfigOption<Boolean>
 		}
 
 		@Override public AbstractNGSMCConfigOption<Boolean> build() {
-			return new BooleanNGSMCConfigOption(defaultValue, value, name, saveOperation, validator, componentProvider);
+			return new BooleanNGSMCConfigOption(defaultValue, value, name, saveOperation, validator,
+					componentProvider, warning);
 		}
 
 		@Override

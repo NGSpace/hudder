@@ -63,12 +63,12 @@ public class DefineInstruction extends Instruction {
 		method.end();
 		
 		if (tokenizedBlock.canReturnValue()!=tokenizedBlock.doesReturnValue()) {
-			throw new CompileException("Function \""+name+"\" does not always return a value!",pos);
+			throw new CompileException("Function \""+name+"\" does not always return a value!", pos);
 		}
 		
 		if (!tokenizedBlock.canReturnValue())
-			comp.user_methods.put(name, finalname);
+			writer.user_methods.put(name, finalname);
 		else
-			comp.user_functions.put(name, finalname);
+			writer.user_functions.put(name, finalname);
 	}
 }
