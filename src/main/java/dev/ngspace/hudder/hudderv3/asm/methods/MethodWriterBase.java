@@ -19,6 +19,10 @@ public interface MethodWriterBase {
 		visitor().visitInsn(Opcodes.DUP2);
 	}
 	
+	public default void athrow() {
+		visitor().visitInsn(Opcodes.ATHROW);
+	}
+	
 	// Comparison instructions
 	
 	public default void lcmp() {

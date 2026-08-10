@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 
 public abstract class VariableMethodWriter extends BaseMethodWriter {
 
@@ -42,5 +44,27 @@ public abstract class VariableMethodWriter extends BaseMethodWriter {
 	
 	public void getVariable(String name) {
 		aload(variables.get(name));
+	}
+	
+	// Fields
+
+	public void getField(String name, Class<?> owner, Class<?> type) {
+		methodVisitor.visitFieldInsn(Opcodes.GETFIELD, Type.getInternalName(owner),
+				name, Type.getDescriptor(type));
+	}
+
+	public void getStaticField(String name, Class<?> owner, Class<?> type) {
+		methodVisitor.visitFieldInsn(Opcodes.GETSTATIC, Type.getInternalName(owner),
+				name, Type.getDescriptor(type));
+	}
+
+	public void putField(String name, Class<?> owner, Class<?> type) {
+		methodVisitor.visitFieldInsn(Opcodes.PUTFIELD, Type.getInternalName(owner),
+				name, Type.getDescriptor(type));
+	}
+
+	public void putStaticField(String name, Class<?> owner, Class<?> type) {
+		methodVisitor.visitFieldInsn(Opcodes.PUTSTATIC, Type.getInternalName(owner),
+				name, Type.getDescriptor(type));
 	}
 }

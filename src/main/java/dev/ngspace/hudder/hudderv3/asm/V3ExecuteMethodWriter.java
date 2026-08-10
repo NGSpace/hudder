@@ -64,8 +64,11 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 		nullConstant();
 		return_value_index = astore();
 	}
-
-
+	
+	public void initStringBuilder() {
+		newAndDup(StringBuilder.class);
+		callInit(StringBuilder.class, "()V");
+	}
 
 	public void appendStringConstant(String string) {
 		if (shouldNotApppendToBuilder()) {

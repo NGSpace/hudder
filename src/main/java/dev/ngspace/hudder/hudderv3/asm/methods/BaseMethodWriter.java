@@ -3,6 +3,7 @@ package dev.ngspace.hudder.hudderv3.asm.methods;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 
 public abstract class BaseMethodWriter implements MethodWriterJumpInsn, MethodWriterConstants,
 		MethodWriterTypeInsn, MethodWriterMath {
@@ -13,6 +14,7 @@ public abstract class BaseMethodWriter implements MethodWriterJumpInsn, MethodWr
 	
 	protected BaseMethodWriter(MethodVisitor methodVisitor) {
 		this.methodVisitor = methodVisitor;
+		methodVisitor.visitCode();
 	}
 
 
@@ -40,6 +42,33 @@ public abstract class BaseMethodWriter implements MethodWriterJumpInsn, MethodWr
 	
 	public void putLineNumber(int line, Label start) {
 		methodVisitor.visitLineNumber(line, start);
+	}
+
+	// -------------------------------------------------------------------------
+	// CALLING
+	// -------------------------------------------------------------------------
+	
+	public void callSpecial(Class<?> type, String name, String sign, boolean isInterface) {
+		methodVisitor.visitMethodInsn(Opcodes.INVOKESPECIAL, Type.getInternalName(type), name, sign,
+				isInterface);
+	}
+	public void callInit(Class<?> type, String sign) {
+		callSpecial(type, "<init>", sign, false);
+	}
+
+	public void callInterface(Class<?> clazz, String name, String descriptor) {
+		methodVisitor.visitMethodInsn(Opcodes.INVOKEINTERFACE, Type.getInternalName(clazz), name, descriptor,
+				true);
+	}
+
+	public void callStatic(Class<?> clazz, String name, String descriptor, boolean isInterface) {
+		methodVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, Type.getInternalName(clazz), name, descriptor,
+				isInterface);
+	}
+
+	public void call(Class<?> clazz, String name, String descriptor, boolean isInterface) {
+		methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, Type.getInternalName(clazz), name, descriptor,
+				isInterface);
 	}
 
 	// -------------------------------------------------------------------------

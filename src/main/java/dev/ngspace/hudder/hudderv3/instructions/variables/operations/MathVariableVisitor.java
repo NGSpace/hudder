@@ -49,7 +49,9 @@ public class MathVariableVisitor extends VariableVisitor {
 		writer.ifeq(mathOperation);
 
 		// Create StringBuilder
-		writer.initStringBuilder();
+		writer.newAndDup(StringBuilder.class);
+		writer.callInit(StringBuilder.class, "()V");
+
 		int builder_index = writer.astore();
 		
 		for (int i = 0;i<values.size();i++) {
