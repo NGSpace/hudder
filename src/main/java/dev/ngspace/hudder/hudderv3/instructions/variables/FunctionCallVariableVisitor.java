@@ -1,6 +1,5 @@
 package dev.ngspace.hudder.hudderv3.instructions.variables;
 
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
@@ -58,7 +57,7 @@ public class FunctionCallVariableVisitor extends VariableVisitor {
 				methodWriter.loadConstantUnsafe(pos.column());
 				methodWriter.callSpecial(ImplObjectWrapper.class, "<init>", "(Ljava/lang/Object;II)V", false);
 			}
-			methodWriter.methodVisitor.visitInsn(Opcodes.AASTORE);
+			methodWriter.aastore();
 		}
 		
 		if (apiCall) {

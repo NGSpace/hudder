@@ -1,7 +1,5 @@
 package dev.ngspace.hudder.hudderv3.instructions.variables.operations;
 
-import org.objectweb.asm.Opcodes;
-
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
@@ -28,9 +26,9 @@ public class PostIncDecVariableVisitor extends VariableVisitor {
 		methodWriter.dup2();
 		methodWriter.loadConstantUnsafe(1d);
 		if (increase) {
-			methodWriter.methodVisitor.visitInsn(Opcodes.DADD);
+			methodWriter.dadd();
 		} else {
-			methodWriter.methodVisitor.visitInsn(Opcodes.DSUB);
+			methodWriter.dsub();
 		}
 		methodWriter.callStatic(Double.class, "valueOf", "(D)Ljava/lang/Double;", false);
 		value.visitSetValue(methodWriter);

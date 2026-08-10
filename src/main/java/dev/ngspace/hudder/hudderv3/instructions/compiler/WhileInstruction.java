@@ -1,7 +1,6 @@
 package dev.ngspace.hudder.hudderv3.instructions.compiler;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
@@ -45,15 +44,15 @@ public class WhileInstruction extends Instruction {
 		methodWriter.putLabel(start);
 		condition.visit(methodWriter);
 		methodWriter.booleanValue();
-		methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFEQ, end);
+		methodWriter.ifeq(end);
 		if (has_limits) {
 			Label error = new Label();
 			methodWriter.iload(limit_index);
 			methodWriter.loadConstantUnsafe(1);
-			methodWriter.methodVisitor.visitInsn(Opcodes.ISUB);
+			methodWriter.isub();
 			methodWriter.dup();
 			methodWriter.istore(limit_index);
-			methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFEQ, error);
+			methodWriter.ifeq(error);
 			methodWriter.jumpto(user_code);
 			methodWriter.putLabel(error);
 			methodWriter.throwExecutionException("Max while loop reached", pos);

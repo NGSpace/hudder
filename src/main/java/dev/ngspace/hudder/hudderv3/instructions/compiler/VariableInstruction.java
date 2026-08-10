@@ -1,7 +1,6 @@
 package dev.ngspace.hudder.hudderv3.instructions.compiler;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
@@ -35,7 +34,7 @@ public class VariableInstruction extends Instruction {
 			if (visitor instanceof DynamicVariableVisitor) {
 				Label end = new Label();
 				methodWriter.dup();
-				methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFNONNULL, end);
+				methodWriter.ifnonnull(end);
 				methodWriter.pop();
 				methodWriter.loadConstant(variable.toLowerCase());
 				methodWriter.putLabel(end);

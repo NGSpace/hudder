@@ -17,6 +17,7 @@ import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableConsumer;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableFunction;
 import dev.ngspace.hudder.compilers.HudderV3Compiler;
+import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
 import dev.ngspace.hudder.hudderv3.GeneratedCompiler;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 
@@ -72,13 +73,7 @@ public class V3ClassWriter {
 		init = createMethod("<init>", new Class<?>[] {HudderV3Compiler.class}, null, null, null);
 
 		init.aload(0);
-		init.methodVisitor.visitMethodInsn(
-		        Opcodes.INVOKESPECIAL,
-		        "dev/ngspace/hudder/compilers/abstractions/AVarTextCompiler",
-		        "<init>",
-		        "()V",
-		        false
-		);
+		init.callInit(AVarTextCompiler.class, "()V");
 		
 		// Init UIElements field
 	    
@@ -90,8 +85,7 @@ public class V3ClassWriter {
 		// Init v3compiler field
 		init.aload(0);
 		init.aload(1);
-		init.methodVisitor.visitFieldInsn(Opcodes.PUTFIELD, classname, "v3compiler",
-				Type.getDescriptor(HudderV3Compiler.class));
+		init.putField("v3compiler", HudderV3Compiler.class);
 	}
 	
 	public V3ExecuteMethodWriter createExecuteMethod(String name, Class<?>[] classes) {

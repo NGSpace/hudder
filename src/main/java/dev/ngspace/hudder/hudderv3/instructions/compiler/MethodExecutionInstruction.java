@@ -1,7 +1,6 @@
 package dev.ngspace.hudder.hudderv3.instructions.compiler;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
@@ -105,8 +104,7 @@ public class MethodExecutionInstruction extends Instruction {
 				}
 				
 				methodWriter.loadConstantUnsafe(builder.length-1);
-				methodWriter.methodVisitor.visitTypeInsn(Opcodes.ANEWARRAY,
-						Type.getInternalName(apiCall ? ObjectWrapper.class: Object.class));
+				methodWriter.newArray(apiCall ? ObjectWrapper.class: Object.class);
 				int array_index = methodWriter.astore();
 				for (int i = 1;i<builder.length;i++) {
 					comp.parseVariable(builder[i], pos).visit(methodWriter);
@@ -122,7 +120,7 @@ public class MethodExecutionInstruction extends Instruction {
 						methodWriter.loadConstantUnsafe(pos.column());
 						methodWriter.callSpecial(ImplObjectWrapper.class, "<init>", "(Ljava/lang/Object;II)V", false);
 					}
-					methodWriter.methodVisitor.visitInsn(Opcodes.AASTORE);
+					methodWriter.aastore();
 				}
 				
 				if (apiCall) {

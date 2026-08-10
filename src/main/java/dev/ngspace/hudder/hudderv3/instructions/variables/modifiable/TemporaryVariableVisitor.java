@@ -3,7 +3,6 @@ package dev.ngspace.hudder.hudderv3.instructions.variables.modifiable;
 import java.util.Map;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
@@ -31,7 +30,7 @@ public class TemporaryVariableVisitor extends VariableVisitor {
 			methodWriter.loadConstant(variable);
 			methodWriter.callInterface(Map.class, "get", "(Ljava/lang/Object;)Ljava/lang/Object;");
 			methodWriter.dup();
-			methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFNONNULL, end);
+			methodWriter.ifnonnull(end);
 			methodWriter.pop();
 			methodWriter.loadConstant(0d);
 			methodWriter.putLabel(end);

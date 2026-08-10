@@ -3,7 +3,6 @@ package dev.ngspace.hudder.hudderv3.instructions.compiler;
 import java.util.Iterator;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
@@ -45,7 +44,7 @@ public class ForInstruction extends Instruction {
 		methodWriter.putLabel(start);
 		methodWriter.aload(iterator_index);
 		methodWriter.callInterface(Iterator.class, "hasNext", "()Z");
-		methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFEQ, end);
+		methodWriter.ifeq(end);
 
 		methodWriter.aload(iterator_index);
 		methodWriter.callInterface(Iterator.class, "next", "()Ljava/lang/Object;");

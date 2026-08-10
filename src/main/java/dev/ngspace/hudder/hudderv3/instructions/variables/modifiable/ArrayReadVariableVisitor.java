@@ -3,8 +3,6 @@ package dev.ngspace.hudder.hudderv3.instructions.variables.modifiable;
 import java.util.List;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
@@ -34,8 +32,8 @@ public class ArrayReadVariableVisitor extends VariableVisitor {
 		
 		methodWriter.dup();
 		
-		methodWriter.methodVisitor.visitTypeInsn(Opcodes.INSTANCEOF, Type.getInternalName(List.class));
-		methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFEQ, normalarray);
+		methodWriter.instanceOf(List.class);
+		methodWriter.ifeq(normalarray);
 		
 		methodWriter.checkcast(List.class);
 		indexValue.visit(methodWriter);
@@ -77,11 +75,11 @@ public class ArrayReadVariableVisitor extends VariableVisitor {
 		methodWriter.intValue();
 		methodWriter.dup();
 		int index_index = methodWriter.istore();
-		methodWriter.methodVisitor.visitInsn(Opcodes.ISUB);
+		methodWriter.isub();
 		methodWriter.dup();
-		methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFEQ, add);
+		methodWriter.ifeq(add);
 		
-		methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFGT, set);
+		methodWriter.ifgt(set);
 		
 		methodWriter.throwRuntimeException("Index out of bounds of array!");
 

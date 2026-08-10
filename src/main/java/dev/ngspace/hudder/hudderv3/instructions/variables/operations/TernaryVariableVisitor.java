@@ -1,7 +1,6 @@
 package dev.ngspace.hudder.hudderv3.instructions.variables.operations;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
@@ -32,7 +31,7 @@ public class TernaryVariableVisitor extends VariableVisitor {
 		methodWriter.checkcast(Boolean.class);
 		methodWriter.booleanValue();
 		
-		methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFNE, label);
+		methodWriter.ifne(label);
 		falsevalue.visit(methodWriter);
 		methodWriter.jumpto(end);
 		

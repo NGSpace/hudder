@@ -1,7 +1,6 @@
 package dev.ngspace.hudder.hudderv3.instructions.compiler;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
@@ -50,7 +49,7 @@ public class DefineInstruction extends Instruction {
 			method.defineVariable("arg" + (i+1));
 			method.aload(4);
 			method.loadConstantUnsafe(i);
-			method.methodVisitor.visitInsn(Opcodes.AALOAD);
+			method.aaload();
 			method.dup();
 			method.storeVariable(args[i].toLowerCase().trim());
 			method.storeVariable("arg" + (i+1));

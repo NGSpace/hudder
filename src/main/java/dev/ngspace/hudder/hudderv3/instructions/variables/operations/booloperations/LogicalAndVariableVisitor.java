@@ -3,7 +3,6 @@ package dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperat
 import java.util.List;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
@@ -29,7 +28,7 @@ public class LogicalAndVariableVisitor extends VariableVisitor {
 			values.get(i).visit(methodWriter);
 			methodWriter.checkcast(Boolean.class);
 			methodWriter.booleanValue();
-			methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFEQ, false_value);
+			methodWriter.ifeq(false_value);
 		}
 		methodWriter.loadConstant(true);
 		methodWriter.jumpto(end);

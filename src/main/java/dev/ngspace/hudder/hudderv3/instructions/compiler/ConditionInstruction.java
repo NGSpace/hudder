@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
@@ -59,7 +58,7 @@ public class ConditionInstruction extends Instruction {
 				methodWriter.checkcast(Boolean.class);
 				methodWriter.booleanValue();
 				
-				methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFEQ, elseLabel);
+				methodWriter.ifeq(elseLabel);
 			}
 			
 			if (branch.codeBlock() != null) {

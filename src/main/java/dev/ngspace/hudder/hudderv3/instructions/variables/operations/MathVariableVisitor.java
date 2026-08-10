@@ -3,8 +3,6 @@ package dev.ngspace.hudder.hudderv3.instructions.variables.operations;
 import java.util.List;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
@@ -36,11 +34,11 @@ public class MathVariableVisitor extends VariableVisitor {
 			comp.parseVariable(values.get(i), pos).visit(writer);
 			value_indexes[i] = writer.astore();
 			writer.aload(value_indexes[i]);
-			writer.methodVisitor.visitTypeInsn(Opcodes.INSTANCEOF, Type.getInternalName(Number.class));
-			writer.methodVisitor.visitJumpInsn(Opcodes.IFNE, isNumber);
+			writer.instanceOf(Number.class);
+			writer.ifne(isNumber);
 
 			writer.loadConstantUnsafe(true);
-			writer.methodVisitor.visitVarInsn(Opcodes.ISTORE, is_string_index);
+			writer.istore(is_string_index);
 			
 			writer.putLabel(isNumber);
 		}
@@ -48,7 +46,7 @@ public class MathVariableVisitor extends VariableVisitor {
 		writer.iload(is_string_index);
 		Label mathOperation = new Label();
 		Label end = new Label();
-		writer.methodVisitor.visitJumpInsn(Opcodes.IFEQ, mathOperation);
+		writer.ifeq(mathOperation);
 
 		// Create StringBuilder
 		writer.initStringBuilder();
@@ -59,8 +57,8 @@ public class MathVariableVisitor extends VariableVisitor {
 			writer.aload(builder_index);
 			writer.aload(value_indexes[i]);
 			writer.dup();
-			writer.methodVisitor.visitTypeInsn(Opcodes.INSTANCEOF, Type.getInternalName(Number.class));
-			writer.methodVisitor.visitJumpInsn(Opcodes.IFEQ, append);
+			writer.instanceOf(Number.class);
+			writer.ifeq(append);
 			writer.checkcast(Number.class);
 			writer.doubleValue();
 			writer.callStatic(HudderV3Helper.class, "cleanDouble", "(D)Ljava/lang/String;", false);
@@ -76,9 +74,13 @@ public class MathVariableVisitor extends VariableVisitor {
 		writer.putLabel(mathOperation);
 		
 		int operation_index = 0;
-		writer.aloadDouble(value_indexes[0]);
+		writer.aload(value_indexes[0]);
+		writer.checkcast(Number.class);
+		writer.doubleValue();
 		while (operation_index < operations.size() && isMultiplicative(operations.get(operation_index))) {
-			writer.aloadDouble(value_indexes[operation_index + 1]);
+			writer.aload(value_indexes[operation_index + 1]);
+			writer.checkcast(Number.class);
+			writer.doubleValue();
 			visitMultiplicativeOperation(writer, operations.get(operation_index));
 			operation_index++;
 		}
@@ -87,14 +89,19 @@ public class MathVariableVisitor extends VariableVisitor {
 			char additive_operation = operations.get(operation_index);
 			operation_index++;
 
-			writer.aloadDouble(value_indexes[operation_index]);
+			writer.aload(value_indexes[operation_index]);
+			writer.checkcast(Number.class);
+			writer.doubleValue();
 			while (operation_index < operations.size() && isMultiplicative(operations.get(operation_index))) {
-				writer.aloadDouble(value_indexes[operation_index + 1]);
+				writer.aload(value_indexes[operation_index + 1]);
+				writer.checkcast(Number.class);
+				writer.doubleValue();
 				visitMultiplicativeOperation(writer, operations.get(operation_index));
 				operation_index++;
 			}
-
-			writer.methodVisitor.visitInsn(additive_operation == '+' ? Opcodes.DADD : Opcodes.DSUB);
+			
+			if (additive_operation == '+') writer.dadd();
+			else writer.dsub();
 		}
 
 		writer.callStatic(Double.class, "valueOf", "(D)Ljava/lang/Double;", false);
@@ -108,11 +115,11 @@ public class MathVariableVisitor extends VariableVisitor {
 
 	private static void visitMultiplicativeOperation(V3MethodWriter writer, char operation) {
 		if (operation == '*') {
-			writer.methodVisitor.visitInsn(Opcodes.DMUL);
+			writer.dmul();
 		} else if (operation == '/') {
-			writer.methodVisitor.visitInsn(Opcodes.DDIV);
+			writer.ddiv();
 		} else {
-			writer.methodVisitor.visitInsn(Opcodes.DREM);
+			writer.drem();
 		}
 	}
 

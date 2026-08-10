@@ -1,7 +1,6 @@
 package dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
@@ -26,7 +25,7 @@ public class NegateVariableVisitor extends VariableVisitor {
 		Label end = new Label();
 		Label false_result = new Label();
 		
-		methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFNE, false_result);
+		methodWriter.ifne(false_result);
 		methodWriter.loadConstant(true);
 		methodWriter.jumpto(end);
 		
