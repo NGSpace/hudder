@@ -33,17 +33,14 @@ public class V3MethodWriter extends ClassAccessMethodWriter {
 		newAndDup(RuntimeException.class);
 		loadConstant(exception);
 		callSpecial(RuntimeException.class, "<init>", "(Ljava/lang/String;)V", false);
+		athrow();
 	}
 	
 	public void throwExecutionException(String exception, TextPos pos) {
-		throwExecutionException(exception, pos.line(), pos.column());
-	}
-	
-	public void throwExecutionException(String exception, int line, int col) {
 		newAndDup(ExecutionException.class);
 		loadConstant(exception);
-		loadConstantUnsafe(line);
-		loadConstantUnsafe(col);
+		loadConstantUnsafe(pos.line());
+		loadConstantUnsafe(pos.column());
 		callSpecial(ExecutionException.class, "<init>", "(Ljava/lang/String;II)V", false);
 		athrow();
 	}
