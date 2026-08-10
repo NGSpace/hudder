@@ -125,8 +125,18 @@
     "hudder.safety_perf.limitrate.tooltip": "§4ADVERTENCIA - ESTO PUEDE CAUSAR PROBLEMAS DE RENDIMIENTO.\n§fActivar esto hará que tu HUD sea ejecutada cada fotograma en vez de cada tick (20 ticks por segundo).",
     "hudder.safety_perf.autorefresh": "Actualización de la HUD automática",
     "hudder.safety_perf.autorefresh.tooltip": "Desactivar esto hará que tu HUD deje de actualizarse con cada cambio. Actualizaciones manuales desde la tecla aún funcionarán",
-    "hudder.safety_perf.disableWarnings": "Desactivar advertencias",
+    "hudder.safety_perf.disableWarnings": "Desactivar notificaciones de advertencias",
     "hudder.safety_perf.disableWarnings.tooltip": "§4LAS ADVERTENCIAS EXISTEN PARA ALGO!\nESTO INCLUYE ADVERTENCIAS DE DEPRECIACIÓN\n§fDesactiva TODAS las advertencias.",
     "hudder.safety_perf.disableHudpackVersionCheck": "Evitar verificación de versión de HUDpacks",
-    "hudder.safety_perf.disableHudpackVersionCheck.tooltip": "Desactiva la verificación de version que previene que las versiones no soportadas de HUDpacks sean ejecutadas.\nNota: Los HUDpacks son retrocompatibles asi que esto es principalmente para casos límite y versiones más nuevas."
+    "hudder.safety_perf.disableHudpackVersionCheck.tooltip": "Desactiva la verificación de version que previene que las versiones no soportadas de HUDpacks sean ejecutadas.\nNota: Los HUDpacks son retrocompatibles asi que esto es principalmente para casos límite y versiones más nuevas.",
+    "hudder.mainfile": "HUDs",
+    "hudder.mainfile.title": "HUDs dispobibles",
+    "hudder.mainfile.subtitle": "Selecciona, edita o arrastra y suelta una HUD",
+    "hudder.mainfile.tooltip": "Cambia el archivo principal de HUD.\n§7El archivo debe de estar en §6/.minecraft/config/Hudder§7.",
+    "hudder.mainfile.doesntexist": "El HUD %s no existe el la carpeta de HUDs.",
+    "hudder.mainfile.noselection": "Ninguna HUD seleccionada.",
+    "hudder.mainfile.unsupportedformat": "%s no es compatible el formato de archivo de \"%s\"",
+    "hudder.mainfile.noknowncompilers": " - Ningún compilador es compatible con esta HUD",
+    "hudder.mainfile.editbutton": "Editar",
+    "hudder.general.compilertype.unstable_warning": "El compilador %s es inestable y no se recomienda que lo uses."
 }
