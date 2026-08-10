@@ -20,6 +20,7 @@ public abstract class AbstractFluentNGSMCConfigOptionBuilder<T,
 	protected Component name;
 	protected Consumer<T> saveOperation;
 	protected Function<T, Component> validator;
+	protected Function<T, Component> warning;
 
 	protected AbstractFluentNGSMCConfigOptionBuilder(T value, Component name) {
 		super(value, name);
@@ -66,6 +67,11 @@ public abstract class AbstractFluentNGSMCConfigOptionBuilder<T,
 	@Override
 	public E setValidator(Function<T, Component> validator) {
 		this.validator = validator;
+		return self();
+	}
+
+	public E setWarningProvider(Function<T, Component> warning) {
+		this.warning = warning;
 		return self();
 	}
 

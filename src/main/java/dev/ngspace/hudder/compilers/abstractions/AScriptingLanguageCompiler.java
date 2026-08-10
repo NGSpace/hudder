@@ -14,7 +14,6 @@ import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.main.HudCompilationManager;
 import dev.ngspace.hudder.uielements.AUIElement;
-import dev.ngspace.hudder.utils.HudFileUtils;
 import net.minecraft.client.Minecraft;
 
 public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
@@ -26,10 +25,6 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 	
 	protected AScriptingLanguageCompiler() {
 		HudCompilationManager.addPreCompilerListener(c->{if(c==this) elms.clear();});
-		HudFileUtils.addReloadResourcesListener(()->{
-			for(RuntimeCache c:cache.values()) c.close();
-			cache.clear();
-		});
 	}
 	
 	protected abstract IScriptingLanguageEngine createLangEngine() throws CompileException;
@@ -119,5 +114,11 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 			exception = null;
 			engine.close();
 		}
+	}
+	
+	@Override
+	public void resetState() throws IOException {
+		for(RuntimeCache c:cache.values()) c.close();
+		cache.clear();
 	}
 }

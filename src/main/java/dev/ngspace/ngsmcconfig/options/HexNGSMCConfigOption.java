@@ -17,8 +17,8 @@ public class HexNGSMCConfigOption extends AbstractNGSMCConfigOption<Integer> {
 	protected NGSMCConfigColorPickerWidget widget;
 	
 	protected HexNGSMCConfigOption(Integer defaultValue, Integer value, Component text, Consumer<Integer> saveOperation,
-			Function<Integer, Component> validator) {
-		super(defaultValue, value, text, saveOperation, validator);
+			Function<Integer, Component> validator, Function<Integer, Component> warning) {
+		super(defaultValue, value, text, saveOperation, validator, warning);
 		
 		this.validator = val->{
 			if (!validnum)
@@ -48,7 +48,10 @@ public class HexNGSMCConfigOption extends AbstractNGSMCConfigOption<Integer> {
 		return new NGSMCConfigEntry(widget, text, this, true);
 	}
 	
-	@SuppressWarnings({ "deprecation" })
+	/**
+	 * @deprecated
+	 */
+	@Deprecated(since = "10.1.0", forRemoval = true)
 	public static AbstractNGSMCConfigOptionBuilder<Integer> builder(Integer value, Component name) {
 	    return fluentBuilder(value, name);
 	}
@@ -56,7 +59,7 @@ public class HexNGSMCConfigOption extends AbstractNGSMCConfigOption<Integer> {
 	public static NGSMCConfigOptionBuilder<Integer> fluentBuilder(int value, Component name) {
 		return new NGSMCConfigOptionBuilder<Integer>(value, name) {
 			@Override public AbstractNGSMCConfigOption<Integer> build() {
-				return new HexNGSMCConfigOption(defaultValue, value, name, saveOperation, validator);
+				return new HexNGSMCConfigOption(defaultValue, value, name, saveOperation, validator, warning);
 			}
 		};
 	}

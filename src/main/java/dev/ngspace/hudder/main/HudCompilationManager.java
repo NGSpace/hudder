@@ -9,6 +9,7 @@ import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
+import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.hudder.variables.advanced.Misc;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.EndTick;
 import net.minecraft.client.DeltaTracker;
@@ -24,6 +25,8 @@ public class HudCompilationManager implements EndTick {
     
     public static String LastFailMessage = "";
     
+    public static boolean isFirstRunSinceCacheClear = true;
+    
     
 	public void compile(DeltaTracker f) {
 		result = null;
@@ -33,7 +36,9 @@ public class HudCompilationManager implements EndTick {
     			Misc.updateCPS();
     			for (Consumer<AHudCompiler<?>> con : precomplistners)  con.accept(Hudder.config.getCompiler());
     			result = Hudder.config.compileMainHud();
+    			HudFileUtils.loadMarkedResources();
     			for (Consumer<AHudCompiler<?>> con : postcomplistners) con.accept(Hudder.config.getCompiler());
+    			isFirstRunSinceCacheClear = false;
     		}
 		} catch (CompileException e) {
 			LastFailMessage = "Compiler error: " + e.getFailureMessage();

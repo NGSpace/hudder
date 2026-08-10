@@ -2,7 +2,9 @@ package dev.ngspace.ngsmcconfig.gui;
 
 import java.io.File;
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.function.Consumer;
 
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 import net.minecraft.client.Minecraft;
@@ -17,8 +19,8 @@ public class NGSMCConfigOptionsScreen extends AbstractNGSMCConfigScreen {
 
 	public NGSMCConfigOptionsScreen(Screen parentScreen, List<NGSMCConfigCategory> categories,
 			NGSMCConfigCategory selectedCategory, Runnable writeoperation, URI wikiUri, File configfile,
-			AbstractNGSMCConfigScreen root, Component configButtonText) {
-		super(parentScreen, categories, writeoperation, wikiUri, configfile, root, configButtonText);
+			AbstractNGSMCConfigScreen root, Component configButtonText, Consumer<List<Path>> dragAndDrop) {
+		super(parentScreen, categories, writeoperation, wikiUri, configfile, root, configButtonText, dragAndDrop);
 		this.selectedCategory = selectedCategory;
 	}
 

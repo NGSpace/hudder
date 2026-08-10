@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import org.mozilla.javascript.BaseFunction;
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ContextAction;
+import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.NativeJavaObject;
@@ -26,37 +28,61 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 
 	protected static Minecraft mc = Minecraft.getInstance();
 	
-	Context cx;
+	private final ContextFactory contextFactory = new ContextFactory() {
+		@Override protected Context makeContext() {
+			Context context = super.makeContext();
+			context.setWrapFactory(new HudderJavaScriptWrapFactory());
+			context.setInterpretedMode(false);
+			return context;
+		}
+	};
+	
+	private final Context cx;
 	ScriptableObject scope;
+	boolean closed;
 	public JavaScriptEngine() {
-        cx = Context.enter();
-        cx.setWrapFactory(new HudderJavaScriptWrapFactory());
-        cx.setInterpretedMode(false);
-        
-        scope = cx.initSafeStandardObjects();
+		cx = contextFactory.enterContext();
+		try {
+			scope = cx.initSafeStandardObjects();
+		} finally {
+			Context.exit();
+		}
 		
 		var JavaScriptIO = new JavaScriptIO();
 		
 		insertObject(JavaScriptIO, "console");
 		insertObject(JavaScriptIO, "hudder" );
 	}
+	
+	private synchronized <T> T withContext(ContextAction<T> action) {
+		if (closed) throw new IllegalStateException("JavaScript engine is closed");
+		Context context = contextFactory.enterContext(cx);
+		try {
+			return action.run(context);
+		} finally {
+			Context.exit();
+		}
+	}
 
 	@Override public void bindFunction(ScriptFunction function, String... names) {
-        Function func = new BaseFunction() {
-            private static final long serialVersionUID = 1L;
+		withContext(_ -> {
+	        Function func = new BaseFunction() {
+	            private static final long serialVersionUID = 1L;
 			@Override public Object call(Context con, Scriptable scope, Scriptable thisObj, Object[] args) {
 				try {
 					ObjectWrapper[] vals = new ObjectWrapper[args.length];
 					for (int i = 0;i<args.length;i++) {
 						vals[i] = new JavaScriptValue(args[i]);
 					}
-					return cx.getWrapFactory().wrap(cx, scope, function.exec(vals), (Class<?>) null);
+					return con.getWrapFactory().wrap(con, scope, function.exec(vals), (Class<?>) null);
 				} catch (Exception e) {
 					throw new WrappedException(e);
 				}
-            }
-        };
-        for (String name : names) scope.put(name, scope, func);
+			}
+	        };
+	        for (String name : names) scope.put(name, scope, func);
+	        return null;
+		});
 	}
 	@Override public void bindConsumer(ScriptConsumer consumer, String... names) {
 		bindFunction(e->{consumer.exec(e);return Undefined.instance;},names);
@@ -65,49 +91,62 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 	
 	
 	@Override public ObjectWrapper readVariable(String name) {
-		Object val = scope.get(name, scope);
-		if (val==Scriptable.NOT_FOUND) return null;
-		return new JavaScriptValue(val);
+		return withContext(_ -> {
+			Object val = scope.get(name, scope);
+			if (val==Scriptable.NOT_FOUND) return null;
+			return new JavaScriptValue(val);
+		});
 	}
 	@Override public ObjectWrapper readVariableSafe(String name, Object t) {
-		Object val = scope.get(name, scope);
-		if (val==null||val==Scriptable.NOT_FOUND) return new JavaScriptValue(t);
-		return new JavaScriptValue(val);
+		return withContext(_ -> {
+			Object val = scope.get(name, scope);
+			if (val==null||val==Scriptable.NOT_FOUND) return new JavaScriptValue(t);
+			return new JavaScriptValue(val);
+		});
 	}
 	
 	
 	
 	@Override public void evaluateCode(String code, String name) {
-		cx.evaluateString(scope, code, name, 1, null);
+		withContext(context -> {
+			context.evaluateString(scope, code, name, 1, null);
+			return null;
+		});
 	}
 	
 	
 	
 	private void insertObject(Object obj, String name) {
-		Object wrappedObj = Context.javaToJS(obj, scope);
-		ScriptableObject.defineProperty(scope, name, wrappedObj, ScriptableObject.READONLY|ScriptableObject.PERMANENT);
+		withContext(context -> {
+			Object wrappedObj = Context.javaToJS(obj, scope, context);
+			ScriptableObject.defineProperty(scope, name, wrappedObj, ScriptableObject.READONLY|ScriptableObject.PERMANENT);
+			return null;
+		});
 	}
 	
 	
 
 	@Override
-	public ObjectWrapper callFunction(String name, String... args) throws IOException {
-		Object func = scope.get(name, scope);
-		if (func instanceof Function f) return new JavaScriptValue(f.call(cx, scope, scope, args));
+	public synchronized ObjectWrapper callFunction(String name, String... args) throws IOException {
+		Object func = withContext(_ -> scope.get(name, scope));
+		if (func instanceof Function f) return withContext(context -> new JavaScriptValue(f.call(context, scope, scope, args)));
 		else throw new IOException(name + " is not a function or is not defined!");
 	}
 	
 	@Override
-	public ObjectWrapper callFunctionSafe(String name, Object defualt, String... args) throws IOException {
-		Object func = scope.get(name, scope);
+	public synchronized ObjectWrapper callFunctionSafe(String name, Object defualt, String... args) throws IOException {
+		Object func = withContext(_ -> scope.get(name, scope));
 		if (func==null||func==Scriptable.NOT_FOUND) return new JavaScriptValue(defualt);
-		else if (func instanceof Function f) return new JavaScriptValue(f.call(cx, scope, scope, args));
+		else if (func instanceof Function f) return withContext(context -> new JavaScriptValue(f.call(context, scope, scope, args)));
 		else throw new IOException(name + " is not a function!");
 	}
 	
 	
 	
-	@Override public void close() throws IOException {cx.close();}
+	@Override public synchronized void close() throws IOException {
+		closed = true;
+		scope = null;
+	}
 	
 	
 
@@ -158,12 +197,12 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 
 		@Override public Object get() throws ExecutionException {return value==Undefined.instance?null:value;}
 		
-		@Override public String asString() {return Context.toString(value);}
-		@Override public double asDouble() {return Context.toNumber(value);}
-		@Override public boolean asBoolean() {return Context.toBoolean(value);}
-		@Override public Object[] asArray() {return ((NativeArray) value).toArray();}
+		@Override public String asString() {return withContext(_ -> Context.toString(value));}
+		@Override public double asDouble() {return withContext(_ -> Context.toNumber(value));}
+		@Override public boolean asBoolean() {return withContext(_ -> Context.toBoolean(value));}
+		@Override public Object[] asArray() {return withContext(_ -> ((NativeArray) value).toArray());}
 		
-		@Override public String toString() {return Context.toString(value);}
+		@Override public String toString() {return withContext(_ -> Context.toString(value));}
 
 		@Override public <T> T asType(Class<T> clazz) throws ExecutionException {return clazz.cast(get());}
 	}

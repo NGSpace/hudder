@@ -1,0 +1,286 @@
+|TEST:
+
+@name=Ternary then parenthesses
+@mode=normal
+
+input:
+	{then=false}
+	{if ( then ) then -1 else -2}
+end_input;
+
+output:
+	false
+	-2
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Ternary then quotes
+@mode=normal
+
+input:
+	{if " then "==" else " then -1 else -2}
+end_input;
+
+output:
+	-2
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Ternary else parenthesses
+@mode=normal
+
+input:
+	{else=false}
+	{if true then ( else ) else -2}
+end_input;
+
+output:
+	false
+	false
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Ternary else quotes
+@mode=normal
+
+input:
+	{if true then " else r" else -2}
+end_input;
+
+output:
+	 else r
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Else
+@mode=normal
+
+input:
+	{var=1}
+	#if var==2
+		{var=1}
+	#else
+		{var=2}
+	{var}
+end_input;
+
+output:
+	1
+	2
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Logical operators in comparisions
+@mode=normal
+
+input:
+	{5>6||6>6}
+	{5>6&&6>6}
+	{5<6||6>6}
+	{5<6&&6>5}
+end_input;
+
+output:
+	false
+	false
+	true
+	true
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Logical And/Or operators
+@mode=normal
+
+input:
+	{false||false||true}
+	{true&&true}
+	{ false || true && true || false}
+	{true && false || false}
+end_input;
+
+output:
+	true
+	true
+	true
+	false
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Conditions
+@mode=normal
+
+input:
+	%401>400, "a", 399>100, "b", "c"%
+end_input;
+
+output:
+	a
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Conditions count
+@mode=normal
+
+input:
+	%401>400, "{_i=_i+1}", 399>100, "{_i=_i+1}", "{_i=_i+1}"%
+end_input;
+
+output:
+	1
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Conditions and Math
+@mode=normal
+
+input:
+	{100==10/2}
+end_input;
+
+output:
+	false
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Boolean invertion
+@mode=normal
+
+input:
+	{!false} {res=true} {!res}
+end_input;
+
+output:
+	true true false
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Boolean invertion and conditions
+@mode=normal
+
+input:
+	{res=1} {!(res!=1)} {true==!false}
+end_input;
+
+output:
+	1 true true
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=% in conditions
+@mode=normal
+
+input:
+	%true, "0\\%1"%
+end_input;
+
+output:
+	0%1
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Nested Advanced if spaces
+@mode=normal
+
+input:
+	#if testif==unset
+		{testif=1}
+		#if testif!=unset
+		  {testif=2}
+	{testif}
+	#if testif!=unset
+	  {testif=1}
+	  #if true
+	   {testif=2}
+	{testif}
+end_input;
+
+output:
+	2
+	2
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Nested conditions
+@mode=normal
+
+input:
+	{testping=20}
+	%testping>5, "&6PING: &%testping>=400,\"4\",testping>=100,\"e\",\"2\"%{testping}"%
+end_input;
+
+output:
+	20
+	&6PING: &220
+end_output;
+
+END_TEST;

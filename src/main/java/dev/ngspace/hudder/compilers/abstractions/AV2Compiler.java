@@ -1,5 +1,6 @@
 package dev.ngspace.hudder.compilers.abstractions;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,7 +15,6 @@ import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
-import dev.ngspace.hudder.main.HudCompilationManager;
 import dev.ngspace.hudder.v2runtime.V2Runtime;
 import dev.ngspace.hudder.v2runtime.functions.IV2Function;
 import dev.ngspace.hudder.v2runtime.functions.V2FunctionHandler;
@@ -28,38 +28,14 @@ import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 	
 	public Map<String, V2Runtime> runtimes = new HashMap<String, V2Runtime>();
-	public static Map<String, Object> tempVariables = new HashMap<String, Object>();
 	public MethodHandler methodHandler = new MethodHandler();
 	public V2FunctionHandler functionHandler = new V2FunctionHandler();
 	protected IV2VariableParser variableParser = new DefaultV2VariableParser();
 	public boolean SYSTEM_VARIABLES_ENABLED = true;
 	
 	protected AV2Compiler() {
-		HudCompilationManager.addPreCompilerListener(_ -> tempVariables.clear());
 		FunctionAndConsumerAPI.getInstance().applyFunctionsAndConsumers(this);
 	}
-	
-	
-	/**
-	 * Returns the temporary variables.
-	 * 
-	 * <br><br>
-	 * 
-	 * Temporary variables get deleted every hud compiliation.
-	 * @param key - the name of the variable
-	 * @return the value of the variable or null if it is not set
-	 */
-	public Object getTempVariable(String key) {return tempVariables.get(key);}
-	/**
-	 * Sets the value of a temporary variable.
-	 * 
-	 * <br><br>
-	 * 
-	 * Temporary variables get deleted every hud compiliation.
-	 * @param key - the name of the variable
-	 * @param value - the new value of the variable
-	 */
-	public void putTemp(String key, Object value) {tempVariables.put(key, value);}
 	
 	
 	
@@ -127,7 +103,7 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 		
 		if (isMethod) {
 			MethodHandler.methods.put(name, (_,state,_,type,_,charpos,vals) -> {
-				if (vals.length<args.length) throw new ExecutionException("Not enough arguments", pos.line(), pos.column());
+				if (vals.length<args.length) throw new ExecutionException("Not enough arguments", pos);
 				for (int i = 0;i<vals.length;i++) {
 					Object v = vals[i].get();
 					runtime.putScoped("arg"+(i+1), v);
@@ -146,9 +122,9 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 				if (element.returnsAValue()) temp = false;
 			}
 			if (temp) throw new CompileException("Function \""+name
-					+"\" does not always return a value!",pos.line(),pos.column());
+					+"\" does not always return a value!",pos);
 			functionHandler.bindFunction((IV2Function) (_,_,vals,line,charpos) -> {
-				if (vals.length<args.length) throw new ExecutionException("Not enough arguments", pos.line(), pos.column());
+				if (vals.length<args.length) throw new ExecutionException("Not enough arguments", pos);
 				for (int i = 0;i<vals.length;i++) {
 					Object v = vals[i].get();
 					runtime.putScoped("arg"+(i+1), v);
@@ -213,4 +189,11 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 	public record CodeBlock(String code, String text, int starting_index, int ending_index) {}
 	
 	public record Instruction(byte instruction, String paremeter, int ending_index) {}
+	
+	@Override
+	public void resetState() throws IOException {
+		SYSTEM_VARIABLES_ENABLED = true;
+		runtimes.clear();
+		super.resetState();
+	}
 }

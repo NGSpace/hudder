@@ -128,5 +128,15 @@
     "hudder.safety_perf.disableWarnings": "בטל אזהרות קומפילר",
     "hudder.safety_perf.disableWarnings.tooltip": "§4אזהרות קיימות לסיבות טובות!\nזה כולל אזהרות Deprecation!\n§fמבטל את כל האזהרות.",
     "hudder.safety_perf.disableHudpackVersionCheck": "עקיפת בדיקת גרסאות Hudpack",
-    "hudder.safety_perf.disableHudpackVersionCheck.tooltip": "מבטל את בדיקת הגרסאות המונעת הפעלה של גרסאות hudpack שאינן נתמכות.\nהערה: Hudpacks תואמים לאחור, כך שזה בעיקר עבור מקרי קצה וגרסאות חדשות יותר."
+    "hudder.safety_perf.disableHudpackVersionCheck.tooltip": "מבטל את בדיקת הגרסאות המונעת הפעלה של גרסאות hudpack שאינן נתמכות.\nהערה: Hudpacks תואמים לאחור, כך שזה בעיקר עבור מקרי קצה וגרסאות חדשות יותר.",
+    "hudder.mainfile": "קבצי Hud",
+    "hudder.mainfile.title": "Huds זמינים",
+    "hudder.mainfile.subtitle": "בחר, ערוך או גרור Hud",
+    "hudder.mainfile.tooltip": "שנה את הקובץ הראשי\n§7הקובץ Hud חייב להיות ממוקם בתיקייה §6.minecraft/config/Hudder§7.",
+    "hudder.mainfile.doesntexist": "Hud לא קיים בתיקיית הHuds.",
+    "hudder.mainfile.noselection": "לא נבחר Hud.",
+    "hudder.mainfile.unsupportedformat": "%s לא תומך בסוג הקובץ של הHud \"%s\"",
+    "hudder.mainfile.noknowncompilers": " - שום קומפילר תומך בHud הזה",
+    "hudder.mainfile.editbutton": "ערוך",
+    "hudder.general.compilertype.unstable_warning": "הקומפילר %s אינו יציב ולא מומלץ להישתמש בו."
 }

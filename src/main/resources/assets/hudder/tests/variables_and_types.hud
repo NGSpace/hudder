@@ -1,0 +1,180 @@
+|TEST:
+
+@name=Lacking 0 in decimal point
+@mode=normal
+
+input:
+	{var=.1}
+	{var==0.1}
+end_input;
+
+output:
+	0.1
+	true
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=No system variables 
+@mode=normal
+
+input:
+	;no_sys_var;
+	{fps=10}
+end_input;
+
+output:
+	10
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Variable Registry
+@mode=normal
+
+input:
+	{string_var}
+	{STrIng_vAR}
+	{STrIng_vAR2}
+	{number_var}
+	{boolean_var}
+	{object_var.toString()}
+end_input;
+
+output:
+	Value
+	Value
+	string_var2
+	69
+	true
+	lol
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Int
+@mode=normal
+
+input:
+	{int(1.6)}
+end_input;
+
+output:
+	1
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Char
+@mode=normal
+
+input:
+	{char(int(97))}
+end_input;
+
+output:
+	a
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Char Int
+@mode=normal
+
+input:
+	{int(char(int(97.1)))}
+end_input;
+
+output:
+	97
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Case insensitivity in variables
+@mode=normal
+
+input:
+	{vAr=1} {VaR}
+end_input;
+
+output:
+	1 1
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Type casting
+@mode=normal
+
+input:
+	{str(int("10"),false)}
+end_input;
+
+output:
+	10.0
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Comparing unset values
+@mode=normal
+
+input:
+	{unsetval==unset} {unset==unsetval} {unset==0} {unsetval==0} {0==unset} {0==unsetval}
+end_input;
+
+output:
+	true true false false false false
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Unset dynamic variable fallback
+@mode=normal
+
+input:
+	{missingVariable}
+end_input;
+
+output:
+	missingvariable
+end_output;
+
+END_TEST;

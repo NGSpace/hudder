@@ -2,7 +2,9 @@ package dev.ngspace.ngsmcconfig.gui;
 
 import java.io.File;
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.function.Consumer;
 
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigIcon;
@@ -34,12 +36,13 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 	protected Runnable writeoperation;
 	protected URI docsUri;
 	protected File configfile;
+	protected Consumer<List<Path>> dragAndDrop;
 	protected final AbstractNGSMCConfigScreen root;
 	protected final Component configButtonText;
 
 	protected AbstractNGSMCConfigScreen(Screen parent, List<NGSMCConfigCategory> categories,
 			Runnable writeoperation, URI docsUri, File configfile, AbstractNGSMCConfigScreen root,
-			Component configButtonText) {
+			Component configButtonText, Consumer<List<Path>> dragAndDrop) {
 		super(Component.literal("NGSMCConfig"));
 		this.categories = categories;
 		this.parent = parent;
@@ -48,6 +51,7 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		this.configfile = configfile;
 		this.root = root == null ? this : root;
 		this.configButtonText = configButtonText;
+		this.dragAndDrop = dragAndDrop;
 	}
 	
 	protected AbstractNGSMCConfigScreen(AbstractNGSMCConfigScreen parent, AbstractNGSMCConfigScreen root) {
@@ -59,6 +63,7 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		this.configfile = parent.configfile;
 		this.root = root == null ? this : root;
 		this.configButtonText = parent.configButtonText;
+		this.dragAndDrop = parent.dragAndDrop;
 	}
 	@Override
 	protected void init() {
@@ -140,7 +145,7 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 			addRenderableWidget(configButton);
 		}
 		
-		errorWidget = new StringWidget(stylizeErrorComponment(error), font);
+		errorWidget = new StringWidget(stylizeErrorWarningComponment(getWarning(), error), font);
 		errorWidget.setPosition(BUTTONS_WIDTH+2, 0);
 		errorWidget.setSize(width-BUTTONS_WIDTH-4, 20);
 		errorWidget.setMaxWidth(errorWidget.getWidth(), TextOverflow.SCROLLING);
@@ -197,12 +202,27 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		}
 		return null;
 	}
+	protected Component getWarning() {
+		for (var category : categories) {
+			for (var option : category.options()) {
+				var error = option.getWarning();
+				if (error!=null)
+					return error;
+			}
+		}
+		return null;
+	}
 	protected boolean isEditedAndNotSaved() {
 		for (var category : categories)
 			for (var option : category.options())
 				if (option.edited)
 					return option.edited;
 		return false;
+	}
+	
+	@Override
+	public void onFilesDrop(List<Path> files) {
+		dragAndDrop.accept(files);
 	}
 	
 	@Override
@@ -222,12 +242,16 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 		Component error = getError();
 		
 		saveButton.active = error==null;
-		errorWidget.setMessage(stylizeErrorComponment(error));
+		errorWidget.setMessage(stylizeErrorWarningComponment(getWarning(), error));
 		
         super.extractRenderState(graphics, mouseX, mouseY, partialTick);
     }
 
-	private Component stylizeErrorComponment(Component error) {
-		return error!=null?error.plainCopy().withColor(0xFF0000):Component.literal("");
+	protected static Component stylizeErrorWarningComponment(Component warning, Component error) {
+		if (error!=null)
+			return error.plainCopy().withColor(0xFF0000);
+		else if (warning!=null)
+			return warning.plainCopy().withColor(0xFFFF00);
+		return Component.literal("");
 	}
 }
