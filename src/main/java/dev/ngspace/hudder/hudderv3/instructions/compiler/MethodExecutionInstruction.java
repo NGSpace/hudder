@@ -164,6 +164,6 @@ public class MethodExecutionInstruction extends Instruction {
 	
 	@Override
 	public boolean doesReturnValue() {
-		return "return".equals(builder[0]);
+		return "return".equalsIgnoreCase(builder[0].trim());
 	}
 }

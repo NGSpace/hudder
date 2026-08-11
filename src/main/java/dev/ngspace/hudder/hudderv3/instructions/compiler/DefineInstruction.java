@@ -14,30 +14,30 @@ public class DefineInstruction extends Instruction {
 	
 	public static int user_defines_count = 0;
 
-	private String block;
 	private String[] args;
-	private HudderConfig info;
 	private String name;
-	private String finalname;
-	private String filename;
-	private AV3Compiler comp;
+	private String bytecodename;
+	private TokenizedCodeBlock tokenizedBlock;
 
 	public DefineInstruction(String block, String[] args, HudderConfig info, String name, String filename,
-			AV3Compiler comp, TextPos pos) {
+			AV3Compiler comp, TextPos pos) throws CompileException {
 		super(pos);
-		this.block = block;
 		this.args = args;
-		this.info = info;
 		this.name = name;
-		this.filename = filename;
-		this.comp = comp;
-		finalname = "user_" + name + "_" + (++user_defines_count);
+		tokenizedBlock = comp.compile(info, block, filename, pos);
+		
+		bytecodename = "user_" + (tokenizedBlock.canReturnValue() ? "function" : "method")
+				+ "_" + (++user_defines_count);
+		
+		if (tokenizedBlock.canReturnValue()!=tokenizedBlock.doesReturnValue()) {
+			throw new CompileException("Function \""+name+"\" does not always return a value!", pos);
+		}
 	}
 
 	@Override
 	public void visit(V3ExecuteMethodWriter methodWriter, V3ClassWriter writer, Label breaklabel)
 			throws CompileException {
-		var method = writer.createExecuteMethod(finalname, new Class<?>[] {
+		var method = writer.createExecuteMethod(bytecodename, new Class<?>[] {
 			HudderConfig.class,
 			String.class,
 			String.class,
@@ -56,18 +56,13 @@ public class DefineInstruction extends Instruction {
 		}
 
 		Label end = new Label();
-		TokenizedCodeBlock tokenizedBlock = comp.compile(info, block, filename, pos);
 		tokenizedBlock.writeInstructions(method, writer, end);
 		method.putLabel(end);
 		method.end();
 		
-		if (tokenizedBlock.canReturnValue()!=tokenizedBlock.doesReturnValue()) {
-			throw new CompileException("Function \""+name+"\" does not always return a value!", pos);
-		}
-		
 		if (!tokenizedBlock.canReturnValue())
-			writer.user_methods.put(name, finalname);
+			writer.user_methods.put(name, bytecodename);
 		else
-			writer.user_functions.put(name, finalname);
+			writer.user_functions.put(name, bytecodename);
 	}
 }

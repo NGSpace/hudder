@@ -1,6 +1,5 @@
 package dev.ngspace.hudder.utils;
 
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -8,8 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.CRC32;
-import java.util.zip.Checksum;
 
 import javax.imageio.ImageIO;
 
@@ -155,14 +152,7 @@ public class HudFileUtils {private HudFileUtils() {}
 			if (Hudder.IS_DEBUG) e.printStackTrace();
 			return null;
 		}
-		return Identifier.fromNamespaceAndPath("hudder",
-				String.valueOf(getCRC32Checksum(filename.trim().toLowerCase())));
-	}
-	private static long getCRC32Checksum(String str) {return getCRC32Checksum(str.getBytes());}
-	private static long getCRC32Checksum(byte[] bytes) {
-	    Checksum crc32 = new CRC32();
-	    crc32.update(bytes, 0, bytes.length);
-	    return crc32.getValue();
+		return Identifier.fromNamespaceAndPath("hudder", String.valueOf(HudderUtils.getCRC32Checksum(filename.trim().toLowerCase())));
 	}
 
 	public static void reloadResources() throws IOException {

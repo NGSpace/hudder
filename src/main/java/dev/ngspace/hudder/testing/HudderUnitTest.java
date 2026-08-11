@@ -57,11 +57,24 @@ public class HudderUnitTest {
 							e.toString(), filename);
 				}
 			}
+			case NO_ERROR: {
+				try {
+					compiler.resetState();
+					compiler.compileFile(texttocompile, "Unit Tests");
+					var res = compiler.execute(info, texttocompile, "Unit Tests");
+					yield new HudderUnitTestResult(true, "No error to occur",
+							res.TopLeftText().replaceAll("(^ )|( $)", "~"), filename);
+				} catch (Exception e) {
+					e.printStackTrace();
+					yield new HudderUnitTestResult(false, "No error to occur", e.toString(), filename);
+				}
+			}
 		};
 	}
 	
 	public enum Mode {
 		NORMAL,
-		ERROR,;
+		ERROR,
+		NO_ERROR,;
 	}
 }

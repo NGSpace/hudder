@@ -152,14 +152,14 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Binder {
 	@Override
 	public void bindConsumer(BindableConsumer cons, String... names) {
 		for (String name : names) {
-			HudderV3Helper.api_consumers.putIfAbsent("api_consumer_" + name, cons);
+			HudderV3Helper.api_consumers.put("api_consumer_" + name, cons);
 		}
 	}
 	
 	@Override
 	public void bindFunction(BindableFunction cons, String... names) {
 		for (String name : names) {
-			HudderV3Helper.api_functions.putIfAbsent("api_function_" + name, cons);
+			HudderV3Helper.api_functions.put("api_function_" + name, cons);
 		}
 	}
 }

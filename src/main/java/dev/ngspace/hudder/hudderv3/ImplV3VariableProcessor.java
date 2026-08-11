@@ -386,7 +386,7 @@ public class ImplV3VariableProcessor implements V3VariableProcessor {
 			}
 			mathvalue.append(c);
 		}
-		if (values==null||!values.isEmpty()) {
+		if (values!=null&&!values.isEmpty()) {
 			values.add(mathvalue.toString());
 			return new MathVariableVisitor(values, operations, comp, pos);
 		}

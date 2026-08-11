@@ -2,6 +2,8 @@ package dev.ngspace.hudder.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.CRC32;
+import java.util.zip.Checksum;
 
 public class HudderUtils {private HudderUtils() {}
 	
@@ -62,5 +64,12 @@ public class HudderUtils {private HudderUtils() {}
 			b.append(c);
 		}
 		return b.toString();
+	}
+	
+	public static long getCRC32Checksum(String str) {return getCRC32Checksum(str.getBytes());}
+	public static long getCRC32Checksum(byte[] bytes) {
+	    Checksum crc32 = new CRC32();
+	    crc32.update(bytes, 0, bytes.length);
+	    return crc32.getValue();
 	}
 }

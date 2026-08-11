@@ -35,9 +35,10 @@ public class ForInstruction extends Instruction {
 		Label start = new Label();
 		Label end = new Label();
 		String localVariableName = variable_name.toLowerCase();
-		Integer previousVariableIndex = methodWriter.defineScopedVariable(localVariableName);
 
 		value.visit(methodWriter);
+		methodWriter.ensureNotNull("Can not iterate over null value!", pos);
+		methodWriter.checkcast(Iterable.class);
 		methodWriter.callInterface(Iterable.class, "iterator", "()Ljava/util/Iterator;");
 		int iterator_index = methodWriter.astore();
 		
@@ -47,6 +48,7 @@ public class ForInstruction extends Instruction {
 		methodWriter.ifeq(end);
 
 		methodWriter.aload(iterator_index);
+		Integer previousVariableIndex = methodWriter.defineScopedVariable(localVariableName);
 		methodWriter.callInterface(Iterator.class, "next", "()Ljava/lang/Object;");
 		methodWriter.storeVariable(localVariableName);
 		

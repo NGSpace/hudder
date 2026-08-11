@@ -3,6 +3,7 @@ package dev.ngspace.hudder.hudderv3.asm.methods;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
@@ -18,6 +19,10 @@ public abstract class VariableMethodWriter extends BaseMethodWriter {
 	public void defineVariable(String name) {
 		nullConstant();
 		int index = astore();
+		Label variable_start = new Label();
+		putLabel(variable_start);
+		methodVisitor.visitLocalVariable(name, Type.getDescriptor(Object.class), null, variable_start,
+				variable_start, index);
 		variables.put(name, index);
 	}
 	public boolean hasVariable(String name) {

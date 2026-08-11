@@ -2,6 +2,7 @@ package dev.ngspace.hudder.hudderv3.asm;
 
 import java.util.List;
 
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
@@ -27,6 +28,14 @@ public class V3MethodWriter extends ClassAccessMethodWriter {
 	@Override
 	public String getClassName() {
 		return classWriter.classname;
+	}
+
+	public void ensureNotNull(String error, TextPos pos) {
+		dup();
+		Label nonnull = new Label();
+		ifnonnull(nonnull);
+		throwExecutionException(error, pos);
+		putLabel(nonnull);
 	}
 	
 	public void throwRuntimeException(String exception) {
