@@ -56,7 +56,9 @@ public class LoadMethod implements V2IMethod, BindableConsumer {
 	public void invoke(IUIElementManager man, AHudCompiler<?> comp, ObjectWrapper... args) throws ExecutionException {
 		String file = args[0].asString();
 		try {
-			AHudCompiler<?> ecompiler=(args.length>1?Compilers.getCompilerFromName(args[1].asString()):comp);
+			if (args.length>1&&args[1].asBoolean())
+				throw new ExecutionException("V3 does not support the addText parameter!");
+			AHudCompiler<?> ecompiler=(args.length>2?Compilers.getCompilerFromName(args[2].asString()):comp);
 			for (var i : HudCompilationManager.precomplistners) i.accept(ecompiler);
 			for (var uielement : ecompiler.processAndExecute(Hudder.config, file, file).elements()) {
 				man.addUIElement(uielement);

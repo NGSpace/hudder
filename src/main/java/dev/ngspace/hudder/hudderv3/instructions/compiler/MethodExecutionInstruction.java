@@ -48,9 +48,13 @@ public class MethodExecutionInstruction extends Instruction {
 			case "no_sys_var", "sys_var":
 				break;
 			case "mute":
+				if (methodWriter.isBuilderDisabled())
+					break;
 				methodWriter.setMuted(true);
 				break;
 			case "topleft":
+				if (methodWriter.isBuilderDisabled())
+					break;
 				methodWriter.setMuted(false);
 				methodWriter.selected_builder_index = methodWriter.topleft_builder_index;
 				if (builder.length>1) {
@@ -61,6 +65,8 @@ public class MethodExecutionInstruction extends Instruction {
 				}
 				break;
 			case "topright":
+				if (methodWriter.isBuilderDisabled())
+					break;
 				methodWriter.setMuted(false);
 				methodWriter.selected_builder_index = methodWriter.topright_builder_index;
 				if (builder.length>1) {
@@ -71,6 +77,8 @@ public class MethodExecutionInstruction extends Instruction {
 				}
 				break;
 			case "bottomleft":
+				if (methodWriter.isBuilderDisabled())
+					break;
 				methodWriter.setMuted(false);
 				methodWriter.selected_builder_index = methodWriter.bottomleft_builder_index;
 				if (builder.length>1) {
@@ -81,6 +89,8 @@ public class MethodExecutionInstruction extends Instruction {
 				}
 				break;
 			case "bottomright":
+				if (methodWriter.isBuilderDisabled())
+					break;
 				methodWriter.setMuted(false);
 				methodWriter.selected_builder_index = methodWriter.bottomright_builder_index;
 				if (builder.length>1) {
