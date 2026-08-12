@@ -22,6 +22,7 @@ import dev.ngspace.hudder.hudderv3.instructions.variables.operations.ClassAccess
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.MathVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.PostIncDecVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.PreIncDecVariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.operations.TernaryVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations.ComparisionVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations.LogicalAndVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations.LogicalOrVariableVisitor;
@@ -114,6 +115,10 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 		List<VariableVisitor> and_values = new ArrayList<VariableVisitor>();
 		int and_last_index = 0;
 		
+		boolean can_ternary = value.startsWith("if ");
+		int ternary_then_index = -1;
+		int ternary_else_index = -1;
+		
 		for (int i = 1;i<value.length();i++) {
 			c = value.charAt(i);
 
@@ -148,6 +153,20 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 			}
 			if (!quotes&&parenthesses==0&&c==']') {
 				square_parenthesses--;
+			}
+
+			if (can_ternary) {
+				if (!quotes&&parenthesses==0&&square_parenthesses==0) {
+					if (ternary_then_index==-1&&value.indexOf(" then ", i)==i) {
+						ternary_then_index = i;
+						i += " then ".length()-1;
+					} else if (ternary_then_index!=-1&&ternary_else_index==-1
+							&&value.indexOf(" else ", i)==i) {
+						ternary_else_index = i;
+						i += " else ".length()-1;
+					}
+				}
+				continue;
 			}
 			
 			if (!quotes&&parenthesses==0&&c=='.') {
@@ -217,6 +236,11 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 					can_0x = false;
 			}
 		}
+		if (can_ternary&&ternary_then_index!=-1&&ternary_else_index!=-1)
+			return new TernaryVariableVisitor(comp,
+					value.substring(3, ternary_then_index),
+					value.substring(ternary_then_index+" then ".length(), ternary_else_index),
+					value.substring(ternary_else_index+" else ".length()), pos);
 		
 		// ! Operator
 		if (value.charAt(0)=='!')
