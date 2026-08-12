@@ -1,6 +1,7 @@
 package dev.ngspace.hudder.api.functionsandconsumers;
 
 import dev.ngspace.hudder.Hudder;
+import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableFunction;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
 import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
@@ -16,6 +17,15 @@ public class DeprecatedFunciton implements BindablePositionedFunction {
 	private BindablePositionedFunction func;
 	private String name;
 
+	/**
+	 * @deprecated use {@link #DeprecatedFunciton(String, BindablePositionedFunction, String[])}
+	 */
+	@SuppressWarnings("removal")
+	@Deprecated(since = "10.3.0", forRemoval = true)
+	public DeprecatedFunciton(String warning, BindableFunction cons, String[] names) {
+		this(warning, (BindablePositionedFunction) cons, names);
+	}
+	
 	public DeprecatedFunciton(String warning, BindablePositionedFunction func, String[] names) {
 		this.warning = warning;
 		this.func = func;

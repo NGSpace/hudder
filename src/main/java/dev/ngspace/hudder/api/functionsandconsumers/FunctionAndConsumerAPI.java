@@ -256,12 +256,6 @@ public class FunctionAndConsumerAPI {
 	 */
 	@Deprecated(since = "10.3.0",forRemoval = true)
 	public interface Binder extends PositionedBinder {
-		/**
-		 * Binds a consumer under one or more names.
-		 *
-		 * @param cons the consumer to bind
-		 * @param names the names under which the consumer will be available
-		 */
 		@Deprecated(since = "10.3.0",forRemoval = true)
 		public void bindConsumer(BindableConsumer cons, String... names);
 		
@@ -273,12 +267,6 @@ public class FunctionAndConsumerAPI {
 				bindConsumer((i,j,k)->cons.invoke(i, j, new TextPos(-1, -1), k), names);
 		}
 
-		/**
-		 * Binds a function under one or more names.
-		 *
-		 * @param cons the function to bind
-		 * @param names the names under which the function will be available
-		 */
 		@Deprecated(since = "10.3.0",forRemoval = true)
 		public void bindFunction(BindableFunction cons, String... names);
 		
