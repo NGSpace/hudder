@@ -4,7 +4,7 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.Type;
 
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
-import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableConsumer;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
 import dev.ngspace.hudder.compilers.HudderV3Compiler;
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
@@ -106,11 +106,15 @@ public class MethodExecutionInstruction extends Instruction {
 				if (apiCall) {
 					methodWriter.classWriter.loadApiConsumer(builder[0].trim());
 					methodWriter.aload(0);
-					methodWriter.getField("api_consumer_"+builder[0].trim(), BindableConsumer.class);
+					methodWriter.getField("api_consumer_"+builder[0].trim(), BindablePositionedConsumer.class);
 					methodWriter.aload(0);
 					methodWriter.getField("uimanager", ArrayElementManager.class);
 					methodWriter.aload(0);
 					methodWriter.getField("v3compiler", HudderV3Compiler.class);
+					methodWriter.newAndDup(TextPos.class);
+					methodWriter.loadConstantUnsafe(pos.line());
+					methodWriter.loadConstantUnsafe(pos.column());
+					methodWriter.callInit(TextPos.class, "(II)V");
 				}
 				
 				methodWriter.loadConstantUnsafe(builder.length-1);
@@ -143,8 +147,8 @@ public class MethodExecutionInstruction extends Instruction {
 	
 	protected void visitApiCall(V3MethodWriter methodWriter, int array_index) {
 		methodWriter.aload(array_index);
-		methodWriter.callInterface(BindableConsumer.class, "invoke",
-				"(Ldev/ngspace/hudder/api/functionsandconsumers/IUIElementManager;Ldev/ngspace/hudder/compilers/abstractions/AHudCompiler;[Ldev/ngspace/hudder/utils/ObjectWrapper;)V");
+		methodWriter.callInterface(BindablePositionedConsumer.class, "invoke",
+				"(Ldev/ngspace/hudder/api/functionsandconsumers/IUIElementManager;Ldev/ngspace/hudder/compilers/abstractions/AHudCompiler;Ldev/ngspace/hudder/compilers/utils/TextPos;[Ldev/ngspace/hudder/utils/ObjectWrapper;)V");
 
 	}
 	

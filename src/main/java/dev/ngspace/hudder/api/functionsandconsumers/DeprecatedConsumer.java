@@ -20,8 +20,8 @@ public class DeprecatedConsumer implements BindablePositionedConsumer {
 	/**
 	 * @deprecated use {@link #DeprecatedConsumer(String, BindablePositionedConsumer, String[])}
 	 */
-	@Deprecated(since = "10.3.0", forRemoval = true)
 	@SuppressWarnings("removal")
+	@Deprecated(since = "10.3.0", forRemoval = false)
 	public DeprecatedConsumer(String warning, BindableConsumer cons, String[] names) {
 		this(warning, (BindablePositionedConsumer) cons, names);
 	}

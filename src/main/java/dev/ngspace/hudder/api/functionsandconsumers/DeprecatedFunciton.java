@@ -21,7 +21,7 @@ public class DeprecatedFunciton implements BindablePositionedFunction {
 	 * @deprecated use {@link #DeprecatedFunciton(String, BindablePositionedFunction, String[])}
 	 */
 	@SuppressWarnings("removal")
-	@Deprecated(since = "10.3.0", forRemoval = true)
+	@Deprecated(since = "10.3.0", forRemoval = false)
 	public DeprecatedFunciton(String warning, BindableFunction cons, String[] names) {
 		this(warning, (BindablePositionedFunction) cons, names);
 	}

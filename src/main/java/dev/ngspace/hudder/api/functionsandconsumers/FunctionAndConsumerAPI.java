@@ -69,20 +69,14 @@ public class FunctionAndConsumerAPI {
 	 */
 	@Deprecated(since = "10.3.0", forRemoval = true)
 	public void registerFunction(BindableFunction func, String... names) {
-		for (var binder : binders)
-			binder.bindFunction(func, names);
-		functions.put(func, names);
+		registerFunction((BindablePositionedFunction) func, names);
 	}
 	/**
 	 * @deprecated use {@link #registerUnsafeFunction(BindablePositionedFunction, String...)}
 	 */
 	@Deprecated(since = "10.3.0", forRemoval = true)
 	public void registerUnsafeFunction(BindableFunction func, String... names) {
-		registerFunction((m,c,a)->{
-			if (!Hudder.config.unsafeoperations())
-				throw new SecurityException("Called unsafe function with unsafe operations disabled!");
-			return func.invoke(m,c,a);
-		}, names);
+		registerUnsafeFunction((BindablePositionedFunction) func, names);
 	}
 	
 
@@ -91,7 +85,7 @@ public class FunctionAndConsumerAPI {
 	 */
 	@Deprecated(since = "10.3.0", forRemoval = true)
 	public void registerDeprecatedFunction(String warning, BindableFunction func, String... names) {
-		registerFunction(new DeprecatedFunciton(warning, func, names), names);
+		registerDeprecatedFunction(warning, (BindablePositionedFunction) func, names);
 	}
 	
 	
@@ -143,9 +137,7 @@ public class FunctionAndConsumerAPI {
 	 */
 	@Deprecated(since = "10.3.0", forRemoval = true)
 	public void registerConsumer(BindableConsumer cons, String... names) {
-		for (var binder : binders) 
-			binder.bindConsumer(cons, names);
-		consumers.put(cons, names);
+		registerConsumer((BindablePositionedConsumer) cons, names);
 	}
 
 	/**
@@ -153,11 +145,7 @@ public class FunctionAndConsumerAPI {
 	 */
 	@Deprecated(since = "10.3.0", forRemoval = true)
 	public void registerUnsafeConsumer(BindableConsumer cons, String... names) {
-		registerConsumer((m,c,a)->{
-			if (!Hudder.config.unsafeoperations())
-				throw new SecurityException("Called unsafe method with unsafe operations disabled!");
-			cons.invoke(m,c,a);
-		}, names);
+		registerUnsafeConsumer((BindablePositionedConsumer) cons, names);
 	}
 
 	/**
@@ -165,7 +153,7 @@ public class FunctionAndConsumerAPI {
 	 */
 	@Deprecated(since = "10.3.0", forRemoval = true)
 	public void registerDeprecatedConsumer(String warning, BindableConsumer cons, String... names) {
-		registerConsumer(new DeprecatedConsumer(warning, cons, names), names);
+		registerDeprecatedConsumer(warning, (BindablePositionedConsumer) cons, names);
 	}
 
 

@@ -3,7 +3,7 @@ package dev.ngspace.hudder.hudderv3.instructions.variables;
 import org.objectweb.asm.Type;
 
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
-import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableFunction;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
 import dev.ngspace.hudder.compilers.HudderV3Compiler;
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
@@ -33,11 +33,15 @@ public class FunctionCallVariableVisitor extends VariableVisitor {
 		if (apiCall) {
 			methodWriter.classWriter.loadApiFunction(funcName.trim());
 			methodWriter.aload(0);
-			methodWriter.getField("api_function_"+funcName.trim(), BindableFunction.class);
+			methodWriter.getField("api_function_"+funcName.trim(), BindablePositionedFunction.class);
 			methodWriter.aload(0);
 			methodWriter.getField("uimanager", ArrayElementManager.class);
 			methodWriter.aload(0);
 			methodWriter.getField("v3compiler", HudderV3Compiler.class);
+			methodWriter.newAndDup(TextPos.class);
+			methodWriter.loadConstantUnsafe(pos.line());
+			methodWriter.loadConstantUnsafe(pos.column());
+			methodWriter.callInit(TextPos.class, "(II)V");
 		}
 		
 		methodWriter.loadConstantUnsafe(args.length);
@@ -69,8 +73,8 @@ public class FunctionCallVariableVisitor extends VariableVisitor {
 	
 	protected void visitApiCall(V3MethodWriter methodWriter, int array_index) {
 		methodWriter.aload(array_index);
-		methodWriter.callInterface(BindableFunction.class, "invoke",
-				"(Ldev/ngspace/hudder/api/functionsandconsumers/IUIElementManager;Ldev/ngspace/hudder/compilers/abstractions/AHudCompiler;[Ldev/ngspace/hudder/utils/ObjectWrapper;)Ljava/lang/Object;");
+		methodWriter.callInterface(BindablePositionedFunction.class, "invoke",
+				"(Ldev/ngspace/hudder/api/functionsandconsumers/IUIElementManager;Ldev/ngspace/hudder/compilers/abstractions/AHudCompiler;Ldev/ngspace/hudder/compilers/utils/TextPos;[Ldev/ngspace/hudder/utils/ObjectWrapper;)Ljava/lang/Object;");
 	}
 	
 	protected void visitUserFunction(V3MethodWriter methodWriter, int array_index) throws CompileException {

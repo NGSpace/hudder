@@ -14,8 +14,8 @@ import org.objectweb.asm.Type;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
-import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableConsumer;
-import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableFunction;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
 import dev.ngspace.hudder.compilers.HudderV3Compiler;
 import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
 import dev.ngspace.hudder.hudderv3.GeneratedCompiler;
@@ -123,13 +123,13 @@ public class V3ClassWriter {
 			if (!generatedApiFunctions.add(func)) {
 				continue;
 			}
-			initPublicField(func, BindableFunction.class);
+			initPublicField(func, BindablePositionedFunction.class);
 			init.aload(0);
 			init.loadConstant(func);
 			init.callStatic(HudderV3Helper.class, "getApiFunction", "(Ljava/lang/String;)"
-					+ "Ldev/ngspace/hudder/api/functionsandconsumers/FunctionAndConsumerAPI$BindableFunction;",
+					+ "Ldev/ngspace/hudder/api/functionsandconsumers/interfaces/BindablePositionedFunction;",
 					false);
-			init.putField(func, BindableFunction.class);
+			init.putField(func, BindablePositionedFunction.class);
 		}
 	}
 	
@@ -140,13 +140,13 @@ public class V3ClassWriter {
 			if (!generatedApiConsumers.add(func)) {
 				continue;
 			}
-			initPublicField(func, BindableConsumer.class);
+			initPublicField(func, BindablePositionedConsumer.class);
 			init.aload(0);
 			init.loadConstant(func);
 			init.callStatic(HudderV3Helper.class, "getApiConsumer", "(Ljava/lang/String;)"
-					+ "Ldev/ngspace/hudder/api/functionsandconsumers/FunctionAndConsumerAPI$BindableConsumer;",
+					+ "Ldev/ngspace/hudder/api/functionsandconsumers/interfaces/BindablePositionedConsumer;",
 					false);
-			init.putField(func, BindableConsumer.class);
+			init.putField(func, BindablePositionedConsumer.class);
 		}
 	}
 	

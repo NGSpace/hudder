@@ -14,19 +14,16 @@ import java.util.Set;
 import org.mozilla.javascript.ScriptableObject;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
-import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableConsumer;
-import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableFunction;
-import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.ExecutionException;
-import dev.ngspace.hudder.utils.ImplObjectWrapper;
 import dev.ngspace.hudder.utils.NoAccess;
 import dev.ngspace.hudder.utils.ValueGetter;
 
 public class HudderV3Helper {
-	public static Map<String, BindableFunction> api_functions = new HashMap<String, BindableFunction>();
-	public static Map<String, BindableConsumer> api_consumers = new HashMap<String, BindableConsumer>();
+	public static Map<String, BindablePositionedFunction> api_functions = new HashMap<String, BindablePositionedFunction>();
+	public static Map<String, BindablePositionedConsumer> api_consumers = new HashMap<String, BindablePositionedConsumer>();
 
 	private HudderV3Helper() {}
 	
@@ -69,21 +66,15 @@ public class HudderV3Helper {
 	}
 	
 
-	public static BindableFunction getApiFunction(String name) {
+	public static BindablePositionedFunction getApiFunction(String name) {
 		return api_functions.get(name);
 	}
-	public static BindableConsumer getApiConsumer(String name) {
+	public static BindablePositionedConsumer getApiConsumer(String name) {
 		return api_consumers.get(name);
 	}
 	
 	public static boolean hasApiConsumer(String name) {
 		return api_consumers.containsKey(name);
-	}
-	
-	public static void callApiConsumer(String name, int line, int col, ArrayElementManager uiManager,
-			AVarTextCompiler compiler, Object... values) throws ExecutionException {
-		api_consumers.get(name).invoke(uiManager, compiler,
-				ImplObjectWrapper.fromArray(values, line, col));
 	}
 
 	public static Object getClassProperty(Object object, String objectExpression, String fieldName)

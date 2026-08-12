@@ -11,9 +11,9 @@ import org.objectweb.asm.Label;
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
-import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableConsumer;
-import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableFunction;
-import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.Binder;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.PositionedBinder;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
 import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.config.HudderConfig;
@@ -30,7 +30,7 @@ import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.asm.V3ExecuteMethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
 
-public abstract class AV3Compiler extends AVarTextCompiler implements Binder {
+public abstract class AV3Compiler extends AVarTextCompiler implements PositionedBinder {
 	
 	public Map<String, CachedCompiler> cache = new HashMap<String, CachedCompiler>();
 	
@@ -150,14 +150,14 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Binder {
 	}
 
 	@Override
-	public void bindConsumer(BindableConsumer cons, String... names) {
+	public void bindConsumer(BindablePositionedConsumer cons, String... names) {
 		for (String name : names) {
 			HudderV3Helper.api_consumers.put("api_consumer_" + name, cons);
 		}
 	}
 	
 	@Override
-	public void bindFunction(BindableFunction cons, String... names) {
+	public void bindFunction(BindablePositionedFunction cons, String... names) {
 		for (String name : names) {
 			HudderV3Helper.api_functions.put("api_function_" + name, cons);
 		}
