@@ -1,5 +1,7 @@
 package dev.ngspace.hudder.hudderv3.asm.methods;
 
+import java.util.function.Consumer;
+
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -42,6 +44,26 @@ public abstract class BaseMethodWriter implements MethodWriterJumpInsn, MethodWr
 	
 	public void putLineNumber(int line, Label start) {
 		methodVisitor.visitLineNumber(line, start);
+	}
+	
+	public void tryCatchBlock(Consumer<Label> try_block, Consumer<Label> catch_block, Class<?> exception) {
+		Label try_start = new Label();
+		Label try_end = new Label();
+		Label catch_handler = new Label();
+		Label end = new Label();
+		
+		tryCatch(try_start, try_end, catch_handler, exception);
+		
+		putLabel(try_start);
+		try_block.accept(try_end);
+		putLabel(try_end);
+		jumpto(end);
+		
+		putLabel(catch_handler);
+		
+		catch_block.accept(end);
+		
+		putLabel(end);
 	}
 
 	// -------------------------------------------------------------------------

@@ -31,6 +31,12 @@ public class ExecutionException extends Exception {
 		this.col = pos.column();
 	}
 
+	public ExecutionException(Exception e, int line, int column) {
+		super(e.getMessage(), e);
+		this.line = line;
+		this.col = column;
+	}
+
 	private static final long serialVersionUID = -5301919978870515553L;
 
 	public String getFailureMessage() {

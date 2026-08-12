@@ -23,11 +23,11 @@ import dev.ngspace.hudder.hudderv3.GeneratedCompiler;
 import dev.ngspace.hudder.hudderv3.HudderAPIFunctions;
 import dev.ngspace.hudder.hudderv3.HudderAPIMethods;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
-import dev.ngspace.hudder.hudderv3.ImplV3VariableProcessor;
 import dev.ngspace.hudder.hudderv3.TokenizedCodeBlock;
-import dev.ngspace.hudder.hudderv3.V3VariableProcessor;
 import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.asm.V3ExecuteMethodWriter;
+import dev.ngspace.hudder.hudderv3.instructions.ImplV3VariableProcessor;
+import dev.ngspace.hudder.hudderv3.instructions.V3VariableProcessor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
 
 public abstract class AV3Compiler extends AVarTextCompiler implements PositionedBinder {

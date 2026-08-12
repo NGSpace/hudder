@@ -1,7 +1,9 @@
 package dev.ngspace.hudder.hudderv3.asm.methods;
 
+import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 
 public interface MethodWriterBase {
 	
@@ -21,6 +23,10 @@ public interface MethodWriterBase {
 	
 	public default void athrow() {
 		visitor().visitInsn(Opcodes.ATHROW);
+	}
+	
+	public default void tryCatch(Label try_start, Label try_end, Label handler_start, Class<?> exception) {
+		visitor().visitTryCatchBlock(try_start, try_end, handler_start, Type.getInternalName(exception));
 	}
 	
 	// Comparison instructions

@@ -53,4 +53,29 @@ public class V3MethodWriter extends ClassAccessMethodWriter {
 		callSpecial(ExecutionException.class, "<init>", "(Ljava/lang/String;II)V", false);
 		athrow();
 	}
+
+	public void throwExecutionExceptionFromCaughtException(TextPos pos) {
+		Label execution_excpetion_handler = new Label();
+		Label general_exception_handler = new Label();
+		
+		dup();
+		instanceOf(ExecutionException.class);
+		ifne(execution_excpetion_handler);
+		
+		putLabel(general_exception_handler);
+		int temp = astore();
+		newAndDup(ExecutionException.class);
+		aload(temp);
+		loadConstantUnsafe(pos.line());
+		loadConstantUnsafe(pos.column());
+		callInit(ExecutionException.class, "(Ljava/lang/Exception;II)V");
+		athrow();
+		
+		putLabel(execution_excpetion_handler);
+		dup();
+		checkcast(ExecutionException.class);
+		getField("line", ExecutionException.class, int.class);
+		iflt(general_exception_handler);
+		athrow();
+	}
 }

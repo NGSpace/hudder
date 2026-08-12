@@ -146,10 +146,15 @@ public class MethodExecutionInstruction extends Instruction {
 	}
 	
 	protected void visitApiCall(V3MethodWriter methodWriter, int array_index) {
-		methodWriter.aload(array_index);
-		methodWriter.callInterface(BindablePositionedConsumer.class, "invoke",
-				"(Ldev/ngspace/hudder/api/functionsandconsumers/IUIElementManager;Ldev/ngspace/hudder/compilers/abstractions/AHudCompiler;Ldev/ngspace/hudder/compilers/utils/TextPos;[Ldev/ngspace/hudder/utils/ObjectWrapper;)V");
-
+		methodWriter.tryCatchBlock(_->{
+			methodWriter.aload(array_index);
+			methodWriter.callInterface(BindablePositionedConsumer.class, "invoke","("
+					+ "Ldev/ngspace/hudder/api/functionsandconsumers/IUIElementManager;"
+					+ "Ldev/ngspace/hudder/compilers/abstractions/AHudCompiler;"
+					+ "Ldev/ngspace/hudder/compilers/utils/TextPos;"
+					+ "[Ldev/ngspace/hudder/utils/ObjectWrapper;"
+					+ ")V");
+		}, _->methodWriter.throwExecutionExceptionFromCaughtException(pos), Exception.class);
 	}
 	
 	protected void visitUserConsumer(V3MethodWriter methodWriter, int array_index) throws CompileException {

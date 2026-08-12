@@ -39,7 +39,7 @@ public class FunctionAndConsumerAPI {
 	
 
 	/**
-	 * @deprecated use BindablePositionedConsumer
+	 * @deprecated use {@link #applyFunctionsAndConsumers(PositionedBinder)}
 	 */
 	@Deprecated(since = "10.3.0", forRemoval = true)
 	public void applyFunctionsAndConsumers(Binder binder) {

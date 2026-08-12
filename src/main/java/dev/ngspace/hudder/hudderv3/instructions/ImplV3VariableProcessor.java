@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.hudderv3;
+package dev.ngspace.hudder.hudderv3.instructions;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -39,15 +39,16 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 		comp = Compilers.findEntryFromName(config.compilername).orElse(Compilers.getEntryFromName("hudder"))
 				.displayname();
 		
-		addEntry(new TitleEntry(Component.translatable("hudder.mainfile.title"),
-				Component.translatable("hudder.mainfile.subtitle")), 24);
-		
 		loadHuds(source);
 		
 		HudFileUtils.addReloadResourcesListener(this);
 	}
 	
 	private void loadHuds(File folder) {
+		
+		addEntry(new TitleEntry(Component.translatable("hudder.mainfile.title"),
+				Component.translatable("hudder.mainfile.subtitle")), 24);
+		
 		for (File hud : folder.listFiles()) {
 			if (hud.isDirectory() && isEmptyOrImagesOnly(hud)) {
 				continue;
