@@ -10,6 +10,7 @@ import org.mozilla.javascript.Function;
 import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.RhinoException;
+import org.mozilla.javascript.RhinoTextPosGetter;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.Undefined;
@@ -74,7 +75,9 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 					for (int i = 0;i<args.length;i++) {
 						vals[i] = new JavaScriptValue(args[i]);
 					}
-					return con.getWrapFactory().wrap(con, scope, function.exec(vals), (Class<?>) null);
+					
+					return con.getWrapFactory().wrap(con, scope, function.exec(
+							RhinoTextPosGetter.getPosition(), vals), (Class<?>) null);
 				} catch (Exception e) {
 					throw new WrappedException(e);
 				}
@@ -85,7 +88,7 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 		});
 	}
 	@Override public void bindConsumer(ScriptConsumer consumer, String... names) {
-		bindFunction(e->{consumer.exec(e);return Undefined.instance;},names);
+		bindFunction((p,e)->{consumer.exec(p,e);return Undefined.instance;},names);
 	}
 	
 	

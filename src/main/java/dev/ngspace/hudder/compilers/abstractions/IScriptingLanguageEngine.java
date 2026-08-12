@@ -3,6 +3,7 @@ package dev.ngspace.hudder.compilers.abstractions;
 import java.io.Closeable;
 import java.io.IOException;
 
+import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.utils.ObjectWrapper;
@@ -130,10 +131,11 @@ public interface IScriptingLanguageEngine extends Closeable {
 		 * Executes the function with the supplied arguments.
 		 *
 		 * @param args the arguments supplied by the script
+		 * @param pos the position of the call
 		 * @return the value returned to the script
 		 * @throws ExecutionException if the function cannot be executed
 		 */
-		public Object exec(ObjectWrapper... args) throws ExecutionException;
+		public Object exec(TextPos pos, ObjectWrapper... args) throws ExecutionException;
 	}
 
 	/**
@@ -145,9 +147,10 @@ public interface IScriptingLanguageEngine extends Closeable {
 		 * Executes the consumer with the supplied arguments.
 		 *
 		 * @param args the arguments supplied by the script
+		 * @param pos the position of the call
 		 * @throws ExecutionException if the consumer cannot be executed
 		 */
-		public void exec(ObjectWrapper... args) throws ExecutionException;
+		public void exec(TextPos pos, ObjectWrapper... args) throws ExecutionException;
 	}
 	
 }

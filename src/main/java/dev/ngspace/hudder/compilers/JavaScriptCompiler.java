@@ -1,9 +1,9 @@
 package dev.ngspace.hudder.compilers;
 
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
-import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableConsumer;
-import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableFunction;
-import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.Binder;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.PositionedBinder;
 import dev.ngspace.hudder.compilers.abstractions.AScriptingLanguageCompiler;
 import dev.ngspace.hudder.compilers.abstractions.IScriptingLanguageEngine;
 import dev.ngspace.hudder.compilers.utils.javascript.JavaScriptEngine;
@@ -16,15 +16,15 @@ public class JavaScriptCompiler extends AScriptingLanguageCompiler {
 		JavaScriptEngine engine = new JavaScriptEngine();
 		FunctionAndConsumerAPI api = FunctionAndConsumerAPI.getInstance();
 		var compiler = this;
-		api.applyFunctionsAndConsumers(new Binder() {
+		api.applyFunctionsAndConsumers(new PositionedBinder() {
 			@Override
-			public void bindFunction(BindableFunction c, String... n) {
-				engine.bindFunction(e->c.invoke(elms, compiler, e), n);
+			public void bindFunction(BindablePositionedFunction c, String... n) {
+				engine.bindFunction((p,e)->c.invoke(elms, compiler, p, e), n);
 			}
 			
 			@Override
-			public void bindConsumer(BindableConsumer c, String... n) {
-				engine.bindConsumer(e->c.invoke(elms, compiler, e), n);
+			public void bindConsumer(BindablePositionedConsumer c, String... n) {
+				engine.bindConsumer((p,e)->c.invoke(elms, compiler, p, e), n);
 			}
 		});
 		return engine;
