@@ -1,5 +1,8 @@
 package dev.ngspace.hudder.hudderv3.instructions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
@@ -7,13 +10,21 @@ import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.instructions.variables.FunctionCallVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.SystemVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.constants.ArrayConstantVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.constants.BooleanVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.constants.NumberVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.constants.StringVariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.modifiable.ArrayReadVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.modifiable.DynamicVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.modifiable.SetVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.modifiable.TemporaryVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.ClassAccessVariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.operations.MathVariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.operations.PostIncDecVariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.operations.PreIncDecVariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations.ComparisionVariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations.LogicalAndVariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations.LogicalOrVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations.NegateVariableVisitor;
 import dev.ngspace.hudder.utils.HudderUtils;
 
@@ -29,7 +40,12 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 		if (value.isBlank())
 			throw new CompileException("Empty variable", pos);
 		
-		System.out.println(value);
+		// Array constant
+		// Accepts the follow format: "[(any char)]"
+		if (value.matches("\\[[\\s\\S]*\\]")) {
+			return new ArrayConstantVariableVisitor(
+					HudderUtils.processParemeters(value.substring(1, value.length() - 1).replace("\n", "")), comp, pos);
+		}
 		
 		// Boolean constants
 		if (value.equalsIgnoreCase("false"))
@@ -37,11 +53,24 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 		if (value.equalsIgnoreCase("true"))
 			return new BooleanVariableVisitor(comp, true, pos);
 		
+		// Post Increase and Decrease Operator
+		if (value.matches("[\\s\\S]+(\\+\\+|--)")) {
+			return new PostIncDecVariableVisitor(value.substring(0, value.length() - 2), comp,
+					"+".equals(value.substring(value.length() - 1)), pos);
+		}
+		
+		// Pre Increase and Decrease Operator
+		if (value.matches("(\\+\\+|--)[\\s\\S]+")) {
+			return new PreIncDecVariableVisitor(value.substring(2), comp, "+".equals(value.substring(0, 1)), pos);
+		}
+		
 		int len = value.length();
 		
 		char c = value.charAt(0);
-		
+
 		int parenthesses = c=='('?1:0;
+		int square_parenthesses = c=='['?1:0;
+		boolean escaped = false;
 		
 		boolean can_wrapped = parenthesses==1;
 		
@@ -50,7 +79,7 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 		
 		boolean can_0x = c == '0' && len>2;
 		boolean can_hash = c == '#' && len>1;
-		boolean can_number = Character.isDigit(c) || c=='.';
+		boolean can_number = Character.isDigit(c) || c=='.' || c=='-';
 
 		boolean quotes = c == '"';
 		boolean can_string = quotes && len>2;
@@ -64,29 +93,61 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 		boolean can_function = value.charAt(len-1)==')';
 		int function_args_index = -1;
 		
+		boolean can_math = false;
+		List<String> math_values = new ArrayList<String>();
+		List<Character> math_operators = new ArrayList<Character>();
+		int math_last_index = 0;
+		
+		boolean can_comparision = false;
+		String comparision_operator = "";
+		int comparision_index = -1;
+		
+		boolean can_array_read = false;
+		
+		boolean can_or = false;
+		boolean has_vertical_bar = false;
+		List<VariableVisitor> or_values = new ArrayList<VariableVisitor>();
+		int or_last_index = 0;
+		
+		boolean can_and = false;
+		boolean has_ampersand = false;
+		List<VariableVisitor> and_values = new ArrayList<VariableVisitor>();
+		int and_last_index = 0;
+		
 		for (int i = 1;i<value.length();i++) {
 			c = value.charAt(i);
-			
-			if (c=='"') {
+
+			if (c=='"'&&!escaped) {
 				quotes = !quotes;
 				if (i!=len-1) {
 					can_string = false;
 				}
 			}
-			
-			if (!quotes&&c=='(') {
+			if (c=='\\'&&!escaped) {
+				escaped = true;
+			}
+
+			if (!quotes&&square_parenthesses==0&&c=='(') {
 				if (parenthesses==0) {
-					System.out.println("par" + i);
 					function_args_index = i;
 				}
 				parenthesses++;
 			}
-			if (!quotes&&c==')') {
+			if (!quotes&&square_parenthesses==0&&c==')') {
 				parenthesses--;
-				if (i!=len-1) {
+				if (parenthesses==0&&i!=len-1) {
 					can_wrapped=false;
 					can_function=false;
 				}
+			}
+			if (!quotes&&parenthesses==0&&c=='[') {
+				if (parenthesses==0&&value.charAt(len-1)==']')
+					can_array_read = true;
+				
+				square_parenthesses++;
+			}
+			if (!quotes&&parenthesses==0&&c==']') {
+				square_parenthesses--;
 			}
 			
 			if (!quotes&&parenthesses==0&&c=='.') {
@@ -94,9 +155,52 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 				class_dot = i;
 			}
 			
-			if (!quotes&&parenthesses==0&&c=='=') {
+			if (!quotes&&parenthesses==0&&c=='|') {
+				if (!has_vertical_bar) {
+					has_vertical_bar = true;
+				} else {
+					can_or = true;
+					or_values.add(parseVariable(value.substring(or_last_index, i-1), comp, pos));
+					or_last_index = i+1;
+					has_vertical_bar = false;
+				}
+			} else {
+				has_vertical_bar = false;
+			}
+			
+			if (!quotes&&parenthesses==0&&c=='&') {
+				if (!has_ampersand) {
+					has_ampersand = true;
+				} else {
+					can_and = true;
+					and_values.add(parseVariable(value.substring(and_last_index, i-1), comp, pos));
+					and_last_index = i+1;
+					has_ampersand = false;
+				}
+			} else {
+				has_ampersand = false;
+			}
+			
+			if (!quotes&&parenthesses==0&&((c=='='&&set_index==i-1)
+					||(len>i+1&&(c=='!'&&value.charAt(i+1)=='='))||c=='<'||c=='>')) {
+				if (len>i+1) {
+					can_comparision = true;
+					comparision_operator = c + (value.charAt(i+1)=='='||can_set?"=":"");
+					comparision_index = can_set? i-1 : i;
+				}
+				can_set = false;
+			}
+			
+			if (!quotes&&parenthesses==0&&c=='='&&set_index==-1&&!can_comparision) {
 				can_set = len>2;
 				set_index = i;
+			}
+			
+			if (!quotes&&parenthesses==0&&isMathOperator(c)) {
+				can_math = true;
+				math_operators.add(c);
+				math_values.add(value.substring(math_last_index, i));
+				math_last_index = i + 1;
 			}
 			
 			if (!isAlphaNumeric(c)) {
@@ -114,25 +218,53 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 			}
 		}
 		
+		// ! Operator
+		if (value.charAt(0)=='!')
+			return new NegateVariableVisitor(comp, value.substring(1), pos);
+		
 		if (can_0x||can_hash||can_number)
 			return new NumberVariableVisitor(comp, value, pos);
 		
 		if (can_set)
 			return new SetVariableVisitor(comp, value.substring(0, set_index), value.substring(set_index+1), pos);
+
+		if (can_or) {
+			or_values.add(parseVariable(value.substring(or_last_index, len), comp, pos));
+			return new LogicalOrVariableVisitor(or_values, comp, pos);
+		}
+		
+		if (can_and) {
+			and_values.add(parseVariable(value.substring(and_last_index, len), comp, pos));
+			return new LogicalAndVariableVisitor(and_values, comp, pos);
+		}
+		
+		if (can_comparision)
+			return new ComparisionVariableVisitor(comp, value.substring(0, comparision_index),
+					value.substring(comparision_index+comparision_operator.length()),
+					comparision_operator, pos);
+		
+		if (can_math) {
+			math_values.add(value.substring(math_last_index));
+			return new MathVariableVisitor(math_values, math_operators, comp, pos);
+		}
 		
 		if (can_class)
 			return new ClassAccessVariableVisitor(comp, value.substring(0, class_dot),
 					value.substring(class_dot+1), pos);
+		
+		if (can_array_read)
+			return new ArrayReadVariableVisitor(comp, value, pos);
 
 		if (can_wrapped&&parenthesses==0)
 			return parseVariable(value.substring(1, value.length() - 1), comp, pos);
 		
 		if (can_function&&parenthesses==0)
 			return new FunctionCallVariableVisitor(value.substring(0, function_args_index), comp,
-					HudderUtils.processParemeters(value.substring(function_args_index)), pos);
+					HudderUtils.processParemeters(value.substring(function_args_index+1,len-1)), pos);
 		
 		if (can_string)
-			return new StringVariableVisitor(comp, value.substring(1, value.length()-1), pos);
+			return new StringVariableVisitor(comp, value.substring(1, value.length()-1)
+					.replace("\\\"", "\""), pos);
 		
 		if (can_dynamic) {
 			// System variable
@@ -141,10 +273,6 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 			// Dynamic variable
 			return new DynamicVariableVisitor(comp, value.toLowerCase(), pos);
 		}
-		
-		// ! Operator
-		if (value.charAt(0)=='!')
-			return new NegateVariableVisitor(comp, value.substring(1), pos);
 		
 		if (can_temp)
 			return new TemporaryVariableVisitor(comp, value, pos);
@@ -155,6 +283,10 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 	}
 	
 	static boolean isAlphaNumeric(char c) {
-		return Character.isAlphabetic(c)||Character.isDigit(c);
+		return Character.isAlphabetic(c)||Character.isDigit(c)||c=='_';
+	}
+	
+	static boolean isMathOperator(char c) {
+		return c == '*' || c == '+' || c == '-' || c == '/' || c == '%';
 	}
 }

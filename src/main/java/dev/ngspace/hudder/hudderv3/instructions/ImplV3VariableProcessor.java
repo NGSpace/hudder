@@ -182,10 +182,6 @@ public class ImplV3VariableProcessor implements V3VariableProcessor {
 		// Array constant
 		// Accepts the follow format: "[(any char)]"
 		if (value.matches("\\[[\\s\\S]*\\]")) {
-			
-			// Sends the text between the square brackets to HudderUtils.processParemeters
-				// to tokenize the values.
-			
 			return new ArrayConstantVariableVisitor(
 					HudderUtils.processParemeters(value.substring(1, value.length() - 1).replace("\n", "")), comp, pos);
 		}
