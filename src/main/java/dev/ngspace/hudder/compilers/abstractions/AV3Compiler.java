@@ -27,6 +27,7 @@ import dev.ngspace.hudder.hudderv3.TokenizedCodeBlock;
 import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.asm.V3ExecuteMethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.ImplV3VariableProcessor;
+import dev.ngspace.hudder.hudderv3.instructions.NarrowDownV3VariableProcessor;
 import dev.ngspace.hudder.hudderv3.instructions.V3VariableProcessor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
 
@@ -34,7 +35,7 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Positioned
 	
 	public Map<String, CachedCompiler> cache = new HashMap<String, CachedCompiler>();
 	
-	public V3VariableProcessor variableProcessor = new ImplV3VariableProcessor();
+	public V3VariableProcessor variableProcessor = new NarrowDownV3VariableProcessor();
 
 	public boolean system_variables = true;
 	
