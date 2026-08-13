@@ -26,7 +26,7 @@ public class LogicalOrVariableVisitor extends ExpressionVisitor {
 		
 		for (int i = 0;i<values.size();i++) {
 			values.get(i).visit(methodWriter);
-			methodWriter.checkcast(Boolean.class);
+			methodWriter.checkcastSafe(Boolean.class, pos);
 			methodWriter.booleanValue();
 			methodWriter.ifne(true_value);
 		}

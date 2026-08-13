@@ -21,7 +21,7 @@ public class PostIncDecVariableVisitor extends ExpressionVisitor {
 	@Override
 	public void visit(V3MethodWriter methodWriter) throws CompileException {
 		value.visit(methodWriter);
-		methodWriter.checkcast(Number.class);
+		methodWriter.checkcastSafe(Number.class, pos);
 		methodWriter.doubleValue();
 		methodWriter.dup2();
 		methodWriter.loadConstantUnsafe(1d);

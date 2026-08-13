@@ -38,7 +38,7 @@ public class ForInstruction extends Instruction {
 
 		value.visit(methodWriter);
 		methodWriter.ensureNotNull("Can not iterate over null value!", pos);
-		methodWriter.checkcast(Iterable.class);
+		methodWriter.checkcastSafe(Iterable.class, pos);
 		methodWriter.callInterface(Iterable.class, "iterator", "()Ljava/util/Iterator;");
 		int iterator_index = methodWriter.astore();
 		

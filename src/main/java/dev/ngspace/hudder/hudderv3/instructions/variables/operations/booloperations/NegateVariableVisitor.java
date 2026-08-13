@@ -20,7 +20,7 @@ public class NegateVariableVisitor extends ExpressionVisitor {
 	@Override
 	public void visit(V3MethodWriter methodWriter) throws CompileException {
 		value.visit(methodWriter);
-		methodWriter.checkcast(Boolean.class);
+		methodWriter.checkcastSafe(Boolean.class, pos);
 		methodWriter.booleanValue();
 		Label end = new Label();
 		Label false_result = new Label();

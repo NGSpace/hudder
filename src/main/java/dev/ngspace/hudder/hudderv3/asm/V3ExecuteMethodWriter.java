@@ -38,13 +38,13 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 		
 		
 		// Create the StringBuilders
-		initStringBuilder();
+		newStringBuilder();
 		topleft_builder_index = astore();
-		initStringBuilder();
+		newStringBuilder();
 		topright_builder_index = astore();
-		initStringBuilder();
+		newStringBuilder();
 		bottomleft_builder_index = astore();
-		initStringBuilder();
+		newStringBuilder();
 		bottomright_builder_index = astore();
 		
 		// Default to topleft
@@ -63,11 +63,6 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 		// Return value
 		nullConstant();
 		return_value_index = astore();
-	}
-	
-	public void initStringBuilder() {
-		newAndDup(StringBuilder.class);
-		callInit(StringBuilder.class, "()V");
 	}
 
 	public void appendStringConstant(String string) {

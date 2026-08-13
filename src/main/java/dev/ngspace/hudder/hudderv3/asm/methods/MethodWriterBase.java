@@ -17,8 +17,28 @@ public interface MethodWriterBase {
 		visitor().visitInsn(Opcodes.DUP);
 	}
 	
+	public default void dupX1() {
+		visitor().visitInsn(Opcodes.DUP_X1);
+	}
+	
+	public default void dupX2() {
+		visitor().visitInsn(Opcodes.DUP_X2);
+	}
+	
 	public default void dup2() {
 		visitor().visitInsn(Opcodes.DUP2);
+	}
+	
+	public default void dup2X1() {
+		visitor().visitInsn(Opcodes.DUP2_X1);
+	}
+	
+	public default void dup2X2() {
+		visitor().visitInsn(Opcodes.DUP2_X2);
+	}
+	
+	public default void swap() {
+		visitor().visitInsn(Opcodes.SWAP);
 	}
 	
 	public default void athrow() {

@@ -55,7 +55,8 @@ public class ConditionInstruction extends Instruction {
 			
 			if (branch.condition() != null) {
 				branch.condition().visit(methodWriter);
-				methodWriter.checkcast(Boolean.class);
+				methodWriter.checkcastSafe(Boolean.class, pos);
+				methodWriter.ensureNotNull("Condition can not be null!", pos);
 				methodWriter.booleanValue();
 				
 				methodWriter.ifeq(elseLabel);

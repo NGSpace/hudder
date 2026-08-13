@@ -28,7 +28,7 @@ public class TernaryVariableVisitor extends ExpressionVisitor {
 		Label label = new Label();
 		
 		condition.visit(methodWriter);
-		methodWriter.checkcast(Boolean.class);
+		methodWriter.checkcastSafe(Boolean.class, pos);
 		methodWriter.booleanValue();
 		
 		methodWriter.ifne(label);

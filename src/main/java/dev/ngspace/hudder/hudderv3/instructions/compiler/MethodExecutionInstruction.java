@@ -40,6 +40,9 @@ public class MethodExecutionInstruction extends Instruction {
 			throws CompileException {
 		switch (builder[0].toLowerCase().trim()) {
 			case "return":
+				if (builder.length!=2) {
+					throw new CompileException("Return method must have a return value!", pos);
+				}
 				comp.parseVariable(builder[1], pos).visit(methodWriter);
 				methodWriter.astore(methodWriter.return_value_index);
 				methodWriter.jumpto(methodWriter.finalLabel);
@@ -58,7 +61,7 @@ public class MethodExecutionInstruction extends Instruction {
 				methodWriter.selected_builder_index = methodWriter.topleft_builder_index;
 				if (builder.length>1) {
 					comp.parseVariable(builder[1], pos).visit(methodWriter);
-					methodWriter.checkcast(Number.class);
+					methodWriter.checkcastSafe(Number.class, pos);
 					methodWriter.floatValue();
 					methodWriter.fstore(methodWriter.topleft_scale_index);
 				}
@@ -70,7 +73,7 @@ public class MethodExecutionInstruction extends Instruction {
 				methodWriter.selected_builder_index = methodWriter.topright_builder_index;
 				if (builder.length>1) {
 					comp.parseVariable(builder[1], pos).visit(methodWriter);
-					methodWriter.checkcast(Number.class);
+					methodWriter.checkcastSafe(Number.class, pos);
 					methodWriter.floatValue();
 					methodWriter.fstore(methodWriter.topright_scale_index);
 				}
@@ -82,7 +85,7 @@ public class MethodExecutionInstruction extends Instruction {
 				methodWriter.selected_builder_index = methodWriter.bottomleft_builder_index;
 				if (builder.length>1) {
 					comp.parseVariable(builder[1], pos).visit(methodWriter);
-					methodWriter.checkcast(Number.class);
+					methodWriter.checkcastSafe(Number.class, pos);
 					methodWriter.floatValue();
 					methodWriter.fstore(methodWriter.bottomleft_scale_index);
 				}
@@ -94,7 +97,7 @@ public class MethodExecutionInstruction extends Instruction {
 				methodWriter.selected_builder_index = methodWriter.bottomright_builder_index;
 				if (builder.length>1) {
 					comp.parseVariable(builder[1], pos).visit(methodWriter);
-					methodWriter.checkcast(Number.class);
+					methodWriter.checkcastSafe(Number.class, pos);
 					methodWriter.floatValue();
 					methodWriter.fstore(methodWriter.bottomright_scale_index);
 				}

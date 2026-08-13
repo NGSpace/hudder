@@ -43,7 +43,7 @@ public class WhileInstruction extends Instruction {
 		
 		methodWriter.putLabel(start);
 		condition.visit(methodWriter);
-		methodWriter.checkcast(Boolean.class);
+		methodWriter.checkcastSafe(Boolean.class, pos);
 		methodWriter.booleanValue();
 		methodWriter.ifeq(end);
 		if (has_limits) {

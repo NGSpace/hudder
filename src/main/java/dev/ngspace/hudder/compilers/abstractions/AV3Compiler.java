@@ -76,7 +76,7 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Positioned
 		
 			Class<?> dynamicClass = classWriter.toClass();
 			
-			Object instance = dynamicClass.getDeclaredConstructor(getClass()).newInstance(this);
+			Object instance = dynamicClass.getDeclaredConstructor(AV3Compiler.class).newInstance(this);
 			cache.put(text, new CachedCompiler(instance, (GeneratedCompiler) instance, null));
 		} catch (InvocationTargetException e) {
 			if (e.getTargetException() instanceof RuntimeException re)

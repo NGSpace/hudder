@@ -29,6 +29,11 @@ public class V3MethodWriter extends ClassAccessMethodWriter {
 	public String getClassName() {
 		return classWriter.classname;
 	}
+	
+	public void newStringBuilder() {
+		newAndDup(StringBuilder.class);
+		callInit(StringBuilder.class, "()V");
+	}
 
 	public void ensureNotNull(String error, TextPos pos) {
 		dup();
@@ -36,6 +41,45 @@ public class V3MethodWriter extends ClassAccessMethodWriter {
 		ifnonnull(nonnull);
 		throwExecutionException(error, pos);
 		putLabel(nonnull);
+	}
+
+	public void checkcastSafe(Class<?> type, TextPos pos) {
+		checkcastSafe(type, pos, type.getSimpleName());
+	}
+
+	public void checkcastSafe(Class<?> type, TextPos pos, String friendly_name) {
+		Label wrong_type = new Label();
+		Label end = new Label();
+
+		dup();
+		ifnull(end);
+		dup();
+		instanceOf(type);
+		ifeq(wrong_type);
+		
+		checkcast(type);
+		jumpto(end);
+		
+		putLabel(wrong_type);
+		newStringBuilder();
+		loadConstant("Can't convert object of type ");
+		call(StringBuilder.class, "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;", false);
+		swap();
+		call(Object.class, "getClass", "()Ljava/lang/Class;", false);
+		call(Class.class, "getSimpleName", "()Ljava/lang/String;", false);
+		call(StringBuilder.class, "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;", false);
+		loadConstant(" to type " + friendly_name);
+		call(StringBuilder.class, "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;", false);
+		call(StringBuilder.class, "toString", "()Ljava/lang/String;", false);
+		newInsn(ExecutionException.class);
+		dupX1();
+		swap();
+		loadConstantUnsafe(pos.line());
+		loadConstantUnsafe(pos.column());
+		callSpecial(ExecutionException.class, "<init>", "(Ljava/lang/String;II)V", false);
+		athrow();
+		
+		putLabel(end);
 	}
 	
 	public void throwRuntimeException(String exception) {

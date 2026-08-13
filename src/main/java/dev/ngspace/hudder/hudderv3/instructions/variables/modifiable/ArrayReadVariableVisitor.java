@@ -37,7 +37,7 @@ public class ArrayReadVariableVisitor extends ExpressionVisitor {
 		
 		methodWriter.checkcast(List.class);
 		indexValue.visit(methodWriter);
-		methodWriter.checkcast(Number.class);
+		methodWriter.checkcastSafe(Number.class, pos);
 		methodWriter.intValue();
 		methodWriter.callInterface(List.class, "get", "(I)Ljava/lang/Object;");
 		
@@ -45,9 +45,9 @@ public class ArrayReadVariableVisitor extends ExpressionVisitor {
 
 		methodWriter.putLabel(normalarray);
 
-		methodWriter.checkcast(Object[].class);
+		methodWriter.checkcastSafe(Object[].class, pos);
 		indexValue.visit(methodWriter);
-		methodWriter.checkcast(Number.class);
+		methodWriter.checkcastSafe(Number.class, pos);
 		methodWriter.intValue();
 		methodWriter.aaload();
 		
@@ -65,13 +65,13 @@ public class ArrayReadVariableVisitor extends ExpressionVisitor {
 		
 		array.visit(methodWriter);
 
-		methodWriter.checkcast(List.class);
+		methodWriter.checkcastSafe(List.class, pos, "Array");
 		methodWriter.dup();
 		int list_index = methodWriter.astore();
 		
 		methodWriter.callInterface(List.class, "size", "()I");
 		indexValue.visit(methodWriter);
-		methodWriter.checkcast(Number.class);
+		methodWriter.checkcastSafe(Number.class, pos);
 		methodWriter.intValue();
 		methodWriter.dup();
 		int index_index = methodWriter.istore();

@@ -50,7 +50,7 @@ public class IfElseInstuction extends Instruction {
 			
 			if (statement.condition()!=null) {
 				statement.condition().visit(methodWriter);
-				methodWriter.checkcast(Boolean.class);
+				methodWriter.checkcastSafe(Boolean.class, pos);
 				methodWriter.booleanValue();
 				methodWriter.ifeq(nextcondition);
 			}
