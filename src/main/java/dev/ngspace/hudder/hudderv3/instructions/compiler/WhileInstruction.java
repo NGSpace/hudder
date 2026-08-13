@@ -41,6 +41,7 @@ public class WhileInstruction extends Instruction {
 		methodWriter.putLabel(start);
 		condition.visit(methodWriter);
 		methodWriter.checkcastSafe(Boolean.class, pos);
+		methodWriter.ensureNotNull("Condition can not be null!", pos);
 		methodWriter.booleanValue();
 		methodWriter.ifeq(end);
 		

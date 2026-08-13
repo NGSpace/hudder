@@ -51,6 +51,7 @@ public class IfElseInstuction extends Instruction {
 			if (statement.condition()!=null) {
 				statement.condition().visit(methodWriter);
 				methodWriter.checkcastSafe(Boolean.class, pos);
+				methodWriter.ensureNotNull("Condition can not be null!", pos);
 				methodWriter.booleanValue();
 				methodWriter.ifeq(nextcondition);
 			}
