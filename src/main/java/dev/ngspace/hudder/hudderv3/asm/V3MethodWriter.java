@@ -49,14 +49,16 @@ public class V3MethodWriter extends ClassAccessMethodWriter {
 
 	public void checkcastSafe(Class<?> type, TextPos pos, String friendly_name) {
 		Label wrong_type = new Label();
+		Label correct_type = new Label();
 		Label end = new Label();
 
 		dup();
-		ifnull(end);
+		ifnull(correct_type);// The Verifier will cry if we don't checkcast the null
 		dup();
 		instanceOf(type);
 		ifeq(wrong_type);
 		
+		putLabel(correct_type);
 		checkcast(type);
 		jumpto(end);
 		
