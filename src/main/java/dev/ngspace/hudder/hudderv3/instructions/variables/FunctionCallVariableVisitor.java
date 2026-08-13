@@ -4,7 +4,6 @@ import org.objectweb.asm.Type;
 
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
-import dev.ngspace.hudder.compilers.HudderV3Compiler;
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
@@ -37,7 +36,7 @@ public class FunctionCallVariableVisitor extends ExpressionVisitor {
 			methodWriter.aload(0);
 			methodWriter.getField("uimanager", ArrayElementManager.class);
 			methodWriter.aload(0);
-			methodWriter.getField("v3compiler", HudderV3Compiler.class);
+			methodWriter.getField("v3compiler", AV3Compiler.class);
 			methodWriter.newAndDup(TextPos.class);
 			methodWriter.loadConstantUnsafe(pos.line());
 			methodWriter.loadConstantUnsafe(pos.column());

@@ -16,7 +16,7 @@ import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
-import dev.ngspace.hudder.compilers.HudderV3Compiler;
+import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
 import dev.ngspace.hudder.hudderv3.GeneratedCompiler;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
@@ -59,18 +59,18 @@ public class V3ClassWriter {
 	}
 	public void createInit() {
 		
-		classWriter.newField(classname, "v3compiler", Type.getDescriptor(HudderV3Compiler.class));
+		classWriter.newField(classname, "v3compiler", Type.getDescriptor(AV3Compiler.class));
 		
 	    classWriter.visitField(
 	            Opcodes.ACC_PUBLIC,
 	            "v3compiler",
-	            Type.getDescriptor(HudderV3Compiler.class),
+	            Type.getDescriptor(AV3Compiler.class),
 	            null,
 	            null
 	    ).visitEnd();
 
 		
-		init = createMethod("<init>", new Class<?>[] {HudderV3Compiler.class}, null, null, null);
+		init = createMethod("<init>", new Class<?>[] {AV3Compiler.class}, null, null, null);
 
 		init.aload(0);
 		init.callInit(AVarTextCompiler.class, "()V");
@@ -85,7 +85,7 @@ public class V3ClassWriter {
 		// Init v3compiler field
 		init.aload(0);
 		init.aload(1);
-		init.putField("v3compiler", HudderV3Compiler.class);
+		init.putField("v3compiler", AV3Compiler.class);
 	}
 	
 	public V3ExecuteMethodWriter createExecuteMethod(String name, Class<?>[] classes) {
