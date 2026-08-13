@@ -9,7 +9,7 @@ import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.TokenizedCodeBlock;
 import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.asm.V3ExecuteMethodWriter;
-import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
 
 public class IfElseInstuction extends Instruction {
 
@@ -24,7 +24,7 @@ public class IfElseInstuction extends Instruction {
 		for (int i = 0;i<compiled_statements.length;i++) {
 			Statement statement = statements[i];
 			
-			VariableVisitor condition;
+			ExpressionVisitor condition;
 			if (statement.condition()==null||statement.condition().isBlank()) {
 				if (i<compiled_statements.length-1)
 					throw new CompileException("Detached else/else if statement!", pos);
@@ -88,5 +88,5 @@ public class IfElseInstuction extends Instruction {
 	}
 	
 	public static record Statement(String condition, String codeblock) {}
-	public static record CompiledStatement(VariableVisitor condition, TokenizedCodeBlock code) {}
+	public static record CompiledStatement(ExpressionVisitor condition, TokenizedCodeBlock code) {}
 }

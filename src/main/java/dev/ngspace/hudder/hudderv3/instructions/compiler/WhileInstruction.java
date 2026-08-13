@@ -9,11 +9,11 @@ import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.TokenizedCodeBlock;
 import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.asm.V3ExecuteMethodWriter;
-import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
 
 public class WhileInstruction extends Instruction {
 
-	private VariableVisitor condition;
+	private ExpressionVisitor condition;
 	private TokenizedCodeBlock codeblock;
 	private boolean has_limits;
 	

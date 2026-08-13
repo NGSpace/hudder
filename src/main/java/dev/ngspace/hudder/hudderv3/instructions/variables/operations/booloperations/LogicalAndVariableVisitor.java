@@ -8,13 +8,13 @@ import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
-import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
 
-public class LogicalAndVariableVisitor extends VariableVisitor {
+public class LogicalAndVariableVisitor extends ExpressionVisitor {
 
-	private List<VariableVisitor> values;
+	private List<ExpressionVisitor> values;
 
-	public LogicalAndVariableVisitor(List<VariableVisitor> values, AV3Compiler comp, TextPos pos) {
+	public LogicalAndVariableVisitor(List<ExpressionVisitor> values, AV3Compiler comp, TextPos pos) {
 		super(comp, pos);
 		this.values = values;
 	}

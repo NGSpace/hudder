@@ -5,13 +5,13 @@ import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
-import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
 
-public class ComparisionVariableVisitor extends VariableVisitor {
+public class ComparisionVariableVisitor extends ExpressionVisitor {
 	
 	
-	private VariableVisitor val1;
-	private VariableVisitor val2;
+	private ExpressionVisitor val1;
+	private ExpressionVisitor val2;
 	private String operator;
 	public ComparisionVariableVisitor(AV3Compiler comp, String val1, String val2, String operator, TextPos pos)
 			throws CompileException {

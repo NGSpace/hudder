@@ -14,7 +14,7 @@ import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
 import dev.ngspace.hudder.utils.ImplObjectWrapper;
 import dev.ngspace.hudder.utils.ObjectWrapper;
 
-public class FunctionCallVariableVisitor extends VariableVisitor {
+public class FunctionCallVariableVisitor extends ExpressionVisitor {
 
 	private final String[] args;
 	private final String funcName;

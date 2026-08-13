@@ -26,16 +26,15 @@ import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.TokenizedCodeBlock;
 import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.asm.V3ExecuteMethodWriter;
-import dev.ngspace.hudder.hudderv3.instructions.ImplV3VariableProcessor;
-import dev.ngspace.hudder.hudderv3.instructions.NarrowDownV3VariableProcessor;
-import dev.ngspace.hudder.hudderv3.instructions.V3VariableProcessor;
-import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.WalkingV3ExpressionParser;
+import dev.ngspace.hudder.hudderv3.instructions.V3ExpressionParser;
+import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
 
 public abstract class AV3Compiler extends AVarTextCompiler implements PositionedBinder {
 	
 	public Map<String, CachedCompiler> cache = new HashMap<String, CachedCompiler>();
 	
-	public V3VariableProcessor variableProcessor = new NarrowDownV3VariableProcessor();
+	public V3ExpressionParser expressionParser = new WalkingV3ExpressionParser();
 
 	public boolean system_variables = true;
 	
@@ -125,18 +124,18 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Positioned
 	
 	
 	
-	public VariableVisitor parseVariable(String string, TextPos pos) throws CompileException {
-		return variableProcessor.parseVariable(string, this, pos);
+	public ExpressionVisitor parseVariable(String string, TextPos pos) throws CompileException {
+		return expressionParser.parseExpression(string, this, pos);
 	}
 	
 	
 	
-	public V3VariableProcessor getVariableProcessor() {
-		return variableProcessor;
+	public V3ExpressionParser getExpressionParser() {
+		return expressionParser;
 	}
 
-	public void setVariableProcessor(V3VariableProcessor variableProcessor) {
-		this.variableProcessor = variableProcessor;
+	public void setExpressionParser(V3ExpressionParser expressionParser) {
+		this.expressionParser = expressionParser;
 	}
 
 

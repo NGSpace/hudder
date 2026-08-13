@@ -9,7 +9,7 @@ import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.instructions.variables.FunctionCallVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.SystemVariableVisitor;
-import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.constants.ArrayConstantVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.constants.BooleanVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.constants.NumberVariableVisitor;
@@ -29,10 +29,10 @@ import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperati
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations.NegateVariableVisitor;
 import dev.ngspace.hudder.utils.HudderUtils;
 
-public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
+public class WalkingV3ExpressionParser implements V3ExpressionParser {
 
 	@Override
-	public VariableVisitor parseVariable(String valuee, AV3Compiler comp, TextPos pos)
+	public ExpressionVisitor parseExpression(String valuee, AV3Compiler comp, TextPos pos)
 			throws CompileException {
 		
 		String value = valuee.trim();
@@ -43,10 +43,9 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 		
 		// Array constant
 		// Accepts the follow format: "[(any char)]"
-		if (value.matches("\\[[\\s\\S]*\\]")) {
+		if (value.matches("\\[[\\s\\S]*\\]"))
 			return new ArrayConstantVariableVisitor(
 					HudderUtils.processParemeters(value.substring(1, value.length() - 1).replace("\n", "")), comp, pos);
-		}
 		
 		// Boolean constants
 		if (value.equalsIgnoreCase("false"))
@@ -97,12 +96,12 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 		
 		boolean can_or = false;
 		boolean has_vertical_bar = false;
-		List<VariableVisitor> or_values = new ArrayList<VariableVisitor>();
+		List<ExpressionVisitor> or_values = new ArrayList<ExpressionVisitor>();
 		int or_last_index = 0;
 		
 		boolean can_and = false;
 		boolean has_ampersand = false;
-		List<VariableVisitor> and_values = new ArrayList<VariableVisitor>();
+		List<ExpressionVisitor> and_values = new ArrayList<ExpressionVisitor>();
 		int and_last_index = 0;
 		
 		boolean can_ternary = value.startsWith("if ");
@@ -180,7 +179,7 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 					has_vertical_bar = true;
 				} else {
 					can_or = true;
-					or_values.add(parseVariable(value.substring(or_last_index, i-1), comp, pos));
+					or_values.add(parseExpression(value.substring(or_last_index, i-1), comp, pos));
 					or_last_index = i+1;
 					has_vertical_bar = false;
 				}
@@ -193,7 +192,7 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 					has_ampersand = true;
 				} else {
 					can_and = true;
-					and_values.add(parseVariable(value.substring(and_last_index, i-1), comp, pos));
+					and_values.add(parseExpression(value.substring(and_last_index, i-1), comp, pos));
 					and_last_index = i+1;
 					has_ampersand = false;
 				}
@@ -256,12 +255,12 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 			return new SetVariableVisitor(comp, value.substring(0, set_index), value.substring(set_index+1), pos);
 
 		if (can_or) {
-			or_values.add(parseVariable(value.substring(or_last_index, len), comp, pos));
+			or_values.add(parseExpression(value.substring(or_last_index, len), comp, pos));
 			return new LogicalOrVariableVisitor(or_values, comp, pos);
 		}
 		
 		if (can_and) {
-			and_values.add(parseVariable(value.substring(and_last_index, len), comp, pos));
+			and_values.add(parseExpression(value.substring(and_last_index, len), comp, pos));
 			return new LogicalAndVariableVisitor(and_values, comp, pos);
 		}
 		
@@ -298,7 +297,7 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 					value.substring(class_dot+1), pos);
 
 		if (can_wrapped&&parenthesses==0)
-			return parseVariable(value.substring(1, value.length() - 1), comp, pos);
+			return parseExpression(value.substring(1, value.length() - 1), comp, pos);
 		
 		if (can_function&&parenthesses==0)
 			return new FunctionCallVariableVisitor(value.substring(0, function_args_index), comp,

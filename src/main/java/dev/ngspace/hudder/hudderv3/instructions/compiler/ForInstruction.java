@@ -11,13 +11,13 @@ import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.TokenizedCodeBlock;
 import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.asm.V3ExecuteMethodWriter;
-import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
 
 public class ForInstruction extends Instruction {
 
 	private TokenizedCodeBlock block;
 	private String variable_name;
-	private VariableVisitor value;
+	private ExpressionVisitor value;
 
 	public ForInstruction(String variable_name, String value, String block, AV3Compiler comp,
 			HudderConfig info, String filename, TextPos pos) throws CompileException {

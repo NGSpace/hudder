@@ -4,12 +4,12 @@ import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
-import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
 
-public class SetVariableVisitor extends VariableVisitor {
+public class SetVariableVisitor extends ExpressionVisitor {
 
-	private final VariableVisitor variable_name;
-	private final VariableVisitor value;
+	private final ExpressionVisitor variable_name;
+	private final ExpressionVisitor value;
 
 	public SetVariableVisitor(AV3Compiler comp, String variable_name, String value, TextPos pos) throws CompileException {
 		super(comp, pos);

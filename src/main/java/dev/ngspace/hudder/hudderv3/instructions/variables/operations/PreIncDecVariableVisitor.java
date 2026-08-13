@@ -4,11 +4,11 @@ import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
-import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
 
-public class PreIncDecVariableVisitor extends VariableVisitor {
+public class PreIncDecVariableVisitor extends ExpressionVisitor {
 
-	private VariableVisitor value;
+	private ExpressionVisitor value;
 	private boolean increase;
 
 	public PreIncDecVariableVisitor(String string, AV3Compiler comp, boolean increase, TextPos pos)

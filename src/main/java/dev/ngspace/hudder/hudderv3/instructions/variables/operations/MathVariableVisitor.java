@@ -10,11 +10,11 @@ import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
-import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
 
-public class MathVariableVisitor extends VariableVisitor {
+public class MathVariableVisitor extends ExpressionVisitor {
 
-	private final VariableVisitor[] variables;
+	private final ExpressionVisitor[] variables;
 	private final List<Character> operations;
 	private boolean onlyaddition;
 	private Object constant_value;
@@ -22,7 +22,7 @@ public class MathVariableVisitor extends VariableVisitor {
 	public MathVariableVisitor(List<String> values, List<Character> operations, AV3Compiler comp, TextPos pos)
 			throws CompileException {
 		super(comp, pos);
-		this.variables = new VariableVisitor[values.size()];
+		this.variables = new ExpressionVisitor[values.size()];
 		for (int i = 0;i<values.size();i++) {
 			variables[i] = comp.parseVariable(values.get(i), pos);
 		}

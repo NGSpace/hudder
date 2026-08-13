@@ -7,14 +7,14 @@ import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.asm.V3ExecuteMethodWriter;
-import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.modifiable.DynamicVariableVisitor;
 
 public class VariableInstruction extends Instruction {
 
 	public AV3Compiler comp;
 	public String variable;
-	public VariableVisitor visitor;
+	public ExpressionVisitor visitor;
 	
 	public VariableInstruction(AV3Compiler comp, String variable, TextPos pos) throws CompileException {
 		super(pos);

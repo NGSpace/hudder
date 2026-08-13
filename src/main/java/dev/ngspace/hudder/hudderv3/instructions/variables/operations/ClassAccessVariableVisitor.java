@@ -5,15 +5,15 @@ import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
-import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
 import dev.ngspace.hudder.utils.HudderUtils;
 
-public class ClassAccessVariableVisitor extends VariableVisitor {
+public class ClassAccessVariableVisitor extends ExpressionVisitor {
 	
 	private static final String[] forbiddenValuesAndFunctions = {"getClass","hashCode","wait","notify","notifyAll","clone","finalize"};
-	private VariableVisitor classobj;
+	private ExpressionVisitor classobj;
 	private boolean isFunctionCall;
-	private VariableVisitor[] functionCallArgs;
+	private ExpressionVisitor[] functionCallArgs;
 	private String funcName = "";
 	private String fieldName = "";
 	private final String classObjectName;
@@ -32,7 +32,7 @@ public class ClassAccessVariableVisitor extends VariableVisitor {
 					String parametersString = prop.substring(argStart+1, prop.length()-1);
 					
 					String[] tokenizedArgs = HudderUtils.processParemeters(parametersString);
-					functionCallArgs = new VariableVisitor[tokenizedArgs.length];
+					functionCallArgs = new ExpressionVisitor[tokenizedArgs.length];
 					
 					for (int i=0;i<functionCallArgs.length;i++) 
 						functionCallArgs[i] = comp.parseVariable(tokenizedArgs[i], pos);

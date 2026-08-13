@@ -6,11 +6,11 @@ import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
-import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
 
-public class NegateVariableVisitor extends VariableVisitor {
+public class NegateVariableVisitor extends ExpressionVisitor {
 
-	private VariableVisitor value;
+	private ExpressionVisitor value;
 
 	public NegateVariableVisitor(AV3Compiler comp, String value, TextPos pos) throws CompileException {
 		super(comp, pos);

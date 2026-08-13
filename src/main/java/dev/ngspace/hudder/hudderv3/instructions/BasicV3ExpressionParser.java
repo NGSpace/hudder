@@ -10,7 +10,7 @@ import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.instructions.variables.FunctionCallVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.SystemVariableVisitor;
-import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.constants.ArrayConstantVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.constants.BooleanVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.constants.NumberVariableVisitor;
@@ -30,9 +30,9 @@ import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperati
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations.NegateVariableVisitor;
 import dev.ngspace.hudder.utils.HudderUtils;
 
-public class ImplV3VariableProcessor implements V3VariableProcessor {
+public class BasicV3ExpressionParser implements V3ExpressionParser {
 	
-	public VariableVisitor parseVariable(String valuee, AV3Compiler comp, TextPos pos) throws CompileException {
+	public ExpressionVisitor parseExpression(String valuee, AV3Compiler comp, TextPos pos) throws CompileException {
 		
 		String value = valuee.trim();
 		
@@ -88,7 +88,7 @@ public class ImplV3VariableProcessor implements V3VariableProcessor {
 			// if it is wrapped then remove the first and last chars to unwrap and reprocess
 			// them.
 			if (isSafe) {
-				return parseVariable(value.substring(1, value.length() - 1), comp, pos);
+				return parseExpression(value.substring(1, value.length() - 1), comp, pos);
 			}
 		}
 		
@@ -274,12 +274,12 @@ public class ImplV3VariableProcessor implements V3VariableProcessor {
 		}
 		
 		// Logical OR operator
-		List<VariableVisitor> orValues = logicalOperator('|', value, comp, pos);
+		List<ExpressionVisitor> orValues = logicalOperator('|', value, comp, pos);
 		if (orValues.size() > 1)
 			return new LogicalOrVariableVisitor(orValues, comp, pos);
 		
 		// Logical AND operator
-		List<VariableVisitor> andvalues = logicalOperator('&', value, comp, pos);
+		List<ExpressionVisitor> andvalues = logicalOperator('&', value, comp, pos);
 		if (andvalues.size() > 1)
 			return new LogicalAndVariableVisitor(andvalues, comp, pos);
 		
@@ -452,9 +452,9 @@ public class ImplV3VariableProcessor implements V3VariableProcessor {
 		throw new CompileException("Untokenizable variable: " + value, pos);
 	}
 	
-	private List<VariableVisitor> logicalOperator(char op, String value, AV3Compiler comp, TextPos pos)
+	private List<ExpressionVisitor> logicalOperator(char op, String value, AV3Compiler comp, TextPos pos)
 			throws CompileException {
-		List<VariableVisitor> values = new ArrayList<VariableVisitor>();
+		List<ExpressionVisitor> values = new ArrayList<ExpressionVisitor>();
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0; i < value.length(); i++) {
 			char c = value.charAt(i);
@@ -492,7 +492,7 @@ public class ImplV3VariableProcessor implements V3VariableProcessor {
 			}
 			if (c == op && i + 1 < value.length() && value.charAt(i + 1) == op) {
 				i++;
-				values.add(parseVariable(builder.toString(), comp, pos));
+				values.add(parseExpression(builder.toString(), comp, pos));
 				builder.setLength(0);
 				continue;
 			}
@@ -500,7 +500,7 @@ public class ImplV3VariableProcessor implements V3VariableProcessor {
 			builder.append(c);
 		}
 		if (!Objects.equals(value, builder.toString())) {
-			values.add(parseVariable(builder.toString(), comp, pos));
+			values.add(parseExpression(builder.toString(), comp, pos));
 			return values;
 		} else
 			return values;
