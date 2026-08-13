@@ -123,9 +123,12 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 		for (int i = 1;i<value.length();i++) {
 			c = value.charAt(i);
 			
-			if (c=='n'&&escaped&&quotes) {
+			if (escaped&&quotes) {
 				string.setLength(string.length()-1);
-				string.append('\n');
+				if (c=='n'&&escaped&&quotes)
+					string.append('\n');
+				else
+					string.append(c);
 			} else
 				string.append(c);
 			
