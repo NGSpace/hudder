@@ -43,10 +43,6 @@ public class HudderV3Helper {
 	public static BindablePositionedConsumer getApiConsumer(String name) {
 		return api_consumers.get(name);
 	}
-	
-	public static boolean hasApiConsumer(String name) {
-		return api_consumers.containsKey(name);
-	}
 
 	public static Object getClassProperty(Object object, String objectExpression, String fieldName,
 			int line, int col) throws ExecutionException {
