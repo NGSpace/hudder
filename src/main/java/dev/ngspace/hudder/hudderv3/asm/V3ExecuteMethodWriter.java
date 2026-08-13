@@ -2,8 +2,8 @@ package dev.ngspace.hudder.hudderv3.asm;
 
 import org.objectweb.asm.Label;
 
-import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
+import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.V3HudInformation;
 
 public class V3ExecuteMethodWriter extends V3MethodWriter {
@@ -51,13 +51,13 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 		selected_builder_index = topleft_builder_index;
 		
 		// Define the scales
-		loadConstantUnsafe(Hudder.config.scale());
+		callStatic(HudderV3Helper.class, "getDefaultScale", "()F", false);
+		dup();
+		dup();
+		dup();
 		topleft_scale_index = fstore();
-		loadConstantUnsafe(Hudder.config.scale());
 		topright_scale_index = fstore();
-		loadConstantUnsafe(Hudder.config.scale());
 		bottomleft_scale_index = fstore();
-		loadConstantUnsafe(Hudder.config.scale());
 		bottomright_scale_index = fstore();
 		
 		// Return value

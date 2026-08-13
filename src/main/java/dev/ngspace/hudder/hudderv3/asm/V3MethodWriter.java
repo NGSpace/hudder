@@ -109,9 +109,9 @@ public class V3MethodWriter extends ClassAccessMethodWriter {
 		ifne(execution_excpetion_handler);
 		
 		putLabel(general_exception_handler);
-		int temp = astore();
-		newAndDup(ExecutionException.class);
-		aload(temp);
+		newInsn(ExecutionException.class);
+		dupX1();
+		swap();
 		loadConstantUnsafe(pos.line());
 		loadConstantUnsafe(pos.column());
 		callInit(ExecutionException.class, "(Ljava/lang/Exception;II)V");
