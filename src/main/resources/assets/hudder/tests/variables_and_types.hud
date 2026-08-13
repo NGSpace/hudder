@@ -36,6 +36,20 @@ END_TEST;
 
 |TEST:
 
+@name=Invalid comparision of null values
+@mode=error
+@exception_type=ExecutionException
+
+input:
+	{null>null}
+end_input;
+
+END_TEST;
+
+
+
+|TEST:
+
 @name=No system variables 
 @mode=normal
 

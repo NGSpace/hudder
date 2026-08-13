@@ -24,6 +24,7 @@ import dev.ngspace.hudder.api.variableregistry.VariableTypes;
 import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
 import dev.ngspace.hudder.compilers.utils.Compilers;
 import dev.ngspace.hudder.utils.HudFileUtils;
+import dev.ngspace.hudder.utils.ValueGetter;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.commands.CommandBuildContext;
@@ -96,6 +97,9 @@ public class HudderUnitTestingCommand implements ClientCommandRegistrationCallba
 				return "lol";
 			}
 		}, VariableTypes.OBJECT, "object_var");
+		
+		DataVariableRegistry.registerVariable(_ -> ((ValueGetter) k->k),
+				VariableTypes.OBJECT, "value_getter");
 		
 		dispatcher.register(literal("hudderunittesting")
 				

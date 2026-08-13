@@ -22,7 +22,7 @@ import dev.ngspace.hudder.v2runtime.values.AV2Value;
 
 public class V2ClassPropertyCall extends AV2Value {
 	
-	private static final String[] forbiddenValuesAndFunctions = {"getClass","hashCode","wait","notify","notifyAll","clone","finalize"};
+	public static final String[] forbiddenValuesAndFunctions = {"getClass","hashCode","wait","notify","notifyAll","clone","finalize"};
 	private AV2Value classobj;
 	private boolean isFunctionCall;
 	private AV2Value[] functionCallArgs;

@@ -93,3 +93,23 @@ output:
 end_output;
 
 END_TEST;
+
+
+
+|TEST:
+
+@name=Value Getter
+@mode=normal
+
+input:
+	{value_getter.val}
+	{value_getter.val1}
+end_input;
+
+output:
+	val
+	val1
+end_output;
+
+END_TEST;
+

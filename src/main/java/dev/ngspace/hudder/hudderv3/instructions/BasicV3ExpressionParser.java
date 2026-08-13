@@ -24,7 +24,7 @@ import dev.ngspace.hudder.hudderv3.instructions.variables.operations.MathVariabl
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.PostIncDecVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.PreIncDecVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.TernaryVariableVisitor;
-import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations.ComparisionVariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations.ComparisonVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations.LogicalAndVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations.LogicalOrVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations.NegateVariableVisitor;
@@ -308,7 +308,7 @@ public class BasicV3ExpressionParser implements V3ExpressionParser {
 				}
 			}
 			if (parenthesses == 0) {
-				return new ComparisionVariableVisitor(comp, v[0], v[1], operator, pos);
+				return new ComparisonVariableVisitor(comp, v[0], v[1], operator, pos);
 			}
 		}
 		

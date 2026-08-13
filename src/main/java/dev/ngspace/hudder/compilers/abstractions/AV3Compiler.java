@@ -32,10 +32,13 @@ import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
 
 public abstract class AV3Compiler extends AVarTextCompiler implements PositionedBinder {
 	
-	public Map<String, CachedCompiler> cache = new HashMap<String, CachedCompiler>();
+	public static final String VERIFIER_ERROR_NOTE = """
+			
+			# This is a bytecode-gen error!
+			# Please report this to the developer of Hudder!""";
 	
+	public Map<String, CachedCompiler> cache = new HashMap<String, CachedCompiler>();
 	public V3ExpressionParser expressionParser = new WalkingV3ExpressionParser();
-
 	public boolean system_variables = true;
 	
 	protected AV3Compiler() {
@@ -92,11 +95,12 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Positioned
 		} catch (VerifyError e) {
 			// The compilation manager does not handle Verifier errors and will crash the game which is bad.
 			e.printStackTrace();
-			String msg = e.getMessage();
+			String msg = VERIFIER_ERROR_NOTE + e.getMessage();
 			int frame = msg.indexOf("Current Frame");
+			int at = msg.indexOf("@");
 			throw new RuntimeException(msg.substring(0, msg.indexOf('\n')+1) +
 					'\n' +
-					msg.substring(msg.indexOf("@"), frame==-1?msg.length():frame));
+					msg.substring(at==-1?0:at, frame==-1?msg.length():frame));
 		} catch (CompileException e) {
 			cache.put(text, new CachedCompiler(null,null,e));
 			throw e;

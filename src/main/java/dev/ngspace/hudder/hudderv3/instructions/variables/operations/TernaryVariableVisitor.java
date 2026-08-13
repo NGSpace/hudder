@@ -29,6 +29,7 @@ public class TernaryVariableVisitor extends ExpressionVisitor {
 		
 		condition.visit(methodWriter);
 		methodWriter.checkcastSafe(Boolean.class, pos);
+		methodWriter.ensureNotNull("Condition can not be null!", pos);
 		methodWriter.booleanValue();
 		
 		methodWriter.ifne(label);

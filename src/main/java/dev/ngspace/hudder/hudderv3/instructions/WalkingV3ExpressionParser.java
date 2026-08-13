@@ -23,7 +23,7 @@ import dev.ngspace.hudder.hudderv3.instructions.variables.operations.MathVariabl
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.PostIncDecVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.PreIncDecVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.TernaryVariableVisitor;
-import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations.ComparisionVariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations.ComparisonVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations.LogicalAndVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations.LogicalOrVariableVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations.NegateVariableVisitor;
@@ -269,7 +269,7 @@ public class WalkingV3ExpressionParser implements V3ExpressionParser {
 			return new NegateVariableVisitor(comp, value.substring(1), pos);
 		
 		if (can_comparision)
-			return new ComparisionVariableVisitor(comp, value.substring(0, comparision_index),
+			return new ComparisonVariableVisitor(comp, value.substring(0, comparision_index),
 					value.substring(comparision_index+comparision_operator.length()),
 					comparision_operator, pos);
 		
