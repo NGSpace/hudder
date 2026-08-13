@@ -76,14 +76,15 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 		boolean can_wrapped = parenthesses==1;
 		
 		boolean can_dynamic = isAlphaNumeric(c);
-		boolean can_temp = c == '_' && len>1;
+		boolean can_temp = c == '_';
 		
 		boolean can_0x = c == '0' && len>2;
 		boolean can_hash = c == '#' && len>1;
 		boolean can_number = Character.isDigit(c) || c=='.' || c=='-';
 
 		boolean quotes = c == '"';
-		boolean can_string = quotes && len>2;
+		boolean can_string = quotes;
+		StringBuilder string = new StringBuilder();
 		
 		boolean can_set = false;
 		int set_index = -1;
@@ -121,7 +122,13 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 		
 		for (int i = 1;i<value.length();i++) {
 			c = value.charAt(i);
-
+			
+			if (c=='n'&&escaped&&quotes) {
+				string.setLength(string.length()-1);
+				string.append('\n');
+			} else
+				string.append(c);
+			
 			if (c=='"'&&!escaped) {
 				quotes = !quotes;
 				if (i!=len-1) {
@@ -130,6 +137,8 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 			}
 			if (c=='\\'&&!escaped) {
 				escaped = true;
+			} else {
+				escaped = false;
 			}
 
 			if (!quotes&&square_parenthesses==0&&c=='(') {
@@ -215,7 +224,8 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 				set_index = i;
 			}
 			
-			if (!quotes&&parenthesses==0&&isMathOperator(c)) {
+			if (!quotes&&parenthesses==0&&isMathOperator(c)
+					&& i > math_last_index) {
 				can_math = true;
 				math_operators.add(c);
 				math_values.add(value.substring(math_last_index, i));
@@ -286,9 +296,12 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 			return new FunctionCallVariableVisitor(value.substring(0, function_args_index), comp,
 					HudderUtils.processParemeters(value.substring(function_args_index+1,len-1)), pos);
 		
-		if (can_string)
-			return new StringVariableVisitor(comp, value.substring(1, value.length()-1)
+		if (can_string&&!quotes)
+			return new StringVariableVisitor(comp, string.substring(0, string.length()-1)
 					.replace("\\\"", "\""), pos);
+		
+		if (can_temp)
+			return new TemporaryVariableVisitor(comp, value, pos);
 		
 		if (can_dynamic) {
 			// System variable
@@ -297,9 +310,6 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 			// Dynamic variable
 			return new DynamicVariableVisitor(comp, value.toLowerCase(), pos);
 		}
-		
-		if (can_temp)
-			return new TemporaryVariableVisitor(comp, value, pos);
 		
 		
 		// Fallback
