@@ -255,10 +255,6 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 					value.substring(ternary_then_index+" then ".length(), ternary_else_index),
 					value.substring(ternary_else_index+" else ".length()), pos);
 		
-		// ! Operator
-		if (value.charAt(0)=='!')
-			return new NegateVariableVisitor(comp, value.substring(1), pos);
-		
 		if (can_0x||can_hash||can_number)
 			return new NumberVariableVisitor(comp, value, pos);
 		
@@ -275,10 +271,17 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 			return new LogicalAndVariableVisitor(and_values, comp, pos);
 		}
 		
+		// ! Operator
+		if (value.charAt(0)=='!')
+			return new NegateVariableVisitor(comp, value.substring(1), pos);
+		
 		if (can_comparision)
 			return new ComparisionVariableVisitor(comp, value.substring(0, comparision_index),
 					value.substring(comparision_index+comparision_operator.length()),
 					comparision_operator, pos);
+		
+		if (can_array_read)
+			return new ArrayReadVariableVisitor(comp, value, pos);
 		
 		if (can_math) {
 			math_values.add(value.substring(math_last_index));
@@ -288,9 +291,6 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 		if (can_class)
 			return new ClassAccessVariableVisitor(comp, value.substring(0, class_dot),
 					value.substring(class_dot+1), pos);
-		
-		if (can_array_read)
-			return new ArrayReadVariableVisitor(comp, value, pos);
 
 		if (can_wrapped&&parenthesses==0)
 			return parseVariable(value.substring(1, value.length() - 1), comp, pos);
