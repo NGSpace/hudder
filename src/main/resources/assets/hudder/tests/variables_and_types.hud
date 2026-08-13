@@ -19,6 +19,23 @@ END_TEST;
 
 |TEST:
 
+@name=Hex values
+@mode=normal
+
+input:
+	{0x1fA}
+end_input;
+
+output:
+	506
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
 @name=No system variables 
 @mode=normal
 

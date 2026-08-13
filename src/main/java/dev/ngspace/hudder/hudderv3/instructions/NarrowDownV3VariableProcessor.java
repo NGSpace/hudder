@@ -54,17 +54,6 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 		if (value.equalsIgnoreCase("true"))
 			return new BooleanVariableVisitor(comp, true, pos);
 		
-		// Post Increase and Decrease Operator
-		if (value.matches("[\\s\\S]+(\\+\\+|--)")) {
-			return new PostIncDecVariableVisitor(value.substring(0, value.length() - 2), comp,
-					"+".equals(value.substring(value.length() - 1)), pos);
-		}
-		
-		// Pre Increase and Decrease Operator
-		if (value.matches("(\\+\\+|--)[\\s\\S]+")) {
-			return new PreIncDecVariableVisitor(value.substring(2), comp, "+".equals(value.substring(0, 1)), pos);
-		}
-		
 		int len = value.length();
 		
 		char c = value.charAt(0);
@@ -92,7 +81,7 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 		boolean can_class = false;
 		int class_dot = -1;
 		
-		boolean can_function = value.charAt(len-1)==')';
+		boolean can_function = value.charAt(len-1)==')' && isAlphaNumeric(c);
 		int function_args_index = -1;
 		
 		boolean can_math = false;
@@ -227,15 +216,18 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 				set_index = i;
 			}
 			
-			if (!quotes&&parenthesses==0&&isMathOperator(c)
-					&& i > math_last_index) {
+			if (!quotes&&parenthesses==0&&isMathOperator(c) && i > math_last_index) {
 				can_math = true;
 				math_operators.add(c);
 				math_values.add(value.substring(math_last_index, i));
 				math_last_index = i + 1;
 			}
 			
-			if (!isAlphaNumeric(c)) {
+			if (!quotes&&parenthesses==0&&!isValidFunctionDigit(c)&&i!=len-1) {
+				can_function = false;
+			}
+			
+			if (!isAlphaNumeric(c)&&c!='_') {
 				can_dynamic = false;
 				can_temp = false;
 			}
@@ -244,9 +236,11 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 			if (!Character.isDigit(c)) {
 				if (c!='.')
 					can_number = false;
-				can_hash = false;
-				if (i>1)
-					can_0x = false;
+				if (!isHexDigit(c)) {
+					can_hash = false;
+					if (i>1)
+						can_0x = false;
+				}
 			}
 		}
 		if (can_ternary&&ternary_then_index!=-1&&ternary_else_index!=-1)
@@ -279,6 +273,17 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 			return new ComparisionVariableVisitor(comp, value.substring(0, comparision_index),
 					value.substring(comparision_index+comparision_operator.length()),
 					comparision_operator, pos);
+		
+		// Post Increase and Decrease Operator
+		if (value.matches("[\\s\\S]+(\\+\\+|--)")) {
+			return new PostIncDecVariableVisitor(value.substring(0, value.length() - 2), comp,
+					"+".equals(value.substring(value.length() - 1)), pos);
+		}
+		
+		// Pre Increase and Decrease Operator
+		if (value.matches("(\\+\\+|--)[\\s\\S]+")) {
+			return new PreIncDecVariableVisitor(value.substring(2), comp, "+".equals(value.substring(0, 1)), pos);
+		}
 		
 		if (can_array_read)
 			return new ArrayReadVariableVisitor(comp, value, pos);
@@ -319,8 +324,16 @@ public class NarrowDownV3VariableProcessor implements V3VariableProcessor {
 		throw new CompileException("Untokenizable variable: " + value, pos);
 	}
 	
+	static boolean isHexDigit(char c) {
+		return (c >= '0' && c <= '9') || (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f');
+	}
+	
+	static boolean isValidFunctionDigit(char c) {
+		return isAlphaNumeric(c)||c=='_'||c=='-';
+	}
+
 	static boolean isAlphaNumeric(char c) {
-		return Character.isAlphabetic(c)||Character.isDigit(c)||c=='_';
+		return Character.isAlphabetic(c)||Character.isDigit(c);
 	}
 	
 	static boolean isMathOperator(char c) {
