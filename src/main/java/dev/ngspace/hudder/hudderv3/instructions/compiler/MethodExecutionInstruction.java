@@ -160,13 +160,18 @@ public class MethodExecutionInstruction extends Instruction {
 	}
 	
 	protected void visitUserConsumer(V3MethodWriter methodWriter, int array_index) throws CompileException {
-		if (methodWriter.classWriter.user_methods.containsKey(builder[0].trim())) {
+		var cons = methodWriter.classWriter.user_methods.get(builder[0].trim());
+		if (cons!=null) {
+			if (builder.length-1<cons.min_args())
+				throw new CompileException("Too little arguements for function \""+builder[0].trim()+'"', pos);
+			if (builder.length-1>cons.max_args())
+				throw new CompileException("Too many arguements for function \""+builder[0].trim()+'"', pos);
 			methodWriter.aload(0);
 			methodWriter.aload(1);
 			methodWriter.aload(2);
 			methodWriter.aload(3);
 			methodWriter.aload(array_index);
-			methodWriter.callSelf(methodWriter.classWriter.user_methods.get(builder[0].trim()),
+			methodWriter.callSelf(cons.bytecode_name(),
 					"(Ldev/ngspace/hudder/config/HudderConfig;"
 					+ "Ljava/lang/String;"
 					+ "Ljava/lang/String;"

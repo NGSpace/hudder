@@ -3,6 +3,7 @@ package dev.ngspace.hudder.compilers.abstractions;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.main.HudCompilationManager;
@@ -10,9 +11,10 @@ import dev.ngspace.hudder.main.HudCompilationManager;
 public abstract class AVarTextCompiler extends ATextCompiler {
 	
 	public static Map<String, Object> tempVariables = new HashMap<String, Object>();
+	protected Consumer<AHudCompiler<?>> listener = this::preCompileListener;
 	
 	protected AVarTextCompiler() {
-		HudCompilationManager.addPreCompilerListener(_ -> tempVariables.clear());
+		HudCompilationManager.addPreCompilerListener(listener);
 	}
 	
 	@Override public Object getVariable(String key) {
@@ -66,6 +68,16 @@ public abstract class AVarTextCompiler extends ATextCompiler {
 	public void resetState() throws IOException {
 		tempVariables.clear();
 		super.resetState();
+	}
+	
+	@Override
+	public void shutdown() {
+		HudCompilationManager.precomplistners.remove(listener);
+		super.shutdown();
+	}
+	
+	public void preCompileListener(AHudCompiler<?> comp) {
+		tempVariables.clear();
 	}
 	
 }

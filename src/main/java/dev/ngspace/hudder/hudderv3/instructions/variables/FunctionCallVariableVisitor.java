@@ -83,13 +83,18 @@ public class FunctionCallVariableVisitor extends ExpressionVisitor {
 	}
 	
 	protected void visitUserFunction(V3MethodWriter methodWriter, int array_index) throws CompileException {
-		if (methodWriter.classWriter.user_functions.containsKey(funcName)) {
+		var func = methodWriter.classWriter.user_functions.get(funcName);
+		if (func!=null) {
+			if (args.length<func.min_args())
+				throw new CompileException("Too little arguements for function \""+funcName+'"', pos);
+			if (args.length>func.max_args())
+				throw new CompileException("Too many arguements for function \""+funcName+'"', pos);
 			methodWriter.aload(0);
 			methodWriter.aload(1);
 			methodWriter.aload(2);
 			methodWriter.aload(3);
 			methodWriter.aload(array_index);
-			methodWriter.callSelf(methodWriter.classWriter.user_functions.get(funcName),
+			methodWriter.callSelf(func.bytecode_name(),
 					"(Ldev/ngspace/hudder/config/HudderConfig;"
 					+ "Ljava/lang/String;"
 					+ "Ljava/lang/String;"

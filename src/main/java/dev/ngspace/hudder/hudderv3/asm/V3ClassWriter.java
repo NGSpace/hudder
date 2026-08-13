@@ -31,8 +31,8 @@ public class V3ClassWriter {
 	private final Set<String> calledApiConsumers = new HashSet<>();
 	private final Set<String> calledApiFunctions = new HashSet<>();
 	
-	public Map<String, String> user_methods = new HashMap<String, String>();
-	public Map<String, String> user_functions = new HashMap<String, String>();
+	public Map<String, UserMethod> user_methods = new HashMap<String, UserMethod>();
+	public Map<String, UserMethod> user_functions = new HashMap<String, UserMethod>();
 	
 	public V3ClassWriter(String classname, String debugfilename) {
 		this.classname = classname;
@@ -157,4 +157,6 @@ public class V3ClassWriter {
 	public void loadApiConsumer(String name) {
 		calledApiConsumers.add(name);
 	}
+	
+	public static record UserMethod(String bytecode_name, int min_args, int max_args) {}
 }

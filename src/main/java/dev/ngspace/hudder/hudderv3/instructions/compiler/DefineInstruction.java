@@ -8,6 +8,7 @@ import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.TokenizedCodeBlock;
 import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
+import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter.UserMethod;
 import dev.ngspace.hudder.hudderv3.asm.V3ExecuteMethodWriter;
 
 public class DefineInstruction extends Instruction {
@@ -61,8 +62,8 @@ public class DefineInstruction extends Instruction {
 		method.end();
 		
 		if (!tokenizedBlock.canReturnValue())
-			writer.user_methods.put(name, bytecodename);
+			writer.user_methods.put(name, new UserMethod(bytecodename, args.length, args.length));
 		else
-			writer.user_functions.put(name, bytecodename);
+			writer.user_functions.put(name, new UserMethod(bytecodename, args.length, args.length));
 	}
 }

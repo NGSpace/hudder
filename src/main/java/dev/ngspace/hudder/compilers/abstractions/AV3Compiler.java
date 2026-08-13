@@ -145,6 +145,9 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Positioned
 	@Override
 	public void resetState() throws IOException {
 		system_variables = true;
+		for (var instance : cache.values())
+			if (instance.generatedCompiler instanceof AVarTextCompiler comp)
+				comp.shutdown();
 		cache.clear();
 		super.resetState();
 	}
