@@ -74,7 +74,7 @@ public class Compilers {
 		put("hudder", "Hudder", false, hudderV2Compiler);
 		put("js", "JavaScript", false, new JavaScriptCompiler());
 		put("pack", "Hudpack", false, new HudPackCompiler());
-		put("hudderv3", "Hudder V3 (Exp)", true, hudderV3Compiler);
+		put("hudderv3", "Hudder V3", false, hudderV3Compiler);
 	}
 	
 	/**

@@ -53,7 +53,7 @@ public class HudderV3Helper {
 				throw new ExecutionException("No property named \"" + fieldName + "\" in type \""
 						+ objectClass.getSimpleName() + '"', line, col);
 			}
-			return normalizeClassAccessResult(field.get(object));
+			return normalizeResult(field.get(object));
 		} catch (NoSuchFieldException e) {
 			if (Hudder.IS_DEBUG) e.printStackTrace();
 			throw new ExecutionException("No property named \"" + fieldName + '"', line, col);
@@ -104,7 +104,7 @@ public class HudderV3Helper {
 
 		try {
 			selectedMethod.setAccessible(true);
-			return normalizeClassAccessResult(selectedMethod.invoke(object, selectedParameters));
+			return normalizeResult(selectedMethod.invoke(object, selectedParameters));
 		} catch (InvocationTargetException e) {
 			Throwable target = e.getTargetException();
 			if (Hudder.IS_DEBUG) target.printStackTrace();
@@ -154,7 +154,7 @@ public class HudderV3Helper {
 		return true;
 	}
 
-	private static Object normalizeClassAccessResult(Object result) {
+	private static Object normalizeResult(Object result) {
 		if (result == null) return null;
 		if (!HudderConfig.isAccessible(result.getClass())) return null;
 		if (result instanceof Set<?> set) return set.toArray();
