@@ -135,8 +135,13 @@ public class Hudder implements ClientModInitializer {
 		    	@Override protected void logLine(@Nullable String string) {wk.error("[{}]: {}", name, string);}
 		    });
 		}
-		ClientCommandRegistrationCallback.EVENT.register(new HudderUnitTestingCommand());
-
+		
+		try {
+			ClientCommandRegistrationCallback.EVENT.register(new HudderUnitTestingCommand(config));
+		} catch (Exception e) {
+			Hudder.error("Could not load unit tests");
+			e.printStackTrace();
+		}
 		
 		HudderBuiltInMethods.registerMethods(FunctionAndConsumerAPI.getInstance());
 		HudderBuiltInFunctions.registerFunction(FunctionAndConsumerAPI.getInstance());

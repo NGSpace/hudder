@@ -23,6 +23,7 @@ import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.api.variableregistry.VariableTypes;
 import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
 import dev.ngspace.hudder.compilers.utils.Compilers;
+import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.hudder.utils.ValueGetter;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -34,8 +35,9 @@ import net.minecraft.util.CommonColors;
 public class HudderUnitTestingCommand implements ClientCommandRegistrationCallback {
 	
 	public static final String TESTS_FOLDER = HudFileUtils.ASSETS + "tests/";
-    private HudderUnitTester hudderTester = new HudderUnitTester(Compilers.hudderV3Compiler);
     public static List<TestProvider> test_providers = new ArrayList<TestProvider>();
+	public HudderUnitTester hudderTester = new HudderUnitTester(Compilers.hudderV3Compiler);
+	public HudderConfig config;
     
     @FunctionalInterface
     public static interface TestProvider {
@@ -68,43 +70,17 @@ public class HudderUnitTestingCommand implements ClientCommandRegistrationCallba
 		});
     }
 	
-	public HudderUnitTestingCommand() {
-		try {
-			loadTests();
-		} catch (Exception e) {
-			Hudder.error("Could not load unit tests");
-			e.printStackTrace();
-		}
+	public HudderUnitTestingCommand(HudderConfig config) throws IOException {
+		this.config = config;
+		loadTests();
 	}
 	
 	@Override
 	public void register(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
-		
-		FunctionAndConsumerAPI.getInstance().registerPositionedFunction((_,_,_,a) -> a[0].get(), "FunctionAPITestingFunction");
-		FunctionAndConsumerAPI.getInstance().registerPositionedConsumer(
-				(_,co,_,a) -> ((AVarTextCompiler) co).put("methodvalue", a[0].get()), "MethodAPITestingMethod");
-		
-		DataVariableRegistry.registerVariable(_ -> new JavaTestObject(), "JavaObjectAccess");
-		DataVariableRegistry.registerVariable(_ -> new JavaTestNoAccess(), "JavaTestNoAccess");
-		
-		DataVariableRegistry.registerVariable(_ -> "Value", VariableTypes.STRING, "string_var");
-		DataVariableRegistry.registerVariable(k -> k, VariableTypes.STRING, "string_var2");
-		DataVariableRegistry.registerVariable(_ -> 69, VariableTypes.NUMBER, "number_var");
-		DataVariableRegistry.registerVariable(_ -> true, VariableTypes.BOOLEAN, "boolean_var");
-		DataVariableRegistry.registerVariable(_ -> new Object() {
-			@Override
-			public String toString() {
-				return "lol";
-			}
-		}, VariableTypes.OBJECT, "object_var");
-		
-		DataVariableRegistry.registerVariable(_ -> ((ValueGetter) k->k),
-				VariableTypes.OBJECT, "value_getter");
-		
 		dispatcher.register(literal("hudderunittesting")
 				
 				.then(literal("test_all").executes(context -> {
-					context.getSource().sendFeedback(hudderTester.testAll(Hudder.config));
+					context.getSource().sendFeedback(hudderTester.testAllAndReturnComponent(Hudder.config));
 					return 1;
 				}))
 				
@@ -137,7 +113,7 @@ public class HudderUnitTestingCommand implements ClientCommandRegistrationCallba
 						loadTests();
 						context.getSource().sendFeedback(
 								Component.literal("Succesfully reloaded tests").withColor(CommonColors.GREEN));
-						context.getSource().sendFeedback(hudderTester.testAll(Hudder.config));
+						context.getSource().sendFeedback(hudderTester.testAllAndReturnComponent(Hudder.config));
 					} catch (Exception e) {
 						Hudder.error("Could not load unit tests");
 						e.printStackTrace();
@@ -149,7 +125,25 @@ public class HudderUnitTestingCommand implements ClientCommandRegistrationCallba
 	}
 	
 	private void loadTests() throws IOException {
-		if (Hudder.config.getCompiler() instanceof AVarTextCompiler comp)
+		
+		FunctionAndConsumerAPI.getInstance().registerPositionedFunction((_,_,_,a) -> a[0].get(), "FunctionAPITestingFunction");
+		FunctionAndConsumerAPI.getInstance().registerPositionedConsumer(
+				(_,co,_,a) -> ((AVarTextCompiler) co).put("methodvalue", a[0].get()), "MethodAPITestingMethod");
+		
+		DataVariableRegistry.registerVariable(_ -> new JavaTestObject(), "JavaObjectAccess");
+		DataVariableRegistry.registerVariable(_ -> new JavaTestNoAccess(), "JavaTestNoAccess");
+		
+		DataVariableRegistry.registerVariable(_ -> "Value", VariableTypes.STRING, "string_var");
+		DataVariableRegistry.registerVariable(k -> k, VariableTypes.STRING, "string_var2");
+		DataVariableRegistry.registerVariable(_ -> 69, VariableTypes.NUMBER, "number_var");
+		DataVariableRegistry.registerVariable(_ -> true, VariableTypes.BOOLEAN, "boolean_var");
+		DataVariableRegistry.registerVariable(_ -> new Object() {
+			@Override public String toString() {return "lol";}
+		}, VariableTypes.OBJECT, "object_var");
+		
+		DataVariableRegistry.registerVariable(_ -> ((ValueGetter) k->k), VariableTypes.OBJECT, "value_getter");
+		
+		if (config.getCompiler() instanceof AVarTextCompiler comp)
 			hudderTester.compiler = comp;
 		hudderTester.UnitTests.clear();
 		for (TestProvider provider : test_providers)

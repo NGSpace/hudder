@@ -26,12 +26,12 @@ public class HudFileUtils {private HudFileUtils() {}
 	private static CachedReader reader = new CachedReader();
 	private static List<ResourceReloadListener> reloadResourcesListeners = new ArrayList<ResourceReloadListener>();
 
-	public static final String FABRIC_CONFIG_FOLDER = FabricLoader.getInstance().getConfigDir().toString();
-	public static final String FOLDER = FABRIC_CONFIG_FOLDER + File.separator + "hudder" + File.separator;
-    public static final String ASSETS = "/assets/hudder/";
-    public static final String[] DEFAULT_HUDS = {"hand.hud", "armorside.hud", "hud.hud", "basic.hud",
+	public static String FABRIC_CONFIG_FOLDER = FabricLoader.getInstance().getConfigDir().toString();
+	public static String FOLDER = FABRIC_CONFIG_FOLDER + File.separator + "hudder" + File.separator;
+    public static String ASSETS = "/assets/hudder/";
+    public static String[] DEFAULT_HUDS = {"hand.hud", "armorside.hud", "hud.hud", "basic.hud",
     		"hud.js", "hotbar.js"};
-    public static final String[] DEFAULT_TEXTURES = {"pointer.png","selection.png"};
+    public static String[] DEFAULT_TEXTURES = {"pointer.png","selection.png"};
 	
     
     

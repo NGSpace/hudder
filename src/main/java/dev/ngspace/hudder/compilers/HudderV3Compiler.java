@@ -56,7 +56,7 @@ public class HudderV3Compiler extends AV3Compiler {
 		int savedind = 0;
 		
 		boolean cleanup = false;
-		int cleanup_amount = Hudder.config.methodBuffer();
+		int cleanup_amount = info.methodBuffer();
 		
 		byte compileState = TEXT_STATE;
 
@@ -91,7 +91,7 @@ public class HudderV3Compiler extends AV3Compiler {
 							break;
 						case ';':
 							compileState = METHOD_STATE;
-							finalCodeBlock.appendStringConstant(trimMethod(elemBuilder.toString()), posTracker.get());
+							finalCodeBlock.appendStringConstant(trimMethod(info, elemBuilder.toString()), posTracker.get());
 							elemBuilder.setLength(0);
 							savedind = ind;
 						    quotesafe = false;
@@ -201,7 +201,7 @@ public class HudderV3Compiler extends AV3Compiler {
 						finalCodeBlock.addInstruction(new MethodExecutionInstruction(builder, this, posTracker.goToAndGet(savedind)));
 						elemBuilder.setLength(0);
 						cleanup = true;
-						cleanup_amount = Hudder.config.methodBuffer()/2;
+						cleanup_amount = info.methodBuffer()/2;
 					}
 					break;
 				}
@@ -373,10 +373,10 @@ public class HudderV3Compiler extends AV3Compiler {
 		});
 		return strb.toString();
 	}
-	public String trimMethod(String string) {
+	public String trimMethod(HudderConfig config, String string) {
 		String str = string;
 		int buffer;
-		if ((buffer = Hudder.config.methodBuffer())<10) {
+		if ((buffer = config.methodBuffer())<10) {
 			for (int i = 0; i<buffer;i++) {
 				if (str.endsWith("\n")||str.endsWith("\r")) str = str.substring(0, str.length()-1);
 			}

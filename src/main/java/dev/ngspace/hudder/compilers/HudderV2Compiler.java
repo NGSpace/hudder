@@ -54,7 +54,7 @@ public class HudderV2Compiler extends AV2Compiler {
 		int savedind = 0;
 		
 		boolean cleanup = false;
-		int cleanup_amount = Hudder.config.methodBuffer();
+		int cleanup_amount = info.methodBuffer();
 		
 		byte compileState = TEXT_STATE;
 
@@ -216,7 +216,7 @@ public class HudderV2Compiler extends AV2Compiler {
 						}
 						elemBuilder.setLength(0);
 						cleanup = true;
-						cleanup_amount = Hudder.config.methodBuffer()/2;
+						cleanup_amount = info.methodBuffer()/2;
 					}
 					break;
 				}

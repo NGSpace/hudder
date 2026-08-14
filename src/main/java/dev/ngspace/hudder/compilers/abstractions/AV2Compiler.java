@@ -68,9 +68,9 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Positioned
 	
 	
 	@Override
-	public void compileFile(String text, String filepath) throws CompileException {
+	public void compileFile(HudderConfig config, String text, String filepath) throws CompileException {
 		if (!runtimes.containsKey(text))
-			runtimes.put(text, buildRuntimeSafe(Hudder.config, text, new TextPos(-1, -1), filepath, null));
+			runtimes.put(text, buildRuntimeSafe(config, text, new TextPos(-1, -1), filepath, null));
 	}
 	
 
@@ -180,7 +180,7 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Positioned
 	public HudInformation compileAndExecute(HudderConfig info, String text, String filename) throws ExecutionException {
 		try {
 			if (!runtimes.containsKey(text))
-				compileFile(text, filename);
+				compileFile(info, text, filename);
 			return execute(info, text, filename);
 		} catch (CompileException e) {
 			throw new ExecutionException(e);

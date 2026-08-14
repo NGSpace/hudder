@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.objectweb.asm.Label;
 
-import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
@@ -20,10 +19,10 @@ import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.hudderv3.GeneratedCompiler;
-import dev.ngspace.hudder.hudderv3.V3APIFunctions;
-import dev.ngspace.hudder.hudderv3.V3APIMethods;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.TokenizedCodeBlock;
+import dev.ngspace.hudder.hudderv3.V3APIFunctions;
+import dev.ngspace.hudder.hudderv3.V3APIMethods;
 import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.asm.V3ExecuteMethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.ImplV3ExpressionParser;
@@ -50,13 +49,14 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Positioned
 	}
 	
 	@Override
-	public void compileFile(String text, String filepath) throws CompileException {
+	public void compileFile(HudderConfig config, String text, String filepath) throws CompileException {
 		if (cache.containsKey(text)) {
 			var cachehit = cache.get(text);
 			if (cachehit.exception!=null) throw cachehit.exception;
 			return;
 		}
 		try {
+			HudderV3Helper.config = config;
 		
 			V3ClassWriter classWriter = new V3ClassWriter("dev/ngspace/hudder/hudderv3/GeneratedClass",
 					filepath);
@@ -74,7 +74,7 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Positioned
 			executeMethod.getField("uimanager", ArrayElementManager.class);
 			executeMethod.callInterface(List.class, "clear", "()V");
 			
-			compile(Hudder.config, text, filepath, new TextPos(0, 0)).writeInstructions(executeMethod, classWriter, end);
+			compile(config, text, filepath, new TextPos(0, 0)).writeInstructions(executeMethod, classWriter, end);
 			
 			executeMethod.putLabel(end);
 			executeMethod.end();

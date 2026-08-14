@@ -28,7 +28,7 @@ public class HudPackCompiler extends AHudCompiler<HudPack> {
 	}
 
 	@Override
-	public HudPack processFile(String filepath) throws CompileException {
+	public HudPack processFile(HudderConfig config, String filepath) throws CompileException {
 		elms.clear();
 		if (hudpacks.containsKey(filepath))
 			return hudpacks.get(filepath);
@@ -75,7 +75,7 @@ public class HudPackCompiler extends AHudCompiler<HudPack> {
 	public boolean setupHudSettings(NGSMCConfigCategory hudsettings) {
 		HudderConfig config = Hudder.config;
 		try {
-			HudPack mainhudpack = processFile(config.mainfile());
+			HudPack mainhudpack = processFile(config, config.mainfile());
 			
 			if (mainhudpack!=null
 					&&mainhudpack.hasSettings()) {

@@ -56,7 +56,15 @@ public class HudderUnitTester {
 	
 	
 	
-	public MutableComponent testAll(HudderConfig config) {
+	public Map<String, HudderUnitTestResult> testAll(HudderConfig config) {
+		Map<String, HudderUnitTestResult> results = new HashMap<String, HudderUnitTestResult>();
+		for (var test : UnitTests.entrySet()) {
+			results.put(test.getKey(), test(config, test.getKey()));
+		}
+		return results;
+	}
+	
+	public MutableComponent testAllAndReturnComponent(HudderConfig config) {
 		MutableComponent result = Component.literal("All tests:\n");
 		boolean failed = false;
 		Instant start = Instant.now();

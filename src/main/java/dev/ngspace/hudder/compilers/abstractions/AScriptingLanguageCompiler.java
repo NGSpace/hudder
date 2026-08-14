@@ -30,7 +30,7 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 	protected abstract IScriptingLanguageEngine createLangEngine() throws CompileException;
 	
 	@Override
-	public void compileFile(String text, String filepath) throws CompileException {
+	public void compileFile(HudderConfig config, String text, String filepath) throws CompileException {
 		if (cache.containsKey(text)) {
 			var cachehit = cache.get(text);
 			if (cachehit.exception!=null) throw cachehit.engine.processCompileException(cachehit.exception);
