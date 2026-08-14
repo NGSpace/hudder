@@ -15,17 +15,26 @@ public class TextElement extends AUIElement {
 	public final float scale;
 	public final boolean shadow;
 	public final boolean background;
+	public final float rotation;
 
 	/**
-	 * @deprecated use {@link #TextElement(int, int, Component, float, int, boolean, boolean, int)}
+	 * @deprecated use {@link #TextElement(int, int, Component, float, int, boolean, boolean, int, float)}
 	 */
 	@Deprecated(since = "10.1.0", forRemoval = true)
 	public TextElement(int x, int y, String text, float scale, int color, boolean shadow, boolean background,
 			int backgroundcolor) {
 		this(x, y, Component.literal(text), scale, color, shadow, background, backgroundcolor);
 	}
+	/**
+	 * @deprecated use {@link #TextElement(int, int, Component, float, int, boolean, boolean, int, float)}
+	 */
+	@Deprecated(since = "10.3.0", forRemoval = true)
 	public TextElement(int x, int y, Component component, float scale, int color, boolean shadow, boolean background,
 			int backgroundcolor) {
+		this(x, y, component, scale, color, shadow, background, backgroundcolor, 0);
+	}
+	public TextElement(int x, int y, Component component, float scale, int color, boolean shadow, boolean background,
+			int backgroundcolor, float rotation) {
 		this.component = component;
 		this.x = x;
 		this.y = y;
@@ -34,8 +43,10 @@ public class TextElement extends AUIElement {
 		this.scale = scale;
 		this.shadow = shadow;
 		this.background = background;
+		this.rotation = rotation;
 	}
-	@Override public void renderElement(GuiGraphicsExtractor context, HudderRenderer renderer, DeltaTracker delta) {
-		renderer.renderTextLine(context, component, x, y, color, scale, shadow, background, backgroundcolor);
+	@Override public void renderElement(GuiGraphicsExtractor context, HudderRenderer renderer,
+			DeltaTracker delta) {
+		renderer.renderTextLine(context, component, x, y, color, scale, shadow, background, backgroundcolor, rotation);
 	}
 }

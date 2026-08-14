@@ -176,4 +176,5 @@ public class Misc {private Misc() {}
 	static double truncate(double num, int cutoff) {
 		return Math.floor(num*Math.pow(10, cutoff))/Math.pow(10, cutoff);
 	}
+	
 }

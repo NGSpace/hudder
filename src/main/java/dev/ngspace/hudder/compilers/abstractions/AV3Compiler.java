@@ -20,8 +20,8 @@ import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.hudderv3.GeneratedCompiler;
-import dev.ngspace.hudder.hudderv3.HudderAPIFunctions;
-import dev.ngspace.hudder.hudderv3.HudderAPIMethods;
+import dev.ngspace.hudder.hudderv3.V3APIFunctions;
+import dev.ngspace.hudder.hudderv3.V3APIMethods;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.TokenizedCodeBlock;
 import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
@@ -35,7 +35,8 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Positioned
 	public static final String VERIFIER_ERROR_NOTE = """
 			
 			# This is a bytecode-gen error!
-			# Please report this to the developer of Hudder!""";
+			# Please report this to the developer of Hudder!
+			""";
 	
 	public Map<String, CachedCompiler> cache = new HashMap<String, CachedCompiler>();
 	public V3ExpressionParser expressionParser = new WalkingV3ExpressionParser();
@@ -43,8 +44,8 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Positioned
 	
 	protected AV3Compiler() {
 		FunctionAndConsumerAPI.getInstance().applyFunctionsAndConsumers(this);
-		HudderAPIFunctions.bindAllAPIFunctions(this);
-		HudderAPIMethods.bindAllAPIMethods(this);
+		V3APIFunctions.bindAllAPIFunctions(this);
+		V3APIMethods.bindAllAPIMethods(this);
 	}
 	
 	@Override

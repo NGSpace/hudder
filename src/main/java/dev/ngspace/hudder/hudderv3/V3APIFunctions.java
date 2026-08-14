@@ -11,8 +11,8 @@ import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.v2runtime.functions.RngV2Function;
 import dev.ngspace.hudder.v2runtime.functions.V2FunctionHandler.RangedIterator;
 
-public class HudderAPIFunctions {
-	private HudderAPIFunctions() {/* */}
+public class V3APIFunctions {
+	private V3APIFunctions() {/* */}
 
 	public static void bindAllAPIFunctions(PositionedBinder binder) {
 		

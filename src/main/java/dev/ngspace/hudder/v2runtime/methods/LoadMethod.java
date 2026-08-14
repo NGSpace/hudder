@@ -39,7 +39,8 @@ public class LoadMethod implements V2IMethod, BindablePositionedConsumer {
 			boolean AddText = (args.length<2 || args[1].asBoolean()) || type.equals("add");
 			if (AddText && HudCompilationManager.isFirstRunSinceCacheClear)
 				Hudder.showWarningToast(Component.literal("AddText parameter in the " + type + " method is deprecated"), 
-						Component.literal("Please use the run function to read the text."));
+						Component.literal("Please use the run function to read the text."
+								+ (type.equals("add")?" Or use the run method instead.":"")));
 			AHudCompiler<?> ecompiler=(args.length>2?Compilers.getCompilerFromName(args[2].asString()):comp);
 			for (var i : HudCompilationManager.precomplistners) i.accept(ecompiler);
 			CompileState state = runtime.getMasterScope().compileState;

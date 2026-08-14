@@ -2,13 +2,16 @@ package dev.ngspace.hudder.variables.data;
 
 import static dev.ngspace.hudder.api.variableregistry.VariableTypes.BOOLEAN;
 import static dev.ngspace.hudder.api.variableregistry.VariableTypes.NUMBER;
+import static dev.ngspace.hudder.api.variableregistry.VariableTypes.OBJECT;
 import static dev.ngspace.hudder.api.variableregistry.VariableTypes.STRING;
 
 import java.util.Queue;
 
+import dev.ngspace.hudder.mixin.BossHealthOverlayAccessor;
 import dev.ngspace.hudder.mixin.LevelRendererAccess;
 import dev.ngspace.hudder.mixin.ParticleManagerAccessor;
 import dev.ngspace.hudder.variables.HudderBuiltInVariables;
+import dev.ngspace.hudder.variables.advanced.BossBarData;
 import dev.ngspace.hudder.variables.advanced.PlayerInformation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.level.LightLayer;
@@ -66,17 +69,17 @@ public class WorldData extends HudderBuiltInVariables {
 		/* World Rendering */
 
 		register(_->((LevelRendererAccess) ins.levelRenderer)
-		                .getLevelRenderState()
-		                .entityRenderStates
-		                .size(),
+	                .getLevelRenderState()
+	                .entityRenderStates
+	                .size(),
 		    NUMBER, "entites", "entities");
 
 		register(_->((ParticleManagerAccessor) ins.particleEngine)
-		                .getParticles()
-		                .values()
-		                .stream()
-		                .mapToInt(Queue::size)
-		                .sum(),
+	                .getParticles()
+	                .values()
+	                .stream()
+	                .mapToInt(Queue::size)
+	                .sum(),
 		    NUMBER, "particles");
 
 		register(_->ins.levelExtractor.countRenderedSections(), NUMBER, "chunks");
@@ -98,6 +101,15 @@ public class WorldData extends HudderBuiltInVariables {
 		    NUMBER, "cam_blocklight", "cam_block_light");
 		register(_->ins.level.getBrightness(LightLayer.SKY, ins.gameRenderer.mainCamera().blockPosition()),
 		    NUMBER, "cam_skylight", "cam_sky_light");
+		
+		// Boss bars
+		register(_->{
+			var obj = ((BossHealthOverlayAccessor)ins.gui.hud.getBossOverlay()).events();
+			return obj.entrySet()
+					.stream()
+					.map(e->new BossBarData(e.getValue()))
+					.toList();
+		}, OBJECT, "boss_bars");
 	}
 	
 	private static void registerOtherVariables() {

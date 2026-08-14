@@ -387,6 +387,10 @@ public class HudderConfig {
 	    return userSettings.removeeffects;
 	}
 
+	public boolean removeBossBars() {
+		return userSettings.removeBossBars;
+	}
+
 	public boolean limitrate() {
 	    return userSettings.limitrate;
 	}
@@ -424,4 +428,5 @@ public class HudderConfig {
 	public Map<String, Object> globalVariables() {
 		return userSettings.globalVariables;
 	}
+	
 }

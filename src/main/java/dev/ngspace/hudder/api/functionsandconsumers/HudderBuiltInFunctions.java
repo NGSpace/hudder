@@ -129,7 +129,7 @@ public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 				throw new ExecutionException(e, p);
 			}
 		},"exists");
-		binder.registerPositionedFunction((_,_,_,s)->mc.font.width(s[0].asString()), "strWidth", "strwidth");
+		binder.registerPositionedFunction((_,_,_,s)->mc.font.width(s[0].asComponent()), "strWidth", "strwidth");
 		binder.registerPositionedFunction((_,_,_,s)->s[0].get().toString(), "toString");
 		binder.registerUnsafePositionedFunction((_,_,_,_)->new HashMap<Object, Object>(), "map");
 	}

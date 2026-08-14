@@ -93,7 +93,10 @@
 	"hudder.vanillahud.removehotbar.tooltip": "\u00A74WARNING - THIS WILL MAKE YOUR HOTBAR AND HEALTH BAR INVISIBLE UNTIL DISABLED.\n\u00A7fWhether hudder should hide all Hotbar related GUI elements.",
 
 	"hudder.vanillahud.removeeffects": "Remove effects hud",
-	"hudder.vanillahud.removeeffects.tooltip": "\u00A74WARNING - THIS WILL MAKE YOUR EFFECTS HUD INVISIBLE UNTIL DISABLED.\n\u00A7fWhether hudder should hide the effects hud.",
+	"hudder.vanillahud.removeeffects.tooltip": "Whether the vanilla effects hud should be rendered.",
+	
+	"hudder.vanillahud.removebossbars": "Remove boss bars",
+	"hudder.vanillahud.removebossbars.tooltip": "Whether the vanilla boss bars should be rendered.",
 	
 	"hudder.safety_perf": "Safety & Performance",
 	

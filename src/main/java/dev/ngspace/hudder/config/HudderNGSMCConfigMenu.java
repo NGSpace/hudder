@@ -212,6 +212,11 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 				.setSaveOperation(b->config.removeeffects=b)
 				.setDefaultValue(false)
 				.build());
+		vanillahud.addOption(BooleanNGSMCConfigOption.fluentBuilder(config.removeBossBars, Component.translatable("hudder.vanillahud.removebossbars"))
+				.setHoverComponent(Component.translatable("hudder.vanillahud.removebossbars.tooltip"))
+				.setSaveOperation(b->config.removeBossBars=b)
+				.setDefaultValue(false)
+				.build());
 
         
 		/* Safety & Performance */
