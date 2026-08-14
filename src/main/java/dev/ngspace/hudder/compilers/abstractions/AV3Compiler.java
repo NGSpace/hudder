@@ -29,6 +29,7 @@ import dev.ngspace.hudder.hudderv3.asm.V3ExecuteMethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.WalkingV3ExpressionParser;
 import dev.ngspace.hudder.hudderv3.instructions.V3ExpressionParser;
 import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
+import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 
 public abstract class AV3Compiler extends AVarTextCompiler implements PositionedBinder {
 	
@@ -169,5 +170,10 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Positioned
 		for (String name : names) {
 			HudderV3Helper.api_functions.put("api_function_" + name, cons);
 		}
+	}
+
+	@Override
+	public boolean setupHudSettings(NGSMCConfigCategory hudsettings) {
+		return false;
 	}
 }

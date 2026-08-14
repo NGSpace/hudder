@@ -21,7 +21,6 @@ import dev.ngspace.hudder.hudderv3.instructions.compiler.MethodExecutionInstruct
 import dev.ngspace.hudder.hudderv3.instructions.compiler.VariableInstruction;
 import dev.ngspace.hudder.hudderv3.instructions.compiler.WhileInstruction;
 import dev.ngspace.hudder.utils.HudderUtils;
-import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 import net.minecraft.network.chat.Component;
 	
 public class HudderV3Compiler extends AV3Compiler {
@@ -298,11 +297,6 @@ public class HudderV3Compiler extends AV3Compiler {
 		}
 		
 		return finalCodeBlock;
-	}
-
-	@Override
-	public boolean setupHudSettings(NGSMCConfigCategory hudsettings) {
-		return false;
 	}
 	
 	public CodeBlock getCodeBlock(String text, int index) {
