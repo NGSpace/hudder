@@ -26,7 +26,7 @@ import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.TokenizedCodeBlock;
 import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.asm.V3ExecuteMethodWriter;
-import dev.ngspace.hudder.hudderv3.instructions.WalkingV3ExpressionParser;
+import dev.ngspace.hudder.hudderv3.instructions.ImplV3ExpressionParser;
 import dev.ngspace.hudder.hudderv3.instructions.V3ExpressionParser;
 import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
@@ -40,7 +40,7 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Positioned
 			""";
 	
 	public Map<String, CachedCompiler> cache = new HashMap<String, CachedCompiler>();
-	public V3ExpressionParser expressionParser = new WalkingV3ExpressionParser();
+	public V3ExpressionParser expressionParser = new ImplV3ExpressionParser();
 	public boolean system_variables = true;
 	
 	protected AV3Compiler() {

@@ -30,7 +30,10 @@ import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperati
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations.NegateVariableVisitor;
 import dev.ngspace.hudder.utils.HudderUtils;
 
-public class BasicV3ExpressionParser implements V3ExpressionParser {
+/**
+ * DefaultV2VariableParser ported to V3
+ */
+public class PortedV3ExpressionParser implements V3ExpressionParser {
 	
 	public ExpressionVisitor parseExpression(String valuee, AV3Compiler comp, TextPos pos) throws CompileException {
 		

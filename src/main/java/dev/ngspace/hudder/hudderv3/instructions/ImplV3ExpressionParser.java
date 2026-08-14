@@ -29,7 +29,7 @@ import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperati
 import dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperations.NegateVariableVisitor;
 import dev.ngspace.hudder.utils.HudderUtils;
 
-public class WalkingV3ExpressionParser implements V3ExpressionParser {
+public class ImplV3ExpressionParser implements V3ExpressionParser {
 
 	@Override
 	public ExpressionVisitor parseExpression(String valuee, AV3Compiler comp, TextPos pos)
