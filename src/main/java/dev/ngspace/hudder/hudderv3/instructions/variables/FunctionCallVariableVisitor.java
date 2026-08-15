@@ -7,7 +7,6 @@ import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositione
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
-import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.V3HudInformation;
 import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
 import dev.ngspace.hudder.utils.ImplObjectWrapper;
@@ -23,7 +22,7 @@ public class FunctionCallVariableVisitor extends ExpressionVisitor {
 		super(comp, pos);
 		this.args = args;
 		this.funcName = funcName;
-		this.apiCall = HudderV3Helper.api_functions.containsKey("api_function_" + funcName.trim());
+		this.apiCall = comp.api_functions.containsKey("api_function_" + funcName.trim());
 	}
 
 	@Override

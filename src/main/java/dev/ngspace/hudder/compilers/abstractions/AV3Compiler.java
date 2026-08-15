@@ -41,6 +41,9 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Positioned
 	public Map<String, CachedCompiler> cache = new HashMap<String, CachedCompiler>();
 	public V3ExpressionParser expressionParser = new ImplV3ExpressionParser();
 	public boolean system_variables = true;
+
+	public Map<String, BindablePositionedFunction> api_functions = new HashMap<String, BindablePositionedFunction>();
+	public Map<String, BindablePositionedConsumer> api_consumers = new HashMap<String, BindablePositionedConsumer>();
 	
 	protected AV3Compiler() {
 		FunctionAndConsumerAPI.getInstance().applyFunctionsAndConsumers(this);
@@ -56,10 +59,10 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Positioned
 			return;
 		}
 		try {
-			HudderV3Helper helper = new HudderV3Helper(config);
+			HudderV3Helper helper = new HudderV3Helper(config, this);
 			
 			V3ClassWriter classWriter = new V3ClassWriter("dev/ngspace/hudder/hudderv3/GeneratedClass",
-					filepath);
+					filepath, helper);
 			classWriter.createInit();
 			
 			V3ExecuteMethodWriter executeMethod = classWriter.createExecuteMethod("execute", null);
@@ -159,14 +162,14 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Positioned
 	@Override
 	public void bindConsumer(BindablePositionedConsumer cons, String... names) {
 		for (String name : names) {
-			HudderV3Helper.api_consumers.put("api_consumer_" + name, cons);
+			api_consumers.put("api_consumer_" + name, cons);
 		}
 	}
 	
 	@Override
 	public void bindFunction(BindablePositionedFunction cons, String... names) {
 		for (String name : names) {
-			HudderV3Helper.api_functions.put("api_function_" + name, cons);
+			api_functions.put("api_function_" + name, cons);
 		}
 	}
 

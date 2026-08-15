@@ -8,7 +8,6 @@ import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositione
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
-import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.V3HudInformation;
 import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.asm.V3ExecuteMethodWriter;
@@ -26,7 +25,7 @@ public class MethodExecutionInstruction extends Instruction {
 		super(pos);
 		this.builder = builder;
 		this.comp = comp;
-		this.apiCall = HudderV3Helper.api_consumers.containsKey("api_consumer_" + builder[0].trim());
+		this.apiCall = comp.api_consumers.containsKey("api_consumer_" + builder[0].trim());
 		
 		if ("no_sys_var".equalsIgnoreCase(builder[0].trim())) {
 			comp.system_variables = false;

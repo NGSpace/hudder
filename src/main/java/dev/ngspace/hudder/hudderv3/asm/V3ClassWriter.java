@@ -26,6 +26,7 @@ public class V3ClassWriter {
 	public ClassWriter classWriter;
 	public String classname;
 	public V3MethodWriter init;
+	public HudderV3Helper helper;
 	private final Set<String> generatedApiFunctions = new HashSet<>();
 	private final Set<String> generatedApiConsumers = new HashSet<>();
 	private final Set<String> calledApiConsumers = new HashSet<>();
@@ -34,8 +35,9 @@ public class V3ClassWriter {
 	public Map<String, UserMethod> user_methods = new HashMap<String, UserMethod>();
 	public Map<String, UserMethod> user_functions = new HashMap<String, UserMethod>();
 	
-	public V3ClassWriter(String classname, String debugfilename) {
+	public V3ClassWriter(String classname, String debugfilename, HudderV3Helper helper) {
 		this.classname = classname;
+		this.helper = helper;
 		classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
 		classWriter.visit(Opcodes.V25, Opcodes.ACC_PUBLIC, classname, null,
 				"dev/ngspace/hudder/compilers/abstractions/AVarTextCompiler", new String[] {
@@ -139,9 +141,9 @@ public class V3ClassWriter {
 				continue;
 			}
 			initPublicField(func, BindablePositionedFunction.class);
-			init.aload(0);
+			init.getHelper();
 			init.loadConstant(func);
-			init.callStatic(HudderV3Helper.class, "getApiFunction", "(Ljava/lang/String;)"
+			init.call(HudderV3Helper.class, "getApiFunction", "(Ljava/lang/String;)"
 					+ "Ldev/ngspace/hudder/api/functionsandconsumers/interfaces/BindablePositionedFunction;",
 					false);
 			init.putField(func, BindablePositionedFunction.class);
@@ -156,9 +158,9 @@ public class V3ClassWriter {
 				continue;
 			}
 			initPublicField(func, BindablePositionedConsumer.class);
-			init.aload(0);
+			init.getHelper();
 			init.loadConstant(func);
-			init.callStatic(HudderV3Helper.class, "getApiConsumer", "(Ljava/lang/String;)"
+			init.call(HudderV3Helper.class, "getApiConsumer", "(Ljava/lang/String;)"
 					+ "Ldev/ngspace/hudder/api/functionsandconsumers/interfaces/BindablePositionedConsumer;",
 					false);
 			init.putField(func, BindablePositionedConsumer.class);
