@@ -5,6 +5,7 @@ import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.Binda
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
 import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
+import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.utils.ObjectWrapper;
 import net.minecraft.ChatFormatting;
@@ -33,13 +34,13 @@ public class DeprecatedFunciton implements BindablePositionedFunction {
 	}
 
 	@Override
-	public Object invoke(IUIElementManager man, AHudCompiler<?> comp, TextPos pos, ObjectWrapper... args) throws ExecutionException {
+	public Object invoke(IUIElementManager man, AHudCompiler<?> comp, TextPos pos, HudderConfig config, ObjectWrapper... args) throws ExecutionException {
 		if (firstRun) {
 			firstRun = false;
 			Hudder.showWarningToast(Component.literal(name+" function is Deprecated!").withStyle(ChatFormatting.BOLD),
 					Component.literal("\u00A7a" + warning));
 		}
-		return func.invoke(man, comp, pos, args);
+		return func.invoke(man, comp, pos, config, args);
 	}
 	
 }

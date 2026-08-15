@@ -57,7 +57,7 @@ public class LoadMethod implements V2IMethod, BindablePositionedConsumer {
 	}
 
 	@Override
-	public void invoke(IUIElementManager man, AHudCompiler<?> comp, TextPos pos, ObjectWrapper... args)
+	public void invoke(IUIElementManager man, AHudCompiler<?> comp, TextPos pos, HudderConfig config, ObjectWrapper... args)
 			throws ExecutionException {
 		String file = args[0].asString();
 		try {
@@ -65,7 +65,7 @@ public class LoadMethod implements V2IMethod, BindablePositionedConsumer {
 				throw new ExecutionException("V3 does not support the addText parameter!", pos);
 			AHudCompiler<?> ecompiler=(args.length>2?Compilers.getCompilerFromName(args[2].asString()):comp);
 			for (var i : HudCompilationManager.precomplistners) i.accept(ecompiler);
-			for (var uielement : ecompiler.processAndExecute(Hudder.config, file, file).elements()) {
+			for (var uielement : ecompiler.processAndExecute(config, file, file).elements()) {
 				man.addUIElement(uielement);
 			}
 			for (var i : HudCompilationManager.postcomplistners) i.accept(ecompiler);

@@ -7,6 +7,7 @@ import dev.ngspace.hudder.api.functionsandconsumers.IUIElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
 import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
+import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.utils.ObjectWrapper;
 import dev.ngspace.hudder.v2runtime.V2Runtime;
@@ -32,8 +33,8 @@ public class RngV2Function implements IV2Function, BindablePositionedFunction {
 	}
 
 	@Override
-	public Object invoke(IUIElementManager man, AHudCompiler<?> comp, TextPos pos, ObjectWrapper... args)
-			throws ExecutionException {
+	public Object invoke(IUIElementManager man, AHudCompiler<?> comp, TextPos pos, HudderConfig config,
+			ObjectWrapper... args) throws ExecutionException {
 		return (args.length==3? getRandom(args[2].asInt()) : random).nextDouble(args[0].asDouble(),args[1].asDouble());
 	}
 }

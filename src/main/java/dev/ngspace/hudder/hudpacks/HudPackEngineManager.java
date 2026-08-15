@@ -8,6 +8,7 @@ import java.util.Map;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.compilers.HudPackCompiler;
 import dev.ngspace.hudder.compilers.utils.javascript.JavaScriptEngine;
+import dev.ngspace.hudder.config.HudderConfig;
 
 public class HudPackEngineManager implements Closeable {
 	
@@ -21,9 +22,9 @@ public class HudPackEngineManager implements Closeable {
 	
 	private Map<String, JavaScriptEngine> engines = new HashMap<String, JavaScriptEngine>();
 	
-	public JavaScriptEngine getOrCreateEngine(String hud, String point_code) {
+	public JavaScriptEngine getOrCreateEngine(String hud, HudderConfig config, String point_code) {
 		if (!engines.containsKey(hud)) {
-			JavaScriptEngine engine = new JavaScriptEngine(compiler.elms, compiler);
+			JavaScriptEngine engine = new JavaScriptEngine(compiler.elms, compiler, config);
 			FunctionAndConsumerAPI.getInstance().applyFunctionsAndConsumers(engine);
 			engine.bindFunction((_,e)->hudpack.getSettingValue(e[0].asString()), "getHudSetting");
 			if (hudpack.format_version>1) {

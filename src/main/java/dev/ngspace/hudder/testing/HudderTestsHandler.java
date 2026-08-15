@@ -37,9 +37,9 @@ public class HudderTestsHandler {
 	}
 	
 	public void registerApis() {
-		FunctionAndConsumerAPI.getInstance().registerPositionedFunction((_,_,_,a) -> a[0].get(), "FunctionAPITestingFunction");
+		FunctionAndConsumerAPI.getInstance().registerPositionedFunction((_,_,_,_,a) -> a[0].get(), "FunctionAPITestingFunction");
 		FunctionAndConsumerAPI.getInstance().registerPositionedConsumer(
-				(_,co,_,a) -> ((AVarTextCompiler) co).put("methodvalue", a[0].get()), "MethodAPITestingMethod");
+				(_,co,_,_,a) -> ((AVarTextCompiler) co).put("methodvalue", a[0].get()), "MethodAPITestingMethod");
 		
 		DataVariableRegistry.registerVariable(_ -> new JavaTestObject(), "JavaObjectAccess");
 		DataVariableRegistry.registerVariable(_ -> new JavaTestNoAccess(), "JavaTestNoAccess");

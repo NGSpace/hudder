@@ -10,6 +10,7 @@ import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositione
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.PositionedBinder;
 import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
+import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.utils.ObjectWrapper;
 import dev.ngspace.hudder.utils.ValueGetter;
@@ -113,10 +114,10 @@ public class FunctionAndConsumerAPI {
 	 * @see #registerFunction(BindableFunction, String...)
 	 */
 	public void registerUnsafePositionedFunction(BindablePositionedFunction func, String... names) {
-		registerPositionedFunction((m,c,p,a)->{
-			if (!Hudder.config.unsafeoperations())
+		registerPositionedFunction((m,c,p,i,a)->{
+			if (!i.unsafeoperations())
 				throw new SecurityException("Called unsafe function with unsafe operations disabled!");
-			return func.invoke(m,c,p,a);
+			return func.invoke(m,c,p,i,a);
 		}, names);
 	}
 	
@@ -182,10 +183,10 @@ public class FunctionAndConsumerAPI {
 	 * @see #registerConsumer(BindableConsumer, String...)
 	 */
 	public void registerUnsafePositionedConsumer(BindablePositionedConsumer cons, String... names) {
-		registerPositionedConsumer((m,c,p,a)->{
-			if (!Hudder.config.unsafeoperations())
+		registerPositionedConsumer((m,c,p,i,a)->{
+			if (!i.unsafeoperations())
 				throw new SecurityException("Called unsafe method with unsafe operations disabled!");
-			cons.invoke(m,c,p,a);
+			cons.invoke(m,c,p,i,a);
 		}, names);
 	}
 	
@@ -214,8 +215,8 @@ public class FunctionAndConsumerAPI {
 		public Object invoke(IUIElementManager man, AHudCompiler<?> comp, ObjectWrapper... args) throws ExecutionException;
 		@Deprecated(since = "10.3.0", forRemoval = true)
 		@Override
-		default Object invoke(IUIElementManager man, AHudCompiler<?> comp, TextPos position, ObjectWrapper... args)
-				throws ExecutionException {
+		default Object invoke(IUIElementManager man, AHudCompiler<?> comp, TextPos position,
+				HudderConfig config, ObjectWrapper... args) throws ExecutionException {
 			return invoke(man, comp, args);
 		}
 	}
@@ -231,8 +232,8 @@ public class FunctionAndConsumerAPI {
 		public void invoke(IUIElementManager man, AHudCompiler<?> comp, ObjectWrapper... args) throws ExecutionException;
 		@Deprecated(since = "10.3.0", forRemoval = true)
 		@Override
-		default void invoke(IUIElementManager man, AHudCompiler<?> comp, TextPos position, ObjectWrapper... args)
-				throws ExecutionException {
+		default void invoke(IUIElementManager man, AHudCompiler<?> comp, TextPos position,
+				HudderConfig config, ObjectWrapper... args) throws ExecutionException {
 			invoke(man, comp, args);
 		}
 	}
@@ -252,7 +253,7 @@ public class FunctionAndConsumerAPI {
 			if (cons instanceof BindableConsumer old)
 				bindConsumer(old, names);
 			else
-				bindConsumer((i,j,k)->cons.invoke(i, j, new TextPos(-1, -1), k), names);
+				bindConsumer((i,j,k)->cons.invoke(i, j, new TextPos(-1, -1), Hudder.config, k), names);
 		}
 
 		@Deprecated(since = "10.3.0",forRemoval = true)
@@ -263,7 +264,7 @@ public class FunctionAndConsumerAPI {
 			if (cons instanceof BindableFunction old)
 				bindFunction(old, names);
 			else
-				bindFunction((i,j,k)->cons.invoke(i, j, new TextPos(-1, -1), k), names);
+				bindFunction((i,j,k)->cons.invoke(i, j, new TextPos(-1, -1), Hudder.config, k), names);
 		}
 	}
 

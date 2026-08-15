@@ -20,7 +20,7 @@ import dev.ngspace.hudder.utils.NoAccess;
 import dev.ngspace.hudder.utils.ValueGetter;
 
 public class HudderV3Helper {
-	public HudderConfig config = Hudder.config;
+	public HudderConfig config;
 	private AV3Compiler compiler;
 
 	public HudderV3Helper(HudderConfig config, AV3Compiler compiler) {

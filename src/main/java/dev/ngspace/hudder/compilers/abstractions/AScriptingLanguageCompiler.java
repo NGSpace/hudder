@@ -27,7 +27,7 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 		HudCompilationManager.addPreCompilerListener(c->{if(c==this) elms.clear();});
 	}
 	
-	protected abstract IScriptingLanguageEngine createLangEngine() throws CompileException;
+	protected abstract IScriptingLanguageEngine createLangEngine(HudderConfig config) throws CompileException;
 	
 	@Override
 	public void compileFile(HudderConfig config, String text, String filepath) throws CompileException {
@@ -40,7 +40,7 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 		try {
 			RuntimeCache rtcache = cache.get(text);
 			if (rtcache!=null&&rtcache.exception!=null) throw rtcache.exception;
-			wrapper = createLangEngine();
+			wrapper = createLangEngine(config);
 			
 			Exception exception = null;
 			try {

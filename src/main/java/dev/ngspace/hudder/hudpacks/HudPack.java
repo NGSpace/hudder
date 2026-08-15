@@ -54,13 +54,13 @@ public class HudPack implements Closeable {
 				entries.put(entry, reader.readEntry(entry).readAllBytes());
 			}
 		}
-		processConfig();
+		processConfig(config);
 		bufferTextures(configYaml.texturesOrEmpty());
 		loadTextures();
 		loadSettings(configYaml.settingsOrEmpty());
 	}
 
-	private void processConfig() throws CompileException {
+	private void processConfig(HudderConfig config) throws CompileException {
 		// Check if pack.json exists
 		if (!entries.containsKey("pack.json"))
 			throw new CompileException("Missing entry: pack.json", -1, -1);
@@ -79,7 +79,7 @@ public class HudPack implements Closeable {
 				throw new CompileException("Missing entry: " + point.path(), -1, -1);
 			// Read point
 			String point_code = new String(entries.get(point.path()));
-			hudpackpoints[i] = new HudPackPoint(point, engineManager.getOrCreateEngine(point.path(), point_code));
+			hudpackpoints[i] = new HudPackPoint(point, config, engineManager.getOrCreateEngine(point.path(), config, point_code));
 		}
 	}
 	

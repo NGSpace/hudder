@@ -14,7 +14,7 @@ public class V3APIMethods {
 		binder.bindConsumer(new LoadMethod(), "load", "execute", "compile", "run", "add");
 		
 		//Logging and errors
-		binder.bindConsumer((_,_,p,s)->{throw new ExecutionException(s[0].asString(),p);}, "throw");
+		binder.bindConsumer((_,_,p,_,s)->{throw new ExecutionException(s[0].asString(),p);}, "throw");
 	}
 	
 }

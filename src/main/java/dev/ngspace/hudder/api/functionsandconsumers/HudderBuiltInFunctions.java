@@ -5,7 +5,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
 
-import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.TranslatedItemStack;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
@@ -34,19 +33,19 @@ public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 		
 		//Getters
 		
-		binder.registerPositionedFunction((_,c,_,s)->c.getVariable(s[0].asString()), "get", "getVal", "getVariable");
-		binder.registerPositionedFunction((_,_,_,s)->DataVariableRegistry.getNumber  (s[0].asString()), "getNumber" );
-		binder.registerPositionedFunction((_,_,_,s)->DataVariableRegistry.getString  (s[0].asString()), "getString" );
-		binder.registerPositionedFunction((_,_,_,s)->DataVariableRegistry.getObject  (s[0].asString()), "getObject" );
-		binder.registerPositionedFunction((_,_,_,s)->DataVariableRegistry.getBoolean (s[0].asString()), "getBoolean");
+		binder.registerPositionedFunction((_,c,_,_,s)->c.getVariable(s[0].asString()), "get", "getVal", "getVariable");
+		binder.registerPositionedFunction((_,_,_,_,s)->DataVariableRegistry.getNumber  (s[0].asString()), "getNumber" );
+		binder.registerPositionedFunction((_,_,_,_,s)->DataVariableRegistry.getString  (s[0].asString()), "getString" );
+		binder.registerPositionedFunction((_,_,_,_,s)->DataVariableRegistry.getObject  (s[0].asString()), "getObject" );
+		binder.registerPositionedFunction((_,_,_,_,s)->DataVariableRegistry.getBoolean (s[0].asString()), "getBoolean");
 		
-		binder.registerPositionedFunction((_,_,_,s)->new TranslatedItemStack(mc.player.getInventory().getItem(s[0].asInt())), "getItem");
+		binder.registerPositionedFunction((_,_,_,_,s)->new TranslatedItemStack(mc.player.getInventory().getItem(s[0].asInt())), "getItem");
 		
-		binder.registerPositionedFunction((_,_,_,s)->Hudder.config.savedVariables().get(s[0].asString()),"readValue");
+		binder.registerPositionedFunction((_,_,_,i,s)->i.savedVariables().get(s[0].asString()),"readValue");
 		
 		//Stats
 		
-		binder.registerPositionedFunction((_,_,p,s)->{
+		binder.registerPositionedFunction((_,_,p,_,s)->{
 			updateStats();
 			Identifier blockId = s[0].asIdentifier();
 			var block = BuiltInRegistries.BLOCK.get(blockId);
@@ -55,28 +54,28 @@ public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 			return mc.player.getStats().getValue(Stats.BLOCK_MINED, block.get().value());
 		}, "getTimesMinedStat");
 		
-		binder.registerPositionedFunction((_,_,_,s)->getItemStat(Stats.ITEM_CRAFTED, s[0].asIdentifier()),
+		binder.registerPositionedFunction((_,_,_,_,s)->getItemStat(Stats.ITEM_CRAFTED, s[0].asIdentifier()),
 				"getTimesCraftedStat");
 		
-		binder.registerPositionedFunction((_,_,_,s)->getItemStat(Stats.ITEM_USED, s[0].asIdentifier()),
+		binder.registerPositionedFunction((_,_,_,_,s)->getItemStat(Stats.ITEM_USED, s[0].asIdentifier()),
 				"getTimesUsedStat");
 		
-		binder.registerPositionedFunction((_,_,_,s)->getItemStat(Stats.ITEM_BROKEN, s[0].asIdentifier()),
+		binder.registerPositionedFunction((_,_,_,_,s)->getItemStat(Stats.ITEM_BROKEN, s[0].asIdentifier()),
 				"getTimesBrokenStat");
 		
-		binder.registerPositionedFunction((_,_,_,s)->getItemStat(Stats.ITEM_PICKED_UP, s[0].asIdentifier()),
+		binder.registerPositionedFunction((_,_,_,_,s)->getItemStat(Stats.ITEM_PICKED_UP, s[0].asIdentifier()),
 				"getTimesPickedUpStat");
 		
-		binder.registerPositionedFunction((_,_,_,s)->getItemStat(Stats.ITEM_DROPPED, s[0].asIdentifier()),
+		binder.registerPositionedFunction((_,_,_,_,s)->getItemStat(Stats.ITEM_DROPPED, s[0].asIdentifier()),
 				"getTimesDroppedStat");
 		
-		binder.registerPositionedFunction((_,_,_,s)->getEntityStat(Stats.ENTITY_KILLED, s[0].asIdentifier()),
+		binder.registerPositionedFunction((_,_,_,_,s)->getEntityStat(Stats.ENTITY_KILLED, s[0].asIdentifier()),
 				"getTimesKilledStat");
 		
-		binder.registerPositionedFunction((_,_,_,s)->getEntityStat(Stats.ENTITY_KILLED_BY, s[0].asIdentifier()),
+		binder.registerPositionedFunction((_,_,_,_,s)->getEntityStat(Stats.ENTITY_KILLED_BY, s[0].asIdentifier()),
 				"getTimesKilledByStat");
 		
-		binder.registerPositionedFunction((_,_,p,s)->{
+		binder.registerPositionedFunction((_,_,p,_,s)->{
 			updateStats();
 			Identifier statId = s[0].asIdentifier();
 			ObjectArrayList<Stat<Identifier>> stats = new ObjectArrayList<>(Stats.CUSTOM.iterator());
@@ -90,20 +89,20 @@ public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 		
 		//Keybinds
 
-		binder.registerPositionedFunction((_,_,_,s)->KeyMapping.get(s[0].asString()).isDown(), "isKeybindDown");
-		binder.registerPositionedFunction((_,_,_,s)->KeyMapping.get(s[0].asString()).isDefault(), "isKeybindDefault");
-		binder.registerPositionedFunction((_,_,_,s)->KeyMapping.get(s[0].asString()).isUnbound(), "isKeybindUnbound");
+		binder.registerPositionedFunction((_,_,_,_,s)->KeyMapping.get(s[0].asString()).isDown(), "isKeybindDown");
+		binder.registerPositionedFunction((_,_,_,_,s)->KeyMapping.get(s[0].asString()).isDefault(), "isKeybindDefault");
+		binder.registerPositionedFunction((_,_,_,_,s)->KeyMapping.get(s[0].asString()).isUnbound(), "isKeybindUnbound");
 		
 		//Compile
 		
-		binder.registerPositionedFunction((m,_,_,s)-> {
+		binder.registerPositionedFunction((m,_,_,c,s)-> {
 			try {
 				var e = m.toUIElementArray();
 				
 				AHudCompiler<?> ecompiler = Compilers.getCompilerFromName(s[1].asString());
 				for (var i : HudCompilationManager.precomplistners) i.accept(ecompiler);
 				
-				HudInformation result = ecompiler.processAndExecute(Hudder.config,s[0].asString(),s[0].asString());
+				HudInformation result = ecompiler.processAndExecute(c,s[0].asString(),s[0].asString());
 
 				for (var v : result.elements()) m.addUIElement(v);
 				for (var v : e) m.addUIElement(v);
@@ -121,7 +120,7 @@ public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 		
 		//Misc
 		
-		binder.registerPositionedFunction((_,_,p,s)->{
+		binder.registerPositionedFunction((_,_,p,_,s)->{
 			try {
 				return HudFileUtils.exists(s[0].asString());
 			} catch (IOException e) {
@@ -129,9 +128,9 @@ public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 				throw new ExecutionException(e, p);
 			}
 		},"exists");
-		binder.registerPositionedFunction((_,_,_,s)->mc.font.width(s[0].asComponent()), "strWidth", "strwidth");
-		binder.registerPositionedFunction((_,_,_,s)->s[0].get().toString(), "toString");
-		binder.registerUnsafePositionedFunction((_,_,_,_)->new HashMap<Object, Object>(), "map");
+		binder.registerPositionedFunction((_,_,_,_,s)->mc.font.width(s[0].asComponent()), "strWidth", "strwidth");
+		binder.registerPositionedFunction((_,_,_,_,s)->s[0].get().toString(), "toString");
+		binder.registerUnsafePositionedFunction((_,_,_,_,_)->new HashMap<Object, Object>(), "map");
 	}
 	
 	static Instant laststatsupdate = Instant.now();

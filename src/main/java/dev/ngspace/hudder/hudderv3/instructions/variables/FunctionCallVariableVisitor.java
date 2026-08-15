@@ -40,6 +40,7 @@ public class FunctionCallVariableVisitor extends ExpressionVisitor {
 			methodWriter.loadConstantUnsafe(pos.line());
 			methodWriter.loadConstantUnsafe(pos.column());
 			methodWriter.callInit(TextPos.class, "(II)V");
+			methodWriter.aload(1);
 		}
 		
 		methodWriter.loadConstantUnsafe(args.length);
@@ -76,6 +77,7 @@ public class FunctionCallVariableVisitor extends ExpressionVisitor {
 					+ "Ldev/ngspace/hudder/api/functionsandconsumers/IUIElementManager;"
 					+ "Ldev/ngspace/hudder/compilers/abstractions/AHudCompiler;"
 					+ "Ldev/ngspace/hudder/compilers/utils/TextPos;"
+					+ "Ldev/ngspace/hudder/config/HudderConfig;"
 					+ "[Ldev/ngspace/hudder/utils/ObjectWrapper;"
 					+ ")Ljava/lang/Object;");
 		}, _->methodWriter.throwExecutionExceptionFromCaughtException(pos), Exception.class);

@@ -141,6 +141,7 @@ public class V3ClassWriter {
 				continue;
 			}
 			initPublicField(func, BindablePositionedFunction.class);
+			init.aload(0);
 			init.getHelper();
 			init.loadConstant(func);
 			init.call(HudderV3Helper.class, "getApiFunction", "(Ljava/lang/String;)"
@@ -158,6 +159,7 @@ public class V3ClassWriter {
 				continue;
 			}
 			initPublicField(func, BindablePositionedConsumer.class);
+			init.aload(0);
 			init.getHelper();
 			init.loadConstant(func);
 			init.call(HudderV3Helper.class, "getApiConsumer", "(Ljava/lang/String;)"

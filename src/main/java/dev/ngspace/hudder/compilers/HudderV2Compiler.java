@@ -42,7 +42,7 @@ public class HudderV2Compiler extends AV2Compiler {
 
 	@Override public V2Runtime buildRuntime(HudderConfig info, String text, TextPos charPosition, String filename,
 			V2Runtime scope) throws CompileException, ExecutionException {
-		V2Runtime runtime = new V2Runtime(this, scope);
+		V2Runtime runtime = new V2Runtime(this, info, scope);
 		
 		StringBuilder elemBuilder = new StringBuilder();
 		

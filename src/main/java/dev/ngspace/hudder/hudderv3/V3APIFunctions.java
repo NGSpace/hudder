@@ -18,7 +18,7 @@ public class V3APIFunctions {
 		
 		//Type casting
 		
-		bindFunction(binder,(_,_,p,args) -> {
+		bindFunction(binder,(_,_,p,_,args) -> {
 			Object value = args[0].get();
 			
 			if (value==null) throw new ExecutionException("Value of variable is null!", p);
@@ -36,7 +36,7 @@ public class V3APIFunctions {
 					return Double.parseDouble(value.toString());
 			}
 		}, 1, "int", "num", "number", "double");
-		bindFunction(binder, (_,_,_,args) -> {
+		bindFunction(binder, (_,_,_,_,args) -> {
 
 			Object value = args[0].get();
 			
@@ -49,7 +49,7 @@ public class V3APIFunctions {
 			}
 			return value.toString();
 		}, 1, 2, "str", "string");
-		bindFunction(binder, (_,_,_,args) -> {
+		bindFunction(binder, (_,_,_,_,args) -> {
 			var lst = new ArrayList<Object>();
 			Object o = args[0].get();
 			if (o instanceof String str) {
@@ -63,43 +63,43 @@ public class V3APIFunctions {
 			}
 			return lst;
 		}, 1, 2, "array");
-		bindFunction(binder, (_,_,_,args) -> (char)(args[0].asDouble()), 1, "char");
-		bindFunction(binder, (_,_,_,args) -> Integer.toBinaryString((int) args[0].asDouble()), 1, "toBinaryString");
+		bindFunction(binder, (_,_,_,_,args) -> (char)(args[0].asDouble()), 1, "char");
+		bindFunction(binder, (_,_,_,_,args) -> Integer.toBinaryString((int) args[0].asDouble()), 1, "toBinaryString");
 		
 		//Math
 		
 		bindFunction(binder,new RngV2Function(), 2, 3, "rng", "random");
 
-		bindFunction(binder, (_,_,_,args) -> Math.abs  (args[0].asDouble()), 1, "abs"    );
-		bindFunction(binder, (_,_,_,args) -> Math.floor(args[0].asDouble()), 1, "floor"  );
-		bindFunction(binder, (_,_,_,args) -> Math.ceil (args[0].asDouble()), 1, "ceiling");
+		bindFunction(binder, (_,_,_,_,args) -> Math.abs  (args[0].asDouble()), 1, "abs"    );
+		bindFunction(binder, (_,_,_,_,args) -> Math.floor(args[0].asDouble()), 1, "floor"  );
+		bindFunction(binder, (_,_,_,_,args) -> Math.ceil (args[0].asDouble()), 1, "ceiling");
 		
-		bindFunction(binder, (_,_,_,args) -> Math.sin (args[0].asDouble()), 1, "sin" );
-		bindFunction(binder, (_,_,_,args) -> Math.cos (args[0].asDouble()), 1, "cos" );
-		bindFunction(binder, (_,_,_,args) -> Math.tan (args[0].asDouble()), 1, "tan" );
+		bindFunction(binder, (_,_,_,_,args) -> Math.sin (args[0].asDouble()), 1, "sin" );
+		bindFunction(binder, (_,_,_,_,args) -> Math.cos (args[0].asDouble()), 1, "cos" );
+		bindFunction(binder, (_,_,_,_,args) -> Math.tan (args[0].asDouble()), 1, "tan" );
 		
-		bindFunction(binder, (_,_,_,args) -> Math.asin(args[0].asDouble()), 1, "asin");
-		bindFunction(binder, (_,_,_,args) -> Math.acos(args[0].asDouble()), 1, "acos");
-		bindFunction(binder, (_,_,_,args) -> Math.atan(args[0].asDouble()), 1, "atan");
+		bindFunction(binder, (_,_,_,_,args) -> Math.asin(args[0].asDouble()), 1, "asin");
+		bindFunction(binder, (_,_,_,_,args) -> Math.acos(args[0].asDouble()), 1, "acos");
+		bindFunction(binder, (_,_,_,_,args) -> Math.atan(args[0].asDouble()), 1, "atan");
 		
-		bindFunction(binder, (_,_,_,args) -> Math.sqrt(args[0].asDouble()), 1, "sqrt");
+		bindFunction(binder, (_,_,_,_,args) -> Math.sqrt(args[0].asDouble()), 1, "sqrt");
 		
-		bindFunction(binder, (_,_,_,args) -> Math.pow(args[0].asDouble(),args[1].asDouble()), 2, "pow");
-		bindFunction(binder, (_,_,_,args) -> Math.min(args[0].asDouble(),args[1].asDouble()), 2, "min");
-		bindFunction(binder, (_,_,_,args) -> Math.max(args[0].asDouble(),args[1].asDouble()), 2, "max");
+		bindFunction(binder, (_,_,_,_,args) -> Math.pow(args[0].asDouble(),args[1].asDouble()), 2, "pow");
+		bindFunction(binder, (_,_,_,_,args) -> Math.min(args[0].asDouble(),args[1].asDouble()), 2, "min");
+		bindFunction(binder, (_,_,_,_,args) -> Math.max(args[0].asDouble(),args[1].asDouble()), 2, "max");
 		
-		bindFunction(binder, (_,_,_,args) -> Math.floor(args[0].asDouble()*Math.pow(10, args[1].asInt()))
+		bindFunction(binder, (_,_,_,_,args) -> Math.floor(args[0].asDouble()*Math.pow(10, args[1].asInt()))
 				/Math.pow(10, args[1].asInt()),2,"truncate");
 		
 		// Misc
 		
-		bindFunction(binder, (_,_,_,args)->{
+		bindFunction(binder, (_,_,_,_,args)->{
 			Object value = args[0].get();
 			if (value instanceof Collection<?> c) return c.size();
 			if (value instanceof Object[] c) return c.length;
 			return args[0].asString().length();
 		}, 1, "length");
-		bindFunction(binder, (_,_,_,args)->(Iterable<Integer>)() -> {
+		bindFunction(binder, (_,_,_,_,args)->(Iterable<Integer>)() -> {
 			try {
 				if (args.length==1) return new RangedIterator(0, args[0].asInt());
 				return new RangedIterator(args[0].asInt(), args[1].asInt());
@@ -116,10 +116,10 @@ public class V3APIFunctions {
 	
 	public static void bindFunction(PositionedBinder binder, BindablePositionedFunction function, int minlength, int maxlength, String... names) {
 		for (String name : names) {
-			BindablePositionedFunction expandedFunction = (uimanager, comp, pos, args) -> {
+			BindablePositionedFunction expandedFunction = (uimanager, comp, pos, config, args) -> {
 				if (args.length<minlength) throw new ExecutionException("Too little parameters for "+name+" function!",pos);
 				if (args.length>maxlength) throw new ExecutionException("Too many parameters for "+name+" function!",pos);
-				return function.invoke(uimanager, comp, pos, args);
+				return function.invoke(uimanager, comp, pos, config, args);
 			};
 			binder.bindFunction(expandedFunction, name);
 		}

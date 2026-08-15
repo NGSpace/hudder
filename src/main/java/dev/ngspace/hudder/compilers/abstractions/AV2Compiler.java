@@ -87,11 +87,11 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Positioned
 	
 	
 	@Override public void bindConsumer(BindablePositionedConsumer cons, String... names) {
-		methodHandler.bindConsumer((_,m,_,_,_,pos,s)->cons.invoke(m, this, pos, s), names);
+		methodHandler.bindConsumer((ci,m,_,_,_,pos,s)->cons.invoke(m, this, pos, ci, s), names);
 	}
 	@Override public void bindFunction(BindablePositionedFunction cons, String... names) {
-		functionHandler.bindFunction((c,_,s,l,co)->cons.invoke(c.compileState, this, new TextPos(l, co), s),
-				names);
+		functionHandler.bindFunction((c,_,s,l,co)->cons.invoke(c.compileState, this, new TextPos(l, co),
+				c.config, s), names);
 	}
 	
 

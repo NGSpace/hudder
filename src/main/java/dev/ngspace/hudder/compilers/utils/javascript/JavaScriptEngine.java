@@ -24,6 +24,7 @@ import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositione
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.PositionedBinder;
 import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
 import dev.ngspace.hudder.compilers.abstractions.IScriptingLanguageEngine;
+import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.utils.ObjectWrapper;
@@ -49,10 +50,12 @@ public class JavaScriptEngine implements IScriptingLanguageEngine, PositionedBin
 	boolean closed;
 	private AHudCompiler<?> compiler;
 	private IUIElementManager elms;
+	private HudderConfig config;
 	
-	public JavaScriptEngine(IUIElementManager elms, AHudCompiler<?> compiler) {
+	public JavaScriptEngine(IUIElementManager elms, AHudCompiler<?> compiler, HudderConfig config) {
 		this.compiler = compiler;
 		this.elms = elms;
+		this.config = config;
 		cx = contextFactory.enterContext();
 		try {
 			scope = cx.initSafeStandardObjects();
@@ -225,12 +228,12 @@ public class JavaScriptEngine implements IScriptingLanguageEngine, PositionedBin
 	
 	@Override
 	public void bindFunction(BindablePositionedFunction c, String... n) {
-		bindFunction((p,e)->c.invoke(elms, compiler, p, e), n);
+		bindFunction((p,e)->c.invoke(elms, compiler, p, config, e), n);
 	}
 	
 	@Override
 	public void bindConsumer(BindablePositionedConsumer c, String... n) {
-		bindConsumer((p,e)->c.invoke(elms, compiler, p, e), n);
+		bindConsumer((p,e)->c.invoke(elms, compiler, p, config, e), n);
 	}
 	
 }
