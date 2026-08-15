@@ -43,6 +43,8 @@ dependencies {
 	compileOnly("maven.modrinth:modmenu:${project.modmenu_version}")
 	
 	testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
+	
+    testImplementation "org.junit.jupiter:junit-jupiter-params:5.12.2"
 }
 
 test {

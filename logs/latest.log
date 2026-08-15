@@ -1,34 +1,34 @@
-[02:35:35] [Test worker/INFO]: Running unit test: {abs(-69)} {floor(69.7)} {ceiling(68.7)} {sqrt(4)} {pow(2,8)} {min(1,20)} {max(1,20)} {truncate(1.69, 1)}
-[02:35:35] [Test worker/INFO]: Running unit test: {"r" + "\n" + "o"}
-[02:35:35] [Test worker/INFO]: Running unit test: {string_var}
+[14:35:59] [Test worker/INFO]: Running unit test: {abs(-69)} {floor(69.7)} {ceiling(68.7)} {sqrt(4)} {pow(2,8)} {min(1,20)} {max(1,20)} {truncate(1.69, 1)}
+[14:35:59] [Test worker/INFO]: Running unit test: {"r" + "\n" + "o"}
+[14:35:59] [Test worker/INFO]: Running unit test: {string_var}
 {STrIng_vAR}
 {STrIng_vAR2}
 {number_var}
 {boolean_var}
 {object_var.toString()}
-[02:35:35] [Test worker/INFO]: Running unit test: {if true then " else r" else -2}
-[02:35:35] [Test worker/INFO]: Running unit test: {1+2+"r"}
-[02:35:35] [Test worker/INFO]: Running unit test: {0x1fA}
-[02:35:35] [Test worker/INFO]: Running unit test: {unsetval==unset} {unset==unsetval} {unset==0} {unsetval==0} {0==unset} {0==unsetval}
-[02:35:35] [Test worker/INFO]: Running unit test: {1+1}
-[02:35:35] [Test worker/INFO]: Running unit test: {res=1} {!(res!=1)} {true==!false}
-[02:35:35] [Test worker/INFO]: Running unit test: r
+[14:35:59] [Test worker/INFO]: Running unit test: {if true then " else r" else -2}
+[14:35:59] [Test worker/INFO]: Running unit test: {1+2+"r"}
+[14:35:59] [Test worker/INFO]: Running unit test: {0x1fA}
+[14:35:59] [Test worker/INFO]: Running unit test: {unsetval==unset} {unset==unsetval} {unset==0} {unsetval==0} {0==unset} {0==unsetval}
+[14:35:59] [Test worker/INFO]: Running unit test: {1+1}
+[14:35:59] [Test worker/INFO]: Running unit test: {res=1} {!(res!=1)} {true==!false}
+[14:35:59] [Test worker/INFO]: Running unit test: r
 {break}
 t
-[02:35:35] [Test worker/INFO]: Running unit test: {(1+2)/3-1}
-[02:35:35] [Test worker/INFO]: Running unit test: {truncate(3*2.1,1)}
-[02:35:35] [Test worker/INFO]: Running unit test: {"X: " + 1 + " Y: " + 60 + " Z: " + 0}
-[02:35:35] [Test worker/INFO]: Running unit test: %401>400, "a", 399>100, "b", "c"%
-[02:35:35] [Test worker/INFO]: Running unit test: {null>null}
-[02:35:35] [Test worker/INFO]: Running unit test: ;MethodAPITestingMethod, "1";
+[14:35:59] [Test worker/INFO]: Running unit test: {(1+2)/3-1}
+[14:35:59] [Test worker/INFO]: Running unit test: {truncate(3*2.1,1)}
+[14:35:59] [Test worker/INFO]: Running unit test: {"X: " + 1 + " Y: " + 60 + " Z: " + 0}
+[14:35:59] [Test worker/INFO]: Running unit test: %401>400, "a", 399>100, "b", "c"%
+[14:35:59] [Test worker/INFO]: Running unit test: {null>null}
+[14:35:59] [Test worker/INFO]: Running unit test: ;MethodAPITestingMethod, "1";
 {methodvalue}
-[02:35:35] [Test worker/INFO]: Running unit test: #def divide, num1
+[14:35:59] [Test worker/INFO]: Running unit test: #def divide, num1
 	{break}
 ;divide, -1, -2;
-[02:35:35] [Test worker/INFO]: Running unit test: {"Long text".substring(1, 4)}
-[02:35:35] [Test worker/INFO]: Running unit test: {exists("hud.hud")}
-[02:35:35] [Test worker/INFO]: Running unit test: {"Days: ".concat(string(int(1/2),true))}
-[02:35:35] [Test worker/INFO]: Running unit test: ;mute;
+[14:35:59] [Test worker/INFO]: Running unit test: {"Long text".substring(1, 4)}
+[14:35:59] [Test worker/INFO]: Running unit test: {exists("hud.hud")}
+[14:35:59] [Test worker/INFO]: Running unit test: {"Days: ".concat(string(int(1/2),true))}
+[14:35:59] [Test worker/INFO]: Running unit test: ;mute;
 #def breaktest
 	{r="y"}
 	{break}
@@ -36,19 +36,19 @@ t
 ;breaktest;
 ;topleft;
 {r}
-[02:35:35] [Test worker/INFO]: Running unit test: #def divide, num1, num2
+[14:35:59] [Test worker/INFO]: Running unit test: #def divide, num1, num2
 	{result=num1/arg2}
 ;divide, 4, 2;
 {result}
-[02:35:35] [Test worker/INFO]: Running unit test: #def while_and_return
+[14:35:59] [Test worker/INFO]: Running unit test: #def while_and_return
 	#for x in range(1)
 		;return, true;
 	;return, false;
 {while_and_return()}
-[02:35:35] [Test worker/INFO]: Running unit test: {then=false}
+[14:35:59] [Test worker/INFO]: Running unit test: {then=false}
 {if ( then ) then -1 else -2}
-[02:35:35] [Test worker/INFO]: Running unit test: {!false} {res=true} {!res}
-[02:35:35] [Test worker/INFO]: Running unit test: ;mute;
+[14:35:59] [Test worker/INFO]: Running unit test: {!false} {res=true} {!res}
+[14:35:59] [Test worker/INFO]: Running unit test: ;mute;
 {javaobject=JavaObjectAccess}
 ;topleft;
 {javaobject.field}
@@ -56,62 +56,62 @@ t
 {javaobject.setField(10)}
 {javaobject.field}
 {javaobject.getField()}
-[02:35:35] [Test worker/INFO]: Running unit test: {else=false}
+[14:35:59] [Test worker/INFO]: Running unit test: {else=false}
 {if true then ( else ) else -2}
-[02:35:35] [Test worker/INFO]: Running unit test: Basic Bitch Test
-[02:35:35] [Test worker/INFO]: Running unit test: {str(10,true).concat("test")}
-[02:35:35] [Test worker/INFO]: Running unit test: {10-3-2}
+[14:35:59] [Test worker/INFO]: Running unit test: Basic Bitch Test
+[14:35:59] [Test worker/INFO]: Running unit test: {str(10,true).concat("test")}
+[14:35:59] [Test worker/INFO]: Running unit test: {10-3-2}
 {1-2+3}
 {20-2*3-4}
-[02:35:35] [Test worker/INFO]: Running unit test: {sin(69)} {cos(69)} {tan(69)}
-[02:35:35] [Test worker/INFO]: Running unit test: {vAr=1} {VaR}
-[02:35:35] [Test worker/INFO]: Running unit test: #def divide, num1, num2
+[14:35:59] [Test worker/INFO]: Running unit test: {sin(69)} {cos(69)} {tan(69)}
+[14:35:59] [Test worker/INFO]: Running unit test: {vAr=1} {VaR}
+[14:35:59] [Test worker/INFO]: Running unit test: #def divide, num1, num2
 	{result=num1/arg2}
 ; divide, 4, 2;
 {result}
-[02:35:35] [Test worker/INFO]: Running unit test: {6/2*(1+2)}
-[02:35:35] [Test worker/INFO]: Running unit test: {2+3*4}
+[14:35:59] [Test worker/INFO]: Running unit test: {6/2*(1+2)}
+[14:35:59] [Test worker/INFO]: Running unit test: {2+3*4}
 {(2+3)*4}
-[02:35:35] [Test worker/INFO]: Running unit test: {2darr=[[0,1],[2,3]]}
+[14:35:59] [Test worker/INFO]: Running unit test: {2darr=[[0,1],[2,3]]}
 {2darr[1][0]}
 {2darr[1][1]=4}
 {2darr}
-[02:35:35] [Test worker/INFO]: Running unit test: {missingVariable}
-[02:35:35] [Test worker/INFO]: Running unit test: r#if true
+[14:35:59] [Test worker/INFO]: Running unit test: {missingVariable}
+[14:35:59] [Test worker/INFO]: Running unit test: r#if true
 	{break}
 t
-[02:35:35] [Test worker/INFO]: Running unit test: {100==10/2}
-[02:35:35] [Test worker/INFO]: Running unit test: {"CaSE SenSitive"} {r="CaSE SenSitive"} {r}
-[02:35:35] [Test worker/INFO]: Running unit test: {"1 \"2\" 3"}
-[02:35:35] [Test worker/INFO]: Running unit test: {str(int("10"),false)}
-[02:35:35] [Test worker/INFO]: Running unit test: {if " then "==" else " then -1 else -2}
-[02:35:35] [Test worker/INFO]: Running unit test: {false||false||true}
+[14:35:59] [Test worker/INFO]: Running unit test: {100==10/2}
+[14:35:59] [Test worker/INFO]: Running unit test: {"CaSE SenSitive"} {r="CaSE SenSitive"} {r}
+[14:35:59] [Test worker/INFO]: Running unit test: {"1 \"2\" 3"}
+[14:35:59] [Test worker/INFO]: Running unit test: {str(int("10"),false)}
+[14:35:59] [Test worker/INFO]: Running unit test: {if " then "==" else " then -1 else -2}
+[14:35:59] [Test worker/INFO]: Running unit test: {false||false||true}
 {true&&true}
 { false || true && true || false}
 {true && false || false}
-[02:35:35] [Test worker/INFO]: Running unit test: {var=.1}
+[14:35:59] [Test worker/INFO]: Running unit test: {var=.1}
 {var==0.1}
-[02:35:35] [Test worker/INFO]: Running unit test: %401>400, "{_i=_i+1}", 399>100, "{_i=_i+1}", "{_i=_i+1}"%
-[02:35:35] [Test worker/INFO]: Running unit test: %true, "0\\%1"%
-[02:35:35] [Test worker/INFO]: Running unit test: {"{}}"}
-[02:35:35] [Test worker/INFO]: Running unit test: {r=43} {"result="+r} {"result="+1} {"result="}
-[02:35:35] [Test worker/INFO]: Running unit test: ;mute;
+[14:35:59] [Test worker/INFO]: Running unit test: %401>400, "{_i=_i+1}", 399>100, "{_i=_i+1}", "{_i=_i+1}"%
+[14:35:59] [Test worker/INFO]: Running unit test: %true, "0\\%1"%
+[14:35:59] [Test worker/INFO]: Running unit test: {"{}}"}
+[14:35:59] [Test worker/INFO]: Running unit test: {r=43} {"result="+r} {"result="+1} {"result="}
+[14:35:59] [Test worker/INFO]: Running unit test: ;mute;
 {j=""}
 #for i in range(0,11)
 	{j=j+i}
 ;topleft;
 {j}
-[02:35:35] [Test worker/INFO]: Running unit test: {int(1.6)}
-[02:35:35] [Test worker/INFO]: Running unit test: #def divide, num1, num2
+[14:35:59] [Test worker/INFO]: Running unit test: {int(1.6)}
+[14:35:59] [Test worker/INFO]: Running unit test: #def divide, num1, num2
 	#if num2==0
 		;return, -1;
 	;return, arg1/arg2;
 {divide(4,2)} {divide(4,0)}
-[02:35:35] [Test worker/INFO]: Running unit test: {res=0} {res--} {res++} {--res} {++res}
-[02:35:35] [Test worker/INFO]: Running unit test: r#while true
+[14:35:59] [Test worker/INFO]: Running unit test: {res=0} {res--} {res++} {--res} {++res}
+[14:35:59] [Test worker/INFO]: Running unit test: r#while true
 	{break}
 t
-[02:35:35] [Test worker/INFO]: Running unit test: #if testif==unset
+[14:35:59] [Test worker/INFO]: Running unit test: #if testif==unset
 	{testif=1}
 	#if testif!=unset
 	  {testif=2}
@@ -121,16 +121,16 @@ t
   #if true
    {testif=2}
 {testif}
-[02:35:35] [Test worker/INFO]: Running unit test: {array(3)}
+[14:35:59] [Test worker/INFO]: Running unit test: {array(3)}
 {array(3,1)}
 {r=array(2,"r")}
 {r[1]="t"}
 {r}
-[02:35:35] [Test worker/INFO]: Running unit test: {char(int(97))}
-[02:35:35] [Test worker/INFO]: Running unit test: ;no_sys_var;
+[14:35:59] [Test worker/INFO]: Running unit test: {char(int(97))}
+[14:35:59] [Test worker/INFO]: Running unit test: ;no_sys_var;
 {fps=10}
-[02:35:35] [Test worker/INFO]: Running unit test: 
-[02:35:35] [Test worker/INFO]: Running unit test: ;mute;
+[14:35:59] [Test worker/INFO]: Running unit test: 
+[14:35:59] [Test worker/INFO]: Running unit test: ;mute;
 {r=""}
 {N=0}
 {num1=0}{num2=1}
@@ -142,26 +142,26 @@ t
 	{num2=num3}
 ;topleft,1;
 {r}
-[02:35:35] [Test worker/INFO]: Running unit test: #def while_and_return
+[14:35:59] [Test worker/INFO]: Running unit test: #def while_and_return
 	#if true
 		;return, true;
 	;return, false;
 {while_and_return()}
-[02:35:35] [Test worker/INFO]: Running unit test: #def divide, num1, num2
+[14:35:59] [Test worker/INFO]: Running unit test: #def divide, num1, num2
 	#if num2==0
 		;return, -1;
 	oww no return value? too bad
-[02:35:35] [Test worker/INFO]: Running unit test: {r=1+1} {r}
-[02:35:35] [Test worker/INFO]: Running unit test: {i=1}
+[14:35:59] [Test worker/INFO]: Running unit test: {r=1+1} {r}
+[14:35:59] [Test worker/INFO]: Running unit test: {i=1}
 {2* 3.141592653589793 * i / 360}
-[02:35:35] [Test worker/INFO]: Running unit test: #def divide, num1
+[14:35:59] [Test worker/INFO]: Running unit test: #def divide, num1
 	;return, -1;
 ;divide, -1, -2;
-[02:35:35] [Test worker/INFO]: Running unit test: {(1+2)3/1}
-[02:35:35] [Test worker/INFO]: Running unit test: {[1,
+[14:35:59] [Test worker/INFO]: Running unit test: {(1+2)3/1}
+[14:35:59] [Test worker/INFO]: Running unit test: {[1,
 1]}
-[02:35:35] [Test worker/INFO]: Running unit test: {"r\nr"}
-[02:35:35] [Test worker/INFO]: Running unit test: #def putall, string, number, boolean, array, any
+[14:35:59] [Test worker/INFO]: Running unit test: {"r\nr"}
+[14:35:59] [Test worker/INFO]: Running unit test: #def putall, string, number, boolean, array, any
 	{str=int(arg1)}
 	{num=str(arg2)}
 	{bool=arg3==false}
@@ -169,54 +169,54 @@ t
 	{any=arg5}
 ;putall, "1", 10, true, ["yes","no"], "no";
 {str} {num} {bool} {array} {any}
-[02:35:35] [Test worker/INFO]: Running unit test: r#for x in range(1)
+[14:35:59] [Test worker/INFO]: Running unit test: r#for x in range(1)
 	{break}
 t
-[02:35:35] [Test worker/INFO]: Running unit test: {testping=20}
+[14:35:59] [Test worker/INFO]: Running unit test: {testping=20}
 %testping>5, "&6PING: &%testping>=400,\"4\",testping>=100,\"e\",\"2\"%{testping}"%
-[02:35:35] [Test worker/INFO]: Running unit test: {length("Length")}
-[02:35:35] [Test worker/INFO]: Running unit test: #def while_and_return
+[14:35:59] [Test worker/INFO]: Running unit test: {length("Length")}
+[14:35:59] [Test worker/INFO]: Running unit test: #def while_and_return
 	#while true
 		;return, true;
 	;return, false;
 {while_and_return()}
-[02:35:35] [Test worker/INFO]: Running unit test: {JavaTestNoAccess.ImportantDataHolder}
-[02:35:35] [Test worker/INFO]: Running unit test: {5>6||6>6}
+[14:35:59] [Test worker/INFO]: Running unit test: {JavaTestNoAccess.ImportantDataHolder}
+[14:35:59] [Test worker/INFO]: Running unit test: {5>6||6>6}
 {5>6&&6>6}
 {5<6||6>6}
 {5<6&&6>5}
-[02:35:35] [Test worker/INFO]: Running unit test: {length([1,"4"])}
-[02:35:35] [Test worker/INFO]: Running unit test: {int(char(int(97.1)))}
-[02:35:35] [Test worker/INFO]: Running unit test: {var=1}
+[14:35:59] [Test worker/INFO]: Running unit test: {length([1,"4"])}
+[14:35:59] [Test worker/INFO]: Running unit test: {int(char(int(97.1)))}
+[14:35:59] [Test worker/INFO]: Running unit test: {var=1}
 #if var==2
 	{var=1}
 #else
 	{var=2}
 {var}
-[02:35:35] [Test worker/INFO]: Running unit test: {var=0}
+[14:35:59] [Test worker/INFO]: Running unit test: {var=0}
 #while true
 	#if var<4
 		{var++}
 	#else
 		{break}
 {var}
-[02:35:35] [Test worker/INFO]: Running unit test: ;mute;
+[14:35:59] [Test worker/INFO]: Running unit test: ;mute;
 {j=""}
 #for i in [0,1,2,3,4,5,6,"7",8,9,10]
 	{j=j+i}
 ;topleft;
 {j}
-[02:35:35] [Test worker/INFO]: Running unit test: {value_getter.val}
+[14:35:59] [Test worker/INFO]: Running unit test: {value_getter.val}
 {value_getter.val1}
-[02:35:35] [Test worker/INFO]: Running unit test: {"Repeat".repeat(2)}
-[02:35:35] [Test worker/INFO]: Running unit test: #def divide, num1
+[14:35:59] [Test worker/INFO]: Running unit test: {"Repeat".repeat(2)}
+[14:35:59] [Test worker/INFO]: Running unit test: #def divide, num1
 	{break}
 ;divide;
-[02:35:35] [Test worker/INFO]: Running unit test: {FunctionAPITestingFunction("1")=="1"}
-[02:35:35] [Test worker/INFO]: Running unit test: {res=10} {res*-1} {-1*res}
-[02:35:35] [Test worker/INFO]: Running unit test: {flag=true}
+[14:35:59] [Test worker/INFO]: Running unit test: {FunctionAPITestingFunction("1")=="1"}
+[14:35:59] [Test worker/INFO]: Running unit test: {res=10} {res*-1} {-1*res}
+[14:35:59] [Test worker/INFO]: Running unit test: {flag=true}
 #while flag
     {break}
-[02:35:35] [Test worker/INFO]: Running unit test: #def divide, num1
+[14:35:59] [Test worker/INFO]: Running unit test: #def divide, num1
 	;return, -1;
 ;divide;

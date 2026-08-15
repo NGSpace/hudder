@@ -27,12 +27,11 @@ public class DefineInstruction extends Instruction {
 		this.name = name;
 		tokenizedBlock = comp.compile(info, block, filename, pos);
 		
-		bytecodename = "user_" + (tokenizedBlock.canReturnValue() ? "function" : "method")
-				+ "_" + (++user_defines_count);
+		bytecodename = "user_" + (tokenizedBlock.canReturnValue() ? "function" : "method") + "_"
+				+ (++user_defines_count);
 		
-		if (tokenizedBlock.canReturnValue()!=tokenizedBlock.doesReturnValue()) {
+		if (tokenizedBlock.canReturnValue()!=tokenizedBlock.doesReturnValue())
 			throw new CompileException("Function \""+name+"\" does not always return a value!", pos);
-		}
 	}
 
 	@Override
