@@ -65,7 +65,7 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 					HudderTickEvent.TEMP_DISABLE = true;
 					File dest = new File(HudFileUtils.FOLDER + p.getFileName());
 					
-					if (p.toFile().exists()) {
+					if (dest.exists()) {
 						throw new IOException("Hud already exists");
 					}
 					
