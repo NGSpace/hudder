@@ -36,6 +36,7 @@ import net.minecraft.client.gui.screens.inventory.EnchantmentScreen;
 import net.minecraft.client.gui.screens.inventory.GrindstoneScreen;
 import net.minecraft.client.gui.screens.inventory.HopperScreen;
 import net.minecraft.client.gui.screens.inventory.HorseInventoryScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.gui.screens.inventory.LecternScreen;
 import net.minecraft.client.gui.screens.inventory.LoomScreen;
 import net.minecraft.client.gui.screens.inventory.MerchantScreen;
@@ -149,6 +150,7 @@ public class Misc {private Misc() {}
 			case CrafterScreen _: yield "Crafter";
 			case CraftingScreen _: yield "Crafting";
 			case CreativeModeInventoryScreen _: yield "Creative Mode Inventory";
+			case InventoryScreen _: yield "Survival Mode Inventory";
 			case EnchantmentScreen _: yield "Enchantment";
 			case ContainerScreen _: yield "Container";
 			case GrindstoneScreen _: yield "Grindstone";

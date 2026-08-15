@@ -1,0 +1,17 @@
+{
+	"schemaVersion": 1,
+	"id": "hudder-tests",
+	"version": "1.0.0",
+	"environment": "*",
+	"mixins": [
+		"hudder-tests.mixins.json"
+	],
+	"entrypoints": {
+		"fabric-client-gametest": [
+			"dev.ngspace.hudder.InputVariablesTests",
+			"dev.ngspace.hudder.HudderUnitTestsRunner",
+			"dev.ngspace.hudder.GenericVariablesTest",
+			"dev.ngspace.hudder.GenericFunctionsAndMethodsTest"
+		]
+	}
+}

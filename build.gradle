@@ -47,6 +47,16 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-params:5.12.2"
 }
 
+fabricApi {
+    configureTests {
+        createSourceSet = true
+        modId = "hudder-tests"
+        enableGameTests = true
+        enableClientGameTests = true
+        eula = true
+    }
+}
+
 test {
 	useJUnitPlatform()
 	

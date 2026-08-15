@@ -5,6 +5,7 @@ run/
 !src/**/build/
 remappedSrc/
 tests/
+config/
 
 # Ignore Gradle GUI config
 gradle-app.setting
