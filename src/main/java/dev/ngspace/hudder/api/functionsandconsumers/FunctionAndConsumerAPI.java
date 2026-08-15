@@ -312,4 +312,13 @@ public class FunctionAndConsumerAPI {
 			};
 		}
 	}
+
+
+	public boolean containsBinder(PositionedBinder binder) {
+		return binders.contains(binder);
+	}
+
+	public boolean removeBinder(PositionedBinder binder) {
+		return binders.remove(binder);
+	}
 }

@@ -162,7 +162,7 @@ public class Misc {private Misc() {}
 			case StonecutterScreen _: yield "Stonecutter";
 			case PauseScreen _: yield "Pause";
 			case ChatScreen _: yield "Chat";
-			case BookViewScreen _: yield "Anvil";
+			case BookViewScreen _: yield "Book";
 			case AbstractContainerScreen<?> _: yield "Generic container";
 			
 			

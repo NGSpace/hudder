@@ -22,10 +22,6 @@ public class HudPackCompiler extends AHudCompiler<HudPack> {
 	
 	HashMap<String, HudPack> hudpacks = new HashMap<String, HudPack>();
 	public ArrayElementManager elms = new ArrayElementManager();
-	
-	public HudPackCompiler() {
-		HudFileUtils.addReloadResourcesListener(()->hudpacks.clear());
-	}
 
 	@Override
 	public HudPack processFile(HudderConfig config, String filepath) throws CompileException {
@@ -33,7 +29,7 @@ public class HudPackCompiler extends AHudCompiler<HudPack> {
 		if (hudpacks.containsKey(filepath))
 			return hudpacks.get(filepath);
 		try {
-			hudpacks.put(filepath, new HudPack(HudFileUtils.FOLDER + filepath, this));
+			hudpacks.put(filepath, new HudPack(config, HudFileUtils.FOLDER + filepath, this));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -101,4 +97,13 @@ public class HudPackCompiler extends AHudCompiler<HudPack> {
 		File file = new File(HudFileUtils.FOLDER + filepath);
 		return file.isDirectory() ? new File(HudFileUtils.FOLDER + filepath+"/pack.json").exists() : super.isValidFilePath(filepath);
 	}
+	
+	@Override
+	public void resetState() throws IOException {
+		for (var pack : hudpacks.values())
+			pack.close();
+		hudpacks.clear();
+		super.resetState();
+	}
+	
 }

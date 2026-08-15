@@ -1,16 +1,15 @@
 package dev.ngspace.hudder.hudpacks;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
-import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
-import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
-import dev.ngspace.hudder.api.functionsandconsumers.interfaces.PositionedBinder;
 import dev.ngspace.hudder.compilers.HudPackCompiler;
 import dev.ngspace.hudder.compilers.utils.javascript.JavaScriptEngine;
 
-public class HudPackEngineManager {
+public class HudPackEngineManager implements Closeable {
 	
 	private HudPackCompiler compiler;
 	private HudPack hudpack;
@@ -24,18 +23,8 @@ public class HudPackEngineManager {
 	
 	public JavaScriptEngine getOrCreateEngine(String hud, String point_code) {
 		if (!engines.containsKey(hud)) {
-			var engine = new JavaScriptEngine();
-			FunctionAndConsumerAPI.getInstance().applyFunctionsAndConsumers(new PositionedBinder() {
-				@Override
-				public void bindFunction(BindablePositionedFunction c, String... n) {
-					engine.bindFunction((p,e)->c.invoke(compiler.elms, compiler, p, e), n);
-				}
-				
-				@Override
-				public void bindConsumer(BindablePositionedConsumer c, String... n) {
-					engine.bindConsumer((p,e)->c.invoke(compiler.elms, compiler, p, e), n);
-				}
-			});
+			JavaScriptEngine engine = new JavaScriptEngine(compiler.elms, compiler);
+			FunctionAndConsumerAPI.getInstance().applyFunctionsAndConsumers(engine);
 			engine.bindFunction((_,e)->hudpack.getSettingValue(e[0].asString()), "getHudSetting");
 			if (hudpack.format_version>1) {
 				engine.bindFunction((_,e)->hudpack.entries.get(e[0].asString()), "readBinaryHudpackFile");
@@ -45,5 +34,10 @@ public class HudPackEngineManager {
 			engine.evaluateCode(point_code, hud);
 		}
 		return engines.get(hud);
+	}
+
+	public void close() throws IOException {
+		for (var engine : engines.values())
+			engine.close();
 	}
 }

@@ -49,16 +49,10 @@ public class Compilers {
 	
 	private static final Map<String, CompilerInstance> registeredcompilers = new HashMap<String, CompilerInstance>();
 	
-	/**
-	 * Shared Hudder V2 compiler instance.
-	 *
-	 * <p>
-	 * A single instance is retained to prevent unnecessary creation of multiple
-	 * {@link HudderV2Compiler} objects.
-	 * </p>
-	 */
 	public static final HudderV2Compiler hudderV2Compiler = new HudderV2Compiler();
 	public static final HudderV3Compiler hudderV3Compiler = new HudderV3Compiler();
+	public static final HudPackCompiler hudpackCompiler = new HudPackCompiler();
+	public static final JavaScriptCompiler javaScriptCompiler = new JavaScriptCompiler();
 	
 	/**
 	 * Registers the compilers included with Hudder.
@@ -72,8 +66,8 @@ public class Compilers {
 	 */
 	public static void registerDefaultCompilers() {
 		put("hudder", "Hudder", false, hudderV2Compiler);
-		put("js", "JavaScript", false, new JavaScriptCompiler());
-		put("pack", "Hudpack", false, new HudPackCompiler());
+		put("js", "JavaScript", false, javaScriptCompiler);
+		put("pack", "Hudpack", false, hudpackCompiler);
 		put("hudderv3", "Hudder V3", false, hudderV3Compiler);
 	}
 	

@@ -17,6 +17,12 @@ import org.mozilla.javascript.Undefined;
 import org.mozilla.javascript.WrappedException;
 
 import dev.ngspace.hudder.Hudder;
+import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
+import dev.ngspace.hudder.api.functionsandconsumers.IUIElementManager;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.PositionedBinder;
+import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
 import dev.ngspace.hudder.compilers.abstractions.IScriptingLanguageEngine;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
@@ -25,7 +31,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
-public class JavaScriptEngine implements IScriptingLanguageEngine {
+public class JavaScriptEngine implements IScriptingLanguageEngine, PositionedBinder {
 
 	protected static Minecraft mc = Minecraft.getInstance();
 	
@@ -41,7 +47,12 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 	private final Context cx;
 	ScriptableObject scope;
 	boolean closed;
-	public JavaScriptEngine() {
+	private AHudCompiler<?> compiler;
+	private IUIElementManager elms;
+	
+	public JavaScriptEngine(IUIElementManager elms, AHudCompiler<?> compiler) {
+		this.compiler = compiler;
+		this.elms = elms;
 		cx = contextFactory.enterContext();
 		try {
 			scope = cx.initSafeStandardObjects();
@@ -149,6 +160,8 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 	@Override public synchronized void close() throws IOException {
 		closed = true;
 		scope = null;
+		if (FunctionAndConsumerAPI.getInstance().containsBinder(this))
+			FunctionAndConsumerAPI.getInstance().removeBinder(this);
 	}
 	
 	
@@ -208,6 +221,16 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 		@Override public String toString() {return withContext(_ -> Context.toString(value));}
 
 		@Override public <T> T asType(Class<T> clazz) throws ExecutionException {return clazz.cast(get());}
+	}
+	
+	@Override
+	public void bindFunction(BindablePositionedFunction c, String... n) {
+		bindFunction((p,e)->c.invoke(elms, compiler, p, e), n);
+	}
+	
+	@Override
+	public void bindConsumer(BindablePositionedConsumer c, String... n) {
+		bindConsumer((p,e)->c.invoke(elms, compiler, p, e), n);
 	}
 	
 }
