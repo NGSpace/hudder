@@ -301,7 +301,6 @@ public class FunctionAndConsumerAPI {
 					+ ", maxdurability: " + maxdurability + ", identifier: " + identifier + "}";
 		}
 		@Override public Object get(String key) {
-			
 			return switch (key) {
 				case "name": yield name;
 				case "count": yield count;

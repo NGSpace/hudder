@@ -11,7 +11,7 @@
 			"dev.ngspace.hudder.InputVariablesTests",
 			"dev.ngspace.hudder.HudderUnitTestsRunner",
 			"dev.ngspace.hudder.GenericVariablesTest",
-			"dev.ngspace.hudder.GenericFunctionsAndMethodsTest"
+			"dev.ngspace.hudder.FunctionsAndMethodsTest"
 		]
 	}
 }
