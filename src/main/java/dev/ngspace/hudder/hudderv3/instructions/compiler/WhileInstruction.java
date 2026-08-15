@@ -31,7 +31,7 @@ public class WhileInstruction extends Instruction {
 		methodWriter.setBuilderDisabled(true);
 		
 		methodWriter.getHelper();
-		methodWriter.callStatic(HudderV3Helper.class, "getMaxWhile", "()I", false);
+		methodWriter.call(HudderV3Helper.class, "getMaxWhile", "()I", false);
 		int limit_index = methodWriter.istore();
 		
 		Label start = new Label();
