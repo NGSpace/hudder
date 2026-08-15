@@ -127,6 +127,7 @@ public class V3MethodWriter extends ClassAccessMethodWriter {
 	}
 
 	public void getHelper() {
+		aload(0);
 		getField("helper", HudderV3Helper.class);
 	}
 }
