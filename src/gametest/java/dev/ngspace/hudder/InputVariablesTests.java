@@ -6,14 +6,11 @@ import org.lwjgl.glfw.GLFW;
 
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
-import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 
 public class InputVariablesTests implements FabricClientGameTest {
     @Override
     public void runTest(ClientGameTestContext context) {
-		try (TestSingleplayerContext world = context.worldBuilder().create()) {
-            world.getClientLevel().waitForChunksRender();
-            
+		try (var _ = context.worldBuilder().create()) {
             context.getInput().holdKey(GLFW.GLFW_KEY_C);
             testBoolean("key_c", true);
     		

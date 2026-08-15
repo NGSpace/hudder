@@ -5,7 +5,6 @@ import java.util.List;
 import dev.ngspace.hudder.tests_mixins.ChatComponentAccessor;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
-import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.minecraft.client.multiplayer.chat.GuiMessage;
 
 // This is one is so overly complicated but idrc
@@ -14,9 +13,7 @@ import net.minecraft.client.multiplayer.chat.GuiMessage;
 public class HudderUnitTestsRunner implements FabricClientGameTest {
     @Override
     public void runTest(ClientGameTestContext context) {
-		try (TestSingleplayerContext world = context.worldBuilder().create()) {
-            world.getClientLevel().waitForChunksRender();
-            
+		try (var _ = context.worldBuilder().create()) {
 			int before = context.computeOnClient(
 					client -> ((ChatComponentAccessor) client.gui.hud.getChat()).getMessages().size());
 			context.runOnClient(ins->{
