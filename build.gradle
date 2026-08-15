@@ -50,9 +50,16 @@ dependencies {
 test {
 	useJUnitPlatform()
 	
+    outputs.upToDateWhen { false }
+	
 	test.testLogging {
 		showStandardStreams = true
 	}
+    workingDir = file("tests")
+    
+    doFirst {
+        workingDir.mkdirs()
+    }
 }
 
 processResources {
