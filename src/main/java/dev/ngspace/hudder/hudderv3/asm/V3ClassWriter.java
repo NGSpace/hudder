@@ -68,9 +68,19 @@ public class V3ClassWriter {
 	            null,
 	            null
 	    ).visitEnd();
+		
+		classWriter.newField(classname, "helper", Type.getDescriptor(HudderV3Helper.class));
+		
+	    classWriter.visitField(
+	            Opcodes.ACC_PUBLIC,
+	            "helper",
+	            Type.getDescriptor(HudderV3Helper.class),
+	            null,
+	            null
+	    ).visitEnd();
 
 		
-		init = createMethod("<init>", new Class<?>[] {AV3Compiler.class}, null, null, null);
+		init = createMethod("<init>", new Class<?>[] {AV3Compiler.class, HudderV3Helper.class}, null, null, null);
 
 		init.aload(0);
 		init.callInit(AVarTextCompiler.class, "()V");
@@ -86,6 +96,11 @@ public class V3ClassWriter {
 		init.aload(0);
 		init.aload(1);
 		init.putField("v3compiler", AV3Compiler.class);
+		
+		// Init v3compiler field
+		init.aload(0);
+		init.aload(2);
+		init.putField("helper", HudderV3Helper.class);
 	}
 	
 	public V3ExecuteMethodWriter createExecuteMethod(String name, Class<?>[] classes) {

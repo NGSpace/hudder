@@ -29,7 +29,8 @@ public class WhileInstruction extends Instruction {
 			throws CompileException {
 		boolean builderdisabled = methodWriter.isBuilderDisabled();
 		methodWriter.setBuilderDisabled(true);
-
+		
+		methodWriter.getHelper();
 		methodWriter.callStatic(HudderV3Helper.class, "getMaxWhile", "()I", false);
 		int limit_index = methodWriter.istore();
 		

@@ -56,17 +56,13 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Positioned
 			return;
 		}
 		try {
-			HudderV3Helper.config = config;
-		
+			HudderV3Helper helper = new HudderV3Helper(config);
+			
 			V3ClassWriter classWriter = new V3ClassWriter("dev/ngspace/hudder/hudderv3/GeneratedClass",
 					filepath);
 			classWriter.createInit();
 			
-			V3ExecuteMethodWriter executeMethod = classWriter.createExecuteMethod("execute", new Class<?>[] {
-					HudderConfig.class,
-					String.class,
-					String.class
-				});
+			V3ExecuteMethodWriter executeMethod = classWriter.createExecuteMethod("execute", null);
 			
 			Label end = new Label();
 			
@@ -81,14 +77,15 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Positioned
 		
 			Class<?> dynamicClass = classWriter.toClass();
 			
-			Object instance = dynamicClass.getDeclaredConstructor(AV3Compiler.class).newInstance(this);
-			cache.put(text, new CachedCompiler(instance, (GeneratedCompiler) instance, null));
+			Object instance = dynamicClass.getDeclaredConstructor(AV3Compiler.class, HudderV3Helper.class)
+					.newInstance(this, helper);
+			cache.put(text, new CachedCompiler(instance, (GeneratedCompiler) instance, helper, null));
 		} catch (InvocationTargetException e) {
 			if (e.getTargetException() instanceof RuntimeException re)
 				throw re;
 			e.printStackTrace();
 			var ne = new CompileException(e.getTargetException().toString(),-1, -1, e.getTargetException());
-			cache.put(text, new CachedCompiler(null,null,ne));
+			cache.put(text, new CachedCompiler(null,null,null,ne));
 			throw ne;
 		} catch (ClassFormatError e) {
 			// The compilation manager does not handle JVM errors and will crash the game which is bad.
@@ -104,12 +101,12 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Positioned
 					'\n' +
 					msg.substring(at==-1?0:at, frame==-1?msg.length():frame));
 		} catch (CompileException e) {
-			cache.put(text, new CachedCompiler(null,null,e));
+			cache.put(text, new CachedCompiler(null,null,null,e));
 			throw e;
 		} catch (Exception e) {
 			e.printStackTrace();
 			var ne = new CompileException(e.toString(),-1, -1, e);
-			cache.put(text, new CachedCompiler(null,null,ne));
+			cache.put(text, new CachedCompiler(null,null,null,ne));
 			throw ne;
 		} 
 	}
@@ -146,7 +143,8 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Positioned
 
 
 
-	public static record CachedCompiler(Object compiledhud, GeneratedCompiler generatedCompiler, CompileException exception) {}
+	public static record CachedCompiler(Object compiledhud, GeneratedCompiler generatedCompiler,
+			HudderV3Helper helper, CompileException exception) {}
 	
 	@Override
 	public void resetState() throws IOException {

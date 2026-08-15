@@ -13,7 +13,6 @@ public class RectangleElement extends AUIElement {
 	final int color;
 	
 	public RectangleElement(int x, int y, int width, int height, int color) {
-		super();
 		this.x = x;
 		this.y = y;
 		this.width = width;

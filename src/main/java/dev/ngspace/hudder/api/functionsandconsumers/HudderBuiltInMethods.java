@@ -8,6 +8,7 @@ import dev.ngspace.hudder.uielements.BuiltInTextureElement;
 import dev.ngspace.hudder.uielements.ColorVerticesElement;
 import dev.ngspace.hudder.uielements.GameHudElement;
 import dev.ngspace.hudder.uielements.GameHudElement.GuiType;
+import dev.ngspace.hudder.uielements.GradientElement;
 import dev.ngspace.hudder.uielements.ItemElement;
 import dev.ngspace.hudder.uielements.RectangleElement;
 import dev.ngspace.hudder.uielements.TextElement;
@@ -66,6 +67,18 @@ public class HudderBuiltInMethods {
 				(e, _, _, s) -> e.addUIElement(
 						new RectangleElement(s[0].asInt(), s[1].asInt(), s[2].asInt(), s[3].asInt(), s[4].asInt())),
 				"rectangle");
+
+		api.registerPositionedConsumer(
+				(e, _, _, s) -> e.addUIElement(
+						new GradientElement(s[0].asInt(), s[1].asInt(), s[2].asInt(), s[3].asInt(),
+								s[4].asInt(), s[5].asInt(), false)),
+				"gradient");
+
+		api.registerPositionedConsumer(
+				(e, _, _, s) -> e.addUIElement(
+						new GradientElement(s[0].asInt(), s[1].asInt(), s[2].asInt(), s[3].asInt(),
+								s[4].asInt(), s[5].asInt(), true)),
+				"horizontal_gradient");
 		
 		// Text
 		

@@ -3,6 +3,7 @@ package dev.ngspace.hudder.hudderv3.asm;
 import org.objectweb.asm.Label;
 
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
+import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.V3HudInformation;
 
@@ -30,11 +31,15 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 
 	public V3ExecuteMethodWriter(V3ClassWriter classWriter, String name, Class<?>[] args) {
 		super(classWriter, name,
-				args, V3HudInformation.class, null, new String[] {
+				args==null?new Class<?>[] {
+					HudderConfig.class,
+					String.class,
+					String.class
+				}:args, V3HudInformation.class, null, new String[] {
 					"dev/ngspace/hudder/exceptions/ExecutionException"
 				});
 		
-		variableindex+=args.length; // the parameters
+		variableindex+=args==null?3:args.length; // the parameters
 		
 		
 		// Create the StringBuilders
@@ -51,7 +56,8 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 		selected_builder_index = topleft_builder_index;
 		
 		// Define the scales
-		callStatic(HudderV3Helper.class, "getDefaultScale", "()F", false);
+		getHelper();
+		call(HudderV3Helper.class, "getDefaultScale", "()F", false);
 		dup();
 		dup();
 		dup();

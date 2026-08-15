@@ -8,6 +8,7 @@ import org.objectweb.asm.Type;
 
 import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.ExecutionException;
+import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.asm.methods.ClassAccessMethodWriter;
 
 public class V3MethodWriter extends ClassAccessMethodWriter {
@@ -123,5 +124,9 @@ public class V3MethodWriter extends ClassAccessMethodWriter {
 		getField("line", ExecutionException.class, int.class);
 		iflt(general_exception_handler);
 		athrow();
+	}
+
+	public void getHelper() {
+		getField("helper", HudderV3Helper.class);
 	}
 }
