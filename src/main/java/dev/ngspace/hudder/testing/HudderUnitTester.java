@@ -44,11 +44,6 @@ public class HudderUnitTester {
 	}
 	
 	
-	public void updateSuggestions() {
-	    HudderUnitTestingCommand.UnitTestsSuggestionProvider.suggestions = new ArrayList<String>(UnitTests.keySet());
-	}
-	
-	
 	
 	public HudderUnitTestResult test(HudderConfig info, String name) {
 		return UnitTests.get(name).test(compiler,info);

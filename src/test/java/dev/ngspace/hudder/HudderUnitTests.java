@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Map.Entry;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -21,9 +20,9 @@ import dev.ngspace.hudder.api.functionsandconsumers.HudderBuiltInMethods;
 import dev.ngspace.hudder.compilers.utils.Compilers;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
+import dev.ngspace.hudder.testing.HudderTestsHandler;
 import dev.ngspace.hudder.testing.HudderUnitTest;
 import dev.ngspace.hudder.testing.HudderUnitTestResult;
-import dev.ngspace.hudder.testing.HudderUnitTestingCommand;
 import dev.ngspace.hudder.utils.HudFileUtils;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -31,7 +30,7 @@ class HudderUnitTests {
 	
 	@TempDir
 	static Path tempDir;
-	HudderUnitTestingCommand command;
+	HudderTestsHandler handler;
 	HudderConfig config;
 
 	@BeforeAll
@@ -42,15 +41,16 @@ class HudderUnitTests {
 		config = new HudderConfig(tempDir.resolve("hudder-test.json").toFile());
 		HudFileUtils.makeDefaultHud();
 		HudderV3Helper.config = config;
-		command = new HudderUnitTestingCommand(config);
-		command.hudderTester.compiler = Compilers.hudderV3Compiler;
+		handler = new HudderTestsHandler(config, Compilers.hudderV3Compiler);
+		handler.test_providers.add(handler::loadDefaultTests);
+		handler.loadTests();
 
 		HudderBuiltInFunctions.registerFunction(FunctionAndConsumerAPI.getInstance());
 		HudderBuiltInMethods.registerMethods(FunctionAndConsumerAPI.getInstance());
 	}
 	
 	Stream<Arguments> testCases() {
-	    return command.hudderTester.UnitTests.entrySet().stream()
+	    return handler.hudderTester.UnitTests.entrySet().stream()
 	    		.map(e->Arguments.of(e.getKey(), e.getValue().filename, e.getValue()));
 	}
 	
