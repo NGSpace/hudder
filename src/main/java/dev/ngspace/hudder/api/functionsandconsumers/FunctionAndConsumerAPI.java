@@ -308,7 +308,7 @@ public class FunctionAndConsumerAPI {
 				case "maxcount": yield maxcount;
 				case "durability": yield durability;
 				case "maxdurability": yield maxdurability;
-				case "identifier": yield maxdurability;
+				case "identifier": yield identifier;
 				default: yield ComponentsData.getObject(key, components, item);
 			};
 		}
