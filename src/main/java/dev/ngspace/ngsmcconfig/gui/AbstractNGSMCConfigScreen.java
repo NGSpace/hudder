@@ -222,7 +222,8 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 	
 	@Override
 	public void onFilesDrop(List<Path> files) {
-		dragAndDrop.accept(files);
+		if (dragAndDrop!=null)
+			dragAndDrop.accept(files);
 	}
 	
 	@Override

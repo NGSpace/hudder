@@ -157,7 +157,7 @@ public class DataVariableRegistry {
 	 *         String
 	 */
 	public static String getString(String key) {
-		var v = StringVariables.get(key);
+		var v = StringVariables.get(key.toLowerCase());
 		return v==null ? null : (String) v.getValue(key);
 	}
 	/**
@@ -170,7 +170,7 @@ public class DataVariableRegistry {
 	 *         {@link Number}
 	 */
 	public static Double getNumber(String key) {
-		var v = NumberVariables.get(key);
+		var v = NumberVariables.get(key.toLowerCase());
 		return v==null ? null : ((Number) v.getValue(key)).doubleValue();
 	}
 	/**
@@ -183,7 +183,7 @@ public class DataVariableRegistry {
 	 *         Boolean
 	 */
 	public static Boolean getBoolean(String key) {
-		var v = BooleanVariables.get(key);
+		var v = BooleanVariables.get(key.toLowerCase());
 		return v==null ? null : (Boolean) v.getValue(key);
 	}
 	/**
@@ -194,7 +194,7 @@ public class DataVariableRegistry {
 	 *         registered under the given key
 	 */
 	public static Object getObject(String key) {
-		var v = ObjectVariables.get(key);
+		var v = ObjectVariables.get(key.toLowerCase());
 		return v==null ? null : v.getValue(key);
 	}
 	/**
@@ -206,7 +206,7 @@ public class DataVariableRegistry {
 	 *         under the given key
 	 */
 	public static Object getAny(String key) {
-		var v = AllVariables.get(key);
+		var v = AllVariables.get(key.toLowerCase());
 		return v==null ? null : v.getValue(key);
 	}
 	
@@ -218,7 +218,7 @@ public class DataVariableRegistry {
 	 *         {@code false} otherwise
 	 */
 	public static boolean hasVariable(String key) {
-		return AllVariables.containsKey(key);
+		return AllVariables.containsKey(key.toLowerCase());
 	}
 	
 	/**

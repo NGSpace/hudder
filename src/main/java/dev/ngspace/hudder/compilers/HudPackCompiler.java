@@ -92,7 +92,7 @@ public class HudPackCompiler extends AHudCompiler<CachedPack> {
 			}
 		} catch (CompileException e) {
 			// Not much to do, if the pack fails to compile there are no settings.
-			e.printStackTrace();
+			if (Hudder.IS_DEBUG) e.printStackTrace();
 		}
 		
 		return false;

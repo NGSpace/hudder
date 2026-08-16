@@ -257,13 +257,8 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 		
 		
 		/* Hud specific settings */
-		try {
-			if (!Hudder.config.getCompiler().setupHudSettings(hudsettings))
-				builder.removeCategory(hudsettings);
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (!Hudder.config.getCompiler().setupHudSettings(hudsettings))
 			builder.removeCategory(hudsettings);
-		}
 		
 		return builder.build();
 	}

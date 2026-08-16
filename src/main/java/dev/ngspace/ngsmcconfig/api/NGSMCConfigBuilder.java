@@ -24,7 +24,7 @@ public class NGSMCConfigBuilder {
 	URI docsUri;
 	File configfile;
 	Component configButtonText = Component.translatable("ngsmcconfig.config");
-	Consumer<List<Path>> dragAndDrop = _->{};
+	Consumer<List<Path>> dragAndDrop;
 
 	public NGSMCConfigBuilder(Screen parent) {
 		this.parent = parent;
@@ -70,17 +70,20 @@ public class NGSMCConfigBuilder {
 	}
 	
 	public Screen build() {
+		if (categories.isEmpty())
+			throw new IllegalStateException("Cannot build screen without any categories");
+		
 		var category = categories.get(0);
 		
-		if (category.customWidget()!=null) {
-			return new NGSMCConfigOptionsWidgetScreen(parent, categories, category, writeoperation, docsUri,
-					configfile, null, configButtonText, dragAndDrop);
+		if (category.customWidget() != null) {
+			return new NGSMCConfigOptionsWidgetScreen(parent, categories, category, writeoperation, docsUri, configfile,
+					null, configButtonText, dragAndDrop);
 		}
-		if (category.customAction()!=null) {
+		if (category.customAction() != null) {
 			category.customAction().run();
 		}
-		return new NGSMCConfigOptionsScreen(parent, categories, category, writeoperation, docsUri,
-				configfile, null, configButtonText, dragAndDrop);
+		return new NGSMCConfigOptionsScreen(parent, categories, category, writeoperation, docsUri, configfile, null,
+				configButtonText, dragAndDrop);
 	}
 
 	public void setWriteOperation(Runnable writeoperation) {
