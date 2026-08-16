@@ -1,9 +1,7 @@
 package dev.ngspace.hudder.utils;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.CRC32;
@@ -78,20 +76,9 @@ public class HudderUtils {private HudderUtils() {}
 	}
 
 	public static byte[] limitedReadAllByte(InputStream input, int max_length) throws IOException {
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		limitedReadAllByte(input,outputStream,max_length);
-		return outputStream.toByteArray();
-	}
-
-	public static void limitedReadAllByte(InputStream input, OutputStream output, int max_length) throws IOException {
-	    int b;
-	    int count = 0;
-	    while ((b = input.read()) != -1) {
-	        if (count >= max_length) {
-	            throw new IOException("Input stream exceeds maximum length of " + max_length);
-	        }
-	        output.write(b);
-	    	count++;
-	    }
+	    byte[] data = input.readNBytes(max_length + 1);
+	    if (data.length > max_length)
+	        throw new IOException("Input stream exceeds maximum length of " + max_length);
+	    return data;
 	}
 }
