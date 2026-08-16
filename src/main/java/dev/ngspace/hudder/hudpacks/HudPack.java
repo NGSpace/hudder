@@ -3,6 +3,7 @@ package dev.ngspace.hudder.hudpacks;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,10 +56,12 @@ public class HudPack implements Closeable {
 						&&!config.unsafeoperations())
 					throw new CompileException("Reached maximum entry count for Hudpacks!", -1, -1);
 				entries_count++;
+				InputStream input = reader.readEntry(entry);
 				byte[] bytes = config.unsafeoperations() ?
-						reader.readEntry(entry).readAllBytes() :
-						HudderUtils.limitedReadAllByte(reader.readEntry(entry), Math.min(MAXIMUM_ENTRY_SIZE,
+						input.readAllBytes() :
+						HudderUtils.limitedReadAllByte(input, Math.min(MAXIMUM_ENTRY_SIZE,
 								bytes_left));
+				input.close();
 				bytes_left -= bytes.length;
 				entries.put(entry, bytes);
 			}

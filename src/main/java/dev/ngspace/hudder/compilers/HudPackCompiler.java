@@ -60,7 +60,7 @@ public class HudPackCompiler extends AHudCompiler<CachedPack> {
 			return state.toResult(elms);
 		} catch (IOException e) {
 			if (Hudder.IS_DEBUG) e.printStackTrace();
-			throw new ExecutionException(pack.exception(), -1, -1);
+			throw new ExecutionException(e, -1, -1);
 		}
 	}
 
