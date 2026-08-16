@@ -36,7 +36,7 @@ public class LoadMethod implements V2IMethod, BindablePositionedConsumer {
 						Component.literal("The " + type + " method now requires quotes for strings like any other method"));
 		}
 		try {
-			boolean AddText = (args.length<2 || args[1].asBoolean()) || type.equals("add");
+			boolean AddText = (args.length>2 && args[1].asBoolean()) || type.equals("add");
 			if (AddText && HudCompilationManager.isFirstRunSinceCacheClear)
 				Hudder.showWarningToast(Component.literal("AddText parameter in the " + type + " method is deprecated"), 
 						Component.literal("Please use the run function to read the text."
