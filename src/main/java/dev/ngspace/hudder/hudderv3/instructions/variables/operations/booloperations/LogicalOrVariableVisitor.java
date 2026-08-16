@@ -14,8 +14,8 @@ public class LogicalOrVariableVisitor extends ExpressionVisitor {
 
 	private List<ExpressionVisitor> values;
 
-	public LogicalOrVariableVisitor(List<ExpressionVisitor> values, AV3Compiler comp, TextPos pos) {
-		super(comp, pos);
+	public LogicalOrVariableVisitor(List<ExpressionVisitor> values, AV3Compiler comp, TextPos pos, String expression) {
+		super(comp, pos, expression);
 		this.values = values;
 	}
 

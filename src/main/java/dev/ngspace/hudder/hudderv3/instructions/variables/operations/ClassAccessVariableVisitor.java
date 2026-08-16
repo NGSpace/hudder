@@ -21,9 +21,9 @@ public class ClassAccessVariableVisitor extends ExpressionVisitor {
 	private String fieldName = "";
 	private final String classObjectName;
 
-	public ClassAccessVariableVisitor(AV3Compiler comp, String classyobjname, String prop, TextPos pos)
-			throws CompileException {
-		super(comp, pos);
+	public ClassAccessVariableVisitor(AV3Compiler comp, String classyobjname, String prop, TextPos pos,
+			String expression) throws CompileException {
+		super(comp, pos, expression);
 		this.classObjectName = classyobjname;
 		this.classobj = comp.parseVariable(classyobjname, pos);
 		if (!prop.startsWith("(")&&prop.endsWith(")")) {

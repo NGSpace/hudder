@@ -10,8 +10,8 @@ public class NumberVariableVisitor extends ExpressionVisitor {
 
 	private double value;
 
-	public NumberVariableVisitor(AV3Compiler comp, String value, TextPos pos) {
-		super(comp, pos);
+	public NumberVariableVisitor(AV3Compiler comp, String value, TextPos pos, String expression) {
+		super(comp, pos, expression);
 		if (value.startsWith("0x")) {
 			this.value = Integer.parseUnsignedInt(value.substring(2), 16);
 		} else if (value.startsWith("#")) {

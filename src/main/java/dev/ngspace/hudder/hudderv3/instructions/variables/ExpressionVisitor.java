@@ -9,9 +9,11 @@ public abstract class ExpressionVisitor {
 	
 	protected AV3Compiler comp;
 	protected TextPos pos;
-	protected ExpressionVisitor(AV3Compiler comp, TextPos pos) {
+	protected String expression;
+	protected ExpressionVisitor(AV3Compiler comp, TextPos pos, String expression) {
 		this.comp = comp;
 		this.pos = pos;
+		this.expression = expression;
 	}
 	
 	public abstract void visit(V3MethodWriter methodWriter) throws CompileException;

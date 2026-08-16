@@ -18,8 +18,8 @@ public class FunctionCallVariableVisitor extends ExpressionVisitor {
 	private final String funcName;
 	private final boolean apiCall;
 	
-	public FunctionCallVariableVisitor(String funcName, AV3Compiler comp, String[] args, TextPos pos) {
-		super(comp, pos);
+	public FunctionCallVariableVisitor(String funcName, AV3Compiler comp, String[] args, TextPos pos, String expression) {
+		super(comp, pos, expression);
 		this.args = args;
 		this.funcName = funcName;
 		this.apiCall = comp.api_functions.containsKey("api_function_" + funcName.trim());

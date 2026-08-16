@@ -11,8 +11,8 @@ public class DynamicVariableVisitor extends ExpressionVisitor {
 
 	public String variable;
 
-	public DynamicVariableVisitor(AV3Compiler comp, String variable, TextPos pos) {
-		super(comp, pos);
+	public DynamicVariableVisitor(AV3Compiler comp, String variable, TextPos pos, String expression) {
+		super(comp, pos, expression);
 		this.variable = variable;
 	}
 

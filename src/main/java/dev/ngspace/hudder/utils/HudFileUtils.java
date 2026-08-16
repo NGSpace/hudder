@@ -129,8 +129,12 @@ public class HudFileUtils {private HudFileUtils() {}
 		for (String file : DEFAULT_HUDS) {
 			File dest = new File(FOLDER, file);
 			if (dest.exists()) continue;
-			try {FileUtils.copyURLToFile(HudFileUtils.class.getResource(ASSETS + "huds/" + file), dest);}
-			catch (IOException e) {e.printStackTrace();}
+			try {
+				FileUtils.copyURLToFile(HudFileUtils.class.getResource(ASSETS + "huds/" + file), dest);
+			} catch (IOException e) {
+				if (Hudder.IS_DEBUG) e.printStackTrace();
+				Hudder.log("Failed to generate default hud " + file);
+			}
 		}
 		
 		// Create A Textures folder if missing
@@ -140,8 +144,12 @@ public class HudFileUtils {private HudFileUtils() {}
 		for (String file : DEFAULT_TEXTURES) {
 			File dest = new File(FOLDER + "Textures", file);
 			if (dest.exists()) continue;
-			try {FileUtils.copyURLToFile(HudFileUtils.class.getResource(ASSETS + "Textures/" + file), dest);}
-			catch (IOException e) {e.printStackTrace();}
+			try {
+				FileUtils.copyURLToFile(HudFileUtils.class.getResource(ASSETS + "Textures/" + file), dest);
+			} catch (IOException e) {
+				if (Hudder.IS_DEBUG) e.printStackTrace();
+				Hudder.log("Failed to generate default texture " + file);
+			}
 		}
 	}
 	

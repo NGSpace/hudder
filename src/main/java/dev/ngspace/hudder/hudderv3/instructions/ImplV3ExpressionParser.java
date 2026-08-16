@@ -45,13 +45,14 @@ public class ImplV3ExpressionParser implements V3ExpressionParser {
 		// Accepts the follow format: "[(any char)]"
 		if (value.matches("\\[[\\s\\S]*\\]"))
 			return new ArrayConstantVariableVisitor(
-					HudderUtils.processParemeters(value.substring(1, value.length() - 1).replace("\n", "")), comp, pos);
+					HudderUtils.processParemeters(value.substring(1, value.length() - 1).replace("\n", "")),
+					comp, pos, value);
 		
 		// Boolean constants
 		if (value.equalsIgnoreCase("false"))
-			return new BooleanVariableVisitor(comp, false, pos);
+			return new BooleanVariableVisitor(comp, false, pos, value);
 		if (value.equalsIgnoreCase("true"))
-			return new BooleanVariableVisitor(comp, true, pos);
+			return new BooleanVariableVisitor(comp, true, pos, value);
 		
 		int len = value.length();
 		
@@ -246,76 +247,78 @@ public class ImplV3ExpressionParser implements V3ExpressionParser {
 			return new TernaryVariableVisitor(comp,
 					value.substring(3, ternary_then_index),
 					value.substring(ternary_then_index+" then ".length(), ternary_else_index),
-					value.substring(ternary_else_index+" else ".length()), pos);
+					value.substring(ternary_else_index+" else ".length()), pos, value);
 		
 		if (can_0x||can_hash||can_number)
-			return new NumberVariableVisitor(comp, value, pos);
+			return new NumberVariableVisitor(comp, value, pos, value);
 		
 		if (can_set)
-			return new SetVariableVisitor(comp, value.substring(0, set_index), value.substring(set_index+1), pos);
+			return new SetVariableVisitor(comp, value.substring(0, set_index), value.substring(set_index+1),
+					pos, value);
 
 		if (can_or) {
 			or_values.add(parseExpression(value.substring(or_last_index, len), comp, pos));
-			return new LogicalOrVariableVisitor(or_values, comp, pos);
+			return new LogicalOrVariableVisitor(or_values, comp, pos, value);
 		}
 		
 		if (can_and) {
 			and_values.add(parseExpression(value.substring(and_last_index, len), comp, pos));
-			return new LogicalAndVariableVisitor(and_values, comp, pos);
+			return new LogicalAndVariableVisitor(and_values, comp, pos, value);
 		}
 		
 		// ! Operator
 		if (value.charAt(0)=='!')
-			return new NegateVariableVisitor(comp, value.substring(1), pos);
+			return new NegateVariableVisitor(comp, value.substring(1), pos, value);
 		
 		if (can_comparision)
 			return new ComparisonVariableVisitor(comp, value.substring(0, comparision_index),
 					value.substring(comparision_index+comparision_operator.length()),
-					comparision_operator, pos);
+					comparision_operator, pos, value);
 		
 		// Post Increase and Decrease Operator
 		if (value.matches("[\\s\\S]+(\\+\\+|--)")) {
 			return new PostIncDecVariableVisitor(value.substring(0, value.length() - 2), comp,
-					"+".equals(value.substring(value.length() - 1)), pos);
+					"+".equals(value.substring(value.length() - 1)), pos, value);
 		}
 		
 		// Pre Increase and Decrease Operator
 		if (value.matches("(\\+\\+|--)[\\s\\S]+")) {
-			return new PreIncDecVariableVisitor(value.substring(2), comp, "+".equals(value.substring(0, 1)), pos);
+			return new PreIncDecVariableVisitor(value.substring(2), comp, "+".equals(value.substring(0, 1)),
+					pos, value);
 		}
 		
 		if (can_array_read)
-			return new ArrayReadVariableVisitor(comp, value, pos);
+			return new ArrayReadVariableVisitor(comp, value, pos, value);
 		
 		if (can_math) {
 			math_values.add(value.substring(math_last_index));
-			return new MathVariableVisitor(math_values, math_operators, comp, pos);
+			return new MathVariableVisitor(math_values, math_operators, comp, pos, value);
 		}
 		
 		if (can_class)
 			return new ClassAccessVariableVisitor(comp, value.substring(0, class_dot),
-					value.substring(class_dot+1), pos);
+					value.substring(class_dot+1), pos, value);
 
 		if (can_wrapped&&parenthesses==0)
 			return parseExpression(value.substring(1, value.length() - 1), comp, pos);
 		
 		if (can_function&&parenthesses==0)
 			return new FunctionCallVariableVisitor(value.substring(0, function_args_index), comp,
-					HudderUtils.processParemeters(value.substring(function_args_index+1,len-1)), pos);
+					HudderUtils.processParemeters(value.substring(function_args_index+1,len-1)), pos, value);
 		
 		if (can_string&&!quotes)
 			return new StringVariableVisitor(comp, string.substring(0, string.length()-1)
-					.replace("\\\"", "\""), pos);
+					.replace("\\\"", "\""), pos, value);
 		
 		if (can_temp)
-			return new TemporaryVariableVisitor(comp, value, pos);
+			return new TemporaryVariableVisitor(comp, value, pos, value);
 		
 		if (can_dynamic) {
 			// System variable
 			if (comp.system_variables && DataVariableRegistry.hasVariable(value.toLowerCase()))
-				return new SystemVariableVisitor(comp, value.toLowerCase(), pos);
+				return new SystemVariableVisitor(comp, value.toLowerCase(), pos, value);
 			// Dynamic variable
-			return new DynamicVariableVisitor(comp, value.toLowerCase(), pos);
+			return new DynamicVariableVisitor(comp, value.toLowerCase(), pos, value);
 		}
 		
 		

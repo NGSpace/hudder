@@ -11,9 +11,9 @@ public class PostIncDecVariableVisitor extends ExpressionVisitor {
 	private ExpressionVisitor value;
 	private boolean increase;
 
-	public PostIncDecVariableVisitor(String string, AV3Compiler comp, boolean increase, TextPos pos)
-			throws CompileException {
-		super(comp, pos);
+	public PostIncDecVariableVisitor(String string, AV3Compiler comp, boolean increase, TextPos pos,
+			String expression) throws CompileException {
+		super(comp, pos, expression);
 		this.value = comp.parseVariable(string, pos);
 		this.increase = increase;
 	}

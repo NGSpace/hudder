@@ -15,8 +15,8 @@ public class ArrayReadVariableVisitor extends ExpressionVisitor {
 	private ExpressionVisitor indexValue;
 	private ExpressionVisitor array;
 
-	public ArrayReadVariableVisitor(AV3Compiler comp, String value, TextPos pos) throws CompileException {
-		super(comp, pos);
+	public ArrayReadVariableVisitor(AV3Compiler comp, String value, TextPos pos, String expression) throws CompileException {
+		super(comp, pos, expression);
 		int indexstart = value.lastIndexOf('[');
 		String index = value.substring(indexstart+1,value.length()-1);
 		indexValue = comp.parseVariable(index, pos);

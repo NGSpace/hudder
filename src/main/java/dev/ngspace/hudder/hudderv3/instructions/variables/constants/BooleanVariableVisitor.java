@@ -10,8 +10,8 @@ public class BooleanVariableVisitor extends ExpressionVisitor {
 
 	private boolean value;
 
-	public BooleanVariableVisitor(AV3Compiler comp, boolean value, TextPos pos) {
-		super(comp, pos);
+	public BooleanVariableVisitor(AV3Compiler comp, boolean value, TextPos pos, String expression) {
+		super(comp, pos, expression);
 		this.value = value;
 	}
 

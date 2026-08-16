@@ -22,15 +22,5 @@ public class V2TempDynamicVar extends AV2Value {
 	
 	@Override public boolean isConstant() throws ExecutionException {return false;}
 	
-	/*
-	 * This is done to allow {_temp=_temp+1} even when {_temp} is not set
-	 */
-	@Override public double asDouble() throws ExecutionException {
-		try {
-			return super.asDouble();
-		} catch (Exception _) {
-			return 0;
-		}
-	}
 
 }

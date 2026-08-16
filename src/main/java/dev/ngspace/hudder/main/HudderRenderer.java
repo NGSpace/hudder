@@ -320,7 +320,8 @@ public class HudderRenderer implements HudElement {
 				}
 			}
     	} catch (RuntimeException e) {
-			e.printStackTrace();
+			if (Hudder.IS_DEBUG) e.printStackTrace();
+    		renderFail(context, e.getMessage());
 		}
 		
 	}

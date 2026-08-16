@@ -19,9 +19,9 @@ public class MathVariableVisitor extends ExpressionVisitor {
 	private boolean onlyaddition;
 	private Object constant_value;
 	
-	public MathVariableVisitor(List<String> values, List<Character> operations, AV3Compiler comp, TextPos pos)
-			throws CompileException {
-		super(comp, pos);
+	public MathVariableVisitor(List<String> values, List<Character> operations, AV3Compiler comp, TextPos pos,
+			String expression) throws CompileException {
+		super(comp, pos, expression);
 		this.variables = new ExpressionVisitor[values.size()];
 		for (int i = 0;i<values.size();i++) {
 			variables[i] = comp.parseVariable(values.get(i), pos);

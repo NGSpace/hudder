@@ -15,8 +15,8 @@ public class TernaryVariableVisitor extends ExpressionVisitor {
 	private ExpressionVisitor falsevalue;
 
 	public TernaryVariableVisitor(AV3Compiler comp, String condition, String truevalue, String falsevalue,
-			TextPos pos) throws CompileException {
-		super(comp, pos);
+			TextPos pos, String expression) throws CompileException {
+		super(comp, pos, expression);
 		this.condition = comp.parseVariable(condition, pos);
 		this.truevalue = comp.parseVariable(truevalue, pos);
 		this.falsevalue = comp.parseVariable(falsevalue, pos);

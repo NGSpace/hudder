@@ -10,8 +10,8 @@ public class SystemVariableVisitor extends ExpressionVisitor {
 
 	public String value;
 
-	public SystemVariableVisitor(AV3Compiler comp, String variable, TextPos pos) {
-		super(comp, pos);
+	public SystemVariableVisitor(AV3Compiler comp, String variable, TextPos pos, String expression) {
+		super(comp, pos, expression);
 		this.value = variable;
 	}
 

@@ -42,14 +42,14 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 			if (rtcache!=null&&rtcache.exception!=null) throw rtcache.exception;
 			wrapper = createLangEngine(config);
 			
-			Exception exception = null;
 			try {
 				wrapper.evaluateCode(text, filepath);
+				cache.put(text, new RuntimeCache(wrapper,null));
 			} catch (Exception e) {
-				exception = e;
 				wrapper.close();
+				cache.put(text, new RuntimeCache(wrapper,e));
+				throw wrapper.processCompileException(e);
 			}
-			cache.put(text, new RuntimeCache(wrapper,exception));
 		} catch (Exception e) {
 			if (Hudder.IS_DEBUG) e.printStackTrace();
 			if (wrapper!=null) {

@@ -12,8 +12,8 @@ public class ArrayConstantVariableVisitor extends ExpressionVisitor {
 
 	private ExpressionVisitor[] values;
 
-	public ArrayConstantVariableVisitor(String[] strings, AV3Compiler comp, TextPos pos) throws CompileException {
-		super(comp, pos);
+	public ArrayConstantVariableVisitor(String[] strings, AV3Compiler comp, TextPos pos, String expression) throws CompileException {
+		super(comp, pos, expression);
 		values = new ExpressionVisitor[strings.length];
 		for (int i = 0;i<strings.length;i++)
 			values[i] = comp.parseVariable(strings[i], pos);

@@ -15,8 +15,8 @@ public class TemporaryVariableVisitor extends ExpressionVisitor {
 
 	public String variable;
 
-	public TemporaryVariableVisitor(AV3Compiler comp, String variable, TextPos pos) {
-		super(comp, pos);
+	public TemporaryVariableVisitor(AV3Compiler comp, String variable, TextPos pos, String expression) {
+		super(comp, pos, expression);
 		this.variable = variable.toLowerCase();
 	}
 

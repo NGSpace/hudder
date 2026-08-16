@@ -12,8 +12,8 @@ public class NegateVariableVisitor extends ExpressionVisitor {
 
 	private ExpressionVisitor value;
 
-	public NegateVariableVisitor(AV3Compiler comp, String value, TextPos pos) throws CompileException {
-		super(comp, pos);
+	public NegateVariableVisitor(AV3Compiler comp, String value, TextPos pos, String expression) throws CompileException {
+		super(comp, pos, expression);
 		this.value = comp.parseVariable(value, pos);
 	}
 

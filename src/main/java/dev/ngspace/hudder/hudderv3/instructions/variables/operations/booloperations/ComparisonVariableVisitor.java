@@ -17,9 +17,9 @@ public class ComparisonVariableVisitor extends ExpressionVisitor {
 	private ExpressionVisitor val1;
 	private ExpressionVisitor val2;
 	private String operator;
-	public ComparisonVariableVisitor(AV3Compiler comp, String val1, String val2, String operator, TextPos pos)
-			throws CompileException {
-		super(comp, pos);
+	public ComparisonVariableVisitor(AV3Compiler comp, String val1, String val2, String operator, TextPos pos,
+			String expression) throws CompileException {
+		super(comp, pos, expression);
 		this.val1 = comp.parseVariable(val1, pos);
 		this.val2 = comp.parseVariable(val2, pos);
 		this.operator = operator;
