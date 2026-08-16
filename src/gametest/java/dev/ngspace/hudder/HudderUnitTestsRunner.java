@@ -24,14 +24,13 @@ public class HudderUnitTestsRunner implements FabricClientGameTest {
 			boolean failed = context.computeOnClient(client -> {
 			    List<GuiMessage> messages =
 			        ((ChatComponentAccessor) client.gui.hud.getChat()).getMessages();
-			    int added = messages.size() - before;
-			    return messages.subList(0, added)
+			    return messages.subList(0, messages.size() - before)
 			        .stream()
 			        .anyMatch(msg->msg.content().toString().contains("Failed the following tests:"));
 			});
 			
 			if (failed) {
-				throw new AssertionError("Failed /hudderunittesting test_all");
+				throw new AssertionError("Failed /hudderunittesting reload_and_test_all");
 			}
         }
         

@@ -36,3 +36,5 @@ jobs:
         run: ./gradlew build
       - name: test
         run: ./gradlew test
+      - name: gametest
+        run: ./gradlew runClientGameTest

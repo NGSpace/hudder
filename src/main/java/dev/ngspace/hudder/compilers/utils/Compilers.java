@@ -65,10 +65,10 @@ public class Compilers {
 	 * </p>
 	 */
 	public static void registerDefaultCompilers() {
-		put("hudder", "Hudder", false, hudderV2Compiler);
-		put("js", "JavaScript", false, javaScriptCompiler);
-		put("pack", "Hudpack", false, hudpackCompiler);
-		put("hudderv3", "Hudder V3", false, hudderV3Compiler);
+		put("hudder", "Hudder", false, false, hudderV2Compiler);
+		put("js", "JavaScript", false, false, javaScriptCompiler);
+		put("pack", "Hudpack", false, false, hudpackCompiler);
+		put("hudderv3", "Hudder V3", false, false, hudderV3Compiler);
 	}
 	
 	/**
@@ -313,7 +313,15 @@ public class Compilers {
 	@Deprecated(since = "10.2.0", forRemoval = false)
 	public static void registerCompiler(String name, AHudCompiler<?> compiler) {
 		
-		registerCompiler(name, name, false, compiler);
+		registerCompiler(name, name, false, false, compiler);
+	}
+
+	/**
+	 * @deprecated use {@link #registerCompiler(String, String, boolean, boolean, AHudCompiler)}
+	 */
+	@Deprecated(since = "10.3.0", forRemoval = false)
+	public static void registerCompiler(String name, String displayname, boolean isUnstable, AHudCompiler<?> compiler) {
+		registerCompiler(name, displayname, isUnstable, false, compiler);
 	}
 	
 	/**
@@ -328,12 +336,12 @@ public class Compilers {
 	 * @param name        the internal compiler name
 	 * @param displayname the user-facing compiler name
 	 * @param isUnstable  whether the compiler should be treated as experimental
+	 * @param deprecated  whether the compiler is deprecated
 	 * @param compiler    the compiler instance to register
 	 */
-	public static void registerCompiler(String name, String displayname, boolean isUnstable, AHudCompiler<?> compiler) {
-		
-		put(name, displayname, isUnstable, compiler);
-		
+	public static void registerCompiler(String name, String displayname, boolean isUnstable, boolean deprecated,
+			AHudCompiler<?> compiler) {
+		put(name, displayname, isUnstable, deprecated, compiler);
 		if (Hudder.config != null) {
 			Hudder.config.readAndUpdateConfig();
 		}
@@ -347,9 +355,8 @@ public class Compilers {
 	 * @param isUnstable  whether the compiler is experimental
 	 * @param compiler    the compiler instance
 	 */
-	private static void put(String name, String displayname, boolean isUnstable, AHudCompiler<?> compiler) {
-		
-		registeredcompilers.put(name, new CompilerInstance(displayname, isUnstable, compiler));
+	private static void put(String name, String displayname, boolean isUnstable, boolean deprecated, AHudCompiler<?> compiler) {
+		registeredcompilers.put(name, new CompilerInstance(displayname, isUnstable, deprecated, compiler));
 	}
 	
 	/**
@@ -502,8 +509,7 @@ public class Compilers {
 	 * @return the public representation of the registry entry
 	 */
 	private static CompilerEntry toEntry(String name, CompilerInstance instance) {
-		
-		return new CompilerEntry(name, instance.displayname(), instance.unstable(), instance.compiler());
+		return new CompilerEntry(name, instance.displayname(), instance.unstable(), instance.deprecated(), instance.compiler());
 	}
 	
 	/**
@@ -513,7 +519,7 @@ public class Compilers {
 	 * @param unstable    whether the compiler is experimental
 	 * @param compiler    the compiler instance
 	 */
-	private static record CompilerInstance(String displayname, boolean unstable, AHudCompiler<?> compiler) {
+	private static record CompilerInstance(String displayname, boolean unstable, boolean deprecated, AHudCompiler<?> compiler) {
 	}
 	
 	/**
@@ -524,6 +530,6 @@ public class Compilers {
 	 * @param unstable    whether the compiler is experimental
 	 * @param compiler    the compiler instance
 	 */
-	public static record CompilerEntry(String name, String displayname, boolean unstable, AHudCompiler<?> compiler) {
+	public static record CompilerEntry(String name, String displayname, boolean unstable, boolean deprecated, AHudCompiler<?> compiler) {
 	}
 }
