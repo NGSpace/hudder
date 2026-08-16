@@ -343,7 +343,7 @@ public class HudderV3Compiler extends AV3Compiler {
 				else if(c==' '&&elemBuilder.toString().equals("for")){instruction=FOR_LOOP_INSTRUCTION;}
 				else if(c==' '&&elemBuilder.toString().equals("else if")){instruction=ELSE_IF_INSTRUCTION;}
 				else if(c=='e'&&elemBuilder.toString().equals("els")&&
-						(text.charAt(ind+1)=='\n')){instruction=ELSE_INSTRUCTION;}
+						(text.length()>ind+1&&text.charAt(ind+1)=='\n')){instruction=ELSE_INSTRUCTION;}
 				if (instruction!=UNDEFINED_INSTRUCTION) {elemBuilder.setLength(0);continue;}
 			}
 			elemBuilder.append(c);

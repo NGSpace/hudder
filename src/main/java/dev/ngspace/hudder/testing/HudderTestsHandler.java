@@ -7,7 +7,6 @@ import java.util.List;
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
-import dev.ngspace.hudder.api.variableregistry.VariableTypes;
 import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.utils.HudFileUtils;
@@ -41,18 +40,18 @@ public class HudderTestsHandler {
 		FunctionAndConsumerAPI.getInstance().registerPositionedConsumer(
 				(_,co,_,_,a) -> ((AVarTextCompiler) co).put("methodvalue", a[0].get()), "MethodAPITestingMethod");
 		
-		DataVariableRegistry.registerVariable(_ -> new JavaTestObject(), "JavaObjectAccess");
-		DataVariableRegistry.registerVariable(_ -> new JavaTestNoAccess(), "JavaTestNoAccess");
+		DataVariableRegistry.registerObjectVariable(_ -> new JavaTestObject(), "JavaObjectAccess");
+		DataVariableRegistry.registerObjectVariable(_ -> new JavaTestNoAccess(), "JavaTestNoAccess");
 		
-		DataVariableRegistry.registerVariable(_ -> "Value", VariableTypes.STRING, "string_var");
-		DataVariableRegistry.registerVariable(k -> k, VariableTypes.STRING, "string_var2");
-		DataVariableRegistry.registerVariable(_ -> 69, VariableTypes.NUMBER, "number_var");
-		DataVariableRegistry.registerVariable(_ -> true, VariableTypes.BOOLEAN, "boolean_var");
-		DataVariableRegistry.registerVariable(_ -> new Object() {
+		DataVariableRegistry.registerStringVariable(_ -> "Value", "string_var");
+		DataVariableRegistry.registerStringVariable(k -> k, "string_var2");
+		DataVariableRegistry.registerNumberVariable(_ -> 69, "number_var");
+		DataVariableRegistry.registerBooleanVariable(_ -> true, "boolean_var");
+		DataVariableRegistry.registerObjectVariable(_ -> new Object() {
 			@Override public String toString() {return "lol";}
-		}, VariableTypes.OBJECT, "object_var");
+		}, "object_var");
 		
-		DataVariableRegistry.registerVariable(_ -> ((ValueGetter) k->k), VariableTypes.OBJECT, "value_getter");
+		DataVariableRegistry.registerObjectVariable(_ -> ((ValueGetter) k->k), "value_getter");
 	}
     
     private static final String[] tests = {

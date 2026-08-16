@@ -32,7 +32,10 @@ public class DataVariableRegistry {
 	 * @param variable the variable to register
 	 * @param names the names under which the variable will be registered
 	 * @see #registerVariable(DataVariable, VariableTypes.Type, String...)
+	 * 
+	 * @deprecated use {@link #registerObjectVariable(DataVariable, String...)}
 	 */
+	@Deprecated(since = "10.3.0", forRemoval = false)
 	public static void registerVariable(DataVariable<Object> variable, String... names) {
 		registerVariable(variable, VariableTypes.OBJECT, names);
 	}
@@ -50,7 +53,10 @@ public class DataVariableRegistry {
 	 * @param variable the variable to register
 	 * @param type the category under which the variable will be registered
 	 * @param names the names under which the variable will be registered
+	 * 
+	 * @deprecated Use the appropriate register method for the given type. `VariableTypes.Type` is also deprecated.
 	 */
+	@Deprecated(since = "10.3.0", forRemoval = false)
 	public static <T> void registerVariable(DataVariable<?> variable, VariableTypes.Type<T> type, String... names) {
 		Map<String, DataVariable<?>> typemap = ObjectVariables;
 		if (type == VariableTypes.NUMBER)
@@ -61,6 +67,82 @@ public class DataVariableRegistry {
 			typemap = BooleanVariables;
 		for (String name : names) {
 			typemap.put(name.toLowerCase(), variable);
+			AllVariables.put(name.toLowerCase(), variable);
+		}
+	}
+	
+	/**
+	 * Registers a String variable under one or more names.
+	 * <p>
+	 * Each supplied name is converted to lowercase and added to both the String
+	 * variable registry and the registry containing all variables. Registering
+	 * another variable with an existing name replaces the previous mapping for
+	 * that name.
+	 * </p>
+	 *
+	 * @param variable the String variable to register
+	 * @param names the names under which the variable will be registered
+	 */
+	public static void registerStringVariable(DataVariable<String> variable, String... names) {
+		for (String name : names) {
+			StringVariables.put(name.toLowerCase(), variable);
+			AllVariables.put(name.toLowerCase(), variable);
+		}
+	}
+
+	/**
+	 * Registers a numeric variable under one or more names.
+	 * <p>
+	 * Each supplied name is converted to lowercase and added to both the numeric
+	 * variable registry and the registry containing all variables. Registering
+	 * another variable with an existing name replaces the previous mapping for
+	 * that name.
+	 * </p>
+	 *
+	 * @param variable the numeric variable to register
+	 * @param names the names under which the variable will be registered
+	 */
+	public static void registerNumberVariable(DataVariable<Number> variable, String... names) {
+		for (String name : names) {
+			NumberVariables.put(name.toLowerCase(), variable);
+			AllVariables.put(name.toLowerCase(), variable);
+		}
+	}
+
+	/**
+	 * Registers a Boolean variable under one or more names.
+	 * <p>
+	 * Each supplied name is converted to lowercase and added to both the Boolean
+	 * variable registry and the registry containing all variables. Registering
+	 * another variable with an existing name replaces the previous mapping for
+	 * that name.
+	 * </p>
+	 *
+	 * @param variable the Boolean variable to register
+	 * @param names the names under which the variable will be registered
+	 */
+	public static void registerBooleanVariable(DataVariable<Boolean> variable, String... names) {
+		for (String name : names) {
+			BooleanVariables.put(name.toLowerCase(), variable);
+			AllVariables.put(name.toLowerCase(), variable);
+		}
+	}
+
+	/**
+	 * Registers an object variable under one or more names.
+	 * <p>
+	 * Each supplied name is converted to lowercase and added to both the object
+	 * variable registry and the registry containing all variables. Registering
+	 * another variable with an existing name replaces the previous mapping for
+	 * that name.
+	 * </p>
+	 *
+	 * @param variable the object variable to register
+	 * @param names the names under which the variable will be registered
+	 */
+	public static void registerObjectVariable(DataVariable<Object> variable, String... names) {
+		for (String name : names) {
+			ObjectVariables.put(name.toLowerCase(), variable);
 			AllVariables.put(name.toLowerCase(), variable);
 		}
 	}

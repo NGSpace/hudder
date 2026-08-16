@@ -12,8 +12,6 @@ import org.lwjgl.glfw.GLFW;
 import com.sun.management.OperatingSystemMXBean;
 
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
-import dev.ngspace.hudder.api.variableregistry.VariableTypes;
-import dev.ngspace.hudder.v2runtime.V2Runtime;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.PauseScreen;
@@ -130,13 +128,13 @@ public class Misc {private Misc() {}
 			} catch (Exception e) {e.printStackTrace();}
 	    }
 	    
-	    DataVariableRegistry.registerVariable(
+	    DataVariableRegistry.registerBooleanVariable(
 	    		variable->held_keys.containsKey(keys.get(variable.substring(4).toLowerCase())),
-	    		VariableTypes.BOOLEAN, keyNames.toArray(new String[keyNames.size()]));
+	    		keyNames.toArray(new String[keyNames.size()]));
 	}
 	
 	
-	public static Object getScreenType(Screen screen) {
+	public static String getScreenType(Screen screen) {
 		return switch (screen) {
 			case BlastFurnaceScreen _: yield "Blast Furnace";
 			case SmokerScreen _: yield "Smoker";
@@ -166,12 +164,8 @@ public class Misc {private Misc() {}
 			case ChatScreen _: yield "Chat";
 			case BookViewScreen _: yield "Book";
 			case AbstractContainerScreen<?> _: yield "Generic container";
-			
-			
-			case null:
-				yield V2Runtime.NULL;
-			default:
-				yield screen.getClass().getSimpleName();
+			case null: yield null;
+			default: yield screen.getClass().getSimpleName();
 		};
 	}
 	

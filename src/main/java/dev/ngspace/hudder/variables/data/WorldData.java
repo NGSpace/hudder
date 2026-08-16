@@ -1,10 +1,5 @@
 package dev.ngspace.hudder.variables.data;
 
-import static dev.ngspace.hudder.api.variableregistry.VariableTypes.BOOLEAN;
-import static dev.ngspace.hudder.api.variableregistry.VariableTypes.NUMBER;
-import static dev.ngspace.hudder.api.variableregistry.VariableTypes.OBJECT;
-import static dev.ngspace.hudder.api.variableregistry.VariableTypes.STRING;
-
 import java.util.Queue;
 
 import dev.ngspace.hudder.mixin.BossHealthOverlayAccessor;
@@ -29,112 +24,112 @@ public class WorldData extends HudderBuiltInVariables {
 	}
 
 	private static void registerServerVariables() {
-		register(_->{
+		registerString(_->{
 		    var server = ins.getCurrentServer();
 		    return (server == null) ? null : server.name;
-		}, STRING, "server_name");
+		}, "server_name");
 
-		register(_->{
+		registerString(_->{
 		    var server = ins.getCurrentServer();
 		    return (server == null) ? null : server.ip;
-		}, STRING, "server_ip");
+		}, "server_ip");
 
-		register(_->{
+		registerString(_->{
 		    var server = ins.getCurrentServer();
 		    return (server == null) ? null : server.motd.getString();
-		}, STRING, "server_motd");
+		}, "server_motd");
 	}
 
 	private static void registerChunkVariables() {
 		/* Player chunk information */
 		
-		register(_->ins.player.getBlockX() & 0xF, NUMBER, "subchunkx");
-		register(_->ins.player.getBlockY() & 0xF, NUMBER, "subchunky");
-		register(_->ins.player.getBlockZ() & 0xF, NUMBER, "subchunkz");
+		registerNumber(_->ins.player.getBlockX() & 0xF, "subchunkx");
+		registerNumber(_->ins.player.getBlockY() & 0xF, "subchunky");
+		registerNumber(_->ins.player.getBlockZ() & 0xF, "subchunkz");
 
-		register(_->ins.player.chunkPosition().x(), NUMBER, "chunkx");
-		register(_->ins.player.chunkPosition().z(), NUMBER, "chunkz");
+		registerNumber(_->ins.player.chunkPosition().x(), "chunkx");
+		registerNumber(_->ins.player.chunkPosition().z(), "chunkz");
 
 		/* Camera chunk information */
 		
-		register(_->ins.gameRenderer.mainCamera().blockPosition().getX() & 0xF, NUMBER, "cam_subchunkx");
-		register(_->ins.gameRenderer.mainCamera().blockPosition().getY() & 0xF, NUMBER, "cam_subchunky");
-		register(_->ins.gameRenderer.mainCamera().blockPosition().getZ() & 0xF, NUMBER, "cam_subchunkz")
+		registerNumber(_->ins.gameRenderer.mainCamera().blockPosition().getX() & 0xF, "cam_subchunkx");
+		registerNumber(_->ins.gameRenderer.mainCamera().blockPosition().getY() & 0xF, "cam_subchunky");
+		registerNumber(_->ins.gameRenderer.mainCamera().blockPosition().getZ() & 0xF, "cam_subchunkz")
 		;
-		register(_->ins.gameRenderer.mainCamera().blockPosition().getX() >> 4, NUMBER, "cam_chunkx");
-		register(_->ins.gameRenderer.mainCamera().blockPosition().getZ() >> 4, NUMBER, "cam_chunkz");
+		registerNumber(_->ins.gameRenderer.mainCamera().blockPosition().getX() >> 4, "cam_chunkx");
+		registerNumber(_->ins.gameRenderer.mainCamera().blockPosition().getZ() >> 4, "cam_chunkz");
 	}
 	
 	private static void registerRenderingVariables() {
 		/* World Rendering */
 
-		register(_->((LevelRendererAccess) ins.levelRenderer)
+		registerNumber(_->((LevelRendererAccess) ins.levelRenderer)
 	                .getLevelRenderState()
 	                .entityRenderStates
 	                .size(),
-		    NUMBER, "entites", "entities");
+		    "entites", "entities");
 
-		register(_->((ParticleManagerAccessor) ins.particleEngine)
+		registerNumber(_->((ParticleManagerAccessor) ins.particleEngine)
 	                .getParticles()
 	                .values()
 	                .stream()
 	                .mapToInt(Queue::size)
 	                .sum(),
-		    NUMBER, "particles");
+		    "particles");
 
-		register(_->ins.levelExtractor.countRenderedSections(), NUMBER, "chunks");
+		registerNumber(_->ins.levelExtractor.countRenderedSections(), "chunks");
 
 
 
 		/* Light */
 		/* At player */
-		register(_->ins.level.getMaxLocalRawBrightness(ins.player.blockPosition()), NUMBER, "light");
-		register(_->ins.level.getBrightness(LightLayer.BLOCK, ins.player.blockPosition()),
-		    NUMBER, "blocklight", "block_light");
-		register(_->ins.level.getBrightness(LightLayer.SKY, ins.player.blockPosition()),
-		    NUMBER, "skylight", "sky_light");
+		registerNumber(_->ins.level.getMaxLocalRawBrightness(ins.player.blockPosition()), "light");
+		registerNumber(_->ins.level.getBrightness(LightLayer.BLOCK, ins.player.blockPosition()),
+		    "blocklight", "block_light");
+		registerNumber(_->ins.level.getBrightness(LightLayer.SKY, ins.player.blockPosition()),
+		    "skylight", "sky_light");
 
 		/* At camera */
-		register(_->ins.level.getMaxLocalRawBrightness(ins.gameRenderer.mainCamera().blockPosition()),
-		    NUMBER, "cam_light");
-		register(_->ins.level.getBrightness(LightLayer.BLOCK, ins.gameRenderer.mainCamera().blockPosition()),
-		    NUMBER, "cam_blocklight", "cam_block_light");
-		register(_->ins.level.getBrightness(LightLayer.SKY, ins.gameRenderer.mainCamera().blockPosition()),
-		    NUMBER, "cam_skylight", "cam_sky_light");
+		registerNumber(_->ins.level.getMaxLocalRawBrightness(ins.gameRenderer.mainCamera().blockPosition()),
+		    "cam_light");
+		registerNumber(_->ins.level.getBrightness(LightLayer.BLOCK, ins.gameRenderer.mainCamera().blockPosition()),
+		    "cam_blocklight", "cam_block_light");
+		registerNumber(_->ins.level.getBrightness(LightLayer.SKY, ins.gameRenderer.mainCamera().blockPosition()),
+		    "cam_skylight", "cam_sky_light");
 		
 		// Boss bars
-		register(_->{
+		registerObject(_->{
 			var obj = ((BossHealthOverlayAccessor)ins.gui.hud.getBossOverlay()).events();
 			return obj.entrySet()
 					.stream()
 					.map(e->new BossBarData(e.getValue()))
 					.toList();
-		}, OBJECT, "boss_bars");
+		}, "boss_bars");
 	}
 	
 	private static void registerOtherVariables() {
 		// Biome / dimension
-		register(_->ins.level.getBiome(ins.player.blockPosition()).getRegisteredName(),
-		    STRING, "biome");
+		registerString(_->ins.level.getBiome(ins.player.blockPosition()).getRegisteredName(),
+		    "biome");
 
-		register(_->ins.level.getBiome(ins.gameRenderer.mainCamera().blockPosition()).getRegisteredName(),
-		    STRING, "cam_biome");
+		registerString(_->ins.level.getBiome(ins.gameRenderer.mainCamera().blockPosition()).getRegisteredName(),
+		    "cam_biome");
 
-		register(_->ins.level.dimension().identifier().toString(),
-		    STRING, "dimension");
+		registerString(_->ins.level.dimension().identifier().toString(),
+		    "dimension");
 
 		// World name (singleplayer only)
-		register(_->{
+		registerString(_->{
 		    var server = ins.getSingleplayerServer();
 		    return (server == null) ? null : server.getWorldData().getLevelName();
-		}, STRING, "world_name");
+		}, "world_name");
 
 		// Time
-		register(_->ins.level.getGameTime(), NUMBER, "worldtime", "world_time");
-		register(_->ins.level.getGameTime() / 24000d, NUMBER, "daytime", "day_time");
+		registerNumber(_->ins.level.getGameTime(), "worldtime", "world_time");
+		registerNumber(_->ins.level.getGameTime() / 24000d, "daytime", "day_time");
 
 		// Slime chunk
-		register(_->{
+		registerBoolean(_->{
 		    try {
 		        var server = ins.getSingleplayerServer();
 		        if (server == null) return false;
@@ -150,26 +145,26 @@ public class WorldData extends HudderBuiltInVariables {
 		    	// Fallback when there is no permission
 		        return false;
 		    }
-		}, BOOLEAN, "isslime", "is_slime");
+		}, "isslime", "is_slime");
 		
 		// Weather
-		register(_->ins.player.level().isRaining(), BOOLEAN, "is_raining");
-		register(_->ins.player.level().isThundering(), BOOLEAN, "is_thundering");
-		register(_->ins.player.level().canHaveWeather(), BOOLEAN, "can_have_weather");
+		registerBoolean(_->ins.player.level().isRaining(), "is_raining");
+		registerBoolean(_->ins.player.level().isThundering(), "is_thundering");
+		registerBoolean(_->ins.player.level().canHaveWeather(), "can_have_weather");
 		
 		// Difficulty
-		register(_->ins.player.level().getDifficulty().getSerializedName(), STRING, "difficulty");
+		registerString(_->ins.player.level().getDifficulty().getSerializedName(), "difficulty");
 		
 		// PlayerList
-		register(_->ins.getConnection().getListedOnlinePlayers()
+		registerObject(_->ins.getConnection().getListedOnlinePlayers()
 				.stream()
 				.map(p -> new PlayerInformation(p.getProfile().name(), p.getProfile().id(),
 						p.getTabListDisplayName(), p.getTabListOrder(),
 						p.getTeam() != null ? p.getTeam().getName() : "", p.getGameMode().toString()))
 				.toList(),
-			OBJECT, "players_list");
+			"players_list");
 		
 		// Is Singleplayer
-		register(_->ins.hasSingleplayerServer(), BOOLEAN, "is_singleplayer");
+		registerBoolean(_->ins.hasSingleplayerServer(), "is_singleplayer");
 	}
 }
