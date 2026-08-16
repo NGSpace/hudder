@@ -268,7 +268,6 @@ public class Compilers {
 	 * @return an exception describing the failed lookup
 	 */
 	private static IllegalArgumentException getNoCompilerException(String value, String inputType) {
-		
 		return new IllegalArgumentException("Compiler with the " + inputType + " \"" + value
 				+ "\" either does not exist or has not yet been loaded.");
 	}
