@@ -16,6 +16,7 @@ import dev.ngspace.hudder.compilers.HudPackCompiler;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.utils.HudFileUtils;
+import dev.ngspace.hudder.utils.HudderUtils;
 import dev.ngspace.ngsmcconfig.options.AbstractNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.BooleanNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.DoubleNGSMCConfigOption;
@@ -29,6 +30,8 @@ public class HudPack implements Closeable {
 
 	public static final int MAXIMUM_SUPPORTED_FORMAT = 3;
 	public static final int MAXIMUM_ENTRY_COUNT = 255;
+	public static final int MAXIMUM_ENTRY_SIZE = 8388608; // 8 MiB
+	public static final int MAXIMUM_PACK_SIZE = 67108864; // 64 MiB
 	private HudPackConfig configYaml;
 	private HudPackCompiler compiler;
 	private BufferedTexture[] bufferedtextures;
@@ -46,12 +49,18 @@ public class HudPack implements Closeable {
 		try (EntryReaderConsumer reader = file.isDirectory() ? new EntryReaderConsumer.Directory(file) :
 				new EntryReaderConsumer.Zip(file)) {
 			int entries_count = 0;
+			int bytes_left = MAXIMUM_PACK_SIZE;
 			for (String entry : reader.listEntries()) {
 				if (entries_count==MAXIMUM_ENTRY_COUNT
 						&&!config.unsafeoperations())
 					throw new CompileException("Reached maximum entry count for Hudpacks!", -1, -1);
 				entries_count++;
-				entries.put(entry, reader.readEntry(entry).readAllBytes());
+				byte[] bytes = config.unsafeoperations() ?
+						reader.readEntry(entry).readAllBytes() :
+						HudderUtils.limitedReadAllByte(reader.readEntry(entry), Math.min(MAXIMUM_ENTRY_SIZE,
+								bytes_left));
+				bytes_left -= bytes.length;
+				entries.put(entry, bytes);
 			}
 		}
 		processConfig(config);

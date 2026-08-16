@@ -60,9 +60,12 @@ public class HudderTickEvent implements StartTick {
 		}
     	try {
     		if (watcherService==null) return;
-    		WatchKey wk = watcherService.poll();
-        	if (!Hudder.config.enabled()||!Hudder.config.autorefresh()||TEMP_DISABLE) return;
-			if (wk!=null) {
+    		WatchKey wk;
+			while ((wk = watcherService.poll())!=null) {
+	        	if (!Hudder.config.enabled()||!Hudder.config.autorefresh()||TEMP_DISABLE) {
+    				reset(wk);
+	        		continue;
+	        	}
 				for (WatchEvent<?> event : wk.pollEvents()) {
 				    Path changed = (Path) event.context();
 				    try {
@@ -71,7 +74,7 @@ public class HudderTickEvent implements StartTick {
 						Hudder.showToast(Component.literal("Refreshed files!").withStyle(ChatFormatting.BOLD), 
 							Component.literal("\u00A7a"+changed.getFileName()+" changed."));
 					} catch (IOException e) {
-						Hudder.showToast(Component.literal("\\u00A74Error refreshing files!")
+						Hudder.showToast(Component.literal("\u00A74Error refreshing files!")
 								.withStyle(ChatFormatting.BOLD),Component.literal(e.getMessage()));
 						e.printStackTrace();
 					}
@@ -81,13 +84,17 @@ public class HudderTickEvent implements StartTick {
 				    			Component.literal("\u00A7aLoaded File"));
 				    }
 				}
-				if (!wk.reset()) {
-					watcherService = null;
-					Hudder.error("Unable to watch for changes in config folder!");
-					Hudder.showToast(Component.literal("\u00A74Failed to reload files!").withStyle(ChatFormatting.BOLD),
-			    			Component.literal("\u00A74Failed to reload files"));
-				}
+				reset(wk);
 			}
     	} catch (RuntimeException e) {e.printStackTrace();}
+	}
+
+	private void reset(WatchKey wk) {
+		if (!wk.reset()) {
+			watcherService = null;
+			Hudder.error("Unable to watch for changes in config folder!");
+			Hudder.showToast(Component.literal("\u00A74Failed to reload files!").withStyle(ChatFormatting.BOLD),
+	    			Component.literal("\u00A74Failed to reload files"));
+		}
 	}
 }

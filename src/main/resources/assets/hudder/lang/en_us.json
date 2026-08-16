@@ -49,6 +49,7 @@
 	"hudder.general.compilertype.tooltip": "Change the type of compiler (ex hudder, js, pack).",
 	"hudder.general.compilertype.error":"Invalid compiler type.",
 	"hudder.general.compilertype.unstable_warning":"The compiler %s is unstable and is not advised to be used.",
+	"hudder.general.compilertype.deprecated_warning":"The compiler %s is deprecated and may be removed.",
 	
 	"hudder.general.scale":"Scale",
 	"hudder.general.scale.tooltip":"Control the default scale of Hud Elements and text.\n\u00A77This can be overriden by elements specifying the size on their own.",

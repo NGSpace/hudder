@@ -130,8 +130,7 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 	    			return Compilers.hasCompilerFromDisplayName(e)
 	    					? null : Component.translatable("hudder.general.compilertype.error");
 	    		})
-	    		.setWarningProvider(e->Compilers.getEntryFromDisplayName(e).unstable()
-	    				? Component.translatable("hudder.general.compilertype.unstable_warning", e): null)
+	    		.setWarningProvider(e->getCompilerWarning(Compilers.getEntryFromDisplayName(e)))
 	    		.build());
 		general.addOption(DoubleNGSMCConfigOption.fluentBuilder(config.scale, Component.translatable("hudder.general.scale"))
 				.setHoverComponent(Component.translatable("hudder.general.scale.tooltip"))
@@ -267,6 +266,14 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 		}
 		
 		return builder.build();
+	}
+	
+	public static Component getCompilerWarning(CompilerEntry compilerEntry) {
+		if (compilerEntry.deprecated()) return Component.translatable(
+				"hudder.general.compilertype.deprecated_warning", compilerEntry.displayname());
+		if (compilerEntry.unstable()) return Component.translatable(
+				"hudder.general.compilertype.unstable_warning", compilerEntry.displayname());
+		return null;
 	}
 	
 }
