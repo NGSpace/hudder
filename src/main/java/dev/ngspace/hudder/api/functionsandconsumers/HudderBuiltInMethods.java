@@ -136,8 +136,8 @@ public class HudderBuiltInMethods {
 				s[2].asFloat(), false)), "drawMountArmor", "mountarmor");
 		
 		api.registerPositionedConsumer(
-				(e,_,_,_,s) -> e.addUIElement(new ItemElement(s[1].asInt(), s[2].asInt(),
-						new ItemStack(BuiltInRegistries.ITEM.getValue(s[0].asIdentifier())), s[3].asFloat(), false)),
+				(e,_,_,c,s) -> e.addUIElement(new ItemElement(s[1].asInt(), s[2].asInt(),
+						new ItemStack(BuiltInRegistries.ITEM.getValue(s[0].asIdentifier())), s.length > 3 ? s[3].asFloat() : c.scale(), false)),
 				"drawItem", "item");
 		
 		api.registerPositionedConsumer(
@@ -175,8 +175,9 @@ public class HudderBuiltInMethods {
 		// Slot
 		
 		api.registerPositionedConsumer(
-				(e,_,_,_,s) -> e.addUIElement(new ItemElement(s[1].asInt(), s[2].asInt(),
-								mc.player.getInventory().getItem(s[0].asInt()), s[3].asFloat(), s[4].asBoolean())),
+				(e,_,_,c,s) -> e.addUIElement(new ItemElement(s[1].asInt(), s[2].asInt(),
+								mc.player.getInventory().getItem(s[0].asInt()),
+								s.length > 3 ? s[3].asFloat() : c.scale(), s.length <= 4 || s[4].asBoolean())),
 				"drawSlot", "slot");
 		
 		// Armor
