@@ -29,7 +29,7 @@ public class HudderUnitTest {
 				String text = null;
 				try {
 					compiler.resetState();
-					compiler.compileFile(texttocompile, "Unit Tests");
+					compiler.compileFile(info, texttocompile, "Unit Tests");
 					text = compiler.execute(info, texttocompile, "Unit Tests").TopLeftText();
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -43,7 +43,7 @@ public class HudderUnitTest {
 				String type = metadata.getOrDefault("exception_type", new String[1])[0];
 				try {
 					compiler.resetState();
-					compiler.compileFile(texttocompile, "Unit Tests");
+					compiler.compileFile(info, texttocompile, "Unit Tests");
 					compiler.execute(info, texttocompile, "Unit Tests");
 
 					yield new HudderUnitTestResult(false, type, "Error-less execution", filename);
@@ -57,11 +57,24 @@ public class HudderUnitTest {
 							e.toString(), filename);
 				}
 			}
+			case NO_ERROR: {
+				try {
+					compiler.resetState();
+					compiler.compileFile(info, texttocompile, "Unit Tests");
+					var res = compiler.execute(info, texttocompile, "Unit Tests");
+					yield new HudderUnitTestResult(true, "No error to occur",
+							res.TopLeftText().replaceAll("(^ )|( $)", "~"), filename);
+				} catch (Exception e) {
+					e.printStackTrace();
+					yield new HudderUnitTestResult(false, "No error to occur", e.toString(), filename);
+				}
+			}
 		};
 	}
 	
 	public enum Mode {
 		NORMAL,
-		ERROR,;
+		ERROR,
+		NO_ERROR,;
 	}
 }

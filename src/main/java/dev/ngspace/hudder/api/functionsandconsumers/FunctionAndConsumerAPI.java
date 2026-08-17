@@ -5,7 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 
 import dev.ngspace.hudder.Hudder;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.PositionedBinder;
 import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
+import dev.ngspace.hudder.compilers.utils.TextPos;
+import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.utils.ObjectWrapper;
 import dev.ngspace.hudder.utils.ValueGetter;
@@ -27,25 +32,61 @@ public class FunctionAndConsumerAPI {
 	
 	static FunctionAndConsumerAPI instance = new FunctionAndConsumerAPI();
 	
-	HashMap<BindableFunction, String[]> functions = new HashMap<BindableFunction, String[]>();
-	HashMap<BindableConsumer, String[]> consumers = new HashMap<BindableConsumer, String[]>();
+	HashMap<BindablePositionedFunction, String[]> functions = new HashMap<BindablePositionedFunction, String[]>();
+	HashMap<BindablePositionedConsumer, String[]> consumers = new HashMap<BindablePositionedConsumer, String[]>();
 	
-	List<Binder> binders = new ArrayList<Binder>();
+	List<PositionedBinder> binders = new ArrayList<PositionedBinder>();
 	
 	
-	
+
 	/**
-	 * Applies all currently registered consumers and functions to the specified
-	 * binder and registers it to receive future additions.
-	 *
-	 * @param binder the binder to which functions and consumers will be applied
+	 * @deprecated use {@link #applyFunctionsAndConsumers(PositionedBinder)}
 	 */
+	@Deprecated(since = "10.3.0", forRemoval = true)
 	public void applyFunctionsAndConsumers(Binder binder) {
 		for (var cons : consumers.entrySet())
 			binder.bindConsumer(cons.getKey(), cons.getValue());
 		for (var func : functions.entrySet())
 			binder.bindFunction(func.getKey(), func.getValue());
 		binders.add(binder);
+	}
+	/**
+	 * Applies all currently registered consumers and functions to the specified
+	 * binder and registers it to receive future additions.
+	 *
+	 * @param binder the binder to which functions and consumers will be applied
+	 */
+	public void applyFunctionsAndConsumers(PositionedBinder binder) {
+		for (var cons : consumers.entrySet())
+			binder.bindConsumer(cons.getKey(), cons.getValue());
+		for (var func : functions.entrySet())
+			binder.bindFunction(func.getKey(), func.getValue());
+		binders.add(binder);
+	}
+	
+	
+	/**
+	 * @deprecated use {@link #registerPositionedFunction(BindablePositionedFunction, String...)}
+	 */
+	@Deprecated(since = "10.3.0", forRemoval = true)
+	public void registerFunction(BindableFunction func, String... names) {
+		registerPositionedFunction(func, names);
+	}
+	/**
+	 * @deprecated use {@link #registerUnsafePositionedFunction(BindablePositionedFunction, String...)}
+	 */
+	@Deprecated(since = "10.3.0", forRemoval = true)
+	public void registerUnsafeFunction(BindableFunction func, String... names) {
+		registerUnsafePositionedFunction(func, names);
+	}
+	
+
+	/**
+	 * @deprecated use {@link #registerDeprecatedPositionedFunction(String, BindablePositionedFunction, String...)}
+	 */
+	@Deprecated(since = "10.3.0", forRemoval = true)
+	public void registerDeprecatedFunction(String warning, BindableFunction func, String... names) {
+		registerDeprecatedPositionedFunction(warning, func, names);
 	}
 	
 	
@@ -58,7 +99,7 @@ public class FunctionAndConsumerAPI {
 	 * @param func the function to register
 	 * @param names the names under which the function will be bound
 	 */
-	public void registerFunction(BindableFunction func, String... names) {
+	public void registerPositionedFunction(BindablePositionedFunction func, String... names) {
 		for (var binder : binders)
 			binder.bindFunction(func, names);
 		functions.put(func, names);
@@ -72,11 +113,11 @@ public class FunctionAndConsumerAPI {
 	 * @param names the names under which the function will be bound
 	 * @see #registerFunction(BindableFunction, String...)
 	 */
-	public void registerUnsafeFunction(BindableFunction func, String... names) {
-		registerFunction((m,c,a)->{
-			if (!Hudder.config.unsafeoperations())
+	public void registerUnsafePositionedFunction(BindablePositionedFunction func, String... names) {
+		registerPositionedFunction((m,c,p,i,a)->{
+			if (!i.unsafeoperations())
 				throw new SecurityException("Called unsafe function with unsafe operations disabled!");
-			return func.invoke(m,c,a);
+			return func.invoke(m,c,p,i,a);
 		}, names);
 	}
 	
@@ -89,8 +130,31 @@ public class FunctionAndConsumerAPI {
 	 * @param names the names under which the function will be bound
 	 * @see #registerFunction(BindableFunction, String...)
 	 */
-	public void registerDeprecatedFunction(String warning, BindableFunction func, String... names) {
-		registerFunction(new DeprecatedFunciton(warning, func, names), names);
+	public void registerDeprecatedPositionedFunction(String warning, BindablePositionedFunction func, String... names) {
+		registerPositionedFunction(new DeprecatedFunciton(warning, func, names), names);
+	}
+	/**
+	 * @deprecated use {@link #registerPositionedConsumer(BindablePositionedConsumer, String...)}
+	 */
+	@Deprecated(since = "10.3.0", forRemoval = true)
+	public void registerConsumer(BindableConsumer cons, String... names) {
+		registerPositionedConsumer(cons, names);
+	}
+
+	/**
+	 * @deprecated use {@link #registerUnsafePositionedConsumer(BindablePositionedConsumer, String...)}
+	 */
+	@Deprecated(since = "10.3.0", forRemoval = true)
+	public void registerUnsafeConsumer(BindableConsumer cons, String... names) {
+		registerUnsafePositionedConsumer(cons, names);
+	}
+
+	/**
+	 * @deprecated use {@link #registerDeprecatedPositionedConsumer(String, BindablePositionedConsumer, String...)}
+	 */
+	@Deprecated(since = "10.3.0", forRemoval = true)
+	public void registerDeprecatedConsumer(String warning, BindableConsumer cons, String... names) {
+		registerDeprecatedPositionedConsumer(warning, cons, names);
 	}
 
 
@@ -104,7 +168,7 @@ public class FunctionAndConsumerAPI {
 	 * @param cons the consumer to register
 	 * @param names the names under which the consumer will be bound
 	 */
-	public void registerConsumer(BindableConsumer cons, String... names) {
+	public void registerPositionedConsumer(BindablePositionedConsumer cons, String... names) {
 		for (var binder : binders) 
 			binder.bindConsumer(cons, names);
 		consumers.put(cons, names);
@@ -118,11 +182,11 @@ public class FunctionAndConsumerAPI {
 	 * @param names the names under which the consumer will be bound
 	 * @see #registerConsumer(BindableConsumer, String...)
 	 */
-	public void registerUnsafeConsumer(BindableConsumer cons, String... names) {
-		registerConsumer((m,c,a)->{
-			if (!Hudder.config.unsafeoperations())
+	public void registerUnsafePositionedConsumer(BindablePositionedConsumer cons, String... names) {
+		registerPositionedConsumer((m,c,p,i,a)->{
+			if (!i.unsafeoperations())
 				throw new SecurityException("Called unsafe method with unsafe operations disabled!");
-			cons.invoke(m,c,a);
+			cons.invoke(m,c,p,i,a);
 		}, names);
 	}
 	
@@ -135,71 +199,75 @@ public class FunctionAndConsumerAPI {
 	 * @param names the names under which the consumer will be bound
 	 * @see #registerConsumer(BindableConsumer, String...)
 	 */
-	public void registerDeprecatedConsumer(String warning, BindableConsumer cons, String... names) {
-		registerConsumer(new DeprecatedConsumer(warning, cons, names), names);
+	public void registerDeprecatedPositionedConsumer(String warning, BindablePositionedConsumer cons, String... names) {
+		registerPositionedConsumer(new DeprecatedConsumer(warning, cons, names), names);
 	}
 	
 	
 
+
 	/**
-	 * Represents a function that can be exposed to a compiler through a
-	 * {@link Binder}.
+	 * @deprecated use BindablePositionedFunction
 	 */
-	@FunctionalInterface public interface BindableFunction {
-		/**
-		 * Invokes the function with the supplied execution context and arguments.
-		 *
-		 * @param man the UI element manager associated with the invocation
-		 * @param comp the compiler performing the invocation
-		 * @param args the arguments supplied to the function
-		 * @return the value returned by the function
-		 * @throws ExecutionException if the function cannot be executed
-		 */
+	@Deprecated(since = "10.3.0", forRemoval = true)
+	@FunctionalInterface public interface BindableFunction extends BindablePositionedFunction {
+		@Deprecated(since = "10.3.0", forRemoval = true)
 		public Object invoke(IUIElementManager man, AHudCompiler<?> comp, ObjectWrapper... args) throws ExecutionException;
+		@Deprecated(since = "10.3.0", forRemoval = true)
+		@Override
+		default Object invoke(IUIElementManager man, AHudCompiler<?> comp, TextPos position,
+				HudderConfig config, ObjectWrapper... args) throws ExecutionException {
+			return invoke(man, comp, args);
+		}
 	}
+	
+	
 
 	/**
-	 * Represents a value-consuming operation that can be exposed to a compiler
-	 * through a {@link Binder}.
+	 * @deprecated use BindablePositionedConsumer
 	 */
-	@FunctionalInterface public interface BindableConsumer {
-		/**
-		 * Invokes the consumer with the supplied execution context and arguments.
-		 *
-		 * @param man the UI element manager associated with the invocation
-		 * @param comp the compiler performing the invocation
-		 * @param args the arguments supplied to the consumer
-		 * @throws ExecutionException if the consumer cannot be executed
-		 */
+	@Deprecated(since = "10.3.0", forRemoval = true)
+	@FunctionalInterface public interface BindableConsumer extends BindablePositionedConsumer {
+		@Deprecated(since = "10.3.0", forRemoval = true)
 		public void invoke(IUIElementManager man, AHudCompiler<?> comp, ObjectWrapper... args) throws ExecutionException;
+		@Deprecated(since = "10.3.0", forRemoval = true)
+		@Override
+		default void invoke(IUIElementManager man, AHudCompiler<?> comp, TextPos position,
+				HudderConfig config, ObjectWrapper... args) throws ExecutionException {
+			invoke(man, comp, args);
+		}
 	}
 
 	
 	
-	// Tranz Rightz
 	/**
-	 * Binds registered functions and consumers to a compiler or other execution
-	 * environment.
+	 * @deprecated use PositionedBinder
 	 */
-	public interface Binder {
-		/**
-		 * Binds a consumer under one or more names.
-		 *
-		 * @param cons the consumer to bind
-		 * @param names the names under which the consumer will be available
-		 */
+	@Deprecated(since = "10.3.0",forRemoval = true)
+	public interface Binder extends PositionedBinder {
+		@Deprecated(since = "10.3.0",forRemoval = true)
 		public void bindConsumer(BindableConsumer cons, String... names);
+		
+		@Deprecated(since = "10.3.0",forRemoval = true)
+		public default void bindConsumer(BindablePositionedConsumer cons, String... names) {
+			if (cons instanceof BindableConsumer old)
+				bindConsumer(old, names);
+			else
+				bindConsumer((i,j,k)->cons.invoke(i, j, new TextPos(-1, -1), Hudder.config, k), names);
+		}
 
-		/**
-		 * Binds a function under one or more names.
-		 *
-		 * @param cons the function to bind
-		 * @param names the names under which the function will be available
-		 */
+		@Deprecated(since = "10.3.0",forRemoval = true)
 		public void bindFunction(BindableFunction cons, String... names);
+		
+		@Deprecated(since = "10.3.0",forRemoval = true)
+		public default void bindFunction(BindablePositionedFunction cons, String... names) {
+			if (cons instanceof BindableFunction old)
+				bindFunction(old, names);
+			else
+				bindFunction((i,j,k)->cons.invoke(i, j, new TextPos(-1, -1), Hudder.config, k), names);
+		}
 	}
-	
-	
+
 	
 	/**
 	 * Returns the shared function and consumer API instance.
@@ -233,16 +301,24 @@ public class FunctionAndConsumerAPI {
 					+ ", maxdurability: " + maxdurability + ", identifier: " + identifier + "}";
 		}
 		@Override public Object get(String key) {
-			
 			return switch (key) {
 				case "name": yield name;
 				case "count": yield count;
 				case "maxcount": yield maxcount;
 				case "durability": yield durability;
 				case "maxdurability": yield maxdurability;
-				case "identifier": yield maxdurability;
+				case "identifier": yield identifier;
 				default: yield ComponentsData.getObject(key, components, item);
 			};
 		}
+	}
+
+
+	public boolean containsBinder(PositionedBinder binder) {
+		return binders.contains(binder);
+	}
+
+	public boolean removeBinder(PositionedBinder binder) {
+		return binders.remove(binder);
 	}
 }

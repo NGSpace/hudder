@@ -1,425 +1,133 @@
 package dev.ngspace.hudder.hudderv3.asm;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
-import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.ExecutionException;
+import dev.ngspace.hudder.hudderv3.HudderV3Helper;
+import dev.ngspace.hudder.hudderv3.asm.methods.ClassAccessMethodWriter;
 
-public class V3MethodWriter {
-	
-	public static final String STRING_BUILDER = Type.getInternalName(StringBuilder.class);
-	public static final String VAR_REGISTRY = Type.getInternalName(DataVariableRegistry.class);
+public class V3MethodWriter extends ClassAccessMethodWriter {
 	
 	public V3ClassWriter classWriter;
-	public MethodVisitor methodVisitor;
-	public int variableindex = 5;
 	public String methodName;
-	public Label finalLabel = new Label();
-	public Map<String, Integer> variables = new HashMap<String, Integer>();
-
-	public V3MethodWriter(V3ClassWriter classWriter, String name, Class<?>[] parameters, Class<?> returntype, String signature,
-			String[] exceptions) {
+	
+	public V3MethodWriter(V3ClassWriter classWriter, String name, Class<?>[] parameters, Class<?> returntype,
+			String signature, String[] exceptions) {
+		super(classWriter.classWriter.visitMethod(Opcodes.ACC_PUBLIC, name,
+				Type.getMethodDescriptor(returntype == null ? Type.VOID_TYPE : Type.getType(returntype),
+						List.of(parameters).stream().map(Type::getType).toList().toArray(new Type[0])),
+				signature, exceptions));
 		this.classWriter = classWriter;
 		this.methodName = name;
-		
-		this.methodVisitor = classWriter.classWriter.visitMethod(Opcodes.ACC_PUBLIC, name,
-				Type.getMethodDescriptor(returntype==null?Type.VOID_TYPE:Type.getType(returntype),
-						List.of(parameters).stream().map(Type::getType).toList().toArray(new Type[0])),
-				signature, exceptions);
-		methodVisitor.visitCode();
 	}
 	
-	
-
-	public void defineVariable(String name) {
-		methodVisitor.visitInsn(Opcodes.ACONST_NULL);
-		int index = astore();
-		variables.put(name, index);
-	}
-	public boolean hasVariable(String name) {
-		return variables.containsKey(name);
-	}
-
-	/**
-	 * Defines a local variable for a lexical scope and returns the local slot that
-	 * was previously associated with the same name, if any.
-	 */
-	public Integer defineScopedVariable(String name) {
-		Integer previousIndex = variables.get(name);
-		defineVariable(name);
-		return previousIndex;
-	}
-
-	/** Restores the name mapping that existed before defineScopedVariable. */
-	public void restoreScopedVariable(String name, Integer previousIndex) {
-		if (previousIndex == null) {
-			variables.remove(name);
-		} else {
-			variables.put(name, previousIndex);
-		}
+	@Override
+	public String getClassName() {
+		return classWriter.classname;
 	}
 	
-	public void storeVariable(String name) {
-		astore(variables.get(name));
-	}
-	
-	public void getVariable(String name) {
-		aload(variables.get(name));
-	}
-
-
-
-	public void initStringBuilder() {
+	public void newStringBuilder() {
 		newAndDup(StringBuilder.class);
-		callSpecial(StringBuilder.class, "<init>", "()V", false);
+		callInit(StringBuilder.class, "()V");
 	}
 
-	public void getField(String name, Class<?> type) {
-		methodVisitor.visitFieldInsn(Opcodes.GETFIELD, classWriter.classname,
-				name, Type.getDescriptor(type));
-	}
-
-	public void getField(String name, Class<?> owner, Class<?> type) {
-		methodVisitor.visitFieldInsn(Opcodes.GETFIELD, Type.getInternalName(owner),
-				name, Type.getDescriptor(type));
-	}
-
-	public void getStaticField(String name, Class<?> owner, Class<?> type) {
-		methodVisitor.visitFieldInsn(Opcodes.GETSTATIC, Type.getInternalName(owner),
-				name, Type.getDescriptor(type));
-	}
-
-	public void putField(String name, Class<?> type) {
-		methodVisitor.visitFieldInsn(Opcodes.PUTFIELD, classWriter.classname,
-				name, Type.getDescriptor(type));
-	}
-
-	public void putField(String name, Class<?> owner, Class<?> type) {
-		methodVisitor.visitFieldInsn(Opcodes.PUTFIELD, Type.getInternalName(owner),
-				name, Type.getDescriptor(type));
-	}
-
-	public void putStaticField(String name, Class<?> type) {
-		methodVisitor.visitFieldInsn(Opcodes.PUTSTATIC, classWriter.classname,
-				name, Type.getDescriptor(type));
-	}
-
-
-
-	public void newAndDup(Class<?> type) {
-		methodVisitor.visitTypeInsn(Opcodes.NEW, Type.getInternalName(type));
+	public void ensureNotNull(String error, TextPos pos) {
 		dup();
-	}
-	
-	public void dup() {
-		methodVisitor.visitInsn(Opcodes.DUP);
-	}
-
-
-
-	public void dup2() {
-		methodVisitor.visitInsn(Opcodes.DUP2);
+		Label nonnull = new Label();
+		ifnonnull(nonnull);
+		throwExecutionException(error, pos);
+		putLabel(nonnull);
 	}
 
-
-
-	public void callSpecial(Class<?> type, String name, String sign, boolean isInterface) {
-		methodVisitor.visitMethodInsn(Opcodes.INVOKESPECIAL, Type.getInternalName(type), name, sign,
-				isInterface);
-	}
-	public void callInit(Class<?> type, String sign) {
-		callSpecial(type, "<init>", sign, false);
+	public void checkcastSafe(Class<?> type, TextPos pos) {
+		checkcastSafe(type, pos, type.getSimpleName());
 	}
 
+	public void checkcastSafe(Class<?> type, TextPos pos, String friendly_name) {
+		Label wrong_type = new Label();
+		Label correct_type = new Label();
+		Label end = new Label();
 
-
-	public void checkcast(Class<?> type) {
-	    methodVisitor.visitTypeInsn(Opcodes.CHECKCAST, Type.getInternalName(type));
-	}
-
-
-
-	public void booleanValue() {
-		methodVisitor.visitMethodInsn(
-				Opcodes.INVOKEVIRTUAL,
-				"java/lang/Boolean",
-				"booleanValue",
-				"()Z",
-				false
-		);
-	}
-
-
-
-	public void intValue() {
-		methodVisitor.visitMethodInsn(
-				Opcodes.INVOKEVIRTUAL,
-				"java/lang/Number",
-				"intValue",
-				"()I",
-				false
-		);
-	}
-
-
-
-	public void doubleValue() {
-		methodVisitor.visitMethodInsn(
-				Opcodes.INVOKEVIRTUAL,
-				"java/lang/Number",
-				"doubleValue",
-				"()D",
-				false
-		);
-	}
-	public void floatValue() {
-		methodVisitor.visitMethodInsn(
-				Opcodes.INVOKEVIRTUAL,
-				"java/lang/Number",
-				"floatValue",
-				"()F",
-				false
-		);
-	}
-
-	public void aload(int index) {
-		methodVisitor.visitVarInsn(Opcodes.ALOAD, index);
-	}
-	public void lload(int index) {
-		methodVisitor.visitVarInsn(Opcodes.LLOAD, index);
-	}
-	public void dload(int index) {
-		methodVisitor.visitVarInsn(Opcodes.DLOAD, index);
-	}
-	public void fload(int index) {
-		methodVisitor.visitVarInsn(Opcodes.FLOAD, index);
-	}
-	public void iload(int index) {
-		methodVisitor.visitVarInsn(Opcodes.ILOAD, index);
-	}
-	
-	public void aaload() {
-		methodVisitor.visitInsn(Opcodes.AALOAD);
-	}
-	public void aloadDouble(int index) {
-		methodVisitor.visitVarInsn(Opcodes.ALOAD, index);
-
-		methodVisitor.visitTypeInsn(
-		    Opcodes.CHECKCAST,
-		    Type.getInternalName(Number.class)
-		);
+		dup();
+		ifnull(correct_type);// The Verifier will cry if we don't checkcast the null
+		dup();
+		instanceOf(type);
+		ifeq(wrong_type);
 		
-		methodVisitor.visitMethodInsn(
-				Opcodes.INVOKEVIRTUAL,
-				"java/lang/Number",
-				"doubleValue",
-				"()D",
-				false
-		);
-	}
-	public void aloadFloat(int index) {
-		methodVisitor.visitVarInsn(Opcodes.ALOAD, index);
-
-		methodVisitor.visitTypeInsn(
-		    Opcodes.CHECKCAST,
-		    Type.getInternalName(Number.class)
-		);
+		putLabel(correct_type);
+		checkcast(type);
+		jumpto(end);
 		
-		methodVisitor.visitMethodInsn(
-				Opcodes.INVOKEVIRTUAL,
-				"java/lang/Number",
-				"floatValue",
-				"()F",
-				false
-		);
-	}
-	
-	public void loadConstant(Object constant) {
-		methodVisitor.visitLdcInsn(constant);
-	}
-	public void loadConstant(double constant) {
-		methodVisitor.visitLdcInsn(constant);
-		// Preserve Double values even when they have no fractional part. V2 represents
-		// every numeric literal as a Double, and functions such as str() expose that
-		// distinction through Double.toString() (for example, str(10) -> "10.0").
-		methodVisitor.visitMethodInsn(
-				Opcodes.INVOKESTATIC,
-				"java/lang/Double",
-				"valueOf",
-				"(D)Ljava/lang/Double;",
-				false
-		);
-	}
-	public void loadConstant(float constant) {
-		if (constant%1==0) {
-			loadConstant((long)constant);
-		} else {
-			methodVisitor.visitLdcInsn(constant);
-			//Convert to Object
-			methodVisitor.visitMethodInsn(
-					Opcodes.INVOKESTATIC,
-					"java/lang/Float",
-					"valueOf",
-					"(F)Ljava/lang/Float;",
-					false
-			);
-		}
-	}
-	public void loadConstant(long constant) {
-		methodVisitor.visitLdcInsn(constant);
-		//Convert to Object
-		methodVisitor.visitMethodInsn(
-				Opcodes.INVOKESTATIC,
-				"java/lang/Long",
-				"valueOf",
-				"(J)Ljava/lang/Long;",
-				false
-		);
-	}
-	public void loadConstantUnsafe(Object constant) {
-		methodVisitor.visitLdcInsn(constant);
-	}
-	public void loadConstant(boolean constant) {
-		methodVisitor.visitLdcInsn(constant);
-		//Convert to Object
-		methodVisitor.visitMethodInsn(
-				Opcodes.INVOKESTATIC,
-				"java/lang/Boolean",
-				"valueOf",
-				"(Z)Ljava/lang/Boolean;",
-				false
-			);
-	}
-
-
-
-	public void nullConstant() {
-		methodVisitor.visitInsn(Opcodes.ACONST_NULL);
-	}
-	
-	public int astore() {
-		methodVisitor.visitVarInsn(Opcodes.ASTORE, ++variableindex);
-		return variableindex;
-	}
+		putLabel(wrong_type);
+		newStringBuilder();
+		loadConstant("Can't convert object of type ");
+		call(StringBuilder.class, "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;", false);
+		swap();
+		call(Object.class, "getClass", "()Ljava/lang/Class;", false);
+		call(Class.class, "getSimpleName", "()Ljava/lang/String;", false);
+		call(StringBuilder.class, "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;", false);
+		loadConstant(" to type " + friendly_name);
+		call(StringBuilder.class, "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;", false);
+		call(StringBuilder.class, "toString", "()Ljava/lang/String;", false);
+		newInsn(ExecutionException.class);
+		dupX1();
+		swap();
+		loadConstantUnsafe(pos.line());
+		loadConstantUnsafe(pos.column());
+		callSpecial(ExecutionException.class, "<init>", "(Ljava/lang/String;II)V", false);
+		athrow();
 		
-	public int istore() {
-		methodVisitor.visitVarInsn(Opcodes.ISTORE, ++variableindex);
-		return variableindex;
-	}
-
-	public int fstore() {
-		methodVisitor.visitVarInsn(Opcodes.FSTORE, ++variableindex);
-		return variableindex;
-	}
-	public void fstore(int index) {
-		methodVisitor.visitVarInsn(Opcodes.FSTORE, index);
-	}
-	public void istore(int index) {
-		methodVisitor.visitVarInsn(Opcodes.ISTORE, index);
-	}
-	public void astore(int index) {
-		methodVisitor.visitVarInsn(Opcodes.ASTORE, index);
-	}
-
-	public void aastore() {
-		methodVisitor.visitInsn(Opcodes.AASTORE);
+		putLabel(end);
 	}
 	
-	public int lstore() {
-		methodVisitor.visitVarInsn(Opcodes.LSTORE, ++variableindex);
-		return variableindex++;
-	}
-	
-	
-	public void pop() {
-		methodVisitor.visitInsn(Opcodes.POP);
-	}
-
-
-
-	public void callInterface(Class<?> clazz, String name, String descriptor) {
-		methodVisitor.visitMethodInsn(Opcodes.INVOKEINTERFACE, Type.getInternalName(clazz), name, descriptor,
-				true);
-	}
-
-	public void callStatic(Class<?> clazz, String name, String descriptor, boolean isInterface) {
-		methodVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, Type.getInternalName(clazz), name, descriptor,
-				isInterface);
-	}
-
-	public void call(Class<?> clazz, String name, String descriptor, boolean isInterface) {
-		methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, Type.getInternalName(clazz), name, descriptor,
-				isInterface);
-	}
-
-	public void callSelf(String name, String descriptor, boolean isInterface) {
-		methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, classWriter.classname, name, descriptor,
-				isInterface);
-	}
-
-	public void addAReturn() {
-		methodVisitor.visitInsn(Opcodes.ARETURN);
-	}
-
-	public void putLabel(Label label) {
-		methodVisitor.visitLabel(label);
-	}
-
-	public void jumpto(Label end) {
-		methodVisitor.visitJumpInsn(Opcodes.GOTO, end);
-	}
-
-	public void end() {
-		end(Opcodes.RETURN);
-	}
-
-	public void end(int Opcode) {
-		putLabel(finalLabel);
-		methodVisitor.visitInsn(Opcode);
-		
-		endNoInsn();
-	}
-
-	protected void endNoInsn() {
-		methodVisitor.visitMaxs(0, 0);
-		methodVisitor.visitEnd();
-	}
-
-
-
 	public void throwRuntimeException(String exception) {
 		newAndDup(RuntimeException.class);
 		loadConstant(exception);
 		callSpecial(RuntimeException.class, "<init>", "(Ljava/lang/String;)V", false);
-		methodVisitor.visitInsn(Opcodes.ATHROW);
+		athrow();
 	}
-
-
-
+	
 	public void throwExecutionException(String exception, TextPos pos) {
-		throwExecutionException(exception, pos.line(), pos.column());
-	}
-	public void throwExecutionException(String exception, int line, int col) {
 		newAndDup(ExecutionException.class);
 		loadConstant(exception);
-		loadConstantUnsafe(line);
-		loadConstantUnsafe(col);
+		loadConstantUnsafe(pos.line());
+		loadConstantUnsafe(pos.column());
 		callSpecial(ExecutionException.class, "<init>", "(Ljava/lang/String;II)V", false);
-		methodVisitor.visitInsn(Opcodes.ATHROW);
+		athrow();
 	}
 
+	public void throwExecutionExceptionFromCaughtException(TextPos pos) {
+		Label execution_excpetion_handler = new Label();
+		Label general_exception_handler = new Label();
+		
+		dup();
+		instanceOf(ExecutionException.class);
+		ifne(execution_excpetion_handler);
+		
+		putLabel(general_exception_handler);
+		newInsn(ExecutionException.class);
+		dupX1();
+		swap();
+		loadConstantUnsafe(pos.line());
+		loadConstantUnsafe(pos.column());
+		callInit(ExecutionException.class, "(Ljava/lang/Exception;II)V");
+		athrow();
+		
+		putLabel(execution_excpetion_handler);
+		dup();
+		checkcast(ExecutionException.class);
+		getField("line", ExecutionException.class, int.class);
+		iflt(general_exception_handler);
+		athrow();
+	}
 
-
-	public void newArray(Class<?> type) {
-		methodVisitor.visitTypeInsn(Opcodes.ANEWARRAY,
-				Type.getInternalName(type));
+	public void getHelper() {
+		aload(0);
+		getField("helper", HudderV3Helper.class);
 	}
 }

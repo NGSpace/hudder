@@ -41,6 +41,35 @@ dependencies {
 	implementation(include("org.mozilla:rhino:${project.rhino_version}"))
 	
 	compileOnly("maven.modrinth:modmenu:${project.modmenu_version}")
+	
+	testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
+	
+    testImplementation "org.junit.jupiter:junit-jupiter-params:5.12.2"
+}
+
+fabricApi {
+    configureTests {
+        createSourceSet = true
+        modId = "hudder-tests"
+        enableGameTests = true
+        enableClientGameTests = true
+        eula = true
+    }
+}
+
+test {
+	useJUnitPlatform()
+	
+    outputs.upToDateWhen { false }
+	
+	test.testLogging {
+		showStandardStreams = true
+	}
+    workingDir = file("tests")
+    
+    doFirst {
+        workingDir.mkdirs()
+    }
 }
 
 processResources {

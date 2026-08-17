@@ -11,7 +11,9 @@
     	"InGameHudAccessor",
 		"MouseHandlerInjections",
 		"ItemCooldownsAccessor",
-		"GuiGraphicsExtractorAccessor"
+		"GuiGraphicsExtractorAccessor",
+		"BossHealthOverlayAccessor",
+		"ChatFormattingAccessor"
 	],
 	"mixins": [
 	],

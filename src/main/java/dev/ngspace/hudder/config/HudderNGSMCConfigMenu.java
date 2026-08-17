@@ -65,7 +65,7 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 					HudderTickEvent.TEMP_DISABLE = true;
 					File dest = new File(HudFileUtils.FOLDER + p.getFileName());
 					
-					if (p.toFile().exists()) {
+					if (dest.exists()) {
 						throw new IOException("Hud already exists");
 					}
 					
@@ -130,8 +130,7 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 	    			return Compilers.hasCompilerFromDisplayName(e)
 	    					? null : Component.translatable("hudder.general.compilertype.error");
 	    		})
-	    		.setWarningProvider(e->Compilers.getEntryFromDisplayName(e).unstable()
-	    				? Component.translatable("hudder.general.compilertype.unstable_warning", e): null)
+	    		.setWarningProvider(e->getCompilerWarning(Compilers.getEntryFromDisplayName(e)))
 	    		.build());
 		general.addOption(DoubleNGSMCConfigOption.fluentBuilder(config.scale, Component.translatable("hudder.general.scale"))
 				.setHoverComponent(Component.translatable("hudder.general.scale.tooltip"))
@@ -212,6 +211,11 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 				.setSaveOperation(b->config.removeeffects=b)
 				.setDefaultValue(false)
 				.build());
+		vanillahud.addOption(BooleanNGSMCConfigOption.fluentBuilder(config.removeBossBars, Component.translatable("hudder.vanillahud.removebossbars"))
+				.setHoverComponent(Component.translatable("hudder.vanillahud.removebossbars.tooltip"))
+				.setSaveOperation(b->config.removeBossBars=b)
+				.setDefaultValue(false)
+				.build());
 
         
 		/* Safety & Performance */
@@ -253,15 +257,18 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 		
 		
 		/* Hud specific settings */
-		try {
-			if (!Hudder.config.getCompiler().setupHudSettings(hudsettings))
-				builder.removeCategory(hudsettings);
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (!Hudder.config.getCompiler().setupHudSettings(hudsettings))
 			builder.removeCategory(hudsettings);
-		}
 		
 		return builder.build();
+	}
+	
+	public static Component getCompilerWarning(CompilerEntry compilerEntry) {
+		if (compilerEntry.deprecated()) return Component.translatable(
+				"hudder.general.compilertype.deprecated_warning", compilerEntry.displayname());
+		if (compilerEntry.unstable()) return Component.translatable(
+				"hudder.general.compilertype.unstable_warning", compilerEntry.displayname());
+		return null;
 	}
 	
 }

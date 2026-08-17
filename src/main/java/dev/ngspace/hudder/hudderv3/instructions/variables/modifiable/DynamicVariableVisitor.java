@@ -5,14 +5,14 @@ import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
-import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
 
-public class DynamicVariableVisitor extends VariableVisitor {
+public class DynamicVariableVisitor extends ExpressionVisitor {
 
 	public String variable;
 
-	public DynamicVariableVisitor(AV3Compiler comp, String variable, TextPos pos) {
-		super(comp, pos);
+	public DynamicVariableVisitor(AV3Compiler comp, String variable, TextPos pos, String expression) {
+		super(comp, pos, expression);
 		this.variable = variable;
 	}
 

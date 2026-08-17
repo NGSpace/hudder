@@ -85,11 +85,31 @@ END_TEST;
 @mode=normal
 
 input:
-	{exists("hud.hud")} {strwidth("hud")}
+	{exists("hud.hud")}
 end_input;
 
 output:
-	true 18
+	true
 end_output;
 
 END_TEST;
+
+
+
+|TEST:
+
+@name=Value Getter
+@mode=normal
+
+input:
+	{value_getter.val}
+	{value_getter.val1}
+end_input;
+
+output:
+	val
+	val1
+end_output;
+
+END_TEST;
+

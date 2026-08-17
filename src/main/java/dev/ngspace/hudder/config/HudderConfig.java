@@ -13,6 +13,7 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.Expose;
 
 import dev.ngspace.hudder.Hudder;
@@ -109,11 +110,11 @@ public class HudderConfig {
 				save();
 			}
 			
-		} catch (IOException e) {
+		} catch (IOException | JsonSyntaxException e) {
 			Hudder.IS_DEBUG=true;
 			Hudder.log("Failed to read Hudder config file, enabling debug mode.");
 			e.printStackTrace();
-		} catch (ReflectiveOperationException e) {
+		} catch (ReflectiveOperationException | ClassCastException | NullPointerException e) {
 			Hudder.IS_DEBUG=true;
 			Hudder.log("Failed to set Hudder config values, enabling debug mode.");
 			e.printStackTrace();
@@ -244,6 +245,7 @@ public class HudderConfig {
 		} catch (ReflectiveOperationException e) {
 			e.printStackTrace();
 			Hudder.IS_DEBUG=true;
+			throw new IOException(e);
 		}
 	}
 	
@@ -387,6 +389,10 @@ public class HudderConfig {
 	    return userSettings.removeeffects;
 	}
 
+	public boolean removeBossBars() {
+		return userSettings.removeBossBars;
+	}
+
 	public boolean limitrate() {
 	    return userSettings.limitrate;
 	}
@@ -424,4 +430,5 @@ public class HudderConfig {
 	public Map<String, Object> globalVariables() {
 		return userSettings.globalVariables;
 	}
+	
 }

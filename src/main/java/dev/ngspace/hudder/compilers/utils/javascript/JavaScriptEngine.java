@@ -10,13 +10,21 @@ import org.mozilla.javascript.Function;
 import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.RhinoException;
+import org.mozilla.javascript.RhinoTextPosGetter;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.Undefined;
 import org.mozilla.javascript.WrappedException;
 
 import dev.ngspace.hudder.Hudder;
+import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
+import dev.ngspace.hudder.api.functionsandconsumers.IUIElementManager;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.PositionedBinder;
+import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
 import dev.ngspace.hudder.compilers.abstractions.IScriptingLanguageEngine;
+import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.utils.ObjectWrapper;
@@ -24,7 +32,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
-public class JavaScriptEngine implements IScriptingLanguageEngine {
+public class JavaScriptEngine implements IScriptingLanguageEngine, PositionedBinder {
 
 	protected static Minecraft mc = Minecraft.getInstance();
 	
@@ -40,7 +48,14 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 	private final Context cx;
 	ScriptableObject scope;
 	boolean closed;
-	public JavaScriptEngine() {
+	private AHudCompiler<?> compiler;
+	private IUIElementManager elms;
+	private HudderConfig config;
+	
+	public JavaScriptEngine(IUIElementManager elms, AHudCompiler<?> compiler, HudderConfig config) {
+		this.compiler = compiler;
+		this.elms = elms;
+		this.config = config;
 		cx = contextFactory.enterContext();
 		try {
 			scope = cx.initSafeStandardObjects();
@@ -74,7 +89,9 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 					for (int i = 0;i<args.length;i++) {
 						vals[i] = new JavaScriptValue(args[i]);
 					}
-					return con.getWrapFactory().wrap(con, scope, function.exec(vals), (Class<?>) null);
+					
+					return con.getWrapFactory().wrap(con, scope, function.exec(
+							RhinoTextPosGetter.getPosition(), vals), (Class<?>) null);
 				} catch (Exception e) {
 					throw new WrappedException(e);
 				}
@@ -85,7 +102,7 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 		});
 	}
 	@Override public void bindConsumer(ScriptConsumer consumer, String... names) {
-		bindFunction(e->{consumer.exec(e);return Undefined.instance;},names);
+		bindFunction((p,e)->{consumer.exec(p,e);return Undefined.instance;},names);
 	}
 	
 	
@@ -146,6 +163,8 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 	@Override public synchronized void close() throws IOException {
 		closed = true;
 		scope = null;
+		if (FunctionAndConsumerAPI.getInstance().containsBinder(this))
+			FunctionAndConsumerAPI.getInstance().removeBinder(this);
 	}
 	
 	
@@ -205,6 +224,16 @@ public class JavaScriptEngine implements IScriptingLanguageEngine {
 		@Override public String toString() {return withContext(_ -> Context.toString(value));}
 
 		@Override public <T> T asType(Class<T> clazz) throws ExecutionException {return clazz.cast(get());}
+	}
+	
+	@Override
+	public void bindFunction(BindablePositionedFunction c, String... n) {
+		bindFunction((p,e)->c.invoke(elms, compiler, p, config, e), n);
+	}
+	
+	@Override
+	public void bindConsumer(BindablePositionedConsumer c, String... n) {
+		bindConsumer((p,e)->c.invoke(elms, compiler, p, config, e), n);
 	}
 	
 }

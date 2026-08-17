@@ -6,9 +6,9 @@ import java.util.Map;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
-import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableConsumer;
-import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableFunction;
-import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.Binder;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.PositionedBinder;
 import dev.ngspace.hudder.compilers.utils.CompileState;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
 import dev.ngspace.hudder.compilers.utils.TextPos;
@@ -25,7 +25,7 @@ import dev.ngspace.hudder.v2runtime.values.DefaultV2VariableParser;
 import dev.ngspace.hudder.v2runtime.values.IV2VariableParser;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 
-public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
+public abstract class AV2Compiler extends AVarTextCompiler implements PositionedBinder {
 	
 	public Map<String, V2Runtime> runtimes = new HashMap<String, V2Runtime>();
 	public MethodHandler methodHandler = new MethodHandler();
@@ -68,9 +68,9 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 	
 	
 	@Override
-	public void compileFile(String text, String filepath) throws CompileException {
+	public void compileFile(HudderConfig config, String text, String filepath) throws CompileException {
 		if (!runtimes.containsKey(text))
-			runtimes.put(text, buildRuntimeSafe(Hudder.config, text, new TextPos(-1, -1), filepath, null));
+			runtimes.put(text, buildRuntimeSafe(config, text, new TextPos(-1, -1), filepath, null));
 	}
 	
 
@@ -86,11 +86,12 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 	
 	
 	
-	@Override public void bindConsumer(BindableConsumer cons, String... names) {
-		methodHandler.bindConsumer((_,m,_,_,_,_,s)->cons.invoke(m, this, s), names);
+	@Override public void bindConsumer(BindablePositionedConsumer cons, String... names) {
+		methodHandler.bindConsumer((ci,m,_,_,_,pos,s)->cons.invoke(m, this, pos, ci, s), names);
 	}
-	@Override public void bindFunction(BindableFunction cons, String... names) {
-		functionHandler.bindFunction((c,_,s,_,_)->cons.invoke(c.compileState, this, s), names);
+	@Override public void bindFunction(BindablePositionedFunction cons, String... names) {
+		functionHandler.bindFunction((c,_,s,l,co)->cons.invoke(c.compileState, this, new TextPos(l, co),
+				c.config, s), names);
 	}
 	
 
@@ -179,7 +180,7 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 	public HudInformation compileAndExecute(HudderConfig info, String text, String filename) throws ExecutionException {
 		try {
 			if (!runtimes.containsKey(text))
-				compileFile(text, filename);
+				compileFile(info, text, filename);
 			return execute(info, text, filename);
 		} catch (CompileException e) {
 			throw new ExecutionException(e);

@@ -17,6 +17,7 @@ import net.minecraft.client.gui.Hud;
 public class InGameHudInjections {
 	public boolean shouldNotDraw() {return Hudder.config.removegui()&&Hudder.config.shouldCompile();}
     public boolean shouldNotDrawEffects() {return Hudder.config.removeeffects()&&Hudder.config.shouldCompile();}
+    public boolean shouldNotDrawBossBars() {return Hudder.config.removeBossBars()&&Hudder.config.shouldCompile();}
 
 	@Inject(method = "extractHotbarAndDecorations", at = @At("HEAD"),cancellable=true)
     public void disableHotbarAndDecorations(GuiGraphicsExtractor context, DeltaTracker tickCounter, CallbackInfo i) {
@@ -28,6 +29,13 @@ public class InGameHudInjections {
     @Inject(method = "extractEffects", at = @At("HEAD"), cancellable = true)
     public void disableEffectsHud(CallbackInfo ci) {
         if (shouldNotDrawEffects()) {
+            ci.cancel();
+        }
+    }
+
+    @Inject(method = "extractBossOverlay", at = @At("HEAD"), cancellable = true)
+    public void disableBossOverlay(CallbackInfo ci) {
+        if (shouldNotDrawBossBars()) {
             ci.cancel();
         }
     }

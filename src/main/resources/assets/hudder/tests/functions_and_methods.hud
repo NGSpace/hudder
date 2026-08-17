@@ -188,3 +188,67 @@ output:
 end_output;
 
 END_TEST;
+
+
+
+|TEST:
+
+@name=Too many args in call to user function
+@mode=error
+@exception_type=CompileException
+
+input:
+	#def divide, num1
+		;return, -1;
+	;divide, -1, -2;
+end_input;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Too little args in call to user function
+@mode=error
+@exception_type=CompileException
+
+input:
+	#def divide, num1
+		;return, -1;
+	;divide;
+end_input;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Too many args in call to user method
+@mode=error
+@exception_type=CompileException
+
+input:
+	#def divide, num1
+		{break}
+	;divide, -1, -2;
+end_input;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Too little args in call to user method
+@mode=error
+@exception_type=CompileException
+
+input:
+	#def divide, num1
+		{break}
+	;divide;
+end_input;
+
+END_TEST;

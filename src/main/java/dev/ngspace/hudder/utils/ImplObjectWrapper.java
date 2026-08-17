@@ -40,8 +40,8 @@ public class ImplObjectWrapper<T> implements ObjectWrapper {
 	public <E> E asType(Class<E> clazz) throws ExecutionException {
 		Object get = get();
 		if (clazz.isInstance(get)) return clazz.cast(get);
-		throw new ExecutionException("Can not cast value of type " + get.getClass().getSimpleName()
-				+ " to " + clazz.getSimpleName(), line, col);
+		throw new ExecutionException("Can not cast value of type " + (get==null?"null"
+				: get.getClass().getSimpleName()) + " to " + clazz.getSimpleName(), line, col);
 	}
 
 	public static <T> ObjectWrapper[] fromArray(T[] values, int line, int col) {

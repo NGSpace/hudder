@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
@@ -13,7 +12,7 @@ import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.TokenizedCodeBlock;
 import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.asm.V3ExecuteMethodWriter;
-import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.constants.StringVariableVisitor;
 
 public class ConditionInstruction extends Instruction {
@@ -24,7 +23,7 @@ public class ConditionInstruction extends Instruction {
 			TextPos pos) throws CompileException {
 		super(pos);
 		for (int i = 0; i + 1 < conds.size(); i += 2) {
-			VariableVisitor condition = comp.parseVariable(conds.get(i), pos);
+			ExpressionVisitor condition = comp.parseVariable(conds.get(i), pos);
 			
 			branches.add(prepareValue(condition, info, filename, conds.get(i + 1), comp));
 		}
@@ -33,10 +32,10 @@ public class ConditionInstruction extends Instruction {
 		}
 	}
 	
-	private ConditionBranch prepareValue(VariableVisitor condition, HudderConfig info, String filename,
+	private ConditionBranch prepareValue(ExpressionVisitor condition, HudderConfig info, String filename,
 			String source, AV3Compiler comp) throws CompileException {
 		
-		VariableVisitor variable = comp.parseVariable(source, pos);
+		ExpressionVisitor variable = comp.parseVariable(source, pos);
 		
 		TokenizedCodeBlock compiledBlock = variable instanceof StringVariableVisitor string
 				? comp.compile(info, string.value, filename, pos)
@@ -56,10 +55,11 @@ public class ConditionInstruction extends Instruction {
 			
 			if (branch.condition() != null) {
 				branch.condition().visit(methodWriter);
-				methodWriter.checkcast(Boolean.class);
+				methodWriter.checkcastSafe(Boolean.class, pos);
+				methodWriter.ensureNotNull("Condition can not be null!", pos);
 				methodWriter.booleanValue();
 				
-				methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFEQ, elseLabel);
+				methodWriter.ifeq(elseLabel);
 			}
 			
 			if (branch.codeBlock() != null) {
@@ -80,7 +80,7 @@ public class ConditionInstruction extends Instruction {
 		methodWriter.appendToBuilderAndPop();
 	}
 	
-	private record ConditionBranch(VariableVisitor condition, VariableVisitor variable,
+	private record ConditionBranch(ExpressionVisitor condition, ExpressionVisitor variable,
 			TokenizedCodeBlock codeBlock) {}
 	
 	@Override

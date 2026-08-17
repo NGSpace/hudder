@@ -1,6 +1,5 @@
 package dev.ngspace.hudder.utils;
 
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -8,8 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.CRC32;
-import java.util.zip.Checksum;
 
 import javax.imageio.ImageIO;
 
@@ -29,12 +26,12 @@ public class HudFileUtils {private HudFileUtils() {}
 	private static CachedReader reader = new CachedReader();
 	private static List<ResourceReloadListener> reloadResourcesListeners = new ArrayList<ResourceReloadListener>();
 
-	public static final String FABRIC_CONFIG_FOLDER = FabricLoader.getInstance().getConfigDir().toString();
-	public static final String FOLDER = FABRIC_CONFIG_FOLDER + File.separator + "hudder" + File.separator;
-    public static final String ASSETS = "/assets/hudder/";
-    public static final String[] DEFAULT_HUDS = {"hand.hud", "armorside.hud", "hud.hud", "basic.hud",
+	public static String FABRIC_CONFIG_FOLDER = FabricLoader.getInstance().getConfigDir().toString();
+	public static String FOLDER = FABRIC_CONFIG_FOLDER + File.separator + "hudder" + File.separator;
+    public static String ASSETS = "/assets/hudder/";
+    public static String[] DEFAULT_HUDS = {"hand.hud", "armorside.hud", "hud.hud", "basic.hud",
     		"hud.js", "hotbar.js"};
-    public static final String[] DEFAULT_TEXTURES = {"pointer.png","selection.png"};
+    public static String[] DEFAULT_TEXTURES = {"pointer.png","selection.png"};
 	
     
     
@@ -132,8 +129,12 @@ public class HudFileUtils {private HudFileUtils() {}
 		for (String file : DEFAULT_HUDS) {
 			File dest = new File(FOLDER, file);
 			if (dest.exists()) continue;
-			try {FileUtils.copyURLToFile(HudFileUtils.class.getResource(ASSETS + "huds/" + file), dest);}
-			catch (IOException e) {e.printStackTrace();}
+			try {
+				FileUtils.copyURLToFile(HudFileUtils.class.getResource(ASSETS + "huds/" + file), dest);
+			} catch (IOException e) {
+				if (Hudder.IS_DEBUG) e.printStackTrace();
+				Hudder.log("Failed to generate default hud " + file);
+			}
 		}
 		
 		// Create A Textures folder if missing
@@ -143,8 +144,12 @@ public class HudFileUtils {private HudFileUtils() {}
 		for (String file : DEFAULT_TEXTURES) {
 			File dest = new File(FOLDER + "Textures", file);
 			if (dest.exists()) continue;
-			try {FileUtils.copyURLToFile(HudFileUtils.class.getResource(ASSETS + "Textures/" + file), dest);}
-			catch (IOException e) {e.printStackTrace();}
+			try {
+				FileUtils.copyURLToFile(HudFileUtils.class.getResource(ASSETS + "Textures/" + file), dest);
+			} catch (IOException e) {
+				if (Hudder.IS_DEBUG) e.printStackTrace();
+				Hudder.log("Failed to generate default texture " + file);
+			}
 		}
 	}
 	
@@ -155,14 +160,7 @@ public class HudFileUtils {private HudFileUtils() {}
 			if (Hudder.IS_DEBUG) e.printStackTrace();
 			return null;
 		}
-		return Identifier.fromNamespaceAndPath("hudder",
-				String.valueOf(getCRC32Checksum(filename.trim().toLowerCase())));
-	}
-	private static long getCRC32Checksum(String str) {return getCRC32Checksum(str.getBytes());}
-	private static long getCRC32Checksum(byte[] bytes) {
-	    Checksum crc32 = new CRC32();
-	    crc32.update(bytes, 0, bytes.length);
-	    return crc32.getValue();
+		return Identifier.fromNamespaceAndPath("hudder", String.valueOf(HudderUtils.getCRC32Checksum(filename.trim().toLowerCase())));
 	}
 
 	public static void reloadResources() throws IOException {
@@ -182,10 +180,8 @@ public class HudFileUtils {private HudFileUtils() {}
 				loadResources(resource, path);
 				continue;
 			}
-			try {
-				if (loadImage(resource, path))
-					continue;
-			} catch (IOException e) {e.printStackTrace();}
+			if (loadImage(resource, path))
+				continue;
 			reader.loadFileToCache(resource);
 		}
 	}

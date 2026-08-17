@@ -17,14 +17,24 @@ public class ExecutionException extends Exception {
 		this.col = col;
 	}
 
-	public ExecutionException(CompileException e1) {
-		this(e1.getMessage(), e1.line, e1.col, e1);
+	public ExecutionException(CompileException e) {
+		this(e.getMessage(), e.line, e.col, e);
 	}
 
-	public ExecutionException(IOException e1) {
-		super(e1.getMessage(), e1);
-		this.line = 0;
-		this.col = 0;
+	public ExecutionException(IOException e) {
+		this(e, new TextPos(-1,-1));
+	}
+
+	public ExecutionException(IOException e, TextPos pos) {
+		super(e.getMessage(), e);
+		this.line = pos.line();
+		this.col = pos.column();
+	}
+
+	public ExecutionException(Exception e, int line, int column) {
+		super(e.getMessage(), e);
+		this.line = line;
+		this.col = column;
 	}
 
 	private static final long serialVersionUID = -5301919978870515553L;
