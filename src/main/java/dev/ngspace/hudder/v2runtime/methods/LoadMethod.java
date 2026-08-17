@@ -28,7 +28,8 @@ public class LoadMethod implements V2IMethod, BindablePositionedConsumer {
 		String file = null;
 		try {
 			file = args[0].asString();
-		} catch (Exception _) {
+		} catch (Exception e) {
+			e.printStackTrace();
 			file = args[0].toString(); //Against my better judgement I've decided this is for the best...
 			// 30/07/2026 Fuck that, my better judgement was better:
 			if (HudCompilationManager.isFirstRunSinceCacheClear)

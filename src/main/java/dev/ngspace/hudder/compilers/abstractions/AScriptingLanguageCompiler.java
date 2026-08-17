@@ -46,6 +46,7 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 				wrapper.evaluateCode(text, filepath);
 				cache.put(text, new RuntimeCache(wrapper,null));
 			} catch (Exception e) {
+				if (Hudder.IS_DEBUG) e.printStackTrace();
 				wrapper.close();
 				cache.put(text, new RuntimeCache(wrapper,e));
 				throw wrapper.processCompileException(e);

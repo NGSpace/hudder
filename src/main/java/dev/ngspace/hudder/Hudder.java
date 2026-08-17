@@ -199,4 +199,7 @@ public class Hudder implements ClientModInitializer {
 	public static void alert(Object str) {
 		Minecraft.getInstance().player.sendSystemMessage(Component.keybind(String.valueOf(str)));
 	}
+	public static void handle(Exception exception) {
+		if (IS_DEBUG) exception.printStackTrace();
+	}
 }

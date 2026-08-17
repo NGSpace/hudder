@@ -316,7 +316,8 @@ public class HudderRenderer implements HudElement {
 	            	else
 	            		renderFail(context, HudCompilationManager.LastFailMessage);
 				} catch (Exception e) {
-					e.printStackTrace();
+					if (Hudder.IS_DEBUG) e.printStackTrace();
+		    		renderFail(context, e.getMessage());
 				}
 			}
     	} catch (RuntimeException e) {

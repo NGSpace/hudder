@@ -37,4 +37,5 @@ jobs:
       - name: test
         run: ./gradlew test
       - name: gametest
+        if: ${{ runner.os == 'Linux' }} # To run gametests on Headless systems fabric uses XVFB and that's a Linux exclusive. Linux>>>
         run: ./gradlew runClientGameTest

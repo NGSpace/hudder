@@ -180,10 +180,8 @@ public class HudFileUtils {private HudFileUtils() {}
 				loadResources(resource, path);
 				continue;
 			}
-			try {
-				if (loadImage(resource, path))
-					continue;
-			} catch (IOException e) {e.printStackTrace();}
+			if (loadImage(resource, path))
+				continue;
 			reader.loadFileToCache(resource);
 		}
 	}
