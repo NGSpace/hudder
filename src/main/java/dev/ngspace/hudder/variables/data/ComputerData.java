@@ -1,13 +1,7 @@
 package dev.ngspace.hudder.variables.data;
 
-
 import java.util.Calendar;
 import java.util.Locale;
-
-
-import org.lwjgl.glfw.GLFW;
-
-import com.mojang.blaze3d.platform.GLX;
 
 import dev.ngspace.hudder.variables.HudderBuiltInVariables;
 import dev.ngspace.hudder.variables.advanced.Misc;
