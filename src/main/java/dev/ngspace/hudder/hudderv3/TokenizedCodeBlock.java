@@ -35,7 +35,7 @@ public class TokenizedCodeBlock {
 		for (Instruction ins : instructions) {
 			Label instruction_start = new Label();
 			methodWriter.putLabel(instruction_start);
-			methodWriter.methodVisitor.visitLineNumber(ins.pos.line(), instruction_start);
+			methodWriter.putLineNumber(ins.pos.line(), instruction_start);
 			ins.visit(methodWriter, classWriter, breakLabel);
 		}
 	}

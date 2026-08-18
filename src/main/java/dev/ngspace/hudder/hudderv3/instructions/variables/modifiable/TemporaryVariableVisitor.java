@@ -3,21 +3,20 @@ package dev.ngspace.hudder.hudderv3.instructions.variables.modifiable;
 import java.util.Map;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
-import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
 
-public class TemporaryVariableVisitor extends VariableVisitor {
+public class TemporaryVariableVisitor extends ExpressionVisitor {
 
 	public String variable;
 
-	public TemporaryVariableVisitor(AV3Compiler comp, String variable, TextPos pos) {
-		super(comp, pos);
+	public TemporaryVariableVisitor(AV3Compiler comp, String variable, TextPos pos, String expression) {
+		super(comp, pos, expression);
 		this.variable = variable.toLowerCase();
 	}
 
@@ -31,7 +30,7 @@ public class TemporaryVariableVisitor extends VariableVisitor {
 			methodWriter.loadConstant(variable);
 			methodWriter.callInterface(Map.class, "get", "(Ljava/lang/Object;)Ljava/lang/Object;");
 			methodWriter.dup();
-			methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFNONNULL, end);
+			methodWriter.ifnonnull(end);
 			methodWriter.pop();
 			methodWriter.loadConstant(0d);
 			methodWriter.putLabel(end);

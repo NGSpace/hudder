@@ -1,21 +1,19 @@
 package dev.ngspace.hudder.hudderv3.instructions.variables.operations;
 
-import org.objectweb.asm.Opcodes;
-
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
-import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
 
-public class PreIncDecVariableVisitor extends VariableVisitor {
+public class PreIncDecVariableVisitor extends ExpressionVisitor {
 
-	private VariableVisitor value;
+	private ExpressionVisitor value;
 	private boolean increase;
 
-	public PreIncDecVariableVisitor(String string, AV3Compiler comp, boolean increase, TextPos pos)
-			throws CompileException {
-		super(comp, pos);
+	public PreIncDecVariableVisitor(String string, AV3Compiler comp, boolean increase, TextPos pos,
+			String expression) throws CompileException {
+		super(comp, pos, expression);
 		this.value = comp.parseVariable(string, pos);
 		this.increase = increase;
 	}
@@ -23,13 +21,13 @@ public class PreIncDecVariableVisitor extends VariableVisitor {
 	@Override
 	public void visit(V3MethodWriter methodWriter) throws CompileException {
 		value.visit(methodWriter);
-		methodWriter.checkcast(Number.class);
+		methodWriter.checkcastSafe(Number.class, pos);
 		methodWriter.doubleValue();
 		methodWriter.loadConstantUnsafe(1d);
 		if (increase) {
-			methodWriter.methodVisitor.visitInsn(Opcodes.DADD);
+			methodWriter.dadd();
 		} else {
-			methodWriter.methodVisitor.visitInsn(Opcodes.DSUB);
+			methodWriter.dsub();
 		}
 		methodWriter.callStatic(Double.class, "valueOf", "(D)Ljava/lang/Double;", false);
 		value.visitSetValue(methodWriter);

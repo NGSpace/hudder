@@ -1,26 +1,29 @@
 package dev.ngspace.hudder.hudderv3.instructions.variables.operations;
 
+import org.objectweb.asm.Label;
+
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
-import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
 import dev.ngspace.hudder.utils.HudderUtils;
+import dev.ngspace.hudder.utils.ValueGetter;
+import dev.ngspace.hudder.v2runtime.values.operations.V2ClassPropertyCall;
 
-public class ClassAccessVariableVisitor extends VariableVisitor {
+public class ClassAccessVariableVisitor extends ExpressionVisitor {
 	
-	private static final String[] forbiddenValuesAndFunctions = {"getClass","hashCode","wait","notify","notifyAll","clone","finalize"};
-	private VariableVisitor classobj;
+	private ExpressionVisitor classobj;
 	private boolean isFunctionCall;
-	private VariableVisitor[] functionCallArgs;
+	private ExpressionVisitor[] functionCallArgs;
 	private String funcName = "";
 	private String fieldName = "";
 	private final String classObjectName;
 
-	public ClassAccessVariableVisitor(AV3Compiler comp, String classyobjname, String prop, TextPos pos)
-			throws CompileException {
-		super(comp, pos);
+	public ClassAccessVariableVisitor(AV3Compiler comp, String classyobjname, String prop, TextPos pos,
+			String expression) throws CompileException {
+		super(comp, pos, expression);
 		this.classObjectName = classyobjname;
 		this.classobj = comp.parseVariable(classyobjname, pos);
 		if (!prop.startsWith("(")&&prop.endsWith(")")) {
@@ -32,7 +35,7 @@ public class ClassAccessVariableVisitor extends VariableVisitor {
 					String parametersString = prop.substring(argStart+1, prop.length()-1);
 					
 					String[] tokenizedArgs = HudderUtils.processParemeters(parametersString);
-					functionCallArgs = new VariableVisitor[tokenizedArgs.length];
+					functionCallArgs = new ExpressionVisitor[tokenizedArgs.length];
 					
 					for (int i=0;i<functionCallArgs.length;i++) 
 						functionCallArgs[i] = comp.parseVariable(tokenizedArgs[i], pos);
@@ -42,7 +45,7 @@ public class ClassAccessVariableVisitor extends VariableVisitor {
 			}
 		}
 		if (!isFunctionCall) fieldName = prop;
-		for (String forbidden : forbiddenValuesAndFunctions) {
+		for (String forbidden : V2ClassPropertyCall.forbiddenValuesAndFunctions) {
 			if (forbidden.equals(funcName)) throw new CompileException("No function named \""+funcName+'"',pos);
 			if (forbidden.equals(fieldName)) throw new CompileException("No property named \""+fieldName+'"',pos);
 		}
@@ -51,33 +54,60 @@ public class ClassAccessVariableVisitor extends VariableVisitor {
 	@Override
 	public void visit(V3MethodWriter methodWriter) throws CompileException {
 		classobj.visit(methodWriter);
-		int classObjectIndex = methodWriter.astore();
 
-		if (!isFunctionCall) {
+		if (isFunctionCall) {
+			int classObjectIndex = methodWriter.astore();
+			methodWriter.loadConstantUnsafe(functionCallArgs.length);
+			methodWriter.newArray(Object.class);
+			int parametersIndex = methodWriter.astore();
+			for (int i = 0; i < functionCallArgs.length; i++) {
+				methodWriter.aload(parametersIndex);
+				methodWriter.loadConstantUnsafe(i);
+				functionCallArgs[i].visit(methodWriter);
+				methodWriter.aastore();
+			}
 			methodWriter.aload(classObjectIndex);
 			methodWriter.loadConstant(classObjectName);
-			methodWriter.loadConstant(fieldName);
-			methodWriter.callStatic(HudderV3Helper.class, "getClassProperty",
-					"(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Object;", false);
+			methodWriter.loadConstant(funcName);
+			methodWriter.aload(parametersIndex);
+			methodWriter.loadConstantUnsafe(pos.line());
+			methodWriter.loadConstantUnsafe(pos.column());
+			methodWriter.callStatic(HudderV3Helper.class, "callClassMethod", "("
+					+ "Ljava/lang/Object;"
+					+ "Ljava/lang/String;"
+					+ "Ljava/lang/String;"
+					+ "[Ljava/lang/Object;"
+					+ "II"
+					+ ")Ljava/lang/Object;",
+					false);
 			return;
 		}
 
-		methodWriter.loadConstantUnsafe(functionCallArgs.length);
-		methodWriter.newArray(Object.class);
-		int parametersIndex = methodWriter.astore();
-		for (int i = 0; i < functionCallArgs.length; i++) {
-			methodWriter.aload(parametersIndex);
-			methodWriter.loadConstantUnsafe(i);
-			functionCallArgs[i].visit(methodWriter);
-			methodWriter.aastore();
-		}
-		methodWriter.aload(classObjectIndex);
+		Label value_getter = new Label();
+		Label end = new Label();
+		
+		methodWriter.dup();
+		methodWriter.instanceOf(ValueGetter.class);
+		methodWriter.ifne(value_getter);
+		
 		methodWriter.loadConstant(classObjectName);
-		methodWriter.loadConstant(funcName);
-		methodWriter.aload(parametersIndex);
-		methodWriter.callStatic(HudderV3Helper.class, "callClassMethod",
-				"(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/Object;",
-				false);
+		methodWriter.loadConstant(fieldName);
+		methodWriter.loadConstantUnsafe(pos.line());
+		methodWriter.loadConstantUnsafe(pos.column());
+		methodWriter.callStatic(HudderV3Helper.class, "getClassProperty", "("
+				+ "Ljava/lang/Object;"
+				+ "Ljava/lang/String;"
+				+ "Ljava/lang/String;"
+				+ "II)"
+				+ "Ljava/lang/Object;", false);
+		methodWriter.jumpto(end);
+		
+		methodWriter.putLabel(value_getter);
+		methodWriter.checkcast(ValueGetter.class);
+		methodWriter.loadConstant(fieldName);
+		methodWriter.callInterface(ValueGetter.class, "get", "(Ljava/lang/String;)Ljava/lang/Object;");
+		
+		methodWriter.putLabel(end);
 	}
 	
 }

@@ -3,22 +3,20 @@ package dev.ngspace.hudder.hudderv3.instructions.variables.modifiable;
 import java.util.List;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
-import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
 
-public class ArrayReadVariableVisitor extends VariableVisitor {
+public class ArrayReadVariableVisitor extends ExpressionVisitor {
 
-	private VariableVisitor indexValue;
-	private VariableVisitor array;
+	private ExpressionVisitor indexValue;
+	private ExpressionVisitor array;
 
-	public ArrayReadVariableVisitor(AV3Compiler comp, String value, TextPos pos) throws CompileException {
-		super(comp, pos);
+	public ArrayReadVariableVisitor(AV3Compiler comp, String value, TextPos pos, String expression) throws CompileException {
+		super(comp, pos, expression);
 		int indexstart = value.lastIndexOf('[');
 		String index = value.substring(indexstart+1,value.length()-1);
 		indexValue = comp.parseVariable(index, pos);
@@ -34,12 +32,12 @@ public class ArrayReadVariableVisitor extends VariableVisitor {
 		
 		methodWriter.dup();
 		
-		methodWriter.methodVisitor.visitTypeInsn(Opcodes.INSTANCEOF, Type.getInternalName(List.class));
-		methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFEQ, normalarray);
+		methodWriter.instanceOf(List.class);
+		methodWriter.ifeq(normalarray);
 		
 		methodWriter.checkcast(List.class);
 		indexValue.visit(methodWriter);
-		methodWriter.checkcast(Number.class);
+		methodWriter.checkcastSafe(Number.class, pos);
 		methodWriter.intValue();
 		methodWriter.callInterface(List.class, "get", "(I)Ljava/lang/Object;");
 		
@@ -47,9 +45,9 @@ public class ArrayReadVariableVisitor extends VariableVisitor {
 
 		methodWriter.putLabel(normalarray);
 
-		methodWriter.checkcast(Object[].class);
+		methodWriter.checkcastSafe(Object[].class, pos);
 		indexValue.visit(methodWriter);
-		methodWriter.checkcast(Number.class);
+		methodWriter.checkcastSafe(Number.class, pos);
 		methodWriter.intValue();
 		methodWriter.aaload();
 		
@@ -67,21 +65,21 @@ public class ArrayReadVariableVisitor extends VariableVisitor {
 		
 		array.visit(methodWriter);
 
-		methodWriter.checkcast(List.class);
+		methodWriter.checkcastSafe(List.class, pos, "Array");
 		methodWriter.dup();
 		int list_index = methodWriter.astore();
 		
 		methodWriter.callInterface(List.class, "size", "()I");
 		indexValue.visit(methodWriter);
-		methodWriter.checkcast(Number.class);
+		methodWriter.checkcastSafe(Number.class, pos);
 		methodWriter.intValue();
 		methodWriter.dup();
 		int index_index = methodWriter.istore();
-		methodWriter.methodVisitor.visitInsn(Opcodes.ISUB);
+		methodWriter.isub();
 		methodWriter.dup();
-		methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFEQ, add);
+		methodWriter.ifeq(add);
 		
-		methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFGT, set);
+		methodWriter.ifgt(set);
 		
 		methodWriter.throwRuntimeException("Index out of bounds of array!");
 

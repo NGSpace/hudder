@@ -25,14 +25,13 @@ public class ForV2RuntimeElement extends AV2RuntimeElement {
 	
 	@Override
 	public boolean execute(CompileState compileState, StringBuilder builder) throws ExecutionException {
-		if (condition.get() instanceof Iterable<?> iterable) {
-			for (Object val : iterable) {
-				nestedRuntimes[0].putScoped(variablename, val);
-				CompileState res = nestedRuntimes[0].execute();
-				compileState.combineWithResult(res.toResult(), false);
-				if (res.hasReturned) compileState.setReturnValue(res.returnValue);
-				if (res.hasBroken) break;
-			}
+		Iterable<?> iterable = condition.asType(Iterable.class);
+		for (Object val : iterable) {
+			nestedRuntimes[0].putScoped(variablename, val);
+			CompileState res = nestedRuntimes[0].execute();
+			compileState.combineWithResult(res.toResult(), false);
+			if (res.hasReturned) compileState.setReturnValue(res.returnValue);
+			if (res.hasBroken) break;
 		}
 		return true;
 	}

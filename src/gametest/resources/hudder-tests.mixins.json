@@ -1,0 +1,13 @@
+{
+	"required": true,
+	"package": "dev.ngspace.hudder.tests_mixins",
+	"compatibilityLevel": "JAVA_25",
+	"client": [
+    	"ChatComponentAccessor"
+	],
+	"mixins": [
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

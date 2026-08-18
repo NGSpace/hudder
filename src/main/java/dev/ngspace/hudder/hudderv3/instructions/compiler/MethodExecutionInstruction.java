@@ -1,16 +1,13 @@
 package dev.ngspace.hudder.hudderv3.instructions.compiler;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
-import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableConsumer;
-import dev.ngspace.hudder.compilers.HudderV3Compiler;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
-import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.V3HudInformation;
 import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.asm.V3ExecuteMethodWriter;
@@ -28,7 +25,7 @@ public class MethodExecutionInstruction extends Instruction {
 		super(pos);
 		this.builder = builder;
 		this.comp = comp;
-		this.apiCall = HudderV3Helper.api_consumers.containsKey("api_consumer_" + builder[0].trim());
+		this.apiCall = comp.api_consumers.containsKey("api_consumer_" + builder[0].trim());
 		
 		if ("no_sys_var".equalsIgnoreCase(builder[0].trim())) {
 			comp.system_variables = false;
@@ -42,6 +39,9 @@ public class MethodExecutionInstruction extends Instruction {
 			throws CompileException {
 		switch (builder[0].toLowerCase().trim()) {
 			case "return":
+				if (builder.length!=2) {
+					throw new CompileException("Return method must have a return value!", pos);
+				}
 				comp.parseVariable(builder[1], pos).visit(methodWriter);
 				methodWriter.astore(methodWriter.return_value_index);
 				methodWriter.jumpto(methodWriter.finalLabel);
@@ -49,44 +49,54 @@ public class MethodExecutionInstruction extends Instruction {
 			case "no_sys_var", "sys_var":
 				break;
 			case "mute":
+				if (methodWriter.isBuilderDisabled())
+					break;
 				methodWriter.setMuted(true);
 				break;
 			case "topleft":
+				if (methodWriter.isBuilderDisabled())
+					break;
 				methodWriter.setMuted(false);
 				methodWriter.selected_builder_index = methodWriter.topleft_builder_index;
 				if (builder.length>1) {
 					comp.parseVariable(builder[1], pos).visit(methodWriter);
-					methodWriter.checkcast(Number.class);
+					methodWriter.checkcastSafe(Number.class, pos);
 					methodWriter.floatValue();
 					methodWriter.fstore(methodWriter.topleft_scale_index);
 				}
 				break;
 			case "topright":
+				if (methodWriter.isBuilderDisabled())
+					break;
 				methodWriter.setMuted(false);
 				methodWriter.selected_builder_index = methodWriter.topright_builder_index;
 				if (builder.length>1) {
 					comp.parseVariable(builder[1], pos).visit(methodWriter);
-					methodWriter.checkcast(Number.class);
+					methodWriter.checkcastSafe(Number.class, pos);
 					methodWriter.floatValue();
 					methodWriter.fstore(methodWriter.topright_scale_index);
 				}
 				break;
 			case "bottomleft":
+				if (methodWriter.isBuilderDisabled())
+					break;
 				methodWriter.setMuted(false);
 				methodWriter.selected_builder_index = methodWriter.bottomleft_builder_index;
 				if (builder.length>1) {
 					comp.parseVariable(builder[1], pos).visit(methodWriter);
-					methodWriter.checkcast(Number.class);
+					methodWriter.checkcastSafe(Number.class, pos);
 					methodWriter.floatValue();
 					methodWriter.fstore(methodWriter.bottomleft_scale_index);
 				}
 				break;
 			case "bottomright":
+				if (methodWriter.isBuilderDisabled())
+					break;
 				methodWriter.setMuted(false);
 				methodWriter.selected_builder_index = methodWriter.bottomright_builder_index;
 				if (builder.length>1) {
 					comp.parseVariable(builder[1], pos).visit(methodWriter);
-					methodWriter.checkcast(Number.class);
+					methodWriter.checkcastSafe(Number.class, pos);
 					methodWriter.floatValue();
 					methodWriter.fstore(methodWriter.bottomright_scale_index);
 				}
@@ -97,16 +107,20 @@ public class MethodExecutionInstruction extends Instruction {
 				if (apiCall) {
 					methodWriter.classWriter.loadApiConsumer(builder[0].trim());
 					methodWriter.aload(0);
-					methodWriter.getField("api_consumer_"+builder[0].trim(), BindableConsumer.class);
+					methodWriter.getField("api_consumer_"+builder[0].trim(), BindablePositionedConsumer.class);
 					methodWriter.aload(0);
 					methodWriter.getField("uimanager", ArrayElementManager.class);
 					methodWriter.aload(0);
-					methodWriter.getField("v3compiler", HudderV3Compiler.class);
+					methodWriter.getField("v3compiler", AV3Compiler.class);
+					methodWriter.newAndDup(TextPos.class);
+					methodWriter.loadConstantUnsafe(pos.line());
+					methodWriter.loadConstantUnsafe(pos.column());
+					methodWriter.callInit(TextPos.class, "(II)V");
+					methodWriter.aload(1);
 				}
 				
 				methodWriter.loadConstantUnsafe(builder.length-1);
-				methodWriter.methodVisitor.visitTypeInsn(Opcodes.ANEWARRAY,
-						Type.getInternalName(apiCall ? ObjectWrapper.class: Object.class));
+				methodWriter.newArray(apiCall ? ObjectWrapper.class: Object.class);
 				int array_index = methodWriter.astore();
 				for (int i = 1;i<builder.length;i++) {
 					comp.parseVariable(builder[i], pos).visit(methodWriter);
@@ -122,7 +136,7 @@ public class MethodExecutionInstruction extends Instruction {
 						methodWriter.loadConstantUnsafe(pos.column());
 						methodWriter.callSpecial(ImplObjectWrapper.class, "<init>", "(Ljava/lang/Object;II)V", false);
 					}
-					methodWriter.methodVisitor.visitInsn(Opcodes.AASTORE);
+					methodWriter.aastore();
 				}
 				
 				if (apiCall) {
@@ -134,20 +148,31 @@ public class MethodExecutionInstruction extends Instruction {
 	}
 	
 	protected void visitApiCall(V3MethodWriter methodWriter, int array_index) {
-		methodWriter.aload(array_index);
-		methodWriter.callInterface(BindableConsumer.class, "invoke",
-				"(Ldev/ngspace/hudder/api/functionsandconsumers/IUIElementManager;Ldev/ngspace/hudder/compilers/abstractions/AHudCompiler;[Ldev/ngspace/hudder/utils/ObjectWrapper;)V");
-
+		methodWriter.tryCatchBlock(_->{
+			methodWriter.aload(array_index);
+			methodWriter.callInterface(BindablePositionedConsumer.class, "invoke","("
+					+ "Ldev/ngspace/hudder/api/functionsandconsumers/IUIElementManager;"
+					+ "Ldev/ngspace/hudder/compilers/abstractions/AHudCompiler;"
+					+ "Ldev/ngspace/hudder/compilers/utils/TextPos;"
+					+ "Ldev/ngspace/hudder/config/HudderConfig;"
+					+ "[Ldev/ngspace/hudder/utils/ObjectWrapper;"
+					+ ")V");
+		}, _->methodWriter.throwExecutionExceptionFromCaughtException(pos), Exception.class);
 	}
 	
 	protected void visitUserConsumer(V3MethodWriter methodWriter, int array_index) throws CompileException {
-		if (methodWriter.classWriter.user_methods.containsKey(builder[0].trim())) {
+		var cons = methodWriter.classWriter.user_methods.get(builder[0].trim());
+		if (cons!=null) {
+			if (builder.length-1<cons.min_args())
+				throw new CompileException("Too little arguements for function \""+builder[0].trim()+'"', pos);
+			if (builder.length-1>cons.max_args())
+				throw new CompileException("Too many arguements for function \""+builder[0].trim()+'"', pos);
 			methodWriter.aload(0);
 			methodWriter.aload(1);
 			methodWriter.aload(2);
 			methodWriter.aload(3);
 			methodWriter.aload(array_index);
-			methodWriter.callSelf(methodWriter.classWriter.user_methods.get(builder[0].trim()),
+			methodWriter.callSelf(cons.bytecode_name(),
 					"(Ldev/ngspace/hudder/config/HudderConfig;"
 					+ "Ljava/lang/String;"
 					+ "Ljava/lang/String;"
@@ -166,6 +191,6 @@ public class MethodExecutionInstruction extends Instruction {
 	
 	@Override
 	public boolean doesReturnValue() {
-		return "return".equals(builder[0]);
+		return "return".equalsIgnoreCase(builder[0].trim());
 	}
 }

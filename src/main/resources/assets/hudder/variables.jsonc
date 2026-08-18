@@ -10,7 +10,7 @@
 //		]
 //  }
 {
-	"hudder_version": "10.2.0",
+	"hudder_version": "10.3.0",
 	"number": {
 		"Performance": [
 			{
@@ -1178,8 +1178,15 @@
 		"Players list": [
 			{
 				"name": "players_list",
-				"desc": "returns array of PlayerInformation [Contains values: String gamemode, Component displayname, String uuid, String username, int tabOrder, String teammate {nullable}]",
+				"desc": "Returns array of PlayerInformation [Contains values: String gamemode, Component displayname, String uuid, String username, int tabOrder, String teammate {nullable}]",
 				"version": "10.1.0"
+			}
+		],
+		"Boss bars": [
+			{
+				"name": "boss_bars",
+				"desc": "Returns an array of BossBarData [Contains values: String uuid, String color, String color_code, Component name, boolean darken_screen, boolean play_boss_music, boolean create_world_fog, float progress]",
+				"version": "10.3.0"
 			}
 		]
 	}

@@ -3,20 +3,19 @@ package dev.ngspace.hudder.hudderv3.instructions.variables.operations.booloperat
 import java.util.List;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
-import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
 
-public class LogicalAndVariableVisitor extends VariableVisitor {
+public class LogicalAndVariableVisitor extends ExpressionVisitor {
 
-	private List<VariableVisitor> values;
+	private List<ExpressionVisitor> values;
 
-	public LogicalAndVariableVisitor(List<VariableVisitor> values, AV3Compiler comp, TextPos pos) {
-		super(comp, pos);
+	public LogicalAndVariableVisitor(List<ExpressionVisitor> values, AV3Compiler comp, TextPos pos, String expression) {
+		super(comp, pos, expression);
 		this.values = values;
 	}
 
@@ -27,9 +26,9 @@ public class LogicalAndVariableVisitor extends VariableVisitor {
 		
 		for (int i = 0;i<values.size();i++) {
 			values.get(i).visit(methodWriter);
-			methodWriter.checkcast(Boolean.class);
+			methodWriter.checkcastSafe(Boolean.class, pos);
 			methodWriter.booleanValue();
-			methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFEQ, false_value);
+			methodWriter.ifeq(false_value);
 		}
 		methodWriter.loadConstant(true);
 		methodWriter.jumpto(end);

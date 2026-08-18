@@ -21,7 +21,6 @@ import dev.ngspace.hudder.hudderv3.instructions.compiler.MethodExecutionInstruct
 import dev.ngspace.hudder.hudderv3.instructions.compiler.VariableInstruction;
 import dev.ngspace.hudder.hudderv3.instructions.compiler.WhileInstruction;
 import dev.ngspace.hudder.utils.HudderUtils;
-import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 import net.minecraft.network.chat.Component;
 	
 public class HudderV3Compiler extends AV3Compiler {
@@ -57,7 +56,7 @@ public class HudderV3Compiler extends AV3Compiler {
 		int savedind = 0;
 		
 		boolean cleanup = false;
-		int cleanup_amount = Hudder.config.methodBuffer();
+		int cleanup_amount = info.methodBuffer();
 		
 		byte compileState = TEXT_STATE;
 
@@ -92,7 +91,7 @@ public class HudderV3Compiler extends AV3Compiler {
 							break;
 						case ';':
 							compileState = METHOD_STATE;
-							finalCodeBlock.appendStringConstant(trimMethod(elemBuilder.toString()), posTracker.get());
+							finalCodeBlock.appendStringConstant(trimMethod(info, elemBuilder.toString()), posTracker.get());
 							elemBuilder.setLength(0);
 							savedind = ind;
 						    quotesafe = false;
@@ -202,7 +201,7 @@ public class HudderV3Compiler extends AV3Compiler {
 						finalCodeBlock.addInstruction(new MethodExecutionInstruction(builder, this, posTracker.goToAndGet(savedind)));
 						elemBuilder.setLength(0);
 						cleanup = true;
-						cleanup_amount = Hudder.config.methodBuffer()/2;
+						cleanup_amount = info.methodBuffer()/2;
 					}
 					break;
 				}
@@ -299,11 +298,6 @@ public class HudderV3Compiler extends AV3Compiler {
 		
 		return finalCodeBlock;
 	}
-
-	@Override
-	public boolean setupHudSettings(NGSMCConfigCategory hudsettings) {
-		return false;
-	}
 	
 	public CodeBlock getCodeBlock(String text, int index) {
 		StringBuilder instructions = new StringBuilder();
@@ -349,7 +343,7 @@ public class HudderV3Compiler extends AV3Compiler {
 				else if(c==' '&&elemBuilder.toString().equals("for")){instruction=FOR_LOOP_INSTRUCTION;}
 				else if(c==' '&&elemBuilder.toString().equals("else if")){instruction=ELSE_IF_INSTRUCTION;}
 				else if(c=='e'&&elemBuilder.toString().equals("els")&&
-						(text.charAt(ind+1)=='\n')){instruction=ELSE_INSTRUCTION;}
+						(text.length()>ind+1&&text.charAt(ind+1)=='\n')){instruction=ELSE_INSTRUCTION;}
 				if (instruction!=UNDEFINED_INSTRUCTION) {elemBuilder.setLength(0);continue;}
 			}
 			elemBuilder.append(c);
@@ -379,10 +373,10 @@ public class HudderV3Compiler extends AV3Compiler {
 		});
 		return strb.toString();
 	}
-	public String trimMethod(String string) {
+	public String trimMethod(HudderConfig config, String string) {
 		String str = string;
 		int buffer;
-		if ((buffer = Hudder.config.methodBuffer())<10) {
+		if ((buffer = config.methodBuffer())<10) {
 			for (int i = 0; i<buffer;i++) {
 				if (str.endsWith("\n")||str.endsWith("\r")) str = str.substring(0, str.length()-1);
 			}

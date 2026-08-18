@@ -1,7 +1,11 @@
 package dev.ngspace.hudder.utils;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.CRC32;
+import java.util.zip.Checksum;
 
 public class HudderUtils {private HudderUtils() {}
 	
@@ -62,5 +66,19 @@ public class HudderUtils {private HudderUtils() {}
 			b.append(c);
 		}
 		return b.toString();
+	}
+	
+	public static long getCRC32Checksum(String str) {return getCRC32Checksum(str.getBytes());}
+	public static long getCRC32Checksum(byte[] bytes) {
+	    Checksum crc32 = new CRC32();
+	    crc32.update(bytes, 0, bytes.length);
+	    return crc32.getValue();
+	}
+
+	public static byte[] limitedReadAllByte(InputStream input, int max_length) throws IOException {
+	    byte[] data = input.readNBytes(max_length + 1);
+	    if (data.length > max_length)
+	        throw new IOException("Input stream exceeds maximum length of " + max_length);
+	    return data;
 	}
 }

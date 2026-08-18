@@ -45,7 +45,7 @@ public abstract class AHudCompiler<T> {
 	 * @throws CompileException if the file cannot be compiled
 	 * @throws IOException if an I/O error occurs while reading the file
 	 */
-	public abstract T processFile(String filepath) throws CompileException, IOException;
+	public abstract T processFile(HudderConfig config, String filepath) throws CompileException, IOException;
 
 	/**
 	 * Executes a previously processed HUD file.
@@ -56,7 +56,7 @@ public abstract class AHudCompiler<T> {
 	 * @return information describing the executed HUD
 	 * @throws ExecutionException if an error occurs while executing the HUD
 	 */
-	public abstract HudInformation execute(HudderConfig info, T processedfile, String filename) throws ExecutionException;
+	public abstract HudInformation execute(HudderConfig config, T processedfile, String filename) throws ExecutionException;
 
 	/**
 	 * Retrieves a variable using the specified key.
@@ -90,7 +90,7 @@ public abstract class AHudCompiler<T> {
 	 */
 	public HudInformation processAndExecute(HudderConfig config, String filepath, String filename)
 			throws CompileException, ExecutionException, IOException {
-		return execute(config, processFile(filepath), filename);
+		return execute(config, processFile(config, filepath), filename);
 	}
 	
 
@@ -104,7 +104,7 @@ public abstract class AHudCompiler<T> {
 		
 	    var compilation = hudCompilerExecutor.submit(() -> {
 	    	try {
-	    		return processFile(filepath);
+	    		return processFile(config, filepath);
 	    	} finally {
 		        hudCompiling.set(false);
 			}

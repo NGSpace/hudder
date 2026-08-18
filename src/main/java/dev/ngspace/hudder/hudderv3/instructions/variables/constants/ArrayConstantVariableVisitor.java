@@ -6,15 +6,15 @@ import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
-import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
 
-public class ArrayConstantVariableVisitor extends VariableVisitor {
+public class ArrayConstantVariableVisitor extends ExpressionVisitor {
 
-	private VariableVisitor[] values;
+	private ExpressionVisitor[] values;
 
-	public ArrayConstantVariableVisitor(String[] strings, AV3Compiler comp, TextPos pos) throws CompileException {
-		super(comp, pos);
-		values = new VariableVisitor[strings.length];
+	public ArrayConstantVariableVisitor(String[] strings, AV3Compiler comp, TextPos pos, String expression) throws CompileException {
+		super(comp, pos, expression);
+		values = new ExpressionVisitor[strings.length];
 		for (int i = 0;i<strings.length;i++)
 			values[i] = comp.parseVariable(strings[i], pos);
 	}

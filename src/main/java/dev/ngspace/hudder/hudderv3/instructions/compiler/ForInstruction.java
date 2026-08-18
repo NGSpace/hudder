@@ -3,7 +3,6 @@ package dev.ngspace.hudder.hudderv3.instructions.compiler;
 import java.util.Iterator;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
@@ -12,13 +11,13 @@ import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.TokenizedCodeBlock;
 import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.asm.V3ExecuteMethodWriter;
-import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
 
 public class ForInstruction extends Instruction {
 
 	private TokenizedCodeBlock block;
 	private String variable_name;
-	private VariableVisitor value;
+	private ExpressionVisitor value;
 
 	public ForInstruction(String variable_name, String value, String block, AV3Compiler comp,
 			HudderConfig info, String filename, TextPos pos) throws CompileException {
@@ -36,18 +35,20 @@ public class ForInstruction extends Instruction {
 		Label start = new Label();
 		Label end = new Label();
 		String localVariableName = variable_name.toLowerCase();
-		Integer previousVariableIndex = methodWriter.defineScopedVariable(localVariableName);
 
 		value.visit(methodWriter);
+		methodWriter.ensureNotNull("Can not iterate over null value!", pos);
+		methodWriter.checkcastSafe(Iterable.class, pos);
 		methodWriter.callInterface(Iterable.class, "iterator", "()Ljava/util/Iterator;");
 		int iterator_index = methodWriter.astore();
 		
 		methodWriter.putLabel(start);
 		methodWriter.aload(iterator_index);
 		methodWriter.callInterface(Iterator.class, "hasNext", "()Z");
-		methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFEQ, end);
+		methodWriter.ifeq(end);
 
 		methodWriter.aload(iterator_index);
+		Integer previousVariableIndex = methodWriter.defineScopedVariable(localVariableName);
 		methodWriter.callInterface(Iterator.class, "next", "()Ljava/lang/Object;");
 		methodWriter.storeVariable(localVariableName);
 		

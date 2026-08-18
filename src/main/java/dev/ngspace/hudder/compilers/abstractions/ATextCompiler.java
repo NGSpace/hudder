@@ -3,6 +3,7 @@ package dev.ngspace.hudder.compilers.abstractions;
 import java.io.IOException;
 
 import dev.ngspace.hudder.compilers.utils.TextPos;
+import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.utils.HudFileUtils;
 
@@ -10,13 +11,13 @@ public abstract class ATextCompiler extends AHudCompiler<String> {
 	
 	
 	@Override
-	public String processFile(String filepath) throws CompileException, IOException {
+	public String processFile(HudderConfig config, String filepath) throws CompileException, IOException {
 		String text = HudFileUtils.readFile(filepath);
-		compileFile(text, filepath);
+		compileFile(config, text, filepath);
 		return text;
 	}
 	
-	public void compileFile(String text, String filepath) throws CompileException {}
+	public void compileFile(HudderConfig config, String text, String filepath) throws CompileException {}
 	
 	protected TextPos getPosition(int ind, String string) {
 		return getPosition(new TextPos(0, 0), ind, string);

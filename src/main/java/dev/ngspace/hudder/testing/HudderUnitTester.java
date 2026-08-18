@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,11 +43,6 @@ public class HudderUnitTester {
 	}
 	
 	
-	public void updateSuggestions() {
-	    HudderUnitTestingCommand.UnitTestsSuggestionProvider.suggestions = new ArrayList<String>(UnitTests.keySet());
-	}
-	
-	
 	
 	public HudderUnitTestResult test(HudderConfig info, String name) {
 		return UnitTests.get(name).test(compiler,info);
@@ -56,7 +50,15 @@ public class HudderUnitTester {
 	
 	
 	
-	public MutableComponent testAll(HudderConfig config) {
+	public Map<String, HudderUnitTestResult> testAll(HudderConfig config) {
+		Map<String, HudderUnitTestResult> results = new HashMap<String, HudderUnitTestResult>();
+		for (var test : UnitTests.entrySet()) {
+			results.put(test.getKey(), test(config, test.getKey()));
+		}
+		return results;
+	}
+	
+	public MutableComponent testAllAndReturnComponent(HudderConfig config) {
 		MutableComponent result = Component.literal("All tests:\n");
 		boolean failed = false;
 		Instant start = Instant.now();

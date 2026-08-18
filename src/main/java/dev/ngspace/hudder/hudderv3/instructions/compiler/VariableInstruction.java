@@ -1,21 +1,20 @@
 package dev.ngspace.hudder.hudderv3.instructions.compiler;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.asm.V3ExecuteMethodWriter;
-import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
 import dev.ngspace.hudder.hudderv3.instructions.variables.modifiable.DynamicVariableVisitor;
 
 public class VariableInstruction extends Instruction {
 
 	public AV3Compiler comp;
 	public String variable;
-	public VariableVisitor visitor;
+	public ExpressionVisitor visitor;
 	
 	public VariableInstruction(AV3Compiler comp, String variable, TextPos pos) throws CompileException {
 		super(pos);
@@ -35,7 +34,7 @@ public class VariableInstruction extends Instruction {
 			if (visitor instanceof DynamicVariableVisitor) {
 				Label end = new Label();
 				methodWriter.dup();
-				methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFNONNULL, end);
+				methodWriter.ifnonnull(end);
 				methodWriter.pop();
 				methodWriter.loadConstant(variable.toLowerCase());
 				methodWriter.putLabel(end);

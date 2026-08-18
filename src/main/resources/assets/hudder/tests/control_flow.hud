@@ -123,6 +123,21 @@ END_TEST;
 
 |TEST:
 
+@name=Boolean variable as while condition
+@mode=no_error
+
+input:
+	{flag=true}
+	#while flag
+	    {break}
+end_input;
+
+END_TEST;
+
+
+
+|TEST:
+
 @name=Fibonacci
 @mode=normal
 

@@ -1,10 +1,5 @@
 package dev.ngspace.hudder.variables.data;
 
-import static dev.ngspace.hudder.api.variableregistry.VariableTypes.BOOLEAN;
-import static dev.ngspace.hudder.api.variableregistry.VariableTypes.NUMBER;
-import static dev.ngspace.hudder.api.variableregistry.VariableTypes.OBJECT;
-import static dev.ngspace.hudder.api.variableregistry.VariableTypes.STRING;
-
 import dev.ngspace.hudder.variables.HudderBuiltInVariables;
 import dev.ngspace.hudder.variables.advanced.Misc;
 import net.fabricmc.loader.api.FabricLoader;
@@ -26,60 +21,60 @@ public class ClientData extends HudderBuiltInVariables {
 		registerScreenTypeVariables();
 
 		// Camera state
-		register(_->ins.gameRenderer.mainCamera().entity() != ins.player, BOOLEAN, "camera_detached");
+		registerBoolean(_->ins.gameRenderer.mainCamera().entity() != ins.player, "camera_detached");
 		
 		// Resource packs
-		register(_->ins.getResourcePackRepository().getSelectedPacks().stream()
+		registerObject(_->ins.getResourcePackRepository().getSelectedPacks().stream()
 				.filter(pack->!pack.isRequired())
 				.map(t -> t.getTitle().getString())
-				.toList(), OBJECT, "selectedresourcepacks");
-		register(_->ins.getResourcePackRepository().getSelectedPacks().stream()
+				.toList(), "selectedresourcepacks");
+		registerObject(_->ins.getResourcePackRepository().getSelectedPacks().stream()
 				.map(t -> t.getTitle().getString())
-				.toList(), OBJECT, "selectedresourcepacks_unfiltered");
-		register(_->FabricLoader.getInstance().getAllMods().stream()
+				.toList(), "selectedresourcepacks_unfiltered");
+		registerObject(_->FabricLoader.getInstance().getAllMods().stream()
 				.map(mod-> mod.getMetadata().getId() + ":" + mod.getMetadata().getVersion())
-				.toList(), OBJECT, "mods_list");
+				.toList(), "mods_list");
 	}
 
 	private static void registerInputVariables() {
 		// Mouse buttons
-		register(_->ins.mouseHandler.isLeftPressed(), BOOLEAN, "mouse_left");
-		register(_->ins.mouseHandler.isMiddlePressed(), BOOLEAN, "mouse_middle");
-		register(_->ins.mouseHandler.isRightPressed(), BOOLEAN, "mouse_right");
+		registerBoolean(_->ins.mouseHandler.isLeftPressed(), "mouse_left");
+		registerBoolean(_->ins.mouseHandler.isMiddlePressed(), "mouse_middle");
+		registerBoolean(_->ins.mouseHandler.isRightPressed(), "mouse_right");
 
 		// Clicks per second
-		register(_->Misc.getLeftCPS() + Misc.getRightCPS(), NUMBER, "cps");
-		register(_->Misc.getLeftCPS(), NUMBER, "cps_left");
-		register(_->Misc.getRightCPS(), NUMBER, "cps_right");
+		registerNumber(_->Misc.getLeftCPS() + Misc.getRightCPS(), "cps");
+		registerNumber(_->Misc.getLeftCPS(), "cps_left");
+		registerNumber(_->Misc.getRightCPS(), "cps_right");
 	}
 
 	private static void registerScreenVariables() {
 		// Window / GUI
-		register(_->ins.getWindow().getGuiScaledWidth(), NUMBER, "width");
-		register(_->ins.getWindow().getGuiScaledHeight(), NUMBER, "height");
-		register(_->ins.getWindow().getGuiScale(), NUMBER, "guiscale");
+		registerNumber(_->ins.getWindow().getGuiScaledWidth(), "width");
+		registerNumber(_->ins.getWindow().getGuiScaledHeight(), "height");
+		registerNumber(_->ins.getWindow().getGuiScale(), "guiscale");
 
 		// Open GUI
-		register(_->Misc.getScreenType(ins.gui.screen()), STRING, "openguitype");
+		registerString(_->Misc.getScreenType(ins.gui.screen()), "openguitype");
 
-		register(_->(ins.gui.screen() == null) ? null : ins.gui.screen().getTitle().getString(), STRING, "openguititle");
+		registerString(_->(ins.gui.screen() == null) ? null : ins.gui.screen().getTitle().getString(), "openguititle");
 
 		// HUD / debug
-		register(_->ins.gui.hud.isHidden(), BOOLEAN, "hudhidden");
-		register(_->ins.getDebugOverlay().showDebugScreen(), BOOLEAN, "showdebug");
-		register(_->ins.debugEntries.isOverlayVisible(), BOOLEAN, "f3enabled");
+		registerBoolean(_->ins.gui.hud.isHidden(), "hudhidden");
+		registerBoolean(_->ins.getDebugOverlay().showDebugScreen(), "showdebug");
+		registerBoolean(_->ins.debugEntries.isOverlayVisible(), "f3enabled");
 	}
 	
 	private static void registerScreenTypeVariables() {
-		register(_->ins.gui.screen() != null, BOOLEAN, "isguiopen");
-		register(_->ins.gui.screen() instanceof ContainerScreen, BOOLEAN, "ischestopen");
-		register(_->ins.gui.screen() instanceof CraftingScreen, BOOLEAN, "iscraftingtableopen");
-		register(_->ins.gui.screen() instanceof ChatScreen, BOOLEAN, "ischatopen");
-		register(_->ins.gui.screen() instanceof DialogScreen<?>, BOOLEAN, "isdialogopen");
-		register(_->ins.gui.screen() instanceof InventoryScreen
-		        || ins.gui.screen() instanceof CreativeModeInventoryScreen, BOOLEAN, "isinventoryopen");
-		register(_->ins.options.keyPlayerList.isDown()
+		registerBoolean(_->ins.gui.screen() != null, "isguiopen");
+		registerBoolean(_->ins.gui.screen() instanceof ContainerScreen, "ischestopen");
+		registerBoolean(_->ins.gui.screen() instanceof CraftingScreen, "iscraftingtableopen");
+		registerBoolean(_->ins.gui.screen() instanceof ChatScreen, "ischatopen");
+		registerBoolean(_->ins.gui.screen() instanceof DialogScreen<?>, "isdialogopen");
+		registerBoolean(_->ins.gui.screen() instanceof InventoryScreen
+		        || ins.gui.screen() instanceof CreativeModeInventoryScreen, "isinventoryopen");
+		registerBoolean(_->ins.options.keyPlayerList.isDown()
 				&& (!ins.isLocalServer() || ins.player.connection.getListedOnlinePlayers().size() > 1),
-				BOOLEAN, "is_player_list_shown");
+				"is_player_list_shown");
 	}
 }

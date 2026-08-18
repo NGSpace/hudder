@@ -1,11 +1,10 @@
 package dev.ngspace.hudder.hudderv3.asm;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
 
-import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
+import dev.ngspace.hudder.config.HudderConfig;
+import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.V3HudInformation;
 
 public class V3ExecuteMethodWriter extends V3MethodWriter {
@@ -32,42 +31,45 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 
 	public V3ExecuteMethodWriter(V3ClassWriter classWriter, String name, Class<?>[] args) {
 		super(classWriter, name,
-				args, V3HudInformation.class, null, new String[] {
+				args==null?new Class<?>[] {
+					HudderConfig.class,
+					String.class,
+					String.class
+				}:args, V3HudInformation.class, null, new String[] {
 					"dev/ngspace/hudder/exceptions/ExecutionException"
 				});
 		
-		variableindex+=args.length; // the parameters
+		variableindex+=args==null?3:args.length; // the parameters
 		
 		
 		// Create the StringBuilders
-		initStringBuilder();
+		newStringBuilder();
 		topleft_builder_index = astore();
-		initStringBuilder();
+		newStringBuilder();
 		topright_builder_index = astore();
-		initStringBuilder();
+		newStringBuilder();
 		bottomleft_builder_index = astore();
-		initStringBuilder();
+		newStringBuilder();
 		bottomright_builder_index = astore();
 		
 		// Default to topleft
 		selected_builder_index = topleft_builder_index;
 		
 		// Define the scales
-		loadConstantUnsafe(Hudder.config.scale());
+		getHelper();
+		call(HudderV3Helper.class, "getDefaultScale", "()F", false);
+		dup();
+		dup();
+		dup();
 		topleft_scale_index = fstore();
-		loadConstantUnsafe(Hudder.config.scale());
 		topright_scale_index = fstore();
-		loadConstantUnsafe(Hudder.config.scale());
 		bottomleft_scale_index = fstore();
-		loadConstantUnsafe(Hudder.config.scale());
 		bottomright_scale_index = fstore();
 		
 		// Return value
-		methodVisitor.visitInsn(Opcodes.ACONST_NULL);
+		nullConstant();
 		return_value_index = astore();
 	}
-
-
 
 	public void appendStringConstant(String string) {
 		if (shouldNotApppendToBuilder()) {
@@ -103,56 +105,46 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 		
 		int value_index = astore();
 		aload(value_index);
-		methodVisitor.visitTypeInsn(Opcodes.INSTANCEOF, Type.getInternalName(Number.class));
-		methodVisitor.visitJumpInsn(Opcodes.IFEQ, append);
-
-		aloadDouble(value_index);
-		
-		methodVisitor.visitLdcInsn(1d);
-		methodVisitor.visitInsn(Opcodes.DREM);
-		methodVisitor.visitLdcInsn(0d);
-		methodVisitor.visitInsn(Opcodes.DCMPG);
-		methodVisitor.visitJumpInsn(Opcodes.IFNE, append_double);
+		instanceOf(Number.class);
+		ifeq(append);
 
 		aload(value_index);
-	    methodVisitor.visitTypeInsn(
-	            Opcodes.CHECKCAST,
-	            Type.getInternalName(Number.class)
-	    );
-		methodVisitor.visitMethodInsn(
-				Opcodes.INVOKEVIRTUAL,
-				"java/lang/Number",
-				"longValue",
-				"()J",
-				false
-		);
+		checkcast(Number.class);
+		doubleValue();
+		
+		loadConstantUnsafe(1d);
+		drem();
+		loadConstantUnsafe(0d);
+		dcmpg();
+		ifne(append_double);
+
+		aload(value_index);
+		checkcast(Number.class);
+		longValue();
 		int long_index = lstore();
 		loadBuilder();
 		lload(long_index);
-		methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, STRING_BUILDER, "append",
-				"(J)L"+STRING_BUILDER+";", false);
-		methodVisitor.visitJumpInsn(Opcodes.GOTO, end);
+		call(StringBuilder.class, "append", "(J)Ljava/lang/StringBuilder;", false);
+		jumpto(end);
 		
-		methodVisitor.visitLabel(append_double);
+		putLabel(append_double);
 		loadBuilder();
 		aload(value_index);
-		methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, STRING_BUILDER, "append",
-				"(Ljava/lang/Object;)L"+STRING_BUILDER+";", false);
-		methodVisitor.visitJumpInsn(Opcodes.GOTO, end);
+		call(StringBuilder.class, "append", "(Ljava/lang/Object;)Ljava/lang/StringBuilder;", false);
+		jumpto(end);
 
-		methodVisitor.visitLabel(append);
+		putLabel(append);
 		loadBuilder();
 		aload(value_index);
-		methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, STRING_BUILDER, "append",
-				"(Ljava/lang/Object;)L"+STRING_BUILDER+";", false);
+		call(StringBuilder.class, "append", "(Ljava/lang/Object;)Ljava/lang/StringBuilder;", false);
 		
-		methodVisitor.visitLabel(end);
+		putLabel(end);
 	}
 
 
 
 	private void callToString() {
-		methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, STRING_BUILDER, "toString", "()Ljava/lang/String;", false);
+		call(StringBuilder.class, "toString", "()Ljava/lang/String;", false);
 	}
 
 
@@ -167,8 +159,7 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 
 	public void addExecuteAReturn() {
 		putLabel(finalLabel);
-		methodVisitor.visitTypeInsn(Opcodes.NEW, Type.getInternalName(V3HudInformation.class));
-		methodVisitor.visitInsn(Opcodes.DUP);
+		newAndDup(V3HudInformation.class);
 		aload(return_value_index);
 		aload(topleft_builder_index);
 		callToString();
@@ -185,8 +176,13 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 		aload(0);
 		getField("uimanager", ArrayElementManager.class);
 		call(ArrayElementManager.class, "toUIElementArray", "()[Ldev/ngspace/hudder/uielements/AUIElement;", false);
-		methodVisitor.visitMethodInsn(Opcodes.INVOKESPECIAL, Type.getInternalName(V3HudInformation.class),
-				"<init>", "(Ljava/lang/Object;Ljava/lang/String;FLjava/lang/String;FLjava/lang/String;FLjava/lang/String;F[Ldev/ngspace/hudder/uielements/AUIElement;)V", false);
+		callInit(V3HudInformation.class, "("
+				+ "Ljava/lang/Object;"
+				+ "Ljava/lang/String;F"
+				+ "Ljava/lang/String;F"
+				+ "Ljava/lang/String;F"
+				+ "Ljava/lang/String;F"
+				+ "[Ldev/ngspace/hudder/uielements/AUIElement;)V");
 		
 		addAReturn();
 	}

@@ -1,23 +1,22 @@
 package dev.ngspace.hudder.hudderv3.instructions.variables.operations;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
-import dev.ngspace.hudder.hudderv3.instructions.variables.VariableVisitor;
+import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
 
-public class TernaryVariableVisitor extends VariableVisitor {
+public class TernaryVariableVisitor extends ExpressionVisitor {
 
-	private VariableVisitor condition;
-	private VariableVisitor truevalue;
-	private VariableVisitor falsevalue;
+	private ExpressionVisitor condition;
+	private ExpressionVisitor truevalue;
+	private ExpressionVisitor falsevalue;
 
 	public TernaryVariableVisitor(AV3Compiler comp, String condition, String truevalue, String falsevalue,
-			TextPos pos) throws CompileException {
-		super(comp, pos);
+			TextPos pos, String expression) throws CompileException {
+		super(comp, pos, expression);
 		this.condition = comp.parseVariable(condition, pos);
 		this.truevalue = comp.parseVariable(truevalue, pos);
 		this.falsevalue = comp.parseVariable(falsevalue, pos);
@@ -29,10 +28,11 @@ public class TernaryVariableVisitor extends VariableVisitor {
 		Label label = new Label();
 		
 		condition.visit(methodWriter);
-		methodWriter.checkcast(Boolean.class);
+		methodWriter.checkcastSafe(Boolean.class, pos);
+		methodWriter.ensureNotNull("Condition can not be null!", pos);
 		methodWriter.booleanValue();
 		
-		methodWriter.methodVisitor.visitJumpInsn(Opcodes.IFNE, label);
+		methodWriter.ifne(label);
 		falsevalue.visit(methodWriter);
 		methodWriter.jumpto(end);
 		

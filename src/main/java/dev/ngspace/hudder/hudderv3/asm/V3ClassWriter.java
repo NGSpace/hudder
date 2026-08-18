@@ -14,9 +14,10 @@ import org.objectweb.asm.Type;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
-import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableConsumer;
-import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableFunction;
-import dev.ngspace.hudder.compilers.HudderV3Compiler;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
+import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
+import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
 import dev.ngspace.hudder.hudderv3.GeneratedCompiler;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 
@@ -25,16 +26,18 @@ public class V3ClassWriter {
 	public ClassWriter classWriter;
 	public String classname;
 	public V3MethodWriter init;
+	public HudderV3Helper helper;
 	private final Set<String> generatedApiFunctions = new HashSet<>();
 	private final Set<String> generatedApiConsumers = new HashSet<>();
 	private final Set<String> calledApiConsumers = new HashSet<>();
 	private final Set<String> calledApiFunctions = new HashSet<>();
 	
-	public Map<String, String> user_methods = new HashMap<String, String>();
-	public Map<String, String> user_functions = new HashMap<String, String>();
+	public Map<String, UserMethod> user_methods = new HashMap<String, UserMethod>();
+	public Map<String, UserMethod> user_functions = new HashMap<String, UserMethod>();
 	
-	public V3ClassWriter(String classname, String debugfilename) {
+	public V3ClassWriter(String classname, String debugfilename, HudderV3Helper helper) {
 		this.classname = classname;
+		this.helper = helper;
 		classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
 		classWriter.visit(Opcodes.V25, Opcodes.ACC_PUBLIC, classname, null,
 				"dev/ngspace/hudder/compilers/abstractions/AVarTextCompiler", new String[] {
@@ -58,27 +61,31 @@ public class V3ClassWriter {
 	}
 	public void createInit() {
 		
-		classWriter.newField(classname, "v3compiler", Type.getDescriptor(HudderV3Compiler.class));
+		classWriter.newField(classname, "v3compiler", Type.getDescriptor(AV3Compiler.class));
 		
 	    classWriter.visitField(
 	            Opcodes.ACC_PUBLIC,
 	            "v3compiler",
-	            Type.getDescriptor(HudderV3Compiler.class),
+	            Type.getDescriptor(AV3Compiler.class),
+	            null,
+	            null
+	    ).visitEnd();
+		
+		classWriter.newField(classname, "helper", Type.getDescriptor(HudderV3Helper.class));
+		
+	    classWriter.visitField(
+	            Opcodes.ACC_PUBLIC,
+	            "helper",
+	            Type.getDescriptor(HudderV3Helper.class),
 	            null,
 	            null
 	    ).visitEnd();
 
 		
-		init = createMethod("<init>", new Class<?>[] {HudderV3Compiler.class}, null, null, null);
+		init = createMethod("<init>", new Class<?>[] {AV3Compiler.class, HudderV3Helper.class}, null, null, null);
 
 		init.aload(0);
-		init.methodVisitor.visitMethodInsn(
-		        Opcodes.INVOKESPECIAL,
-		        "dev/ngspace/hudder/compilers/abstractions/AVarTextCompiler",
-		        "<init>",
-		        "()V",
-		        false
-		);
+		init.callInit(AVarTextCompiler.class, "()V");
 		
 		// Init UIElements field
 	    
@@ -90,8 +97,12 @@ public class V3ClassWriter {
 		// Init v3compiler field
 		init.aload(0);
 		init.aload(1);
-		init.methodVisitor.visitFieldInsn(Opcodes.PUTFIELD, classname, "v3compiler",
-				Type.getDescriptor(HudderV3Compiler.class));
+		init.putField("v3compiler", AV3Compiler.class);
+		
+		// Init v3compiler field
+		init.aload(0);
+		init.aload(2);
+		init.putField("helper", HudderV3Helper.class);
 	}
 	
 	public V3ExecuteMethodWriter createExecuteMethod(String name, Class<?>[] classes) {
@@ -129,13 +140,14 @@ public class V3ClassWriter {
 			if (!generatedApiFunctions.add(func)) {
 				continue;
 			}
-			initPublicField(func, BindableFunction.class);
+			initPublicField(func, BindablePositionedFunction.class);
 			init.aload(0);
+			init.getHelper();
 			init.loadConstant(func);
-			init.callStatic(HudderV3Helper.class, "getApiFunction", "(Ljava/lang/String;)"
-					+ "Ldev/ngspace/hudder/api/functionsandconsumers/FunctionAndConsumerAPI$BindableFunction;",
+			init.call(HudderV3Helper.class, "getApiFunction", "(Ljava/lang/String;)"
+					+ "Ldev/ngspace/hudder/api/functionsandconsumers/interfaces/BindablePositionedFunction;",
 					false);
-			init.putField(func, BindableFunction.class);
+			init.putField(func, BindablePositionedFunction.class);
 		}
 	}
 	
@@ -146,13 +158,14 @@ public class V3ClassWriter {
 			if (!generatedApiConsumers.add(func)) {
 				continue;
 			}
-			initPublicField(func, BindableConsumer.class);
+			initPublicField(func, BindablePositionedConsumer.class);
 			init.aload(0);
+			init.getHelper();
 			init.loadConstant(func);
-			init.callStatic(HudderV3Helper.class, "getApiConsumer", "(Ljava/lang/String;)"
-					+ "Ldev/ngspace/hudder/api/functionsandconsumers/FunctionAndConsumerAPI$BindableConsumer;",
+			init.call(HudderV3Helper.class, "getApiConsumer", "(Ljava/lang/String;)"
+					+ "Ldev/ngspace/hudder/api/functionsandconsumers/interfaces/BindablePositionedConsumer;",
 					false);
-			init.putField(func, BindableConsumer.class);
+			init.putField(func, BindablePositionedConsumer.class);
 		}
 	}
 	
@@ -163,4 +176,6 @@ public class V3ClassWriter {
 	public void loadApiConsumer(String name) {
 		calledApiConsumers.add(name);
 	}
+	
+	public static record UserMethod(String bytecode_name, int min_args, int max_args) {}
 }

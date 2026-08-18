@@ -6,117 +6,67 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import org.mozilla.javascript.ScriptableObject;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
-import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableConsumer;
-import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableFunction;
-import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
+import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.ExecutionException;
-import dev.ngspace.hudder.utils.ImplObjectWrapper;
 import dev.ngspace.hudder.utils.NoAccess;
 import dev.ngspace.hudder.utils.ValueGetter;
 
 public class HudderV3Helper {
-	public static Map<String, BindableFunction> api_functions = new HashMap<String, BindableFunction>();
-	public static Map<String, BindableConsumer> api_consumers = new HashMap<String, BindableConsumer>();
+	public HudderConfig config;
+	private AV3Compiler compiler;
 
-	private HudderV3Helper() {}
+	public HudderV3Helper(HudderConfig config, AV3Compiler compiler) {
+		this.config = config;
+		this.compiler = compiler;
+	}
+
+	public float getDefaultScale() {return config.scale();}
+	public int getMaxWhile() {return !config.unsafeoperations() ? Short.MAX_VALUE : -1;}
 	
-	public static boolean compare(Object val1, Object val2, String comparisonOperator) throws ExecutionException {
-		if (val1==null||val2==null) {
-			if (comparisonOperator.equals("=="))
-				return val1==val2;
-			else if (comparisonOperator.equals("!="))
-				return val1!=val2;
-			else throw new ExecutionException("Can not compare null values using the "+comparisonOperator+" operator.",
-					-1, -1);
-		}
-		if (val1 instanceof Number num1) {
-			double dou1 = num1.doubleValue();
-			if (val2 instanceof Number num2) {
-				double dou2 = num2.doubleValue();
-				return switch (comparisonOperator) {
-					case "==" -> dou1==dou2;
-					case "!=" -> dou1!=dou2;
-					case ">=" -> dou1>=dou2;
-					case "<=" -> dou1<=dou2;
-					case ">"  -> dou1> dou2;
-					case "<"  -> dou1< dou2;
-					default -> throw new IllegalArgumentException("Unknown comparasion operator: " + comparisonOperator);
-				};
-			}
-		}
-		return switch (comparisonOperator) {
-			case "==" ->  Objects.equals(val1, val2);
-			case "!=" -> !Objects.equals(val1, val2);
-			default -> throw new IllegalArgumentException("Unknown comparasion operator \""
-					+ comparisonOperator + "\" for values of type: \"" + val1.getClass().getSimpleName()
-					+ "\" and \"" + val2.getClass().getSimpleName() + '"');
-		};
+
+	public BindablePositionedFunction getApiFunction(String name) {
+		return compiler.api_functions.get(name);
+	}
+	public BindablePositionedConsumer getApiConsumer(String name) {
+		return compiler.api_consumers.get(name);
 	}
 	
 	public static String cleanDouble(double d) {
 	    if(d % 1 == 0) return Long.toString((long)d);
 	    else return Double.toString(d);
 	}
-	
 
-	public static BindableFunction getApiFunction(String name) {
-		return api_functions.get(name);
-	}
-	public static BindableConsumer getApiConsumer(String name) {
-		return api_consumers.get(name);
-	}
-	
-	public static boolean hasApiConsumer(String name) {
-		return api_consumers.containsKey(name);
-	}
-	
-	public static void callApiConsumer(String name, int line, int col, ArrayElementManager uiManager,
-			AVarTextCompiler compiler, Object... values) throws ExecutionException {
-		api_consumers.get(name).invoke(uiManager, compiler,
-				ImplObjectWrapper.fromArray(values, line, col));
-	}
-
-	public static Object getClassProperty(Object object, String objectExpression, String fieldName)
-			throws ExecutionException {
-		Class<?> objectClass = requireClassAccess(object, objectExpression, fieldName);
-
-		Object result;
-		if (object instanceof ValueGetter getter) {
-			result = getter.get(fieldName);
-		} else {
-			try {
-				Field field = objectClass.getDeclaredField(fieldName);
-				if (!isAccessible(field)) {
-					throw new ExecutionException("No property named \"" + fieldName + "\" in type \""
-							+ objectClass.getSimpleName() + '"', -1, -1);
-				}
-				result = field.get(object);
-			} catch (NoSuchFieldException e) {
-				if (Hudder.IS_DEBUG) e.printStackTrace();
-				throw new ExecutionException("No property named \"" + fieldName + '"', -1, -1);
-			} catch (ReflectiveOperationException e) {
-				if (Hudder.IS_DEBUG) e.printStackTrace();
-				throw new ExecutionException("Failed Reflective Operation property named \"" + fieldName + '"',
-						-1, -1);
+	public static Object getClassProperty(Object object, String objectExpression, String fieldName,
+			int line, int col) throws ExecutionException {
+		Class<?> objectClass = getClassSafe(object, objectExpression, fieldName, line, col);
+		try {
+			Field field = objectClass.getDeclaredField(fieldName);
+			if (!isAccessible(field)) {
+				throw new ExecutionException("No property named \"" + fieldName + "\" in type \""
+						+ objectClass.getSimpleName() + '"', line, col);
 			}
+			return normalizeResult(field.get(object));
+		} catch (NoSuchFieldException e) {
+			if (Hudder.IS_DEBUG) e.printStackTrace();
+			throw new ExecutionException("No property named \"" + fieldName + '"', line, col);
+		} catch (ReflectiveOperationException e) {
+			if (Hudder.IS_DEBUG) e.printStackTrace();
+			throw new ExecutionException("Failed Reflective Operation property named \"" + fieldName + '"',
+					line, col);
 		}
-
-		return normalizeClassAccessResult(result);
 	}
 
 	public static Object callClassMethod(Object object, String objectExpression, String functionName,
-			Object[] parameters) throws ExecutionException {
-		Class<?> objectClass = requireClassAccess(object, objectExpression, functionName);
+			Object[] parameters, int line, int col) throws ExecutionException {
+		Class<?> objectClass = getClassSafe(object, objectExpression, functionName, line, col);
 		Object[] safeParameters = parameters == null ? new Object[0] : parameters;
 		Class<?>[] parameterClasses = Arrays.stream(safeParameters)
 				.map(parameter -> parameter == null ? null : parameter.getClass())
@@ -149,27 +99,27 @@ public class HudderV3Helper {
 
 		if (selectedMethod == null) {
 			throw new ExecutionException("No function named \"" + getCallSign(functionName, parameterClasses)
-					+ "\" in type \"" + objectClass.getSimpleName() + '"', -1, -1);
+					+ "\" in type \"" + objectClass.getSimpleName() + '"', line, col);
 		}
 
 		try {
 			selectedMethod.setAccessible(true);
-			return normalizeClassAccessResult(selectedMethod.invoke(object, selectedParameters));
+			return normalizeResult(selectedMethod.invoke(object, selectedParameters));
 		} catch (InvocationTargetException e) {
 			Throwable target = e.getTargetException();
 			if (Hudder.IS_DEBUG) target.printStackTrace();
-			throw new ExecutionException(target.getMessage(), -1, -1, target);
+			throw new ExecutionException(target.getMessage(), line, col, target);
 		} catch (IllegalAccessException e) {
 			if (Hudder.IS_DEBUG) e.printStackTrace();
-			throw new ExecutionException(e.getMessage(), -1, -1, e);
+			throw new ExecutionException(e.getMessage(), line, col, e);
 		}
 	}
 
-	private static Class<?> requireClassAccess(Object object, String objectExpression, String memberName)
-			throws ExecutionException {
+	private static Class<?> getClassSafe(Object object, String objectExpression, String memberName,
+			int line, int col) throws ExecutionException {
 		if (object == null || object instanceof Class<?> || object instanceof ClassLoader) {
 			throw new ExecutionException("Can't read \"" + memberName + "\" because \"" + objectExpression
-					+ "\" is null", -1, -1);
+					+ "\" is null", line, col);
 		}
 
 		Class<?> objectClass = object.getClass();
@@ -204,7 +154,7 @@ public class HudderV3Helper {
 		return true;
 	}
 
-	private static Object normalizeClassAccessResult(Object result) {
+	private static Object normalizeResult(Object result) {
 		if (result == null) return null;
 		if (!HudderConfig.isAccessible(result.getClass())) return null;
 		if (result instanceof Set<?> set) return set.toArray();

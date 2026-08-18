@@ -49,6 +49,7 @@
 	"hudder.general.compilertype.tooltip": "Change the type of compiler (ex hudder, js, pack).",
 	"hudder.general.compilertype.error":"Invalid compiler type.",
 	"hudder.general.compilertype.unstable_warning":"The compiler %s is unstable and is not advised to be used.",
+	"hudder.general.compilertype.deprecated_warning":"The compiler %s is deprecated and may be removed.",
 	
 	"hudder.general.scale":"Scale",
 	"hudder.general.scale.tooltip":"Control the default scale of Hud Elements and text.\n\u00A77This can be overriden by elements specifying the size on their own.",
@@ -90,10 +91,13 @@
 	"hudder.vanillahud.f3.tooltip": "Should still render when f3 is showing.",
 
 	"hudder.vanillahud.removehotbar": "Remove hotbar",
-	"hudder.vanillahud.removehotbar.tooltip": "\u00A74WARNING - THIS WILL MAKE YOUR HOTBAR AND HEALTH BAR INVISIBLE UNTIL DISABLED.\n\u00A7fWhether hudder should hide all Hotbar related GUI elements.",
+	"hudder.vanillahud.removehotbar.tooltip": "Removes all vanilla Hotbar related GUI elements.",
 
 	"hudder.vanillahud.removeeffects": "Remove effects hud",
-	"hudder.vanillahud.removeeffects.tooltip": "\u00A74WARNING - THIS WILL MAKE YOUR EFFECTS HUD INVISIBLE UNTIL DISABLED.\n\u00A7fWhether hudder should hide the effects hud.",
+	"hudder.vanillahud.removeeffects.tooltip": "Removes the vanilla effects hud.",
+	
+	"hudder.vanillahud.removebossbars": "Remove boss bars",
+	"hudder.vanillahud.removebossbars.tooltip": "Removes the vanilla boss bars.",
 	
 	"hudder.safety_perf": "Safety & Performance",
 	
