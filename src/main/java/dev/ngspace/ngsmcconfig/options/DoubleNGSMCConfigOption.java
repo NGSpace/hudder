@@ -13,8 +13,8 @@ public class DoubleNGSMCConfigOption extends AbstractTextFieldNGSMCConfigOption<
 	protected String invalidnum;
 	
 	protected DoubleNGSMCConfigOption(double defaultValue, double value, Component text, Consumer<Double> saveOperation,
-			Function<Double, Component> validator) {
-		super(defaultValue, value, text, saveOperation, validator);
+			Function<Double, Component> validator, Function<Double, Component> warning) {
+		super(defaultValue, value, text, saveOperation, validator, warning);
 		this.validator = val->{
 			if (!validnum)
 				return Component.literal("Invalid number: \"" + invalidnum + "\"");
@@ -35,7 +35,10 @@ public class DoubleNGSMCConfigOption extends AbstractTextFieldNGSMCConfigOption<
 		};
 	}
 	
-	@SuppressWarnings({ "deprecation" })
+	/**
+	 * @deprecated
+	 */
+	@Deprecated(since = "10.1.0", forRemoval = true)
 	public static AbstractNGSMCConfigOptionBuilder<Double> builder(double value, Component name) {
 	    return fluentBuilder(value, name);
 	}
@@ -43,7 +46,7 @@ public class DoubleNGSMCConfigOption extends AbstractTextFieldNGSMCConfigOption<
 	public static NGSMCConfigOptionBuilder<Double> fluentBuilder(double value, Component name) {
 		return new NGSMCConfigOptionBuilder<Double>(value, name) {
 			@Override public AbstractNGSMCConfigOption<Double> build() {
-				return new DoubleNGSMCConfigOption(defaultValue, value, name, saveOperation, validator);
+				return new DoubleNGSMCConfigOption(defaultValue, value, name, saveOperation, validator, warning);
 			}
 		};
 	}

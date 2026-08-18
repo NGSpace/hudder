@@ -1,7 +1,9 @@
 package dev.ngspace.hudder.hudpacks;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,19 +14,25 @@ import com.mojang.blaze3d.platform.NativeImage;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.HudPackCompiler;
+import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.utils.HudFileUtils;
+import dev.ngspace.hudder.utils.HudderUtils;
 import dev.ngspace.ngsmcconfig.options.AbstractNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.BooleanNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.DoubleNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.DropdownNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.HexNGSMCConfigOption;
+import dev.ngspace.ngsmcconfig.options.IntNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.StringNGSMCConfigOption;
 import net.minecraft.network.chat.Component;
 
-public class HudPack {
-	
-	public static final int MAXIMUM_SUPPORTED_FORMAT = 2;
+public class HudPack implements Closeable {
+
+	public static final int MAXIMUM_SUPPORTED_FORMAT = 3;
+	public static final int MAXIMUM_ENTRY_COUNT = 255;
+	public static final int MAXIMUM_ENTRY_SIZE = 8388608; // 8 MiB
+	public static final int MAXIMUM_PACK_SIZE = 67108864; // 64 MiB
 	private HudPackConfig configYaml;
 	private HudPackCompiler compiler;
 	private BufferedTexture[] bufferedtextures;
@@ -35,32 +43,55 @@ public class HudPack {
 	public int format_version = 0;
 	public Map<String, byte[]> entries = new HashMap<String, byte[]>();
 	
-	public HudPack(String filepath, HudPackCompiler compiler) throws IOException, CompileException {
+	public HudPack(HudderConfig config, String filepath, HudPackCompiler compiler) throws IOException, CompileException {
 		this.compiler = compiler;
 		this.engineManager = new HudPackEngineManager(this.compiler, this);
 		File file = new File(filepath);
 		try (EntryReaderConsumer reader = file.isDirectory() ? new EntryReaderConsumer.Directory(file) :
 				new EntryReaderConsumer.Zip(file)) {
+			int entries_count = 0;
+			int bytes_left = MAXIMUM_PACK_SIZE;
 			for (String entry : reader.listEntries()) {
-				entries.put(entry, reader.readEntry(entry).readAllBytes());
+				if (entries_count==MAXIMUM_ENTRY_COUNT
+						&&!config.unsafeoperations())
+					throw new CompileException("Reached maximum entry count for Hudpacks!", -1, -1);
+				entries_count++;
+				InputStream input = reader.readEntry(entry);
+				byte[] bytes = config.unsafeoperations() ?
+						input.readAllBytes() :
+						HudderUtils.limitedReadAllByte(input, Math.min(MAXIMUM_ENTRY_SIZE,
+								bytes_left));
+				input.close();
+				bytes_left -= bytes.length;
+				entries.put(entry, bytes);
 			}
 		}
-		processConfig();
+		processConfig(config);
 		bufferTextures(configYaml.texturesOrEmpty());
 		loadTextures();
 		loadSettings(configYaml.settingsOrEmpty());
 	}
 
-	private void processConfig() throws CompileException {
-            configYaml = new Gson().fromJson(new String(entries.get("pack.json")), HudPackConfig.class);
+	private void processConfig(HudderConfig config) throws CompileException {
+		// Check if pack.json exists
+		if (!entries.containsKey("pack.json"))
+			throw new CompileException("Missing entry: pack.json", -1, -1);
+		// Read pack.json
+        configYaml = new Gson().fromJson(new String(entries.get("pack.json")), HudPackConfig.class);
         format_version = configYaml.format_version();
+        // Check if format version is supported
         if (format_version>MAXIMUM_SUPPORTED_FORMAT&&!Hudder.config.disableHudpackVersionCheck())
         	throw new CompileException("Unsupported Hud pack format version: " + format_version, -1, -1);
+        // Read pack points
 		hudpackpoints = new HudPackPoint[configYaml.points().size()];
 		for (int i = 0;i<hudpackpoints.length;i++) {
 			HudPackPointConfig point = configYaml.points().get(i);
+			// Validate point actually exists
+			if (!entries.containsKey(point.path()))
+				throw new CompileException("Missing entry: " + point.path(), -1, -1);
+			// Read point
 			String point_code = new String(entries.get(point.path()));
-			hudpackpoints[i] = new HudPackPoint(point, engineManager.getOrCreateEngine(point.path(), point_code));
+			hudpackpoints[i] = new HudPackPoint(point, config, engineManager.getOrCreateEngine(point.path(), config, point_code));
 		}
 	}
 	
@@ -92,7 +123,7 @@ public class HudPack {
 
 	public AbstractNGSMCConfigOption<? extends Object> buildSetting(String setting) {
 		HudPackSettings v = settings.get(setting);
-		
+
 		if (format_version>1&&"dropdown".equals(v.type())) {
 			return DropdownNGSMCConfigOption.fluentBuilder((String) getSettingValue(setting),
 					Component.literal(v.name()),
@@ -101,7 +132,13 @@ public class HudPack {
 				.setSaveOperation(val->setSettingValue(setting, val))
 				.build();
 		}
-		
+		if (format_version>2&&"integer".equals(v.type())) {
+			return IntNGSMCConfigOption.fluentBuilder(((Number) getSettingValue(setting)).intValue(),
+					Component.literal(v.name()))
+				.setDefaultValue(((Number) v.default_value()).intValue())
+				.setSaveOperation(val->setSettingValue(setting, val))
+				.build();
+		}
 		return switch (v.type()) {
 			case "boolean": {
 				yield BooleanNGSMCConfigOption.fluentBuilder(((Boolean) getSettingValue(setting)),
@@ -143,5 +180,10 @@ public class HudPack {
 
 	public void setSettingValue(String string, Object value) {
 		Hudder.config.getHudSettings("hudpacks",  Hudder.config.mainfile()).put(string, value);
+	}
+
+	@Override
+	public void close() throws IOException {
+		engineManager.close();
 	}
 }

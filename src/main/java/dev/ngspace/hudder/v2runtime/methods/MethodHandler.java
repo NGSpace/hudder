@@ -36,7 +36,7 @@ public class MethodHandler {
 	
 	public void bindConsumer(V2IMethod method, String... names) {
 		for(String name:names)
-			methods.put(name.toLowerCase(),method);
+			methods.put(name,method);
 	}
 	
 	public void bindConsumer(V2IMethod method, int length, String[] args, String... names) {
@@ -60,7 +60,7 @@ public class MethodHandler {
 	 * @throws CompileException - if there is no method with that name.
 	 */
 	public V2IMethod getMethodFromName(String name) throws IllegalArgumentException {
-		V2IMethod method = methods.get(name.toLowerCase().trim());
+		V2IMethod method = methods.get(name.trim());
 		if (method==null) throw new IllegalArgumentException("Unknown method " + name);
 		return method;
 	}

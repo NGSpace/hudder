@@ -1,0 +1,227 @@
+|TEST:
+
+@name=Order of operations
+@mode=normal
+
+input:
+	{6/2*(1+2)}
+end_input;
+
+output:
+	9
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Nested order of operations
+@mode=normal
+
+input:
+	{2+3*4}
+	{(2+3)*4}
+end_input;
+
+output:
+	14
+	20
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Math
+@mode=normal
+
+input:
+	{(1+2)/3-1}
+end_input;
+
+output:
+	0
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Decimal point and math
+@mode=normal
+
+input:
+	{i=1}
+	{2* 3.141592653589793 * i / 360}
+end_input;
+
+output:
+	1
+	0.017453292519943295
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Math error
+@mode=error
+@exception_type=CompileException
+
+input:
+	{(1+2)3/1}
+end_input;
+
+output:
+	Untokenizable variable: (1+2)3
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Math operations
+@mode=normal
+
+input:
+	{truncate(3*2.1,1)}
+end_input;
+
+output:
+	6.3
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Inc and Dec
+@mode=normal
+
+input:
+	{res=0} {res--} {res++} {--res} {++res}
+end_input;
+
+output:
+	0 0 -1 -1 0
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Negative math numbers
+@mode=normal
+
+input:
+	{res=10} {res*-1} {-1*res}
+end_input;
+
+output:
+	10 -10 -10
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Trigo Functions
+@mode=normal
+
+input:
+	{sin(69)} {cos(69)} {tan(69)}
+end_input;
+
+output:
+	-0.11478481378318722 0.9933903797222716 -0.11554854579453279
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Math Functions
+@mode=normal
+
+input:
+	{abs(-69)} {floor(69.7)} {ceiling(68.7)} {sqrt(4)} {pow(2,8)} {min(1,20)} {max(1,20)} {truncate(1.69, 1)}
+end_input;
+
+output:
+	69 69 69 2 256 1 20 1.6
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Basic addition
+@mode=normal
+
+input:
+	{1+1}
+end_input;
+
+output:
+	2
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Basic setting addition
+@mode=normal
+
+input:
+	{r=1+1} {r}
+end_input;
+
+output:
+	2 2
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Addition and subtraction
+@mode=normal
+
+input:
+	{10-3-2}
+	{1-2+3}
+	{20-2*3-4}
+end_input;
+
+output:
+	5
+	2
+	10
+end_output;
+
+END_TEST;

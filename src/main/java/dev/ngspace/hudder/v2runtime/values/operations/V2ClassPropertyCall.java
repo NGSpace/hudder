@@ -22,7 +22,7 @@ import dev.ngspace.hudder.v2runtime.values.AV2Value;
 
 public class V2ClassPropertyCall extends AV2Value {
 	
-	private static final String[] forbiddenValuesAndFunctions = {"getClass","hashCode","wait","notify","notifyAll","clone","finalize"};
+	public static final String[] forbiddenValuesAndFunctions = {"getClass","hashCode","wait","notify","notifyAll","clone","finalize"};
 	private AV2Value classobj;
 	private boolean isFunctionCall;
 	private AV2Value[] functionCallArgs;
@@ -83,10 +83,10 @@ public class V2ClassPropertyCall extends AV2Value {
 		Class<?> objClass = objValue.getClass();
 		
 		if (objClass.isPrimitive())
-			throw new ExecutionException("Can not read properties of Numbers, Booleans and Chars : "+classobj.value,line,charpos);
+			throw new SecurityException("Can not read properties of Numbers, Booleans and Chars : "+classobj.value);
 
 		if (!HudderConfig.isAccessible(objClass))
-			throw new ExecutionException("Access to this type is not allowed",line,charpos);
+			throw new SecurityException("Access to this type is not allowed");
 		
 		if (isFunctionCall) {
 			Object[] parameters = new Object[functionCallArgs.length];

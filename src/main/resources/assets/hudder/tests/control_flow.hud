@@ -1,0 +1,163 @@
+|TEST:
+
+@name=Else and break
+@mode=normal
+
+input:
+	{var=0}
+	#while true
+		#if var<4
+			{var++}
+		#else
+			{break}
+	{var}
+end_input;
+
+output:
+	0
+	4
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=If and Break
+@mode=normal
+
+input:
+	r#if true
+		{break}
+	t
+end_input;
+
+output:
+	r
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=For loops in range
+@mode=normal
+
+input:
+	;mute;
+	{j=""}
+	#for i in range(0,11)
+		{j=j+i}
+	;topleft;
+	{j}
+end_input;
+
+output:
+	012345678910
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=While and Break
+@mode=normal
+
+input:
+	r#while true
+		{break}
+	t
+end_input;
+
+output:
+	rt
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=For and Break
+@mode=normal
+
+input:
+	r#for x in range(1)
+		{break}
+	t
+end_input;
+
+output:
+	rt
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Break
+@mode=normal
+
+input:
+	r
+	{break}
+	t
+end_input;
+
+output:
+	r
+	
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Boolean variable as while condition
+@mode=no_error
+
+input:
+	{flag=true}
+	#while flag
+	    {break}
+end_input;
+
+END_TEST;
+
+
+
+|TEST:
+
+@name=Fibonacci
+@mode=normal
+
+input:
+	;mute;
+	{r=""}
+	{N=0}
+	{num1=0}{num2=1}
+	#while N<20
+		{N=N+1}
+		{r=r.concat(str(num1,true).concat(" "))}
+		{num3=num2+num1}
+		{num1=num2}
+		{num2=num3}
+	;topleft,1;
+	{r}
+end_input;
+
+output:
+	0 1 1 2 3 5 8 13 21 34 55 89 144 233 377 610 987 1597 2584 4181 
+end_output;
+
+END_TEST;

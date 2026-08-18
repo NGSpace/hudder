@@ -13,10 +13,10 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.Expose;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.compilers.HudderV2Compiler;
 import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
 import dev.ngspace.hudder.compilers.utils.Compilers;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
@@ -24,7 +24,6 @@ import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.hudder.utils.NoAccess;
-import dev.ngspace.hudder.utils.testing.HudderUnitTester;
 import net.minecraft.client.Minecraft;
 
 public class HudderConfig {
@@ -40,7 +39,6 @@ public class HudderConfig {
 	
 	
 	
-    public HudderUnitTester hudderTester = new HudderUnitTester(new HudderV2Compiler());
     public Minecraft mc = Minecraft.getInstance();
 	
     
@@ -71,7 +69,7 @@ public class HudderConfig {
 	 * @throws IOException
 	 */
 	public HudInformation compileMainHud() throws CompileException, ExecutionException, IOException {
-		if (getCompiler()!=null) return getCompiler().processAndExecute(this, mainfile(), mainfile());
+		if (getCompiler()!=null) return getCompiler().processAndExecuteSafe(this, mainfile(), mainfile());
 		else throw new CompileException("There is no Compiler!", -1, -1);
 	}
 
@@ -112,11 +110,11 @@ public class HudderConfig {
 				save();
 			}
 			
-		} catch (IOException e) {
+		} catch (IOException | JsonSyntaxException e) {
 			Hudder.IS_DEBUG=true;
 			Hudder.log("Failed to read Hudder config file, enabling debug mode.");
 			e.printStackTrace();
-		} catch (ReflectiveOperationException e) {
+		} catch (ReflectiveOperationException | ClassCastException | NullPointerException e) {
 			Hudder.IS_DEBUG=true;
 			Hudder.log("Failed to set Hudder config values, enabling debug mode.");
 			e.printStackTrace();
@@ -247,6 +245,7 @@ public class HudderConfig {
 		} catch (ReflectiveOperationException e) {
 			e.printStackTrace();
 			Hudder.IS_DEBUG=true;
+			throw new IOException(e);
 		}
 	}
 	
@@ -390,6 +389,10 @@ public class HudderConfig {
 	    return userSettings.removeeffects;
 	}
 
+	public boolean removeBossBars() {
+		return userSettings.removeBossBars;
+	}
+
 	public boolean limitrate() {
 	    return userSettings.limitrate;
 	}
@@ -427,4 +430,5 @@ public class HudderConfig {
 	public Map<String, Object> globalVariables() {
 		return userSettings.globalVariables;
 	}
+	
 }

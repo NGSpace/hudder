@@ -1,0 +1,17 @@
+|TEST:
+
+@name=Newlines
+@mode=normal
+
+input:
+	
+end_input;
+
+output:
+	
+end_output;
+
+END_TEST;
+
+
+|TEST:

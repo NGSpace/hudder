@@ -1,20 +1,20 @@
 package dev.ngspace.hudder.compilers.abstractions;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
-import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableConsumer;
-import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableFunction;
-import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.Binder;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.PositionedBinder;
 import dev.ngspace.hudder.compilers.utils.CompileState;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
 import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
-import dev.ngspace.hudder.main.HudCompilationManager;
 import dev.ngspace.hudder.v2runtime.V2Runtime;
 import dev.ngspace.hudder.v2runtime.functions.IV2Function;
 import dev.ngspace.hudder.v2runtime.functions.V2FunctionHandler;
@@ -25,41 +25,17 @@ import dev.ngspace.hudder.v2runtime.values.DefaultV2VariableParser;
 import dev.ngspace.hudder.v2runtime.values.IV2VariableParser;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 
-public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
+public abstract class AV2Compiler extends AVarTextCompiler implements PositionedBinder {
 	
 	public Map<String, V2Runtime> runtimes = new HashMap<String, V2Runtime>();
-	public static Map<String, Object> tempVariables = new HashMap<String, Object>();
 	public MethodHandler methodHandler = new MethodHandler();
 	public V2FunctionHandler functionHandler = new V2FunctionHandler();
 	protected IV2VariableParser variableParser = new DefaultV2VariableParser();
 	public boolean SYSTEM_VARIABLES_ENABLED = true;
 	
 	protected AV2Compiler() {
-		HudCompilationManager.addPreCompilerListener(_ -> tempVariables.clear());
 		FunctionAndConsumerAPI.getInstance().applyFunctionsAndConsumers(this);
 	}
-	
-	
-	/**
-	 * Returns the temporary variables.
-	 * 
-	 * <br><br>
-	 * 
-	 * Temporary variables get deleted every hud compiliation.
-	 * @param key - the name of the variable
-	 * @return the value of the variable or null if it is not set
-	 */
-	public Object getTempVariable(String key) {return tempVariables.get(key);}
-	/**
-	 * Sets the value of a temporary variable.
-	 * 
-	 * <br><br>
-	 * 
-	 * Temporary variables get deleted every hud compiliation.
-	 * @param key - the name of the variable
-	 * @param value - the new value of the variable
-	 */
-	public void putTemp(String key, Object value) {tempVariables.put(key, value);}
 	
 	
 	
@@ -92,9 +68,9 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 	
 	
 	@Override
-	public void compileFile(String text, String filepath) throws CompileException {
+	public void compileFile(HudderConfig config, String text, String filepath) throws CompileException {
 		if (!runtimes.containsKey(text))
-			runtimes.put(text, buildRuntimeSafe(Hudder.config, text, new TextPos(-1, -1), filepath, null));
+			runtimes.put(text, buildRuntimeSafe(config, text, new TextPos(-1, -1), filepath, null));
 	}
 	
 
@@ -110,11 +86,12 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 	
 	
 	
-	@Override public void bindConsumer(BindableConsumer cons, String... names) {
-		methodHandler.bindConsumer((_,m,_,_,_,_,s)->cons.invoke(m, this, s), names);
+	@Override public void bindConsumer(BindablePositionedConsumer cons, String... names) {
+		methodHandler.bindConsumer((ci,m,_,_,_,pos,s)->cons.invoke(m, this, pos, ci, s), names);
 	}
-	@Override public void bindFunction(BindableFunction cons, String... names) {
-		functionHandler.bindFunction((c,_,s,_,_)->cons.invoke(c.compileState, this, s), names);
+	@Override public void bindFunction(BindablePositionedFunction cons, String... names) {
+		functionHandler.bindFunction((c,_,s,l,co)->cons.invoke(c.compileState, this, new TextPos(l, co),
+				c.config, s), names);
 	}
 	
 
@@ -127,7 +104,7 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 		
 		if (isMethod) {
 			MethodHandler.methods.put(name, (_,state,_,type,_,charpos,vals) -> {
-				if (vals.length<args.length) throw new ExecutionException("Not enough arguments", pos.line(), pos.column());
+				if (vals.length<args.length) throw new ExecutionException("Not enough arguments", pos);
 				for (int i = 0;i<vals.length;i++) {
 					Object v = vals[i].get();
 					runtime.putScoped("arg"+(i+1), v);
@@ -146,9 +123,9 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 				if (element.returnsAValue()) temp = false;
 			}
 			if (temp) throw new CompileException("Function \""+name
-					+"\" does not always return a value!",pos.line(),pos.column());
+					+"\" does not always return a value!",pos);
 			functionHandler.bindFunction((IV2Function) (_,_,vals,line,charpos) -> {
-				if (vals.length<args.length) throw new ExecutionException("Not enough arguments", pos.line(), pos.column());
+				if (vals.length<args.length) throw new ExecutionException("Not enough arguments", pos);
 				for (int i = 0;i<vals.length;i++) {
 					Object v = vals[i].get();
 					runtime.putScoped("arg"+(i+1), v);
@@ -203,7 +180,7 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 	public HudInformation compileAndExecute(HudderConfig info, String text, String filename) throws ExecutionException {
 		try {
 			if (!runtimes.containsKey(text))
-				compileFile(text, filename);
+				compileFile(info, text, filename);
 			return execute(info, text, filename);
 		} catch (CompileException e) {
 			throw new ExecutionException(e);
@@ -213,4 +190,11 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Binder {
 	public record CodeBlock(String code, String text, int starting_index, int ending_index) {}
 	
 	public record Instruction(byte instruction, String paremeter, int ending_index) {}
+	
+	@Override
+	public void resetState() throws IOException {
+		SYSTEM_VARIABLES_ENABLED = true;
+		runtimes.clear();
+		super.resetState();
+	}
 }

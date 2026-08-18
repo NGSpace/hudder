@@ -42,7 +42,7 @@ public class HudderV2Compiler extends AV2Compiler {
 
 	@Override public V2Runtime buildRuntime(HudderConfig info, String text, TextPos charPosition, String filename,
 			V2Runtime scope) throws CompileException, ExecutionException {
-		V2Runtime runtime = new V2Runtime(this, scope);
+		V2Runtime runtime = new V2Runtime(this, info, scope);
 		
 		StringBuilder elemBuilder = new StringBuilder();
 		
@@ -54,7 +54,7 @@ public class HudderV2Compiler extends AV2Compiler {
 		int savedind = 0;
 		
 		boolean cleanup = false;
-		int cleanup_amount = Hudder.config.methodBuffer();
+		int cleanup_amount = info.methodBuffer();
 		
 		byte compileState = TEXT_STATE;
 
@@ -216,7 +216,7 @@ public class HudderV2Compiler extends AV2Compiler {
 						}
 						elemBuilder.setLength(0);
 						cleanup = true;
-						cleanup_amount = Hudder.config.methodBuffer()/2;
+						cleanup_amount = info.methodBuffer()/2;
 					}
 					break;
 				}
@@ -303,7 +303,7 @@ public class HudderV2Compiler extends AV2Compiler {
 				}
 				default: {
 					var pos = getPosition(charPosition, savedind, text);
-					throw new CompileException("Unknown compile state: " + compileState, pos.line(), pos.column());
+					throw new CompileException("Unknown compile state: " + compileState, pos);
 				}
 			}
 		}
@@ -312,7 +312,7 @@ public class HudderV2Compiler extends AV2Compiler {
 		
 		if (compileState!=0) {
 			var pos = getPosition(charPosition, savedind, text);
-			throw new CompileException(getCompilerErrorMessage(compileState), pos.line(), pos.column());
+			throw new CompileException(getCompilerErrorMessage(compileState), pos);
 		}
 		
 		return runtime;
@@ -362,7 +362,7 @@ public class HudderV2Compiler extends AV2Compiler {
 				else if(c==' '&&elemBuilder.toString().equals("for")){instruction=FOR_LOOP_INSTRUCTION;}
 				else if(c==' '&&elemBuilder.toString().equals("else if")){instruction=ELSE_IF_INSTRUCTION;}
 				else if(c=='e'&&elemBuilder.toString().equals("els")&&
-						(text.charAt(ind+1)=='\n')){instruction=ELSE_INSTRUCTION;}
+						(text.length()>ind+1&&text.charAt(ind+1)=='\n')){instruction=ELSE_INSTRUCTION;}
 				if (instruction!=UNDEFINED_INSTRUCTION) {elemBuilder.setLength(0);continue;}
 			}
 			elemBuilder.append(c);
@@ -390,5 +390,10 @@ public class HudderV2Compiler extends AV2Compiler {
 			default -> "An unknown error has occurred";
 		});
 		return strb.toString();
+	}
+	
+	@Override
+	public String[] getSupportedFileFormats() {
+		return new String[] {"hud"};
 	}
 }

@@ -12,8 +12,6 @@ import org.lwjgl.sdl.SDLScancode;
 import com.sun.management.OperatingSystemMXBean;
 
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
-import dev.ngspace.hudder.api.variableregistry.VariableTypes;
-import dev.ngspace.hudder.v2runtime.V2Runtime;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.PauseScreen;
@@ -36,6 +34,7 @@ import net.minecraft.client.gui.screens.inventory.EnchantmentScreen;
 import net.minecraft.client.gui.screens.inventory.GrindstoneScreen;
 import net.minecraft.client.gui.screens.inventory.HopperScreen;
 import net.minecraft.client.gui.screens.inventory.HorseInventoryScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.gui.screens.inventory.LecternScreen;
 import net.minecraft.client.gui.screens.inventory.LoomScreen;
 import net.minecraft.client.gui.screens.inventory.MerchantScreen;
@@ -129,13 +128,13 @@ public class Misc {private Misc() {}
 			} catch (Exception e) {e.printStackTrace();}
 	    }
 	    
-	    DataVariableRegistry.registerVariable(
+	    DataVariableRegistry.registerBooleanVariable(
 	    		variable->held_keys.containsKey(keys.get(variable.substring(4).toLowerCase())),
-	    		VariableTypes.BOOLEAN, keyNames.toArray(new String[keyNames.size()]));
+	    		keyNames.toArray(new String[keyNames.size()]));
 	}
 	
 	
-	public static Object getScreenType(Screen screen) {
+	public static String getScreenType(Screen screen) {
 		return switch (screen) {
 			case BlastFurnaceScreen _: yield "Blast Furnace";
 			case SmokerScreen _: yield "Smoker";
@@ -149,6 +148,7 @@ public class Misc {private Misc() {}
 			case CrafterScreen _: yield "Crafter";
 			case CraftingScreen _: yield "Crafting";
 			case CreativeModeInventoryScreen _: yield "Creative Mode Inventory";
+			case InventoryScreen _: yield "Survival Mode Inventory";
 			case EnchantmentScreen _: yield "Enchantment";
 			case ContainerScreen _: yield "Container";
 			case GrindstoneScreen _: yield "Grindstone";
@@ -162,18 +162,15 @@ public class Misc {private Misc() {}
 			case StonecutterScreen _: yield "Stonecutter";
 			case PauseScreen _: yield "Pause";
 			case ChatScreen _: yield "Chat";
-			case BookViewScreen _: yield "Anvil";
+			case BookViewScreen _: yield "Book";
 			case AbstractContainerScreen<?> _: yield "Generic container";
-			
-			
-			case null:
-				yield V2Runtime.NULL;
-			default:
-				yield screen.getClass().getSimpleName();
+			case null: yield null;
+			default: yield screen.getClass().getSimpleName();
 		};
 	}
 	
 	static double truncate(double num, int cutoff) {
 		return Math.floor(num*Math.pow(10, cutoff))/Math.pow(10, cutoff);
 	}
+	
 }

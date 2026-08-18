@@ -13,6 +13,7 @@ import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.uielements.AUIElement;
+import dev.ngspace.hudder.utils.HudFileUtils;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -66,6 +67,7 @@ public class HudderRenderer implements HudElement {
 	
 	protected void renderHudInformation(GuiGraphicsExtractor context, Font renderer, HudInformation text, HudderConfig info,
 			DeltaTracker delta) {
+		HudFileUtils.loadMarkedResources();
         int color = info.color();
         int bgcolor = info.backgroundcolor();
         boolean shadow = info.shadow();
@@ -127,15 +129,19 @@ public class HudderRenderer implements HudElement {
 		renderTextLine(context, Component.literal(text), x, y, color, scale, shadow, background, backgroundColor);
 	}
 	
+	public void renderTextLine(GuiGraphicsExtractor context, Component text, int x, int y, int color,
+			float scale, boolean shadow, boolean background, int backgroundColor) {
+		renderTextLine(context, text, x, y, color, scale, shadow, background, backgroundColor, 0);
+	}
 	
-	
-	public void renderTextLine(GuiGraphicsExtractor context, Component text, int x, int y, int color, float scale, boolean shadow,
-			boolean background, int backgroundColor) {
-        if (scale != 1.0f) {
+	public void renderTextLine(GuiGraphicsExtractor context, Component text, int x, int y, int color,
+			float scale, boolean shadow, boolean background, int backgroundColor, float rotation) {
+        if (scale != 1.0f||rotation!=0) {
             Matrix3x2fStack matrixStack = context.pose();
             matrixStack.pushMatrix();
             matrixStack.translate(x, y);
             matrixStack.scale(scale, scale);
+            matrixStack.rotateAbout((float)Math.toRadians(rotation), -1, -1);
             matrixStack.translate(-x, -y);
     		if (background&&!"".equals(text.getString()))
     			renderBlock(context,x-1,y-1,mc.font.width(text)+2,10,backgroundColor);
@@ -310,11 +316,13 @@ public class HudderRenderer implements HudElement {
 	            	else
 	            		renderFail(context, HudCompilationManager.LastFailMessage);
 				} catch (Exception e) {
-					e.printStackTrace();
+					if (Hudder.IS_DEBUG) e.printStackTrace();
+		    		renderFail(context, e.getMessage());
 				}
 			}
     	} catch (RuntimeException e) {
-			e.printStackTrace();
+			if (Hudder.IS_DEBUG) e.printStackTrace();
+    		renderFail(context, e.getMessage());
 		}
 		
 	}

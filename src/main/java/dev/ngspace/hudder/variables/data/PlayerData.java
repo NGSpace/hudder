@@ -1,9 +1,5 @@
 package dev.ngspace.hudder.variables.data;
 
-import static dev.ngspace.hudder.api.variableregistry.VariableTypes.BOOLEAN;
-import static dev.ngspace.hudder.api.variableregistry.VariableTypes.NUMBER;
-import static dev.ngspace.hudder.api.variableregistry.VariableTypes.STRING;
-
 import dev.ngspace.hudder.variables.HudderBuiltInVariables;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -36,49 +32,49 @@ public class PlayerData extends HudderBuiltInVariables {
 
 	private static void registerPlayerStatusVariables() {
 		// Food / hunger
-		register(_->ins.player.getFoodData().getSaturationLevel(), NUMBER, "saturation");
-		register(_->ins.player.getFoodData().getFoodLevel(), NUMBER, "hunger");
+		registerNumber(_->ins.player.getFoodData().getSaturationLevel(), "saturation");
+		registerNumber(_->ins.player.getFoodData().getFoodLevel(), "hunger");
 
 		// Health
-		register(_->ins.player.getHealth(), NUMBER, "health", "hp");
-		register(_->ins.player.getMaxHealth(), NUMBER, "maxhealth", "maxhp");
+		registerNumber(_->ins.player.getHealth(), "health", "hp");
+		registerNumber(_->ins.player.getMaxHealth(), "maxhealth", "maxhp");
 
 		// Absorption
-		register(_->ins.player.getAbsorptionAmount(), NUMBER, "absorption");
-		register(_->ins.player.getMaxAbsorption(), NUMBER, "maxabsorption");
+		registerNumber(_->ins.player.getAbsorptionAmount(), "absorption");
+		registerNumber(_->ins.player.getMaxAbsorption(), "maxabsorption");
 
 		// XP
-		register(_->ins.player.experienceLevel, NUMBER, "xplevel");
-		register(_->ins.player.experienceProgress*ins.player.getXpNeededForNextLevel(), NUMBER, "xp");
-		register(_->ins.player.getXpNeededForNextLevel(), NUMBER, "next_level_xp_requirement");
+		registerNumber(_->ins.player.experienceLevel, "xplevel");
+		registerNumber(_->ins.player.experienceProgress*ins.player.getXpNeededForNextLevel(), "xp");
+		registerNumber(_->ins.player.getXpNeededForNextLevel(), "next_level_xp_requirement");
 
 		// Armor / movement
-		register(_->ins.player.getArmorValue(), NUMBER, "armor");
-		register(_->ins.player.fallDistance, NUMBER, "falldistance");
+		registerNumber(_->ins.player.getArmorValue(), "armor");
+		registerNumber(_->ins.player.fallDistance, "falldistance");
 
 		// Air bubbles
-		register(_->getCurrentAirSupplyBubble(Math.clamp(ins.player.getAirSupply(), 0,
-				ins.player.getMaxAirSupply()),ins.player.getMaxAirSupply(),0), NUMBER, "airbubbles");
+		registerNumber(_->getCurrentAirSupplyBubble(Math.clamp(ins.player.getAirSupply(), 0,
+				ins.player.getMaxAirSupply()),ins.player.getMaxAirSupply(),0), "airbubbles");
 
-		register(_->getCurrentAirSupplyBubble(ins.player.getMaxAirSupply(),ins.player.getMaxAirSupply(),0),
-				NUMBER, "maxairbubbles");
+		registerNumber(_->getCurrentAirSupplyBubble(ins.player.getMaxAirSupply(),ins.player.getMaxAirSupply(),0),
+				"maxairbubbles");
 		
 		// Attack indicator
-		register(_->ins.player.getAttackStrengthScale(0.0F), NUMBER, "attack_cooldown");
+		registerNumber(_->ins.player.getAttackStrengthScale(0.0F), "attack_cooldown");
 	}
 	
 	private static void registerPlayerMovement() {
 		// Movement / state flags
-		register(_->ins.player.getAbilities().flying, BOOLEAN, "isflying");
-		register(_->ins.player.isFallFlying(), BOOLEAN, "isgliding");
-		register(_->ins.player.onClimbable(), BOOLEAN, "isclimbing");
-		register(_->ins.player.isVisuallyCrawling(), BOOLEAN, "iscrawling");
-		register(_->ins.player.isSwimming(), BOOLEAN, "isswimming");
-		register(_->ins.player.isShiftKeyDown(), BOOLEAN, "issneaking");
-		register(_->ins.player.isSprinting(), BOOLEAN, "issprinting");
+		registerBoolean(_->ins.player.getAbilities().flying, "isflying");
+		registerBoolean(_->ins.player.isFallFlying(), "isgliding");
+		registerBoolean(_->ins.player.onClimbable(), "isclimbing");
+		registerBoolean(_->ins.player.isVisuallyCrawling(), "iscrawling");
+		registerBoolean(_->ins.player.isSwimming(), "isswimming");
+		registerBoolean(_->ins.player.isShiftKeyDown(), "issneaking");
+		registerBoolean(_->ins.player.isSprinting(), "issprinting");
 
 		// Speed
-		register(_->{
+		registerNumber(_->{
 		    var p = ins.player;
 		    var ent = (p.getVehicle() == null) ? p : p.getVehicle();
 
@@ -87,9 +83,9 @@ public class PlayerData extends HudderBuiltInVariables {
 		            Math.pow(ent.getY() - ent.yOld, 2) +
 		            Math.pow(ent.getZ() - ent.zOld, 2)
 		    ) * 20;
-		}, NUMBER, "playerspeed");
+		}, "playerspeed");
 
-		register(_->{
+		registerNumber(_->{
 		    var p = ins.player;
 		    var ent = (p.getVehicle() == null) ? p : p.getVehicle();
 
@@ -97,209 +93,209 @@ public class PlayerData extends HudderBuiltInVariables {
 		            Math.pow(ent.getX() - ent.xOld, 2) +
 		            Math.pow(ent.getZ() - ent.zOld, 2)
 		    ) * 20;
-		}, NUMBER, "horizontal_playerspeed");
+		}, "horizontal_playerspeed");
 	}
 	
 	private static void registerPlayerStateVariables() {
 		// Player state flags
-		register(_->ins.player.isAlive(), BOOLEAN, "isalive");
-		register(_->ins.player.isBlocking(), BOOLEAN, "isblocking");
-		register(_->ins.player.isFreezing(), BOOLEAN, "isfreezing");
-		register(_->ins.player.isCurrentlyGlowing(), BOOLEAN, "isglowing");
-		register(_->ins.player.fireImmune(), BOOLEAN, "isfireimmune");
-		register(_->ins.player.isOnFire(), BOOLEAN, "isonfire");
-		register(_->ins.player.onGround(), BOOLEAN, "isonground");
-		register(_->ins.player.isInvisible(), BOOLEAN, "isinvisible");
-		register(_->ins.player.isInWater(), BOOLEAN, "isdrowning");
-		register(_->ins.player.getControlledVehicle() != null, BOOLEAN, "iscontrollingmount");
-		register(_->ins.player.getVehicle() != null, BOOLEAN, "isonmount");
+		registerBoolean(_->ins.player.isAlive(), "isalive");
+		registerBoolean(_->ins.player.isBlocking(), "isblocking");
+		registerBoolean(_->ins.player.isFreezing(), "isfreezing");
+		registerBoolean(_->ins.player.isCurrentlyGlowing(), "isglowing");
+		registerBoolean(_->ins.player.fireImmune(), "isfireimmune");
+		registerBoolean(_->ins.player.isOnFire(), "isonfire");
+		registerBoolean(_->ins.player.onGround(), "isonground");
+		registerBoolean(_->ins.player.isInvisible(), "isinvisible");
+		registerBoolean(_->ins.player.isInWater(), "isdrowning");
+		registerBoolean(_->ins.player.getControlledVehicle() != null, "iscontrollingmount");
+		registerBoolean(_->ins.player.getVehicle() != null, "isonmount");
 		
-		register(_->ins.player.level().isRainingAt(ins.player.blockPosition()), BOOLEAN, "is_in_rain");
-		register(_->ins.player.level().canSeeSky(ins.player.blockPosition()), BOOLEAN, "is_exposed_to_sky");
+		registerBoolean(_->ins.player.level().isRainingAt(ins.player.blockPosition()), "is_in_rain");
+		registerBoolean(_->ins.player.level().canSeeSky(ins.player.blockPosition()), "is_exposed_to_sky");
 
 		// Game mode flags (with aliases)
-		register(_->ins.gameMode.getPlayerMode() == GameType.SURVIVAL, BOOLEAN, "issurvival", "is_survival");
-		register(_->ins.gameMode.getPlayerMode() == GameType.CREATIVE, BOOLEAN, "iscreative", "is_creative");
-		register(_->ins.gameMode.getPlayerMode() == GameType.ADVENTURE, BOOLEAN, "isadventure", "is_adventure");
-		register(_->ins.gameMode.getPlayerMode() == GameType.SPECTATOR, BOOLEAN, "isspectator", "is_spectator");
+		registerBoolean(_->ins.gameMode.getPlayerMode() == GameType.SURVIVAL, "issurvival", "is_survival");
+		registerBoolean(_->ins.gameMode.getPlayerMode() == GameType.CREATIVE, "iscreative", "is_creative");
+		registerBoolean(_->ins.gameMode.getPlayerMode() == GameType.ADVENTURE, "isadventure", "is_adventure");
+		registerBoolean(_->ins.gameMode.getPlayerMode() == GameType.SPECTATOR, "isspectator", "is_spectator");
 	}
 	
 	@SuppressWarnings("deprecation")
 	private static void registerMountVariables() {
 		// --- Mount numeric stats (nullable) ---
 
-		register(_->(ins.player.getVehicle() instanceof LivingEntity entity) ? entity.getHealth() : null,
-		    NUMBER, "mount_health", "mount_hp");
+		registerNumber(_->(ins.player.getVehicle() instanceof LivingEntity entity) ? entity.getHealth() : null,
+		    "mount_health", "mount_hp");
 
-		register(_->(ins.player.getVehicle() instanceof LivingEntity entity) ? entity.getMaxHealth() : null,
-		    NUMBER, "mount_maxhealth", "mount_maxhp");
+		registerNumber(_->(ins.player.getVehicle() instanceof LivingEntity entity) ? entity.getMaxHealth() : null,
+		    "mount_maxhealth", "mount_maxhp");
 
-		register(_->(ins.player.getVehicle() instanceof LivingEntity entity)
-		        ? entity.getAttribute(Attributes.MOVEMENT_SPEED).getBaseValue() : null, NUMBER, "mount_speed");
+		registerNumber(_->(ins.player.getVehicle() instanceof LivingEntity entity)
+		        ? entity.getAttribute(Attributes.MOVEMENT_SPEED).getBaseValue() : null, "mount_speed");
 
-		register(_->(ins.player.getVehicle() instanceof LivingEntity entity)
-		        ? entity.getAttribute(Attributes.JUMP_STRENGTH).getBaseValue() : null, NUMBER, "mount_jump_strength");
+		registerNumber(_->(ins.player.getVehicle() instanceof LivingEntity entity)
+		        ? entity.getAttribute(Attributes.JUMP_STRENGTH).getBaseValue() : null, "mount_jump_strength");
 
-		register(_->(ins.player.getVehicle() instanceof AbstractHorse)
-				? ins.player.getJumpRidingScale() : null, NUMBER, "mount_jump_scale");
+		registerNumber(_->(ins.player.getVehicle() instanceof AbstractHorse)
+				? ins.player.getJumpRidingScale() : null, "mount_jump_scale");
 
-		register(_->(ins.player.getVehicle() instanceof AbstractHorse horse) ? horse.getArmorValue() : null,
-		    NUMBER, "mount_armor");
+		registerNumber(_->(ins.player.getVehicle() instanceof AbstractHorse horse) ? horse.getArmorValue() : null,
+		    "mount_armor");
 
-		register(_->(ins.player.getVehicle() instanceof AbstractHorse horse) ? horse.getJumpCooldown() : null,
-		    NUMBER, "mount_jump_cooldown");
+		registerNumber(_->(ins.player.getVehicle() instanceof AbstractHorse horse) ? horse.getJumpCooldown() : null,
+		    "mount_jump_cooldown");
 
 
 		// --- Mount string info (nullable) ---
 
-		register(_->{
+		registerString(_->{
 		    var v = ins.player.getVehicle();
 		    return (v == null) ? null : v.getType().builtInRegistryHolder().key().identifier().toString();
-		}, STRING, "mount_type");
+		}, "mount_type");
 
-		register(_->(ins.player.getVehicle() instanceof AbstractHorse horse)
-		        ? horse.getBodyArmorItem().getItem().toString() : null, STRING, "mount_armor_type");
+		registerString(_->(ins.player.getVehicle() instanceof AbstractHorse horse)
+		        ? horse.getBodyArmorItem().getItem().toString() : null, "mount_armor_type");
 
-		register(_->{
+		registerString(_->{
 		    var v = ins.player.getVehicle();
 		    return (v == null || v.getCustomName() == null) ? null : v.getCustomName().getString();
-		}, STRING, "mount_name");
+		}, "mount_name");
 
 
 		// --- Mount booleans ---
 
-		register(_->ins.player.getVehicle() instanceof Mob mob && mob.isSaddled(),
-		    BOOLEAN, "mount_is_saddled");
+		registerBoolean(_->ins.player.getVehicle() instanceof Mob mob && mob.isSaddled(),
+		    "mount_is_saddled");
 
-		register(_->ins.player.getVehicle() instanceof Mob mob && mob.isWearingBodyArmor(),
-		    BOOLEAN, "mount_has_armor");
+		registerBoolean(_->ins.player.getVehicle() instanceof Mob mob && mob.isWearingBodyArmor(),
+		    "mount_has_armor");
 
-		register(_->ins.player.getVehicle() instanceof AbstractHorse horse && horse.isTamed(),
-		    BOOLEAN, "mount_is_tamed");
+		registerBoolean(_->ins.player.getVehicle() instanceof AbstractHorse horse && horse.isTamed(),
+		    "mount_is_tamed");
 
-		register(_->ins.player.getVehicle() instanceof AbstractChestedHorse horse && horse.hasChest(),
-		    BOOLEAN, "mount_has_chest");
+		registerBoolean(_->ins.player.getVehicle() instanceof AbstractChestedHorse horse && horse.hasChest(),
+		    "mount_has_chest");
 	}
 	
 	private static void registerLookingAtVariables() {
 		/* Looking at */
 
-		register(_->hitPos(raycastBlockPlayer(false, 50)), STRING, "looking_at_pos");
-		register(_->hitPos(raycastCamera(false)), STRING, "cam_looking_at_pos");
+		registerString(_->hitPos(raycastBlockPlayer(false, 50)), "looking_at_pos");
+		registerString(_->hitPos(raycastCamera(false)), "cam_looking_at_pos");
 
-		register(_->{
+		registerString(_->{
 		    var hit = raycastBlockPlayer(false, 50);
 		    return hit == null ? null : BuiltInRegistries.BLOCK
 		    		.getKey(ins.level.getBlockState(hit.getBlockPos()).getBlock()).toString();
-		}, STRING, "block_in_front");
+		}, "block_in_front");
 
-		register(_->{
+		registerString(_->{
 		    var hit = raycastCamera(false);
 		    return hit == null ? null : BuiltInRegistries.BLOCK
 		    		.getKey(ins.level.getBlockState(hit.getBlockPos()).getBlock()).toString();
-		}, STRING, "cam_block_in_front");
+		}, "cam_block_in_front");
 
-		register(_->{
+		registerString(_->{
 		    var hit = raycastBlockPlayer(true, 50);
 		    return hit == null ? null : BuiltInRegistries.FLUID
 		    		.getKey(ins.level.getFluidState(hit.getBlockPos()).getType()).toString();
-		}, STRING, "fluid_in_front");
+		}, "fluid_in_front");
 
-		register(_->{
+		registerString(_->{
 		    var hit = raycastCamera(true);
 		    return hit == null ? null : BuiltInRegistries.FLUID
 		    		.getKey(ins.level.getFluidState(hit.getBlockPos()).getType()).toString();
-		}, STRING, "cam_fluid_in_front");
+		}, "cam_fluid_in_front");
 
-		register(_->ins.crosshairPickEntity == null ? null : BuiltInRegistries.ENTITY_TYPE
-				.getKey(ins.crosshairPickEntity.getType()) .toString(), STRING, "entity_in_front");
+		registerString(_->ins.crosshairPickEntity == null ? null : BuiltInRegistries.ENTITY_TYPE
+				.getKey(ins.crosshairPickEntity.getType()) .toString(), "entity_in_front");
 	}
 
 	private static void registerPositionVariables() {
 		/* Player position */
 
-		register(_->ins.player.getX(), NUMBER, "dxpos", "dx");
-		register(_->ins.player.getY(), NUMBER, "dypos", "dy");
-		register(_->ins.player.getZ(), NUMBER, "dzpos", "dz");
+		registerNumber(_->ins.player.getX(), "dxpos", "dx");
+		registerNumber(_->ins.player.getY(), "dypos", "dy");
+		registerNumber(_->ins.player.getZ(), "dzpos", "dz");
 
-		register(_->ins.player.getBlockX(), NUMBER, "xpos", "x");
-		register(_->ins.player.getBlockY(), NUMBER, "ypos", "y");
-		register(_->ins.player.getBlockZ(), NUMBER, "zpos", "z");
+		registerNumber(_->ins.player.getBlockX(), "xpos", "x");
+		registerNumber(_->ins.player.getBlockY(), "ypos", "y");
+		registerNumber(_->ins.player.getBlockZ(), "zpos", "z");
 
 
 		/* Camera position */
 
-		register(_->ins.gameRenderer.mainCamera().position().x, NUMBER, "cam_dxpos");
-		register(_->ins.gameRenderer.mainCamera().position().y, NUMBER, "cam_dypos");
-		register(_->ins.gameRenderer.mainCamera().position().z, NUMBER, "cam_dzpos");
+		registerNumber(_->ins.gameRenderer.mainCamera().position().x, "cam_dxpos");
+		registerNumber(_->ins.gameRenderer.mainCamera().position().y, "cam_dypos");
+		registerNumber(_->ins.gameRenderer.mainCamera().position().z, "cam_dzpos");
 
-		register(_->ins.gameRenderer.mainCamera().blockPosition().getX(), NUMBER, "cam_xpos");
-		register(_->ins.gameRenderer.mainCamera().blockPosition().getY(), NUMBER, "cam_ypos");
-		register(_->ins.gameRenderer.mainCamera().blockPosition().getZ(), NUMBER, "cam_zpos");
+		registerNumber(_->ins.gameRenderer.mainCamera().blockPosition().getX(), "cam_xpos");
+		registerNumber(_->ins.gameRenderer.mainCamera().blockPosition().getY(), "cam_ypos");
+		registerNumber(_->ins.gameRenderer.mainCamera().blockPosition().getZ(), "cam_zpos");
 	}
 	
 	private static void registerRotationVariables() {
 		/* Player rotation */
 
 		// Pitch
-		register(_->ins.player.getXRot(), NUMBER, "dpitch");
-		register(_->(int) ins.player.getXRot(), NUMBER, "pitch");
+		registerNumber(_->ins.player.getXRot(), "dpitch");
+		registerNumber(_->(int) ins.player.getXRot(), "pitch");
 
 		// Yaw (0–360)
-		register(_->{
+		registerNumber(_->{
 		    float yaw = ins.player.getYHeadRot();
 		    return (yaw < 0) ? 360d + (yaw % 360d) : yaw % 360d;
-		}, NUMBER, "dyaw");
+		}, "dyaw");
 
-		register(_->{
+		registerNumber(_->{
 		    int yaw = (int) ins.player.getYHeadRot();
 		    return (yaw < 0) ? 360 + (yaw % 360) : yaw % 360d;
-		}, NUMBER, "yaw");
+		}, "yaw");
 
 		// F3-style yaw
-		register(_->Mth.wrapDegrees(ins.player.getYHeadRot()), NUMBER, "f3_dyaw");
-		register(_->(int) Mth.wrapDegrees(ins.player.getYHeadRot()), NUMBER, "f3_yaw");
+		registerNumber(_->Mth.wrapDegrees(ins.player.getYHeadRot()), "f3_dyaw");
+		registerNumber(_->(int) Mth.wrapDegrees(ins.player.getYHeadRot()), "f3_yaw");
 
 
 
 		/* Camera rotation */
 
 		// Pitch
-		register(_->ins.gameRenderer.mainCamera().xRot(), NUMBER, "cam_dpitch");
-		register(_->(int) ins.gameRenderer.mainCamera().xRot(), NUMBER, "cam_pitch");
+		registerNumber(_->ins.gameRenderer.mainCamera().xRot(), "cam_dpitch");
+		registerNumber(_->(int) ins.gameRenderer.mainCamera().xRot(), "cam_pitch");
 
 		// Yaw (0–360)
-		register(_->{
+		registerNumber(_->{
 		    float yaw = ins.gameRenderer.mainCamera().yRot();
 		    return (yaw < 0) ? 360d + (yaw % 360d) : yaw % 360d;
-		}, NUMBER, "cam_dyaw");
+		}, "cam_dyaw");
 
-		register(_->{
+		registerNumber(_->{
 		    int yaw = (int) ins.gameRenderer.mainCamera().yRot();
 		    return (yaw < 0) ? 360 + (yaw % 360) : yaw % 360d;
-		}, NUMBER, "cam_yaw");
+		}, "cam_yaw");
 
 		// F3-style yaw
-		register(_->Mth.wrapDegrees(ins.gameRenderer.mainCamera().yRot()), NUMBER, "cam_f3_dyaw");
-		register(_->(int) Mth.wrapDegrees(ins.gameRenderer.mainCamera().yRot()), NUMBER, "cam_f3_yaw");
+		registerNumber(_->Mth.wrapDegrees(ins.gameRenderer.mainCamera().yRot()), "cam_f3_dyaw");
+		registerNumber(_->(int) Mth.wrapDegrees(ins.gameRenderer.mainCamera().yRot()), "cam_f3_yaw");
 	}
 	
 	private static void registerOtherPlayerVariables() {
-		register(_->ins.player.getName().getString(), STRING, "username");
-		register(_->ins.player.getStringUUID(), STRING, "uuid");
+		registerString(_->ins.player.getName().getString(), "username");
+		registerString(_->ins.player.getStringUUID(), "uuid");
 
-		register(_->{
+		registerString(_->{
 		    var src = ins.player.getLastDamageSource();
 		    return (src == null) ? null : src.type().msgId();
-		}, STRING, "damagetype");
+		}, "damagetype");
 
-		register(_->ins.player.getInventory().getSelectedSlot(), NUMBER, "selectedslot");
+		registerNumber(_->ins.player.getInventory().getSelectedSlot(), "selectedslot");
 
-		register(_->ins.player.getInventory()
+		registerString(_->ins.player.getInventory()
 		        .getItem(ins.player.getInventory().getSelectedSlot())
 		        .getDisplayName()
 		        .getString(),
-		    STRING, "helditem_name");
+		    "helditem_name");
 	}
 	
 	private static BlockHitResult raycast(Minecraft ins,Vec3 start,Vec3 direction,double reach,boolean fluid) {

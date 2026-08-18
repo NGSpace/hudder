@@ -1,5 +1,12 @@
 package dev.ngspace.hudder.utils;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.zip.CRC32;
+import java.util.zip.Checksum;
+
 public class HudderUtils {private HudderUtils() {}
 	
 	public static String[] processParemeters(String strtoprocess) {
@@ -9,11 +16,11 @@ public class HudderUtils {private HudderUtils() {}
 		int squareparentheses = 0;
 
 		StringBuilder parameterBuilder = new StringBuilder();
-		String[] tokenizedParemeters = new String[0];
+	    List<String> parameters = new ArrayList<String>();
 		for (int i = 0;i<strtoprocess.length();i++) {
 			char c = strtoprocess.charAt(i);
 			if (c==','&&parentheses==0&&squareparentheses==0) {
-				tokenizedParemeters = addToArray(tokenizedParemeters, parameterBuilder.toString());
+				parameters.add(parameterBuilder.toString());
 				parameterBuilder.setLength(0);
 				continue;
 			}
@@ -47,12 +54,31 @@ public class HudderUtils {private HudderUtils() {}
 			
 			parameterBuilder.append(c);
 		}
-		tokenizedParemeters = addToArray(tokenizedParemeters, parameterBuilder.toString());
-		return tokenizedParemeters;
+		parameters.add(parameterBuilder.toString());
+		return parameters.toArray(String[]::new);
 	}
-	private static <T> T[] addToArray(T[] arr, T t) {
-		T[] newarr = java.util.Arrays.copyOf(arr, arr.length+1);
-		newarr[arr.length] = t;
-		return newarr;
+	
+	public static String checkIndentation(String text, int index) {
+		StringBuilder b = new StringBuilder();
+		for (;index<text.length();index++) {
+			char c = text.charAt(index);
+			if (!(c==' '||c=='\t')) break;
+			b.append(c);
+		}
+		return b.toString();
+	}
+	
+	public static long getCRC32Checksum(String str) {return getCRC32Checksum(str.getBytes());}
+	public static long getCRC32Checksum(byte[] bytes) {
+	    Checksum crc32 = new CRC32();
+	    crc32.update(bytes, 0, bytes.length);
+	    return crc32.getValue();
+	}
+
+	public static byte[] limitedReadAllByte(InputStream input, int max_length) throws IOException {
+	    byte[] data = input.readNBytes(max_length + 1);
+	    if (data.length > max_length)
+	        throw new IOException("Input stream exceeds maximum length of " + max_length);
+	    return data;
 	}
 }

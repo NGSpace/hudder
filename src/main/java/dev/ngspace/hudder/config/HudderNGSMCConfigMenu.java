@@ -1,12 +1,21 @@
 package dev.ngspace.hudder.config;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.function.Function;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.utils.Compilers;
+import dev.ngspace.hudder.compilers.utils.Compilers.CompilerEntry;
+import dev.ngspace.hudder.main.HudderTickEvent;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigBuilder;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
@@ -16,7 +25,6 @@ import dev.ngspace.ngsmcconfig.options.DoubleNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.DropdownNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.HexNGSMCConfigOption;
 import dev.ngspace.ngsmcconfig.options.IntNGSMCConfigOption;
-import dev.ngspace.ngsmcconfig.options.StringNGSMCConfigOption;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -45,6 +53,43 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 		
 		
 		
+		// Huds
+		// NGSMCConfig changes the size and position anyways
+		var widget = new HudSelectionList(Minecraft.getInstance(), new File(HudFileUtils.FOLDER), config);
+		builder.addCustomWidgetCategory(Component.translatable("hudder.mainfile"),
+				new NGSMCConfigIcon.SpriteIcon("items", "item/map"),
+				widget, widget::save, widget::reset, widget::error, widget::warning);
+		builder.setDragAndDropConsumer(files->{
+			for (Path p : files) {
+				try {
+					HudderTickEvent.TEMP_DISABLE = true;
+					File dest = new File(HudFileUtils.FOLDER + p.getFileName());
+					
+					if (dest.exists()) {
+						throw new IOException("Hud already exists");
+					}
+					
+					if (p.toFile().isDirectory()) {
+						FileUtils.copyDirectory(p.toFile(), dest);
+					} else {
+						try (var input = new FileInputStream(p.toFile())) {
+							try (var output = new FileOutputStream(dest)) {
+								IOUtils.copy(input, output);
+							}
+						}
+					}
+				} catch (IOException e) {
+					Hudder.showWarningToast(Component.literal("Failed to copy hud"),
+							Component.literal("Failed to copy hud file"));
+					if (Hudder.IS_DEBUG) e.printStackTrace();
+				} finally {
+					HudderTickEvent.TEMP_DISABLE = false;
+				}
+			}
+		});
+		
+		
+		
 		// General
 		NGSMCConfigCategory general = builder.createCategory(Component.translatable("hudder.general"),
 				new NGSMCConfigIcon.SpriteIcon("items", "item/compass_00"));
@@ -63,8 +108,6 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 				config.mainfile),
 				new NGSMCConfigIcon.SpriteIcon("items", "item/amethyst_shard"));
 		
-		
-		
 		/* General */
 		general.addOption(BooleanNGSMCConfigOption.fluentBuilder(config.enabled, Component.translatable("hudder.general.enabled"))
 				.setHoverComponent(Component.translatable("hudder.general.enabled.tooltip"))
@@ -72,27 +115,22 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 				.setSaveOperation(b->config.enabled=b)
 				.setComponentProvider(enabledDisabled)
 				.build());
-		general.addOption(StringNGSMCConfigOption.fluentBuilder(config.mainfile, Component.translatable("hudder.general.mainfile"))
-				.setHoverComponent(Component.translatable("hudder.general.mainfile.tooltip"))
-				.setDefaultValue("hud.hud")
-				.setSaveOperation(s->config.mainfile=s)
-				.setValidator(val->{
-					try {
-						if (!HudFileUtils.exists(val))
-							return Component.translatable("hudder.general.mainfile.error");
-					} catch (SecurityException | IOException e) {
-						e.printStackTrace();
-					}
-					return null;
-				})
-				.build());
-		general.addOption(DropdownNGSMCConfigOption.fluentBuilder(Hudder.config.compilerName(),
+		general.addOption(DropdownNGSMCConfigOption.fluentBuilder(Compilers.getDisplayNameFromCompilerName(Hudder.config.compilerName()),
 					Component.translatable("hudder.general.compilertype"),
-					Compilers.keySet().stream().toList().stream().sorted().toList())
+					Compilers.entries().stream()
+						.sorted(Comparator.comparing(CompilerEntry::unstable)
+								.thenComparing(CompilerEntry::displayname, String.CASE_INSENSITIVE_ORDER))
+						.map(e->e.displayname())
+						.toList())
 	    		.setHoverComponent(Component.translatable("hudder.general.compilertype.tooltip"))
-	    		.setDefaultValue("hudder")
-	    		.setSaveOperation(b->Hudder.config.setCompilerName(b.toLowerCase()))
-	    		.setValidator(e->!Compilers.has(e.toLowerCase())?Component.translatable("hudder.general.compilertype.error"):null)
+	    		.setDefaultValue("Hudder")
+	    		.setSaveOperation(b->Hudder.config.setCompilerName(Compilers.getCompilerNameFromDisplayname(b)))
+	    		.setValidator(e->{
+	    			widget.comp = e;
+	    			return Compilers.hasCompilerFromDisplayName(e)
+	    					? null : Component.translatable("hudder.general.compilertype.error");
+	    		})
+	    		.setWarningProvider(e->getCompilerWarning(Compilers.getEntryFromDisplayName(e)))
 	    		.build());
 		general.addOption(DoubleNGSMCConfigOption.fluentBuilder(config.scale, Component.translatable("hudder.general.scale"))
 				.setHoverComponent(Component.translatable("hudder.general.scale.tooltip"))
@@ -173,6 +211,11 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 				.setSaveOperation(b->config.removeeffects=b)
 				.setDefaultValue(false)
 				.build());
+		vanillahud.addOption(BooleanNGSMCConfigOption.fluentBuilder(config.removeBossBars, Component.translatable("hudder.vanillahud.removebossbars"))
+				.setHoverComponent(Component.translatable("hudder.vanillahud.removebossbars.tooltip"))
+				.setSaveOperation(b->config.removeBossBars=b)
+				.setDefaultValue(false)
+				.build());
 
         
 		/* Safety & Performance */
@@ -214,15 +257,18 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 		
 		
 		/* Hud specific settings */
-		try {
-			if (!Hudder.config.getCompiler().setupHudSettings(hudsettings))
-				builder.removeCategory(hudsettings);
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (!Hudder.config.getCompiler().setupHudSettings(hudsettings))
 			builder.removeCategory(hudsettings);
-		}
 		
 		return builder.build();
+	}
+	
+	public static Component getCompilerWarning(CompilerEntry compilerEntry) {
+		if (compilerEntry.deprecated()) return Component.translatable(
+				"hudder.general.compilertype.deprecated_warning", compilerEntry.displayname());
+		if (compilerEntry.unstable()) return Component.translatable(
+				"hudder.general.compilertype.unstable_warning", compilerEntry.displayname());
+		return null;
 	}
 	
 }

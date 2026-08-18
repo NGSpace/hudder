@@ -10,7 +10,7 @@ public class HudderUserSettings {
 	// This one needs some xplaining, First string is the compiler key, then the hud key, then the setting key
 	@Expose public Map<String, Map<String, Map<String, Object>>> hudSettings = new HashMap<String, Map<String, Map<String, Object>>>();
 	@Expose public Map<String, Object> savedVariables = new HashMap<String, Object>();
-	@Expose public String mainfile = "tutorial.hud";//Set "tutorial.hud" as the initial file selected
+	@Expose public String mainfile = "hud.hud";// With the new hud selector having a tutorial hud seems stupid
 	@Expose public boolean enabled = true;
 	@Expose public boolean shadow = true;
 	@Expose public boolean showInF3 = false;
@@ -28,6 +28,7 @@ public class HudderUserSettings {
 	@Expose public boolean background = true;
 	@Expose public boolean removegui = false;
     @Expose public boolean removeeffects = false;
+    @Expose public boolean removeBossBars = false;
 	@Expose public boolean limitrate = true;
 	@Expose public boolean autorefresh = true;
 	@Expose public boolean disableWarnings = false;

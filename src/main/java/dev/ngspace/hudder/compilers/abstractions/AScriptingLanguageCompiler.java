@@ -14,7 +14,6 @@ import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.main.HudCompilationManager;
 import dev.ngspace.hudder.uielements.AUIElement;
-import dev.ngspace.hudder.utils.HudFileUtils;
 import net.minecraft.client.Minecraft;
 
 public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
@@ -26,16 +25,12 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 	
 	protected AScriptingLanguageCompiler() {
 		HudCompilationManager.addPreCompilerListener(c->{if(c==this) elms.clear();});
-		HudFileUtils.addReloadResourcesListener(()->{
-			for(RuntimeCache c:cache.values()) c.close();
-			cache.clear();
-		});
 	}
 	
-	protected abstract IScriptingLanguageEngine createLangEngine() throws CompileException;
+	protected abstract IScriptingLanguageEngine createLangEngine(HudderConfig config) throws CompileException;
 	
 	@Override
-	public void compileFile(String text, String filepath) throws CompileException {
+	public void compileFile(HudderConfig config, String text, String filepath) throws CompileException {
 		if (cache.containsKey(text)) {
 			var cachehit = cache.get(text);
 			if (cachehit.exception!=null) throw cachehit.engine.processCompileException(cachehit.exception);
@@ -45,16 +40,17 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 		try {
 			RuntimeCache rtcache = cache.get(text);
 			if (rtcache!=null&&rtcache.exception!=null) throw rtcache.exception;
-			wrapper = createLangEngine();
+			wrapper = createLangEngine(config);
 			
-			Exception exception = null;
 			try {
 				wrapper.evaluateCode(text, filepath);
+				cache.put(text, new RuntimeCache(wrapper,null));
 			} catch (Exception e) {
-				exception = e;
+				if (Hudder.IS_DEBUG) e.printStackTrace();
 				wrapper.close();
+				cache.put(text, new RuntimeCache(wrapper,e));
+				throw wrapper.processCompileException(e);
 			}
-			cache.put(text, new RuntimeCache(wrapper,exception));
 		} catch (Exception e) {
 			if (Hudder.IS_DEBUG) e.printStackTrace();
 			if (wrapper!=null) {
@@ -119,5 +115,11 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 			exception = null;
 			engine.close();
 		}
+	}
+	
+	@Override
+	public void resetState() throws IOException {
+		for(RuntimeCache c:cache.values()) c.close();
+		cache.clear();
 	}
 }

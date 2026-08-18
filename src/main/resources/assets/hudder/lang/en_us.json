@@ -34,14 +34,22 @@
 	
 	"hudder.general.enabled":"Enabled",
 	"hudder.general.enabled.tooltip":"Whether Hudder should be enabled or not.",
-	
-	"hudder.general.mainfile":"Hud",
-	"hudder.general.mainfile.tooltip":"Change the main hud file.\u00A77\nThe file must be located in the \u00A76.minecraft/config/Hudder\u00A77 folder.",
-	"hudder.general.mainfile.error":"Hud does not exist in the huds folder.",
+
+	"hudder.mainfile":"Huds",
+	"hudder.mainfile.title":"Available huds",
+	"hudder.mainfile.subtitle":"Select, edit or drag&drop a hud",
+	"hudder.mainfile.tooltip":"Change the main hud file.\u00A77\nThe file must be located in the \u00A76.minecraft/config/Hudder\u00A77 folder.",
+	"hudder.mainfile.doesntexist":"Hud %s does not exist in the huds folder.",
+	"hudder.mainfile.noselection":"No hud selected.",
+	"hudder.mainfile.unsupportedformat":"%s does not support the file format of hud \"%s\"",
+	"hudder.mainfile.noknowncompilers": " - No compilers support this hud",
+	"hudder.mainfile.editbutton": "Edit",
 
 	"hudder.general.compilertype": "Compiler type",
 	"hudder.general.compilertype.tooltip": "Change the type of compiler (ex hudder, js, pack).",
 	"hudder.general.compilertype.error":"Invalid compiler type.",
+	"hudder.general.compilertype.unstable_warning":"The compiler %s is unstable and is not advised to be used.",
+	"hudder.general.compilertype.deprecated_warning":"The compiler %s is deprecated and may be removed.",
 	
 	"hudder.general.scale":"Scale",
 	"hudder.general.scale.tooltip":"Control the default scale of Hud Elements and text.\n\u00A77This can be overriden by elements specifying the size on their own.",
@@ -83,10 +91,13 @@
 	"hudder.vanillahud.f3.tooltip": "Should still render when f3 is showing.",
 
 	"hudder.vanillahud.removehotbar": "Remove hotbar",
-	"hudder.vanillahud.removehotbar.tooltip": "\u00A74WARNING - THIS WILL MAKE YOUR HOTBAR AND HEALTH BAR INVISIBLE UNTIL DISABLED.\n\u00A7fWhether hudder should hide all Hotbar related GUI elements.",
+	"hudder.vanillahud.removehotbar.tooltip": "Removes all vanilla Hotbar related GUI elements.",
 
 	"hudder.vanillahud.removeeffects": "Remove effects hud",
-	"hudder.vanillahud.removeeffects.tooltip": "\u00A74WARNING - THIS WILL MAKE YOUR EFFECTS HUD INVISIBLE UNTIL DISABLED.\n\u00A7fWhether hudder should hide the effects hud.",
+	"hudder.vanillahud.removeeffects.tooltip": "Removes the vanilla effects hud.",
+	
+	"hudder.vanillahud.removebossbars": "Remove boss bars",
+	"hudder.vanillahud.removebossbars.tooltip": "Removes the vanilla boss bars.",
 	
 	"hudder.safety_perf": "Safety & Performance",
 	
@@ -102,7 +113,7 @@
 	"hudder.safety_perf.autorefresh": "Automatic hud refresh",
 	"hudder.safety_perf.autorefresh.tooltip": "Disabling this will stop your hud from updating with every change. Manual refreshes through the keybind still function",
 	
-	"hudder.safety_perf.disableWarnings": "Disable warnings",
+	"hudder.safety_perf.disableWarnings": "Disable warning toasts",
 	"hudder.safety_perf.disableWarnings.tooltip": "\u00A74WARNINGS EXIST FOR A REASON!\nTHIS INCLUDES DEPRECIATION WARNINGS!\n\u00A7fDisables ALL warnings.",
 
 	"hudder.safety_perf.disableHudpackVersionCheck": "Bypass Hudpack version check",
