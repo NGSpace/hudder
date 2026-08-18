@@ -113,9 +113,9 @@
     "hudder.vanillahud.f3": "הראה בf3",
     "hudder.vanillahud.f3.tooltip": "האם עדיין להראות את הHud בf3.",
     "hudder.vanillahud.removehotbar": "הסר Hotbar",
-    "hudder.vanillahud.removehotbar.tooltip": "§4 אזהרה - פעולה זו תהפוך את הHotbar ואת סרגל הבריאות שלך לבלתי נראים עד שיושבתו.\n§האם להסתיר את כל רכיבי ה-GUI הקשורים לHotbar.",
+    "hudder.vanillahud.removehotbar.tooltip": "מסתיר את כל רכיבי ה-GUI הקשורים לHotbar.",
     "hudder.vanillahud.removeeffects": "הסר Hud האפקטים",
-    "hudder.vanillahud.removeeffects.tooltip": "§4אזהרה - פעולה זו תהפוך את HUD האפקטים שלך לבלתי נראה עד שיושבת.\n§fהאם להסתיר את Hud האפקטים.",
+    "hudder.vanillahud.removeeffects.tooltip": "מסתיר את Hud האפקטים.",
     "hudder.safety_perf": "בטיחות וביצועים",
     "hudder.safety_perf.method": "חוצץ Method",
     "hudder.safety_perf.method.tooltip": "שלוט בכמות השורות שיש לקצץ לפני ואחרי Methods.",
@@ -139,5 +139,7 @@
     "hudder.mainfile.noknowncompilers": " - שום קומפילר תומך בHud הזה",
     "hudder.mainfile.editbutton": "ערוך",
     "hudder.general.compilertype.unstable_warning": "הקומפילר %s אינו יציב ולא מומלץ להישתמש בו.",
-    "hudder.general.compilertype.deprecated_warning": "הקומפילר %s הוצא משימוש וייתכן שיוסר."
+    "hudder.general.compilertype.deprecated_warning": "הקומפילר %s הוצא משימוש וייתכן שיוסר.",
+    "hudder.vanillahud.removebossbars": "הסר את הBoss bars",
+    "hudder.vanillahud.removebossbars.tooltip": "מסתיר את הBoss bars."
 }
