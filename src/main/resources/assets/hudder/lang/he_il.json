@@ -138,5 +138,6 @@
     "hudder.mainfile.unsupportedformat": "%s לא תומך בסוג הקובץ של הHud \"%s\"",
     "hudder.mainfile.noknowncompilers": " - שום קומפילר תומך בHud הזה",
     "hudder.mainfile.editbutton": "ערוך",
-    "hudder.general.compilertype.unstable_warning": "הקומפילר %s אינו יציב ולא מומלץ להישתמש בו."
+    "hudder.general.compilertype.unstable_warning": "הקומפילר %s אינו יציב ולא מומלץ להישתמש בו.",
+    "hudder.general.compilertype.deprecated_warning": "הקומפילר %s הוצא משימוש וייתכן שיוסר."
 }
