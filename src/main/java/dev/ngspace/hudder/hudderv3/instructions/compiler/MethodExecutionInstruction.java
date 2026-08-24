@@ -153,7 +153,17 @@ public class MethodExecutionInstruction extends Instruction {
 				}
 				
 				if (run_method) {
-					methodWriter.call(HudderV3Helper.class, "runLoadMethod", "(Ldev/ngspace/hudder/api/functionsandconsumers/IUIElementManager;Ldev/ngspace/hudder/compilers/abstractions/AHudCompiler;Ldev/ngspace/hudder/compilers/utils/TextPos;Ldev/ngspace/hudder/config/HudderConfig;Ljava/lang/String;Ljava/lang/StringBuilder;Ljava/lang/StringBuilder;Ljava/lang/StringBuilder;Ljava/lang/StringBuilder;[Ldev/ngspace/hudder/utils/ObjectWrapper;)V", false);
+					methodWriter.call(HudderV3Helper.class, "runLoadMethod", "("
+							+ "Ldev/ngspace/hudder/api/functionsandconsumers/IUIElementManager;"
+							+ "Ldev/ngspace/hudder/compilers/abstractions/AHudCompiler;"
+							+ "Ldev/ngspace/hudder/compilers/utils/TextPos;"
+							+ "Ldev/ngspace/hudder/config/HudderConfig;"
+							+ "Ljava/lang/String;"
+							+ "Ljava/lang/StringBuilder;"
+							+ "Ljava/lang/StringBuilder;"
+							+ "Ljava/lang/StringBuilder;"
+							+ "Ljava/lang/StringBuilder;"
+							+ "[Ldev/ngspace/hudder/utils/ObjectWrapper;)V", false);
 				} else if (apiCall) {
 					visitApiCall(methodWriter, array_index);
 				} else {
