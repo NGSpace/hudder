@@ -8,6 +8,7 @@ import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositione
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
+import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.V3HudInformation;
 import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.asm.V3ExecuteMethodWriter;
@@ -20,12 +21,14 @@ public class MethodExecutionInstruction extends Instruction {
 	private String[] builder;
 	AV3Compiler comp;
 	private boolean apiCall;
+	private boolean run_method;
 
 	public MethodExecutionInstruction(String[] builder, AV3Compiler comp, TextPos pos) {
 		super(pos);
 		this.builder = builder;
 		this.comp = comp;
-		this.apiCall = comp.api_consumers.containsKey("api_consumer_" + builder[0].trim());
+		this.run_method = builder[0].toLowerCase().matches("load|run|execute|add|compile");
+		this.apiCall = comp.api_consumers.containsKey("api_consumer_" + builder[0].trim()) || run_method;
 		
 		if ("no_sys_var".equalsIgnoreCase(builder[0].trim())) {
 			comp.system_variables = false;
@@ -102,12 +105,15 @@ public class MethodExecutionInstruction extends Instruction {
 				}
 				break;
 			default:
-
 				
 				if (apiCall) {
-					methodWriter.classWriter.loadApiConsumer(builder[0].trim());
-					methodWriter.aload(0);
-					methodWriter.getField("api_consumer_"+builder[0].trim(), BindablePositionedConsumer.class);
+					if (run_method) {
+						methodWriter.getHelper();
+					} else {
+						methodWriter.classWriter.loadApiConsumer(builder[0].trim());
+						methodWriter.aload(0);
+						methodWriter.getField("api_consumer_"+builder[0].trim(), BindablePositionedConsumer.class);
+					}
 					methodWriter.aload(0);
 					methodWriter.getField("uimanager", ArrayElementManager.class);
 					methodWriter.aload(0);
@@ -117,6 +123,13 @@ public class MethodExecutionInstruction extends Instruction {
 					methodWriter.loadConstantUnsafe(pos.column());
 					methodWriter.callInit(TextPos.class, "(II)V");
 					methodWriter.aload(1);
+					if (run_method) {
+						methodWriter.loadConstant(builder[0].toLowerCase());
+						methodWriter.aload(methodWriter.topleft_builder_index);
+						methodWriter.aload(methodWriter.topright_builder_index);
+						methodWriter.aload(methodWriter.bottomleft_builder_index);
+						methodWriter.aload(methodWriter.bottomright_builder_index);
+					}
 				}
 				
 				methodWriter.loadConstantUnsafe(builder.length-1);
@@ -139,7 +152,9 @@ public class MethodExecutionInstruction extends Instruction {
 					methodWriter.aastore();
 				}
 				
-				if (apiCall) {
+				if (run_method) {
+					methodWriter.call(HudderV3Helper.class, "runLoadMethod", "(Ldev/ngspace/hudder/api/functionsandconsumers/IUIElementManager;Ldev/ngspace/hudder/compilers/abstractions/AHudCompiler;Ldev/ngspace/hudder/compilers/utils/TextPos;Ldev/ngspace/hudder/config/HudderConfig;Ljava/lang/String;Ljava/lang/StringBuilder;Ljava/lang/StringBuilder;Ljava/lang/StringBuilder;Ljava/lang/StringBuilder;[Ldev/ngspace/hudder/utils/ObjectWrapper;)V", false);
+				} else if (apiCall) {
 					visitApiCall(methodWriter, array_index);
 				} else {
 					visitUserConsumer(methodWriter, array_index);
