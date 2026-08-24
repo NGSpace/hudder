@@ -39,17 +39,17 @@ public class ForInstruction extends Instruction {
 		value.visit(methodWriter);
 		methodWriter.ensureNotNull("Can not iterate over null value!", pos);
 		methodWriter.checkcastSafe(Iterable.class, pos);
-		methodWriter.callInterface(Iterable.class, "iterator", "()Ljava/util/Iterator;");
+		methodWriter.callInterface(Iterable.class, "iterator", Iterator.class);
 		int iterator_index = methodWriter.astore();
 		
 		methodWriter.putLabel(start);
 		methodWriter.aload(iterator_index);
-		methodWriter.callInterface(Iterator.class, "hasNext", "()Z");
+		methodWriter.callInterface(Iterator.class, "hasNext", Boolean.TYPE);
 		methodWriter.ifeq(end);
 
 		methodWriter.aload(iterator_index);
 		Integer previousVariableIndex = methodWriter.defineScopedVariable(localVariableName);
-		methodWriter.callInterface(Iterator.class, "next", "()Ljava/lang/Object;");
+		methodWriter.callInterface(Iterator.class, "next", Object.class);
 		methodWriter.storeVariable(localVariableName);
 		
 		block.writeInstructions(methodWriter, classWriter, end);

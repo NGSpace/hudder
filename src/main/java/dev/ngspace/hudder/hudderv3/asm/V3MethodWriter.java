@@ -33,7 +33,7 @@ public class V3MethodWriter extends ClassAccessMethodWriter {
 	
 	public void newStringBuilder() {
 		newAndDup(StringBuilder.class);
-		callInit(StringBuilder.class, "()V");
+		callInit(StringBuilder.class);
 	}
 
 	public void ensureNotNull(String error, TextPos pos) {
@@ -66,20 +66,20 @@ public class V3MethodWriter extends ClassAccessMethodWriter {
 		putLabel(wrong_type);
 		newStringBuilder();
 		loadConstant("Can't convert object of type ");
-		call(StringBuilder.class, "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;", false);
+		call(StringBuilder.class, "append", false, StringBuilder.class, String.class);
 		swap();
-		call(Object.class, "getClass", "()Ljava/lang/Class;", false);
-		call(Class.class, "getSimpleName", "()Ljava/lang/String;", false);
-		call(StringBuilder.class, "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;", false);
+		call(Object.class, "getClass", false, Class.class);
+		call(Class.class, "getSimpleName", false, String.class);
+		call(StringBuilder.class, "append", false, StringBuilder.class, String.class);
 		loadConstant(" to type " + friendly_name);
-		call(StringBuilder.class, "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;", false);
-		call(StringBuilder.class, "toString", "()Ljava/lang/String;", false);
+		call(StringBuilder.class, "append", false, StringBuilder.class, String.class);
+		call(StringBuilder.class, "toString", false, String.class);
 		newInsn(ExecutionException.class);
 		dupX1();
 		swap();
 		loadConstantUnsafe(pos.line());
 		loadConstantUnsafe(pos.column());
-		callSpecial(ExecutionException.class, "<init>", "(Ljava/lang/String;II)V", false);
+		callInit(ExecutionException.class, String.class, Integer.TYPE, Integer.TYPE);
 		athrow();
 		
 		putLabel(end);
@@ -88,7 +88,7 @@ public class V3MethodWriter extends ClassAccessMethodWriter {
 	public void throwRuntimeException(String exception) {
 		newAndDup(RuntimeException.class);
 		loadConstant(exception);
-		callSpecial(RuntimeException.class, "<init>", "(Ljava/lang/String;)V", false);
+		callInit(RuntimeException.class, String.class);
 		athrow();
 	}
 	
@@ -97,7 +97,7 @@ public class V3MethodWriter extends ClassAccessMethodWriter {
 		loadConstant(exception);
 		loadConstantUnsafe(pos.line());
 		loadConstantUnsafe(pos.column());
-		callSpecial(ExecutionException.class, "<init>", "(Ljava/lang/String;II)V", false);
+		callInit(ExecutionException.class, String.class, Integer.TYPE, Integer.TYPE);
 		athrow();
 	}
 
@@ -115,7 +115,7 @@ public class V3MethodWriter extends ClassAccessMethodWriter {
 		swap();
 		loadConstantUnsafe(pos.line());
 		loadConstantUnsafe(pos.column());
-		callInit(ExecutionException.class, "(Ljava/lang/Exception;II)V");
+		callInit(ExecutionException.class, Exception.class, Integer.TYPE, Integer.TYPE);
 		athrow();
 		
 		putLabel(execution_excpetion_handler);

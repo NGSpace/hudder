@@ -71,7 +71,7 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Positioned
 			
 			executeMethod.aload(0);
 			executeMethod.getField("uimanager", ArrayElementManager.class);
-			executeMethod.callInterface(List.class, "clear", "()V");
+			executeMethod.callInterface(List.class, "clear", (Class<?>) null);
 			
 			compile(config, text, filepath, new TextPos(0, 0)).writeInstructions(executeMethod, classWriter, end);
 			

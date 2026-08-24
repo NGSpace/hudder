@@ -4,9 +4,12 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.Type;
 
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
+import dev.ngspace.hudder.api.functionsandconsumers.IUIElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
+import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
+import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.V3HudInformation;
@@ -121,7 +124,7 @@ public class MethodExecutionInstruction extends Instruction {
 					methodWriter.newAndDup(TextPos.class);
 					methodWriter.loadConstantUnsafe(pos.line());
 					methodWriter.loadConstantUnsafe(pos.column());
-					methodWriter.callInit(TextPos.class, "(II)V");
+					methodWriter.callInit(TextPos.class, Integer.TYPE, Integer.TYPE);
 					methodWriter.aload(1);
 					if (run_method) {
 						methodWriter.loadConstant(builder[0].toLowerCase());
@@ -147,23 +150,24 @@ public class MethodExecutionInstruction extends Instruction {
 					if (apiCall) {
 						methodWriter.loadConstantUnsafe(pos.line());
 						methodWriter.loadConstantUnsafe(pos.column());
-						methodWriter.callSpecial(ImplObjectWrapper.class, "<init>", "(Ljava/lang/Object;II)V", false);
+						methodWriter.callInit(ImplObjectWrapper.class, Object.class, Integer.TYPE, Integer.TYPE);
 					}
 					methodWriter.aastore();
 				}
 				
 				if (run_method) {
-					methodWriter.call(HudderV3Helper.class, "runLoadMethod", "("
-							+ "Ldev/ngspace/hudder/api/functionsandconsumers/IUIElementManager;"
-							+ "Ldev/ngspace/hudder/compilers/abstractions/AHudCompiler;"
-							+ "Ldev/ngspace/hudder/compilers/utils/TextPos;"
-							+ "Ldev/ngspace/hudder/config/HudderConfig;"
-							+ "Ljava/lang/String;"
-							+ "Ljava/lang/StringBuilder;"
-							+ "Ljava/lang/StringBuilder;"
-							+ "Ljava/lang/StringBuilder;"
-							+ "Ljava/lang/StringBuilder;"
-							+ "[Ldev/ngspace/hudder/utils/ObjectWrapper;)V", false);
+					methodWriter.aload(array_index);
+					methodWriter.call(HudderV3Helper.class, "runLoadMethod", false, null,
+							IUIElementManager.class,
+							AHudCompiler.class,
+							TextPos.class,
+							HudderConfig.class,
+							String.class,
+							StringBuilder.class,
+							StringBuilder.class,
+							StringBuilder.class,
+							StringBuilder.class,
+							ObjectWrapper[].class);
 				} else if (apiCall) {
 					visitApiCall(methodWriter, array_index);
 				} else {
@@ -175,13 +179,12 @@ public class MethodExecutionInstruction extends Instruction {
 	protected void visitApiCall(V3MethodWriter methodWriter, int array_index) {
 		methodWriter.tryCatchBlock(_->{
 			methodWriter.aload(array_index);
-			methodWriter.callInterface(BindablePositionedConsumer.class, "invoke","("
-					+ "Ldev/ngspace/hudder/api/functionsandconsumers/IUIElementManager;"
-					+ "Ldev/ngspace/hudder/compilers/abstractions/AHudCompiler;"
-					+ "Ldev/ngspace/hudder/compilers/utils/TextPos;"
-					+ "Ldev/ngspace/hudder/config/HudderConfig;"
-					+ "[Ldev/ngspace/hudder/utils/ObjectWrapper;"
-					+ ")V");
+			methodWriter.callInterface(BindablePositionedConsumer.class, "invoke", null,
+					IUIElementManager.class,
+					AHudCompiler.class,
+					TextPos.class,
+					HudderConfig.class,
+					ObjectWrapper[].class);
 		}, _->methodWriter.throwExecutionExceptionFromCaughtException(pos), Exception.class);
 	}
 	

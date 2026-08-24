@@ -23,11 +23,11 @@ public class ArrayConstantVariableVisitor extends ExpressionVisitor {
 	public void visit(V3MethodWriter methodWriter) throws CompileException {
 		methodWriter.newAndDup(ArrayList.class);
 		methodWriter.loadConstantUnsafe(values.length);
-		methodWriter.callInit(ArrayList.class, "(I)V");
+		methodWriter.callInit(ArrayList.class, Integer.TYPE);
 		for (int i = 0;i<values.length;i++) {
 			methodWriter.dup();
 			values[i].visit(methodWriter);
-			methodWriter.call(ArrayList.class, "add", "(Ljava/lang/Object;)Z", false);
+			methodWriter.call(ArrayList.class, "add", false, Boolean.TYPE, Object.class);
 			methodWriter.pop();// Add returns a boolean, burn it.
 		}
 	}

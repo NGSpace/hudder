@@ -85,13 +85,13 @@ public class V3ClassWriter {
 		init = createMethod("<init>", new Class<?>[] {AV3Compiler.class, HudderV3Helper.class}, null, null, null);
 
 		init.aload(0);
-		init.callInit(AVarTextCompiler.class, "()V");
+		init.callInit(AVarTextCompiler.class);
 		
 		// Init UIElements field
 	    
 		init.aload(0);
 		init.newAndDup(ArrayElementManager.class);
-		init.callSpecial(ArrayElementManager.class, "<init>", "()V", false);
+		init.callInit(ArrayElementManager.class);
 		init.putField("uimanager", ArrayElementManager.class);
 		
 		// Init v3compiler field
@@ -144,9 +144,8 @@ public class V3ClassWriter {
 			init.aload(0);
 			init.getHelper();
 			init.loadConstant(func);
-			init.call(HudderV3Helper.class, "getApiFunction", "(Ljava/lang/String;)"
-					+ "Ldev/ngspace/hudder/api/functionsandconsumers/interfaces/BindablePositionedFunction;",
-					false);
+			init.call(HudderV3Helper.class, "getApiFunction", false, BindablePositionedFunction.class,
+					String.class);
 			init.putField(func, BindablePositionedFunction.class);
 		}
 	}
@@ -162,9 +161,8 @@ public class V3ClassWriter {
 			init.aload(0);
 			init.getHelper();
 			init.loadConstant(func);
-			init.call(HudderV3Helper.class, "getApiConsumer", "(Ljava/lang/String;)"
-					+ "Ldev/ngspace/hudder/api/functionsandconsumers/interfaces/BindablePositionedConsumer;",
-					false);
+			init.call(HudderV3Helper.class, "getApiConsumer", false, BindablePositionedConsumer.class,
+					String.class);
 			init.putField(func, BindablePositionedConsumer.class);
 		}
 	}

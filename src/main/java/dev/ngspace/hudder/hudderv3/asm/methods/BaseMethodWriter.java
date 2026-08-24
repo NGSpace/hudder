@@ -2,6 +2,7 @@ package dev.ngspace.hudder.hudderv3.asm.methods;
 
 import java.util.function.Consumer;
 
+import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -69,28 +70,83 @@ public abstract class BaseMethodWriter implements MethodWriterJumpInsn, MethodWr
 	// -------------------------------------------------------------------------
 	// CALLING
 	// -------------------------------------------------------------------------
-	
-	public void callSpecial(Class<?> type, String name, String sign, boolean isInterface) {
-		methodVisitor.visitMethodInsn(Opcodes.INVOKESPECIAL, Type.getInternalName(type), name, sign,
+
+	/**
+	 * @deprecated use {@link #callSpecial(Class, String, boolean, Class, Class...)}
+	 */
+	@Deprecated(since = "10.4.0", forRemoval = false)
+	public void callSpecial(Class<?> type, String name, String descriptor, boolean isInterface) {
+		methodVisitor.visitMethodInsn(Opcodes.INVOKESPECIAL, Type.getInternalName(type), name, descriptor,
 				isInterface);
 	}
-	public void callInit(Class<?> type, String sign) {
-		callSpecial(type, "<init>", sign, false);
+	/**
+	 * @deprecated use {@link #callInitSTUPID(Class, Class, Class...)}
+	 */
+	@Deprecated(since = "10.4.0", forRemoval = false)
+	public void callInit(Class<?> type, String descriptor) {
+		callSpecial(type, "<init>", descriptor, false);
 	}
 
+	/**
+	 * @deprecated use {@link #callInterface(Class, String, Class, Class...)}
+	 */
+	@Deprecated(since = "10.4.0", forRemoval = false)
 	public void callInterface(Class<?> clazz, String name, String descriptor) {
 		methodVisitor.visitMethodInsn(Opcodes.INVOKEINTERFACE, Type.getInternalName(clazz), name, descriptor,
 				true);
 	}
-
+	
+	/**
+	 * @deprecated use {@link #callStatic(Class, String, boolean, Class, Class...)}
+	 */
+	@Deprecated(since = "10.4.0", forRemoval = false)
 	public void callStatic(Class<?> clazz, String name, String descriptor, boolean isInterface) {
 		methodVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, Type.getInternalName(clazz), name, descriptor,
 				isInterface);
 	}
-
+	
+	/**
+	 * @deprecated use {@link #call(Class, String, boolean, Class, Class...)}
+	 */
+	@Deprecated(since = "10.4.0", forRemoval = false)
 	public void call(Class<?> clazz, String name, String descriptor, boolean isInterface) {
 		methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, Type.getInternalName(clazz), name, descriptor,
 				isInterface);
+	}
+	
+	public void callSpecial(Class<?> type, String name, boolean isInterface, @Nullable Class<?> returntype, Class<?>... args) {
+		methodVisitor.visitMethodInsn(Opcodes.INVOKESPECIAL, Type.getInternalName(type), name,
+				getMethodDescriptor(returntype, args), isInterface);
+	}
+	public void callInit(Class<?> type, Class<?>... args) {
+		callSpecial(type, "<init>", false, null, args);
+	}
+	public void callInit(Class<?> type) {
+		callInit(type, new Class[0]);
+	}
+
+	public void callInterface(Class<?> clazz, String name, @Nullable Class<?> returntype, Class<?>... args) {
+		methodVisitor.visitMethodInsn(Opcodes.INVOKEINTERFACE, Type.getInternalName(clazz), name,
+				getMethodDescriptor(returntype, args), true);
+	}
+
+	public void callStatic(Class<?> clazz, String name, boolean isInterface, @Nullable Class<?> returntype,
+			Class<?>... args) {
+		methodVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, Type.getInternalName(clazz), name,
+				getMethodDescriptor(returntype, args), isInterface);
+	}
+
+	public void call(Class<?> clazz, String name, boolean isInterface, @Nullable Class<?> returntype,
+			Class<?>... args) {
+		methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, Type.getInternalName(clazz), name,
+				getMethodDescriptor(returntype, args), isInterface);
+	}
+
+	public String getMethodDescriptor(Class<?> returntype, Class<?>[] args) {
+		Type[] args_type = new Type[args.length];
+		for (int i = 0;i<args_type.length;i++)
+			args_type[i] = Type.getType(args[i]);
+		return Type.getMethodDescriptor(returntype==null?Type.VOID_TYPE:Type.getType(returntype),args_type);
 	}
 
 	// -------------------------------------------------------------------------

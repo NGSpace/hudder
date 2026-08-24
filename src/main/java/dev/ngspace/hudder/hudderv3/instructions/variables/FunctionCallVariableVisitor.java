@@ -3,9 +3,12 @@ package dev.ngspace.hudder.hudderv3.instructions.variables;
 import org.objectweb.asm.Type;
 
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
+import dev.ngspace.hudder.api.functionsandconsumers.IUIElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
+import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
+import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.V3HudInformation;
 import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
@@ -39,7 +42,7 @@ public class FunctionCallVariableVisitor extends ExpressionVisitor {
 			methodWriter.newAndDup(TextPos.class);
 			methodWriter.loadConstantUnsafe(pos.line());
 			methodWriter.loadConstantUnsafe(pos.column());
-			methodWriter.callInit(TextPos.class, "(II)V");
+			methodWriter.callInit(TextPos.class, Integer.TYPE, Integer.TYPE);
 			methodWriter.aload(1);
 		}
 		
@@ -58,7 +61,7 @@ public class FunctionCallVariableVisitor extends ExpressionVisitor {
 			if (apiCall) {
 				methodWriter.loadConstantUnsafe(pos.line());
 				methodWriter.loadConstantUnsafe(pos.column());
-				methodWriter.callSpecial(ImplObjectWrapper.class, "<init>", "(Ljava/lang/Object;II)V", false);
+				methodWriter.callInit(ImplObjectWrapper.class, Object.class, Integer.TYPE, Integer.TYPE);
 			}
 			methodWriter.aastore();
 		}
@@ -73,13 +76,12 @@ public class FunctionCallVariableVisitor extends ExpressionVisitor {
 	protected void visitApiCall(V3MethodWriter methodWriter, int array_index) {
 		methodWriter.tryCatchBlock(_->{
 			methodWriter.aload(array_index);
-			methodWriter.callInterface(BindablePositionedFunction.class, "invoke", "("
-					+ "Ldev/ngspace/hudder/api/functionsandconsumers/IUIElementManager;"
-					+ "Ldev/ngspace/hudder/compilers/abstractions/AHudCompiler;"
-					+ "Ldev/ngspace/hudder/compilers/utils/TextPos;"
-					+ "Ldev/ngspace/hudder/config/HudderConfig;"
-					+ "[Ldev/ngspace/hudder/utils/ObjectWrapper;"
-					+ ")Ljava/lang/Object;");
+			methodWriter.callInterface(BindablePositionedFunction.class, "invoke", Object.class,
+					IUIElementManager.class,
+					AHudCompiler.class,
+					TextPos.class,
+					HudderConfig.class,
+					ObjectWrapper[].class);
 		}, _->methodWriter.throwExecutionExceptionFromCaughtException(pos), Exception.class);
 	}
 	

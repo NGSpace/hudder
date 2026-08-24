@@ -27,7 +27,6 @@ import dev.ngspace.hudder.utils.NoAccess;
 import dev.ngspace.hudder.utils.ObjectWrapper;
 import dev.ngspace.hudder.utils.ValueGetter;
 import dev.ngspace.hudder.v2runtime.methods.LoadMethod;
-import net.minecraft.network.chat.Component;
 
 public class HudderV3Helper {
 	public HudderConfig config;
