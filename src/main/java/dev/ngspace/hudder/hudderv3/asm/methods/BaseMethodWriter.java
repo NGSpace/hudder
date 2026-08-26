@@ -142,7 +142,7 @@ public abstract class BaseMethodWriter implements MethodWriterJumpInsn, MethodWr
 				getMethodDescriptor(returntype, args), isInterface);
 	}
 
-	public static String getMethodDescriptor(Class<?> returntype, Class<?>[] args) {
+	public static String getMethodDescriptor(@Nullable Class<?> returntype, Class<?>[] args) {
 		Type[] args_type = new Type[args.length];
 		for (int i = 0;i<args_type.length;i++)
 			args_type[i] = Type.getType(args[i]);
