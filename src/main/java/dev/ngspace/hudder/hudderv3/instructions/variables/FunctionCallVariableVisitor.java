@@ -1,7 +1,5 @@
 package dev.ngspace.hudder.hudderv3.instructions.variables;
 
-import org.objectweb.asm.Type;
-
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.IUIElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
@@ -97,12 +95,11 @@ public class FunctionCallVariableVisitor extends ExpressionVisitor {
 			methodWriter.aload(2);
 			methodWriter.aload(3);
 			methodWriter.aload(array_index);
-			methodWriter.callSelf(func.bytecode_name(),
-					"(Ldev/ngspace/hudder/config/HudderConfig;"
-					+ "Ljava/lang/String;"
-					+ "Ljava/lang/String;"
-					+ "[Ljava/lang/Object;)"
-					+ Type.getDescriptor(V3HudInformation.class), false);
+			methodWriter.callSelf(func.bytecode_name(), false, V3HudInformation.class,
+					HudderConfig.class,
+					String.class,
+					String.class,
+					Object[].class);
 			methodWriter.getField("return_value", V3HudInformation.class, Object.class);
 		} else {
 			throw new CompileException("Unknown function: " + funcName, pos);

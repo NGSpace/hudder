@@ -80,7 +80,7 @@ public abstract class BaseMethodWriter implements MethodWriterJumpInsn, MethodWr
 				isInterface);
 	}
 	/**
-	 * @deprecated use {@link #callInitSTUPID(Class, Class, Class...)}
+	 * @deprecated use {@link #callInit(Class, Class...)} or {@link #callInit(Class)}
 	 */
 	@Deprecated(since = "10.4.0", forRemoval = false)
 	public void callInit(Class<?> type, String descriptor) {
@@ -142,7 +142,7 @@ public abstract class BaseMethodWriter implements MethodWriterJumpInsn, MethodWr
 				getMethodDescriptor(returntype, args), isInterface);
 	}
 
-	public String getMethodDescriptor(Class<?> returntype, Class<?>[] args) {
+	public static String getMethodDescriptor(Class<?> returntype, Class<?>[] args) {
 		Type[] args_type = new Type[args.length];
 		for (int i = 0;i<args_type.length;i++)
 			args_type[i] = Type.getType(args[i]);

@@ -1,7 +1,6 @@
 package dev.ngspace.hudder.hudderv3.instructions.compiler;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.Type;
 
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.IUIElementManager;
@@ -200,12 +199,12 @@ public class MethodExecutionInstruction extends Instruction {
 			methodWriter.aload(2);
 			methodWriter.aload(3);
 			methodWriter.aload(array_index);
-			methodWriter.callSelf(cons.bytecode_name(),
-					"(Ldev/ngspace/hudder/config/HudderConfig;"
-					+ "Ljava/lang/String;"
-					+ "Ljava/lang/String;"
-					+ "[Ljava/lang/Object;)"
-					+ Type.getDescriptor(V3HudInformation.class), false);
+			methodWriter.callSelf(cons.bytecode_name(), false,
+					V3HudInformation.class,
+					HudderConfig.class,
+					String.class,
+					String.class,
+					Object[].class);
 			methodWriter.pop();
 		} else {
 			throw new CompileException("Unknown method: " + builder[0], pos);

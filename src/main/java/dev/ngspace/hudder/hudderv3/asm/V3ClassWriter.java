@@ -50,14 +50,7 @@ public class V3ClassWriter {
 	
 	public void initPublicField(String name, Class<?> type) {
 		classWriter.newField(classname, name, Type.getDescriptor(type));
-		
-	    classWriter.visitField(
-	            Opcodes.ACC_PUBLIC,
-	            name,
-	            Type.getDescriptor(type),
-	            null,
-	            null
-	    ).visitEnd();
+		classWriter.visitField(Opcodes.ACC_PUBLIC, name, Type.getDescriptor(type), null, null).visitEnd();
 	}
 	public void createInit() {
 		
