@@ -9,6 +9,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import dev.ngspace.hudder.compilers.utils.HudInformation;
 import dev.ngspace.hudder.config.HudderConfig;
@@ -27,7 +28,7 @@ public abstract class AHudCompiler<T> {
 	/**
 	 * Contains globally available compiler variables, indexed by name.
 	 */
-	public static Map<String, Object> variables = new HashMap<String, Object>();
+	public Map<String, Object> variables = new HashMap<String, Object>();
 	protected final ExecutorService hudCompilerExecutor =
 	        Executors.newSingleThreadExecutor(r -> {
 	        	Thread thread = new Thread(r, "hud-compiler");

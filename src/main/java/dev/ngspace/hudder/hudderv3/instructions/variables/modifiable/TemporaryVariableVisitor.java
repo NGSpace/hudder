@@ -26,7 +26,8 @@ public class TemporaryVariableVisitor extends ExpressionVisitor {
 			methodWriter.getVariable(variable);
 		} else {
 			Label end = new Label();
-			methodWriter.getStaticField("tempVariables", AVarTextCompiler.class, Map.class);
+			methodWriter.aload(0);
+			methodWriter.getField("tempVariables", Map.class);
 			methodWriter.loadConstant(variable);
 			methodWriter.callInterface(Map.class, "get", Object.class, Object.class);
 			methodWriter.dup();
@@ -44,7 +45,8 @@ public class TemporaryVariableVisitor extends ExpressionVisitor {
 			methodWriter.storeVariable(variable);
 		} else {
 			int index = methodWriter.astore();
-			methodWriter.getStaticField("tempVariables", AVarTextCompiler.class, Map.class);
+			methodWriter.aload(0);
+			methodWriter.getField("tempVariables", Map.class);
 			methodWriter.loadConstant(variable);
 			methodWriter.aload(index);
 			methodWriter.callInterface(Map.class, "put", Object.class, Object.class, Object.class);

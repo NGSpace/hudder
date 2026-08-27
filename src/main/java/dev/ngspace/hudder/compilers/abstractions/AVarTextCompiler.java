@@ -10,7 +10,7 @@ import dev.ngspace.hudder.main.HudCompilationManager;
 
 public abstract class AVarTextCompiler extends ATextCompiler {
 	
-	public static Map<String, Object> tempVariables = new HashMap<String, Object>();
+	public Map<String, Object> tempVariables = new HashMap<String, Object>();
 	protected Consumer<AHudCompiler<?>> listener = this::preCompileListener;
 	
 	protected AVarTextCompiler() {

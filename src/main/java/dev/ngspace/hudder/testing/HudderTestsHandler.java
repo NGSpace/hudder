@@ -9,6 +9,7 @@ import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
 import dev.ngspace.hudder.config.HudderConfig;
+import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.hudder.utils.ValueGetter;
 
@@ -38,7 +39,7 @@ public class HudderTestsHandler {
 	public void registerApis() {
 		FunctionAndConsumerAPI.getInstance().registerPositionedFunction((_,_,_,_,a) -> a[0].get(), "FunctionAPITestingFunction");
 		FunctionAndConsumerAPI.getInstance().registerPositionedConsumer(
-				(_,co,_,_,a) -> ((AVarTextCompiler) co).put("methodvalue", a[0].get()), "MethodAPITestingMethod");
+				(_,_,p,_,a) -> {throw new ExecutionException(a[0].asString(), p);}, "MethodAPITestingMethod");
 		
 		DataVariableRegistry.registerObjectVariable(_ -> new JavaTestObject(), "JavaObjectAccess");
 		DataVariableRegistry.registerObjectVariable(_ -> new JavaTestNoAccess(), "JavaTestNoAccess");
