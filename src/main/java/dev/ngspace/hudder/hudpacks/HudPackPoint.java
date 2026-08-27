@@ -11,7 +11,6 @@ import java.util.Arrays;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.compilers.utils.javascript.JavaScriptEngine;
 import dev.ngspace.hudder.exceptions.ExecutionException;
-import dev.ngspace.hudder.v2runtime.values.AV2Value;
 
 public class HudPackPoint {
 	
@@ -19,14 +18,14 @@ public class HudPackPoint {
 	public JavaScriptEngine engine;
 	public String path;
 	public HudPackPointConfig config;
-	public AV2Value[] conditions;
+	public Boolean[] conditions;
 
 	public HudPackPoint(HudPackPointConfig config, JavaScriptEngine engine) {
 		this.config = config;
 		this.engine = engine;
 		this.conditions = config.conditions()==null ? null : Arrays.stream(config.conditions())
 				.map(DataVariableRegistry::getBoolean)
-				.toArray(AV2Value[]::new);
+				.toArray(Boolean[]::new);
 	}
 	
 	public void execute(HudPackHudState state) throws IOException, ExecutionException {
