@@ -5,11 +5,11 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
 
+import dev.ngspace.hudder.api.compilers.AHudCompiler;
+import dev.ngspace.hudder.api.compilers.Compilers;
+import dev.ngspace.hudder.api.compilers.HudInformation;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.TranslatedItemStack;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
-import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
-import dev.ngspace.hudder.compilers.utils.Compilers;
-import dev.ngspace.hudder.compilers.utils.HudInformation;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.utils.HudFileUtils;

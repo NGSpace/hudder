@@ -5,8 +5,8 @@ import java.util.HashMap;
 
 import org.jetbrains.annotations.Nullable;
 
-import dev.ngspace.hudder.compilers.abstractions.AV2Compiler;
-import dev.ngspace.hudder.compilers.utils.CompileState;
+import dev.ngspace.hudder.api.compilers.CompileState;
+import dev.ngspace.hudder.api.compilers.abstractions.AV2Compiler;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.v2runtime.runtime_elements.AV2RuntimeElement;

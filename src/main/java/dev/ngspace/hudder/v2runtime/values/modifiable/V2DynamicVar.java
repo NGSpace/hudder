@@ -1,6 +1,6 @@
 package dev.ngspace.hudder.v2runtime.values.modifiable;
 
-import dev.ngspace.hudder.compilers.abstractions.AV2Compiler;
+import dev.ngspace.hudder.api.compilers.abstractions.AV2Compiler;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.v2runtime.V2Runtime;
 import dev.ngspace.hudder.v2runtime.values.AV2Value;

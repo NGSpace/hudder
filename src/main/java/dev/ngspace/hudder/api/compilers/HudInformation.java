@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.compilers.utils;
+package dev.ngspace.hudder.api.compilers;
 
 import java.util.Arrays;
 import java.util.Objects;

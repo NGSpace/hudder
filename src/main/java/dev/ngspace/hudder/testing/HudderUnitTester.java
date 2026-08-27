@@ -12,8 +12,8 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
-import dev.ngspace.hudder.compilers.utils.Compilers;
+import dev.ngspace.hudder.api.compilers.Compilers;
+import dev.ngspace.hudder.api.compilers.abstractions.AVarTextCompiler;
 import dev.ngspace.hudder.testing.HudderTestReader.Result;
 import dev.ngspace.hudder.testing.HudderUnitTest.Mode;
 import net.minecraft.network.chat.Component;

@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.compilers.abstractions;
+package dev.ngspace.hudder.api.compilers.abstractions;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -8,13 +8,13 @@ import java.util.Map;
 
 import org.objectweb.asm.Label;
 
+import dev.ngspace.hudder.api.compilers.HudInformation;
+import dev.ngspace.hudder.api.compilers.TextPos;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.PositionedBinder;
-import dev.ngspace.hudder.compilers.utils.HudInformation;
-import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
@@ -27,7 +27,6 @@ import dev.ngspace.hudder.hudderv3.asm.V3ExecuteMethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.ImplV3ExpressionParser;
 import dev.ngspace.hudder.hudderv3.instructions.V3ExpressionParser;
 import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
-import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 
 public abstract class AV3Compiler extends AVarTextCompiler implements PositionedBinder {
 	
@@ -170,10 +169,5 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Positioned
 		for (String name : names) {
 			api_functions.put("api_function_" + name, cons);
 		}
-	}
-
-	@Override
-	public boolean setupHudSettings(NGSMCConfigCategory hudsettings) {
-		return false;
 	}
 }

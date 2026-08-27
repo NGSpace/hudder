@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import com.mojang.blaze3d.platform.NativeImage;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.compilers.utils.Compilers;
+import dev.ngspace.hudder.api.compilers.Compilers;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.Identifier;
 

@@ -8,8 +8,8 @@ import static dev.ngspace.hudder.hudpacks.HudPackHudState.TOPRIGHT;
 import java.io.IOException;
 import java.util.Arrays;
 
+import dev.ngspace.hudder.api.compilers.defaultcompilers.javascript.JavaScriptEngine;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
-import dev.ngspace.hudder.compilers.utils.javascript.JavaScriptEngine;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 
 public class HudPackPoint {

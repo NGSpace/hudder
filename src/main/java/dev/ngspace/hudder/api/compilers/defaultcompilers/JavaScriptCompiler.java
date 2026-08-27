@@ -1,12 +1,11 @@
-package dev.ngspace.hudder.compilers;
+package dev.ngspace.hudder.api.compilers.defaultcompilers;
 
+import dev.ngspace.hudder.api.compilers.abstractions.AScriptingLanguageCompiler;
+import dev.ngspace.hudder.api.compilers.abstractions.IScriptingLanguageEngine;
+import dev.ngspace.hudder.api.compilers.defaultcompilers.javascript.JavaScriptEngine;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
-import dev.ngspace.hudder.compilers.abstractions.AScriptingLanguageCompiler;
-import dev.ngspace.hudder.compilers.abstractions.IScriptingLanguageEngine;
-import dev.ngspace.hudder.compilers.utils.javascript.JavaScriptEngine;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
-import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 
 public class JavaScriptCompiler extends AScriptingLanguageCompiler {
 
@@ -19,11 +18,6 @@ public class JavaScriptCompiler extends AScriptingLanguageCompiler {
 		FunctionAndConsumerAPI api = FunctionAndConsumerAPI.getInstance();
 		api.applyFunctionsAndConsumers(engine);
 		return engine;
-	}
-
-	@Override
-	public boolean setupHudSettings(NGSMCConfigCategory hudsettings) {
-		return false;
 	}
 	
 	@Override

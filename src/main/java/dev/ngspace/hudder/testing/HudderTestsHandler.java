@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dev.ngspace.hudder.Hudder;
+import dev.ngspace.hudder.api.compilers.abstractions.AVarTextCompiler;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
-import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.utils.HudFileUtils;

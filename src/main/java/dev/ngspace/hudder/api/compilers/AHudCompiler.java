@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.compilers.abstractions;
+package dev.ngspace.hudder.api.compilers;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,11 +13,9 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import dev.ngspace.hudder.compilers.utils.HudInformation;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
-import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 import net.minecraft.util.Util;
 
 /**
@@ -78,16 +76,6 @@ public abstract class AHudCompiler<T> {
 	 * @throws ExecutionException if the variable cannot be retrieved
 	 */
 	public abstract Object getVariable(String key) throws ExecutionException;
-	
-	
-	/**
-	 * Sets up the configurable settings used by HUDs compiled by this compiler.
-	 *
-	 * @param hudsettings the configuration category in which HUD settings are set up
-	 * @return {@code true} if the HUD settings were set up successfully;
-	 *         {@code false} otherwise
-	 */
-	public abstract boolean setupHudSettings(NGSMCConfigCategory hudsettings);
 	
 	/**
 	 * Processes and then executes a HUD file.

@@ -1,10 +1,11 @@
-package dev.ngspace.hudder.compilers.abstractions;
+package dev.ngspace.hudder.api.compilers.abstractions;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import dev.ngspace.hudder.api.compilers.AHudCompiler;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.config.HudderConfig;
 

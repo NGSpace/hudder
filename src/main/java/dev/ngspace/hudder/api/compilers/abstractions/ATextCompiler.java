@@ -1,10 +1,11 @@
-package dev.ngspace.hudder.compilers.abstractions;
+package dev.ngspace.hudder.api.compilers.abstractions;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
-import dev.ngspace.hudder.compilers.utils.TextPos;
+import dev.ngspace.hudder.api.compilers.AHudCompiler;
+import dev.ngspace.hudder.api.compilers.TextPos;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.utils.HudFileUtils;

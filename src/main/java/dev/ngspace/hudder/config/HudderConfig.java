@@ -17,12 +17,12 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.Expose;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.compilers.HudPackCompiler;
-import dev.ngspace.hudder.compilers.HudderV2Compiler;
-import dev.ngspace.hudder.compilers.HudderV3Compiler;
-import dev.ngspace.hudder.compilers.JavaScriptCompiler;
-import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
-import dev.ngspace.hudder.compilers.utils.Compilers;
+import dev.ngspace.hudder.api.compilers.AHudCompiler;
+import dev.ngspace.hudder.api.compilers.Compilers;
+import dev.ngspace.hudder.api.compilers.defaultcompilers.HudPackCompiler;
+import dev.ngspace.hudder.api.compilers.defaultcompilers.HudderV2Compiler;
+import dev.ngspace.hudder.api.compilers.defaultcompilers.HudderV3Compiler;
+import dev.ngspace.hudder.api.compilers.defaultcompilers.JavaScriptCompiler;
 import dev.ngspace.hudder.main.HudCompilationManager;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.hudder.utils.NoAccess;

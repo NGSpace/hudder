@@ -1,3 +1,3 @@
-package dev.ngspace.hudder.compilers.utils;
+package dev.ngspace.hudder.api.compilers;
 
 public record TextPos(int line, int column) {}

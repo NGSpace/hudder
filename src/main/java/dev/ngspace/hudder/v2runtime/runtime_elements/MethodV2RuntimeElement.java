@@ -3,9 +3,9 @@ package dev.ngspace.hudder.v2runtime.runtime_elements;
 import java.util.Arrays;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.compilers.abstractions.AV2Compiler;
-import dev.ngspace.hudder.compilers.utils.CompileState;
-import dev.ngspace.hudder.compilers.utils.TextPos;
+import dev.ngspace.hudder.api.compilers.CompileState;
+import dev.ngspace.hudder.api.compilers.TextPos;
+import dev.ngspace.hudder.api.compilers.abstractions.AV2Compiler;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.v2runtime.V2Runtime;

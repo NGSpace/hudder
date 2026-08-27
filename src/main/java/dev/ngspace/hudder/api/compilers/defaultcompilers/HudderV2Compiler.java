@@ -1,12 +1,12 @@
-package dev.ngspace.hudder.compilers;
+package dev.ngspace.hudder.api.compilers.defaultcompilers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.compilers.abstractions.AV2Compiler;
-import dev.ngspace.hudder.compilers.utils.TextPos;
+import dev.ngspace.hudder.api.compilers.TextPos;
+import dev.ngspace.hudder.api.compilers.abstractions.AV2Compiler;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;

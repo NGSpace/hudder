@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.compilers.utils.javascript;
+package dev.ngspace.hudder.api.compilers.defaultcompilers.javascript;
 
 import java.util.List;
 

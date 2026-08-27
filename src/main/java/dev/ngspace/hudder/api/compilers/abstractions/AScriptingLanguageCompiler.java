@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.compilers.abstractions;
+package dev.ngspace.hudder.api.compilers.abstractions;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -6,9 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import dev.ngspace.hudder.Hudder;
+import dev.ngspace.hudder.api.compilers.HudInformation;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
-import dev.ngspace.hudder.compilers.utils.HudInformation;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;

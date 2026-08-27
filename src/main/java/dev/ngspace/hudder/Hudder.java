@@ -13,11 +13,11 @@ import org.slf4j.LoggerFactory;
 
 import com.mojang.blaze3d.platform.InputConstants;
 
+import dev.ngspace.hudder.api.compilers.Compilers;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.api.functionsandconsumers.HudderBuiltInFunctions;
 import dev.ngspace.hudder.api.functionsandconsumers.HudderBuiltInMethods;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
-import dev.ngspace.hudder.compilers.utils.Compilers;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.main.HudderRenderer;
 import dev.ngspace.hudder.main.HudderTickEvent;

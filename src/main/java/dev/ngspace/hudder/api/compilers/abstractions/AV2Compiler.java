@@ -1,16 +1,16 @@
-package dev.ngspace.hudder.compilers.abstractions;
+package dev.ngspace.hudder.api.compilers.abstractions;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import dev.ngspace.hudder.api.compilers.CompileState;
+import dev.ngspace.hudder.api.compilers.HudInformation;
+import dev.ngspace.hudder.api.compilers.TextPos;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.PositionedBinder;
-import dev.ngspace.hudder.compilers.utils.CompileState;
-import dev.ngspace.hudder.compilers.utils.HudInformation;
-import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
@@ -22,7 +22,6 @@ import dev.ngspace.hudder.v2runtime.runtime_elements.AV2RuntimeElement;
 import dev.ngspace.hudder.v2runtime.values.AV2Value;
 import dev.ngspace.hudder.v2runtime.values.DefaultV2VariableParser;
 import dev.ngspace.hudder.v2runtime.values.IV2VariableParser;
-import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 
 public abstract class AV2Compiler extends AVarTextCompiler implements PositionedBinder {
 	
@@ -169,12 +168,6 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Positioned
 		}
 		return false;
 	}
-
-	@Override
-	public boolean setupHudSettings(NGSMCConfigCategory hudsettings) {
-		return false;
-	}
-
 
 	public HudInformation compileAndExecute(String text, String filename) throws ExecutionException {
 		try {

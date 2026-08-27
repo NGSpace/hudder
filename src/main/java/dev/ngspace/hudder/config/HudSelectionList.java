@@ -7,7 +7,7 @@ import java.util.function.UnaryOperator;
 
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 
-import dev.ngspace.hudder.compilers.utils.Compilers;
+import dev.ngspace.hudder.api.compilers.Compilers;
 import dev.ngspace.hudder.config.HudSelectionList.HudEntry;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.hudder.utils.ResourceReloadListener;

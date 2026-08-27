@@ -1,6 +1,6 @@
 package org.mozilla.javascript;
 
-import dev.ngspace.hudder.compilers.utils.TextPos;
+import dev.ngspace.hudder.api.compilers.TextPos;
 
 // Don't ask questions
 public final class RhinoTextPosGetter {

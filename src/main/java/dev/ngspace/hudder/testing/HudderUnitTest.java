@@ -3,7 +3,7 @@ package dev.ngspace.hudder.testing;
 import java.util.Map;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
+import dev.ngspace.hudder.api.compilers.abstractions.AVarTextCompiler;
 
 public class HudderUnitTest {
 	public final String texttocompile;

@@ -13,8 +13,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.compilers.utils.Compilers;
-import dev.ngspace.hudder.compilers.utils.Compilers.CompilerEntry;
+import dev.ngspace.hudder.api.compilers.Compilers;
+import dev.ngspace.hudder.api.compilers.Compilers.CompilerEntry;
+import dev.ngspace.hudder.api.compilers.interfaces.SettingsProvider;
 import dev.ngspace.hudder.main.HudderTickEvent;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigBuilder;
@@ -257,7 +258,8 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 		
 		
 		/* Hud specific settings */
-		if (!Hudder.config.getCompiler().setupHudSettings(hudsettings))
+		if (Hudder.config.getCompiler() instanceof SettingsProvider provider
+				&& !provider.setupHudSettings(hudsettings))
 			builder.removeCategory(hudsettings);
 		
 		return builder.build();

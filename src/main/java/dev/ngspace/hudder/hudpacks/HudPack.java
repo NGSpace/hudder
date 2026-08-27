@@ -13,7 +13,7 @@ import java.util.Set;
 import com.google.gson.Gson;
 import com.mojang.blaze3d.platform.NativeImage;
 
-import dev.ngspace.hudder.compilers.HudPackCompiler;
+import dev.ngspace.hudder.api.compilers.defaultcompilers.HudPackCompiler;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.utils.HudFileUtils;

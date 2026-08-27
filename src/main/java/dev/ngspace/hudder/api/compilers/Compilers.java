@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.compilers.utils;
+package dev.ngspace.hudder.api.compilers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,8 +10,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
-import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
+import dev.ngspace.hudder.api.compilers.abstractions.AVarTextCompiler;
 import dev.ngspace.hudder.config.HudderConfig;
 
 /**

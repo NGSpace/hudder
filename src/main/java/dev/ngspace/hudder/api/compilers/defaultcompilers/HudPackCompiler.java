@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.compilers;
+package dev.ngspace.hudder.api.compilers.defaultcompilers;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,10 +6,11 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import dev.ngspace.hudder.Hudder;
+import dev.ngspace.hudder.api.compilers.AHudCompiler;
+import dev.ngspace.hudder.api.compilers.HudInformation;
+import dev.ngspace.hudder.api.compilers.interfaces.SettingsProvider;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
-import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
-import dev.ngspace.hudder.compilers.utils.HudInformation;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
@@ -19,7 +20,7 @@ import dev.ngspace.hudder.hudpacks.HudPackHudState;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 
-public class HudPackCompiler extends AHudCompiler<CachedPack> {
+public class HudPackCompiler extends AHudCompiler<CachedPack> implements SettingsProvider {
 	
 	public HudPackCompiler(HudderConfig config) {
 		super(config, new AtomicReference<>(), new HashMap<>());

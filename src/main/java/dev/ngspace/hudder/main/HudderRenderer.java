@@ -12,7 +12,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.compilers.utils.HudInformation;
+import dev.ngspace.hudder.api.compilers.HudInformation;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.uielements.AUIElement;
 import dev.ngspace.hudder.utils.HudFileUtils;
