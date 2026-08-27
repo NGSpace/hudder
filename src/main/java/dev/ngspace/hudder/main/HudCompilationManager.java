@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.compilers.AHudCompiler;
+import dev.ngspace.hudder.api.compilers.Compilers;
 import dev.ngspace.hudder.api.compilers.HudInformation;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
@@ -32,11 +33,6 @@ public class HudCompilationManager implements EndTick {
 		HudFileUtils.addReloadResourcesListenerFirst(()->isFirstRunSinceCacheClear = true);
 	}
 
-
-	public void addPreCompilerListener(Consumer<AHudCompiler<?>> consumer) {
-		precomplistners.add(consumer);
-	}
-
 	public void compileAndExecute(DeltaTracker f) {
 		mainresult = null;
 		try {
@@ -59,9 +55,8 @@ public class HudCompilationManager implements EndTick {
 	}
 
 	public HudInformation compileAndExecuteMainHud() throws CompileException, ExecutionException, IOException {
-		for (Consumer<AHudCompiler<?>> con : precomplistners) {
-			con.accept(config.getCompiler());
-		}
+		Compilers.prepareCompilers();
+		for (Consumer<AHudCompiler<?>> con : precomplistners) con.accept(config.getCompiler());
 		HudInformation result = config.getCompiler().processAndExecuteMain(config.mainfile(), config.mainfile());
 		HudFileUtils.loadMarkedResources();
 		return result;
@@ -69,10 +64,7 @@ public class HudCompilationManager implements EndTick {
 
 	public HudInformation compileAndExecuteSecondaryHud(AHudCompiler<?> compiler, String filepath, String filename)
 			throws CompileException, ExecutionException, IOException {
-		Misc.updateCPS();
-		for (Consumer<AHudCompiler<?>> con : precomplistners) {
-			con.accept(config.getCompiler());
-		}
+		for (Consumer<AHudCompiler<?>> con : precomplistners) con.accept(config.getCompiler());
 		HudInformation result = compiler.processAndExecute(filepath, filename);
 		HudFileUtils.loadMarkedResources();
 		return result;
@@ -87,6 +79,10 @@ public class HudCompilationManager implements EndTick {
 		if (config.limitrate()) {
 			compileAndExecute(null);
 		}
+	}
+
+	public void addPreCompilerListener(Consumer<AHudCompiler<?>> consumer) {
+		precomplistners.add(consumer);
 	}
 
 	public void removePreCompilerListener(Consumer<AHudCompiler<?>> consumer) {

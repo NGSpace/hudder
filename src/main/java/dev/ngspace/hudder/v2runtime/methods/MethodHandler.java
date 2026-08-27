@@ -18,7 +18,7 @@ public class MethodHandler {
 	public MethodHandler() {
 		
 		//Text and compiling
-		bindConsumer((c,m,_,_,t,_,s)->m.setTextLocation(CompileState.Sections.valueOf(t),
+		bindConsumer((c,m,_,_,t,_,s)->m.setTextLocation(CompileState.Sections.valueOf(t.toUpperCase()),
 				(float) (s.length>0?s[0].asDouble():c.scale())),
 				CompileState.Sections.sectionNames());
 		

@@ -10,55 +10,34 @@ import dev.ngspace.hudder.api.compilers.AHudCompiler;
 import dev.ngspace.hudder.api.compilers.HudInformation;
 import dev.ngspace.hudder.api.compilers.interfaces.SettingsProvider;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
-import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
-import dev.ngspace.hudder.hudpacks.CachedPack;
 import dev.ngspace.hudder.hudpacks.HudPack;
 import dev.ngspace.hudder.hudpacks.HudPackHudState;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 
-public class HudPackCompiler extends AHudCompiler<CachedPack> implements SettingsProvider {
+public class HudPackCompiler extends AHudCompiler<HudPack> implements SettingsProvider {
 	
 	public HudPackCompiler(HudderConfig config) {
 		super(config, new AtomicReference<>(), new HashMap<>());
 	}
 
-	HashMap<String, CachedPack> hudpacks = new HashMap<String, CachedPack>();
 	public ArrayElementManager elms = new ArrayElementManager();
 
 	@Override
-	public CachedPack processFile(String filepath) throws CompileException {
+	public HudPack processFile(String filepath) throws CompileException, IOException {
 		elms.clear();
-		if (hudpacks.containsKey(filepath)) {
-			CachedPack pack = hudpacks.get(filepath);
-			if (pack.exception()!=null) {
-				if (pack.exception() instanceof CompileException ce)
-					throw ce;
-				throw new CompileException(pack.exception());
-			}
-			return pack;
-		}
-		try {
-			hudpacks.put(filepath, new CachedPack(new HudPack(config, HudFileUtils.FOLDER + filepath, this), null));
-		} catch (IOException e) {
-			e.printStackTrace();
-			hudpacks.put(filepath, new CachedPack(null, e));
-			throw new CompileException(e);
-		}
-		return hudpacks.get(filepath);
+		return new HudPack(config, HudFileUtils.FOLDER + filepath, this);
 	}
 
 	@Override
-	public HudInformation execute(CachedPack pack, String filename) throws ExecutionException {
-		if (pack==null||pack.pack()==null)
-			return HudInformation.of("\u00A74Failed to load HudPack: " + filename);
+	public HudInformation execute(HudPack pack, String filename) throws ExecutionException {
 		try {
 			elms.clear();
 			HudPackHudState state = new HudPackHudState();
-			for (var point : pack.pack().hudpackpoints) {
+			for (var point : pack.hudpackpoints) {
 				if (point.conditions==null||checkConditions(point.conditions))
 					point.execute(state);
 			}
@@ -75,25 +54,20 @@ public class HudPackCompiler extends AHudCompiler<CachedPack> implements Setting
 				return false;
 		return true;
 	}
-	
-	
-	@Override public Object getVariable(String key) throws ExecutionException {
-		return DataVariableRegistry.getAny(key);
-	}
 
 	@Override
 	public boolean setupHudSettings(NGSMCConfigCategory hudsettings) {
 		try {
-			CachedPack mainhudpack = processFile(config.mainfile());
+			HudPack mainhudpack = processFile(config.mainfile());
 			
 			if (mainhudpack!=null
-					&&mainhudpack.pack().hasSettings()) {
-				for (String setting : mainhudpack.pack().getSettingsKeys()) {
-					hudsettings.addOption(mainhudpack.pack().buildSetting(setting));
+					&&mainhudpack.hasSettings()) {
+				for (String setting : mainhudpack.getSettingsKeys()) {
+					hudsettings.addOption(mainhudpack.buildSetting(setting));
 				}
 				return true;
 			}
-		} catch (CompileException e) {
+		} catch (CompileException | IOException e) {
 			// Not much to do, if the pack fails to compile there are no settings.
 			if (Hudder.IS_DEBUG) e.printStackTrace();
 		}
@@ -113,12 +87,10 @@ public class HudPackCompiler extends AHudCompiler<CachedPack> implements Setting
 	}
 	
 	@Override
-	public void resetState() throws IOException {
-		for (var pack : hudpacks.values())
-			if (pack.pack()!=null)
-				pack.pack().close();
-		hudpacks.clear();
-		super.resetState();
+	public void reset() throws IOException {
+		for (var pack : instances.values())
+			pack.close();
+		super.reset();
 	}
 	
 }

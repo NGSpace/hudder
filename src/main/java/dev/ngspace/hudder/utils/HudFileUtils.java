@@ -174,7 +174,7 @@ public class HudFileUtils {private HudFileUtils() {}
 	public static void reloadResources() throws IOException {
 		reader.clearCache();
 		loadResources(new File(FOLDER), "");
-		for (var comp : Compilers.compilers()) comp.resetState();
+		for (var comp : Compilers.compilers()) comp.reset();
 		for (var listener : reloadResourcesListeners) listener.run();
 	}
 

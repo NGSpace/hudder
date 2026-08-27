@@ -25,10 +25,6 @@ import net.minecraft.util.Util;
  */
 public abstract class AHudCompiler<T> {
 
-	/**
-	 * Contains globally available compiler variables, indexed by name.
-	 */
-	protected Map<String, Object> variables = new HashMap<String, Object>();
 	protected Future<T> mainCompilation;
 	protected ExecutorService hudCompilerExecutor =
 	        Executors.newSingleThreadExecutor(r -> {
@@ -40,6 +36,7 @@ public abstract class AHudCompiler<T> {
 	protected final AtomicBoolean hudCompiling = new AtomicBoolean(false);
 	protected final AtomicReference<T> mainInstance;
 	protected final Map<String, T> instances;
+	protected final Map<String, Exception> errors = new HashMap<>();
 	protected final HudderConfig config;
 	
 	protected AHudCompiler(HudderConfig config, AtomicReference<T> mainInstance, Map<String, T> instancesMap) {
@@ -67,15 +64,6 @@ public abstract class AHudCompiler<T> {
 	 * @throws ExecutionException if an error occurs while executing the HUD
 	 */
 	public abstract HudInformation execute(T processedfile, String filename) throws ExecutionException;
-
-	/**
-	 * Retrieves a variable using the specified key.
-	 *
-	 * @param key the key of the variable to retrieve
-	 * @return the value associated with the specified key
-	 * @throws ExecutionException if the variable cannot be retrieved
-	 */
-	public abstract Object getVariable(String key) throws ExecutionException;
 	
 	/**
 	 * Processes and then executes a HUD file.
@@ -89,8 +77,24 @@ public abstract class AHudCompiler<T> {
 	 */
 	public HudInformation processAndExecute(String filepath, String filename)
 			throws CompileException, ExecutionException, IOException {
-		T res = processFile(filepath);
-		instances.put(filepath, res);
+		if (errors.containsKey(filepath)) {
+			var exception = errors.get(filepath);
+			if (exception instanceof CompileException e)
+				throw e;
+			if (exception instanceof IOException e)
+				throw e;
+			throw new CompileException(exception);
+		}
+		T res = instances.get(filepath);
+		if (res==null) {
+			try {
+				res = processFile(filepath);
+				instances.put(filepath, res);
+			} catch (CompileException | IOException e) {
+				errors.put(filepath, e);
+				throw e;
+			}
+		}
 		return execute(res, filename);
 	}
 	
@@ -167,7 +171,14 @@ public abstract class AHudCompiler<T> {
 		Util.getPlatform().openFile(file);
 	}
 	
-	public void resetState() throws IOException {
+	/**
+	 * Resets the compiler's state to be as if the game was restarted.
+	 * 
+	 * Called when settings are changed or reloadResources is called.
+	 * 
+	 * @throws IOException
+	 */
+	public void reset() throws IOException {
 		hudCompilerExecutor.shutdownNow();
 		hudCompilerExecutor = Executors.newSingleThreadExecutor(r -> {
 	        	Thread thread = new Thread(r, "hud-compiler");
@@ -175,8 +186,8 @@ public abstract class AHudCompiler<T> {
 	        	thread.setDaemon(true);
 	        	return thread;
 	        });
-		variables.clear();
 		mainInstance.set(null);
+		instances.clear();
 		hudCompiling.set(false);
 	}
 }

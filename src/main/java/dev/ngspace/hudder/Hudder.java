@@ -171,7 +171,10 @@ public class Hudder implements ClientModInitializer {
         
         // Make sure the FPS variable is updated once every compilation instead of every time a number variable is used
         var mc = Minecraft.getInstance();
-        config.compilationManager.addPreCompilerListener(_->Misc.fps = Misc.getFPS(mc));
+        config.compilationManager.addPreCompilerListener(_->{
+    		Misc.updateCPS();
+    		Misc.fps = Misc.getFPS(mc);
+        });
 		
 		log("Hudder has finished loading!");
 	}

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.api.compilers.abstractions.AVarTextCompiler;
+import dev.ngspace.hudder.api.compilers.AHudCompiler;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.config.HudderConfig;
@@ -21,7 +21,7 @@ public class HudderTestsHandler {
 	public HudderUnitTester hudderTester;
 	public HudderConfig config;
 	
-	public HudderTestsHandler(HudderConfig config, AVarTextCompiler compiler) throws IOException {
+	public HudderTestsHandler(HudderConfig config, AHudCompiler<?> compiler) throws IOException {
 		this.config = config;
 		this.hudderTester = new HudderUnitTester(compiler);
 		loadTests();
@@ -29,7 +29,7 @@ public class HudderTestsHandler {
 	
 	public void loadTests() throws IOException {
 		registerApis();
-		if (config.getCompiler() instanceof AVarTextCompiler comp)
+		if (config.getCompiler() instanceof AHudCompiler<?> comp)
 			hudderTester.compiler = comp;
 		hudderTester.UnitTests.clear();
 		for (TestProvider provider : test_providers)

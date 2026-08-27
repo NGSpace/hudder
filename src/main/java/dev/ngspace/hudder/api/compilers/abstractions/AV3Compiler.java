@@ -5,11 +5,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.objectweb.asm.Label;
 
+import dev.ngspace.hudder.api.compilers.AHudCompiler;
 import dev.ngspace.hudder.api.compilers.HudInformation;
 import dev.ngspace.hudder.api.compilers.TextPos;
+import dev.ngspace.hudder.api.compilers.interfaces.StringEvaluator;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
@@ -27,8 +30,10 @@ import dev.ngspace.hudder.hudderv3.asm.V3ExecuteMethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.ImplV3ExpressionParser;
 import dev.ngspace.hudder.hudderv3.instructions.V3ExpressionParser;
 import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
+import dev.ngspace.hudder.utils.HudFileUtils;
 
-public abstract class AV3Compiler extends AVarTextCompiler implements PositionedBinder {
+public abstract class AV3Compiler extends AHudCompiler<AV3Compiler.CachedCompiler> implements PositionedBinder,
+		StringEvaluator<AV3Compiler.CachedCompiler> {
 	
 	public static final String VERIFIER_ERROR_NOTE = """
 			
@@ -36,7 +41,6 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Positioned
 			# Please report this to the developer of Hudder!
 			""";
 	
-	public Map<String, CachedCompiler> cache = new HashMap<String, CachedCompiler>();
 	public V3ExpressionParser expressionParser = new ImplV3ExpressionParser();
 	public boolean system_variables = true;
 
@@ -44,18 +48,19 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Positioned
 	public Map<String, BindablePositionedConsumer> api_consumers = new HashMap<String, BindablePositionedConsumer>();
 
 	protected AV3Compiler(HudderConfig config) {
-		super(config);
+		super(config, new AtomicReference<>(), new HashMap<>());
 		FunctionAndConsumerAPI.getInstance().applyFunctionsAndConsumers(this);
 		V3APIFunctions.bindAllAPIFunctions(this);
 	}
+
+	@Override
+	public CachedCompiler processFile(String filepath) throws CompileException, IOException {
+		String text = HudFileUtils.readFile(filepath);
+		return evalHud(text, filepath);
+	}
 	
 	@Override
-	public void compileFile(String text, String filepath) throws CompileException {
-		if (cache.containsKey(text)) {
-			var cachehit = cache.get(text);
-			if (cachehit.exception!=null) throw cachehit.exception;
-			return;
-		}
+	public CachedCompiler evalHud(String text, String filepath) throws CompileException {
 		try {
 			HudderV3Helper helper = new HudderV3Helper(config, this);
 			
@@ -80,14 +85,12 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Positioned
 			
 			Object instance = dynamicClass.getDeclaredConstructor(AV3Compiler.class, HudderV3Helper.class)
 					.newInstance(this, helper);
-			cache.put(text, new CachedCompiler(instance, (GeneratedCompiler) instance, helper, null));
+			return new CachedCompiler(instance, (GeneratedCompiler) instance, helper, text);
 		} catch (InvocationTargetException e) {
 			if (e.getTargetException() instanceof RuntimeException re)
 				throw re;
 			e.printStackTrace();
-			var ne = new CompileException(e.getTargetException().toString(),-1, -1, e.getTargetException());
-			cache.put(text, new CachedCompiler(null,null,null,ne));
-			throw ne;
+			throw new CompileException(e.getTargetException().toString(),-1, -1, e.getTargetException());
 		} catch (ClassFormatError e) {
 			// The compilation manager does not handle JVM errors and will crash the game which is bad.
 			e.printStackTrace();
@@ -102,20 +105,17 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Positioned
 					'\n' +
 					msg.substring(at==-1?0:at, frame==-1?msg.length():frame));
 		} catch (CompileException e) {
-			cache.put(text, new CachedCompiler(null,null,null,e));
 			throw e;
 		} catch (Exception e) {
 			e.printStackTrace();
-			var ne = new CompileException(e.toString(),-1, -1, e);
-			cache.put(text, new CachedCompiler(null,null,null,ne));
-			throw ne;
+			throw new CompileException(e.toString(),-1, -1, e);
 		} 
 	}
 
 	@Override
-	public HudInformation execute(String processedfile, String filename) throws ExecutionException {
+	public HudInformation execute(CachedCompiler compiler, String filename) throws ExecutionException {
 		try {
-			return cache.get(processedfile).generatedCompiler().execute(config, processedfile, filename).hudInformation;
+			return compiler.generatedCompiler().execute(config, compiler.processedFile(), filename).hudInformation;
 		} catch (VerifyError e) {
 			// The compilation manager does not handle Verifier errors and will crash the game which is bad.
 			e.printStackTrace();
@@ -145,16 +145,15 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Positioned
 
 
 	public static record CachedCompiler(Object compiledhud, GeneratedCompiler generatedCompiler,
-			HudderV3Helper helper, CompileException exception) {}
+			HudderV3Helper helper, String processedFile) {}
 	
 	@Override
-	public void resetState() throws IOException {
+	public void reset() throws IOException {
 		system_variables = true;
-		for (var instance : cache.values())
-			if (instance.generatedCompiler instanceof AVarTextCompiler comp)
-				comp.shutdown();
-		cache.clear();
-		super.resetState();
+		for (var instance : instances.values())
+			if (instance.generatedCompiler != null)
+				instance.generatedCompiler.shutdown();
+		super.reset();
 	}
 
 	@Override
@@ -169,5 +168,9 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Positioned
 		for (String name : names) {
 			api_functions.put("api_function_" + name, cons);
 		}
+	}
+	@Override
+	public HudInformation evalAndExecuteHud(String text, String debugname) throws CompileException, ExecutionException {
+		return execute(evalHud(text, debugname), debugname);
 	}
 }

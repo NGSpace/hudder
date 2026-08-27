@@ -7,34 +7,41 @@ import java.util.Map;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.compilers.HudInformation;
+import dev.ngspace.hudder.api.compilers.interfaces.PreparedCompiler;
+import dev.ngspace.hudder.api.compilers.interfaces.StringEvaluator;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.uielements.AUIElement;
-import net.minecraft.client.Minecraft;
+import dev.ngspace.hudder.utils.HudFileUtils;
 
-public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
-	
-	protected static Minecraft mc = Minecraft.getInstance();
+public abstract class AScriptingLanguageCompiler extends AVarTextCompiler implements PreparedCompiler,
+		StringEvaluator<String> {
 	
 	public Map<String, RuntimeCache> cache = new HashMap<String, RuntimeCache>();
 	public ArrayElementManager elms = new ArrayElementManager();
 	
 	protected AScriptingLanguageCompiler(HudderConfig config) {
 		super(config);
-		config.compilationManager.addPreCompilerListener(c->{if(c==this) elms.clear();});
 	}
 	
 	protected abstract IScriptingLanguageEngine createLangEngine() throws CompileException;
+
+	@Override
+	public String processFile(String filepath) throws CompileException, IOException {
+		String text = HudFileUtils.readFile(filepath);
+		evalHud(text, filepath);
+		return text;
+	}
 	
 	@Override
-	public void compileFile(String text, String filepath) throws CompileException {
+	public String evalHud(String text, String filepath) throws CompileException {
 		if (cache.containsKey(text)) {
 			var cachehit = cache.get(text);
 			if (cachehit.exception!=null) throw cachehit.engine.processCompileException(cachehit.exception);
-			return;
+			return text;
 		}
 		IScriptingLanguageEngine wrapper = null;
 		try {
@@ -51,6 +58,7 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 				cache.put(text, new RuntimeCache(wrapper,e));
 				throw wrapper.processCompileException(e);
 			}
+			return text;
 		} catch (Exception e) {
 			if (Hudder.IS_DEBUG) e.printStackTrace();
 			if (wrapper!=null) {
@@ -63,7 +71,6 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 	}
 
 	@Override public HudInformation execute(String text, String filename) throws ExecutionException {
-		if (mc.player==null) return HudInformation.of("");
 		IScriptingLanguageEngine wrapper = null;
 		try {
 			wrapper = cache.get(text).engine;
@@ -118,9 +125,19 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 	}
 	
 	@Override
-	public void resetState() throws IOException {
+	public void reset() throws IOException {
 		for(RuntimeCache c:cache.values()) c.close();
 		cache.clear();
-		super.resetState();
+		super.reset();
+	}
+	
+	@Override
+	public void prepareCompiler() {
+		elms.clear();
+	}
+	
+	@Override
+	public HudInformation evalAndExecuteHud(String text, String debugname) throws CompileException, ExecutionException {
+		return execute(evalHud(text, debugname), debugname);
 	}
 }

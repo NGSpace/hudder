@@ -7,6 +7,7 @@ import java.util.Map;
 import dev.ngspace.hudder.api.compilers.CompileState;
 import dev.ngspace.hudder.api.compilers.HudInformation;
 import dev.ngspace.hudder.api.compilers.TextPos;
+import dev.ngspace.hudder.api.compilers.interfaces.StringEvaluator;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
@@ -14,6 +15,7 @@ import dev.ngspace.hudder.api.functionsandconsumers.interfaces.PositionedBinder;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
+import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.hudder.v2runtime.V2Runtime;
 import dev.ngspace.hudder.v2runtime.functions.IV2Function;
 import dev.ngspace.hudder.v2runtime.functions.V2FunctionHandler;
@@ -23,7 +25,7 @@ import dev.ngspace.hudder.v2runtime.values.AV2Value;
 import dev.ngspace.hudder.v2runtime.values.DefaultV2VariableParser;
 import dev.ngspace.hudder.v2runtime.values.IV2VariableParser;
 
-public abstract class AV2Compiler extends AVarTextCompiler implements PositionedBinder {
+public abstract class AV2Compiler extends AVarTextCompiler implements PositionedBinder, StringEvaluator<String> {
 	
 	public Map<String, V2Runtime> runtimes = new HashMap<String, V2Runtime>();
 	public MethodHandler methodHandler = new MethodHandler();
@@ -65,11 +67,18 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Positioned
 		variableParser = parser;
 	}
 	
+	@Override
+	public String processFile(String filepath) throws CompileException, IOException {
+		String text = HudFileUtils.readFile(filepath);
+		evalHud(text, filepath);
+		return text;
+	}
 	
 	@Override
-	public void compileFile(String text, String filepath) throws CompileException {
+	public String evalHud(String text, String filepath) throws CompileException {
 		if (!runtimes.containsKey(text))
 			runtimes.put(text, buildRuntimeSafe(text, new TextPos(-1, -1), filepath, null));
+		return text;
 	}
 	
 
@@ -172,7 +181,7 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Positioned
 	public HudInformation compileAndExecute(String text, String filename) throws ExecutionException {
 		try {
 			if (!runtimes.containsKey(text))
-				compileFile(text, filename);
+				evalHud(text, filename);
 			return execute(text, filename);
 		} catch (CompileException e) {
 			throw new ExecutionException(e);
@@ -184,9 +193,37 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Positioned
 	public record Instruction(byte instruction, String paremeter, int ending_index) {}
 	
 	@Override
-	public void resetState() throws IOException {
+	public void reset() throws IOException {
 		SYSTEM_VARIABLES_ENABLED = true;
 		runtimes.clear();
-		super.resetState();
+		super.reset();
+	}
+	
+	// V2 is the only one using those...
+	protected TextPos getPosition(int ind, String string) {
+		return getPosition(new TextPos(0, 0), ind, string);
+	}
+	protected TextPos getPosition(TextPos charPosition, int ind, String text) {
+		int line = charPosition.line();
+		int charpos = charPosition.column();
+		if (line==-1||charpos==-1) {
+			line = 0;
+			charpos = 0;
+		}
+		
+		for (int i = 0;i<ind;i++) {
+			if (text.charAt(i)=='\n') {
+				line++;
+				charpos = 0;
+				continue;
+			}
+			charpos++;
+		}
+		return new TextPos(line, charpos);
+	}
+	
+	@Override
+	public HudInformation evalAndExecuteHud(String text, String debugname) throws CompileException, ExecutionException {
+		return execute(evalHud(text, debugname), debugname);
 	}
 }

@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import dev.ngspace.hudder.api.compilers.abstractions.AVarTextCompiler;
+import dev.ngspace.hudder.api.compilers.interfaces.PreparedCompiler;
 import dev.ngspace.hudder.config.HudderConfig;
 
 /**
@@ -179,7 +179,7 @@ public class Compilers {
 		return findEntryFromName(name).orElseThrow(() -> getNoCompilerException(name, "name"));
 	}
 
-	public static String getNameFromCompiler(AVarTextCompiler compiler) {
+	public static String getNameFromCompiler(AHudCompiler<?> compiler) {
 		return findNameFromCompiler(compiler).orElseThrow(() -> getNoCompilerException(compiler.getClass().getCanonicalName(), "type"));
 	}
 	
@@ -244,13 +244,13 @@ public class Compilers {
 		return findEntryFromDisplayName(displayName).map(CompilerEntry::compiler);
 	}
 	
-	public static Optional<CompilerEntry> findEntryFromCompiler(AVarTextCompiler compiler) {
+	public static Optional<CompilerEntry> findEntryFromCompiler(AHudCompiler<?> compiler) {
 		return registeredcompilers.entrySet().stream()
 				.filter(entry -> entry.getValue().compiler().getClass().isInstance(compiler)).findFirst()
 				.map(entry -> toEntry(entry.getKey(), entry.getValue()));
 	}
 
-	public static Optional<String> findNameFromCompiler(AVarTextCompiler compiler) {
+	public static Optional<String> findNameFromCompiler(AHudCompiler<?> compiler) {
 		return findEntryFromCompiler(compiler).map(CompilerEntry::name);
 	}
 
@@ -510,6 +510,12 @@ public class Compilers {
 	 */
 	private static CompilerEntry toEntry(String name, CompilerInstance instance) {
 		return new CompilerEntry(name, instance.displayname(), instance.unstable(), instance.deprecated(), instance.compiler());
+	}
+
+	public static void prepareCompilers() {
+		for (var entry : registeredcompilers.values())
+			if (entry.compiler() instanceof PreparedCompiler compiler)
+				compiler.prepareCompiler();
 	}
 	
 	/**

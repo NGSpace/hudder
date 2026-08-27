@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import dev.ngspace.hudder.api.compilers.abstractions.AV2Compiler;
+import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.utils.HudderUtils;
 import dev.ngspace.hudder.v2runtime.V2Runtime;
@@ -34,6 +35,8 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 		
 		// Empty variable
 		if (value.isBlank()) throw new ExecutionException("Unknown variable: empty variable", line, charpos);
+		
+		
 		
 		
 		
@@ -206,7 +209,8 @@ public class DefaultV2VariableParser implements IV2VariableParser {
 		boolean matchesVariableRegex = value.matches("[A-Za-z\\d][A-Za-z\\d_]*");
 		
 		// System variable
-		if (matchesVariableRegex&&comp.isSystemVariable(value.toLowerCase())&&comp.SYSTEM_VARIABLES_ENABLED)
+		if (matchesVariableRegex&&(value.equalsIgnoreCase("unset")||DataVariableRegistry.hasVariable(value))
+				&&comp.SYSTEM_VARIABLES_ENABLED)
 			return new V2SystemVar(value, comp, line, charpos);
 		
 		// Dynamic variable

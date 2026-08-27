@@ -3,7 +3,8 @@ package dev.ngspace.hudder.testing;
 import java.util.Map;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.api.compilers.abstractions.AVarTextCompiler;
+import dev.ngspace.hudder.api.compilers.AHudCompiler;
+import dev.ngspace.hudder.api.compilers.interfaces.StringEvaluator;
 
 public class HudderUnitTest {
 	public final String texttocompile;
@@ -21,15 +22,19 @@ public class HudderUnitTest {
 		this.mode = mode;
 	}
 	
-	public HudderUnitTestResult test(AVarTextCompiler compiler) {
+	public HudderUnitTestResult test(AHudCompiler<?> compiler) {
+		if (!(compiler instanceof StringEvaluator))
+			throw new IllegalArgumentException("Compiler must implement StringEvaluator to be tested!");
+		@SuppressWarnings("unchecked")
+		StringEvaluator<String> evaluator = (StringEvaluator<String>) compiler;
 		Hudder.log("Running unit test: " + texttocompile);
 		return switch (mode) {
 			case NORMAL: {
 				String text = null;
 				try {
-					compiler.resetState();
-					compiler.compileFile(texttocompile, "Unit Tests");
-					text = compiler.execute(texttocompile, "Unit Tests").TopLeftText();
+					compiler.reset();
+					evaluator.evalHud(texttocompile, "Unit Tests");
+					text = evaluator.evalAndExecuteHud(texttocompile, "Unit Tests").TopLeftText();
 				} catch (Exception e) {
 					e.printStackTrace();
 					text = e.getMessage();
@@ -41,9 +46,8 @@ public class HudderUnitTest {
 				// Stupidest way to do this but I'm tired rn
 				String type = metadata.getOrDefault("exception_type", new String[1])[0];
 				try {
-					compiler.resetState();
-					compiler.compileFile(texttocompile, "Unit Tests");
-					compiler.execute(texttocompile, "Unit Tests");
+					compiler.reset();
+					evaluator.evalAndExecuteHud(texttocompile, "Unit Tests");
 
 					yield new HudderUnitTestResult(false, type, "Error-less execution", filename);
 				} catch (Exception e) {
@@ -58,9 +62,8 @@ public class HudderUnitTest {
 			}
 			case NO_ERROR: {
 				try {
-					compiler.resetState();
-					compiler.compileFile(texttocompile, "Unit Tests");
-					var res = compiler.execute(texttocompile, "Unit Tests");
+					compiler.reset();
+					var res = evaluator.evalAndExecuteHud(texttocompile, "Unit Tests");
 					yield new HudderUnitTestResult(true, "No error to occur",
 							res.TopLeftText().replaceAll("(^ )|( $)", "~"), filename);
 				} catch (Exception e) {

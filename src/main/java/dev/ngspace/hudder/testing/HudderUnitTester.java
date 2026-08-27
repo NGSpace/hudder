@@ -12,18 +12,18 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 
 import dev.ngspace.hudder.Hudder;
+import dev.ngspace.hudder.api.compilers.AHudCompiler;
 import dev.ngspace.hudder.api.compilers.Compilers;
-import dev.ngspace.hudder.api.compilers.abstractions.AVarTextCompiler;
 import dev.ngspace.hudder.testing.HudderTestReader.Result;
 import dev.ngspace.hudder.testing.HudderUnitTest.Mode;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
 public class HudderUnitTester {
-	public AVarTextCompiler compiler;
+	public AHudCompiler<?> compiler;
 	public Map<String, HudderUnitTest> UnitTests = new HashMap<String, HudderUnitTest>();
 	
-	public HudderUnitTester(AVarTextCompiler compiler) {this.compiler=compiler;}
+	public HudderUnitTester(AHudCompiler<?> compiler) {this.compiler=compiler;}
 	
 	public void loadModern(InputStream inputStream, String filename) throws IOException {
 		loadModern(IOUtils.toString(inputStream, UTF_8), filename);
