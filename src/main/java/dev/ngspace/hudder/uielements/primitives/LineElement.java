@@ -27,6 +27,8 @@ public class LineElement extends AUIElement {
 
 	@Override
 	public void renderElement(GuiGraphicsExtractor graphics, HudderRenderer renderer, DeltaTracker delta) {
+		if (thickness==0)
+			return;
 		float gap_from_center = (thickness/2f);
 		float dx = x1 - x0;
 		float dy = y1 - y0;
@@ -43,5 +45,4 @@ public class LineElement extends AUIElement {
 		    vc.addVertexWith2DPose(matrix, x0 - offsetX, y0 - offsetY).setColor(color).setUv(0, 0);
 		});
 	}
-	
 }
