@@ -123,7 +123,7 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 						.map(e->e.displayname())
 						.toList())
 	    		.setHoverComponent(Component.translatable("hudder.general.compilertype.tooltip"))
-	    		.setDefaultValue("Hudder")
+	    		.setDefaultValue("Hudder V3")
 	    		.setSaveOperation(b->Hudder.config.setCompilerName(Compilers.getCompilerNameFromDisplayname(b)))
 	    		.setValidator(e->{
 	    			widget.comp = e;

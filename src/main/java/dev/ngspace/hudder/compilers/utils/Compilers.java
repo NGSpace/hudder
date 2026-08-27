@@ -65,7 +65,7 @@ public class Compilers {
 	 * </p>
 	 */
 	public static void registerDefaultCompilers() {
-		put("hudder", "Hudder", false, false, hudderV2Compiler);
+		put("hudder", "Hudder V2", false, false, hudderV2Compiler);
 		put("js", "JavaScript", false, false, javaScriptCompiler);
 		put("pack", "Hudpack", false, false, hudpackCompiler);
 		put("hudderv3", "Hudder V3", false, false, hudderV3Compiler);

@@ -34,7 +34,7 @@ public class HudderConfig {
 	public HudderUserSettings userSettings = new HudderUserSettings();
 	
 	
-	private AHudCompiler<?> compiler = Compilers.hudderV2Compiler;
+	private AHudCompiler<?> compiler = Compilers.hudderV3Compiler;
 	private File configFile;
 	
 	
@@ -189,7 +189,7 @@ public class HudderConfig {
 	/**
 	 * Sets the loaded compiler to match the name of the compiler set in {@code compilertype}
 	 * <br><br>
-	 * If unable to retrieve the compiler, switches to the default {@code HudderV2Compiler} instead.
+	 * If unable to retrieve the compiler, switches to the default {@code HudderV3Compiler} instead.
 	 */
 	public void refreshCompiler() {
 		try {
@@ -197,7 +197,7 @@ public class HudderConfig {
 		} catch (Exception e) {
 			e.printStackTrace();
 			Hudder.log("Using default compiler due to error");
-			compiler = Compilers.hudderV2Compiler;
+			compiler = Compilers.hudderV3Compiler;
 		}
 	}
 	

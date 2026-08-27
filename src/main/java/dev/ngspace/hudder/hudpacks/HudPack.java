@@ -91,7 +91,7 @@ public class HudPack implements Closeable {
 				throw new CompileException("Missing entry: " + point.path(), -1, -1);
 			// Read point
 			String point_code = new String(entries.get(point.path()));
-			hudpackpoints[i] = new HudPackPoint(point, config, engineManager.getOrCreateEngine(point.path(), config, point_code));
+			hudpackpoints[i] = new HudPackPoint(point, engineManager.getOrCreateEngine(point.path(), config, point_code));
 		}
 	}
 	
