@@ -26,7 +26,6 @@ import dev.ngspace.hudder.main.HudCompilationManager;
 import dev.ngspace.hudder.utils.NoAccess;
 import dev.ngspace.hudder.utils.ObjectWrapper;
 import dev.ngspace.hudder.utils.ValueGetter;
-import dev.ngspace.hudder.v2runtime.methods.LoadMethod;
 
 public class HudderV3Helper {
 	public HudderConfig config;
@@ -63,8 +62,6 @@ public class HudderV3Helper {
 		String file = args[0].asString();
 		try {
 			boolean AddText = args.length>1&&args[1].asBoolean() || type.equals("add");
-			if (AddText && HudCompilationManager.isFirstRunSinceCacheClear)
-				LoadMethod.showDeprecatedMessage(type);
 			AHudCompiler<?> ecompiler=(args.length>2?Compilers.getCompilerFromName(args[2].asString()):comp);
 			for (var i : HudCompilationManager.precomplistners) i.accept(ecompiler);
 			var result = ecompiler.processAndExecute(config, file, file);
