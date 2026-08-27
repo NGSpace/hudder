@@ -4,6 +4,8 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,10 +79,11 @@ public class HudPack implements Closeable {
 		if (!entries.containsKey("pack.json"))
 			throw new CompileException("Missing entry: pack.json", -1, -1);
 		// Read pack.json
-        configYaml = new Gson().fromJson(new String(entries.get("pack.json")), HudPackConfig.class);
+        configYaml = new Gson().fromJson(new String(entries.get("pack.json"), StandardCharsets.UTF_8),
+        		HudPackConfig.class);
         format_version = configYaml.format_version();
         // Check if format version is supported
-        if (format_version>MAXIMUM_SUPPORTED_FORMAT&&!Hudder.config.disableHudpackVersionCheck())
+        if (format_version>MAXIMUM_SUPPORTED_FORMAT&&!config.disableHudpackVersionCheck())
         	throw new CompileException("Unsupported Hud pack format version: " + format_version, -1, -1);
         // Read pack points
 		hudpackpoints = new HudPackPoint[configYaml.points().size()];
@@ -90,15 +93,17 @@ public class HudPack implements Closeable {
 			if (!entries.containsKey(point.path()))
 				throw new CompileException("Missing entry: " + point.path(), -1, -1);
 			// Read point
-			String point_code = new String(entries.get(point.path()));
+			String point_code = new String(entries.get(point.path()), StandardCharsets.UTF_8);
 			hudpackpoints[i] = new HudPackPoint(point, engineManager.getOrCreateEngine(point.path(), config, point_code));
 		}
 	}
 	
-	private void bufferTextures(List<String> textures) {
+	private void bufferTextures(List<String> textures) throws CompileException {
 		this.bufferedtextures = new BufferedTexture[textures.size()];
 		for (int i = 0;i<textures.size();i++) {
 			String texture = textures.get(i);
+			if (!entries.containsKey(texture))
+				throw new CompileException("Missing Texture: " + texture, -1, -1);
         	bufferedtextures[i] = new BufferedTexture(texture, entries.get(texture));
 		}
 	}
