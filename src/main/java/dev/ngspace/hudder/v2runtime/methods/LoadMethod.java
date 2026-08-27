@@ -39,7 +39,7 @@ public class LoadMethod implements V2IMethod {
 			AHudCompiler<?> ecompiler=(args.length>2?Compilers.getCompilerFromName(args[2].asString()):comp);
 			for (var i : HudCompilationManager.precomplistners) i.accept(ecompiler);
 			CompileState state = runtime.getMasterScope().compileState;
-			state.combineWithResult(ecompiler.processAndExecute(ci, file, file), AddText);
+			state.combineWithResult(ecompiler.processAndExecute(file, file), AddText);
 			for (var i : HudCompilationManager.postcomplistners) i.accept(ecompiler);
 		} catch (IllegalArgumentException e) {
 			throw new ExecutionException(e.getLocalizedMessage(), charpos.line(), charpos.column());

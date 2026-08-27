@@ -138,13 +138,14 @@ public class MethodExecutionInstruction extends Instruction {
 					methodWriter.loadConstantUnsafe(pos.line());
 					methodWriter.loadConstantUnsafe(pos.column());
 					methodWriter.callInit(TextPos.class, Integer.TYPE, Integer.TYPE);
-					methodWriter.aload(1);
 					if (run_method) {
 						methodWriter.loadConstant(builder[0].toLowerCase());
 						methodWriter.aload(methodWriter.topleft_builder_index);
 						methodWriter.aload(methodWriter.topright_builder_index);
 						methodWriter.aload(methodWriter.bottomleft_builder_index);
 						methodWriter.aload(methodWriter.bottomright_builder_index);
+					} else {
+						methodWriter.aload(1);
 					}
 				}
 				
@@ -174,7 +175,6 @@ public class MethodExecutionInstruction extends Instruction {
 							IUIElementManager.class,
 							AHudCompiler.class,
 							TextPos.class,
-							HudderConfig.class,
 							String.class,
 							StringBuilder.class,
 							StringBuilder.class,

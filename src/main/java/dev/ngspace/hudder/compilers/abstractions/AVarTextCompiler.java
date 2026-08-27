@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
+import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.main.HudCompilationManager;
 
 public abstract class AVarTextCompiler extends ATextCompiler {
@@ -13,7 +14,8 @@ public abstract class AVarTextCompiler extends ATextCompiler {
 	public Map<String, Object> tempVariables = new HashMap<String, Object>();
 	protected Consumer<AHudCompiler<?>> listener = this::preCompileListener;
 	
-	protected AVarTextCompiler() {
+	protected AVarTextCompiler(HudderConfig config) {
+		super(config);
 		HudCompilationManager.addPreCompilerListener(listener);
 	}
 	

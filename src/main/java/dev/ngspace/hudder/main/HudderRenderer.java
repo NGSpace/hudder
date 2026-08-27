@@ -35,7 +35,8 @@ import net.minecraft.util.FormattedCharSequence;
  */
 public class HudderRenderer implements HudElement {
 	
-	private HudCompilationManager compman;
+	public final HudCompilationManager compman;
+	public final HudderConfig config;
 	public Identifier hudElementRegistryID = Identifier.fromNamespaceAndPath("hudder_renderer", "renderer");
 	protected static Minecraft mc = Minecraft.getInstance();
     public static final String NL_REGEX = "\r?\n";
@@ -49,8 +50,9 @@ public class HudderRenderer implements HudElement {
 	
 	
 	
-	public HudderRenderer(HudCompilationManager compilationManager) {
+	public HudderRenderer(HudCompilationManager compilationManager, HudderConfig config) {
 		this.compman = compilationManager;
+		this.config = config;
 	}
 	
 	
@@ -318,11 +320,11 @@ public class HudderRenderer implements HudElement {
 	
 	@Override public void extractRenderState(GuiGraphicsExtractor context, DeltaTracker delta) {
 		try {
-			if (!Hudder.config.limitrate()) compman.compile(delta);
-			if (Hudder.config.shouldDrawResult()) {
+			if (!config.limitrate()) compman.compile(delta);
+			if (config.shouldDrawResult()) {
 	            try {
 	            	if (compman.getResult()!=null)
-	            		renderHudInformation(context, mc.font, compman.getResult(), Hudder.config, delta);
+	            		renderHudInformation(context, mc.font, compman.getResult(), config, delta);
 	            	else
 	            		renderFail(context, HudCompilationManager.LastFailMessage);
 				} catch (Exception e) {

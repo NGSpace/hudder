@@ -97,14 +97,14 @@ public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 		
 		//Compile
 		
-		binder.registerPositionedFunction((m,_,_,c,s)-> {
+		binder.registerPositionedFunction((m,_,_,_,s)-> {
 			try {
 				var e = m.toUIElementArray();
 				
 				AHudCompiler<?> ecompiler = Compilers.getCompilerFromName(s[1].asString());
 				for (var i : HudCompilationManager.precomplistners) i.accept(ecompiler);
 				
-				HudInformation result = ecompiler.processAndExecute(c,s[0].asString(),s[0].asString());
+				HudInformation result = ecompiler.processAndExecute(s[0].asString(),s[0].asString());
 
 				for (var v : result.elements()) m.addUIElement(v);
 				for (var v : e) m.addUIElement(v);

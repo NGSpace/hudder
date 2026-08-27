@@ -25,7 +25,7 @@ import dev.ngspace.hudder.v2runtime.runtime_elements.WhileV2RuntimeElement;
 import net.minecraft.network.chat.Component;
 
 public class HudderV2Compiler extends AV2Compiler {
-	
+
 	public static final int TEXT_STATE = 0;
 	public static final int VARIABLE_STATE = 1;
 	public static final int CONDITION_STATE = 2;
@@ -39,10 +39,14 @@ public class HudderV2Compiler extends AV2Compiler {
 	public static final byte FOR_LOOP_INSTRUCTION = 0x4;
 	public static final byte ELSE_IF_INSTRUCTION = 0x5;
 	public static final byte ELSE_INSTRUCTION = 0x6;
+	
+	public HudderV2Compiler(HudderConfig config) {
+		super(config);
+	}
 
-	@Override public V2Runtime buildRuntime(HudderConfig info, String text, TextPos charPosition, String filename,
+	@Override public V2Runtime buildRuntime(String text, TextPos charPosition, String filename,
 			V2Runtime scope) throws CompileException, ExecutionException {
-		V2Runtime runtime = new V2Runtime(this, info, scope);
+		V2Runtime runtime = new V2Runtime(this, scope, config);
 		
 		StringBuilder elemBuilder = new StringBuilder();
 		
@@ -54,7 +58,7 @@ public class HudderV2Compiler extends AV2Compiler {
 		int savedind = 0;
 		
 		boolean cleanup = false;
-		int cleanup_amount = info.methodBuffer();
+		int cleanup_amount = config.methodBuffer();
 		
 		byte compileState = TEXT_STATE;
 
@@ -75,20 +79,20 @@ public class HudderV2Compiler extends AV2Compiler {
 					switch (c) {
 						case '%':
 							compileState = CONDITION_STATE;
-							runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), false));
+							runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), false, config));
 							elemBuilder.setLength(0);
 							savedind = ind;
 							break;
 						case '{':
 							compileState = VARIABLE_STATE;
-							runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), false));
+							runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), false, config));
 							elemBuilder.setLength(0);
 							bracketscount = 1;
 							savedind = ind;
 							break;
 						case ';':
 							compileState = METHOD_STATE;
-							runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), true));
+							runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), true, config));
 							elemBuilder.setLength(0);
 							savedind = ind;
 						    quotesafe = false;
@@ -96,7 +100,7 @@ public class HudderV2Compiler extends AV2Compiler {
 							break;
 						case '#':
 							compileState = HASHTAG_STATE;
-							runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), false));
+							runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), false, config));
 							elemBuilder.setLength(0);
 							savedind = ind;
 							break;
@@ -168,8 +172,8 @@ public class HudderV2Compiler extends AV2Compiler {
 							var pos = getPosition(charPosition, savedind, text);
 							conds.add(conditionOrValue.toString());
 							runtime.addRuntimeElement(new ConditionV2RuntimeElement(
-									conds.toArray(new String[conds.size()]), this, info,
-									runtime, pos.line(), pos.column(),filename));
+									conds.toArray(new String[conds.size()]), this, runtime, pos.line(),
+									pos.column(), filename));
 							compileState = TEXT_STATE;
 							break;
 						} else {
@@ -212,11 +216,11 @@ public class HudderV2Compiler extends AV2Compiler {
 						} else if (builder.length==2&&builder[0].toLowerCase().trim().equals("return")) {
 							runtime.addRuntimeElement(new ReturnV2RuntimeElement(builder[1],this,runtime,line,charpos));
 						} else {
-							runtime.addRuntimeElement(new MethodV2RuntimeElement(builder,this,info,runtime,line,charpos));
+							runtime.addRuntimeElement(new MethodV2RuntimeElement(builder,this,config,runtime,line,charpos));
 						}
 						elemBuilder.setLength(0);
 						cleanup = true;
-						cleanup_amount = info.methodBuffer()/2;
+						cleanup_amount = config.methodBuffer()/2;
 					}
 					break;
 				}
@@ -242,8 +246,8 @@ public class HudderV2Compiler extends AV2Compiler {
 							String variablename = split[0];
 							String value = split[1];
 							elemBuilder.setLength(0);
-							runtime.addRuntimeElement(new ForV2RuntimeElement(info, variablename, value,
-									block, this, runtime, pos, filename));
+							runtime.addRuntimeElement(new ForV2RuntimeElement(variablename, value, block, this,
+									runtime, pos, filename));
 							break;
 						}
 						case DEFINE_INSTRUCTION: {
@@ -255,8 +259,8 @@ public class HudderV2Compiler extends AV2Compiler {
 							break;
 						}
 						case WHILE_LOOP_INSTRUCTION: {
-							runtime.addRuntimeElement(new WhileV2RuntimeElement(info, parameters, block, this,
-									runtime, pos, filename));
+							runtime.addRuntimeElement(new WhileV2RuntimeElement(parameters, block, this,
+									runtime, pos, filename, config));
 							break;
 						}
 						case UNDEFINED_INSTRUCTION:
@@ -290,11 +294,8 @@ public class HudderV2Compiler extends AV2Compiler {
 								}
 							}
 							ind--;
-							runtime.addRuntimeElement(new IfElseV2RuntimeElement(info,
-									statements.toArray(new Statement[statements.size()]),
-									runtime,
-									filename,
-									this));
+							runtime.addRuntimeElement(new IfElseV2RuntimeElement(statements
+									.toArray(new Statement[statements.size()]), runtime, filename, this));
 							break;
 						default:
 							throw new CompileException("Detached else/else if statement!", pos);
@@ -308,7 +309,7 @@ public class HudderV2Compiler extends AV2Compiler {
 			}
 		}
 		
-		runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), false));
+		runtime.addRuntimeElement(new StringV2RuntimeElement(elemBuilder.toString(), false, config));
 		
 		if (compileState!=0) {
 			var pos = getPosition(charPosition, savedind, text);

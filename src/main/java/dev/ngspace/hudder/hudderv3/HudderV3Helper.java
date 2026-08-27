@@ -28,8 +28,8 @@ import dev.ngspace.hudder.utils.ObjectWrapper;
 import dev.ngspace.hudder.utils.ValueGetter;
 
 public class HudderV3Helper {
-	public HudderConfig config;
-	private AV3Compiler compiler;
+	public final HudderConfig config;
+	public final AV3Compiler compiler;
 
 	public HudderV3Helper(HudderConfig config, AV3Compiler compiler) {
 		this.config = config;
@@ -56,7 +56,7 @@ public class HudderV3Helper {
 	}
 	
 	public void runLoadMethod(IUIElementManager man, AHudCompiler<?> comp, TextPos pos,
-			HudderConfig config, String type, StringBuilder topleft, StringBuilder topright,
+			String type, StringBuilder topleft, StringBuilder topright,
 			 StringBuilder bottomleft,  StringBuilder bottomright, ObjectWrapper... args)
 					 throws ExecutionException {
 		String file = args[0].asString();
@@ -64,7 +64,7 @@ public class HudderV3Helper {
 			boolean AddText = args.length>1&&args[1].asBoolean() || type.equals("add");
 			AHudCompiler<?> ecompiler=(args.length>2?Compilers.getCompilerFromName(args[2].asString()):comp);
 			for (var i : HudCompilationManager.precomplistners) i.accept(ecompiler);
-			var result = ecompiler.processAndExecute(config, file, file);
+			var result = ecompiler.processAndExecute(file, file);
 			for (var uielement : result.elements()) {
 				man.addUIElement(uielement);
 			}

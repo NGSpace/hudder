@@ -18,6 +18,7 @@ import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositione
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
+import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.hudderv3.GeneratedCompiler;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 
@@ -78,7 +79,9 @@ public class V3ClassWriter {
 		init = createMethod("<init>", new Class<?>[] {AV3Compiler.class, HudderV3Helper.class}, null, null, null);
 
 		init.aload(0);
-		init.callInit(AVarTextCompiler.class);
+		init.aload(2);
+		init.getField("config", HudderV3Helper.class, HudderConfig.class);
+		init.callInit(AVarTextCompiler.class, HudderConfig.class);
 		
 		// Init UIElements field
 	    

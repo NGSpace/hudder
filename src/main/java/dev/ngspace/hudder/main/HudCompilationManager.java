@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
+import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.utils.HudFileUtils;
@@ -18,6 +19,11 @@ import net.minecraft.client.Minecraft;
 public class HudCompilationManager implements EndTick {
 	
 	protected static Minecraft mc = Minecraft.getInstance();
+	private final HudderConfig config;
+	
+	public HudCompilationManager(HudderConfig config) {
+		this.config = config;
+	}
 	
     public static List<Consumer<AHudCompiler<?>>> precomplistners = new ArrayList<Consumer<AHudCompiler<?>>>();
     public static List<Consumer<AHudCompiler<?>>> postcomplistners = new ArrayList<Consumer<AHudCompiler<?>>>();
@@ -32,12 +38,12 @@ public class HudCompilationManager implements EndTick {
 		result = null;
 		try {
     		Misc.delta = f!=null?f.getGameTimeDeltaTicks():3;
-    		if (Hudder.config.shouldCompile()) {
+    		if (config.shouldCompile()) {
     			Misc.updateCPS();
-    			for (Consumer<AHudCompiler<?>> con : precomplistners)  con.accept(Hudder.config.getCompiler());
-    			result = Hudder.config.compileMainHud();
+    			for (Consumer<AHudCompiler<?>> con : precomplistners)  con.accept(config.getCompiler());
+    			result = config.compileMainHud();
     			HudFileUtils.loadMarkedResources();
-    			for (Consumer<AHudCompiler<?>> con : postcomplistners) con.accept(Hudder.config.getCompiler());
+    			for (Consumer<AHudCompiler<?>> con : postcomplistners) con.accept(config.getCompiler());
     			isFirstRunSinceCacheClear = false;
     		}
 		} catch (CompileException e) {
@@ -57,5 +63,5 @@ public class HudCompilationManager implements EndTick {
 	
 	public HudInformation getResult() {return result;}
 	
-	@Override public void onEndTick(Minecraft client) {if (Hudder.config.limitrate()) compile(null);}
+	@Override public void onEndTick(Minecraft client) {if (config.limitrate()) compile(null);}
 }

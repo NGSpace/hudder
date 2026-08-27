@@ -1,12 +1,11 @@
 package dev.ngspace.hudder.v2runtime.runtime_elements;
 
-import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.abstractions.AV2Compiler;
+import dev.ngspace.hudder.compilers.utils.CompileState;
 import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
-import dev.ngspace.hudder.compilers.utils.CompileState;
 import dev.ngspace.hudder.v2runtime.V2Runtime;
 import dev.ngspace.hudder.v2runtime.values.AV2Value;
 
@@ -14,19 +13,22 @@ public class WhileV2RuntimeElement extends AV2RuntimeElement {
 	
 	private AV2Value condition;
 	private TextPos charPosition;
+	private HudderConfig config;
 
-	public WhileV2RuntimeElement(HudderConfig info, String condition, String cmds, AV2Compiler compiler,
-			V2Runtime runtime, TextPos charPosition, String filename) throws CompileException, ExecutionException {
+	public WhileV2RuntimeElement(String condition, String cmds, AV2Compiler compiler, V2Runtime runtime,
+			TextPos charPosition, String filename, HudderConfig config) throws CompileException, ExecutionException {
 		this.charPosition = charPosition;
-		this.nestedRuntimes = new V2Runtime[] {compiler.buildRuntime(info, cmds,
-				new TextPos(charPosition.line(), 1), filename, runtime)};
+		this.nestedRuntimes = new V2Runtime[] {
+				compiler.buildRuntime(cmds, new TextPos(charPosition.line(), 1), filename, runtime)
+			};
 		this.condition = compiler.getV2Value(nestedRuntimes[0], condition, charPosition.line(), charPosition.column());
+		this.config = config;
 	}
 	
 	@Override public boolean execute(CompileState meta, StringBuilder builder) throws ExecutionException {
 		short s=0;
 		while (condition.asBoolean()) {
-			if (!Hudder.config.unsafeoperations()) {
+			if (!config.unsafeoperations()) {
 				s++;
 				if (s==Short.MAX_VALUE)
 					throw new ExecutionException("Max while loop reached: " + s, charPosition.line(), charPosition.column());

@@ -4,7 +4,6 @@ import java.util.Map;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
-import dev.ngspace.hudder.config.HudderConfig;
 
 public class HudderUnitTest {
 	public final String texttocompile;
@@ -22,15 +21,15 @@ public class HudderUnitTest {
 		this.mode = mode;
 	}
 	
-	public HudderUnitTestResult test(AVarTextCompiler compiler, HudderConfig info) {
+	public HudderUnitTestResult test(AVarTextCompiler compiler) {
 		Hudder.log("Running unit test: " + texttocompile);
 		return switch (mode) {
 			case NORMAL: {
 				String text = null;
 				try {
 					compiler.resetState();
-					compiler.compileFile(info, texttocompile, "Unit Tests");
-					text = compiler.execute(info, texttocompile, "Unit Tests").TopLeftText();
+					compiler.compileFile(texttocompile, "Unit Tests");
+					text = compiler.execute(texttocompile, "Unit Tests").TopLeftText();
 				} catch (Exception e) {
 					e.printStackTrace();
 					text = e.getMessage();
@@ -43,8 +42,8 @@ public class HudderUnitTest {
 				String type = metadata.getOrDefault("exception_type", new String[1])[0];
 				try {
 					compiler.resetState();
-					compiler.compileFile(info, texttocompile, "Unit Tests");
-					compiler.execute(info, texttocompile, "Unit Tests");
+					compiler.compileFile(texttocompile, "Unit Tests");
+					compiler.execute(texttocompile, "Unit Tests");
 
 					yield new HudderUnitTestResult(false, type, "Error-less execution", filename);
 				} catch (Exception e) {
@@ -60,8 +59,8 @@ public class HudderUnitTest {
 			case NO_ERROR: {
 				try {
 					compiler.resetState();
-					compiler.compileFile(info, texttocompile, "Unit Tests");
-					var res = compiler.execute(info, texttocompile, "Unit Tests");
+					compiler.compileFile(texttocompile, "Unit Tests");
+					var res = compiler.execute(texttocompile, "Unit Tests");
 					yield new HudderUnitTestResult(true, "No error to occur",
 							res.TopLeftText().replaceAll("(^ )|( $)", "~"), filename);
 				} catch (Exception e) {

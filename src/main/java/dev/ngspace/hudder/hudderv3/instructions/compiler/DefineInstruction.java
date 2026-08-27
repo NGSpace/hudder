@@ -20,12 +20,12 @@ public class DefineInstruction extends Instruction {
 	private String bytecodename;
 	private TokenizedCodeBlock tokenizedBlock;
 
-	public DefineInstruction(String block, String[] args, HudderConfig info, String name, String filename,
+	public DefineInstruction(String block, String[] args, String name, String filename,
 			AV3Compiler comp, TextPos pos) throws CompileException {
 		super(pos);
 		this.args = args;
 		this.name = name;
-		tokenizedBlock = comp.compile(info, block, filename, new TextPos(pos.line()+1, 0));
+		tokenizedBlock = comp.compile(block, filename, new TextPos(pos.line()+1, 0));
 		
 		bytecodename = "user_" + (tokenizedBlock.canReturnValue() ? "function" : "method") + "_"
 				+ (++user_defines_count);

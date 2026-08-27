@@ -3,6 +3,7 @@ package dev.ngspace.hudder.compilers;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
@@ -20,11 +21,15 @@ import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 
 public class HudPackCompiler extends AHudCompiler<CachedPack> {
 	
+	public HudPackCompiler(HudderConfig config) {
+		super(config, new AtomicReference<CachedPack>());
+	}
+
 	HashMap<String, CachedPack> hudpacks = new HashMap<String, CachedPack>();
 	public ArrayElementManager elms = new ArrayElementManager();
 
 	@Override
-	public CachedPack processFile(HudderConfig config, String filepath) throws CompileException {
+	public CachedPack processFile(String filepath) throws CompileException {
 		elms.clear();
 		if (hudpacks.containsKey(filepath)) {
 			CachedPack pack = hudpacks.get(filepath);
@@ -46,7 +51,7 @@ public class HudPackCompiler extends AHudCompiler<CachedPack> {
 	}
 
 	@Override
-	public HudInformation execute(HudderConfig info, CachedPack pack, String filename) throws ExecutionException {
+	public HudInformation execute(CachedPack pack, String filename) throws ExecutionException {
 		if (pack==null||pack.pack()==null)
 			return HudInformation.of("\u00A74Failed to load HudPack: " + filename);
 		try {
@@ -77,9 +82,8 @@ public class HudPackCompiler extends AHudCompiler<CachedPack> {
 
 	@Override
 	public boolean setupHudSettings(NGSMCConfigCategory hudsettings) {
-		HudderConfig config = Hudder.config;
 		try {
-			CachedPack mainhudpack = processFile(config, config.mainfile());
+			CachedPack mainhudpack = processFile(config.mainfile());
 			
 			if (mainhudpack!=null
 					&&mainhudpack.pack().hasSettings()) {

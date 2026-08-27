@@ -1,19 +1,18 @@
 package dev.ngspace.hudder.compilers.utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.compilers.HudPackCompiler;
-import dev.ngspace.hudder.compilers.HudderV2Compiler;
-import dev.ngspace.hudder.compilers.HudderV3Compiler;
-import dev.ngspace.hudder.compilers.JavaScriptCompiler;
 import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
 import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
+import dev.ngspace.hudder.config.HudderConfig;
 
 /**
  * Provides a central registry for HUD compilers.
@@ -47,13 +46,17 @@ public class Compilers {
 	private Compilers() {
 	}
 	
-	private static final Map<String, CompilerInstance> registeredcompilers = new HashMap<String, CompilerInstance>();
-	
-	public static final HudderV2Compiler hudderV2Compiler = new HudderV2Compiler();
-	public static final HudderV3Compiler hudderV3Compiler = new HudderV3Compiler();
-	public static final HudPackCompiler hudpackCompiler = new HudPackCompiler();
-	public static final JavaScriptCompiler javaScriptCompiler = new JavaScriptCompiler();
-	
+	private static final Map<String, CompilerInstance> registeredcompilers = new HashMap<>();
+    private static final List<Consumer<CompilerEntry>> registrationListeners = new ArrayList<>();
+    
+	public static boolean addRegistrationListener(Consumer<CompilerEntry> e) {
+		return registrationListeners.add(e);
+	}
+
+	public static Consumer<CompilerEntry> removeRegistrationListener(int index) {
+		return registrationListeners.remove(index);
+	}
+
 	/**
 	 * Registers the compilers included with Hudder.
 	 *
@@ -64,11 +67,11 @@ public class Compilers {
 	 * does not directly request a configuration refresh.
 	 * </p>
 	 */
-	public static void registerDefaultCompilers() {
-		put("hudder", "Hudder V2", false, false, hudderV2Compiler);
-		put("js", "JavaScript", false, false, javaScriptCompiler);
-		put("pack", "Hudpack", false, false, hudpackCompiler);
-		put("hudderv3", "Hudder V3", false, false, hudderV3Compiler);
+	public static void registerDefaultCompilers(HudderConfig config) {
+		put("hudder", "Hudder V2", false, false, config.hudderV2Compiler);
+		put("js", "JavaScript", false, false, config.javaScriptCompiler);
+		put("pack", "Hudpack", false, false, config.hudpackCompiler);
+		put("hudderv3", "Hudder V3", false, false, config.hudderV3Compiler);
 	}
 	
 	/**
@@ -214,7 +217,6 @@ public class Compilers {
 	 *         no matching compiler is registered
 	 */
 	public static Optional<CompilerEntry> findEntryFromDisplayName(String displayName) {
-		
 		return registeredcompilers.entrySet().stream()
 				.filter(entry -> entry.getValue().displayname().equals(displayName)).findFirst()
 				.map(entry -> toEntry(entry.getKey(), entry.getValue()));
@@ -306,19 +308,18 @@ public class Compilers {
 	 * @param name     the internal and display name of the compiler
 	 * @param compiler the compiler instance to register
 	 * @deprecated Use
-	 *             {@link #registerCompiler(String, String, boolean, AHudCompiler)}
+	 *             {@link #registerCompiler(String, String, boolean, boolean, AHudCompiler)}
 	 *             to specify a separate display name and stability status.
 	 */
-	@Deprecated(since = "10.2.0", forRemoval = false)
+	@Deprecated(since = "10.2.0", forRemoval = true)
 	public static void registerCompiler(String name, AHudCompiler<?> compiler) {
-		
 		registerCompiler(name, name, false, false, compiler);
 	}
 
 	/**
 	 * @deprecated use {@link #registerCompiler(String, String, boolean, boolean, AHudCompiler)}
 	 */
-	@Deprecated(since = "10.3.0", forRemoval = false)
+	@Deprecated(since = "10.3.0", forRemoval = true)
 	public static void registerCompiler(String name, String displayname, boolean isUnstable, AHudCompiler<?> compiler) {
 		registerCompiler(name, displayname, isUnstable, false, compiler);
 	}
@@ -340,10 +341,9 @@ public class Compilers {
 	 */
 	public static void registerCompiler(String name, String displayname, boolean isUnstable, boolean deprecated,
 			AHudCompiler<?> compiler) {
-		put(name, displayname, isUnstable, deprecated, compiler);
-		if (Hudder.config != null) {
-			Hudder.config.readAndUpdateConfig();
-		}
+		CompilerEntry entry = toEntry(name, put(name, displayname, isUnstable, deprecated, compiler));
+		for (Consumer<CompilerEntry> listener : registrationListeners)
+			listener.accept(entry);
 	}
 	
 	/**
@@ -354,8 +354,10 @@ public class Compilers {
 	 * @param isUnstable  whether the compiler is experimental
 	 * @param compiler    the compiler instance
 	 */
-	private static void put(String name, String displayname, boolean isUnstable, boolean deprecated, AHudCompiler<?> compiler) {
-		registeredcompilers.put(name, new CompilerInstance(displayname, isUnstable, deprecated, compiler));
+	private static CompilerInstance put(String name, String displayname, boolean isUnstable, boolean deprecated, AHudCompiler<?> compiler) {
+		CompilerInstance instance = new CompilerInstance(displayname, isUnstable, deprecated, compiler);
+		registeredcompilers.put(name, instance);
+		return instance;
 	}
 	
 	/**

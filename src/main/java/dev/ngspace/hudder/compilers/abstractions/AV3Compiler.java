@@ -43,14 +43,15 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Positioned
 
 	public Map<String, BindablePositionedFunction> api_functions = new HashMap<String, BindablePositionedFunction>();
 	public Map<String, BindablePositionedConsumer> api_consumers = new HashMap<String, BindablePositionedConsumer>();
-	
-	protected AV3Compiler() {
+
+	protected AV3Compiler(HudderConfig config) {
+		super(config);
 		FunctionAndConsumerAPI.getInstance().applyFunctionsAndConsumers(this);
 		V3APIFunctions.bindAllAPIFunctions(this);
 	}
 	
 	@Override
-	public void compileFile(HudderConfig config, String text, String filepath) throws CompileException {
+	public void compileFile(String text, String filepath) throws CompileException {
 		if (cache.containsKey(text)) {
 			var cachehit = cache.get(text);
 			if (cachehit.exception!=null) throw cachehit.exception;
@@ -71,7 +72,7 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Positioned
 			executeMethod.getField("uimanager", ArrayElementManager.class);
 			executeMethod.callInterface(List.class, "clear", (Class<?>) null);
 			
-			compile(config, text, filepath, new TextPos(0, 0)).writeInstructions(executeMethod, classWriter, end);
+			compile(text, filepath, new TextPos(0, 0)).writeInstructions(executeMethod, classWriter, end);
 			
 			executeMethod.putLabel(end);
 			executeMethod.end();
@@ -113,9 +114,9 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Positioned
 	}
 
 	@Override
-	public HudInformation execute(HudderConfig info, String processedfile, String filename) throws ExecutionException {
+	public HudInformation execute(String processedfile, String filename) throws ExecutionException {
 		try {
-			return cache.get(processedfile).generatedCompiler().execute(info, processedfile, filename).hudInformation;
+			return cache.get(processedfile).generatedCompiler().execute(config, processedfile, filename).hudInformation;
 		} catch (VerifyError e) {
 			// The compilation manager does not handle Verifier errors and will crash the game which is bad.
 			e.printStackTrace();
@@ -123,7 +124,7 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Positioned
 		}
 	}
 	
-	public abstract TokenizedCodeBlock compile(HudderConfig info, String text, String filename, TextPos offset)
+	public abstract TokenizedCodeBlock compile(String text, String filename, TextPos offset)
 			throws CompileException;
 	
 	

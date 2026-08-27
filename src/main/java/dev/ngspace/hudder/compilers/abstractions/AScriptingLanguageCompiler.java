@@ -23,14 +23,15 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 	public Map<String, RuntimeCache> cache = new HashMap<String, RuntimeCache>();
 	public ArrayElementManager elms = new ArrayElementManager();
 	
-	protected AScriptingLanguageCompiler() {
+	protected AScriptingLanguageCompiler(HudderConfig config) {
+		super(config);
 		HudCompilationManager.addPreCompilerListener(c->{if(c==this) elms.clear();});
 	}
 	
-	protected abstract IScriptingLanguageEngine createLangEngine(HudderConfig config) throws CompileException;
+	protected abstract IScriptingLanguageEngine createLangEngine() throws CompileException;
 	
 	@Override
-	public void compileFile(HudderConfig config, String text, String filepath) throws CompileException {
+	public void compileFile(String text, String filepath) throws CompileException {
 		if (cache.containsKey(text)) {
 			var cachehit = cache.get(text);
 			if (cachehit.exception!=null) throw cachehit.engine.processCompileException(cachehit.exception);
@@ -40,7 +41,7 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 		try {
 			RuntimeCache rtcache = cache.get(text);
 			if (rtcache!=null&&rtcache.exception!=null) throw rtcache.exception;
-			wrapper = createLangEngine(config);
+			wrapper = createLangEngine();
 			
 			try {
 				wrapper.evaluateCode(text, filepath);
@@ -62,7 +63,7 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 		
 	}
 
-	@Override public HudInformation execute(HudderConfig info, String text, String filename) throws ExecutionException {
+	@Override public HudInformation execute(String text, String filename) throws ExecutionException {
 		if (mc.player==null) return HudInformation.of("");
 		IScriptingLanguageEngine wrapper = null;
 		try {

@@ -13,7 +13,6 @@ import java.util.Set;
 import com.google.gson.Gson;
 import com.mojang.blaze3d.platform.NativeImage;
 
-import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.HudPackCompiler;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
@@ -38,6 +37,7 @@ public class HudPack implements Closeable {
 	private HudPackCompiler compiler;
 	private BufferedTexture[] bufferedtextures;
 	private Map<String, HudPackSettings> settings;
+	private HudderConfig config;
 	
 	public HudPackPoint[] hudpackpoints;
 	public HudPackEngineManager engineManager;
@@ -47,6 +47,7 @@ public class HudPack implements Closeable {
 	public HudPack(HudderConfig config, String filepath, HudPackCompiler compiler) throws IOException, CompileException {
 		this.compiler = compiler;
 		this.engineManager = new HudPackEngineManager(this.compiler, this);
+		this.config = config;
 		File file = new File(filepath);
 		try (EntryReaderConsumer reader = file.isDirectory() ? new EntryReaderConsumer.Directory(file) :
 				new EntryReaderConsumer.Zip(file)) {
@@ -178,12 +179,12 @@ public class HudPack implements Closeable {
 	}
 
 	public Object getSettingValue(String string) {
-		return Hudder.config.getHudSettings("hudpacks", Hudder.config.mainfile())
-				.getOrDefault(string, settings.get(string).default_value());
+		return config.getHudSettings("hudpacks", config.mainfile()).getOrDefault(string,
+				settings.get(string).default_value());
 	}
 
 	public void setSettingValue(String string, Object value) {
-		Hudder.config.getHudSettings("hudpacks",  Hudder.config.mainfile()).put(string, value);
+		config.getHudSettings("hudpacks",  config.mainfile()).put(string, value);
 	}
 
 	@Override

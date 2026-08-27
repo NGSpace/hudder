@@ -3,6 +3,7 @@ package dev.ngspace.hudder.variables;
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.variableregistry.DataVariable;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
+import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.main.HudCompilationManager;
 import dev.ngspace.hudder.variables.advanced.EffectData;
 import dev.ngspace.hudder.variables.data.ClientData;
@@ -20,7 +21,7 @@ public class HudderBuiltInVariables {
 //			.reversed()
 //			.thenComparing(PlayerScoreEntry::owner, String.CASE_INSENSITIVE_ORDER);
 	
-	public static void registerVariables() {
+	public static void registerVariables(HudderConfig config) {
 		
 		registerObject(new EffectData(), "active_effects");
 		
@@ -28,7 +29,7 @@ public class HudderBuiltInVariables {
 		PlayerData.registerVariables();
 		ClientData.registerVariables();
 		WorldData.registerVariables();
-		registerMiscVariables();
+		registerMiscVariables(config);
 		
 		
 		// Maybe later...
@@ -79,39 +80,39 @@ public class HudderBuiltInVariables {
 		DataVariableRegistry.registerObjectVariable(variable, names);
 	}
 	
-	private static void registerMiscVariables() {
+	private static void registerMiscVariables(HudderConfig config) {
 		/* Hudder */
 		
 		// Booleans
 		registerBoolean(_->true, "enabled"); // duh
-		registerBoolean(_->Hudder.config.shadow(), "shadow");
-		registerBoolean(_->Hudder.config.showInF3(), "showinf3");
+		registerBoolean(_->config.shadow(), "shadow");
+		registerBoolean(_->config.showInF3(), "showinf3");
 		registerBoolean(_->true, "javascriptenabled"); // compatibility
-		registerBoolean(_->Hudder.config.unsafeoperations(), "unsafeoperations");
-		registerBoolean(_->Hudder.config.globalVariablesEnabled(), "globalvariablesenabled");
-		registerBoolean(_->Hudder.config.background(), "background");
-		registerBoolean(_->Hudder.config.removegui(), "removegui");
-		registerBoolean(_->Hudder.config.removeeffects(), "removeeffects");
-		registerBoolean(_->Hudder.config.limitrate(), "limitrate");
-		registerBoolean(_->Hudder.config.disableHudpackVersionCheck(), "disable_hudpack_version_check");
-		registerBoolean(_->Hudder.config.disableWarnings(), "disable_warnings");
+		registerBoolean(_->config.unsafeoperations(), "unsafeoperations");
+		registerBoolean(_->config.globalVariablesEnabled(), "globalvariablesenabled");
+		registerBoolean(_->config.background(), "background");
+		registerBoolean(_->config.removegui(), "removegui");
+		registerBoolean(_->config.removeeffects(), "removeeffects");
+		registerBoolean(_->config.limitrate(), "limitrate");
+		registerBoolean(_->config.disableHudpackVersionCheck(), "disable_hudpack_version_check");
+		registerBoolean(_->config.disableWarnings(), "disable_warnings");
 		registerBoolean(_->HudCompilationManager.isFirstRunSinceCacheClear, "first_execution");
 		
 		// Strings
-		registerString(_->Hudder.config.compilerName(), "compilertype");
-		registerString(_->Hudder.config.mainfile(), "mainfile");
+		registerString(_->config.compilerName(), "compilertype");
+		registerString(_->config.mainfile(), "mainfile");
 		registerString(_->Hudder.HUDDER_VERSION, "hudder_version");
 		
 		// Numbers
-		registerNumber(_->Hudder.config.scale(), "scale");
-		registerNumber(_->Hudder.config.color(), "color");
-		registerNumber(_->Hudder.config.yoffsetTop(), "yoffset_top", "yoffset");
-		registerNumber(_->Hudder.config.yoffsetBottom(), "yoffset_bottom");
-		registerNumber(_->Hudder.config.xoffsetLeft(), "xoffset_left", "xoffset");
-		registerNumber(_->Hudder.config.xoffsetRight(), "xoffset_right");
-		registerNumber(_->Hudder.config.lineHeight(), "lineheight");
-		registerNumber(_->Hudder.config.methodBuffer(), "methodbuffer");
-		registerNumber(_->Hudder.config.backgroundcolor(), "backgroundcolor");
+		registerNumber(_->config.scale(), "scale");
+		registerNumber(_->config.color(), "color");
+		registerNumber(_->config.yoffsetTop(), "yoffset_top", "yoffset");
+		registerNumber(_->config.yoffsetBottom(), "yoffset_bottom");
+		registerNumber(_->config.xoffsetLeft(), "xoffset_left", "xoffset");
+		registerNumber(_->config.xoffsetRight(), "xoffset_right");
+		registerNumber(_->config.lineHeight(), "lineheight");
+		registerNumber(_->config.methodBuffer(), "methodbuffer");
+		registerNumber(_->config.backgroundcolor(), "backgroundcolor");
 
 		/* Constants */
 		

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.PositionedBinder;
@@ -39,17 +38,6 @@ public class FunctionAndConsumerAPI {
 	
 	
 
-	/**
-	 * @deprecated use {@link #applyFunctionsAndConsumers(PositionedBinder)}
-	 */
-	@Deprecated(since = "10.3.0", forRemoval = true)
-	public void applyFunctionsAndConsumers(Binder binder) {
-		for (var cons : consumers.entrySet())
-			binder.bindConsumer(cons.getKey(), cons.getValue());
-		for (var func : functions.entrySet())
-			binder.bindFunction(func.getKey(), func.getValue());
-		binders.add(binder);
-	}
 	/**
 	 * Applies all currently registered consumers and functions to the specified
 	 * binder and registers it to receive future additions.
@@ -235,36 +223,6 @@ public class FunctionAndConsumerAPI {
 		default void invoke(IUIElementManager man, AHudCompiler<?> comp, TextPos position,
 				HudderConfig config, ObjectWrapper... args) throws ExecutionException {
 			invoke(man, comp, args);
-		}
-	}
-
-	
-	
-	/**
-	 * @deprecated use PositionedBinder
-	 */
-	@Deprecated(since = "10.3.0",forRemoval = true)
-	public interface Binder extends PositionedBinder {
-		@Deprecated(since = "10.3.0",forRemoval = true)
-		public void bindConsumer(BindableConsumer cons, String... names);
-		
-		@Deprecated(since = "10.3.0",forRemoval = true)
-		public default void bindConsumer(BindablePositionedConsumer cons, String... names) {
-			if (cons instanceof BindableConsumer old)
-				bindConsumer(old, names);
-			else
-				bindConsumer((i,j,k)->cons.invoke(i, j, new TextPos(-1, -1), Hudder.config, k), names);
-		}
-
-		@Deprecated(since = "10.3.0",forRemoval = true)
-		public void bindFunction(BindableFunction cons, String... names);
-		
-		@Deprecated(since = "10.3.0",forRemoval = true)
-		public default void bindFunction(BindablePositionedFunction cons, String... names) {
-			if (cons instanceof BindableFunction old)
-				bindFunction(old, names);
-			else
-				bindFunction((i,j,k)->cons.invoke(i, j, new TextPos(-1, -1), Hudder.config, k), names);
 		}
 	}
 

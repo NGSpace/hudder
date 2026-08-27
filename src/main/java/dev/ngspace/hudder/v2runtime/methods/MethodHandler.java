@@ -1,16 +1,11 @@
 package dev.ngspace.hudder.v2runtime.methods;
 
-import static dev.ngspace.hudder.compilers.utils.CompileState.BOTTOMLEFT;
-import static dev.ngspace.hudder.compilers.utils.CompileState.BOTTOMRIGHT;
-import static dev.ngspace.hudder.compilers.utils.CompileState.MUTE;
-import static dev.ngspace.hudder.compilers.utils.CompileState.TOPLEFT;
-import static dev.ngspace.hudder.compilers.utils.CompileState.TOPRIGHT;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import com.mojang.datafixers.types.templates.List;
 
+import dev.ngspace.hudder.compilers.utils.CompileState;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 
@@ -23,8 +18,9 @@ public class MethodHandler {
 	public MethodHandler() {
 		
 		//Text and compiling
-		bindConsumer((c,m,_,_,t,_,s)->m.setTextLocation(t,(float) (s.length>0?s[0].asDouble():c.scale())),
-				BOTTOMRIGHT, TOPLEFT, TOPRIGHT, BOTTOMLEFT, MUTE);
+		bindConsumer((c,m,_,_,t,_,s)->m.setTextLocation(CompileState.Sections.valueOf(t),
+				(float) (s.length>0?s[0].asDouble():c.scale())),
+				CompileState.Sections.sectionNames());
 		
 		//Compiler and Variables
 		bindConsumer(new LoadMethod(), "load", "execute", "compile", "run", "add");
@@ -85,7 +81,7 @@ public class MethodHandler {
 		for (String arg : argtypes) errb += ", [" + arg + "]";
 		errb+=';';
 		String err = errb;
-		V2IMethod newmethod = (info,state,comp,_,type,pos,vals) -> {
+		V2IMethod newmethod = (_,state,comp,_,type,pos,vals) -> {
 			if (vals.length!=argtypes.length) throw new ExecutionException(err, defline, defcharpos);
 			for (int i = 0;i<vals.length;i++) {
 				if      (parameters[i]==1) comp.put("arg"+(i+1), vals[i].asString());
@@ -95,7 +91,7 @@ public class MethodHandler {
 				else if (parameters[i]==0) comp.put("arg"+(i+1), vals[i].get());
 			}
 			try {
-				state.combineWithResult(comp.execute(info, method, filename), false);
+				state.combineWithResult(comp.execute(method, filename), false);
 			} catch (ExecutionException e) {
 				throw new ExecutionException(e.getFailureMessage() +"\nMethod "+type+" threw an error ", pos);
 			}

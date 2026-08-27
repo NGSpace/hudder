@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
@@ -32,8 +31,9 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Positioned
 	public V2FunctionHandler functionHandler = new V2FunctionHandler();
 	protected IV2VariableParser variableParser = new DefaultV2VariableParser();
 	public boolean SYSTEM_VARIABLES_ENABLED = true;
-	
-	protected AV2Compiler() {
+
+	protected AV2Compiler(HudderConfig config) {
+		super(config);
 		FunctionAndConsumerAPI.getInstance().applyFunctionsAndConsumers(this);
 	}
 	
@@ -68,21 +68,20 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Positioned
 	
 	
 	@Override
-	public void compileFile(HudderConfig config, String text, String filepath) throws CompileException {
+	public void compileFile(String text, String filepath) throws CompileException {
 		if (!runtimes.containsKey(text))
-			runtimes.put(text, buildRuntimeSafe(config, text, new TextPos(-1, -1), filepath, null));
+			runtimes.put(text, buildRuntimeSafe(text, new TextPos(-1, -1), filepath, null));
 	}
 	
 
-	@Override public final HudInformation execute(HudderConfig info, String text, String filename)
-			throws ExecutionException {
+	@Override public final HudInformation execute(String text, String filename) throws ExecutionException {
 		return runtimes.get(text).execute().toResult();
 	}
 	
 	
 	
-	public abstract V2Runtime buildRuntime(HudderConfig info, String text, TextPos charPosition, String filename,
-			V2Runtime scope) throws CompileException, ExecutionException;
+	public abstract V2Runtime buildRuntime(String text, TextPos charPosition, String filename, V2Runtime scope)
+			throws CompileException, ExecutionException;
 	
 	
 	
@@ -91,14 +90,14 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Positioned
 	}
 	@Override public void bindFunction(BindablePositionedFunction cons, String... names) {
 		functionHandler.bindFunction((c,_,s,l,co)->cons.invoke(c.compileState, this, new TextPos(l, co),
-				c.config, s), names);
+				c.compiler.config, s), names);
 	}
 	
 
 
 	public void defineFunctionOrMethod(String commands, String[] args, String name, TextPos pos, String filename)
 			throws CompileException {
-		V2Runtime runtime = buildRuntimeSafe(Hudder.config, commands, pos, filename, null);
+		V2Runtime runtime = buildRuntimeSafe(commands, pos, filename, null);
 		
 		boolean isMethod = !canReturnValue(runtime);
 		
@@ -143,10 +142,10 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Positioned
 		}
 	}
 
-	private V2Runtime buildRuntimeSafe(HudderConfig config, String commands, TextPos pos, String filename,
+	private V2Runtime buildRuntimeSafe(String commands, TextPos pos, String filename,
 			V2Runtime scope) throws CompileException {
 		try {
-			return buildRuntime(config, commands, pos, filename, scope);
+			return buildRuntime(commands, pos, filename, scope);
 		} catch (ExecutionException e) {
 			throw new CompileException(e);
 		}
@@ -177,11 +176,11 @@ public abstract class AV2Compiler extends AVarTextCompiler implements Positioned
 	}
 
 
-	public HudInformation compileAndExecute(HudderConfig info, String text, String filename) throws ExecutionException {
+	public HudInformation compileAndExecute(String text, String filename) throws ExecutionException {
 		try {
 			if (!runtimes.containsKey(text))
-				compileFile(info, text, filename);
-			return execute(info, text, filename);
+				compileFile(text, filename);
+			return execute(text, filename);
 		} catch (CompileException e) {
 			throw new ExecutionException(e);
 		}

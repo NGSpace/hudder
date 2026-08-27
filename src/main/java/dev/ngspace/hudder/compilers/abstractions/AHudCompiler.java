@@ -28,7 +28,7 @@ public abstract class AHudCompiler<T> {
 	/**
 	 * Contains globally available compiler variables, indexed by name.
 	 */
-	public Map<String, Object> variables = new HashMap<String, Object>();
+	protected Map<String, Object> variables = new HashMap<String, Object>();
 	protected final ExecutorService hudCompilerExecutor =
 	        Executors.newSingleThreadExecutor(r -> {
 	        	Thread thread = new Thread(r, "hud-compiler");
@@ -36,7 +36,14 @@ public abstract class AHudCompiler<T> {
 	        	thread.setDaemon(true);
 	        	return thread;
 	        });
-	private final AtomicBoolean hudCompiling = new AtomicBoolean(false);
+	protected final AtomicBoolean hudCompiling = new AtomicBoolean(false);
+	protected final AtomicReference<T> mainInstance;
+	protected final HudderConfig config;
+	
+	protected AHudCompiler(HudderConfig config, AtomicReference<T> mainInstance) {
+		this.config = config;
+		this.mainInstance = mainInstance;
+	}
 	
 	/**
 	 * Processes a HUD file into the representation used by this compiler.
@@ -46,7 +53,7 @@ public abstract class AHudCompiler<T> {
 	 * @throws CompileException if the file cannot be compiled
 	 * @throws IOException if an I/O error occurs while reading the file
 	 */
-	public abstract T processFile(HudderConfig config, String filepath) throws CompileException, IOException;
+	public abstract T processFile(String filepath) throws CompileException, IOException;
 
 	/**
 	 * Executes a previously processed HUD file.
@@ -57,7 +64,7 @@ public abstract class AHudCompiler<T> {
 	 * @return information describing the executed HUD
 	 * @throws ExecutionException if an error occurs while executing the HUD
 	 */
-	public abstract HudInformation execute(HudderConfig config, T processedfile, String filename) throws ExecutionException;
+	public abstract HudInformation execute(T processedfile, String filename) throws ExecutionException;
 
 	/**
 	 * Retrieves a variable using the specified key.
@@ -89,13 +96,13 @@ public abstract class AHudCompiler<T> {
 	 * @throws ExecutionException if an error occurs while executing the HUD
 	 * @throws IOException if an I/O error occurs while reading the file
 	 */
-	public HudInformation processAndExecute(HudderConfig config, String filepath, String filename)
+	public HudInformation processAndExecute(String filepath, String filename)
 			throws CompileException, ExecutionException, IOException {
-		return execute(config, processFile(config, filepath), filename);
+		return execute(processFile(filepath), filename);
 	}
 	
 
-	public HudInformation processAndExecuteSafe(HudderConfig config, String filepath, String filename)
+	public HudInformation processAndExecuteSafe(String filepath, String filename)
 			throws CompileException, ExecutionException, IOException {
 		
 	    // Immediately reject the call if another HUD is still being processed.
@@ -105,14 +112,14 @@ public abstract class AHudCompiler<T> {
 		
 	    var compilation = hudCompilerExecutor.submit(() -> {
 	    	try {
-	    		return processFile(config, filepath);
+	    		return processFile(filepath);
 	    	} finally {
 		        hudCompiling.set(false);
 			}
 	    });
 
 	    try {
-			return execute(config, compilation.get(1000, TimeUnit.MILLISECONDS), filename);
+			return execute(compilation.get(1000, TimeUnit.MILLISECONDS), filename);
 	    } catch (TimeoutException _) {
 	        throw new CompileException("Hud still processing",-1,-1);
 	    } catch (InterruptedException e) {

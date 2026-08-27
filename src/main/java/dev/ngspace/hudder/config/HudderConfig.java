@@ -17,6 +17,10 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.Expose;
 
 import dev.ngspace.hudder.Hudder;
+import dev.ngspace.hudder.compilers.HudPackCompiler;
+import dev.ngspace.hudder.compilers.HudderV2Compiler;
+import dev.ngspace.hudder.compilers.HudderV3Compiler;
+import dev.ngspace.hudder.compilers.JavaScriptCompiler;
 import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
 import dev.ngspace.hudder.compilers.utils.Compilers;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
@@ -32,9 +36,13 @@ public class HudderConfig {
 	public static final File DEFAULT_CONFIG_FILE = new File(HudFileUtils.FABRIC_CONFIG_FOLDER + File.separator + "hudder.json");
 	
 	public HudderUserSettings userSettings = new HudderUserSettings();
+
+	public final HudderV2Compiler hudderV2Compiler = new HudderV2Compiler(this);
+	public final HudderV3Compiler hudderV3Compiler = new HudderV3Compiler(this);
+	public final HudPackCompiler hudpackCompiler = new HudPackCompiler(this);
+	public final JavaScriptCompiler javaScriptCompiler = new JavaScriptCompiler(this);
 	
-	
-	private AHudCompiler<?> compiler = Compilers.hudderV3Compiler;
+	private AHudCompiler<?> compiler = hudderV3Compiler;
 	private File configFile;
 	
 	
@@ -69,7 +77,7 @@ public class HudderConfig {
 	 * @throws IOException
 	 */
 	public HudInformation compileMainHud() throws CompileException, ExecutionException, IOException {
-		if (getCompiler()!=null) return getCompiler().processAndExecuteSafe(this, mainfile(), mainfile());
+		if (getCompiler()!=null) return getCompiler().processAndExecuteSafe(mainfile(), mainfile());
 		else throw new CompileException("There is no Compiler!", -1, -1);
 	}
 
@@ -197,7 +205,7 @@ public class HudderConfig {
 		} catch (Exception e) {
 			e.printStackTrace();
 			Hudder.log("Using default compiler due to error");
-			compiler = Compilers.hudderV3Compiler;
+			compiler = hudderV3Compiler;
 		}
 	}
 	

@@ -24,7 +24,7 @@ import dev.ngspace.hudder.utils.HudderUtils;
 import net.minecraft.network.chat.Component;
 	
 public class HudderV3Compiler extends AV3Compiler {
-	
+
 	public static final int TEXT_STATE = 0;
 	public static final int VARIABLE_STATE = 1;
 	public static final int CONDITION_STATE = 2;
@@ -39,8 +39,12 @@ public class HudderV3Compiler extends AV3Compiler {
 	public static final byte ELSE_IF_INSTRUCTION = 0x5;
 	public static final byte ELSE_INSTRUCTION = 0x6;
 	
+	public HudderV3Compiler(HudderConfig config) {
+		super(config);
+	}
+	
 	@Override
-	public TokenizedCodeBlock compile(HudderConfig info, String text, String filename, TextPos offset) throws CompileException {
+	public TokenizedCodeBlock compile(String text, String filename, TextPos offset) throws CompileException {
 		
 		TokenizedCodeBlock finalCodeBlock = new TokenizedCodeBlock(this);
 		
@@ -56,7 +60,7 @@ public class HudderV3Compiler extends AV3Compiler {
 		int savedind = 0;
 		
 		boolean cleanup = false;
-		int cleanup_amount = info.methodBuffer();
+		int cleanup_amount = config.methodBuffer();
 		
 		byte compileState = TEXT_STATE;
 
@@ -91,7 +95,7 @@ public class HudderV3Compiler extends AV3Compiler {
 							break;
 						case ';':
 							compileState = METHOD_STATE;
-							finalCodeBlock.appendStringConstant(trimMethod(info, elemBuilder.toString()), posTracker.get());
+							finalCodeBlock.appendStringConstant(trimMethod(elemBuilder.toString()), posTracker.get());
 							elemBuilder.setLength(0);
 							savedind = ind;
 						    quotesafe = false;
@@ -140,7 +144,7 @@ public class HudderV3Compiler extends AV3Compiler {
 							conditionOrValue.setLength(0);
 						} else if (c=='%') {
 							conds.add(conditionOrValue.toString());
-							finalCodeBlock.addInstruction(new ConditionInstruction(info, filename, conds, this,
+							finalCodeBlock.addInstruction(new ConditionInstruction(filename, conds, this,
 									 posTracker.goToAndGet(savedind)));
 							compileState = TEXT_STATE;
 							break;
@@ -201,7 +205,7 @@ public class HudderV3Compiler extends AV3Compiler {
 						finalCodeBlock.addInstruction(new MethodExecutionInstruction(builder, this, posTracker.goToAndGet(savedind)));
 						elemBuilder.setLength(0);
 						cleanup = true;
-						cleanup_amount = info.methodBuffer()/2;
+						cleanup_amount = config.methodBuffer()/2;
 					}
 					break;
 				}
@@ -227,21 +231,21 @@ public class HudderV3Compiler extends AV3Compiler {
 							String variablename = split[0];
 							String value = split[1];
 							elemBuilder.setLength(0);
-							finalCodeBlock.addInstruction(new ForInstruction(variablename, value, block,
-									this, info, filename, pos));
+							finalCodeBlock.addInstruction(new ForInstruction(variablename, value, block, this,
+									filename, pos));
 							break;
 						}
 						case DEFINE_INSTRUCTION: {
 							String[] builder = HudderUtils.processParemeters(parameters);
 							String name = builder[0];
 							String[] args = Arrays.copyOfRange(builder, 1, builder.length);
-							finalCodeBlock.addInstruction(new DefineInstruction(block, args, info, name,
-									filename, this, pos));
+							finalCodeBlock.addInstruction(new DefineInstruction(block, args, name, filename,
+									this, pos));
 							elemBuilder.setLength(0);
 							break;
 						}
 						case WHILE_LOOP_INSTRUCTION: {
-							finalCodeBlock.addInstruction(new WhileInstruction(parameters, block, this, info,
+							finalCodeBlock.addInstruction(new WhileInstruction(parameters, block, this,
 									filename, pos));
 							break;
 						}
@@ -275,8 +279,8 @@ public class HudderV3Compiler extends AV3Compiler {
 								}
 							}
 							ind--;
-							finalCodeBlock.addInstruction(new IfElseInstuction(statements.toArray(new Statement[statements.size()]),
-									filename, this, info, pos));
+							finalCodeBlock.addInstruction(new IfElseInstuction(
+									statements.toArray(Statement[]::new), filename, this, pos));
 							break;
 						default:
 							throw new CompileException("Detached else/else if statement!", pos);
@@ -373,7 +377,7 @@ public class HudderV3Compiler extends AV3Compiler {
 		});
 		return strb.toString();
 	}
-	public String trimMethod(HudderConfig config, String string) {
+	public String trimMethod(String string) {
 		String str = string;
 		int buffer;
 		if ((buffer = config.methodBuffer())<10) {

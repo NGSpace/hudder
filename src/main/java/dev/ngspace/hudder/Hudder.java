@@ -120,11 +120,12 @@ public class Hudder implements ClientModInitializer {
 			}
 		}
 		
-		log("Loading default compilers");
-		Compilers.registerDefaultCompilers();
-		
 		log("Reading Hudder config");
 		config = new HudderConfig(HudderConfig.DEFAULT_CONFIG_FILE);
+		
+		log("Loading default compilers");
+		Compilers.registerDefaultCompilers(config);
+		Compilers.addRegistrationListener(_->config.readAndUpdateConfig());
 
 		if (IS_DEBUG) {
 			log("HUDDER'S DEBUG MODE IS TURNED ON");
@@ -147,17 +148,17 @@ public class Hudder implements ClientModInitializer {
 		HudderBuiltInFunctions.registerFunction(FunctionAndConsumerAPI.getInstance());
 		if (!new File(HudFileUtils.FOLDER).exists())
 			HudFileUtils.makeDefaultHud();
-		ClientTickEvents.START_CLIENT_TICK.register(new HudderTickEvent());
+		ClientTickEvents.START_CLIENT_TICK.register(new HudderTickEvent(config));
 		
 		Hudder.log("Loading variables.");
 		Misc.registerKeyVariables();
-		HudderBuiltInVariables.registerVariables();
+		HudderBuiltInVariables.registerVariables(config);
 		Hudder.log("Finished loading " + DataVariableRegistry.getTotalEntriesCount() + " variables!");
         
-		HudCompilationManager compman = new HudCompilationManager();
+		HudCompilationManager compman = new HudCompilationManager(config);
 		ClientTickEvents.END_CLIENT_TICK.register(compman);
         
-		HudderRenderer renderer = new HudderRenderer(compman);
+		HudderRenderer renderer = new HudderRenderer(compman, config);
 		HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT, renderer.hudElementRegistryID, renderer);
         
         ClientLifecycleEvents.CLIENT_STARTED.register(_->{

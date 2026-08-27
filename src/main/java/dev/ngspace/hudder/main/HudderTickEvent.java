@@ -13,6 +13,7 @@ import java.nio.file.WatchService;
 import java.nio.file.attribute.BasicFileAttributes;
 
 import dev.ngspace.hudder.Hudder;
+import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.config.HudderNGSMCConfigMenu;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.StartTick;
@@ -23,10 +24,13 @@ import net.minecraft.network.chat.Component;
 public class HudderTickEvent implements StartTick {
 	
     private WatchService watcherService;
+
+	private HudderConfig config;
     
     public static boolean TEMP_DISABLE = false;
     
-    public HudderTickEvent() {
+    public HudderTickEvent(HudderConfig config) {
+    	this.config = config;
 		try {
 			watcherService = FileSystems.getDefault().newWatchService();
 		    Files.walkFileTree(Path.of(HudFileUtils.FOLDER), new SimpleFileVisitor<Path>() {
@@ -67,7 +71,7 @@ public class HudderTickEvent implements StartTick {
     		if (watcherService==null) return;
     		WatchKey wk;
 			while ((wk = watcherService.poll())!=null) {
-	        	if (!Hudder.config.enabled()||!Hudder.config.autorefresh()||TEMP_DISABLE) {
+	        	if (!config.enabled()||!config.autorefresh()||TEMP_DISABLE) {
 	        		while (!wk.pollEvents().isEmpty()) {/* Empty events */}
     				reset(wk);
 	        		continue;
@@ -85,7 +89,7 @@ public class HudderTickEvent implements StartTick {
 						e.printStackTrace();
 					}
 				    if (changed.toString().equals("hud.json")) {
-				    	Hudder.config.readAndUpdateConfig();
+				    	config.readAndUpdateConfig();
 				    	Hudder.showToast(Component.literal("Refreshed Config file!").withStyle(ChatFormatting.BOLD),
 				    			Component.literal("\u00A7aLoaded File"));
 				    }

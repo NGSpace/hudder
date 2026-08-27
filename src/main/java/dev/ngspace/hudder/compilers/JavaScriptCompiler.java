@@ -10,7 +10,11 @@ import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 
 public class JavaScriptCompiler extends AScriptingLanguageCompiler {
 
-	@Override protected IScriptingLanguageEngine createLangEngine(HudderConfig config) throws CompileException {
+	public JavaScriptCompiler(HudderConfig config) {
+		super(config);
+	}
+
+	@Override protected IScriptingLanguageEngine createLangEngine() throws CompileException {
 		JavaScriptEngine engine = new JavaScriptEngine(elms, this, config);
 		FunctionAndConsumerAPI api = FunctionAndConsumerAPI.getInstance();
 		api.applyFunctionsAndConsumers(engine);

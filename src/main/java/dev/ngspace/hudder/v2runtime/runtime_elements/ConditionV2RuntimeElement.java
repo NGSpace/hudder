@@ -5,7 +5,6 @@ import java.util.Arrays;
 import dev.ngspace.hudder.compilers.abstractions.AV2Compiler;
 import dev.ngspace.hudder.compilers.utils.CompileState;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
-import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.v2runtime.V2Runtime;
 import dev.ngspace.hudder.v2runtime.values.AV2Value;
@@ -15,13 +14,12 @@ public class ConditionV2RuntimeElement extends AV2RuntimeElement {
 	AV2Value[] results = {};
 	AV2Value[] conditions = {};
 	AV2Compiler compiler;
-	HudderConfig info;
 	boolean hasElse;
 	private String filename;
-	public ConditionV2RuntimeElement(String[] condArgs, AV2Compiler compiler, HudderConfig info, V2Runtime runtime,
-			int line, int charpos, String filename) throws ExecutionException {
+	
+	public ConditionV2RuntimeElement(String[] condArgs, AV2Compiler compiler, V2Runtime runtime, int line,
+			int charpos, String filename) throws ExecutionException {
 		this.compiler = compiler;
-		this.info = info;
 		this.filename = filename;
 		
 		hasElse = condArgs.length%2==1;
@@ -40,11 +38,11 @@ public class ConditionV2RuntimeElement extends AV2RuntimeElement {
 		HudInformation res = null;
 		for (int i = 0;i<conditions.length;i++) {
 			if (conditions[i].asBoolean()) {
-				res = compiler.compileAndExecute(info,results[i].asString(),filename);
+				res = compiler.compileAndExecute(results[i].asString(),filename);
 				break;
 			}
 		}
-		if (res==null&&hasElse) res = compiler.compileAndExecute(info,results[results.length-1].asString(),filename);
+		if (res==null&&hasElse) res = compiler.compileAndExecute(results[results.length-1].asString(),filename);
 		if (res!=null) {
 			builder.append(res.TopLeftText());
 			for (var v : res.elements()) meta.elements.add(v);

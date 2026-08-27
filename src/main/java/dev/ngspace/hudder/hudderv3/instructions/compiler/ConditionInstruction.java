@@ -7,7 +7,6 @@ import org.objectweb.asm.Label;
 
 import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
-import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.TokenizedCodeBlock;
 import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
@@ -19,27 +18,26 @@ public class ConditionInstruction extends Instruction {
 	
 	private List<ConditionBranch> branches = new ArrayList<>();
 	
-	public ConditionInstruction(HudderConfig info, String filename, List<String> conds, AV3Compiler comp,
-			TextPos pos) throws CompileException {
+	public ConditionInstruction(String filename, List<String> conds, AV3Compiler comp, TextPos pos)
+			throws CompileException {
 		super(pos);
 		for (int i = 0; i + 1 < conds.size(); i += 2) {
 			ExpressionVisitor condition = comp.parseVariable(conds.get(i), pos);
 			
-			branches.add(prepareValue(condition, info, filename, conds.get(i + 1), comp));
+			branches.add(prepareValue(condition, filename, conds.get(i + 1), comp));
 		}
 		if (conds.size() % 2 == 1) {
-			branches.add(prepareValue(null, info, filename, conds.get(conds.size() - 1), comp));
+			branches.add(prepareValue(null, filename, conds.get(conds.size() - 1), comp));
 		}
 	}
 	
-	private ConditionBranch prepareValue(ExpressionVisitor condition, HudderConfig info, String filename,
+	private ConditionBranch prepareValue(ExpressionVisitor condition, String filename,
 			String source, AV3Compiler comp) throws CompileException {
 		
 		ExpressionVisitor variable = comp.parseVariable(source, pos);
 		
 		TokenizedCodeBlock compiledBlock = variable instanceof StringVariableVisitor string
-				? comp.compile(info, string.value, filename, pos)
-				: null;
+				? comp.compile(string.value, filename, pos) : null;
 		
 		return new ConditionBranch(condition, variable, compiledBlock);
 	}
