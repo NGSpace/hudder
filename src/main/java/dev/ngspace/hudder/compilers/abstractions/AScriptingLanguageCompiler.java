@@ -12,7 +12,6 @@ import dev.ngspace.hudder.compilers.utils.HudInformation;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
-import dev.ngspace.hudder.main.HudCompilationManager;
 import dev.ngspace.hudder.uielements.AUIElement;
 import net.minecraft.client.Minecraft;
 
@@ -25,7 +24,7 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 	
 	protected AScriptingLanguageCompiler(HudderConfig config) {
 		super(config);
-		HudCompilationManager.addPreCompilerListener(c->{if(c==this) elms.clear();});
+		config.compilationManager.addPreCompilerListener(c->{if(c==this) elms.clear();});
 	}
 	
 	protected abstract IScriptingLanguageEngine createLangEngine() throws CompileException;

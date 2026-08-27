@@ -22,7 +22,7 @@ import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 public class HudPackCompiler extends AHudCompiler<CachedPack> {
 	
 	public HudPackCompiler(HudderConfig config) {
-		super(config, new AtomicReference<CachedPack>());
+		super(config, new AtomicReference<>(), new HashMap<>());
 	}
 
 	HashMap<String, CachedPack> hudpacks = new HashMap<String, CachedPack>();

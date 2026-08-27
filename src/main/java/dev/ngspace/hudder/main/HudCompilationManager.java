@@ -1,5 +1,6 @@
 package dev.ngspace.hudder.main;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -17,51 +18,78 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 
 public class HudCompilationManager implements EndTick {
-	
-	protected static Minecraft mc = Minecraft.getInstance();
+
 	private final HudderConfig config;
-	
+	public boolean isFirstRunSinceCacheClear = true;
+
+	public String LastFailMessage = "";
+	private HudInformation mainresult = null;
+
+	private List<Consumer<AHudCompiler<?>>> precomplistners = new ArrayList<>();
+
 	public HudCompilationManager(HudderConfig config) {
 		this.config = config;
+		HudFileUtils.addReloadResourcesListenerFirst(()->isFirstRunSinceCacheClear = true);
 	}
-	
-    public static List<Consumer<AHudCompiler<?>>> precomplistners = new ArrayList<Consumer<AHudCompiler<?>>>();
-    public static List<Consumer<AHudCompiler<?>>> postcomplistners = new ArrayList<Consumer<AHudCompiler<?>>>();
-    private HudInformation result = null;
-    
-    public static String LastFailMessage = "";
-    
-    public static boolean isFirstRunSinceCacheClear = true;
-    
-    
-	public void compile(DeltaTracker f) {
-		result = null;
+
+
+	public void addPreCompilerListener(Consumer<AHudCompiler<?>> consumer) {
+		precomplistners.add(consumer);
+	}
+
+	public void compileAndExecute(DeltaTracker f) {
+		mainresult = null;
 		try {
-    		Misc.delta = f!=null?f.getGameTimeDeltaTicks():3;
-    		if (config.shouldCompile()) {
-    			Misc.updateCPS();
-    			for (Consumer<AHudCompiler<?>> con : precomplistners)  con.accept(config.getCompiler());
-    			result = config.compileMainHud();
-    			HudFileUtils.loadMarkedResources();
-    			for (Consumer<AHudCompiler<?>> con : postcomplistners) con.accept(config.getCompiler());
-    			isFirstRunSinceCacheClear = false;
-    		}
+			Misc.delta = f != null ? f.getGameTimeDeltaTicks() : 3;
+			if (config.shouldCompile()) {
+				Misc.updateCPS();
+				mainresult = compileAndExecuteMainHud();
+				isFirstRunSinceCacheClear = false;
+			}
 		} catch (CompileException e) {
 			LastFailMessage = "Compiler error: " + e.getFailureMessage();
 		} catch (ExecutionException e) {
 			LastFailMessage = e.getFailureMessage();
 		} catch (Exception e) {
 			LastFailMessage = "E: " + e.getLocalizedMessage();
-			if (Hudder.IS_DEBUG) e.printStackTrace();
+			if (Hudder.IS_DEBUG) {
+				e.printStackTrace();
+			}
 		}
 	}
-	
-	
-	public static void addPreCompilerListener(Consumer<AHudCompiler<?>> consumer) {precomplistners.add(consumer);}
-	public static void addPostCompilerListener(Consumer<AHudCompiler<?>> consumer) {postcomplistners.add(consumer);}
 
-	
-	public HudInformation getResult() {return result;}
-	
-	@Override public void onEndTick(Minecraft client) {if (config.limitrate()) compile(null);}
+	public HudInformation compileAndExecuteMainHud() throws CompileException, ExecutionException, IOException {
+		for (Consumer<AHudCompiler<?>> con : precomplistners) {
+			con.accept(config.getCompiler());
+		}
+		HudInformation result = config.getCompiler().processAndExecuteMain(config.mainfile(), config.mainfile());
+		HudFileUtils.loadMarkedResources();
+		return result;
+	}
+
+	public HudInformation compileAndExecuteSecondaryHud(AHudCompiler<?> compiler, String filepath, String filename)
+			throws CompileException, ExecutionException, IOException {
+		Misc.updateCPS();
+		for (Consumer<AHudCompiler<?>> con : precomplistners) {
+			con.accept(config.getCompiler());
+		}
+		HudInformation result = compiler.processAndExecute(filepath, filename);
+		HudFileUtils.loadMarkedResources();
+		return result;
+	}
+
+	public HudInformation getMainResult() {
+		return mainresult;
+	}
+
+	@Override
+	public void onEndTick(Minecraft client) {
+		if (config.limitrate()) {
+			compileAndExecute(null);
+		}
+	}
+
+	public void removePreCompilerListener(Consumer<AHudCompiler<?>> consumer) {
+		precomplistners.remove(consumer);
+	}
 }

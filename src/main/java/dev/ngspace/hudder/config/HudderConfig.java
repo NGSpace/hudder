@@ -23,9 +23,7 @@ import dev.ngspace.hudder.compilers.HudderV3Compiler;
 import dev.ngspace.hudder.compilers.JavaScriptCompiler;
 import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
 import dev.ngspace.hudder.compilers.utils.Compilers;
-import dev.ngspace.hudder.compilers.utils.HudInformation;
-import dev.ngspace.hudder.exceptions.CompileException;
-import dev.ngspace.hudder.exceptions.ExecutionException;
+import dev.ngspace.hudder.main.HudCompilationManager;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.hudder.utils.NoAccess;
 import net.minecraft.client.Minecraft;
@@ -35,14 +33,16 @@ public class HudderConfig {
 	public static final int HUDDER_CONFIG_VERSION = 5;
 	public static final File DEFAULT_CONFIG_FILE = new File(HudFileUtils.FABRIC_CONFIG_FOLDER + File.separator + "hudder.json");
 	
-	public HudderUserSettings userSettings = new HudderUserSettings();
+	public final HudderUserSettings userSettings = new HudderUserSettings();
 
-	public final HudderV2Compiler hudderV2Compiler = new HudderV2Compiler(this);
-	public final HudderV3Compiler hudderV3Compiler = new HudderV3Compiler(this);
-	public final HudPackCompiler hudpackCompiler = new HudPackCompiler(this);
-	public final JavaScriptCompiler javaScriptCompiler = new JavaScriptCompiler(this);
+	public final HudCompilationManager compilationManager = new HudCompilationManager(this);
 	
-	private AHudCompiler<?> compiler = hudderV3Compiler;
+	public final HudderV2Compiler hudderV2Compiler;
+	public final HudderV3Compiler hudderV3Compiler;
+	public final HudPackCompiler hudpackCompiler;
+	public final JavaScriptCompiler javaScriptCompiler;
+	
+	private AHudCompiler<?> compiler;
 	private File configFile;
 	
 	
@@ -66,21 +66,14 @@ public class HudderConfig {
 				}
 			}
 		}
+		this.hudderV2Compiler = new HudderV2Compiler(this);
+		this.hudderV3Compiler = new HudderV3Compiler(this);
+		this.hudpackCompiler = new HudPackCompiler(this);
+		this.javaScriptCompiler = new JavaScriptCompiler(this);
+		this.compiler = hudderV3Compiler;
+		Compilers.registerDefaultCompilers(this);
 		readAndUpdateConfig();
 	}
-
-
-	/**
-	 * Compiles the main hud using the selected compiler
-	 * @return The result of the execution
-	 * @throws CompileException
-	 * @throws IOException
-	 */
-	public HudInformation compileMainHud() throws CompileException, ExecutionException, IOException {
-		if (getCompiler()!=null) return getCompiler().processAndExecuteSafe(mainfile(), mainfile());
-		else throw new CompileException("There is no Compiler!", -1, -1);
-	}
-
 
 	/**
 	 * Read the JSON values from the config file that was provided durinng the ConfigInfo's initalization and apply
@@ -246,6 +239,7 @@ public class HudderConfig {
 			
 			config_writer.append(new GsonBuilder().setPrettyPrinting().create().toJson(json_output));
 			config_writer.flush();
+			HudFileUtils.reloadResources();
 		} catch (IOException e) {
 			e.printStackTrace();
 			Hudder.IS_DEBUG=true;

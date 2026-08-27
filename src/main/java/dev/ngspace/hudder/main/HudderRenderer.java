@@ -50,9 +50,9 @@ public class HudderRenderer implements HudElement {
 	
 	
 	
-	public HudderRenderer(HudCompilationManager compilationManager, HudderConfig config) {
-		this.compman = compilationManager;
+	public HudderRenderer(HudderConfig config) {
 		this.config = config;
+		this.compman = config.compilationManager;
 	}
 	
 	
@@ -320,13 +320,13 @@ public class HudderRenderer implements HudElement {
 	
 	@Override public void extractRenderState(GuiGraphicsExtractor context, DeltaTracker delta) {
 		try {
-			if (!config.limitrate()) compman.compile(delta);
+			if (!config.limitrate()) compman.compileAndExecute(delta);
 			if (config.shouldDrawResult()) {
 	            try {
-	            	if (compman.getResult()!=null)
-	            		renderHudInformation(context, mc.font, compman.getResult(), config, delta);
+	            	if (compman.getMainResult()!=null)
+	            		renderHudInformation(context, mc.font, compman.getMainResult(), config, delta);
 	            	else
-	            		renderFail(context, HudCompilationManager.LastFailMessage);
+	            		renderFail(context, compman.LastFailMessage);
 				} catch (Exception e) {
 					if (Hudder.IS_DEBUG) e.printStackTrace();
 		    		renderFail(context, e.getMessage());

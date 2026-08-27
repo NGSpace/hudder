@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -29,7 +31,8 @@ public abstract class AHudCompiler<T> {
 	 * Contains globally available compiler variables, indexed by name.
 	 */
 	protected Map<String, Object> variables = new HashMap<String, Object>();
-	protected final ExecutorService hudCompilerExecutor =
+	protected Future<T> mainCompilation;
+	protected ExecutorService hudCompilerExecutor =
 	        Executors.newSingleThreadExecutor(r -> {
 	        	Thread thread = new Thread(r, "hud-compiler");
 	        	// Compilation work must never keep the Minecraft JVM alive during exit.
@@ -38,11 +41,13 @@ public abstract class AHudCompiler<T> {
 	        });
 	protected final AtomicBoolean hudCompiling = new AtomicBoolean(false);
 	protected final AtomicReference<T> mainInstance;
+	protected final Map<String, T> instances;
 	protected final HudderConfig config;
 	
-	protected AHudCompiler(HudderConfig config, AtomicReference<T> mainInstance) {
+	protected AHudCompiler(HudderConfig config, AtomicReference<T> mainInstance, Map<String, T> instancesMap) {
 		this.config = config;
 		this.mainInstance = mainInstance;
+		this.instances = instancesMap;
 	}
 	
 	/**
@@ -58,7 +63,6 @@ public abstract class AHudCompiler<T> {
 	/**
 	 * Executes a previously processed HUD file.
 	 *
-	 * @param info the Hudder configuration used during execution
 	 * @param processedfile the processed representation of the HUD file
 	 * @param filename the name of the HUD file being executed
 	 * @return information describing the executed HUD
@@ -88,7 +92,6 @@ public abstract class AHudCompiler<T> {
 	/**
 	 * Processes and then executes a HUD file.
 	 *
-	 * @param config the Hudder configuration used during execution
 	 * @param filepath the path of the file to process
 	 * @param filename the name of the HUD file being executed
 	 * @return information describing the executed HUD
@@ -98,43 +101,59 @@ public abstract class AHudCompiler<T> {
 	 */
 	public HudInformation processAndExecute(String filepath, String filename)
 			throws CompileException, ExecutionException, IOException {
-		return execute(processFile(filepath), filename);
+		T res = processFile(filepath);
+		instances.put(filepath, res);
+		return execute(res, filename);
 	}
 	
 
-	public HudInformation processAndExecuteSafe(String filepath, String filename)
+	public HudInformation processAndExecuteMain(String filepath, String filename)
 			throws CompileException, ExecutionException, IOException {
-		
+
+    	if (mainInstance.get()!=null) {
+    		return execute(mainInstance.get(), filename);
+    	}
+    	
 	    // Immediately reject the call if another HUD is still being processed.
 	    if (!hudCompiling.compareAndSet(false, true)) {
 	        throw new CompileException("Hud still processing",-1,-1);
 	    }
 		
-	    var compilation = hudCompilerExecutor.submit(() -> {
-	    	try {
-	    		return processFile(filepath);
-	    	} finally {
-		        hudCompiling.set(false);
-			}
-	    });
-
 	    try {
-			return execute(compilation.get(1000, TimeUnit.MILLISECONDS), filename);
-	    } catch (TimeoutException _) {
-	        throw new CompileException("Hud still processing",-1,-1);
-	    } catch (InterruptedException e) {
-	        Thread.currentThread().interrupt();
-	        throw new IOException("Interrupted while waiting for Hud to finish processing", e);
-	    } catch (java.util.concurrent.ExecutionException e) {
-	    	if (e.getCause() instanceof CompileException ex)
-	    		throw ex;
-	    	if (e.getCause() instanceof ExecutionException ex)
-	    		throw ex;
-	    	if (e.getCause() instanceof IOException ex)
-	    		throw ex;
-			e.printStackTrace();
-			var ex = e.getCause() != null ? e.getCause() : e;
-	        throw new CompileException(ex.getMessage(),-1,-1,ex);
+	    	
+		    mainCompilation = hudCompilerExecutor.submit(() -> {
+		    	try {
+		    		T res = processFile(filepath);
+		    		instances.put(filepath, res);
+		    		mainInstance.set(res);
+		    		return mainInstance.get();
+		    	} finally {
+			        hudCompiling.set(false);
+				}
+		    });
+		    try {
+		    	var res = execute(mainCompilation.get(1000, TimeUnit.MILLISECONDS), filename);
+		    	mainCompilation = null;
+				return res;
+		    } catch (TimeoutException _) {
+		        throw new CompileException("Hud still processing",-1,-1);
+		    } catch (InterruptedException e) {
+		        Thread.currentThread().interrupt();
+		        throw new IOException("Interrupted while waiting for Hud to finish processing", e);
+		    } catch (java.util.concurrent.ExecutionException e) {
+		    	if (e.getCause() instanceof CompileException ex)
+		    		throw ex;
+		    	if (e.getCause() instanceof ExecutionException ex)
+		    		throw ex;
+		    	if (e.getCause() instanceof IOException ex)
+		    		throw ex;
+				e.printStackTrace();
+				var ex = e.getCause() != null ? e.getCause() : e;
+		        throw new CompileException(ex.getMessage(),-1,-1,ex);
+			}
+	    } catch (RejectedExecutionException e) {
+	        hudCompiling.set(false);
+	        throw e;
 		}
 	}
 
@@ -147,9 +166,7 @@ public abstract class AHudCompiler<T> {
 		hudCompilerExecutor.shutdownNow();
 	}
 	
-	public String[] getSupportedFileFormats() {
-		return new String[0];// By default, none;
-	}
+	public abstract String[] getSupportedFileFormats();
 	
 	public boolean isValidFilePath(String filepath) {
 		for (String format : getSupportedFileFormats())
@@ -163,6 +180,15 @@ public abstract class AHudCompiler<T> {
 	}
 	
 	public void resetState() throws IOException {
+		hudCompilerExecutor.shutdownNow();
+		hudCompilerExecutor = Executors.newSingleThreadExecutor(r -> {
+	        	Thread thread = new Thread(r, "hud-compiler");
+	        	// Compilation work must never keep the Minecraft JVM alive during exit.
+	        	thread.setDaemon(true);
+	        	return thread;
+	        });
 		variables.clear();
+		mainInstance.set(null);
+		hudCompiling.set(false);
 	}
 }

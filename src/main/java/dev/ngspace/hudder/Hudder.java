@@ -19,7 +19,6 @@ import dev.ngspace.hudder.api.functionsandconsumers.HudderBuiltInMethods;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.compilers.utils.Compilers;
 import dev.ngspace.hudder.config.HudderConfig;
-import dev.ngspace.hudder.main.HudCompilationManager;
 import dev.ngspace.hudder.main.HudderRenderer;
 import dev.ngspace.hudder.main.HudderTickEvent;
 import dev.ngspace.hudder.testing.HudderUnitTestingCommand;
@@ -123,8 +122,6 @@ public class Hudder implements ClientModInitializer {
 		log("Reading Hudder config");
 		config = new HudderConfig(HudderConfig.DEFAULT_CONFIG_FILE);
 		
-		log("Loading default compilers");
-		Compilers.registerDefaultCompilers(config);
 		Compilers.addRegistrationListener(_->config.readAndUpdateConfig());
 
 		if (IS_DEBUG) {
@@ -155,10 +152,9 @@ public class Hudder implements ClientModInitializer {
 		HudderBuiltInVariables.registerVariables(config);
 		Hudder.log("Finished loading " + DataVariableRegistry.getTotalEntriesCount() + " variables!");
         
-		HudCompilationManager compman = new HudCompilationManager(config);
-		ClientTickEvents.END_CLIENT_TICK.register(compman);
+		ClientTickEvents.END_CLIENT_TICK.register(config.compilationManager);
         
-		HudderRenderer renderer = new HudderRenderer(compman, config);
+		HudderRenderer renderer = new HudderRenderer(config);
 		HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT, renderer.hudElementRegistryID, renderer);
         
         ClientLifecycleEvents.CLIENT_STARTED.register(_->{
@@ -175,7 +171,7 @@ public class Hudder implements ClientModInitializer {
         
         // Make sure the FPS variable is updated once every compilation instead of every time a number variable is used
         var mc = Minecraft.getInstance();
-        HudCompilationManager.addPreCompilerListener(_->Misc.fps = Misc.getFPS(mc));
+        config.compilationManager.addPreCompilerListener(_->Misc.fps = Misc.getFPS(mc));
 		
 		log("Hudder has finished loading!");
 	}

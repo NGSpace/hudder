@@ -1,6 +1,7 @@
 package dev.ngspace.hudder.compilers.abstractions;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import dev.ngspace.hudder.compilers.utils.TextPos;
@@ -12,7 +13,7 @@ public abstract class ATextCompiler extends AHudCompiler<String> {
 	
 	
 	protected ATextCompiler(HudderConfig config) {
-		super(config, new AtomicReference<String>());
+		super(config, new AtomicReference<>(), new HashMap<>());
 	}
 
 	@Override

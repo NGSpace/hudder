@@ -22,7 +22,6 @@ import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
-import dev.ngspace.hudder.main.HudCompilationManager;
 import dev.ngspace.hudder.utils.NoAccess;
 import dev.ngspace.hudder.utils.ObjectWrapper;
 import dev.ngspace.hudder.utils.ValueGetter;
@@ -63,8 +62,7 @@ public class HudderV3Helper {
 		try {
 			boolean AddText = args.length>1&&args[1].asBoolean() || type.equals("add");
 			AHudCompiler<?> ecompiler=(args.length>2?Compilers.getCompilerFromName(args[2].asString()):comp);
-			for (var i : HudCompilationManager.precomplistners) i.accept(ecompiler);
-			var result = ecompiler.processAndExecute(file, file);
+			var result = config.compilationManager.compileAndExecuteSecondaryHud(ecompiler, file, file);
 			for (var uielement : result.elements()) {
 				man.addUIElement(uielement);
 			}
@@ -74,7 +72,6 @@ public class HudderV3Helper {
 				bottomleft.append(result.BottomLeftText());
 				bottomright.append(result.BottomRightText());
 			}
-			for (var i : HudCompilationManager.postcomplistners) i.accept(ecompiler);
 		} catch (IllegalArgumentException e) {
 			throw new ExecutionException(e.getLocalizedMessage(), pos);
 		} catch (CompileException e) {

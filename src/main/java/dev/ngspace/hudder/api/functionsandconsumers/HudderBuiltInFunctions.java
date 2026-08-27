@@ -12,7 +12,6 @@ import dev.ngspace.hudder.compilers.utils.Compilers;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
-import dev.ngspace.hudder.main.HudCompilationManager;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.hudder.variables.advanced.Misc;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -97,19 +96,18 @@ public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 		
 		//Compile
 		
-		binder.registerPositionedFunction((m,_,_,_,s)-> {
+		binder.registerPositionedFunction((m,_,_,c,s)-> {
 			try {
 				var e = m.toUIElementArray();
 				
-				AHudCompiler<?> ecompiler = Compilers.getCompilerFromName(s[1].asString());
-				for (var i : HudCompilationManager.precomplistners) i.accept(ecompiler);
+				AHudCompiler<?> compiler = Compilers.getCompilerFromName(s[1].asString());
+				String hud =  s[0].asString();
 				
-				HudInformation result = ecompiler.processAndExecute(s[0].asString(),s[0].asString());
+				HudInformation result = c.compilationManager.compileAndExecuteSecondaryHud(compiler, hud, hud);
 
 				for (var v : result.elements()) m.addUIElement(v);
 				for (var v : e) m.addUIElement(v);
 				
-				for (var i : HudCompilationManager.postcomplistners) i.accept(ecompiler);
 				return result;
 			} catch (CompileException e1) {
 				throw new ExecutionException(e1);

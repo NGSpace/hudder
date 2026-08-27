@@ -4,7 +4,6 @@ import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.variableregistry.DataVariable;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.config.HudderConfig;
-import dev.ngspace.hudder.main.HudCompilationManager;
 import dev.ngspace.hudder.variables.advanced.EffectData;
 import dev.ngspace.hudder.variables.data.ClientData;
 import dev.ngspace.hudder.variables.data.ComputerData;
@@ -96,7 +95,7 @@ public class HudderBuiltInVariables {
 		registerBoolean(_->config.limitrate(), "limitrate");
 		registerBoolean(_->config.disableHudpackVersionCheck(), "disable_hudpack_version_check");
 		registerBoolean(_->config.disableWarnings(), "disable_warnings");
-		registerBoolean(_->HudCompilationManager.isFirstRunSinceCacheClear, "first_execution");
+		registerBoolean(_->config.compilationManager.isFirstRunSinceCacheClear, "first_execution");
 		
 		// Strings
 		registerString(_->config.compilerName(), "compilertype");
@@ -115,9 +114,6 @@ public class HudderBuiltInVariables {
 		registerNumber(_->config.backgroundcolor(), "backgroundcolor");
 
 		/* Constants */
-		
-//		register(k->"unset", STRING, "unset");
-
 		registerString(_->ClientBrandRetriever.getClientModName(), "version_type");
 		registerString(_->SharedConstants.getCurrentVersion().id(), "game_version");
 

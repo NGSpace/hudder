@@ -7,7 +7,6 @@ import java.util.function.Consumer;
 
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.config.HudderConfig;
-import dev.ngspace.hudder.main.HudCompilationManager;
 
 public abstract class AVarTextCompiler extends ATextCompiler {
 	
@@ -16,7 +15,7 @@ public abstract class AVarTextCompiler extends ATextCompiler {
 	
 	protected AVarTextCompiler(HudderConfig config) {
 		super(config);
-		HudCompilationManager.addPreCompilerListener(listener);
+		config.compilationManager.addPreCompilerListener(listener);
 	}
 	
 	@Override public Object getVariable(String key) {
@@ -74,7 +73,7 @@ public abstract class AVarTextCompiler extends ATextCompiler {
 	
 	@Override
 	public void shutdown() {
-		HudCompilationManager.precomplistners.remove(listener);
+		config.compilationManager.removePreCompilerListener(listener);
 		super.shutdown();
 	}
 	
