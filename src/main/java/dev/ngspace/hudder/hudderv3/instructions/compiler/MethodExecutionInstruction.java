@@ -22,7 +22,6 @@ public class MethodExecutionInstruction extends Instruction {
 	
 	private String[] builder;
 	AV3Compiler comp;
-	private boolean apiCall;
 	private boolean run_method;
 
 	public MethodExecutionInstruction(String[] builder, AV3Compiler comp, TextPos pos) {
@@ -30,7 +29,6 @@ public class MethodExecutionInstruction extends Instruction {
 		this.builder = builder;
 		this.comp = comp;
 		this.run_method = builder[0].toLowerCase().matches("load|run|execute|add|compile");
-		this.apiCall = comp.api_consumers.containsKey("api_consumer_" + builder[0].trim()) || run_method;
 		
 		if ("no_sys_var".equalsIgnoreCase(builder[0].trim())) {
 			comp.system_variables = false;
@@ -107,6 +105,7 @@ public class MethodExecutionInstruction extends Instruction {
 				}
 				break;
 			default:
+				boolean apiCall = !classWriter.user_methods.containsKey(builder[0].trim()) || run_method;
 				
 				if (apiCall) {
 					if (run_method) {
@@ -168,6 +167,8 @@ public class MethodExecutionInstruction extends Instruction {
 							StringBuilder.class,
 							ObjectWrapper[].class);
 				} else if (apiCall) {
+					if (!classWriter.helper.hasApiConsumer("api_consumer_"+builder[0].trim()))
+						throw new CompileException("Unknown method: " + builder[0], pos);
 					visitApiCall(methodWriter, array_index);
 				} else {
 					visitUserConsumer(methodWriter, array_index);
@@ -189,26 +190,22 @@ public class MethodExecutionInstruction extends Instruction {
 	
 	protected void visitUserConsumer(V3MethodWriter methodWriter, int array_index) throws CompileException {
 		var cons = methodWriter.classWriter.user_methods.get(builder[0].trim());
-		if (cons!=null) {
-			if (builder.length-1<cons.min_args())
-				throw new CompileException("Too little arguements for function \""+builder[0].trim()+'"', pos);
-			if (builder.length-1>cons.max_args())
-				throw new CompileException("Too many arguements for function \""+builder[0].trim()+'"', pos);
-			methodWriter.aload(0);
-			methodWriter.aload(1);
-			methodWriter.aload(2);
-			methodWriter.aload(3);
-			methodWriter.aload(array_index);
-			methodWriter.callSelf(cons.bytecode_name(), false,
-					V3HudInformation.class,
-					HudderConfig.class,
-					String.class,
-					String.class,
-					Object[].class);
-			methodWriter.pop();
-		} else {
-			throw new CompileException("Unknown method: " + builder[0], pos);
-		}
+		if (builder.length-1<cons.min_args())
+			throw new CompileException("Too little arguements for function \""+builder[0].trim()+'"', pos);
+		if (builder.length-1>cons.max_args())
+			throw new CompileException("Too many arguements for function \""+builder[0].trim()+'"', pos);
+		methodWriter.aload(0);
+		methodWriter.aload(1);
+		methodWriter.aload(2);
+		methodWriter.aload(3);
+		methodWriter.aload(array_index);
+		methodWriter.callSelf(cons.bytecode_name(), false,
+				V3HudInformation.class,
+				HudderConfig.class,
+				String.class,
+				String.class,
+				Object[].class);
+		methodWriter.pop();
 	}
 	
 	@Override

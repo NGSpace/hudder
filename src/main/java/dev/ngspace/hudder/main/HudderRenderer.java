@@ -1,6 +1,7 @@
 package dev.ngspace.hudder.main;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.joml.Matrix3x2fStack;
 
@@ -8,6 +9,7 @@ import com.mojang.blaze3d.PrimitiveTopology;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.compilers.utils.HudInformation;
@@ -302,6 +304,14 @@ public class HudderRenderer implements HudElement {
 	        for (int i = 0;i<vertices.length;i+=2)
 	        	vconsumer.addVertexWith2DPose(matrix,vertices[i],vertices[i+1]).setColor(argb).setUv(0, 0);
 		}));
+	}
+
+	public void renderWithVertexConsumer(GuiGraphicsExtractor context, Consumer<VertexConsumer> cons) {
+		renderWithVertexConsumer(context, TextureSetup.noTexture(), RenderPipelines.GUI_TEXTURED, cons);
+	}
+	public void renderWithVertexConsumer(GuiGraphicsExtractor context, TextureSetup textureSetup,
+			RenderPipeline pipeline, Consumer<VertexConsumer> cons) {
+		context.guiRenderState.addGuiElement(new TextureRenderState(textureSetup, pipeline, cons));
 	}
 	
 	

@@ -48,6 +48,14 @@ public class HudderV3Helper {
 		return compiler.api_consumers.get(name);
 	}
 	
+	
+	public boolean hasApiFunction(String name) {
+		return compiler.api_functions.containsKey(name);
+	}
+	public boolean hasApiConsumer(String name) {
+		return compiler.api_consumers.containsKey(name);
+	}
+	
 	public void runLoadMethod(IUIElementManager man, AHudCompiler<?> comp, TextPos pos,
 			HudderConfig config, String type, StringBuilder topleft, StringBuilder topright,
 			 StringBuilder bottomleft,  StringBuilder bottomright, ObjectWrapper... args)

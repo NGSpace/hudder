@@ -424,7 +424,6 @@ public class HudderConfig {
 	
 	/**
 	 * @deprecated
-	 * @return fuckall
 	 */
 	@Deprecated(since = "9.2.0", forRemoval = true)
 	public Map<String, Object> globalVariables() {
