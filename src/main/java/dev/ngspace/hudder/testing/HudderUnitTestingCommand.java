@@ -44,7 +44,7 @@ public class HudderUnitTestingCommand implements ClientCommandRegistrationCallba
 		dispatcher.register(literal("hudderunittesting")
 				
 				.then(literal("test_all").executes(context -> {
-					context.getSource().sendFeedback(handler.hudderTester.testAllAndReturnComponent(Hudder.config));
+					context.getSource().sendFeedback(handler.hudderTester.testAllAndReturnComponent(config));
 					return 1;
 				}))
 				
@@ -52,7 +52,7 @@ public class HudderUnitTestingCommand implements ClientCommandRegistrationCallba
 						.suggests(new UnitTestsSuggestionProvider()).executes(context -> {
 							String testname = StringArgumentType.getString(context, "name");
 							context.getSource().sendFeedback(
-									handler.hudderTester.test(Hudder.config, testname).toText(testname));
+									handler.hudderTester.test(config, testname).toText(testname));
 							return 1;
 						})))
 				
@@ -77,7 +77,7 @@ public class HudderUnitTestingCommand implements ClientCommandRegistrationCallba
 						handler.loadTests();
 						context.getSource().sendFeedback(
 								Component.literal("Succesfully reloaded tests").withColor(CommonColors.GREEN));
-						context.getSource().sendFeedback(handler.hudderTester.testAllAndReturnComponent(Hudder.config));
+						context.getSource().sendFeedback(handler.hudderTester.testAllAndReturnComponent(config));
 					} catch (Exception e) {
 						Hudder.error("Could not load unit tests");
 						e.printStackTrace();

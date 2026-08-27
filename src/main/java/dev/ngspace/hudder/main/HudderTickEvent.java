@@ -68,6 +68,7 @@ public class HudderTickEvent implements StartTick {
     		WatchKey wk;
 			while ((wk = watcherService.poll())!=null) {
 	        	if (!Hudder.config.enabled()||!Hudder.config.autorefresh()||TEMP_DISABLE) {
+	        		while (!wk.pollEvents().isEmpty()) {/* Empty events */}
     				reset(wk);
 	        		continue;
 	        	}

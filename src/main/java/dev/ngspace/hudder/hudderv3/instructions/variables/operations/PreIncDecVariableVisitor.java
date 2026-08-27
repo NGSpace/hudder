@@ -29,7 +29,7 @@ public class PreIncDecVariableVisitor extends ExpressionVisitor {
 		} else {
 			methodWriter.dsub();
 		}
-		methodWriter.callStatic(Double.class, "valueOf", "(D)Ljava/lang/Double;", false);
+		methodWriter.callStatic(Double.class, "valueOf", false, Double.class, Double.TYPE);
 		value.visitSetValue(methodWriter);
 	}
 	

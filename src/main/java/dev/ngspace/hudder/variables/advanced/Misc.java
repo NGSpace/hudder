@@ -9,9 +9,12 @@ import java.util.Map;
 
 import org.lwjgl.sdl.SDLScancode;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.sun.management.OperatingSystemMXBean;
 
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
+import dev.ngspace.hudder.mixin.KeyMappingAccessor;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.PauseScreen;
@@ -113,24 +116,44 @@ public class Misc {private Misc() {}
     
     
     public static final Map<Integer,Integer> held_keys = new HashMap<Integer,Integer>();
+    private static final String SDL_PREFIX = "SDL_SCANCODE_";
+    private static final String KEY_PREFIX = "key_";
+
+    private static final Map<String, Integer> keys = new HashMap<>();
+    private static final Map<Integer, String> keyNames = new HashMap<>();
 	
 	public static void registerKeyVariables() {
-		ArrayList<String> keyNames = new ArrayList<String>();
-		HashMap<String, Integer> keys = new HashMap<String, Integer>();
+		for (Field field : SDLScancode.class.getFields()) {
+			try {
+				if (field.getName().startsWith(SDL_PREFIX)) {
+					String keyname = field.getName().substring(SDL_PREFIX.length()).toLowerCase();
+					
+					int value = field.getInt(null);
+					
+					keys.put(keyname, value);
+					keyNames.put(value, KEY_PREFIX + keyname);
+				}
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+				throw new RuntimeException(e);
+			}
+		}
 		
-	    for (Field field : SDLScancode.class.getFields()) {
-	    	try {
-	    		if (field.getName().startsWith("SDL_SCANCODE_")&&field.canAccess(null)) {
-	    			String keyname = field.getName().substring(13).toLowerCase();
-	    			keyNames.add("key_" + keyname);
-	    			keys.put(keyname,field.getInt(null));
-	    		}
-			} catch (Exception e) {e.printStackTrace();}
-	    }
-	    
-	    DataVariableRegistry.registerBooleanVariable(
-	    		variable->held_keys.containsKey(keys.get(variable.substring(4).toLowerCase())),
-	    		keyNames.toArray(new String[keyNames.size()]));
+		DataVariableRegistry.registerBooleanVariable(
+				variable -> held_keys.containsKey(keys.get(variable.substring(4).toLowerCase())),
+				keys.keySet().stream().map(k -> KEY_PREFIX + k).toArray(String[]::new));
+	}
+	
+	public static String getMapping(KeyMapping keyMapping) {
+		InputConstants.Key mapping = ((KeyMappingAccessor) keyMapping).key();
+		
+		if (mapping == null || mapping.equals(InputConstants.UNKNOWN))
+			mapping = keyMapping.getDefaultKey();
+		
+		if (mapping.getType() == InputConstants.Type.MOUSE)
+			return mapping.getName().replace("key.mouse.", "mouse_");
+		
+		return keyNames.getOrDefault(mapping.getValue(), String.valueOf(mapping.getValue()));
 	}
 	
 	

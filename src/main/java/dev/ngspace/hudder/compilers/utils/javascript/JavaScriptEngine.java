@@ -217,8 +217,9 @@ public class JavaScriptEngine implements IScriptingLanguageEngine, PositionedBin
 		@Override public Object get() throws ExecutionException {return value==Undefined.instance?null:value;}
 		
 		@Override public String asString() {return withContext(_ -> Context.toString(value));}
-		@Override public double asDouble() {return withContext(_ -> Context.toNumber(value));}
-		@Override public boolean asBoolean() {return withContext(_ -> Context.toBoolean(value));}
+		@Override public double asDouble() {return withContext(_ -> Context.toNumber(value)).doubleValue();}
+		@Override public int asInt() {return (int) withContext(_ -> Context.toNumber(value)).longValue();}
+		@Override public boolean asBoolean() {return withContext(_ -> Context.toBoolean(value)).booleanValue();}
 		@Override public Object[] asArray() {return withContext(_ -> ((NativeArray) value).toArray());}
 		
 		@Override public String toString() {return withContext(_ -> Context.toString(value));}

@@ -23,7 +23,7 @@ public class DynamicVariableVisitor extends ExpressionVisitor {
 		} else {
 			methodWriter.aload(0);
 			methodWriter.loadConstant(variable.toLowerCase());
-			methodWriter.call(AVarTextCompiler.class, "get", "(Ljava/lang/String;)Ljava/lang/Object;", false);
+			methodWriter.call(AVarTextCompiler.class, "get", false, Object.class, String.class);
 		}
 	}
 	
@@ -33,8 +33,7 @@ public class DynamicVariableVisitor extends ExpressionVisitor {
 		methodWriter.aload(0);
 		methodWriter.loadConstant(variable.toLowerCase());
 		methodWriter.aload(valueindex);
-		methodWriter.call(AVarTextCompiler.class, "put", "(Ljava/lang/String;Ljava/lang/Object;)V",
-				false);
+		methodWriter.call(AVarTextCompiler.class, "put", false, null, String.class, Object.class);
 		methodWriter.aload(valueindex);
 	}
 }

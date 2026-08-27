@@ -5,6 +5,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,8 +91,11 @@ public class HudFileUtils {private HudFileUtils() {}
 	 * @throws IOException 
 	 */
 	public static String sanitize(String f) throws SecurityException, IOException {
-		if (!new File(f).getCanonicalFile().toPath().startsWith(new File(FOLDER).getCanonicalFile().toPath()))
+		Path d = Paths.get(f).toAbsolutePath().normalize();
+		Path folder = Paths.get(FOLDER).toAbsolutePath().normalize();
+		if (!d.startsWith(folder))
 			throw new FileNotFoundException(f + " (No such file or directory)");
+		
 		int j = 0;
 		int k = 0;
 		for (int i = 0;i<f.length();i++) {
@@ -101,6 +106,7 @@ public class HudFileUtils {private HudFileUtils() {}
 				k = 0;
 			} else {j = 0;k++;}
 		}
+		
 		return f;
 	}
 	

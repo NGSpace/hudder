@@ -15,6 +15,7 @@ import dev.ngspace.hudder.uielements.TextElement;
 import dev.ngspace.hudder.uielements.Texture9SliceElement;
 import dev.ngspace.hudder.uielements.TextureElement;
 import dev.ngspace.hudder.uielements.TextureVerticesElement;
+import dev.ngspace.hudder.uielements.primitives.LineElement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -30,55 +31,61 @@ public class HudderBuiltInMethods {
 		// Vertex
 		
 		api.registerPositionedConsumer(
-				(e, _, _,_, s) -> e
+				(e,_,_,_,s) -> e
 						.addUIElement(new ColorVerticesElement(s[0].asFloatArray(), (int) s[1].asLong(), false)),
 				"colorvertices");
 		api.registerPositionedConsumer(
-				(e, _, _,_, s) -> e
+				(e,_,_,_,s) -> e
 						.addUIElement(new ColorVerticesElement(s[0].asFloatArray(), (int) s[1].asLong(), true)),
 				"colorvertices_con");
 		
 		api.registerPositionedConsumer(
-				(e, _, _,_, s) -> e.addUIElement(
+				(e,_,_,_,s) -> e.addUIElement(
 						new TextureVerticesElement(s[0].asString(), s[1].asFloatArray(), s[2].asFloatArray(), false)),
 				"texturevertices");
 		api.registerPositionedConsumer(
-				(e, _, _,_, s) -> e.addUIElement(
+				(e,_,_,_,s) -> e.addUIElement(
 						new TextureVerticesElement(s[0].asString(), s[1].asFloatArray(), s[2].asFloatArray(), true)),
 				"texturevertices_con");
 		
 		// Textures
 		
-		api.registerPositionedConsumer((e, _, _,_, s) -> e.addUIElement(new BuiltInTextureElement(s[0].asIdentifier(),
+		api.registerPositionedConsumer((e,_,_,_,s) -> e.addUIElement(new BuiltInTextureElement(s[0].asIdentifier(),
 				s[1].asIdentifier(), s[2].asInt(), s[3].asInt(), s[4].asInt(), s[5].asInt())), "drawTexture",
 				"texture");
 		
 		api.registerPositionedConsumer(
-				(e, _, _,_, s) -> e.addUIElement(
+				(e,_,_,_,s) -> e.addUIElement(
 						new TextureElement(s[0].asString(), s[1].asInt(), s[2].asInt(), s[3].asInt(), s[4].asInt())),
 				"drawLocalTexture", "drawPNG", "drawImage", "image", "png");
 		
-		api.registerPositionedConsumer((e, _, _,_, s) -> e.addUIElement(new Texture9SliceElement(s[0].asString(),
+		api.registerPositionedConsumer((e,_,_,_,s) -> e.addUIElement(new Texture9SliceElement(s[0].asString(),
 				s[1].asInt(), s[2].asInt(), s[3].asInt(), s[4].asInt(), s[5].asFloatArray())), "9slicetexture",
 				"nineslicetexture");
 		
 		// Rectangles
 		api.registerPositionedConsumer(
-				(e, _, _,_, s) -> e.addUIElement(
+				(e,_,_,_,s) -> e.addUIElement(
 						new RectangleElement(s[0].asInt(), s[1].asInt(), s[2].asInt(), s[3].asInt(), s[4].asInt())),
 				"rectangle");
 
 		api.registerPositionedConsumer(
-				(e, _, _,_, s) -> e.addUIElement(
+				(e,_,_,_,s) -> e.addUIElement(
 						new GradientElement(s[0].asInt(), s[1].asInt(), s[2].asInt(), s[3].asInt(),
 								s[4].asInt(), s[5].asInt(), false)),
 				"gradient");
 
 		api.registerPositionedConsumer(
-				(e, _, _,_, s) -> e.addUIElement(
+				(e,_,_,_,s) -> e.addUIElement(
 						new GradientElement(s[0].asInt(), s[1].asInt(), s[2].asInt(), s[3].asInt(),
 								s[4].asInt(), s[5].asInt(), true)),
 				"horizontal_gradient");
+		
+		// Other Primitive Shapes
+		
+		api.registerPositionedConsumer((e,_,_,_,s)->
+			e.addUIElement(new LineElement(s[0].asFloat(), s[1].asFloat(), s[2].asFloat(),
+							s[3].asFloat(), s[4].asInt(), s[5].asInt())), "line");
 		
 		// Text
 		

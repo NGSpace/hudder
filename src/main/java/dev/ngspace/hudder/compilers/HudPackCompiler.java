@@ -16,7 +16,6 @@ import dev.ngspace.hudder.hudpacks.CachedPack;
 import dev.ngspace.hudder.hudpacks.HudPack;
 import dev.ngspace.hudder.hudpacks.HudPackHudState;
 import dev.ngspace.hudder.utils.HudFileUtils;
-import dev.ngspace.hudder.v2runtime.values.AV2Value;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 
 public class HudPackCompiler extends AHudCompiler<CachedPack> {
@@ -64,11 +63,10 @@ public class HudPackCompiler extends AHudCompiler<CachedPack> {
 		}
 	}
 
-	private boolean checkConditions(AV2Value[] conditions) throws ExecutionException {
-		for (AV2Value cond : conditions) {
-			if (!cond.asBoolean())
+	private boolean checkConditions(Boolean[] conditions) throws ExecutionException {
+		for (Boolean cond : conditions)
+			if (!cond.booleanValue())
 				return false;
-		}
 		return true;
 	}
 	

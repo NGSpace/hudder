@@ -14,6 +14,7 @@ import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.main.HudCompilationManager;
 import dev.ngspace.hudder.utils.HudFileUtils;
+import dev.ngspace.hudder.variables.advanced.Misc;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -92,6 +93,7 @@ public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 		binder.registerPositionedFunction((_,_,_,_,s)->KeyMapping.get(s[0].asString()).isDown(), "isKeybindDown");
 		binder.registerPositionedFunction((_,_,_,_,s)->KeyMapping.get(s[0].asString()).isDefault(), "isKeybindDefault");
 		binder.registerPositionedFunction((_,_,_,_,s)->KeyMapping.get(s[0].asString()).isUnbound(), "isKeybindUnbound");
+		binder.registerPositionedFunction((_,_,_,_,s)->Misc.getMapping(KeyMapping.get(s[0].asString())), "getKeybindMapping");
 		
 		//Compile
 		

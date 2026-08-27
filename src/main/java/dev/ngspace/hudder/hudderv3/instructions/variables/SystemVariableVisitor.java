@@ -19,7 +19,7 @@ public class SystemVariableVisitor extends ExpressionVisitor {
 	public void visit(V3MethodWriter methodWriter) throws CompileException {
 		methodWriter.tryCatchBlock(_->{
 			methodWriter.loadConstant(value.toLowerCase());
-			methodWriter.callStatic(DataVariableRegistry.class, "getAny", "(Ljava/lang/String;)Ljava/lang/Object;", false);
+			methodWriter.callStatic(DataVariableRegistry.class, "getAny", false, Object.class, String.class);
 		}, _->methodWriter.throwExecutionExceptionFromCaughtException(pos), Exception.class);
 	}
 	

@@ -94,7 +94,7 @@ public class ComparisonVariableVisitor extends ExpressionVisitor {
 		methodWriter.putLabel(not_numbers);
 		methodWriter.aload(val1index);
 		methodWriter.aload(val2index);
-		methodWriter.callStatic(Objects.class, "equals", "(Ljava/lang/Object;Ljava/lang/Object;)Z", false);
+		methodWriter.callStatic(Objects.class, "equals", false, Boolean.TYPE, Object.class, Object.class);
 		switch (operator) {
 			case "==": break; // No change
 			case "!=": {
@@ -111,7 +111,7 @@ public class ComparisonVariableVisitor extends ExpressionVisitor {
 				mostElaborateExceptionThrower(methodWriter, val1index, val2index);
 			}
 		}
-		methodWriter.callStatic(Boolean.class, "valueOf", "(Z)Ljava/lang/Boolean;", false);
+		methodWriter.callStatic(Boolean.class, "valueOf", false, Boolean.class, Boolean.TYPE);
 		methodWriter.jumpto(end);
 		
 		// Is null
@@ -152,33 +152,30 @@ public class ComparisonVariableVisitor extends ExpressionVisitor {
 		methodWriter.newStringBuilder();
 		methodWriter.loadConstant("Unknown comparasion operator \"" + operator
 				+ "\" for values of type: \"");
-		methodWriter.call(StringBuilder.class, "append", "(Ljava/lang/String;)"
-				+ "Ljava/lang/StringBuilder;", false);
+		methodWriter.call(StringBuilder.class, "append", false, StringBuilder.class, String.class);
 		methodWriter.aload(val1index);
-		methodWriter.call(Object.class, "getClass", "()Ljava/lang/Class;", false);
-		methodWriter.call(Class.class, "getSimpleName", "()Ljava/lang/String;", false);
-		methodWriter.call(StringBuilder.class, "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;", false);
+		methodWriter.call(Object.class, "getClass", false, Class.class);
+		methodWriter.call(Class.class, "getSimpleName", false, String.class);
+		methodWriter.call(StringBuilder.class, "append", false, StringBuilder.class, String.class);
 		
 		// Value 2
 		methodWriter.loadConstant("\" and \"");
-		methodWriter.call(StringBuilder.class, "append", "(Ljava/lang/String;)"
-				+ "Ljava/lang/StringBuilder;", false);
+		methodWriter.call(StringBuilder.class, "append", false, StringBuilder.class, String.class);
 		methodWriter.aload(val2index);
-		methodWriter.call(Object.class, "getClass", "()Ljava/lang/Class;", false);
-		methodWriter.call(Class.class, "getSimpleName", "()Ljava/lang/String;", false);
-		methodWriter.call(StringBuilder.class, "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;", false);
+		methodWriter.call(Object.class, "getClass", false, Class.class);
+		methodWriter.call(Class.class, "getSimpleName", false, String.class);
+		methodWriter.call(StringBuilder.class, "append", false, StringBuilder.class, String.class);
 
 		methodWriter.loadConstant("\"");
-		methodWriter.call(StringBuilder.class, "append", "(Ljava/lang/String;)"
-				+ "Ljava/lang/StringBuilder;", false);
+		methodWriter.call(StringBuilder.class, "append", false, StringBuilder.class, String.class);
 		
-		methodWriter.call(StringBuilder.class, "toString", "()Ljava/lang/String;", false);
+		methodWriter.call(StringBuilder.class, "toString", false, String.class);
 		methodWriter.newInsn(ExecutionException.class);
 		methodWriter.dupX1();
 		methodWriter.swap();
 		methodWriter.loadConstantUnsafe(pos.line());
 		methodWriter.loadConstantUnsafe(pos.column());
-		methodWriter.callInit(ExecutionException.class, "(Ljava/lang/String;II)V");
+		methodWriter.callInit(ExecutionException.class, String.class, Integer.TYPE, Integer.TYPE);
 		methodWriter.athrow();
 	}
 }

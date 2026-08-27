@@ -121,5 +121,6 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler {
 	public void resetState() throws IOException {
 		for(RuntimeCache c:cache.values()) c.close();
 		cache.clear();
+		super.resetState();
 	}
 }
