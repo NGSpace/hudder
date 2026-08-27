@@ -130,7 +130,7 @@ public class HudPack implements Closeable {
 		HudPackSettings v = settings.get(setting);
 
 		if (format_version>1&&"dropdown".equals(v.type())) {
-			return DropdownNGSMCConfigOption.fluentBuilder((String) getSettingValue(setting),
+			return DropdownNGSMCConfigOption.builder((String) getSettingValue(setting),
 					Component.literal(v.name()),
 					List.of(v.values()))
 				.setDefaultValue((String) v.default_value())
@@ -138,7 +138,7 @@ public class HudPack implements Closeable {
 				.build();
 		}
 		if (format_version>2&&"integer".equals(v.type())) {
-			return IntNGSMCConfigOption.fluentBuilder(((Number) getSettingValue(setting)).intValue(),
+			return IntNGSMCConfigOption.builder(((Number) getSettingValue(setting)).intValue(),
 					Component.literal(v.name()))
 				.setDefaultValue(((Number) v.default_value()).intValue())
 				.setSaveOperation(val->setSettingValue(setting, val))
@@ -146,28 +146,28 @@ public class HudPack implements Closeable {
 		}
 		return switch (v.type()) {
 			case "boolean": {
-				yield BooleanNGSMCConfigOption.fluentBuilder(((Boolean) getSettingValue(setting)),
+				yield BooleanNGSMCConfigOption.builder(((Boolean) getSettingValue(setting)),
 						Component.literal(v.name()))
 					.setDefaultValue((Boolean) v.default_value())
 					.setSaveOperation(val->setSettingValue(setting, val))
 					.build();
 			}
 			case "string": {
-				yield StringNGSMCConfigOption.fluentBuilder(String.valueOf(getSettingValue(setting)),
+				yield StringNGSMCConfigOption.builder(String.valueOf(getSettingValue(setting)),
 						Component.literal(v.name()))
 					.setDefaultValue(String.valueOf(v.default_value()))
 					.setSaveOperation(val->setSettingValue(setting, val))
 					.build();
 			}
 			case "number": {
-				yield DoubleNGSMCConfigOption.fluentBuilder(((Number) getSettingValue(setting)).doubleValue(),
+				yield DoubleNGSMCConfigOption.builder(((Number) getSettingValue(setting)).doubleValue(),
 						Component.literal(v.name()))
 					.setDefaultValue(((Number) v.default_value()).doubleValue())
 					.setSaveOperation(val->setSettingValue(setting, val))
 					.build();
 			}
 			case "hex": {
-				yield HexNGSMCConfigOption.fluentBuilder(((Number) getSettingValue(setting)).intValue(),
+				yield HexNGSMCConfigOption.builder(((Number) getSettingValue(setting)).intValue(),
 						Component.literal(v.name()))
 					.setDefaultValue(((Number) v.default_value()).intValue())
 					.setSaveOperation(val->setSettingValue(setting, val))

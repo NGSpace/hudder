@@ -14,7 +14,6 @@ import org.objectweb.asm.Type;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.compilers.abstractions.AV3Compiler;
-import dev.ngspace.hudder.api.compilers.abstractions.AVarTextCompiler;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
