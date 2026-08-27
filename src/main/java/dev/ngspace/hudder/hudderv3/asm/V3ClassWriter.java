@@ -41,9 +41,7 @@ public class V3ClassWriter {
 		this.helper = helper;
 		classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
 		classWriter.visit(Opcodes.V25, Opcodes.ACC_PUBLIC, classname, null,
-				"dev/ngspace/hudder/compilers/abstractions/AVarTextCompiler", new String[] {
-						Type.getInternalName(GeneratedCompiler.class)
-				});
+				Type.getInternalName(GeneratedCompiler.class), null);
 		classWriter.visitSource(debugfilename, null);
 		
 	    initPublicField("uimanager", ArrayElementManager.class);
@@ -81,7 +79,7 @@ public class V3ClassWriter {
 		init.aload(0);
 		init.aload(2);
 		init.getField("config", HudderV3Helper.class, HudderConfig.class);
-		init.callInit(AVarTextCompiler.class, HudderConfig.class);
+		init.callInit(GeneratedCompiler.class, HudderConfig.class);
 		
 		// Init UIElements field
 	    
