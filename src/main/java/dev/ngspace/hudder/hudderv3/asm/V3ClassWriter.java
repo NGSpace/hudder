@@ -62,15 +62,15 @@ public class V3ClassWriter {
 	            null
 	    ).visitEnd();
 		
-		classWriter.newField(classname, "helper", Type.getDescriptor(HudderV3Helper.class));
-		
-	    classWriter.visitField(
-	            Opcodes.ACC_PUBLIC,
-	            "helper",
-	            Type.getDescriptor(HudderV3Helper.class),
-	            null,
-	            null
-	    ).visitEnd();
+//		classWriter.newField(classname, "helper", Type.getDescriptor(HudderV3Helper.class));
+//		
+//	    classWriter.visitField(
+//	            Opcodes.ACC_PUBLIC,
+//	            "helper",
+//	            Type.getDescriptor(HudderV3Helper.class),
+//	            null,
+//	            null
+//	    ).visitEnd();
 
 		
 		init = createMethod("<init>", new Class<?>[] {AV3Compiler.class, HudderV3Helper.class}, null, null, null);

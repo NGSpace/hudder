@@ -94,11 +94,9 @@ public class FunctionCallVariableVisitor extends ExpressionVisitor {
 		methodWriter.aload(0);
 		methodWriter.aload(1);
 		methodWriter.aload(2);
-		methodWriter.aload(3);
 		methodWriter.aload(array_index);
 		methodWriter.callSelf(func.bytecode_name(), false, V3HudInformation.class,
 				HudderConfig.class,
-				String.class,
 				String.class,
 				Object[].class);
 		methodWriter.getField("return_value", V3HudInformation.class, Object.class);

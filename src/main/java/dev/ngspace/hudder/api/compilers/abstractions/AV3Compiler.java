@@ -12,6 +12,7 @@ import org.objectweb.asm.Label;
 import dev.ngspace.hudder.api.compilers.AHudCompiler;
 import dev.ngspace.hudder.api.compilers.HudInformation;
 import dev.ngspace.hudder.api.compilers.TextPos;
+import dev.ngspace.hudder.api.compilers.interfaces.PreparedCompiler;
 import dev.ngspace.hudder.api.compilers.interfaces.StringEvaluator;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
@@ -32,8 +33,8 @@ import dev.ngspace.hudder.hudderv3.instructions.V3ExpressionParser;
 import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
 import dev.ngspace.hudder.utils.HudFileUtils;
 
-public abstract class AV3Compiler extends AHudCompiler<AV3Compiler.CachedCompiler> implements PositionedBinder,
-		StringEvaluator<AV3Compiler.CachedCompiler> {
+public abstract class AV3Compiler extends AHudCompiler<GeneratedCompiler> implements PositionedBinder,
+		StringEvaluator<GeneratedCompiler>, PreparedCompiler {
 	
 	public static final String VERIFIER_ERROR_NOTE = """
 			
@@ -54,13 +55,13 @@ public abstract class AV3Compiler extends AHudCompiler<AV3Compiler.CachedCompile
 	}
 
 	@Override
-	public CachedCompiler processFile(String filepath) throws CompileException, IOException {
+	public GeneratedCompiler processFile(String filepath) throws CompileException, IOException {
 		String text = HudFileUtils.readFile(filepath);
 		return evalHud(text, filepath);
 	}
 	
 	@Override
-	public CachedCompiler evalHud(String text, String filepath) throws CompileException {
+	public GeneratedCompiler evalHud(String text, String filepath) throws CompileException {
 		try {
 			HudderV3Helper helper = new HudderV3Helper(config, this);
 			
@@ -85,7 +86,7 @@ public abstract class AV3Compiler extends AHudCompiler<AV3Compiler.CachedCompile
 			
 			Object instance = dynamicClass.getDeclaredConstructor(AV3Compiler.class, HudderV3Helper.class)
 					.newInstance(this, helper);
-			return new CachedCompiler(instance, (GeneratedCompiler) instance, helper, text);
+			return (GeneratedCompiler) instance;
 		} catch (InvocationTargetException e) {
 			if (e.getTargetException() instanceof RuntimeException re)
 				throw re;
@@ -102,8 +103,7 @@ public abstract class AV3Compiler extends AHudCompiler<AV3Compiler.CachedCompile
 			int frame = msg.indexOf("Current Frame");
 			int at = msg.indexOf("@");
 			throw new RuntimeException(msg.substring(0, msg.indexOf('\n')+1) +
-					'\n' +
-					msg.substring(at==-1?0:at, frame==-1?msg.length():frame));
+					'\n' + msg.substring(at==-1?0:at, frame==-1?msg.length():frame));
 		} catch (CompileException e) {
 			throw e;
 		} catch (Exception e) {
@@ -113,9 +113,9 @@ public abstract class AV3Compiler extends AHudCompiler<AV3Compiler.CachedCompile
 	}
 
 	@Override
-	public HudInformation execute(CachedCompiler compiler, String filename) throws ExecutionException {
+	public HudInformation execute(GeneratedCompiler compiler, String filename) throws ExecutionException {
 		try {
-			return compiler.generatedCompiler().execute(config, compiler.processedFile(), filename).hudInformation;
+			return compiler.execute(config, filename).hudInformation;
 		} catch (VerifyError e) {
 			// The compilation manager does not handle Verifier errors and will crash the game which is bad.
 			e.printStackTrace();
@@ -143,16 +143,12 @@ public abstract class AV3Compiler extends AHudCompiler<AV3Compiler.CachedCompile
 	}
 
 
-
-	public static record CachedCompiler(Object compiledhud, GeneratedCompiler generatedCompiler,
-			HudderV3Helper helper, String processedFile) {}
-	
 	@Override
 	public void reset() throws IOException {
 		system_variables = true;
 		for (var instance : instances.values())
-			if (instance.generatedCompiler != null)
-				instance.generatedCompiler.shutdown();
+			if (instance != null)
+				instance.shutdown();
 		super.reset();
 	}
 
@@ -173,4 +169,10 @@ public abstract class AV3Compiler extends AHudCompiler<AV3Compiler.CachedCompile
 	public HudInformation evalAndExecuteHud(String text, String debugname) throws CompileException, ExecutionException {
 		return execute(evalHud(text, debugname), debugname);
 	}
+	
+	@Override
+    public void prepareCompiler() {
+		if (mainInstance.get()!=null)
+			mainInstance.get().prepareCompiler();
+    }
 }

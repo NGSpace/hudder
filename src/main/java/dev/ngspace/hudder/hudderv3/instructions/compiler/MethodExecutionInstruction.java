@@ -212,12 +212,10 @@ public class MethodExecutionInstruction extends Instruction {
 		methodWriter.aload(0);
 		methodWriter.aload(1);
 		methodWriter.aload(2);
-		methodWriter.aload(3);
 		methodWriter.aload(array_index);
 		methodWriter.callSelf(cons.bytecode_name(), false,
 				V3HudInformation.class,
 				HudderConfig.class,
-				String.class,
 				String.class,
 				Object[].class);
 		methodWriter.pop();

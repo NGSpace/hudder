@@ -6,9 +6,11 @@ import dev.ngspace.hudder.exceptions.ExecutionException;
 
 public abstract class GeneratedCompiler extends AVarTextCompiler {
 	
+	public HudderV3Helper helper;
+	
 	protected GeneratedCompiler(HudderConfig config) {
 		super(config);
 	}
 
-	public abstract V3HudInformation execute(HudderConfig config, String text, String filename) throws ExecutionException;
+	public abstract V3HudInformation execute(HudderConfig config, String filename) throws ExecutionException;
 }

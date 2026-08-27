@@ -40,14 +40,13 @@ public class DefineInstruction extends Instruction {
 		var method = writer.createExecuteMethod(bytecodename, new Class<?>[] {
 			HudderConfig.class,
 			String.class,
-			String.class,
 			Object[].class
 		});
 		
 		for (int i = 0;i<args.length;i++) {
 			method.defineVariable(args[i].toLowerCase().trim());
 			method.defineVariable("arg" + (i+1));
-			method.aload(4);
+			method.aload(3);
 			method.loadConstantUnsafe(i);
 			method.aaload();
 			method.dup();
