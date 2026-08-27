@@ -81,8 +81,11 @@ public class V3APIFunctions {
 		bindFunction(binder, (_,_,_,_,args) -> Math.asin(args[0].asDouble()), 1, "asin");
 		bindFunction(binder, (_,_,_,_,args) -> Math.acos(args[0].asDouble()), 1, "acos");
 		bindFunction(binder, (_,_,_,_,args) -> Math.atan(args[0].asDouble()), 1, "atan");
-		
+
 		bindFunction(binder, (_,_,_,_,args) -> Math.sqrt(args[0].asDouble()), 1, "sqrt");
+
+		bindFunction(binder, (_,_,_,_,args) -> Math.toRadians(args[0].asDouble()), 1, "radians");
+		bindFunction(binder, (_,_,_,_,args) -> Math.toDegrees(args[0].asDouble()), 1, "degrees");
 		
 		bindFunction(binder, (_,_,_,_,args) -> Math.pow(args[0].asDouble(),args[1].asDouble()), 2, "pow");
 		bindFunction(binder, (_,_,_,_,args) -> Math.min(args[0].asDouble(),args[1].asDouble()), 2, "min");

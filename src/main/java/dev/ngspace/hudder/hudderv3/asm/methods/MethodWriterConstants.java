@@ -54,7 +54,7 @@ public interface MethodWriterConstants extends MethodWriterBase {
 		visitor().visitLdcInsn(constant);
 	}
 	public default void loadConstant(boolean constant) {
-		visitor().visitLdcInsn(constant);
+		visitor().visitInsn(constant ? Opcodes.ICONST_1 : Opcodes.ICONST_0);
 		//Convert to Object
 		visitor().visitMethodInsn(
 				Opcodes.INVOKESTATIC,

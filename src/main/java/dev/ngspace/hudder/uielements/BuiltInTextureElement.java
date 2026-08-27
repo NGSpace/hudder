@@ -33,16 +33,7 @@ public class BuiltInTextureElement extends AUIElement {
 
 	@Override
 	public void renderElement(GuiGraphicsExtractor context, HudderRenderer renderer, DeltaTracker delta) {
-
 		TextureAtlasSprite sprite = mc.getAtlasManager().getAtlasOrThrow(atlasId).getSprite(spriteId);
-
-        context.blitSprite(
-                RenderPipelines.GUI_TEXTURED,
-                sprite,
-                x,
-                y,
-                width,
-                height
-        );
+		context.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, x, y, width, height);
     }
 }

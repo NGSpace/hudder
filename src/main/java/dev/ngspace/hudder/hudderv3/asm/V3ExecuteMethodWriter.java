@@ -6,6 +6,7 @@ import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.V3HudInformation;
+import dev.ngspace.hudder.uielements.AUIElement;
 
 public class V3ExecuteMethodWriter extends V3MethodWriter {
 
@@ -57,7 +58,7 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 		
 		// Define the scales
 		getHelper();
-		call(HudderV3Helper.class, "getDefaultScale", "()F", false);
+		call(HudderV3Helper.class, "getDefaultScale", false, Float.TYPE);
 		dup();
 		dup();
 		dup();
@@ -77,7 +78,7 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 		}
 		loadBuilder();
 		loadConstant(string);
-		call(StringBuilder.class, "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;", false);
+		call(StringBuilder.class, "append", false, StringBuilder.class, String.class);
 		pop();
 	}
 	
@@ -124,19 +125,19 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 		int long_index = lstore();
 		loadBuilder();
 		lload(long_index);
-		call(StringBuilder.class, "append", "(J)Ljava/lang/StringBuilder;", false);
+		call(StringBuilder.class, "append", false, StringBuilder.class, Long.TYPE);
 		jumpto(end);
 		
 		putLabel(append_double);
 		loadBuilder();
 		aload(value_index);
-		call(StringBuilder.class, "append", "(Ljava/lang/Object;)Ljava/lang/StringBuilder;", false);
+		call(StringBuilder.class, "append", false, StringBuilder.class, Object.class);
 		jumpto(end);
 
 		putLabel(append);
 		loadBuilder();
 		aload(value_index);
-		call(StringBuilder.class, "append", "(Ljava/lang/Object;)Ljava/lang/StringBuilder;", false);
+		call(StringBuilder.class, "append", false, StringBuilder.class, Object.class);
 		
 		putLabel(end);
 	}
@@ -144,7 +145,7 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 
 
 	private void callToString() {
-		call(StringBuilder.class, "toString", "()Ljava/lang/String;", false);
+		call(StringBuilder.class, "toString", false, String.class);
 	}
 
 
@@ -175,14 +176,14 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 		fload(bottomright_scale_index);
 		aload(0);
 		getField("uimanager", ArrayElementManager.class);
-		call(ArrayElementManager.class, "toUIElementArray", "()[Ldev/ngspace/hudder/uielements/AUIElement;", false);
-		callInit(V3HudInformation.class, "("
-				+ "Ljava/lang/Object;"
-				+ "Ljava/lang/String;F"
-				+ "Ljava/lang/String;F"
-				+ "Ljava/lang/String;F"
-				+ "Ljava/lang/String;F"
-				+ "[Ldev/ngspace/hudder/uielements/AUIElement;)V");
+		call(ArrayElementManager.class, "toUIElementArray", false, AUIElement[].class);
+		callInit(V3HudInformation.class,
+				Object.class,
+				String.class, Float.TYPE,
+				String.class, Float.TYPE,
+				String.class, Float.TYPE,
+				String.class, Float.TYPE,
+				AUIElement[].class);
 		
 		addAReturn();
 	}

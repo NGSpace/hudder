@@ -25,7 +25,7 @@ public class DefineInstruction extends Instruction {
 		super(pos);
 		this.args = args;
 		this.name = name;
-		tokenizedBlock = comp.compile(info, block, filename, pos);
+		tokenizedBlock = comp.compile(info, block, filename, new TextPos(pos.line()+1, 0));
 		
 		bytecodename = "user_" + (tokenizedBlock.canReturnValue() ? "function" : "method") + "_"
 				+ (++user_defines_count);

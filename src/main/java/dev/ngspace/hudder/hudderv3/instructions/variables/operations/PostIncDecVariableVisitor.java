@@ -30,10 +30,10 @@ public class PostIncDecVariableVisitor extends ExpressionVisitor {
 		} else {
 			methodWriter.dsub();
 		}
-		methodWriter.callStatic(Double.class, "valueOf", "(D)Ljava/lang/Double;", false);
+		methodWriter.callStatic(Double.class, "valueOf", false, Double.class, Double.TYPE);
 		value.visitSetValue(methodWriter);
 		methodWriter.pop();
-		methodWriter.callStatic(Double.class, "valueOf", "(D)Ljava/lang/Double;", false);
+		methodWriter.callStatic(Double.class, "valueOf", false, Double.class, Double.TYPE);
 	}
 	
 }

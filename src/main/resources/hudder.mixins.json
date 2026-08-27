@@ -13,7 +13,8 @@
 		"ItemCooldownsAccessor",
 		"GuiGraphicsExtractorAccessor",
 		"BossHealthOverlayAccessor",
-		"ChatFormattingAccessor"
+		"ChatFormattingAccessor",
+		"KeyMappingAccessor"
 	],
 	"mixins": [
 	],

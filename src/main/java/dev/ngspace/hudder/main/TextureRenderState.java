@@ -7,8 +7,10 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.TextureSetup;
+import net.minecraft.client.renderer.state.gui.GuiElementRenderState;
 
-public record TextureRenderState(TextureSetup textureSetup, RenderPipeline pipeline, Consumer<VertexConsumer> consumer) implements net.minecraft.client.renderer.state.gui.GuiElementRenderState {
+public record TextureRenderState(TextureSetup textureSetup, RenderPipeline pipeline,
+		Consumer<VertexConsumer> consumer) implements GuiElementRenderState {
 
 	@Override
 	public ScreenRectangle bounds() {
