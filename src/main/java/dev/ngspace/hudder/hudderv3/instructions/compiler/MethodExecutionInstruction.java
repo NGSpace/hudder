@@ -10,6 +10,7 @@ import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
+import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.V3HudInformation;
 import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
@@ -48,6 +49,20 @@ public class MethodExecutionInstruction extends Instruction {
 				comp.parseVariable(builder[1], pos).visit(methodWriter);
 				methodWriter.astore(methodWriter.return_value_index);
 				methodWriter.jumpto(methodWriter.finalLabel);
+				break;
+			case "throw":
+				if (builder.length!=2) {
+					throw new CompileException("Throw method must provide an error message!", pos);
+				}
+				comp.parseVariable(builder[1], pos).visit(methodWriter);
+				methodWriter.checkcastSafe(String.class, pos);
+				methodWriter.newInsn(ExecutionException.class);
+				methodWriter.dupX1();
+				methodWriter.swap();
+				methodWriter.loadConstantUnsafe(pos.line());
+				methodWriter.loadConstantUnsafe(pos.column());
+				methodWriter.callInit(ExecutionException.class, String.class, Integer.TYPE, Integer.TYPE);
+				methodWriter.athrow();
 				break;
 			case "no_sys_var", "sys_var":
 				break;

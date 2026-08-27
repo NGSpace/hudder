@@ -22,7 +22,6 @@ import dev.ngspace.hudder.hudderv3.GeneratedCompiler;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.TokenizedCodeBlock;
 import dev.ngspace.hudder.hudderv3.V3APIFunctions;
-import dev.ngspace.hudder.hudderv3.V3APIMethods;
 import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
 import dev.ngspace.hudder.hudderv3.asm.V3ExecuteMethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.ImplV3ExpressionParser;
@@ -48,7 +47,6 @@ public abstract class AV3Compiler extends AVarTextCompiler implements Positioned
 	protected AV3Compiler() {
 		FunctionAndConsumerAPI.getInstance().applyFunctionsAndConsumers(this);
 		V3APIFunctions.bindAllAPIFunctions(this);
-		V3APIMethods.bindAllAPIMethods(this);
 	}
 	
 	@Override
