@@ -14,11 +14,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import dev.ngspace.hudder.api.compilers.Compilers;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.api.functionsandconsumers.HudderBuiltInFunctions;
 import dev.ngspace.hudder.api.functionsandconsumers.HudderBuiltInMethods;
 import dev.ngspace.hudder.config.HudderConfig;
+import dev.ngspace.hudder.defaultcompilers.Compilers;
 import dev.ngspace.hudder.testing.HudderTestsHandler;
 import dev.ngspace.hudder.testing.HudderUnitTest;
 import dev.ngspace.hudder.testing.HudderUnitTestResult;

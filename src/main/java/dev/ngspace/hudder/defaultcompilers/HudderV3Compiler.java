@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.api.compilers.defaultcompilers;
+package dev.ngspace.hudder.defaultcompilers;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -1,7 +1,7 @@
 package dev.ngspace.hudder.api;
 
 import dev.ngspace.hudder.api.compilers.CompilerRegistry;
-import dev.ngspace.hudder.api.compilers.Compilers;
+import dev.ngspace.hudder.defaultcompilers.Compilers;
 
 public class HudderApi {
 	

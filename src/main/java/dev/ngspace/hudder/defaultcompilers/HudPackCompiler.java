@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.api.compilers.defaultcompilers;
+package dev.ngspace.hudder.defaultcompilers;
 
 import java.io.File;
 import java.io.IOException;

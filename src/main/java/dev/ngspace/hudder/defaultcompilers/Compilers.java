@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.api.compilers;
+package dev.ngspace.hudder.defaultcompilers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +9,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+
+import dev.ngspace.hudder.api.compilers.AHudCompiler;
+import dev.ngspace.hudder.api.compilers.CompilerEntry;
+import dev.ngspace.hudder.api.compilers.CompilerRegistry;
 
 public class Compilers implements CompilerRegistry {
 	

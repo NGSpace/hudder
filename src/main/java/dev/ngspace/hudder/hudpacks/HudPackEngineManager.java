@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import dev.ngspace.hudder.api.compilers.defaultcompilers.HudPackCompiler;
-import dev.ngspace.hudder.api.compilers.defaultcompilers.javascript.JavaScriptEngine;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.config.HudderConfig;
+import dev.ngspace.hudder.defaultcompilers.HudPackCompiler;
+import dev.ngspace.hudder.defaultcompilers.javascript.JavaScriptEngine;
 
 public class HudPackEngineManager implements Closeable {
 	

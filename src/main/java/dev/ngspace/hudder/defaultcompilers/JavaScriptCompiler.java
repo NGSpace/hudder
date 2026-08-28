@@ -1,10 +1,10 @@
-package dev.ngspace.hudder.api.compilers.defaultcompilers;
+package dev.ngspace.hudder.defaultcompilers;
 
 import dev.ngspace.hudder.api.compilers.abstractions.AScriptingLanguageCompiler;
 import dev.ngspace.hudder.api.compilers.abstractions.IScriptingLanguageEngine;
-import dev.ngspace.hudder.api.compilers.defaultcompilers.javascript.JavaScriptEngine;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.config.HudderConfig;
+import dev.ngspace.hudder.defaultcompilers.javascript.JavaScriptEngine;
 import dev.ngspace.hudder.exceptions.CompileException;
 
 public class JavaScriptCompiler extends AScriptingLanguageCompiler {
