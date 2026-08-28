@@ -1,12 +1,11 @@
 package dev.ngspace.hudder.config;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import dev.ngspace.hudder.api.compilers.CompilerRegistry;
 import dev.ngspace.hudder.api.compilers.compilers.AHudCompiler;
@@ -15,35 +14,35 @@ import dev.ngspace.hudder.api.compilers.utils.CompilerEntry;
 public class ImplCompilerRegistry implements CompilerRegistry {
 
 	private List<Consumer<CompilerEntry>> listeners = new ArrayList<>();
-	private Map<CompilerEntry, AHudCompiler<?>> registredCompilers = new HashMap<>();
+	private List<CompilerEntry> registredCompilers = new ArrayList<>();
 
 	@Override
 	public Optional<CompilerEntry> findEntryFromId(String id) {
-		return entries().stream().filter(e->e.id().equals(id)).findAny();
+		return registredCompilers.stream().filter(e->e.id().equals(id)).findAny();
 	}
 
 	@Override
 	public Optional<CompilerEntry> findEntryFromDisplayName(String displayName) {
-		return entries().stream().filter(e->e.display_name().equals(displayName)).findAny();
+		return registredCompilers.stream().filter(e->e.display_name().equals(displayName)).findAny();
 	}
 
 	@Override
 	public Optional<CompilerEntry> findEntryFromCompiler(AHudCompiler<?> compiler) {
-		return entries().stream().filter(e->e.compiler()==compiler).findAny();
+		return registredCompilers.stream().filter(e->e.compiler()==compiler).findAny();
 	}
 
 	@Override
 	public CompilerEntry[] getValidCompilersForFilePath(String filepath) {
-		return entries().stream().filter(e->e.compiler().isValidFilePath(filepath)).toArray(CompilerEntry[]::new);
+		return registredCompilers.stream().filter(e->e.compiler().isValidFilePath(filepath)).toArray(CompilerEntry[]::new);
 	}
 
 	@Override
 	public CompilerEntry registerCompiler(String id, String display_name, boolean unstable, boolean deprecated,
 			AHudCompiler<?> compiler) {
-		if (entries().stream().map(CompilerEntry::id).anyMatch(s->s.equals(id)))
+		if (registredCompilers.stream().map(CompilerEntry::id).anyMatch(s->s.equals(id)))
 			throw new IllegalArgumentException("A compiler with the identifier \"" + id + "\" has already been registered");
 		CompilerEntry entry = new CompilerEntry(id, display_name, unstable, deprecated, compiler);
-		registredCompilers.put(entry, compiler);
+		registredCompilers.add(entry);
 		for (var listener : listeners)
 			listener.accept(entry);
 		return entry;
@@ -51,12 +50,12 @@ public class ImplCompilerRegistry implements CompilerRegistry {
 
 	@Override
 	public Set<CompilerEntry> entries() {
-		return registredCompilers.keySet();
+		return Set.copyOf(registredCompilers);
 	}
 
 	@Override
 	public Set<AHudCompiler<?>> compilers() {
-		return Set.copyOf(registredCompilers.values());
+		return entries().stream().map(e->e.compiler()).collect(Collectors.toSet());
 	}
 
 	@Override
