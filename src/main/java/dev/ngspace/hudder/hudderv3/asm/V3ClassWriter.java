@@ -14,10 +14,8 @@ import org.objectweb.asm.Type;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.compilers.abstractions.AV3Compiler;
-import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
-import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.hudderv3.GeneratedCompiler;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 
@@ -42,8 +40,6 @@ public class V3ClassWriter {
 		classWriter.visit(Opcodes.V25, Opcodes.ACC_PUBLIC, classname, null,
 				Type.getInternalName(GeneratedCompiler.class), null);
 		classWriter.visitSource(debugfilename, null);
-		
-	    initPublicField("uimanager", ArrayElementManager.class);
 	}
 	
 	public void initPublicField(String name, Class<?> type) {
@@ -52,50 +48,12 @@ public class V3ClassWriter {
 	}
 	public void createInit() {
 		
-		classWriter.newField(classname, "v3compiler", Type.getDescriptor(AV3Compiler.class));
-		
-	    classWriter.visitField(
-	            Opcodes.ACC_PUBLIC,
-	            "v3compiler",
-	            Type.getDescriptor(AV3Compiler.class),
-	            null,
-	            null
-	    ).visitEnd();
-		
-//		classWriter.newField(classname, "helper", Type.getDescriptor(HudderV3Helper.class));
-//		
-//	    classWriter.visitField(
-//	            Opcodes.ACC_PUBLIC,
-//	            "helper",
-//	            Type.getDescriptor(HudderV3Helper.class),
-//	            null,
-//	            null
-//	    ).visitEnd();
-
-		
 		init = createMethod("<init>", new Class<?>[] {AV3Compiler.class, HudderV3Helper.class}, null, null, null);
 
 		init.aload(0);
-		init.aload(2);
-		init.getField("config", HudderV3Helper.class, HudderConfig.class);
-		init.callInit(GeneratedCompiler.class, HudderConfig.class);
-		
-		// Init UIElements field
-	    
-		init.aload(0);
-		init.newAndDup(ArrayElementManager.class);
-		init.callInit(ArrayElementManager.class);
-		init.putField("uimanager", ArrayElementManager.class);
-		
-		// Init v3compiler field
-		init.aload(0);
 		init.aload(1);
-		init.putField("v3compiler", AV3Compiler.class);
-		
-		// Init v3compiler field
-		init.aload(0);
 		init.aload(2);
-		init.putField("helper", HudderV3Helper.class);
+		init.callInit(GeneratedCompiler.class, AV3Compiler.class, HudderV3Helper.class);
 	}
 	
 	public V3ExecuteMethodWriter createExecuteMethod(String name, Class<?>[] classes) {

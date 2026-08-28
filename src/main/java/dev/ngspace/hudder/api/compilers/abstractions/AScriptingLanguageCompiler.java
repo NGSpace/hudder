@@ -1,14 +1,15 @@
 package dev.ngspace.hudder.api.compilers.abstractions;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import dev.ngspace.hudder.Hudder;
+import dev.ngspace.hudder.api.compilers.AHudCompiler;
 import dev.ngspace.hudder.api.compilers.HudInformation;
 import dev.ngspace.hudder.api.compilers.interfaces.PreparedCompiler;
 import dev.ngspace.hudder.api.compilers.interfaces.StringEvaluator;
+import dev.ngspace.hudder.api.compilers.interfaces.VariablesProvider;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.config.HudderConfig;
@@ -17,48 +18,37 @@ import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.uielements.AUIElement;
 import dev.ngspace.hudder.utils.HudFileUtils;
 
-public abstract class AScriptingLanguageCompiler extends AVarTextCompiler implements PreparedCompiler,
-		StringEvaluator<String> {
+public abstract class AScriptingLanguageCompiler extends AHudCompiler<IScriptingLanguageEngine> implements
+		PreparedCompiler, StringEvaluator<IScriptingLanguageEngine>, VariablesProvider {
 	
-	public Map<String, RuntimeCache> cache = new HashMap<String, RuntimeCache>();
 	public ArrayElementManager elms = new ArrayElementManager();
 	
 	protected AScriptingLanguageCompiler(HudderConfig config) {
-		super(config);
+		super(config, new AtomicReference<>(), new HashMap<>());
 	}
 	
 	protected abstract IScriptingLanguageEngine createLangEngine() throws CompileException;
 
 	@Override
-	public String processFile(String filepath) throws CompileException, IOException {
+	public IScriptingLanguageEngine processFile(String filepath) throws CompileException, IOException {
 		String text = HudFileUtils.readFile(filepath);
-		evalHud(text, filepath);
-		return text;
+		return evalHud(text, filepath);
 	}
 	
 	@Override
-	public String evalHud(String text, String filepath) throws CompileException {
-		if (cache.containsKey(text)) {
-			var cachehit = cache.get(text);
-			if (cachehit.exception!=null) throw cachehit.engine.processCompileException(cachehit.exception);
-			return text;
-		}
+	public IScriptingLanguageEngine evalHud(String text, String filepath) throws CompileException {
 		IScriptingLanguageEngine wrapper = null;
 		try {
-			RuntimeCache rtcache = cache.get(text);
-			if (rtcache!=null&&rtcache.exception!=null) throw rtcache.exception;
 			wrapper = createLangEngine();
 			
 			try {
 				wrapper.evaluateCode(text, filepath);
-				cache.put(text, new RuntimeCache(wrapper,null));
 			} catch (Exception e) {
 				if (Hudder.IS_DEBUG) e.printStackTrace();
 				wrapper.close();
-				cache.put(text, new RuntimeCache(wrapper,e));
 				throw wrapper.processCompileException(e);
 			}
-			return text;
+			return wrapper;
 		} catch (Exception e) {
 			if (Hudder.IS_DEBUG) e.printStackTrace();
 			if (wrapper!=null) {
@@ -70,10 +60,9 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler implem
 		
 	}
 
-	@Override public HudInformation execute(String text, String filename) throws ExecutionException {
-		IScriptingLanguageEngine wrapper = null;
+	@Override public HudInformation execute(IScriptingLanguageEngine wrapper, String filename)
+			throws ExecutionException {
 		try {
-			wrapper = cache.get(text).engine;
 			String TL = String.valueOf(wrapper.callFunctionSafe("topleft", ""));
 			String BL = String.valueOf(wrapper.callFunctionSafe("bottomleft", ""));
 			String TR = String.valueOf(wrapper.callFunctionSafe("topright", ""));
@@ -103,31 +92,12 @@ public abstract class AScriptingLanguageCompiler extends AVarTextCompiler implem
 	@Override public Object getVariable(String key) {
 		Object obj = DataVariableRegistry.getAny(key);
 		if (obj!=null) return obj;
-		return get(key);
-	}
-	
-	
-
-	/**
-	 * Saves the engine as well as any compiler exception that was thrown during compiliation.
-	 */
-	public static class RuntimeCache implements Closeable {
-		public IScriptingLanguageEngine engine;
-		public Exception exception;
-		public RuntimeCache(IScriptingLanguageEngine engine, Exception exception) {
-			this.engine=engine;
-			this.exception=exception;
-		}
-		@Override public void close() throws IOException {
-			exception = null;
-			engine.close();
-		}
+		return getVariable(key);
 	}
 	
 	@Override
 	public void reset() throws IOException {
-		for(RuntimeCache c:cache.values()) c.close();
-		cache.clear();
+		for(IScriptingLanguageEngine c:instances.values()) c.close();
 		super.reset();
 	}
 	

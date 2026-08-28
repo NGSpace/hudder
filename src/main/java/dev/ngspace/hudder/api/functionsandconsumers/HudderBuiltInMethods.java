@@ -3,7 +3,7 @@ package dev.ngspace.hudder.api.functionsandconsumers;
 import java.io.IOException;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.api.compilers.abstractions.AVarTextCompiler;
+import dev.ngspace.hudder.api.compilers.interfaces.VariablesManager;
 import dev.ngspace.hudder.uielements.BuiltInTextureElement;
 import dev.ngspace.hudder.uielements.ColorVerticesElement;
 import dev.ngspace.hudder.uielements.GameHudElement;
@@ -124,8 +124,8 @@ public class HudderBuiltInMethods {
 		// Variables
 		
 		api.registerDeprecatedPositionedConsumer("Setting variables through a function is deprecated", (_,a,_,_, s) -> {
-			if (a instanceof AVarTextCompiler c)
-				c.put(s[0].asString(), s[1]);
+			if (a instanceof VariablesManager c)
+				c.putVariable(s[0].asString(), s[1]);
 		}, "set", "setVal", "setVariable");
 		api.registerPositionedConsumer((_,_,_,i,s) -> {
 			try {

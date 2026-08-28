@@ -1,6 +1,5 @@
 package dev.ngspace.hudder.api.compilers.interfaces;
 
-public interface VariablesManager {
-	public void put(String key, Object value);
-	public Object get(String key);
+public interface VariablesManager extends VariablesProvider {
+	public void putVariable(String key, Object value);
 }
