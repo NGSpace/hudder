@@ -118,9 +118,9 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 				.setSaveOperation(b->config.enabled=b)
 				.setComponentProvider(enabledDisabled)
 				.build());
-		general.addOption(DropdownNGSMCConfigOption.builder(registry.findEntryFromDisplayName(Hudder.config.compilerName())
+		general.addOption(DropdownNGSMCConfigOption.builder(registry.findEntryFromId(Hudder.config.compilerId())
 				.orElseThrow(()->new IllegalArgumentException("No compiler named "
-						+ Hudder.config.compilerName())).display_name(),
+						+ Hudder.config.compilerId())).display_name(),
 					Component.translatable("hudder.general.compilertype"),
 					registry.entries().stream()
 						.sorted(Comparator.comparing(CompilerEntry::unstable)

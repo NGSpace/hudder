@@ -201,11 +201,11 @@ public class HudderConfig {
 	 * If unable to retrieve the compiler, switches to the default {@code HudderV3Compiler} instead.
 	 */
 	public void refreshCompiler() {
-		Optional<CompilerEntry> entry = registry.findEntryFromId(compilerName());
+		Optional<CompilerEntry> entry = registry.findEntryFromId(compilerId());
 		if (entry.isPresent()) {
 			compiler = entry.get().compiler();
 		} else {
-			Hudder.log("Couldn't find compiler \"" + compilerName() + "\", using default compiler.");
+			Hudder.log("Couldn't find compiler \"" + compilerId() + "\", using default compiler.");
 			compiler = hudderV3Compiler;
 		}
 	}
@@ -423,7 +423,7 @@ public class HudderConfig {
 	    return userSettings.config_version;
 	}
 
-	public String compilerName() {
+	public String compilerId() {
 	    return userSettings.compilername;
 	}
 	

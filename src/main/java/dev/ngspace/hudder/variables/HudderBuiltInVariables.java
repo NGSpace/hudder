@@ -98,7 +98,7 @@ public class HudderBuiltInVariables {
 		registerBoolean(_->config.compilationManager.isFirstRunSinceCacheClear, "first_execution");
 		
 		// Strings
-		registerString(_->config.compilerName(), "compilertype");
+		registerString(_->config.compilerId(), "compilertype");
 		registerString(_->config.mainfile(), "mainfile");
 		registerString(_->Hudder.HUDDER_VERSION, "hudder_version");
 		
