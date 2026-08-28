@@ -3,7 +3,6 @@ package dev.ngspace.hudder.defaultcompilers;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicReference;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.compilers.compilers.AHudCompiler;
@@ -21,7 +20,7 @@ import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 public class HudPackCompiler extends AHudCompiler<HudPack> implements SettingsProvider {
 	
 	public HudPackCompiler(HudderConfig config) {
-		super(config, new AtomicReference<>(), new HashMap<>());
+		super(config, new HashMap<>());
 	}
 
 	public ArrayElementManager elms = new ArrayElementManager();

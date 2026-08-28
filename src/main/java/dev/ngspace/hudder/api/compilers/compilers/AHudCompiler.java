@@ -30,22 +30,21 @@ import net.minecraft.util.Util;
 public abstract class AHudCompiler<T> {
 
 	protected Future<T> mainCompilation;
-	protected ExecutorService hudCompilerExecutor =
+	protected AtomicReference<ExecutorService> hudCompilerExecutor = new AtomicReference<>(
 	        Executors.newSingleThreadExecutor(r -> {
 	        	Thread thread = new Thread(r, "hud-compiler");
 	        	// Compilation work must never keep the Minecraft JVM alive during exit.
 	        	thread.setDaemon(true);
 	        	return thread;
-	        });
+	        }));
 	protected final AtomicBoolean hudCompiling = new AtomicBoolean(false);
-	protected final AtomicReference<T> mainInstance;
 	protected final Map<String, T> instances;
 	protected final Map<String, Exception> errors = new HashMap<>();
 	protected final HudderConfig config;
+	protected T mainInstance = null;
 	
-	protected AHudCompiler(HudderConfig config, AtomicReference<T> mainInstance, Map<String, T> instancesMap) {
+	protected AHudCompiler(HudderConfig config, Map<String, T> instancesMap) {
 		this.config = config;
-		this.mainInstance = mainInstance;
 		this.instances = instancesMap;
 	}
 	
@@ -102,29 +101,36 @@ public abstract class AHudCompiler<T> {
 		return execute(res, filename);
 	}
 	
-
+	/*
+	 * I fought and struggled against many, many concurrency issues...
+	 * But then I remembered this isn't real multi-threading.
+	 * Sure there are issues but I am not trading my sanity for thread-safety in hud compilation
+	 * At the end of the day, if any compilers are having issues with this, they can @Override this method
+	 * And map it to #processAndExecute or smt, idk, and idc anymore.
+	 */
 	public HudInformation processAndExecuteMain(String filepath, String filename)
 			throws CompileException, ExecutionException, IOException {
-
-    	if (mainInstance.get()!=null) {
-    		return execute(mainInstance.get(), filename);
-    	}
+    	if (mainInstance!=null)
+    		return execute(mainInstance, filename);
     	
-	    // Immediately reject the call if another HUD is still being processed.
 	    if (!hudCompiling.compareAndSet(false, true)) {
 	        throw new CompileException("Hud still processing",-1,-1);
 	    }
 		
 	    try {
-	    	
-		    mainCompilation = hudCompilerExecutor.submit(() -> {
+	    	ExecutorService copy = hudCompilerExecutor.get();
+		    mainCompilation = copy.submit(() -> {
 		    	try {
 		    		T res = processFile(filepath);
-		    		instances.put(filepath, res);
-		    		mainInstance.set(res);
-		    		return mainInstance.get();
+		    		if (copy == hudCompilerExecutor.get()) {
+			    		instances.put(filepath, res);
+			    		mainInstance = res;
+		    		}
+		    		return res;
 		    	} finally {
-			        hudCompiling.set(false);
+		    		if (copy == hudCompilerExecutor.get()) {
+		    			hudCompiling.set(false);
+		    		}
 				}
 		    });
 		    try {
@@ -159,7 +165,7 @@ public abstract class AHudCompiler<T> {
 	 * <p>This method is safe to call more than once.</p>
 	 */
 	public void shutdown() {
-		hudCompilerExecutor.shutdownNow();
+		hudCompilerExecutor.get().shutdownNow();
 	}
 	
 	public abstract String[] getSupportedFileFormats();
@@ -183,16 +189,16 @@ public abstract class AHudCompiler<T> {
 	 * @throws IOException
 	 */
 	public void reset() throws IOException {
-		hudCompilerExecutor.shutdownNow();
-		hudCompilerExecutor = Executors.newSingleThreadExecutor(r -> {
+		mainInstance = null;
+		hudCompiling.set(false);
+		instances.clear();
+		errors.clear();
+		hudCompilerExecutor.get().shutdownNow();
+		hudCompilerExecutor.set(Executors.newSingleThreadExecutor(r -> {
 	        	Thread thread = new Thread(r, "hud-compiler");
 	        	// Compilation work must never keep the Minecraft JVM alive during exit.
 	        	thread.setDaemon(true);
 	        	return thread;
-	        });
-		mainInstance.set(null);
-		hudCompiling.set(false);
-		instances.clear();
-		errors.clear();
+	        }));
 	}
 }

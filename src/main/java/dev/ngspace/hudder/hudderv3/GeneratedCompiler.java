@@ -3,7 +3,6 @@ package dev.ngspace.hudder.hudderv3;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 import dev.ngspace.hudder.api.compilers.compilers.AHudCompiler;
 import dev.ngspace.hudder.api.compilers.compilers.AV3Compiler;
@@ -24,7 +23,7 @@ public abstract class GeneratedCompiler extends AHudCompiler<String> implements 
 	protected Map<String, Object> variables = new HashMap<String, Object>();
 	
 	protected GeneratedCompiler(AV3Compiler compiler, HudderV3Helper helper) {
-		super(helper.config, new AtomicReference<>(), new HashMap<>());
+		super(helper.config, new HashMap<>());
 		this.helper = helper;
 		this.v3compiler = compiler;
 		this.uimanager = new ArrayElementManager();

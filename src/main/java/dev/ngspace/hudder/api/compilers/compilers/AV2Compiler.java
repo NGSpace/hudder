@@ -3,10 +3,9 @@ package dev.ngspace.hudder.api.compilers.compilers;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
-import dev.ngspace.hudder.api.compilers.interfaces.PreparedCompiler;
 import dev.ngspace.hudder.api.compilers.interfaces.HudEvaluator;
+import dev.ngspace.hudder.api.compilers.interfaces.PreparedCompiler;
 import dev.ngspace.hudder.api.compilers.interfaces.VariablesManager;
 import dev.ngspace.hudder.api.compilers.utils.CompileState;
 import dev.ngspace.hudder.api.compilers.utils.HudInformation;
@@ -41,7 +40,7 @@ public abstract class AV2Compiler extends AHudCompiler<V2Runtime> implements Pos
 	public Map<String, Object> variables = new HashMap<String, Object>();
 
 	protected AV2Compiler(HudderConfig config) {
-		super(config, new AtomicReference<>(), new HashMap<>());
+		super(config, new HashMap<>());
 		FunctionAndConsumerAPI.getInstance().applyFunctionsAndConsumers(this);
 	}
 	

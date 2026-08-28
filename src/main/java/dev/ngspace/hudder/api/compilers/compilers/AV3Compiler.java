@@ -5,7 +5,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.objectweb.asm.Label;
 
@@ -48,7 +47,7 @@ public abstract class AV3Compiler extends AHudCompiler<GeneratedCompiler> implem
 	public Map<String, BindablePositionedConsumer> api_consumers = new HashMap<String, BindablePositionedConsumer>();
 
 	protected AV3Compiler(HudderConfig config) {
-		super(config, new AtomicReference<>(), new HashMap<>());
+		super(config, new HashMap<>());
 		FunctionAndConsumerAPI.getInstance().applyFunctionsAndConsumers(this);
 		V3APIFunctions.bindAllAPIFunctions(this);
 	}
@@ -168,7 +167,7 @@ public abstract class AV3Compiler extends AHudCompiler<GeneratedCompiler> implem
 	
 	@Override
     public void prepareCompiler() {
-		if (mainInstance.get()!=null)
-			mainInstance.get().prepareCompiler();
+		if (mainInstance!=null)
+			mainInstance.prepareCompiler();
     }
 }
