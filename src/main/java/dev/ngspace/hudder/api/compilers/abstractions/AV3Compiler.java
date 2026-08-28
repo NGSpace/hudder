@@ -13,7 +13,7 @@ import dev.ngspace.hudder.api.compilers.AHudCompiler;
 import dev.ngspace.hudder.api.compilers.HudInformation;
 import dev.ngspace.hudder.api.compilers.TextPos;
 import dev.ngspace.hudder.api.compilers.interfaces.PreparedCompiler;
-import dev.ngspace.hudder.api.compilers.interfaces.StringEvaluator;
+import dev.ngspace.hudder.api.compilers.interfaces.HudEvaluator;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
@@ -34,7 +34,7 @@ import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
 import dev.ngspace.hudder.utils.HudFileUtils;
 
 public abstract class AV3Compiler extends AHudCompiler<GeneratedCompiler> implements PositionedBinder,
-		StringEvaluator<GeneratedCompiler>, PreparedCompiler {
+		HudEvaluator<GeneratedCompiler>, PreparedCompiler {
 	
 	public static final String VERIFIER_ERROR_NOTE = """
 			

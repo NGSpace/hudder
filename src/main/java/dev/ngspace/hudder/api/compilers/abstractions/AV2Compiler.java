@@ -10,7 +10,7 @@ import dev.ngspace.hudder.api.compilers.CompileState;
 import dev.ngspace.hudder.api.compilers.HudInformation;
 import dev.ngspace.hudder.api.compilers.TextPos;
 import dev.ngspace.hudder.api.compilers.interfaces.PreparedCompiler;
-import dev.ngspace.hudder.api.compilers.interfaces.StringEvaluator;
+import dev.ngspace.hudder.api.compilers.interfaces.HudEvaluator;
 import dev.ngspace.hudder.api.compilers.interfaces.VariablesManager;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
@@ -31,7 +31,7 @@ import dev.ngspace.hudder.v2runtime.values.DefaultV2VariableParser;
 import dev.ngspace.hudder.v2runtime.values.IV2VariableParser;
 
 public abstract class AV2Compiler extends AHudCompiler<V2Runtime> implements PositionedBinder,
-		StringEvaluator<V2Runtime>, PreparedCompiler, VariablesManager {
+		HudEvaluator<V2Runtime>, PreparedCompiler, VariablesManager {
 	
 	public MethodHandler methodHandler = new MethodHandler();
 	public V2FunctionHandler functionHandler = new V2FunctionHandler();

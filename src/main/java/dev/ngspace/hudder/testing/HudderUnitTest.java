@@ -4,7 +4,7 @@ import java.util.Map;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.compilers.AHudCompiler;
-import dev.ngspace.hudder.api.compilers.interfaces.StringEvaluator;
+import dev.ngspace.hudder.api.compilers.interfaces.HudEvaluator;
 
 public class HudderUnitTest {
 	public final String texttocompile;
@@ -23,10 +23,10 @@ public class HudderUnitTest {
 	}
 	
 	public HudderUnitTestResult test(AHudCompiler<?> compiler) {
-		if (!(compiler instanceof StringEvaluator))
+		if (!(compiler instanceof HudEvaluator))
 			throw new IllegalArgumentException("Compiler must implement StringEvaluator to be tested!");
 		@SuppressWarnings("unchecked")
-		StringEvaluator<String> evaluator = (StringEvaluator<String>) compiler;
+		HudEvaluator<String> evaluator = (HudEvaluator<String>) compiler;
 		Hudder.log("Running unit test: " + texttocompile);
 		return switch (mode) {
 			case NORMAL: {

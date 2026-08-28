@@ -8,7 +8,7 @@ import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.compilers.AHudCompiler;
 import dev.ngspace.hudder.api.compilers.HudInformation;
 import dev.ngspace.hudder.api.compilers.interfaces.PreparedCompiler;
-import dev.ngspace.hudder.api.compilers.interfaces.StringEvaluator;
+import dev.ngspace.hudder.api.compilers.interfaces.HudEvaluator;
 import dev.ngspace.hudder.api.compilers.interfaces.VariablesProvider;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
@@ -19,7 +19,7 @@ import dev.ngspace.hudder.uielements.AUIElement;
 import dev.ngspace.hudder.utils.HudFileUtils;
 
 public abstract class AScriptingLanguageCompiler extends AHudCompiler<IScriptingLanguageEngine> implements
-		PreparedCompiler, StringEvaluator<IScriptingLanguageEngine>, VariablesProvider {
+		PreparedCompiler, HudEvaluator<IScriptingLanguageEngine>, VariablesProvider {
 	
 	public ArrayElementManager elms = new ArrayElementManager();
 	
