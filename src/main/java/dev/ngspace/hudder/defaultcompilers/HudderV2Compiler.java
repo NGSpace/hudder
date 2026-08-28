@@ -397,4 +397,7 @@ public class HudderV2Compiler extends AV2Compiler {
 	public String[] getSupportedFileFormats() {
 		return new String[] {"hud"};
 	}
+	
+	private record CodeBlock(String code, String text, int starting_index, int ending_index) {}
+	private record Instruction(byte instruction, String paremeter, int ending_index) {}
 }

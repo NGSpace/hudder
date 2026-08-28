@@ -120,19 +120,19 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 				.build());
 		general.addOption(DropdownNGSMCConfigOption.builder(registry.findEntryFromDisplayName(Hudder.config.compilerName())
 				.orElseThrow(()->new IllegalArgumentException("No compiler named "
-						+ Hudder.config.compilerName())).displayname(),
+						+ Hudder.config.compilerName())).display_name(),
 					Component.translatable("hudder.general.compilertype"),
 					registry.entries().stream()
 						.sorted(Comparator.comparing(CompilerEntry::unstable)
-								.thenComparing(CompilerEntry::displayname, String.CASE_INSENSITIVE_ORDER))
-						.map(e->e.displayname())
+								.thenComparing(CompilerEntry::display_name, String.CASE_INSENSITIVE_ORDER))
+						.map(e->e.display_name())
 						.toList())
 	    		.setHoverComponent(Component.translatable("hudder.general.compilertype.tooltip"))
 	    		.setDefaultValue("Hudder V3")
 	    		// Should be safe since the compiler has either been selected from the list which means it's
 	    		// safe. Or the first check during the builder's initation would've thrown already.
 	    		.setSaveOperation(b->Hudder.config.setCompilerName(registry.findEntryFromDisplayName(b).get()
-	    				.registry_name()))
+	    				.id()))
 	    		.setValidator(e->{
 	    			widget.comp = e;
 	    			return registry.findEntryFromDisplayName(e).isPresent()
@@ -278,9 +278,9 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 	
 	public static Component getCompilerWarning(CompilerEntry compilerEntry) {
 		if (compilerEntry.deprecated()) return Component.translatable(
-				"hudder.general.compilertype.deprecated_warning", compilerEntry.displayname());
+				"hudder.general.compilertype.deprecated_warning", compilerEntry.display_name());
 		if (compilerEntry.unstable()) return Component.translatable(
-				"hudder.general.compilertype.unstable_warning", compilerEntry.displayname());
+				"hudder.general.compilertype.unstable_warning", compilerEntry.display_name());
 		return null;
 	}
 	

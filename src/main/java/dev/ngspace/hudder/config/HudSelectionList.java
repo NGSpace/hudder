@@ -8,6 +8,7 @@ import java.util.function.UnaryOperator;
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 
 import dev.ngspace.hudder.api.compilers.CompilerRegistry;
+import dev.ngspace.hudder.api.compilers.utils.CompilerEntry;
 import dev.ngspace.hudder.config.HudSelectionList.HudEntry;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.hudder.utils.ResourceReloadListener;
@@ -39,9 +40,9 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 		this.config = config;
 		this.source = source;
 		this.registry = registry;
-		var entry = registry.findEntryFromName(config.compilername);
+		var entry = registry.findEntryFromId(config.compilername);
 		if (entry.isPresent()) {
-			comp = entry.get().displayname();
+			comp = entry.get().display_name();
 		} else {
 			comp = "Hudder V3";
 		}
@@ -96,7 +97,7 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 		return IMAGE_EXTENSIONS.contains(extension);
 	}
 	
-	public void addEntry(String filepath, File file, String[] compilers, boolean isSelected) {
+	public void addEntry(String filepath, File file, CompilerEntry[] compilers, boolean isSelected) {
 		HudEntry entry = new HudEntry(filepath, compilers, file);
 		addEntry(entry);
 		if (isSelected)
@@ -120,7 +121,7 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 		
 		public MutableComponent component;
 		public String filepath;
-		public String[] compilers;
+		public CompilerEntry[] compilers;
 		public File file;
 		public NGSMCConfigButton editbutton;
 		
@@ -129,7 +130,7 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 		
 		protected HudEntry() {}
 		
-		public HudEntry(String filepath, String[] compilers, File file) {
+		public HudEntry(String filepath, CompilerEntry[] compilers, File file) {
 			this.file = file;
 			if (filepath != null) {
 				this.component = Component.literal(filepath);
@@ -140,8 +141,8 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 							String separator = i == compilers.length - 1 ? " and " : ", ";
 							component.append(Component.literal(separator).withStyle(COMPILER_TEXT_STYLE));
 						}
-						component.append(Component.literal(registry.findEntryFromName(compilers[i]).orElseThrow()
-								.displayname()).withStyle(COMPILER_TEXT_STYLE));
+						component.append(Component.literal(compilers[i].display_name())
+								.withStyle(COMPILER_TEXT_STYLE));
 					}
 				} else {
 					component.append(
@@ -183,9 +184,9 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 					&& editbutton.isMouseOver(mouseX, mouseY);
 			
 			if (clickedEdit) {
-				for (String compiler : compilers) {
-					if (compiler.equals(config.compilername)) {
-						registry.findEntryFromName(config.compilername).orElseThrow().compiler().edit(file);
+				for (CompilerEntry compiler : compilers) {
+					if (compiler.id().equals(config.compilername)) {
+						registry.findEntryFromId(config.compilername).orElseThrow().compiler().edit(file);
 						return true;
 					}
 				}

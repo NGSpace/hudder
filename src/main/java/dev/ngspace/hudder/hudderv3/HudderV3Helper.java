@@ -61,7 +61,7 @@ public class HudderV3Helper {
 		try {
 			boolean AddText = args.length>1&&args[1].asBoolean() || type.equals("add");
 			AHudCompiler<?> ecompiler=(args.length>2 ?
-					config.registry.findEntryFromName(args[2].asString()).orElseThrow().compiler():comp);
+					config.registry.findEntryFromId(args[2].asString()).orElseThrow().compiler():comp);
 			var result = config.compilationManager.compileAndExecuteSecondaryHud(ecompiler, file, file);
 			for (var uielement : result.elements()) {
 				man.addUIElement(uielement);

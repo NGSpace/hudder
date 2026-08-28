@@ -34,7 +34,7 @@ public class LoadMethod implements V2IMethod {
 		}
 		try {
 			boolean AddText = (args.length>2 && args[1].asBoolean()) || type.equals("add");
-			AHudCompiler<?> compiler=(args.length>2?config.registry.findEntryFromName(args[2].asString())
+			AHudCompiler<?> compiler=(args.length>2?config.registry.findEntryFromId(args[2].asString())
 					.orElseThrow(()->new ExecutionException("Compiler not found", charpos)).compiler():comp);
 			CompileState state = runtime.getMasterScope().compileState;
 			state.combineWithResult(config.compilationManager.compileAndExecuteSecondaryHud(compiler, file, file), AddText);

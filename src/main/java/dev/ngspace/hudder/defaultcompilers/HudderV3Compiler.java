@@ -6,8 +6,6 @@ import java.util.List;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.compilers.compilers.AV3Compiler;
-import dev.ngspace.hudder.api.compilers.compilers.AV2Compiler.CodeBlock;
-import dev.ngspace.hudder.api.compilers.compilers.AV2Compiler.Instruction;
 import dev.ngspace.hudder.api.compilers.utils.TextPos;
 import dev.ngspace.hudder.api.compilers.utils.TextPosTracker;
 import dev.ngspace.hudder.config.HudderConfig;
@@ -393,4 +391,7 @@ public class HudderV3Compiler extends AV3Compiler {
 	public String[] getSupportedFileFormats() {
 		return new String[] {"hud"};
 	}
+	
+	private record CodeBlock(String code, String text, int starting_index, int ending_index) {}
+	private record Instruction(byte instruction, String paremeter, int ending_index) {}
 }

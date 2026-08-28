@@ -201,7 +201,7 @@ public class HudderConfig {
 	 * If unable to retrieve the compiler, switches to the default {@code HudderV3Compiler} instead.
 	 */
 	public void refreshCompiler() {
-		Optional<CompilerEntry> entry = registry.findEntryFromName(compilerName());
+		Optional<CompilerEntry> entry = registry.findEntryFromId(compilerName());
 		if (entry.isPresent()) {
 			compiler = entry.get().compiler();
 		} else {

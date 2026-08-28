@@ -95,7 +95,7 @@ public class HudderUnitTester {
 		double res = (int) (v*1000);
 		res/=1000;
 		String compname = HudderApi.COMPILER_REGISTRY.findEntryFromCompiler(compiler)
-			.map(CompilerEntry::registry_name)
+			.map(CompilerEntry::id)
 			.orElseGet(() -> compiler.getClass().getSimpleName());
 		return "\n\n" + (success? "Successful, " : "") + "took "+ res + "ms. Passed "
 				+ (testscount-failedcount) + "/" + testscount + " tests using " + compname;

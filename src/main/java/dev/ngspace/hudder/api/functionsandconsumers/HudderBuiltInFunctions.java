@@ -99,7 +99,7 @@ public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 			try {
 				var e = m.toUIElementArray();
 				
-				AHudCompiler<?> compiler = c.registry.findEntryFromName(s[1].asString()).orElseThrow().compiler();
+				AHudCompiler<?> compiler = c.registry.findEntryFromId(s[1].asString()).orElseThrow().compiler();
 				String hud =  s[0].asString();
 				
 				HudInformation result = c.compilationManager.compileAndExecuteSecondaryHud(compiler, hud, hud);

@@ -18,7 +18,7 @@ import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.api.functionsandconsumers.HudderBuiltInFunctions;
 import dev.ngspace.hudder.api.functionsandconsumers.HudderBuiltInMethods;
 import dev.ngspace.hudder.config.HudderConfig;
-import dev.ngspace.hudder.defaultcompilers.Compilers;
+import dev.ngspace.hudder.config.ImplCompilerRegistry;
 import dev.ngspace.hudder.testing.HudderTestsHandler;
 import dev.ngspace.hudder.testing.HudderUnitTest;
 import dev.ngspace.hudder.testing.HudderUnitTestResult;
@@ -37,7 +37,7 @@ class HudderUnitTests {
 		HudFileUtils.FABRIC_CONFIG_FOLDER = tempDir.toString();
 		HudFileUtils.FOLDER = HudFileUtils.FABRIC_CONFIG_FOLDER + File.separator + "hudder" + File.separator;
 		
-		config = new HudderConfig(tempDir.resolve("hudder-test.json").toFile(), new Compilers());
+		config = new HudderConfig(tempDir.resolve("hudder-test.json").toFile(), new ImplCompilerRegistry());
 		HudFileUtils.makeDefaultHud();
 		handler = new HudderTestsHandler(config, config.hudderV3Compiler);
 		handler.test_providers.add(handler::loadDefaultTests);

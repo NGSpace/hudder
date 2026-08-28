@@ -182,10 +182,6 @@ public abstract class AV2Compiler extends AHudCompiler<V2Runtime> implements Pos
 		return false;
 	}
 	
-	public record CodeBlock(String code, String text, int starting_index, int ending_index) {}
-	
-	public record Instruction(byte instruction, String paremeter, int ending_index) {}
-	
 	// V2 is the only one using those...
 	protected TextPos getPosition(int ind, String string) {
 		return getPosition(new TextPos(0, 0), ind, string);
