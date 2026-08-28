@@ -4,6 +4,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import dev.ngspace.hudder.api.compilers.compilers.AHudCompiler;
+import dev.ngspace.hudder.api.compilers.utils.CompilerEntry;
+
 public interface CompilerRegistry {
 	
 	public Optional<CompilerEntry> findEntryFromName(String name);

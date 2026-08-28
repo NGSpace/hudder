@@ -3,8 +3,8 @@ package dev.ngspace.hudder.v2runtime.functions;
 import java.util.HashMap;
 import java.util.Random;
 
-import dev.ngspace.hudder.api.compilers.AHudCompiler;
-import dev.ngspace.hudder.api.compilers.TextPos;
+import dev.ngspace.hudder.api.compilers.compilers.AHudCompiler;
+import dev.ngspace.hudder.api.compilers.utils.TextPos;
 import dev.ngspace.hudder.api.functionsandconsumers.IUIElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
 import dev.ngspace.hudder.config.HudderConfig;

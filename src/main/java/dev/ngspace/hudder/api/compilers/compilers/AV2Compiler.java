@@ -1,17 +1,16 @@
-package dev.ngspace.hudder.api.compilers.abstractions;
+package dev.ngspace.hudder.api.compilers.compilers;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-import dev.ngspace.hudder.api.compilers.AHudCompiler;
-import dev.ngspace.hudder.api.compilers.CompileState;
-import dev.ngspace.hudder.api.compilers.HudInformation;
-import dev.ngspace.hudder.api.compilers.TextPos;
 import dev.ngspace.hudder.api.compilers.interfaces.PreparedCompiler;
 import dev.ngspace.hudder.api.compilers.interfaces.HudEvaluator;
 import dev.ngspace.hudder.api.compilers.interfaces.VariablesManager;
+import dev.ngspace.hudder.api.compilers.utils.CompileState;
+import dev.ngspace.hudder.api.compilers.utils.HudInformation;
+import dev.ngspace.hudder.api.compilers.utils.TextPos;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;

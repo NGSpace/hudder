@@ -13,8 +13,8 @@ import org.apache.commons.io.IOUtils;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.HudderApi;
-import dev.ngspace.hudder.api.compilers.AHudCompiler;
-import dev.ngspace.hudder.api.compilers.CompilerEntry;
+import dev.ngspace.hudder.api.compilers.compilers.AHudCompiler;
+import dev.ngspace.hudder.api.compilers.utils.CompilerEntry;
 import dev.ngspace.hudder.testing.HudderTestReader.Result;
 import dev.ngspace.hudder.testing.HudderUnitTest.Mode;
 import net.minecraft.network.chat.Component;

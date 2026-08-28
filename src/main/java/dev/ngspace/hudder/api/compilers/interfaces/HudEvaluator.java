@@ -1,6 +1,6 @@
 package dev.ngspace.hudder.api.compilers.interfaces;
 
-import dev.ngspace.hudder.api.compilers.HudInformation;
+import dev.ngspace.hudder.api.compilers.utils.HudInformation;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 

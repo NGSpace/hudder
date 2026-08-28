@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.mojang.datafixers.types.templates.List;
 
-import dev.ngspace.hudder.api.compilers.CompileState;
+import dev.ngspace.hudder.api.compilers.utils.CompileState;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 

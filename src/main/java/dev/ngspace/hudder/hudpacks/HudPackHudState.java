@@ -1,6 +1,6 @@
 package dev.ngspace.hudder.hudpacks;
 
-import dev.ngspace.hudder.api.compilers.HudInformation;
+import dev.ngspace.hudder.api.compilers.utils.HudInformation;
 import dev.ngspace.hudder.api.functionsandconsumers.IUIElementManager;
 
 public class HudPackHudState {

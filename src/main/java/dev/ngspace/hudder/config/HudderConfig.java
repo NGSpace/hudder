@@ -18,9 +18,9 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.Expose;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.api.compilers.AHudCompiler;
-import dev.ngspace.hudder.api.compilers.CompilerEntry;
 import dev.ngspace.hudder.api.compilers.CompilerRegistry;
+import dev.ngspace.hudder.api.compilers.compilers.AHudCompiler;
+import dev.ngspace.hudder.api.compilers.utils.CompilerEntry;
 import dev.ngspace.hudder.defaultcompilers.HudPackCompiler;
 import dev.ngspace.hudder.defaultcompilers.HudderV2Compiler;
 import dev.ngspace.hudder.defaultcompilers.HudderV3Compiler;

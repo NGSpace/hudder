@@ -4,8 +4,8 @@ import java.util.Map;
 
 import org.objectweb.asm.Label;
 
-import dev.ngspace.hudder.api.compilers.TextPos;
-import dev.ngspace.hudder.api.compilers.abstractions.AV3Compiler;
+import dev.ngspace.hudder.api.compilers.compilers.AV3Compiler;
+import dev.ngspace.hudder.api.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;

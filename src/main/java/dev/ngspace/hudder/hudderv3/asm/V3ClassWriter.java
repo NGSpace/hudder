@@ -13,7 +13,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.api.compilers.abstractions.AV3Compiler;
+import dev.ngspace.hudder.api.compilers.compilers.AV3Compiler;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
 import dev.ngspace.hudder.hudderv3.GeneratedCompiler;

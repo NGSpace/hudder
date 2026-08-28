@@ -17,8 +17,8 @@ import org.mozilla.javascript.Undefined;
 import org.mozilla.javascript.WrappedException;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.api.compilers.AHudCompiler;
-import dev.ngspace.hudder.api.compilers.abstractions.IScriptingLanguageEngine;
+import dev.ngspace.hudder.api.compilers.compilers.AHudCompiler;
+import dev.ngspace.hudder.api.compilers.compilers.IScriptingLanguageEngine;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.api.functionsandconsumers.IUIElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;

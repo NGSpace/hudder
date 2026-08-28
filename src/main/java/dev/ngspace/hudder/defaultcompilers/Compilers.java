@@ -10,9 +10,9 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import dev.ngspace.hudder.api.compilers.AHudCompiler;
-import dev.ngspace.hudder.api.compilers.CompilerEntry;
 import dev.ngspace.hudder.api.compilers.CompilerRegistry;
+import dev.ngspace.hudder.api.compilers.compilers.AHudCompiler;
+import dev.ngspace.hudder.api.compilers.utils.CompilerEntry;
 
 public class Compilers implements CompilerRegistry {
 	

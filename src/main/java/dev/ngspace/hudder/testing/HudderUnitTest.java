@@ -3,7 +3,7 @@ package dev.ngspace.hudder.testing;
 import java.util.Map;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.api.compilers.AHudCompiler;
+import dev.ngspace.hudder.api.compilers.compilers.AHudCompiler;
 import dev.ngspace.hudder.api.compilers.interfaces.HudEvaluator;
 
 public class HudderUnitTest {

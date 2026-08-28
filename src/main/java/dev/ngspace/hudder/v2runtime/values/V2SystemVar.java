@@ -1,6 +1,6 @@
 package dev.ngspace.hudder.v2runtime.values;
 
-import dev.ngspace.hudder.api.compilers.abstractions.AV2Compiler;
+import dev.ngspace.hudder.api.compilers.compilers.AV2Compiler;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 

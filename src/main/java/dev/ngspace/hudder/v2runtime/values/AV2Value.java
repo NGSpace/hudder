@@ -3,8 +3,8 @@ package dev.ngspace.hudder.v2runtime.values;
 import java.util.Collection;
 import java.util.Objects;
 
-import dev.ngspace.hudder.api.compilers.CompileState;
-import dev.ngspace.hudder.api.compilers.abstractions.AV2Compiler;
+import dev.ngspace.hudder.api.compilers.compilers.AV2Compiler;
+import dev.ngspace.hudder.api.compilers.utils.CompileState;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.utils.ObjectWrapper;

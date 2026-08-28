@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.api.compilers.AHudCompiler;
 import dev.ngspace.hudder.api.compilers.CompilerRegistry;
-import dev.ngspace.hudder.api.compilers.HudInformation;
+import dev.ngspace.hudder.api.compilers.compilers.AHudCompiler;
 import dev.ngspace.hudder.api.compilers.interfaces.PreparedCompiler;
+import dev.ngspace.hudder.api.compilers.utils.HudInformation;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;

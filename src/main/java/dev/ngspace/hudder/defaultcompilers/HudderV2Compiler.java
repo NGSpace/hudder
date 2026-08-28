@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.api.compilers.TextPos;
-import dev.ngspace.hudder.api.compilers.abstractions.AV2Compiler;
+import dev.ngspace.hudder.api.compilers.compilers.AV2Compiler;
+import dev.ngspace.hudder.api.compilers.utils.TextPos;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;

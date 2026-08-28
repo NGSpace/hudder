@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.api.compilers;
+package dev.ngspace.hudder.api.compilers.utils;
 
 public class TextPosTracker {
 	public String text;

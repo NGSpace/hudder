@@ -3,9 +3,9 @@ package dev.ngspace.hudder.v2runtime.runtime_elements;
 import java.io.IOException;
 import java.util.Arrays;
 
-import dev.ngspace.hudder.api.compilers.CompileState;
-import dev.ngspace.hudder.api.compilers.HudInformation;
-import dev.ngspace.hudder.api.compilers.abstractions.AV2Compiler;
+import dev.ngspace.hudder.api.compilers.compilers.AV2Compiler;
+import dev.ngspace.hudder.api.compilers.utils.CompileState;
+import dev.ngspace.hudder.api.compilers.utils.HudInformation;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;

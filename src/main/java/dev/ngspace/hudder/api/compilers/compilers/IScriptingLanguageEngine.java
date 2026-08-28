@@ -1,9 +1,9 @@
-package dev.ngspace.hudder.api.compilers.abstractions;
+package dev.ngspace.hudder.api.compilers.compilers;
 
 import java.io.Closeable;
 import java.io.IOException;
 
-import dev.ngspace.hudder.api.compilers.TextPos;
+import dev.ngspace.hudder.api.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.utils.ObjectWrapper;
