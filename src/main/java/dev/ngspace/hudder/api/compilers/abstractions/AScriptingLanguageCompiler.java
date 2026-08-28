@@ -7,11 +7,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.compilers.AHudCompiler;
 import dev.ngspace.hudder.api.compilers.HudInformation;
-import dev.ngspace.hudder.api.compilers.interfaces.PreparedCompiler;
 import dev.ngspace.hudder.api.compilers.interfaces.HudEvaluator;
-import dev.ngspace.hudder.api.compilers.interfaces.VariablesProvider;
+import dev.ngspace.hudder.api.compilers.interfaces.PreparedCompiler;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
-import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
@@ -19,7 +17,7 @@ import dev.ngspace.hudder.uielements.AUIElement;
 import dev.ngspace.hudder.utils.HudFileUtils;
 
 public abstract class AScriptingLanguageCompiler extends AHudCompiler<IScriptingLanguageEngine> implements
-		PreparedCompiler, HudEvaluator<IScriptingLanguageEngine>, VariablesProvider {
+		PreparedCompiler, HudEvaluator<IScriptingLanguageEngine> {
 	
 	public ArrayElementManager elms = new ArrayElementManager();
 	
@@ -87,12 +85,6 @@ public abstract class AScriptingLanguageCompiler extends AHudCompiler<IScripting
 			if (e instanceof RuntimeException ex) throw ex;
 			throw new ExecutionException(e.getMessage(),-1,-1,e);
 		}
-	}
-
-	@Override public Object getVariable(String key) {
-		Object obj = DataVariableRegistry.getAny(key);
-		if (obj!=null) return obj;
-		return getVariable(key);
 	}
 	
 	@Override

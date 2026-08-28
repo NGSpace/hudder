@@ -8,7 +8,6 @@ import java.util.HashMap;
 import dev.ngspace.hudder.api.compilers.AHudCompiler;
 import dev.ngspace.hudder.api.compilers.Compilers;
 import dev.ngspace.hudder.api.compilers.HudInformation;
-import dev.ngspace.hudder.api.compilers.interfaces.VariablesProvider;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.TranslatedItemStack;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.exceptions.CompileException;
@@ -34,12 +33,7 @@ public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 		
 		//Getters
 		
-		binder.registerPositionedFunction((_,c,_,_,s)->{
-			if (c instanceof VariablesProvider provider)
-				return provider.getVariable(s[0].asString());
-			else
-				return DataVariableRegistry.getAny(s[0].asString());
-		}, "get", "getVal", "getVariable");
+		binder.registerPositionedFunction((_,_,_,_,s)->DataVariableRegistry.getAny     (s[0].asString()), "get", "getVal", "getVariable");
 		binder.registerPositionedFunction((_,_,_,_,s)->DataVariableRegistry.getNumber  (s[0].asString()), "getNumber" );
 		binder.registerPositionedFunction((_,_,_,_,s)->DataVariableRegistry.getString  (s[0].asString()), "getString" );
 		binder.registerPositionedFunction((_,_,_,_,s)->DataVariableRegistry.getObject  (s[0].asString()), "getObject" );

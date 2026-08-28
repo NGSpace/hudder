@@ -12,8 +12,8 @@ import org.objectweb.asm.Label;
 import dev.ngspace.hudder.api.compilers.AHudCompiler;
 import dev.ngspace.hudder.api.compilers.HudInformation;
 import dev.ngspace.hudder.api.compilers.TextPos;
-import dev.ngspace.hudder.api.compilers.interfaces.PreparedCompiler;
 import dev.ngspace.hudder.api.compilers.interfaces.HudEvaluator;
+import dev.ngspace.hudder.api.compilers.interfaces.PreparedCompiler;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
@@ -123,16 +123,16 @@ public abstract class AV3Compiler extends AHudCompiler<GeneratedCompiler> implem
 		}
 	}
 	
-	public abstract TokenizedCodeBlock compile(String text, String filename, TextPos offset)
-			throws CompileException;
+	@Override
+	public HudInformation evalAndExecuteHud(String text, String debugname) throws CompileException, ExecutionException {
+		return execute(evalHud(text, debugname), debugname);
+	}
 	
-	
+	public abstract TokenizedCodeBlock compile(String text, String filename, TextPos offset) throws CompileException;
 	
 	public ExpressionVisitor parseVariable(String string, TextPos pos) throws CompileException {
 		return expressionParser.parseExpression(string, this, pos);
 	}
-	
-	
 	
 	public V3ExpressionParser getExpressionParser() {
 		return expressionParser;
@@ -140,16 +140,6 @@ public abstract class AV3Compiler extends AHudCompiler<GeneratedCompiler> implem
 
 	public void setExpressionParser(V3ExpressionParser expressionParser) {
 		this.expressionParser = expressionParser;
-	}
-
-
-	@Override
-	public void reset() throws IOException {
-		system_variables = true;
-		for (var instance : instances.values())
-			if (instance != null)
-				instance.shutdown();
-		super.reset();
 	}
 
 	@Override
@@ -165,9 +155,16 @@ public abstract class AV3Compiler extends AHudCompiler<GeneratedCompiler> implem
 			api_functions.put("api_function_" + name, cons);
 		}
 	}
+
+	
+	
 	@Override
-	public HudInformation evalAndExecuteHud(String text, String debugname) throws CompileException, ExecutionException {
-		return execute(evalHud(text, debugname), debugname);
+	public void reset() throws IOException {
+		system_variables = true;
+		for (var instance : instances.values())
+			if (instance != null)
+				instance.shutdown();
+		super.reset();
 	}
 	
 	@Override
