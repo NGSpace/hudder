@@ -187,7 +187,8 @@ public abstract class AHudCompiler<T> {
 	        	return thread;
 	        });
 		mainInstance.set(null);
-		instances.clear();
 		hudCompiling.set(false);
+		instances.clear();
+		errors.clear();
 	}
 }
