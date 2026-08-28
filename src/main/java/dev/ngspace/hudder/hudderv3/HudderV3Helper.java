@@ -13,7 +13,6 @@ import org.mozilla.javascript.ScriptableObject;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.compilers.AHudCompiler;
-import dev.ngspace.hudder.api.compilers.Compilers;
 import dev.ngspace.hudder.api.compilers.TextPos;
 import dev.ngspace.hudder.api.compilers.abstractions.AV3Compiler;
 import dev.ngspace.hudder.api.functionsandconsumers.IUIElementManager;
@@ -56,12 +55,13 @@ public class HudderV3Helper {
 	
 	public void runLoadMethod(IUIElementManager man, AHudCompiler<?> comp, TextPos pos,
 			String type, StringBuilder topleft, StringBuilder topright,
-			 StringBuilder bottomleft,  StringBuilder bottomright, ObjectWrapper... args)
+			 StringBuilder bottomleft,  StringBuilder bottomright, HudderConfig config, ObjectWrapper... args)
 					 throws ExecutionException {
 		String file = args[0].asString();
 		try {
 			boolean AddText = args.length>1&&args[1].asBoolean() || type.equals("add");
-			AHudCompiler<?> ecompiler=(args.length>2?Compilers.getCompilerFromName(args[2].asString()):comp);
+			AHudCompiler<?> ecompiler=(args.length>2 ?
+					config.registry.findEntryFromName(args[2].asString()).orElseThrow().compiler():comp);
 			var result = config.compilationManager.compileAndExecuteSecondaryHud(ecompiler, file, file);
 			for (var uielement : result.elements()) {
 				man.addUIElement(uielement);

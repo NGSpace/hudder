@@ -12,8 +12,9 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 
 import dev.ngspace.hudder.Hudder;
+import dev.ngspace.hudder.api.HudderApi;
 import dev.ngspace.hudder.api.compilers.AHudCompiler;
-import dev.ngspace.hudder.api.compilers.Compilers;
+import dev.ngspace.hudder.api.compilers.CompilerEntry;
 import dev.ngspace.hudder.testing.HudderTestReader.Result;
 import dev.ngspace.hudder.testing.HudderUnitTest.Mode;
 import net.minecraft.network.chat.Component;
@@ -93,7 +94,10 @@ public class HudderUnitTester {
 		double v = Duration.between(start, end).toNanos()/1000000d;
 		double res = (int) (v*1000);
 		res/=1000;
+		String compname = HudderApi.COMPILER_REGISTRY.findEntryFromCompiler(compiler)
+			.map(CompilerEntry::registry_name)
+			.orElseGet(() -> compiler.getClass().getSimpleName());
 		return "\n\n" + (success? "Successful, " : "") + "took "+ res + "ms. Passed "
-				+ (testscount-failedcount) + "/" + testscount + " tests using " + Compilers.getNameFromCompiler(compiler);
+				+ (testscount-failedcount) + "/" + testscount + " tests using " + compname;
 	}
 }

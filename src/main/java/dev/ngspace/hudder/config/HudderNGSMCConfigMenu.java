@@ -13,8 +13,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.api.compilers.Compilers;
-import dev.ngspace.hudder.api.compilers.Compilers.CompilerEntry;
+import dev.ngspace.hudder.api.compilers.CompilerEntry;
+import dev.ngspace.hudder.api.compilers.CompilerRegistry;
 import dev.ngspace.hudder.api.compilers.interfaces.SettingsProvider;
 import dev.ngspace.hudder.main.HudderTickEvent;
 import dev.ngspace.hudder.utils.HudFileUtils;
@@ -35,7 +35,9 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 	protected static Minecraft mc = Minecraft.getInstance();
 
 	public static Screen createMenu(Screen parent) {
+		// I hate this. I hate this. I hate this. I hate this. I hate this. I hate this. I hate this.
 		HudderUserSettings config = Hudder.config.userSettings;
+		CompilerRegistry registry = Hudder.config.registry;
 		
 		Function<Boolean, Component> enabledDisabled = v -> Boolean.TRUE.equals(v) ? Component.translatable(
 				"hudder.ngsmcconfig.enabled") : Component.translatable("hudder.ngsmcconfig.disabled");
@@ -56,7 +58,7 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 		
 		// Huds
 		// NGSMCConfig changes the size and position anyways
-		var widget = new HudSelectionList(Minecraft.getInstance(), new File(HudFileUtils.FOLDER), config);
+		var widget = new HudSelectionList(Minecraft.getInstance(), new File(HudFileUtils.FOLDER), config, registry);
 		builder.addCustomWidgetCategory(Component.translatable("hudder.mainfile"),
 				new NGSMCConfigIcon.SpriteIcon("items", "item/map"),
 				widget, widget::save, widget::reset, widget::error, widget::warning);
@@ -116,22 +118,27 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 				.setSaveOperation(b->config.enabled=b)
 				.setComponentProvider(enabledDisabled)
 				.build());
-		general.addOption(DropdownNGSMCConfigOption.builder(Compilers.getDisplayNameFromCompilerName(Hudder.config.compilerName()),
+		general.addOption(DropdownNGSMCConfigOption.builder(registry.findEntryFromDisplayName(Hudder.config.compilerName())
+				.orElseThrow(()->new IllegalArgumentException("No compiler named "
+						+ Hudder.config.compilerName())).displayname(),
 					Component.translatable("hudder.general.compilertype"),
-					Compilers.entries().stream()
+					registry.entries().stream()
 						.sorted(Comparator.comparing(CompilerEntry::unstable)
 								.thenComparing(CompilerEntry::displayname, String.CASE_INSENSITIVE_ORDER))
 						.map(e->e.displayname())
 						.toList())
 	    		.setHoverComponent(Component.translatable("hudder.general.compilertype.tooltip"))
 	    		.setDefaultValue("Hudder V3")
-	    		.setSaveOperation(b->Hudder.config.setCompilerName(Compilers.getCompilerNameFromDisplayname(b)))
+	    		// Should be safe since the compiler has either been selected from the list which means it's
+	    		// safe. Or the first check during the builder's initation would've thrown already.
+	    		.setSaveOperation(b->Hudder.config.setCompilerName(registry.findEntryFromDisplayName(b).get()
+	    				.registry_name()))
 	    		.setValidator(e->{
 	    			widget.comp = e;
-	    			return Compilers.hasCompilerFromDisplayName(e)
+	    			return registry.findEntryFromDisplayName(e).isPresent()
 	    					? null : Component.translatable("hudder.general.compilertype.error");
 	    		})
-	    		.setWarningProvider(e->getCompilerWarning(Compilers.getEntryFromDisplayName(e)))
+	    		.setWarningProvider(e->getCompilerWarning(registry.findEntryFromDisplayName(e).get()))
 	    		.build());
 		general.addOption(DoubleNGSMCConfigOption.builder(config.scale, Component.translatable("hudder.general.scale"))
 				.setHoverComponent(Component.translatable("hudder.general.scale.tooltip"))

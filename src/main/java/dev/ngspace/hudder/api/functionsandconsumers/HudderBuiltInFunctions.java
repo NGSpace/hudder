@@ -6,7 +6,6 @@ import java.time.Instant;
 import java.util.HashMap;
 
 import dev.ngspace.hudder.api.compilers.AHudCompiler;
-import dev.ngspace.hudder.api.compilers.Compilers;
 import dev.ngspace.hudder.api.compilers.HudInformation;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.TranslatedItemStack;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
@@ -100,7 +99,7 @@ public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 			try {
 				var e = m.toUIElementArray();
 				
-				AHudCompiler<?> compiler = Compilers.getCompilerFromName(s[1].asString());
+				AHudCompiler<?> compiler = c.registry.findEntryFromName(s[1].asString()).orElseThrow().compiler();
 				String hud =  s[0].asString();
 				
 				HudInformation result = c.compilationManager.compileAndExecuteSecondaryHud(compiler, hud, hud);

@@ -144,9 +144,8 @@ public class MethodExecutionInstruction extends Instruction {
 						methodWriter.aload(methodWriter.topright_builder_index);
 						methodWriter.aload(methodWriter.bottomleft_builder_index);
 						methodWriter.aload(methodWriter.bottomright_builder_index);
-					} else {
-						methodWriter.aload(1);
 					}
+					methodWriter.aload(1);
 				}
 				
 				methodWriter.loadConstantUnsafe(builder.length-1);

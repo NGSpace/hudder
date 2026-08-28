@@ -13,7 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import com.mojang.blaze3d.platform.InputConstants;
 
-import dev.ngspace.hudder.api.compilers.Compilers;
+import dev.ngspace.hudder.api.HudderApi;
+import dev.ngspace.hudder.api.compilers.CompilerRegistry;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.api.functionsandconsumers.HudderBuiltInFunctions;
 import dev.ngspace.hudder.api.functionsandconsumers.HudderBuiltInMethods;
@@ -120,9 +121,10 @@ public class Hudder implements ClientModInitializer {
 		}
 		
 		log("Reading Hudder config");
-		config = new HudderConfig(HudderConfig.DEFAULT_CONFIG_FILE);
+		CompilerRegistry compiler_registry = HudderApi.COMPILER_REGISTRY;
+		config = new HudderConfig(HudderConfig.DEFAULT_CONFIG_FILE, compiler_registry);
 		
-		Compilers.addRegistrationListener(_->config.readAndUpdateConfig());
+		compiler_registry.addRegistrationListener(_->config.readAndUpdateConfig());
 
 		if (IS_DEBUG) {
 			log("HUDDER'S DEBUG MODE IS TURNED ON");
@@ -167,7 +169,7 @@ public class Hudder implements ClientModInitializer {
 				e.printStackTrace();
 			}
 		});
-		ClientLifecycleEvents.CLIENT_STOPPING.register(_ -> Compilers.shutdownAll());
+		ClientLifecycleEvents.CLIENT_STOPPING.register(_ -> compiler_registry.shutdownAll());
         
         // Make sure the FPS variable is updated once every compilation instead of every time a number variable is used
         var mc = Minecraft.getInstance();

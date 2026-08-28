@@ -7,8 +7,9 @@ import java.util.function.Consumer;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.compilers.AHudCompiler;
-import dev.ngspace.hudder.api.compilers.Compilers;
+import dev.ngspace.hudder.api.compilers.CompilerRegistry;
 import dev.ngspace.hudder.api.compilers.HudInformation;
+import dev.ngspace.hudder.api.compilers.interfaces.PreparedCompiler;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
@@ -21,6 +22,7 @@ import net.minecraft.client.Minecraft;
 public class HudCompilationManager implements EndTick {
 
 	private final HudderConfig config;
+	private final CompilerRegistry registry;
 	public boolean isFirstRunSinceCacheClear = true;
 
 	public String LastFailMessage = "";
@@ -28,9 +30,14 @@ public class HudCompilationManager implements EndTick {
 
 	private List<Consumer<AHudCompiler<?>>> compilationlistners = new ArrayList<>();
 
-	public HudCompilationManager(HudderConfig config) {
+	public HudCompilationManager(HudderConfig config, CompilerRegistry registry) {
 		this.config = config;
-		HudFileUtils.addReloadResourcesListenerFirst(()->isFirstRunSinceCacheClear = true);
+		this.registry = registry;
+		HudFileUtils.addReloadResourcesListenerFirst(()->{
+			isFirstRunSinceCacheClear = true;
+			for (var comp : registry.compilers())
+				comp.reset();
+		});
 	}
 
 	public void compileAndExecute(DeltaTracker f) {
@@ -54,7 +61,9 @@ public class HudCompilationManager implements EndTick {
 	}
 
 	public HudInformation compileAndExecuteMainHud() throws CompileException, ExecutionException, IOException {
-		Compilers.prepareCompilers();
+		for (var entry : registry.entries())
+			if (entry.compiler() instanceof PreparedCompiler compiler)
+				compiler.prepareCompiler();
 		for (Consumer<AHudCompiler<?>> con : compilationlistners) con.accept(config.getCompiler());
 		HudInformation result = config.getCompiler().processAndExecuteMain(config.mainfile(), config.mainfile());
 		HudFileUtils.loadMarkedResources();

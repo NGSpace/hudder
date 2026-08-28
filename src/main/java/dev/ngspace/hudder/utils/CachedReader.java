@@ -96,6 +96,7 @@ public class CachedReader {
 			mc.getTextureManager().release(v.getKey());
 			v.getValue().close();
 		}
+		unregisteredImages.clear();
 		savedImages.clear();
 		savedFiles.clear();
 		savedFilesStrings.clear();

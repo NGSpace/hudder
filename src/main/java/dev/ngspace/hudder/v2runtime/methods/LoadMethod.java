@@ -5,7 +5,6 @@ import java.io.IOException;
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.compilers.AHudCompiler;
 import dev.ngspace.hudder.api.compilers.CompileState;
-import dev.ngspace.hudder.api.compilers.Compilers;
 import dev.ngspace.hudder.api.compilers.TextPos;
 import dev.ngspace.hudder.api.compilers.abstractions.AV2Compiler;
 import dev.ngspace.hudder.config.HudderConfig;
@@ -35,7 +34,8 @@ public class LoadMethod implements V2IMethod {
 		}
 		try {
 			boolean AddText = (args.length>2 && args[1].asBoolean()) || type.equals("add");
-			AHudCompiler<?> compiler=(args.length>2?Compilers.getCompilerFromName(args[2].asString()):comp);
+			AHudCompiler<?> compiler=(args.length>2?config.registry.findEntryFromName(args[2].asString())
+					.orElseThrow(()->new ExecutionException("Compiler not found", charpos)).compiler():comp);
 			CompileState state = runtime.getMasterScope().compileState;
 			state.combineWithResult(config.compilationManager.compileAndExecuteSecondaryHud(compiler, file, file), AddText);
 		} catch (IllegalArgumentException e) {

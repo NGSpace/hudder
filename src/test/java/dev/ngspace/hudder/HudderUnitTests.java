@@ -14,6 +14,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import dev.ngspace.hudder.api.compilers.Compilers;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.api.functionsandconsumers.HudderBuiltInFunctions;
 import dev.ngspace.hudder.api.functionsandconsumers.HudderBuiltInMethods;
@@ -36,7 +37,7 @@ class HudderUnitTests {
 		HudFileUtils.FABRIC_CONFIG_FOLDER = tempDir.toString();
 		HudFileUtils.FOLDER = HudFileUtils.FABRIC_CONFIG_FOLDER + File.separator + "hudder" + File.separator;
 		
-		config = new HudderConfig(tempDir.resolve("hudder-test.json").toFile());
+		config = new HudderConfig(tempDir.resolve("hudder-test.json").toFile(), new Compilers());
 		HudFileUtils.makeDefaultHud();
 		handler = new HudderTestsHandler(config, config.hudderV3Compiler);
 		handler.test_providers.add(handler::loadDefaultTests);

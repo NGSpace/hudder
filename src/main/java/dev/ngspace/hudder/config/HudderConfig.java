@@ -9,6 +9,7 @@ import java.lang.reflect.Member;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 
@@ -18,7 +19,8 @@ import com.google.gson.annotations.Expose;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.compilers.AHudCompiler;
-import dev.ngspace.hudder.api.compilers.Compilers;
+import dev.ngspace.hudder.api.compilers.CompilerEntry;
+import dev.ngspace.hudder.api.compilers.CompilerRegistry;
 import dev.ngspace.hudder.api.compilers.defaultcompilers.HudPackCompiler;
 import dev.ngspace.hudder.api.compilers.defaultcompilers.HudderV2Compiler;
 import dev.ngspace.hudder.api.compilers.defaultcompilers.HudderV3Compiler;
@@ -35,13 +37,14 @@ public class HudderConfig {
 	
 	public final HudderUserSettings userSettings = new HudderUserSettings();
 
-	public final HudCompilationManager compilationManager = new HudCompilationManager(this);
+	public final HudCompilationManager compilationManager;
 	
 	public final HudderV2Compiler hudderV2Compiler;
 	public final HudderV3Compiler hudderV3Compiler;
 	public final HudPackCompiler hudpackCompiler;
 	public final JavaScriptCompiler javaScriptCompiler;
-	
+
+	public final CompilerRegistry registry;
 	private AHudCompiler<?> compiler;
 	private File configFile;
 	
@@ -54,7 +57,8 @@ public class HudderConfig {
      * Initalize the config. 
      * @param configFile - the config file.
      */
-	public HudderConfig(File configFile) {
+	public HudderConfig(File configFile, CompilerRegistry registry) {
+		compilationManager = new HudCompilationManager(this, registry);
 		this.configFile = configFile;
 		if (!configFile.exists()) {
 			File oldconfigloc = new File(HudFileUtils.FOLDER + "hud.json");
@@ -67,11 +71,15 @@ public class HudderConfig {
 			}
 		}
 		this.hudderV2Compiler = new HudderV2Compiler(this);
+		registry.registerCompiler("hudder", "Hudder V2", false, false, hudderV2Compiler);
 		this.hudderV3Compiler = new HudderV3Compiler(this);
+		registry.registerCompiler("hudderv3", "Hudder V3", false, false, hudderV3Compiler);
 		this.hudpackCompiler = new HudPackCompiler(this);
+		registry.registerCompiler("pack", "Hudpack", false, false, hudpackCompiler);
 		this.javaScriptCompiler = new JavaScriptCompiler(this);
+		registry.registerCompiler("js", "JavaScript", false, false, javaScriptCompiler);
 		this.compiler = hudderV3Compiler;
-		Compilers.registerDefaultCompilers(this);
+		this.registry = registry;
 		readAndUpdateConfig();
 	}
 
@@ -193,11 +201,11 @@ public class HudderConfig {
 	 * If unable to retrieve the compiler, switches to the default {@code HudderV3Compiler} instead.
 	 */
 	public void refreshCompiler() {
-		try {
-			compiler = Compilers.getCompilerFromName(compilerName());
-		} catch (Exception e) {
-			e.printStackTrace();
-			Hudder.log("Using default compiler due to error");
+		Optional<CompilerEntry> entry = registry.findEntryFromName(compilerName());
+		if (entry.isPresent()) {
+			compiler = entry.get().compiler();
+		} else {
+			Hudder.log("Couldn't find compiler \"" + compilerName() + "\", using default compiler.");
 			compiler = hudderV3Compiler;
 		}
 	}
