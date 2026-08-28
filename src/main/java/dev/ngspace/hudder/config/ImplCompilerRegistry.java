@@ -14,8 +14,8 @@ import dev.ngspace.hudder.api.compilers.utils.CompilerEntry;
 
 public class ImplCompilerRegistry implements CompilerRegistry {
 
-	public List<Consumer<CompilerEntry>> listeners = new ArrayList<>();
-	public Map<CompilerEntry, AHudCompiler<?>> registredCompilers = new HashMap<>();
+	private List<Consumer<CompilerEntry>> listeners = new ArrayList<>();
+	private Map<CompilerEntry, AHudCompiler<?>> registredCompilers = new HashMap<>();
 
 	@Override
 	public Optional<CompilerEntry> findEntryFromId(String id) {
