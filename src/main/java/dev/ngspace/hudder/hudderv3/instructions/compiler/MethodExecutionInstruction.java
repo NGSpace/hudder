@@ -179,6 +179,7 @@ public class MethodExecutionInstruction extends Instruction {
 							StringBuilder.class,
 							StringBuilder.class,
 							StringBuilder.class,
+							HudderConfig.class,
 							ObjectWrapper[].class);
 				} else if (apiCall) {
 					if (!classWriter.helper.hasApiConsumer("api_consumer_"+builder[0].trim()))

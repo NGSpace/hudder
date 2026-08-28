@@ -62,7 +62,7 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 				continue;
 			}
 			String name = hud.getName();
-			addEntry(name, hud, registry.getSupportedCompilersForFilepath(name), name.equals(config.mainfile));
+			addEntry(name, hud, registry.getValidCompilersForFilePath(name), name.equals(config.mainfile));
 		}
 	}
 

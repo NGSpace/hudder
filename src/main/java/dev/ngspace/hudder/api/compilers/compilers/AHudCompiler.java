@@ -13,6 +13,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import dev.ngspace.hudder.api.compilers.CompilerRegistry;
 import dev.ngspace.hudder.api.compilers.utils.HudInformation;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
@@ -23,6 +24,8 @@ import net.minecraft.util.Util;
  * Defines the common operations required to process and execute HUD files.
  *
  * @param <T> the type produced when a HUD file is processed
+ * 
+ * @see CompilerRegistry
  */
 public abstract class AHudCompiler<T> {
 

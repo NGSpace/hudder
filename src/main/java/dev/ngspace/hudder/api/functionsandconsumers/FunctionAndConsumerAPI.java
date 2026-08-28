@@ -119,7 +119,7 @@ public class FunctionAndConsumerAPI {
 	 * @see #registerFunction(BindableFunction, String...)
 	 */
 	public void registerDeprecatedPositionedFunction(String warning, BindablePositionedFunction func, String... names) {
-		registerPositionedFunction(new DeprecatedFunciton(warning, func, names), names);
+		registerPositionedFunction(new DeprecatedFunction(warning, func, names), names);
 	}
 	/**
 	 * @deprecated use {@link #registerPositionedConsumer(BindablePositionedConsumer, String...)}
