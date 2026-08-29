@@ -93,10 +93,11 @@ public abstract class AHudCompiler<T> {
 	 */
 	public HudInformation processAndExecuteMain(String filepath, String filename)
 			throws CompileException, ExecutionException, IOException {
-		T res = processFile(filepath);
-		instances.put(filepath, res);
-		mainInstance = res;
-		return execute(res, filename);
+		if (mainInstance!=null) {
+			mainInstance = processFile(filepath);
+			instances.put(filepath, mainInstance);
+		}
+		return execute(mainInstance, filename);
 	}
 
 	/**
