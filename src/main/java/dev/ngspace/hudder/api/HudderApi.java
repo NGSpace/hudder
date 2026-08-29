@@ -4,8 +4,7 @@ import dev.ngspace.hudder.api.compilers.CompilerRegistry;
 import dev.ngspace.hudder.config.ImplCompilerRegistry;
 
 /**
- * Main class for accessing the Hudder API... Well, it's supposed to at least, for now it
- * only contains the CompilerRegistry
+ * Main class for accessing the Hudder API.
  * 
  */
 public class HudderApi {
