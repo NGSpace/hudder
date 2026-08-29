@@ -48,7 +48,7 @@ public class HudderConfig {
 	private AHudCompiler<?> compiler;
 	private File configFile;
 	
-    public Minecraft mc = Minecraft.getInstance();
+	private final Minecraft mc = Minecraft.getInstance();
 	private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	
     

@@ -14,7 +14,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.config.HudderConfig;
-import dev.ngspace.hudder.config.HudderNGSMCConfigMenu;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.StartTick;
 import net.minecraft.ChatFormatting;
@@ -52,21 +51,6 @@ public class HudderTickEvent implements StartTick {
 	}
     
 	@Override public void onStartTick(Minecraft client) {
-		while (Hudder.configkeybind.consumeClick()) {
-			Minecraft.getInstance().gui.setScreen(HudderNGSMCConfigMenu.createMenu(Minecraft.getInstance().gui.screen()));
-		}
-		while (Hudder.reloadkeybind.consumeClick()) {
-	    	Hudder.log("Manual file refresh triggered!");
-			try {
-				HudFileUtils.reloadResources();
-				Hudder.showToast(Component.literal("Refreshed files!").withStyle(ChatFormatting.BOLD), 
-						Component.literal("\u00A7aDue to manual refresh."));
-			} catch (IOException e) {
-				Hudder.showToast(Component.literal("\\u00A74Error refreshing files!")
-						.withStyle(ChatFormatting.BOLD),Component.literal(e.getMessage()));
-				e.printStackTrace();
-			}
-		}
     	try {
     		if (watcherService==null) return;
     		WatchKey wk;

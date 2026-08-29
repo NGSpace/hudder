@@ -20,6 +20,7 @@ import dev.ngspace.hudder.api.functionsandconsumers.HudderBuiltInFunctions;
 import dev.ngspace.hudder.api.functionsandconsumers.HudderBuiltInMethods;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.config.HudderConfig;
+import dev.ngspace.hudder.config.HudderNGSMCConfigMenu;
 import dev.ngspace.hudder.main.HudderRenderer;
 import dev.ngspace.hudder.main.HudderTickEvent;
 import dev.ngspace.hudder.testing.HudderUnitTestingCommand;
@@ -35,6 +36,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
@@ -63,12 +65,6 @@ public class Hudder implements ClientModInitializer {
      * Hudder's config
      */
     public static HudderConfig config;
-
-
-
-	public static KeyMapping configkeybind;
-	public static KeyMapping reloadkeybind;
-
     
     
     /**
@@ -82,19 +78,38 @@ public class Hudder implements ClientModInitializer {
 		
 		var keycategory = KeyMapping.Category.register(Identifier.parse("hudder.keybinds"));
 		
-		configkeybind = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+		KeyMapping configkeybind = KeyMappingHelper.registerKeyMapping(new KeyMapping(
             "hudder.configkeybind",
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_R,
             keycategory
         ));
 		
-		reloadkeybind = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+		KeyMapping reloadkeybind = KeyMappingHelper.registerKeyMapping(new KeyMapping(
             "hudder.reloadkeybind",
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_H,
             keycategory
         ));
+		
+		// I know this is registering 2 different client tick events but I wanted to clear out HudderTickEvent
+		ClientTickEvents.START_CLIENT_TICK.register(_->{
+			while (configkeybind.consumeClick()) {
+				Minecraft.getInstance().gui.setScreen(HudderNGSMCConfigMenu.createMenu(Minecraft.getInstance().gui.screen()));
+			}
+			while (reloadkeybind.consumeClick()) {
+		    	Hudder.log("Manual file refresh triggered!");
+				try {
+					HudFileUtils.reloadResources();
+					Hudder.showToast(Component.literal("Refreshed files!").withStyle(ChatFormatting.BOLD), 
+							Component.literal("\u00A7aDue to manual refresh."));
+				} catch (IOException e) {
+					Hudder.showToast(Component.literal("\\u00A74Error refreshing files!")
+							.withStyle(ChatFormatting.BOLD),Component.literal(e.getMessage()));
+					e.printStackTrace();
+				}
+			}
+		});
 		
 		
 		Optional<ModContainer> containerOpt = FabricLoader.getInstance().getModContainer("hudder");
