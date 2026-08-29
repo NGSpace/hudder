@@ -33,7 +33,7 @@ public abstract class AHudCompiler<T> {
 	protected AtomicReference<ExecutorService> hudCompilerExecutor = new AtomicReference<>(
 	        Executors.newSingleThreadExecutor(r -> {
 	        	Thread thread = new Thread(r, "hud-compiler");
-	        	// Compilation work must never keep the Minecraft JVM alive during exit.
+	        	// Compilation work must never keep the JVM alive during exit.
 	        	thread.setDaemon(true);
 	        	return thread;
 	        }));

@@ -48,6 +48,7 @@ import net.minecraft.server.LoggedPrintStream;
 public class Hudder implements ClientModInitializer {
 	
     private static final Logger LOGGER = LoggerFactory.getLogger("hudder");
+    private static final File DEFAULT_CONFIG_FILE = new File(HudFileUtils.FABRIC_CONFIG_FOLDER + File.separator + "hudder.json");
 
 
 
@@ -114,7 +115,7 @@ public class Hudder implements ClientModInitializer {
 						}
 					}
 				} catch (FileNotFoundException e) {
-					log("Can not determine Hudder version!");
+					error("Can not determine Hudder version!");
 					e.printStackTrace();
 				}
 			}
@@ -122,7 +123,7 @@ public class Hudder implements ClientModInitializer {
 		
 		log("Reading Hudder config");
 		CompilerRegistry compiler_registry = HudderApi.COMPILER_REGISTRY;
-		config = new HudderConfig(HudderConfig.DEFAULT_CONFIG_FILE, compiler_registry);
+		config = new HudderConfig(DEFAULT_CONFIG_FILE, compiler_registry);
 		
 		compiler_registry.addRegistrationListener(_->config.readAndUpdateConfig());
 
