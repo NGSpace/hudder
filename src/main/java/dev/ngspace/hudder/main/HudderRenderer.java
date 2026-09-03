@@ -298,6 +298,7 @@ public class HudderRenderer implements HudElement {
 	 * @param mode The rendering mode
 	 */
 	public void renderColoredVertexArray(GuiGraphicsExtractor context, float[] vertices, int argb, boolean triangle_strip) {
+		//TODO: apparently this has layering issues
 		context.guiRenderState.addGuiElement(new TextureRenderState(TextureSetup.noTexture(),
 			triangle_strip ? GUI_TEXTURED_TRIANGLES : RenderPipelines.GUI_TEXTURED, vconsumer -> {
 			

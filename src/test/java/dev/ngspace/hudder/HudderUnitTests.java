@@ -3,6 +3,7 @@ package dev.ngspace.hudder;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
@@ -36,6 +37,9 @@ class HudderUnitTests {
 		HudFileUtils.FABRIC_CONFIG_FOLDER = tempDir;
 		HudFileUtils.FOLDER = HudFileUtils.FABRIC_CONFIG_FOLDER.resolve("hudder");
 		
+		Files.createDirectories(HudFileUtils.FOLDER);
+		Files.createFile(HudFileUtils.FOLDER.resolve("hud.hud"));
+		
 		config = new HudderConfig(tempDir.resolve("hudder-test.json"), new ImplCompilerRegistry());
 		HudFileUtils.makeDefaultHud();
 		handler = new HudderTestsHandler(config, config.hudderV3Compiler);
@@ -58,7 +62,7 @@ class HudderUnitTests {
 		HudderUnitTestResult result = test.test(config.hudderV3Compiler);
 		if (!result.isSucessful()) {
 			System.out.println(result.getFailureMessage().toString());
-			fail();
+			fail(result.toString());
 		}
 	}
 }
