@@ -130,7 +130,7 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 						.map(e->e.display_name())
 						.toList())
 	    		.setHoverComponent(Component.translatable("hudder.general.compilertype.tooltip"))
-	    		.setDefaultValue("Hudder")
+	    		.setDefaultValue("Hudder V3")
 	    		// Should be safe since the compiler has either been selected from the list which means it's
 	    		// safe. Or the first check during the builder's initation would've thrown already.
 	    		.setSaveOperation(b->Hudder.config.setCompilerName(registry.findEntryFromDisplayName(b).get()
