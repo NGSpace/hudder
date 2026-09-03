@@ -6,13 +6,13 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class RectangleElement extends AUIElement {
 
-	final int x;
-	final int y;
-	final int width;
-	final int height;
+	final float x;
+	final float y;
+	final float width;
+	final float height;
 	final int color;
 	
-	public RectangleElement(int x, int y, int width, int height, int color) {
+	public RectangleElement(float x, float y, float width, float height, int color) {
 		this.x = x;
 		this.y = y;
 		this.width = width;

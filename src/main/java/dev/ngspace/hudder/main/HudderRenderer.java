@@ -158,8 +158,12 @@ public class HudderRenderer implements HudElement {
 	
 	
 	
-	public void renderBlock(GuiGraphicsExtractor graphics, int x, int y, int width, int height, int argb) {
-		graphics.fill(x, y, x+width, y+height, argb);
+	public void renderBlock(GuiGraphicsExtractor graphics, float x, float y, float width, float height, int argb) {
+        graphics.pose().pushMatrix();
+        graphics.pose().translate(x, y);
+        graphics.pose().scale(width, height);
+        graphics.fill(0, 0, 1, 1, argb);
+        graphics.pose().popMatrix();
 	}
 	
 	
