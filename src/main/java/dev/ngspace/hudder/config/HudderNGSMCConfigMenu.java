@@ -1,16 +1,13 @@
 package dev.ngspace.hudder.config;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.function.Function;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.compilers.CompilerRegistry;
@@ -52,14 +49,14 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 			}
 		});
 		builder.setDocsUri(URI.create("https://ngspace.dev/hudder"));
-		builder.setConfigFile(new File(HudFileUtils.FOLDER));
+		builder.setConfigFile(HudFileUtils.FOLDER.toFile());
 		builder.setConfigButtonText(Component.translatable("hudder.ngsmcconfig.config"));
 		
 		
 		
 		// Huds
 		// NGSMCConfig changes the size and position anyways
-		var widget = new HudSelectionList(Minecraft.getInstance(), new File(HudFileUtils.FOLDER), config, registry);
+		var widget = new HudSelectionList(Minecraft.getInstance(), HudFileUtils.FOLDER, config, registry);
 		builder.addCustomWidgetCategory(Component.translatable("hudder.mainfile"),
 				new NGSMCConfigIcon.SpriteIcon("items", "item/map"),
 				widget, widget::save, widget::reset, widget::error, widget::warning);
@@ -67,20 +64,16 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 			for (Path p : files) {
 				try {
 					HudderTickEvent.TEMP_DISABLE = true;
-					File dest = new File(HudFileUtils.FOLDER + p.getFileName());
+					Path dest = HudFileUtils.FOLDER.resolve(p.getFileName());
 					
-					if (dest.exists()) {
+					if (Files.exists(dest)) {
 						throw new IOException("Hud already exists");
 					}
 					
-					if (p.toFile().isDirectory()) {
-						FileUtils.copyDirectory(p.toFile(), dest);
+					if (Files.isDirectory(p)) {
+						FileUtils.copyDirectory(p.toFile(), dest.toFile());
 					} else {
-						try (var input = new FileInputStream(p.toFile())) {
-							try (var output = new FileOutputStream(dest)) {
-								IOUtils.copy(input, output);
-							}
-						}
+						Files.copy(p, dest);
 					}
 				} catch (IOException e) {
 					Hudder.showWarningToast(Component.literal("Failed to copy hud"),

@@ -1,6 +1,7 @@
 package dev.ngspace.hudder.main;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -65,14 +66,14 @@ public class HudCompilationManager implements EndTick {
 			if (entry.compiler() instanceof PreparedCompiler compiler)
 				compiler.prepareCompiler();
 		for (Consumer<AHudCompiler<?>> con : compilationlistners) con.accept(config.getCompiler());
-		HudInformation result = config.getCompiler().processAndExecuteMain(config.mainfile(), config.mainfile());
+		HudInformation result = config.getCompiler().processAndExecuteMain(config.mainfile(), config.mainfileString());
 		HudFileUtils.loadMarkedResources();
 		return result;
 	}
 
-	public HudInformation compileAndExecuteSecondaryHud(AHudCompiler<?> compiler, String filepath, String filename)
+	public HudInformation compileAndExecuteSecondaryHud(AHudCompiler<?> compiler, Path path, String filename)
 			throws CompileException, ExecutionException, IOException {
-		return compiler.processAndExecute(filepath, filename);
+		return compiler.processAndExecute(path, filename);
 	}
 
 	public HudInformation getMainResult() {

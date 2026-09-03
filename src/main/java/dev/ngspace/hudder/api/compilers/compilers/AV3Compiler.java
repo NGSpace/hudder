@@ -2,6 +2,7 @@ package dev.ngspace.hudder.api.compilers.compilers;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,9 +54,9 @@ public abstract class AV3Compiler extends AHudCompiler<GeneratedCompiler> implem
 	}
 
 	@Override
-	public GeneratedCompiler processFile(String filepath) throws CompileException, IOException {
-		String text = HudFileUtils.readFile(filepath);
-		return evalHud(text, filepath);
+	public GeneratedCompiler processFile(Path path) throws CompileException, IOException {
+		String text = HudFileUtils.readFile(path);
+		return evalHud(text, path.getFileName().toString());
 	}
 	
 	@Override

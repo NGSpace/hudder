@@ -1,9 +1,9 @@
 package dev.ngspace.hudder.utils;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Scanner;
@@ -21,15 +21,15 @@ public class CachedReader {
 	public Reader reader = new FilesRABReader();
 	
 
-	HashMap<String, byte[]> savedFiles = new HashMap<String, byte[]>();
-	HashMap<String, String> savedFilesStrings = new HashMap<String, String>();
+	HashMap<Path, byte[]> savedFiles = new HashMap<>();
+	HashMap<Path, String> savedFilesStrings = new HashMap<>();
 	HashMap<Identifier, DynamicTexture> savedImages = new HashMap<Identifier, DynamicTexture>();
 	HashMap<Identifier, NativeImage> unregisteredImages = new HashMap<Identifier, NativeImage>();
 	
 	
 
-	public byte[] getCachedFile(String file) {return savedFiles.get(file);}
-	public String getCachedFileAsString(String file) {
+	public byte[] getCachedFile(Path file) {return savedFiles.get(file);}
+	public String getCachedFileAsString(Path file) {
 		String contents = savedFilesStrings.get(file);
 		if (contents == null) {
 			contents = new String(getCachedFile(file));
@@ -41,12 +41,12 @@ public class CachedReader {
 	
 	
 	
-	public boolean loadFileToCache(File file) throws IOException {
-		if (!file.exists()) {
-			file.getParentFile().mkdirs();
-			if (!file.createNewFile()) return false;
+	public boolean loadFileToCache(Path file) throws IOException {
+		if (!Files.exists(file)) {
+			Files.createDirectories(file.getParent());
+			Files.createFile(file);
 		}
-		savedFiles.put(file.getAbsolutePath(),reader.readFile(file));
+		savedFiles.put(file.toAbsolutePath(),reader.readFile(file));
 		return true;
 	}
 	
@@ -103,7 +103,7 @@ public class CachedReader {
 	}
 	
 	public static interface Reader {
-		public byte[] readFile(File f) throws IOException;
+		public byte[] readFile(Path f) throws IOException;
 	}
 	
 	/**
@@ -113,7 +113,7 @@ public class CachedReader {
 	public static class ScannerReader implements Reader {
 		
 		@Deprecated
-		public byte[] readFile(File file) throws IOException {
+		public byte[] readFile(Path file) throws IOException {
 			Scanner reader = new Scanner(file);
 			String res = "";
 			while (reader.hasNextLine()) {
@@ -128,11 +128,9 @@ public class CachedReader {
 	}
 	
 	public static class FilesRABReader implements Reader {
-		
-		public byte[] readFile(File file) throws IOException {
-			return Files.readAllBytes(file.toPath());
+		public byte[] readFile(Path file) throws IOException {
+			return Files.readAllBytes(file);
 		}
-		
 	}
 
 	public boolean imageLoaded(Identifier id) {

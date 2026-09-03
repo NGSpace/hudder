@@ -1,6 +1,7 @@
 package dev.ngspace.hudder.api.functionsandconsumers;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
@@ -100,9 +101,10 @@ public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 				var e = m.toUIElementArray();
 				
 				AHudCompiler<?> compiler = c.registry.findEntryFromId(s[1].asString()).orElseThrow().compiler();
-				String hud =  s[0].asString();
+				String filename = s[0].asString();
+				Path file = HudFileUtils.FOLDER.resolve(filename);
 				
-				HudInformation result = c.compilationManager.compileAndExecuteSecondaryHud(compiler, hud, hud);
+				HudInformation result = c.compilationManager.compileAndExecuteSecondaryHud(compiler, file, filename);
 
 				for (var v : result.elements()) m.addUIElement(v);
 				for (var v : e) m.addUIElement(v);

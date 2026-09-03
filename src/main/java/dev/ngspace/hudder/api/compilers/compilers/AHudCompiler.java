@@ -1,7 +1,7 @@
 package dev.ngspace.hudder.api.compilers.compilers;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,67 +21,41 @@ import net.minecraft.util.Util;
  */
 public abstract class AHudCompiler<T> {
 
-	protected final Map<String, T> instances;
-	protected final Map<String, Exception> errors = new HashMap<>();
+	protected final Map<Path, T> instances;
+	protected final Map<Path, Exception> errors = new HashMap<>();
 	protected final HudderConfig config;
 	protected T mainInstance = null;
 	
-	protected AHudCompiler(HudderConfig config, Map<String, T> instancesMap) {
+	protected AHudCompiler(HudderConfig config, Map<Path, T> instancesMap) {
 		this.config = config;
 		this.instances = instancesMap;
 	}
 	
-	/**
-	 * Processes a HUD file into the representation used by this compiler.
-	 *
-	 * @param filepath the path of the file to process
-	 * @return the processed representation of the HUD file
-	 * @throws CompileException if the file cannot be compiled
-	 * @throws IOException if an I/O error occurs while reading the file
-	 */
-	public abstract T processFile(String filepath) throws CompileException, IOException;
+	public abstract T processFile(Path path) throws CompileException, IOException;
 
-	/**
-	 * Executes a previously processed HUD file.
-	 *
-	 * @param processedfile the processed representation of the HUD file
-	 * @param filename the name of the HUD file being executed
-	 * @return information describing the executed HUD
-	 * @throws ExecutionException if an error occurs while executing the HUD
-	 */
-	public abstract HudInformation execute(T processedfile, String filename) throws ExecutionException;
+	public abstract HudInformation execute(T processedfile, String debugname) throws ExecutionException;
 	
-	/**
-	 * Processes and then executes a HUD file.
-	 *
-	 * @param filepath the path of the file to process
-	 * @param filename the name of the HUD file being executed
-	 * @return information describing the executed HUD
-	 * @throws CompileException if the file cannot be compiled
-	 * @throws ExecutionException if an error occurs while executing the HUD
-	 * @throws IOException if an I/O error occurs while reading the file
-	 */
-	public HudInformation processAndExecute(String filepath, String filename)
+	public HudInformation processAndExecute(Path path, String debugname)
 			throws CompileException, ExecutionException, IOException {
-		if (errors.containsKey(filepath)) {
-			var exception = errors.get(filepath);
+		if (errors.containsKey(path)) {
+			var exception = errors.get(path);
 			if (exception instanceof CompileException e)
 				throw e;
 			if (exception instanceof IOException e)
 				throw e;
 			throw new CompileException(exception);
 		}
-		T res = instances.get(filepath);
+		T res = instances.get(path);
 		if (res==null) {
 			try {
-				res = processFile(filepath);
-				instances.put(filepath, res);
+				res = processFile(path);
+				instances.put(path, res);
 			} catch (CompileException | IOException e) {
-				errors.put(filepath, e);
+				errors.put(path, e);
 				throw e;
 			}
 		}
-		return execute(res, filename);
+		return execute(res, debugname);
 	}
 	
 	/*
@@ -90,34 +64,33 @@ public abstract class AHudCompiler<T> {
 	 * Sure there are issues but I am not trading my sanity for thread-safety in hud compilation
 	 * At the end of the day, if any compilers are having issues with this, they can @Override this method
 	 * And map it to #processAndExecute or smt, idk, and idc anymore.
+	 * 
+	 * Update: That's what I eventually did lol
 	 */
-	public HudInformation processAndExecuteMain(String filepath, String filename)
+	public HudInformation processAndExecuteMain(Path path, String debugname)
 			throws CompileException, ExecutionException, IOException {
 		if (mainInstance==null) {
-			mainInstance = processFile(filepath);
-			instances.put(filepath, mainInstance);
+			mainInstance = processFile(path);
+			instances.put(path, mainInstance);
 		}
-		return execute(mainInstance, filename);
+		return execute(mainInstance, debugname);
 	}
 
-	/**
-	 * Stops pending compiler work and releases this compiler's worker thread.
-	 *
-	 * <p>This method is safe to call more than once.</p>
-	 */
 	public void shutdown() {}
 	
 	public abstract String[] getSupportedFileFormats();
 	
-	public boolean isValidFilePath(String filepath) {
+	public boolean isValidFilePath(Path filepath) {
+	    String filename = filepath.getFileName().toString().toLowerCase();
 		for (String format : getSupportedFileFormats())
-			if (filepath.endsWith('.'+format))
+			if (filename.endsWith('.'+format.toLowerCase()))
 				return true;
 		return false;
 	}
 	
-	public void edit(File file) {
-		Util.getPlatform().openFile(file);
+	public void edit(Path file) {
+		// I know openPath exists but for some reason it just doesn't work
+		Util.getPlatform().openFile(file.toFile());
 	}
 	
 	/**

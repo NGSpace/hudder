@@ -1,8 +1,9 @@
 package dev.ngspace.hudder.hudderv3.asm;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -74,9 +75,10 @@ public class V3ClassWriter {
 		
 		classWriter.visitEnd();
 		byte[] bytecode = classWriter.toByteArray();
-		if ((!new File("hudderv3output.class").exists())&&Hudder.IS_DEBUG) {
-			try (FileOutputStream writer = new FileOutputStream(new File("hudderv3output.class"))) {
-				writer.write(bytecode);
+		Path path = Paths.get("hudderv3output.class");
+		if ((!Files.exists(path))&&Hudder.IS_DEBUG) {
+			try {
+				Files.write(path, bytecode);
 			} catch (IOException e) {
 				e.printStackTrace();
 			} 

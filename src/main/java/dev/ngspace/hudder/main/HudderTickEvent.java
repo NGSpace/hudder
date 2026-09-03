@@ -32,7 +32,7 @@ public class HudderTickEvent implements StartTick {
     	this.config = config;
 		try {
 			watcherService = FileSystems.getDefault().newWatchService();
-		    Files.walkFileTree(Path.of(HudFileUtils.FOLDER), new SimpleFileVisitor<Path>() {
+		    Files.walkFileTree(HudFileUtils.FOLDER, new SimpleFileVisitor<Path>() {
 		        @Override public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs)
 		                throws IOException {
 		            dir.register(watcherService,

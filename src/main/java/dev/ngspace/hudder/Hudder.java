@@ -1,8 +1,9 @@
 package dev.ngspace.hudder;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -50,7 +51,7 @@ import net.minecraft.server.LoggedPrintStream;
 public class Hudder implements ClientModInitializer {
 	
     private static final Logger LOGGER = LoggerFactory.getLogger("hudder");
-    private static final File DEFAULT_CONFIG_FILE = new File(HudFileUtils.FABRIC_CONFIG_FOLDER + File.separator + "hudder.json");
+    private static final Path DEFAULT_CONFIG_FILE = HudFileUtils.FABRIC_CONFIG_FOLDER.resolve("hudder.json");
 
 
 
@@ -120,8 +121,8 @@ public class Hudder implements ClientModInitializer {
 		// If there is still no version (eg. when running through an IDE)
 		if (HUDDER_VERSION.equals("${version}")) {
 			// Read the version from gradle.properties
-			File gradleProp = new File("../gradle.properties");
-			if (gradleProp.exists()) {
+			Path gradleProp = Paths.get("../gradle.properties");
+			if (Files.exists(gradleProp)) {
 				try (Scanner scanner = new Scanner(gradleProp)) {
 					while (scanner.hasNext()) {
 						String line = scanner.nextLine();
@@ -129,7 +130,7 @@ public class Hudder implements ClientModInitializer {
 							HUDDER_VERSION = line.substring(12);
 						}
 					}
-				} catch (FileNotFoundException e) {
+				} catch (IOException e) {
 					error("Can not determine Hudder version!");
 					e.printStackTrace();
 				}
@@ -138,7 +139,13 @@ public class Hudder implements ClientModInitializer {
 		
 		log("Reading Hudder config");
 		CompilerRegistry compiler_registry = HudderApi.COMPILER_REGISTRY;
-		config = new HudderConfig(DEFAULT_CONFIG_FILE, compiler_registry);
+		try {
+			config = new HudderConfig(DEFAULT_CONFIG_FILE, compiler_registry);
+		} catch (IOException e) {
+			e.printStackTrace();
+			IS_DEBUG = true;
+			error("Failed to load Hudder config: " + e.getMessage());
+		}
 		
 		compiler_registry.addRegistrationListener(_->config.readAndUpdateConfig());
 
@@ -161,7 +168,7 @@ public class Hudder implements ClientModInitializer {
 		
 		HudderBuiltInMethods.registerMethods(FunctionAndConsumerAPI.getInstance());
 		HudderBuiltInFunctions.registerFunction(FunctionAndConsumerAPI.getInstance());
-		if (!new File(HudFileUtils.FOLDER).exists())
+		if (!Files.exists(HudFileUtils.FOLDER))
 			HudFileUtils.makeDefaultHud();
 		ClientTickEvents.START_CLIENT_TICK.register(new HudderTickEvent(config));
 		

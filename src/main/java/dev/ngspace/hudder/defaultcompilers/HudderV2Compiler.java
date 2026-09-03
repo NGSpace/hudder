@@ -171,7 +171,7 @@ public class HudderV2Compiler extends AV2Compiler {
 						} else if (c=='%') {
 							var pos = getPosition(charPosition, savedind, text);
 							conds.add(conditionOrValue.toString());
-							runtime.addRuntimeElement(new ConditionV2RuntimeElement(config,
+							runtime.addRuntimeElement(new ConditionV2RuntimeElement(
 									conds.toArray(new String[conds.size()]), this, runtime, pos.line(),
 									pos.column(), filename));
 							compileState = TEXT_STATE;

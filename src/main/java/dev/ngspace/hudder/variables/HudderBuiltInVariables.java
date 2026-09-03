@@ -99,7 +99,7 @@ public class HudderBuiltInVariables {
 		
 		// Strings
 		registerString(_->config.compilerId(), "compilertype");
-		registerString(_->config.mainfile(), "mainfile");
+		registerString(_->config.mainfileString(), "mainfile");
 		registerString(_->Hudder.HUDDER_VERSION, "hudder_version");
 		
 		// Numbers

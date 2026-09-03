@@ -1,5 +1,6 @@
 package dev.ngspace.hudder.config;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,8 +33,8 @@ public class ImplCompilerRegistry implements CompilerRegistry {
 	}
 
 	@Override
-	public CompilerEntry[] getValidCompilersForFilePath(String filepath) {
-		return registredCompilers.stream().filter(e->e.compiler().isValidFilePath(filepath)).toArray(CompilerEntry[]::new);
+	public CompilerEntry[] getValidCompilersForFilePath(Path path) {
+		return registredCompilers.stream().filter(e->e.compiler().isValidFilePath(path)).toArray(CompilerEntry[]::new);
 	}
 
 	@Override

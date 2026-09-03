@@ -1,10 +1,11 @@
 package dev.ngspace.hudder.hudpacks;
 
 import java.io.Closeable;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,13 +45,12 @@ public class HudPack implements Closeable {
 	public int format_version = 0;
 	public Map<String, byte[]> entries = new HashMap<String, byte[]>();
 	
-	public HudPack(HudderConfig config, String filepath, HudPackCompiler compiler) throws IOException, CompileException {
+	public HudPack(HudderConfig config, Path path, HudPackCompiler compiler) throws IOException, CompileException {
 		this.compiler = compiler;
 		this.engineManager = new HudPackEngineManager(this.compiler, this);
 		this.config = config;
-		File file = new File(filepath);
-		try (EntryReaderConsumer reader = file.isDirectory() ? new EntryReaderConsumer.Directory(file) :
-				new EntryReaderConsumer.Zip(file)) {
+		try (EntryReaderConsumer reader = Files.isDirectory(path) ? new EntryReaderConsumer.Directory(path) :
+				new EntryReaderConsumer.Zip(path)) {
 			int entries_count = 0;
 			int bytes_left = MAXIMUM_PACK_SIZE;
 			for (String entry : reader.listEntries()) {
@@ -179,12 +179,12 @@ public class HudPack implements Closeable {
 	}
 
 	public Object getSettingValue(String string) {
-		return config.getHudSettings("hudpacks", config.mainfile()).getOrDefault(string,
+		return config.getHudSettings("hudpacks", config.mainfileString()).getOrDefault(string,
 				settings.get(string).default_value());
 	}
 
 	public void setSettingValue(String string, Object value) {
-		config.getHudSettings("hudpacks",  config.mainfile()).put(string, value);
+		config.getHudSettings("hudpacks",  config.mainfileString()).put(string, value);
 	}
 
 	@Override

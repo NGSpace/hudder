@@ -1,7 +1,8 @@
 package dev.ngspace.hudder.defaultcompilers;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 
 import dev.ngspace.hudder.Hudder;
@@ -26,9 +27,9 @@ public class HudPackCompiler extends AHudCompiler<HudPack> implements SettingsPr
 	public ArrayElementManager elms = new ArrayElementManager();
 
 	@Override
-	public HudPack processFile(String filepath) throws CompileException, IOException {
+	public HudPack processFile(Path path) throws CompileException, IOException {
 		elms.clear();
-		return new HudPack(config, HudFileUtils.FOLDER + filepath, this);
+		return new HudPack(config, HudFileUtils.FOLDER.resolve(path), this);
 	}
 
 	@Override
@@ -80,9 +81,8 @@ public class HudPackCompiler extends AHudCompiler<HudPack> implements SettingsPr
 	}
 	
 	@Override
-	public boolean isValidFilePath(String filepath) {
-		File file = new File(HudFileUtils.FOLDER + filepath);
-		return file.isDirectory() ? new File(HudFileUtils.FOLDER + filepath+"/pack.json").exists() : super.isValidFilePath(filepath);
+	public boolean isValidFilePath(Path path) {
+		return Files.isDirectory(path) ? Files.exists(path.resolve("pack.json")) : super.isValidFilePath(path);
 	}
 	
 	@Override

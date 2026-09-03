@@ -6,6 +6,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -21,6 +22,7 @@ import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositione
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
+import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.hudder.utils.NoAccess;
 import dev.ngspace.hudder.utils.ObjectWrapper;
 import dev.ngspace.hudder.utils.ValueGetter;
@@ -57,12 +59,13 @@ public class HudderV3Helper {
 			String type, StringBuilder topleft, StringBuilder topright,
 			 StringBuilder bottomleft,  StringBuilder bottomright, HudderConfig config, ObjectWrapper... args)
 					 throws ExecutionException {
-		String file = args[0].asString();
+		String filename = args[0].asString();
+		Path file = HudFileUtils.FOLDER.resolve(filename);
 		try {
 			boolean AddText = args.length>1&&args[1].asBoolean() || type.equals("add");
 			AHudCompiler<?> ecompiler=(args.length>2 ?
 					config.registry.findEntryFromId(args[2].asString()).orElseThrow().compiler():comp);
-			var result = config.compilationManager.compileAndExecuteSecondaryHud(ecompiler, file, file);
+			var result = config.compilationManager.compileAndExecuteSecondaryHud(ecompiler, file, filename);
 			for (var uielement : result.elements()) {
 				man.addUIElement(uielement);
 			}

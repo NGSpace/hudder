@@ -2,7 +2,6 @@ package dev.ngspace.hudder;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.stream.Stream;
@@ -34,10 +33,10 @@ class HudderUnitTests {
 
 	@BeforeAll
 	void prepareHudder() throws IOException {
-		HudFileUtils.FABRIC_CONFIG_FOLDER = tempDir.toString();
-		HudFileUtils.FOLDER = HudFileUtils.FABRIC_CONFIG_FOLDER + File.separator + "hudder" + File.separator;
+		HudFileUtils.FABRIC_CONFIG_FOLDER = tempDir;
+		HudFileUtils.FOLDER = HudFileUtils.FABRIC_CONFIG_FOLDER.resolve("hudder");
 		
-		config = new HudderConfig(tempDir.resolve("hudder-test.json").toFile(), new ImplCompilerRegistry());
+		config = new HudderConfig(tempDir.resolve("hudder-test.json"), new ImplCompilerRegistry());
 		HudFileUtils.makeDefaultHud();
 		handler = new HudderTestsHandler(config, config.hudderV3Compiler);
 		handler.test_providers.add(handler::loadDefaultTests);

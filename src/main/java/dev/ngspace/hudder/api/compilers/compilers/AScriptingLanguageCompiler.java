@@ -1,6 +1,7 @@
 package dev.ngspace.hudder.api.compilers.compilers;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashMap;
 
 import dev.ngspace.hudder.Hudder;
@@ -26,19 +27,19 @@ public abstract class AScriptingLanguageCompiler extends AHudCompiler<IScripting
 	protected abstract IScriptingLanguageEngine createLangEngine() throws CompileException;
 
 	@Override
-	public IScriptingLanguageEngine processFile(String filepath) throws CompileException, IOException {
+	public IScriptingLanguageEngine processFile(Path filepath) throws CompileException, IOException {
 		String text = HudFileUtils.readFile(filepath);
-		return evalHud(text, filepath);
+		return evalHud(text, filepath.getFileName().toString());
 	}
 	
 	@Override
-	public IScriptingLanguageEngine evalHud(String text, String filepath) throws CompileException {
+	public IScriptingLanguageEngine evalHud(String text, String debugname) throws CompileException {
 		IScriptingLanguageEngine wrapper = null;
 		try {
 			wrapper = createLangEngine();
 			
 			try {
-				wrapper.evaluateCode(text, filepath);
+				wrapper.evaluateCode(text, debugname);
 			} catch (Exception e) {
 				if (Hudder.IS_DEBUG) e.printStackTrace();
 				wrapper.close();

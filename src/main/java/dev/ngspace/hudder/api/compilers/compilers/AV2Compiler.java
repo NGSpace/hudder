@@ -1,6 +1,7 @@
 package dev.ngspace.hudder.api.compilers.compilers;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,14 +75,14 @@ public abstract class AV2Compiler extends AHudCompiler<V2Runtime> implements Pos
 	}
 	
 	@Override
-	public V2Runtime processFile(String filepath) throws CompileException, IOException {
-		String text = HudFileUtils.readFile(filepath);
-		return evalHud(text, filepath);
+	public V2Runtime processFile(Path path) throws CompileException, IOException {
+		String text = HudFileUtils.readFile(path);
+		return evalHud(text, path.getFileName().toString());
 	}
 	
 	@Override
-	public V2Runtime evalHud(String text, String filepath) throws CompileException {
-		return buildRuntimeSafe(text, new TextPos(-1, -1), filepath, null);
+	public V2Runtime evalHud(String text, String debugname) throws CompileException {
+		return buildRuntimeSafe(text, new TextPos(-1, -1), debugname, null);
 	}
 	
 
@@ -91,7 +92,7 @@ public abstract class AV2Compiler extends AHudCompiler<V2Runtime> implements Pos
 	
 	
 	
-	public abstract V2Runtime buildRuntime(String text, TextPos charPosition, String filename, V2Runtime scope)
+	public abstract V2Runtime buildRuntime(String text, TextPos charPosition, String debugname, V2Runtime scope)
 			throws CompileException, ExecutionException;
 	
 	
@@ -153,10 +154,10 @@ public abstract class AV2Compiler extends AHudCompiler<V2Runtime> implements Pos
 		}
 	}
 
-	private V2Runtime buildRuntimeSafe(String commands, TextPos pos, String filename,
+	private V2Runtime buildRuntimeSafe(String commands, TextPos pos, String debugname,
 			V2Runtime scope) throws CompileException {
 		try {
-			return buildRuntime(commands, pos, filename, scope);
+			return buildRuntime(commands, pos, debugname, scope);
 		} catch (ExecutionException e) {
 			throw new CompileException(e);
 		}

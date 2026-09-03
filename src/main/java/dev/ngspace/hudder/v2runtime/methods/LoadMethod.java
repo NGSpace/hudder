@@ -10,6 +10,7 @@ import dev.ngspace.hudder.api.compilers.utils.TextPos;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
+import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.hudder.utils.ObjectWrapper;
 import dev.ngspace.hudder.v2runtime.V2Runtime;
 import net.minecraft.network.chat.Component;
@@ -37,7 +38,8 @@ public class LoadMethod implements V2IMethod {
 			AHudCompiler<?> compiler=(args.length>2?config.registry.findEntryFromId(args[2].asString())
 					.orElseThrow(()->new ExecutionException("Compiler not found", charpos)).compiler():comp);
 			CompileState state = runtime.getMasterScope().compileState;
-			state.combineWithResult(config.compilationManager.compileAndExecuteSecondaryHud(compiler, file, file), AddText);
+			state.combineWithResult(config.compilationManager.compileAndExecuteSecondaryHud(compiler,
+					HudFileUtils.FOLDER.resolve(file), file), AddText);
 		} catch (IllegalArgumentException e) {
 			throw new ExecutionException(e.getLocalizedMessage(), charpos.line(), charpos.column());
 		} catch (CompileException e) {

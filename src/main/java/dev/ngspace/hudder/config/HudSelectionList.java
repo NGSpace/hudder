@@ -1,9 +1,11 @@
 package dev.ngspace.hudder.config;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Set;
 import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 
@@ -28,13 +30,13 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 	private HudderUserSettings config;
 	private CompilerRegistry registry;
 	public String comp;
-	public File source;
+	public Path source;
 	
 	// There are more formats but those are the only ones that matter, as far as I
 	// am aware minecraft only supports those formats
 	private static final Set<String> IMAGE_EXTENSIONS = Set.of("png", "jpg", "jpeg");
 	
-	public HudSelectionList(Minecraft minecraft, File source, HudderUserSettings config,
+	public HudSelectionList(Minecraft minecraft, Path source, HudderUserSettings config,
 			CompilerRegistry registry) {
 		super(minecraft, 0, 0, 0, 18);
 		this.config = config;
@@ -47,46 +49,46 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 			comp = "Hudder V3";
 		}
 		
-		loadHuds(source);
+		try {
+			loadHuds(source);
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new IllegalArgumentException(e);
+		}
 		
 		HudFileUtils.addReloadResourcesListener(this);
 	}
 	
-	private void loadHuds(File folder) {
+	private void loadHuds(Path folder) throws IOException {
 		
 		addEntry(new TitleEntry(Component.translatable("hudder.mainfile.title"),
 				Component.translatable("hudder.mainfile.subtitle")), 24);
 		
-		for (File hud : folder.listFiles()) {
-			if (hud.isDirectory() && isEmptyOrImagesOnly(hud)) {
+		for (Path hud : Files.newDirectoryStream(folder)) {
+			if (Files.isDirectory(hud) && isEmptyOrImagesOnly(hud)) {
 				continue;
 			}
-			String name = hud.getName();
-			addEntry(name, hud, registry.getValidCompilersForFilePath(name), name.equals(config.mainfile));
+			String name = hud.getFileName().toString();
+			addEntry(name, hud, registry.getValidCompilersForFilePath(hud), name.equals(config.mainfile));
 		}
 	}
 
-	private static boolean isEmptyOrImagesOnly(File directory) {
-		File[] contents = directory.listFiles();
-		
-		if (contents == null)
-			return false;
-		
-		for (File file : contents) {
-			if (file.isDirectory()) {
-				if (!isEmptyOrImagesOnly(file)) {
-					return false;
-				}
-			} else if (!isImage(file)) {
-				return false;
-			}
+	private static boolean isEmptyOrImagesOnly(Path directory) {
+		try (Stream<Path> contents = Files.list(directory)) {
+		    return contents.allMatch(path -> {
+		        if (Files.isDirectory(path)) {
+		            return isEmptyOrImagesOnly(path);
+		        } else {
+		            return isImage(path);
+		        }
+		    });
+		} catch (IOException _) {
+		    return false;
 		}
-		
-		return true;
 	}
 	
-	private static boolean isImage(File file) {
-		String name = file.getName();
+	private static boolean isImage(Path file) {
+		String name = file.getFileName().toString();
 		int dot = name.lastIndexOf('.');
 		
 		if (dot < 0 || dot == name.length() - 1) {
@@ -97,7 +99,7 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 		return IMAGE_EXTENSIONS.contains(extension);
 	}
 	
-	public void addEntry(String filepath, File file, CompilerEntry[] compilers, boolean isSelected) {
+	public void addEntry(String filepath, Path file, CompilerEntry[] compilers, boolean isSelected) {
 		HudEntry entry = new HudEntry(filepath, compilers, file);
 		addEntry(entry);
 		if (isSelected)
@@ -122,7 +124,7 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 		public MutableComponent component;
 		public String filepath;
 		public CompilerEntry[] compilers;
-		public File file;
+		public Path file;
 		public NGSMCConfigButton editbutton;
 		
 		public static int EDIT_BUTTON_WIDTH = 40;
@@ -130,7 +132,7 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 		
 		protected HudEntry() {}
 		
-		public HudEntry(String filepath, CompilerEntry[] compilers, File file) {
+		public HudEntry(String filepath, CompilerEntry[] compilers, Path file) {
 			this.file = file;
 			if (filepath != null) {
 				this.component = Component.literal(filepath);
@@ -290,9 +292,10 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 	
 	public Component warning() {
 		var selected = getSelected();
-		String file = selected != null ? selected.filepath : "";
-		return registry.findEntryFromDisplayName(comp).orElseThrow().compiler().isValidFilePath(file) ? null
-				: Component.translatable("hudder.mainfile.unsupportedformat", comp, file);
+		if (selected==null)
+			return Component.translatable("hudder.mainfile.noselection");
+		return registry.findEntryFromDisplayName(comp).orElseThrow().compiler().isValidFilePath(selected.file) ? null
+				: Component.translatable("hudder.mainfile.unsupportedformat", comp, selected.filepath);
 	}
 
 	@Override

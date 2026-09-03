@@ -1,15 +1,17 @@
 package dev.ngspace.hudder.config;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.AccessFlag;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
+import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -45,28 +47,26 @@ public class HudderConfig {
 	public final JavaScriptCompiler javaScriptCompiler;
 
 	public final CompilerRegistry registry;
-	private AHudCompiler<?> compiler;
-	private File configFile;
+	private @Nullable AHudCompiler<?> compiler;
+	private final Path configFile;
 	
-	private final Minecraft mc = Minecraft.getInstance();
-	private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+	private static final Minecraft mc = Minecraft.getInstance();
+	private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	
     
     /**
      * Initalize the config. 
      * @param configFile - the config file.
+     * @throws IOException 
      */
-	public HudderConfig(File configFile, CompilerRegistry registry) {
+	public HudderConfig(Path configFile, CompilerRegistry registry) throws IOException {
 		compilationManager = new HudCompilationManager(this, registry);
 		this.configFile = configFile;
-		if (!configFile.exists()) {
-			File oldconfigloc = new File(HudFileUtils.FOLDER + "hud.json");
-			if (oldconfigloc.exists()) {
+		if (!Files.exists(configFile)) {
+			Path oldconfigloc = HudFileUtils.FOLDER.resolve("hud.json");
+			if (Files.exists(oldconfigloc)) {
 				Hudder.log("Migrating Hudder config");
-				if (!oldconfigloc.renameTo(configFile)) {
-					Hudder.log("Failed to migrate Hudder config file.");
-					throw new UnsupportedOperationException("Failed to migrate Hudder config file.");
-				}
+				Files.move(configFile, oldconfigloc);
 			}
 		}
 		this.hudderV2Compiler = new HudderV2Compiler(this);
@@ -88,7 +88,7 @@ public class HudderConfig {
 	 */
 	public void readAndUpdateConfig() {
 		try {
-			if (!configFile.exists()) {
+			if (!Files.exists(configFile)) {
 				save();
 				return; // We already know it'll be default value, no need to waste resources.
 			}
@@ -109,7 +109,7 @@ public class HudderConfig {
 			if (!newinfo.containsKey("config_version"))
 				userSettings.config_version = 0;
 			
-			for(Field field : HudderUserSettings.class.getDeclaredFields()) {
+			for(Field field : HudderUserSettings.class.getFields()) {
 				if (field.getAnnotation(Expose.class) == null)
 			        continue;
 				
@@ -131,7 +131,7 @@ public class HudderConfig {
 			Hudder.IS_DEBUG=true;
 			Hudder.log("Failed to read Hudder config file, enabling debug mode.");
 			e.printStackTrace();
-		} catch (ReflectiveOperationException | ClassCastException e) {
+		} catch (IllegalAccessException e) {
 			Hudder.IS_DEBUG=true;
 			Hudder.log("Failed to set Hudder config values, enabling debug mode.");
 			e.printStackTrace();
@@ -202,8 +202,8 @@ public class HudderConfig {
 		if (entry.isPresent()) {
 			compiler = entry.get().compiler();
 		} else {
-			Hudder.log("Couldn't find compiler \"" + compilerId() + "\", using default compiler.");
-			compiler = hudderV3Compiler;
+			Hudder.log("Couldn't find compiler \"" + compilerId() + "\".");
+			compiler = null;
 		}
 	}
 	
@@ -214,11 +214,11 @@ public class HudderConfig {
 	 * @throws IOException When fails to write to the file
 	 */
 	public void save() throws IOException {
-		if (!configFile.exists()) {
-			configFile.getParentFile().mkdirs();
-			if (!configFile.createNewFile()) throw new IOException("Failed to create Hudder config file.");
+		if (!Files.exists(configFile)) {
+			Files.createDirectories(configFile.getParent());
+			Files.createFile(configFile);
 		}
-		try (FileWriter config_writer = new FileWriter(configFile)) {
+		try {
 			Map<String, Object> json_output = new HashMap<String, Object>();
 			for (Field f : HudderUserSettings.class.getDeclaredFields())
 				if (f.getAnnotation(Expose.class)!=null)
@@ -226,8 +226,7 @@ public class HudderConfig {
 
 			json_output.put("debug", Hudder.IS_DEBUG);
 			
-			config_writer.append(gson.toJson(json_output));
-			config_writer.flush();
+			Files.writeString(configFile, gson.toJson(json_output));
 		} catch (IOException e) {
 			e.printStackTrace();
 			Hudder.IS_DEBUG=true;
@@ -276,7 +275,7 @@ public class HudderConfig {
 	 * Returns the compiler currently used to compile the main file.
 	 * @return The current compiler
 	 */
-	public AHudCompiler<?> getCompiler() {
+	public @Nullable AHudCompiler<?> getCompiler() {
 		return compiler;
 	}
 
@@ -307,7 +306,11 @@ public class HudderConfig {
 	    return userSettings.savedVariables;
 	}
 
-	public String mainfile() {
+	public Path mainfile() {
+	    return HudFileUtils.FOLDER.resolve(mainfileString());
+	}
+
+	public String mainfileString() {
 	    return userSettings.mainfile;
 	}
 

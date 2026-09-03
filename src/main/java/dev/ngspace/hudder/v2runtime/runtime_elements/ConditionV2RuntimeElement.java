@@ -1,12 +1,10 @@
 package dev.ngspace.hudder.v2runtime.runtime_elements;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 import dev.ngspace.hudder.api.compilers.compilers.AV2Compiler;
 import dev.ngspace.hudder.api.compilers.utils.CompileState;
 import dev.ngspace.hudder.api.compilers.utils.HudInformation;
-import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.v2runtime.V2Runtime;
@@ -19,14 +17,12 @@ public class ConditionV2RuntimeElement extends AV2RuntimeElement {
 	AV2Compiler compiler;
 	boolean hasElse;
 	private String filename;
-	private HudderConfig config;
 	private int line;
 	private int charpos;
 	
-	public ConditionV2RuntimeElement(HudderConfig config, String[] condArgs, AV2Compiler compiler, V2Runtime runtime, int line,
+	public ConditionV2RuntimeElement(String[] condArgs, AV2Compiler compiler, V2Runtime runtime, int line,
 			int charpos, String filename) throws ExecutionException {
 		this.compiler = compiler;
-		this.config = config;
 		this.filename = filename;
 		this.line = line;
 		this.charpos = charpos;
@@ -48,19 +44,18 @@ public class ConditionV2RuntimeElement extends AV2RuntimeElement {
 			HudInformation res = null;
 			for (int i = 0;i<conditions.length;i++) {
 				if (conditions[i].asBoolean()) {
-					res = config.compilationManager.compileAndExecuteSecondaryHud(compiler, results[i].asString(),filename);
+					res = compiler.evalAndExecuteHud(results[i].asString(),filename);
 					break;
 				}
 			}
 			if (res==null&&hasElse)
-				res = config.compilationManager.compileAndExecuteSecondaryHud(compiler,
-						results[results.length-1].asString(),filename);
+				res = compiler.evalAndExecuteHud(results[results.length-1].asString(),filename);
 			if (res!=null) {
 				builder.append(res.TopLeftText());
 				for (var v : res.elements()) meta.elements.add(v);
 			}
 			return true;
-		} catch (IOException | CompileException e) {
+		} catch (CompileException e) {
 			throw new ExecutionException(e, line, charpos);
 		} 
 	}

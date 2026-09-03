@@ -1,5 +1,6 @@
 package dev.ngspace.hudder.api.compilers;
 
+import java.nio.file.Path;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -59,15 +60,15 @@ public interface CompilerRegistry {
 	public Optional<CompilerEntry> findEntryFromCompiler(AHudCompiler<?> compiler);
 	
 	/**
-	 * Returns all valid compiler entries for the given filepath
+	 * Returns all valid compiler entries for the given path
 	 * 
-	 * @param filepath the filepath to check
+	 * @param path the path to check
 	 * @return an array of all compiler entries that are valid for this filepath or an empty array if none
 	 *  are valid.
 	 * 
 	 * @see AHudCompiler#isValidFilePath(String)
 	 */
-	public CompilerEntry[] getValidCompilersForFilePath(String filepath);
+	public CompilerEntry[] getValidCompilersForFilePath(Path path);
 	
 	/**
 	 * Registers a compiler in this registry
