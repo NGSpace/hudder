@@ -43,10 +43,17 @@ public class HudderRenderer implements HudElement {
 	
 	
 	
-	public final RenderPipeline GUI_TEXTURED_TRIANGLES = RenderPipelines.register(RenderPipeline.builder(
-			RenderPipelines.GUI_TEXTURED_SNIPPET).withLocation("pipeline/gui_textured_triangles")
-			.withVertexBinding(0, DefaultVertexFormat.POSITION_TEX_COLOR)
-			.withPrimitiveTopology(PrimitiveTopology.TRIANGLE_STRIP).build());
+	public final RenderPipeline GUI_TEXTURED_TRIANGLES = RenderPipelines.register(
+		RenderPipeline.builder(RenderPipelines.GUI_TEXTURED_SNIPPET).withLocation("pipeline/gui_textured_triangles")
+				.withVertexBinding(0, DefaultVertexFormat.POSITION_TEX_COLOR)
+				.withCull(false)
+				.withPrimitiveTopology(PrimitiveTopology.TRIANGLE_STRIP).build());
+	
+	public final RenderPipeline GUI_COLORED_TRIANGLES = RenderPipelines
+		.register(RenderPipeline.builder(RenderPipelines.GUI_SNIPPET).withLocation("pipeline/gui_colored_triangles")
+				.withVertexBinding(0, DefaultVertexFormat.POSITION_COLOR)
+				.withCull(false)
+				.withPrimitiveTopology(PrimitiveTopology.TRIANGLE_STRIP).build());
 	
 	
 	
@@ -298,19 +305,18 @@ public class HudderRenderer implements HudElement {
 	 * @param mode The rendering mode
 	 */
 	public void renderColoredVertexArray(GuiGraphicsExtractor context, float[] vertices, int argb, boolean triangle_strip) {
-		//TODO: apparently this has layering issues
 		context.guiRenderState.addGuiElement(new TextureRenderState(TextureSetup.noTexture(),
-			triangle_strip ? GUI_TEXTURED_TRIANGLES : RenderPipelines.GUI_TEXTURED, vconsumer -> {
+			triangle_strip ? GUI_COLORED_TRIANGLES : RenderPipelines.GUI, vconsumer -> {
 			
 	        Matrix3x2fStack matrix = context.pose();
 	        
 	        for (int i = 0;i<vertices.length;i+=2)
-	        	vconsumer.addVertexWith2DPose(matrix,vertices[i],vertices[i+1]).setColor(argb).setUv(0, 0);
+	        	vconsumer.addVertexWith2DPose(matrix,vertices[i],vertices[i+1]).setColor(argb);
 		}));
 	}
 
 	public void renderWithVertexConsumer(GuiGraphicsExtractor context, Consumer<VertexConsumer> cons) {
-		renderWithVertexConsumer(context, TextureSetup.noTexture(), RenderPipelines.GUI_TEXTURED, cons);
+		renderWithVertexConsumer(context, TextureSetup.noTexture(), RenderPipelines.GUI, cons);
 	}
 	public void renderWithVertexConsumer(GuiGraphicsExtractor context, TextureSetup textureSetup,
 			RenderPipeline pipeline, Consumer<VertexConsumer> cons) {

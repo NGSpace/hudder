@@ -126,6 +126,16 @@ public class HudFileUtils {private HudFileUtils() {}
 	 * @throws  
 	 */
 	public static void makeDefaultHud() {
+		
+	    try {
+	    	Hudder.log("Creating config folder");
+	        Files.createDirectories(FOLDER);
+	    	Hudder.log("Done creating config folder");
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	        Hudder.error("Failed to create hudder folder");
+	        return;
+	    }
 
 		// Add missing huds to Hudder config folder (Assume one exists)
 		for (String file : DEFAULT_HUDS) {
@@ -135,7 +145,7 @@ public class HudFileUtils {private HudFileUtils() {}
 				Files.copy(HudFileUtils.class.getResourceAsStream(ASSETS + "huds/" + file), dest);
 			} catch (IOException e) {
 				if (Hudder.IS_DEBUG) e.printStackTrace();
-				Hudder.log("Failed to generate default hud " + file);
+				Hudder.error("Failed to generate default hud " + file);
 			}
 		}
 		
@@ -160,7 +170,7 @@ public class HudFileUtils {private HudFileUtils() {}
 				Files.copy(HudFileUtils.class.getResourceAsStream(ASSETS + "Textures/" + file), dest);
 			} catch (IOException e) {
 				if (Hudder.IS_DEBUG) e.printStackTrace();
-				Hudder.log("Failed to generate default texture " + file);
+				Hudder.error("Failed to generate default texture " + file);
 			}
 		}
 	}

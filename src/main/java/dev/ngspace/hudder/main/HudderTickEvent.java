@@ -44,8 +44,8 @@ public class HudderTickEvent implements StartTick {
 		    });
 		} catch (IOException e) {
 			if (Hudder.IS_DEBUG) e.printStackTrace();
-			Hudder.log("Failed to initalize watcher service!");
-			Hudder.log("Hudder's auto-refresh has been fully disabled for this session.");
+			Hudder.error("Failed to initalize watcher service!");
+			Hudder.error("Hudder's auto-refresh has been fully disabled for this session.");
 			watcherService = null;
 		}
 	}
