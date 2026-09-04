@@ -66,7 +66,7 @@ public class HudderBuiltInMethods {
 		// Rectangles
 		api.registerPositionedConsumer(
 				(e,_,_,_,s) -> e.addUIElement(
-						new RectangleElement(s[0].asInt(), s[1].asInt(), s[2].asInt(), s[3].asInt(), s[4].asInt())),
+						new RectangleElement(s[0].asFloat(), s[1].asFloat(), s[2].asFloat(), s[3].asFloat(), s[4].asInt())),
 				"rectangle");
 
 		api.registerPositionedConsumer(
