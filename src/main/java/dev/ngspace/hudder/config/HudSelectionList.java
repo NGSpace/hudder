@@ -127,7 +127,6 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 		public Path file;
 		public NGSMCConfigButton editbutton;
 		
-		public static int EDIT_BUTTON_WIDTH = 40;
 		public static UnaryOperator<Style> COMPILER_TEXT_STYLE = t -> t.withItalic(true).withColor(ChatFormatting.GRAY);
 		
 		protected HudEntry() {}

@@ -59,7 +59,6 @@ public class HudderConfig {
     /**
      * Initalize the config. 
      * @param configFile - the config file.
-     * @throws IOException 
      */
 	public HudderConfig(Path configFile, CompilerRegistry registry) {
 		compilationManager = new HudCompilationManager(this, registry);
@@ -422,14 +421,6 @@ public class HudderConfig {
 	public Map<String, Object> getHudSettings(String compiler, String hud) {
 		return userSettings.hudSettings.computeIfAbsent(compiler,_->new HashMap<String, Map<String, Object>>())
 				.computeIfAbsent(hud, _->new HashMap<String, Object>());
-	}
-	
-	/**
-	 * @deprecated
-	 */
-	@Deprecated(since = "9.2.0", forRemoval = true)
-	public Map<String, Object> globalVariables() {
-		return userSettings.globalVariables;
 	}
 
 	public boolean isFirstRun() {

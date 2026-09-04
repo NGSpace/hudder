@@ -72,7 +72,6 @@ public class Hudder implements ClientModInitializer {
      * Errors usually happen beyond this point
      * @throws Exception Because I fuck up a lot.
      */
-	@SuppressWarnings("removal")
 	@Override public void onInitializeClient() {
 		
 		log("Starting Hudder " + HUDDER_VERSION);
@@ -179,11 +178,9 @@ public class Hudder implements ClientModInitializer {
         ClientLifecycleEvents.CLIENT_STARTED.register(_->{
 			try {
 				HudFileUtils.reloadResources();
-				if (config.globalVariables().size()>0)
-					showWarningToast(Component.literal("Hudder is deprecating global variables!"),
-							Component.literal("Please stop using them as they'll stop working in a future release."));
 			} catch (IOException e) {
 				e.printStackTrace();
+				showWarningToast(Component.literal("Failed to load huds"), Component.literal("Failed to load huds"));
 			}
 		});
 		ClientLifecycleEvents.CLIENT_STOPPING.register(_ -> compiler_registry.shutdownAll());
@@ -217,8 +214,5 @@ public class Hudder implements ClientModInitializer {
 	public static void debug(Object str) {LOGGER.debug(String.valueOf(str));}
 	public static void alert(Object str) {
 		Minecraft.getInstance().player.sendSystemMessage(Component.keybind(String.valueOf(str)));
-	}
-	public static void handle(Exception exception) {
-		if (IS_DEBUG) exception.printStackTrace();
 	}
 }

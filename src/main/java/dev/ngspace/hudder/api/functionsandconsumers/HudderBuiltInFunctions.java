@@ -38,6 +38,7 @@ public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 		binder.registerPositionedFunction((_,_,_,_,s)->DataVariableRegistry.getString  (s[0].asString()), "getString" );
 		binder.registerPositionedFunction((_,_,_,_,s)->DataVariableRegistry.getObject  (s[0].asString()), "getObject" );
 		binder.registerPositionedFunction((_,_,_,_,s)->DataVariableRegistry.getBoolean (s[0].asString()), "getBoolean");
+		binder.registerPositionedFunction((_,_,_,_,s)->s[0].asMap().values(), "maps");
 		
 		binder.registerPositionedFunction((_,_,_,_,s)->new TranslatedItemStack(mc.player.getInventory().getItem(s[0].asInt())), "getItem");
 		

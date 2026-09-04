@@ -28,8 +28,7 @@ public abstract class AScriptingLanguageCompiler extends AHudCompiler<IScripting
 
 	@Override
 	public IScriptingLanguageEngine processFile(Path filepath) throws CompileException, IOException {
-		String text = HudFileUtils.readFile(filepath);
-		return evalHud(text, filepath.getFileName().toString());
+		return evalHud(HudFileUtils.readFile(filepath), filepath.getFileName().toString());
 	}
 	
 	@Override

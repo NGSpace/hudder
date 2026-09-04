@@ -13,8 +13,6 @@ public class MethodHandler {
 	
 	
 	public static Map<String, V2IMethod> methods = new HashMap<String,V2IMethod>();
-	public static final String[] Var = {"[Variable]"};
-	public static final String[] TextArg = {"[Text]"};
 	public MethodHandler() {
 		
 		//Text and compiling
@@ -26,7 +24,7 @@ public class MethodHandler {
 		bindConsumer(new LoadMethod(), "load", "execute", "compile", "run", "add");
 		
 		//Logging and errors
-		bindConsumer((_,_,_,_,_,ch,s)->{throw new ExecutionException(s[0].asString(),ch);},1, TextArg, "throw");
+		bindConsumer((_,_,_,_,_,ch,s)->{throw new ExecutionException(s[0].asString(),ch);},1, new String[] {"[Text]"}, "throw");
 	}
 	
 	
