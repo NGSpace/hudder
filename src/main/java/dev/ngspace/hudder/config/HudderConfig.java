@@ -61,14 +61,20 @@ public class HudderConfig {
      * @param configFile - the config file.
      * @throws IOException 
      */
-	public HudderConfig(Path configFile, CompilerRegistry registry) throws IOException {
+	public HudderConfig(Path configFile, CompilerRegistry registry) {
 		compilationManager = new HudCompilationManager(this, registry);
 		this.configFile = configFile;
 		if (!Files.exists(configFile)) {
 			Path oldconfigloc = HudFileUtils.FOLDER.resolve("hud.json");
 			if (Files.exists(oldconfigloc)) {
 				Hudder.log("Migrating Hudder config");
-				Files.move(configFile, oldconfigloc);
+				try {
+					Files.move(oldconfigloc, configFile);
+				} catch (Exception _) {
+					// The config failing to initalize would just crash the entire game and imo
+					// aborting the config migration is preferable to crashing the game
+					Hudder.error("Failed to migrate old config");
+				}
 			}
 		}
 		this.hudderV2Compiler = new HudderV2Compiler(this);

@@ -139,13 +139,7 @@ public class Hudder implements ClientModInitializer {
 		
 		log("Reading Hudder config");
 		CompilerRegistry compiler_registry = HudderApi.COMPILER_REGISTRY;
-		try {
-			config = new HudderConfig(DEFAULT_CONFIG_FILE, compiler_registry);
-		} catch (IOException e) {
-			e.printStackTrace();
-			IS_DEBUG = true;
-			error("Failed to load Hudder config: " + e.getMessage());
-		}
+		config = new HudderConfig(DEFAULT_CONFIG_FILE, compiler_registry);
 		
 		compiler_registry.addRegistrationListener(_->config.readAndUpdateConfig());
 
