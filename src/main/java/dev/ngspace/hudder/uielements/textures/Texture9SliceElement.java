@@ -1,6 +1,7 @@
-package dev.ngspace.hudder.uielements;
+package dev.ngspace.hudder.uielements.textures;
 
 import dev.ngspace.hudder.main.HudderRenderer;
+import dev.ngspace.hudder.uielements.AUIElement;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphicsExtractor;

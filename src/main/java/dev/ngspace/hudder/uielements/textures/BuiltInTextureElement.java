@@ -1,6 +1,7 @@
-package dev.ngspace.hudder.uielements;
+package dev.ngspace.hudder.uielements.textures;
 
 import dev.ngspace.hudder.main.HudderRenderer;
+import dev.ngspace.hudder.uielements.AUIElement;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.DeltaTracker;

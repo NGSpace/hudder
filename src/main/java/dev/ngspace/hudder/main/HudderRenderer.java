@@ -155,12 +155,12 @@ public class HudderRenderer implements HudElement {
             matrixStack.rotateAbout((float)Math.toRadians(rotation), -1, -1);
             matrixStack.translate(-x, -y);
     		if (background&&!"".equals(text.getString()))
-    			renderBlock(context,x-1,y-1,mc.font.width(text)+2,10,backgroundColor);
+    			renderBlock(context,x-1f,y-1f,mc.font.width(text)+2f,10,backgroundColor);
             context.text(mc.font, text, x, y, color, shadow);
             matrixStack.popMatrix();
         } else {
     		if (background&&!"".equals(text.getString()))
-    			renderBlock(context,x-1,y-1,mc.font.width(text)+2,10,backgroundColor);
+    			renderBlock(context,x-1f,y-1f,mc.font.width(text)+2f,10,backgroundColor);
         	context.text(mc.font, text, x, y, color, shadow);
         }
     }

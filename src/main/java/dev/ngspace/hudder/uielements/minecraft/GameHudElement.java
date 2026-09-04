@@ -1,9 +1,10 @@
-package dev.ngspace.hudder.uielements;
+package dev.ngspace.hudder.uielements.minecraft;
 
 import com.mojang.datafixers.util.Pair;
 
 import dev.ngspace.hudder.main.HudderRenderer;
 import dev.ngspace.hudder.mixin.InGameHudAccessor;
+import dev.ngspace.hudder.uielements.AUIElement;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -25,11 +26,11 @@ public class GameHudElement extends AUIElement {
 		ITEM_TOOLTIP;
 	}
 	
-	public final int x;
-	public final int y;
+	public final float x;
+	public final float y;
 	public final GuiType type;
 	
-	public GameHudElement(int x, int y, GuiType type) {
+	public GameHudElement(float x, float y, GuiType type) {
 		this.x = x;
 		this.y = y;
 		this.type = type;

@@ -1,6 +1,7 @@
-package dev.ngspace.hudder.uielements;
+package dev.ngspace.hudder.uielements.minecraft;
 
 import dev.ngspace.hudder.main.HudderRenderer;
+import dev.ngspace.hudder.uielements.AUIElement;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -16,10 +17,10 @@ public class ItemElement extends AUIElement {
 	public final float scale;
 	static Font textRenderer = Minecraft.getInstance().font;
 	
-	public ItemElement(double x, double y, ItemStack stack, float scale, boolean showcount) {
+	public ItemElement(float x, float y, ItemStack stack, float scale, boolean showcount) {
 		this.stack = stack;
-		this.x = (float) x;
-		this.y = (float) y;
+		this.x = x;
+		this.y = y;
 		this.scale = scale;
 		this.showcount = showcount;
 	}

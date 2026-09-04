@@ -1,6 +1,7 @@
-package dev.ngspace.hudder.uielements;
+package dev.ngspace.hudder.uielements.textures;
 
 import dev.ngspace.hudder.main.HudderRenderer;
+import dev.ngspace.hudder.uielements.AUIElement;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -9,13 +10,13 @@ import net.minecraft.resources.Identifier;
 
 public class TextureElement extends AUIElement {
 	
-	public final int x;
-	public final int y;
-	public final int width;
-	public final int height;
+	public final float x;
+	public final float y;
+	public final float width;
+	public final float height;
 	public final Identifier id;
 	
-	public TextureElement(String filename, int x, int y, int width, int height) {
+	public TextureElement(String filename, float x, float y, float width, float height) {
 		this.x=x;
 		this.y=y;
 		this.width=width;
@@ -26,6 +27,11 @@ public class TextureElement extends AUIElement {
 	}
 	
 	@Override public void renderElement(GuiGraphicsExtractor context, HudderRenderer renderer, DeltaTracker delta) {
-		context.blit(RenderPipelines.GUI_TEXTURED,id, x, y, 0, 0f, width, height, width, height);
+        context.pose().pushMatrix();
+        context.pose().translate(x, y);
+        context.pose().scale(width, height);
+		context.blit(RenderPipelines.GUI_TEXTURED,id, 0, 0, 0, 0, 1, 1, 1, 1);
+//        context.fill(0, 0, 1, 1, argb);
+        context.pose().popMatrix();
 	}
 }
