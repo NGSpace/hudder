@@ -49,6 +49,8 @@ public class HudderConfig {
 	public final CompilerRegistry registry;
 	private @Nullable AHudCompiler<?> compiler;
 	private final Path configFile;
+
+	private boolean first_run;
 	
 	private static final Minecraft mc = Minecraft.getInstance();
 	private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -89,6 +91,7 @@ public class HudderConfig {
 	public void readAndUpdateConfig() {
 		try {
 			if (!Files.exists(configFile)) {
+				first_run = true;
 				save();
 				return; // We already know it'll be default value, no need to waste resources.
 			}
@@ -421,6 +424,10 @@ public class HudderConfig {
 	@Deprecated(since = "9.2.0", forRemoval = true)
 	public Map<String, Object> globalVariables() {
 		return userSettings.globalVariables;
+	}
+
+	public boolean isFirstRun() {
+		return first_run;
 	}
 	
 }
