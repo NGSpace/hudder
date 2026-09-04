@@ -39,10 +39,10 @@ public class ImplCompilerRegistry implements CompilerRegistry {
 
 	@Override
 	public CompilerEntry registerCompiler(String id, String display_name, boolean unstable, boolean deprecated,
-			AHudCompiler<?> compiler) {
+			int priority, AHudCompiler<?> compiler) {
 		if (registredCompilers.stream().map(CompilerEntry::id).anyMatch(s->s.equals(id)))
 			throw new IllegalArgumentException("A compiler with the identifier \"" + id + "\" has already been registered");
-		CompilerEntry entry = new CompilerEntry(id, display_name, unstable, deprecated, compiler);
+		CompilerEntry entry = new CompilerEntry(id, display_name, unstable, deprecated, priority, compiler);
 		registredCompilers.add(entry);
 		for (var listener : listeners)
 			listener.accept(entry);

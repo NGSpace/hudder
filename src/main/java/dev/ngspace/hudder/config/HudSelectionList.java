@@ -3,12 +3,16 @@ package dev.ngspace.hudder.config;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 
+import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.compilers.CompilerRegistry;
 import dev.ngspace.hudder.api.compilers.utils.CompilerEntry;
 import dev.ngspace.hudder.config.HudSelectionList.HudEntry;
@@ -27,17 +31,16 @@ import net.minecraft.network.chat.Style;
 
 public class HudSelectionList extends ObjectSelectionList<HudEntry> implements ResourceReloadListener {
 	
-	private HudderUserSettings config;
-	private CompilerRegistry registry;
+	private final HudderUserSettings config;
+	private final CompilerRegistry registry;
+	public final Path source;
 	public String comp;
-	public Path source;
 	
 	// There are more formats but those are the only ones that matter, as far as I
 	// am aware minecraft only supports those formats
 	private static final Set<String> IMAGE_EXTENSIONS = Set.of("png", "jpg", "jpeg");
 	
-	public HudSelectionList(Minecraft minecraft, Path source, HudderUserSettings config,
-			CompilerRegistry registry) {
+	public HudSelectionList(Minecraft minecraft, Path source, HudderUserSettings config, CompilerRegistry registry) {
 		super(minecraft, 0, 0, 0, 18);
 		this.config = config;
 		this.source = source;
@@ -46,7 +49,7 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 		if (entry.isPresent()) {
 			comp = entry.get().display_name();
 		} else {
-			comp = "Hudder V3";
+			comp = "Auto-detect";
 		}
 		
 		try {
@@ -191,7 +194,17 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 						return true;
 					}
 				}
-				registry.findEntryFromDisplayName(comp).orElseThrow().compiler().edit(file);
+				if ("Auto-detect".equals(comp)) {
+			        Optional<CompilerEntry> entry = Arrays.stream(registry.getValidCompilersForFilePath(file))
+			                .max(Comparator.comparingInt(CompilerEntry::priority));
+			        if (entry.isPresent()) {
+			        	entry.get().compiler().edit(file);
+			        } else {
+			        	Hudder.config.hudderV3Compiler.edit(file);
+			        }
+				} else {
+					registry.findEntryFromDisplayName(comp).orElseThrow().compiler().edit(file);
+				}
 				return true;
 			}
 			
@@ -269,6 +282,7 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 		if (selected == null)
 			return;
 		config.mainfile = selected.filepath;
+		Hudder.config.refreshCompiler();
 	}
 	
 	public void reset() {
@@ -293,6 +307,8 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 		var selected = getSelected();
 		if (selected==null)
 			return Component.translatable("hudder.mainfile.noselection");
+		if ("Auto-detect".equals(comp))
+			return null;
 		return registry.findEntryFromDisplayName(comp).orElseThrow().compiler().isValidFilePath(selected.file) ? null
 				: Component.translatable("hudder.mainfile.unsupportedformat", comp, selected.filepath);
 	}

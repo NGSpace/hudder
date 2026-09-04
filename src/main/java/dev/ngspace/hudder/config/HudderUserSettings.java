@@ -35,6 +35,6 @@ public class HudderUserSettings {
 	
 	@Expose public int config_version = HudderConfig.HUDDER_CONFIG_VERSION;
 
-    @Expose public String compilername = "hudder";
+    @Expose public String compilername = "auto";
 	
 }

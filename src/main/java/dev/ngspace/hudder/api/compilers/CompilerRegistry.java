@@ -83,7 +83,7 @@ public interface CompilerRegistry {
 	 *  in this registry
 	 */
 	public CompilerEntry registerCompiler(String id, String displayname, boolean unstable, boolean deprecated,
-			AHudCompiler<?> compiler) throws IllegalArgumentException;
+			int priority, AHudCompiler<?> compiler) throws IllegalArgumentException;
 	
 	/**
 	 * Returns all compiler entries that have been registered in this registry

@@ -7,6 +7,8 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -77,13 +79,13 @@ public class HudderConfig {
 			}
 		}
 		this.hudderV2Compiler = new HudderV2Compiler(this);
-		registry.registerCompiler("hudderv2", "Hudder V2", false, false, hudderV2Compiler);
+		registry.registerCompiler("hudderv2", "V2 (Compatibility)", false, false, -1, hudderV2Compiler);
 		this.hudderV3Compiler = new HudderV3Compiler(this);
-		registry.registerCompiler("hudder", "Hudder V3", false, false, hudderV3Compiler);
+		registry.registerCompiler("hudder", "Hudder", false, false, 0, hudderV3Compiler);
 		this.hudpackCompiler = new HudPackCompiler(this);
-		registry.registerCompiler("pack", "Hudpack", false, false, hudpackCompiler);
+		registry.registerCompiler("pack", "Hudpack", false, false, 0, hudpackCompiler);
 		this.javaScriptCompiler = new JavaScriptCompiler(this);
-		registry.registerCompiler("js", "JavaScript", false, false, javaScriptCompiler);
+		registry.registerCompiler("js", "JavaScript", false, false, 0, javaScriptCompiler);
 		this.compiler = hudderV3Compiler;
 		this.registry = registry;
 		readAndUpdateConfig();
@@ -206,12 +208,22 @@ public class HudderConfig {
 	 * If unable to retrieve the compiler, switches to the default {@code HudderV3Compiler} instead.
 	 */
 	public void refreshCompiler() {
-		Optional<CompilerEntry> entry = registry.findEntryFromId(compilerId());
-		if (entry.isPresent()) {
-			compiler = entry.get().compiler();
+		if ("auto".equals(compilerId())) {
+	        Optional<CompilerEntry> entry = Arrays.stream(registry.getValidCompilersForFilePath(mainfile()))
+	                .max(Comparator.comparingInt(CompilerEntry::priority));
+	        if (entry.isPresent()) {
+	        	compiler = entry.get().compiler();
+	        } else {
+	        	compiler = hudderV3Compiler;
+	        }
 		} else {
-			Hudder.log("Couldn't find compiler \"" + compilerId() + "\".");
-			compiler = null;
+			Optional<CompilerEntry> entry = registry.findEntryFromId(compilerId());
+			if (entry.isPresent()) {
+				compiler = entry.get().compiler();
+			} else {
+				Hudder.log("Couldn't find compiler \"" + compilerId() + "\".");
+				compiler = null;
+			}
 		}
 	}
 	
@@ -270,12 +282,10 @@ public class HudderConfig {
 	/**
 	 * Sets the compilertype to the provided compiler name and refreshes the compiler
 	 * @param compilername - the name of the compiler
-	 * @return the provided name (for clothconfig)
 	 */
-	public String setCompilerName(String compilername) {
+	public void setCompilerName(String compilername) {
 		userSettings.compilername=compilername;
 		refreshCompiler();
-		return compilername;
 	}
 
 	

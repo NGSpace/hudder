@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
 
@@ -112,28 +113,36 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 				.setSaveOperation(b->config.enabled=b)
 				.setComponentProvider(enabledDisabled)
 				.build());
-		general.addOption(DropdownNGSMCConfigOption.builder(registry.findEntryFromId(Hudder.config.compilerId())
-				.orElseThrow(()->new IllegalArgumentException("No compiler named "
-						+ Hudder.config.compilerId())).display_name(),
+		String displayname = null;
+		if (Hudder.config.compilerId().equals("auto")) {
+			displayname = "Auto-detect";
+		} else {
+			displayname = registry.findEntryFromId(Hudder.config.compilerId())
+					.orElseThrow(()->new IllegalArgumentException("No compiler named "
+							+ Hudder.config.compilerId())).display_name();
+		}
+		general.addOption(DropdownNGSMCConfigOption.builder(displayname,
 					Component.translatable("hudder.general.compilertype"),
-					registry.entries().stream()
-						.sorted(Comparator.comparing(CompilerEntry::unstable)
-								.thenComparing(CompilerEntry::deprecated)
-								.thenComparing(CompilerEntry::display_name, String.CASE_INSENSITIVE_ORDER))
-						.map(e->e.display_name())
-						.toList())
+					Stream.concat(
+							Stream.of("Auto-detect"),
+							registry.entries().stream()
+								.sorted(Comparator.comparing(CompilerEntry::unstable)
+										.thenComparing(CompilerEntry::deprecated)
+										.thenComparing(CompilerEntry::display_name, String.CASE_INSENSITIVE_ORDER))
+								.map(e->e.display_name()))
+					.toList())
 	    		.setHoverComponent(Component.translatable("hudder.general.compilertype.tooltip"))
-	    		.setDefaultValue("Hudder V3")
+	    		.setDefaultValue("Auto-detect")
 	    		// Should be safe since the compiler has either been selected from the list which means it's
 	    		// safe. Or the first check during the builder's initation would've thrown already.
-	    		.setSaveOperation(b->Hudder.config.setCompilerName(registry.findEntryFromDisplayName(b).get()
-	    				.id()))
+	    		.setSaveOperation(b->Hudder.config.setCompilerName(b.equals("Auto-detect") ? "auto"
+	    				: registry.findEntryFromDisplayName(b).get().id()))
 	    		.setValidator(e->{
 	    			widget.comp = e;
-	    			return registry.findEntryFromDisplayName(e).isPresent()
+	    			return "Auto-detect".equals(e) || registry.findEntryFromDisplayName(e).isPresent()
 	    					? null : Component.translatable("hudder.general.compilertype.error");
 	    		})
-	    		.setWarningProvider(e->getCompilerWarning(registry.findEntryFromDisplayName(e).get()))
+	    		.setWarningProvider(e->"Auto-detect".equals(e) ? null : getCompilerWarning(registry.findEntryFromDisplayName(e).get()))
 	    		.build());
 		general.addOption(DoubleNGSMCConfigOption.builder(config.scale, Component.translatable("hudder.general.scale"))
 				.setHoverComponent(Component.translatable("hudder.general.scale.tooltip"))
