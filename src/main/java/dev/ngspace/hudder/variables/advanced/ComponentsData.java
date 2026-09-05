@@ -114,7 +114,7 @@ public class ComponentsData extends HashMap<String, Object> {
 		public String material;
 		public String pattern;
 		public TrimHolder(DataComponentMap data) {
-			material = data.get(DataComponents.TRIM).material().value().assets().base().suffix();
+			material = data.get(DataComponents.TRIM).material().value().paletteId().toString();
 			pattern = data.get(DataComponents.TRIM).pattern().value().assetId().toString();
 		}
 		@Override

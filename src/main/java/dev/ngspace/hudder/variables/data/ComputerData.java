@@ -3,14 +3,12 @@ package dev.ngspace.hudder.variables.data;
 import java.util.Calendar;
 import java.util.Locale;
 
-import org.lwjgl.glfw.GLFW;
-
-import com.mojang.blaze3d.platform.GLX;
-
 import dev.ngspace.hudder.variables.HudderBuiltInVariables;
 import dev.ngspace.hudder.variables.advanced.Misc;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.server.IntegratedServer;
+import oshi.SystemInfo;
+import oshi.hardware.CentralProcessor;
 
 public class ComputerData extends HudderBuiltInVariables {
 	static Minecraft ins;
@@ -39,7 +37,7 @@ public class ComputerData extends HudderBuiltInVariables {
 			_ -> Math.min(
 				ins.getFramerateLimitTracker().getFramerateLimit(),
 				Boolean.TRUE.equals(ins.options.enableVsync().get()) ? 
-					GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor()).refreshRate() : Integer.MAX_VALUE
+						ins.getWindow().getActiveVideoMode().getRefreshRate() : Integer.MAX_VALUE
         	),
 			"framerate_limit"
 		);
@@ -90,7 +88,11 @@ public class ComputerData extends HudderBuiltInVariables {
 	}
 	
 	public static void registerStringComputerInfo() {
-		registerString(_->GLX._getCpuInfo(), "cpu_info");
+		registerString(_->{
+			CentralProcessor processor = new SystemInfo().getHardware().getProcessor();
+			return String.format(Locale.ROOT, "%dx %s", processor.getLogicalProcessorCount(),
+					processor.getProcessorIdentifier().getName()).replaceAll("\\s+", " ");
+		}, "cpu_info");
 		registerString(_->Misc.OS, "operating_system");
 		registerString(_->Locale.getDefault().getDisplayName(), "locale");
 		registerString(_->Locale.getDefault().getLanguage(), "language");

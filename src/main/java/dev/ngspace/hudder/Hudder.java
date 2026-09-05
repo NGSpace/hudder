@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.Scanner;
 
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLScancode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,15 +83,15 @@ public class Hudder implements ClientModInitializer {
 		
 		configkeybind = KeyMappingHelper.registerKeyMapping(new KeyMapping(
             "hudder.configkeybind",
-            InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_R,
+            InputConstants.Type.KEYBOARD,
+            SDLScancode.SDL_SCANCODE_R,
             keycategory
         ));
 		
 		reloadkeybind = KeyMappingHelper.registerKeyMapping(new KeyMapping(
             "hudder.reloadkeybind",
-            InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_H,
+            InputConstants.Type.KEYBOARD,
+            SDLScancode.SDL_SCANCODE_H,
             keycategory
         ));
 		

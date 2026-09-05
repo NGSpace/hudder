@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLScancode;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.sun.management.OperatingSystemMXBean;
@@ -116,18 +116,17 @@ public class Misc {private Misc() {}
     
     
     public static final Map<Integer,Integer> held_keys = new HashMap<Integer,Integer>();
-    private static final String GLFW_PREFIX = "GLFW_KEY_";
+    private static final String SDL_PREFIX = "SDL_SCANCODE_";
     private static final String KEY_PREFIX = "key_";
 
     private static final Map<String, Integer> keys = new HashMap<>();
     private static final Map<Integer, String> keyNames = new HashMap<>();
 	
 	public static void registerKeyVariables() {
-		
-		for (Field field : GLFW.class.getFields()) {
+		for (Field field : SDLScancode.class.getFields()) {
 			try {
-				if (field.getName().startsWith(GLFW_PREFIX)) {
-					String keyname = field.getName().substring(GLFW_PREFIX.length()).toLowerCase();
+				if (field.getName().startsWith(SDL_PREFIX)) {
+					String keyname = field.getName().substring(SDL_PREFIX.length()).toLowerCase();
 					
 					int value = field.getInt(null);
 					
