@@ -9,8 +9,8 @@ import net.minecraft.network.chat.Component;
 public class TextElement extends AUIElement {
 	
 	public final Component component;
-	public final int x;
-	public final int y;
+	public final float x;
+	public final float y;
 	public final int color;
 	public final int backgroundcolor;
 	public final float scale;
@@ -18,23 +18,7 @@ public class TextElement extends AUIElement {
 	public final boolean background;
 	public final float rotation;
 
-	/**
-	 * @deprecated use {@link #TextElement(int, int, Component, float, int, boolean, boolean, int, float)}
-	 */
-	@Deprecated(since = "10.1.0", forRemoval = true)
-	public TextElement(int x, int y, String text, float scale, int color, boolean shadow, boolean background,
-			int backgroundcolor) {
-		this(x, y, Component.literal(text), scale, color, shadow, background, backgroundcolor);
-	}
-	/**
-	 * @deprecated use {@link #TextElement(int, int, Component, float, int, boolean, boolean, int, float)}
-	 */
-	@Deprecated(since = "10.3.0", forRemoval = true)
-	public TextElement(int x, int y, Component component, float scale, int color, boolean shadow, boolean background,
-			int backgroundcolor) {
-		this(x, y, component, scale, color, shadow, background, backgroundcolor, 0);
-	}
-	public TextElement(int x, int y, Component component, float scale, int color, boolean shadow, boolean background,
+	public TextElement(float x, float y, Component component, float scale, int color, boolean shadow, boolean background,
 			int backgroundcolor, float rotation) {
 		this.component = component;
 		this.x = x;

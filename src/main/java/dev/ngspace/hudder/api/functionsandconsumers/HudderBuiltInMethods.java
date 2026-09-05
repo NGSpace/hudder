@@ -90,8 +90,8 @@ public class HudderBuiltInMethods {
 		// Text
 		
 		api.registerPositionedConsumer((e,_,_,i,args) -> {
-			int x = args[0].asInt();
-			int y = args[1].asInt();
+			float x = args[0].asFloat();
+			float y = args[1].asFloat();
 			
 			Component text = args[2].asComponent();
 			float scale = (float) (args.length > 3 ? args[3].asDouble() : i.scale());

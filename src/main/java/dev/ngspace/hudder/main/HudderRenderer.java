@@ -145,24 +145,17 @@ public class HudderRenderer implements HudElement {
 		renderTextLine(context, text, x, y, color, scale, shadow, background, backgroundColor, 0);
 	}
 	
-	public void renderTextLine(GuiGraphicsExtractor context, Component text, int x, int y, int color,
+	public void renderTextLine(GuiGraphicsExtractor context, Component text, float x, float y, int color,
 			float scale, boolean shadow, boolean background, int backgroundColor, float rotation) {
-        if (scale != 1.0f||rotation!=0) {
-            Matrix3x2fStack matrixStack = context.pose();
-            matrixStack.pushMatrix();
-            matrixStack.translate(x, y);
-            matrixStack.scale(scale, scale);
-            matrixStack.rotateAbout((float)Math.toRadians(rotation), -1, -1);
-            matrixStack.translate(-x, -y);
-    		if (background&&!"".equals(text.getString()))
-    			renderBlock(context,x-1f,y-1f,mc.font.width(text)+2f,10,backgroundColor);
-            context.text(mc.font, text, x, y, color, shadow);
-            matrixStack.popMatrix();
-        } else {
-    		if (background&&!"".equals(text.getString()))
-    			renderBlock(context,x-1f,y-1f,mc.font.width(text)+2f,10,backgroundColor);
-        	context.text(mc.font, text, x, y, color, shadow);
-        }
+        Matrix3x2fStack matrixStack = context.pose();
+        matrixStack.pushMatrix();
+        matrixStack.translate(x, y);
+        matrixStack.scale(scale, scale);
+        matrixStack.rotateAbout((float)Math.toRadians(rotation), -1, -1);
+		if (background&&!"".equals(text.getString()))
+			renderBlock(context,-1f,-1f,mc.font.width(text)+2f,10,backgroundColor);
+        context.text(mc.font, text, 0, 0, color, shadow);
+        matrixStack.popMatrix();
     }
 	
 	

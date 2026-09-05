@@ -6,7 +6,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map.Entry;
-import java.util.Scanner;
 
 import com.mojang.blaze3d.platform.NativeImage;
 
@@ -23,8 +22,8 @@ public class CachedReader {
 
 	HashMap<Path, byte[]> savedFiles = new HashMap<>();
 	HashMap<Path, String> savedFilesStrings = new HashMap<>();
-	HashMap<Identifier, DynamicTexture> savedImages = new HashMap<Identifier, DynamicTexture>();
-	HashMap<Identifier, NativeImage> unregisteredImages = new HashMap<Identifier, NativeImage>();
+	HashMap<Identifier, DynamicTexture> savedImages = new HashMap<>();
+	HashMap<Identifier, NativeImage> unregisteredImages = new HashMap<>();
 	
 	
 
@@ -104,27 +103,6 @@ public class CachedReader {
 	
 	public static interface Reader {
 		public byte[] readFile(Path f) throws IOException;
-	}
-	
-	/**
-	 * @deprecated Very limited
-	 */
-	@Deprecated(since = "8.6.0", forRemoval = true)
-	public static class ScannerReader implements Reader {
-		
-		@Deprecated
-		public byte[] readFile(Path file) throws IOException {
-			Scanner reader = new Scanner(file);
-			String res = "";
-			while (reader.hasNextLine()) {
-				res += reader.nextLine();
-				res += '\n';
-			}
-			reader.close();
-			if (res.isEmpty()) return res.getBytes();
-			return res.substring(0, res.length()-1).getBytes();
-		}
-		
 	}
 	
 	public static class FilesRABReader implements Reader {

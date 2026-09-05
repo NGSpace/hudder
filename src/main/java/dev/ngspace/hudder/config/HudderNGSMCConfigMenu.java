@@ -133,8 +133,6 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 					.toList())
 	    		.setHoverComponent(Component.translatable("hudder.general.compilertype.tooltip"))
 	    		.setDefaultValue("Auto-detect")
-	    		// Should be safe since the compiler has either been selected from the list which means it's
-	    		// safe. Or the first check during the builder's initation would've thrown already.
 	    		.setSaveOperation(b->Hudder.config.setCompilerName(b.equals("Auto-detect") ? "auto"
 	    				: registry.findEntryFromDisplayName(b).get().id()))
 	    		.setValidator(e->{
