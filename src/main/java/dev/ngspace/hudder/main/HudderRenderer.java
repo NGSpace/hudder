@@ -12,7 +12,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.compilers.utils.HudInformation;
+import dev.ngspace.hudder.api.compilers.utils.HudInformation;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.uielements.AUIElement;
 import dev.ngspace.hudder.utils.HudFileUtils;
@@ -35,22 +35,31 @@ import net.minecraft.util.FormattedCharSequence;
  */
 public class HudderRenderer implements HudElement {
 	
-	private HudCompilationManager compman;
+	public final HudCompilationManager compman;
+	public final HudderConfig config;
 	public Identifier hudElementRegistryID = Identifier.fromNamespaceAndPath("hudder_renderer", "renderer");
 	protected static Minecraft mc = Minecraft.getInstance();
     public static final String NL_REGEX = "\r?\n";
 	
 	
 	
-	public final RenderPipeline GUI_TEXTURED_TRIANGLES = RenderPipelines.register(RenderPipeline.builder(
-			RenderPipelines.GUI_TEXTURED_SNIPPET).withLocation("pipeline/gui_textured_triangles")
-			.withVertexBinding(0, DefaultVertexFormat.POSITION_TEX_COLOR)
-			.withPrimitiveTopology(PrimitiveTopology.TRIANGLE_STRIP).build());
+	public final RenderPipeline GUI_TEXTURED_TRIANGLES = RenderPipelines.register(
+		RenderPipeline.builder(RenderPipelines.GUI_TEXTURED_SNIPPET).withLocation("pipeline/gui_textured_triangles")
+				.withVertexBinding(0, DefaultVertexFormat.POSITION_TEX_COLOR)
+				.withCull(false)
+				.withPrimitiveTopology(PrimitiveTopology.TRIANGLE_STRIP).build());
+	
+	public final RenderPipeline GUI_COLORED_TRIANGLES = RenderPipelines
+		.register(RenderPipeline.builder(RenderPipelines.GUI_SNIPPET).withLocation("pipeline/gui_colored_triangles")
+				.withVertexBinding(0, DefaultVertexFormat.POSITION_COLOR)
+				.withCull(false)
+				.withPrimitiveTopology(PrimitiveTopology.TRIANGLE_STRIP).build());
 	
 	
 	
-	public HudderRenderer(HudCompilationManager compilationManager) {
-		this.compman = compilationManager;
+	public HudderRenderer(HudderConfig config) {
+		this.config = config;
+		this.compman = config.compilationManager;
 	}
 	
 	
@@ -136,24 +145,17 @@ public class HudderRenderer implements HudElement {
 		renderTextLine(context, text, x, y, color, scale, shadow, background, backgroundColor, 0);
 	}
 	
-	public void renderTextLine(GuiGraphicsExtractor context, Component text, int x, int y, int color,
+	public void renderTextLine(GuiGraphicsExtractor context, Component text, float x, float y, int color,
 			float scale, boolean shadow, boolean background, int backgroundColor, float rotation) {
-        if (scale != 1.0f||rotation!=0) {
-            Matrix3x2fStack matrixStack = context.pose();
-            matrixStack.pushMatrix();
-            matrixStack.translate(x, y);
-            matrixStack.scale(scale, scale);
-            matrixStack.rotateAbout((float)Math.toRadians(rotation), -1, -1);
-            matrixStack.translate(-x, -y);
-    		if (background&&!"".equals(text.getString()))
-    			renderBlock(context,x-1,y-1,mc.font.width(text)+2,10,backgroundColor);
-            context.text(mc.font, text, x, y, color, shadow);
-            matrixStack.popMatrix();
-        } else {
-    		if (background&&!"".equals(text.getString()))
-    			renderBlock(context,x-1,y-1,mc.font.width(text)+2,10,backgroundColor);
-        	context.text(mc.font, text, x, y, color, shadow);
-        }
+        Matrix3x2fStack matrixStack = context.pose();
+        matrixStack.pushMatrix();
+        matrixStack.translate(x, y);
+        matrixStack.scale(scale, scale);
+        matrixStack.rotateAbout((float)Math.toRadians(rotation), -1, -1);
+		if (background&&!"".equals(text.getString()))
+			renderBlock(context,-1f,-1f,mc.font.width(text)+2f,10,backgroundColor);
+        context.text(mc.font, text, 0, 0, color, shadow);
+        matrixStack.popMatrix();
     }
 	
 	
@@ -301,17 +303,17 @@ public class HudderRenderer implements HudElement {
 	 */
 	public void renderColoredVertexArray(GuiGraphicsExtractor context, float[] vertices, int argb, boolean triangle_strip) {
 		context.guiRenderState.addGuiElement(new TextureRenderState(TextureSetup.noTexture(),
-			triangle_strip ? GUI_TEXTURED_TRIANGLES : RenderPipelines.GUI_TEXTURED, vconsumer -> {
+			triangle_strip ? GUI_COLORED_TRIANGLES : RenderPipelines.GUI, vconsumer -> {
 			
 	        Matrix3x2fStack matrix = context.pose();
 	        
 	        for (int i = 0;i<vertices.length;i+=2)
-	        	vconsumer.addVertexWith2DPose(matrix,vertices[i],vertices[i+1]).setColor(argb).setUv(0, 0);
+	        	vconsumer.addVertexWith2DPose(matrix,vertices[i],vertices[i+1]).setColor(argb);
 		}));
 	}
 
 	public void renderWithVertexConsumer(GuiGraphicsExtractor context, Consumer<VertexConsumer> cons) {
-		renderWithVertexConsumer(context, TextureSetup.noTexture(), RenderPipelines.GUI_TEXTURED, cons);
+		renderWithVertexConsumer(context, TextureSetup.noTexture(), RenderPipelines.GUI, cons);
 	}
 	public void renderWithVertexConsumer(GuiGraphicsExtractor context, TextureSetup textureSetup,
 			RenderPipeline pipeline, Consumer<VertexConsumer> cons) {
@@ -322,13 +324,13 @@ public class HudderRenderer implements HudElement {
 	
 	@Override public void extractRenderState(GuiGraphicsExtractor context, DeltaTracker delta) {
 		try {
-			if (!Hudder.config.limitrate()) compman.compile(delta);
-			if (Hudder.config.shouldDrawResult()) {
+			if (!config.limitrate()) compman.compileAndExecute(delta);
+			if (config.shouldDrawResult()) {
 	            try {
-	            	if (compman.getResult()!=null)
-	            		renderHudInformation(context, mc.font, compman.getResult(), Hudder.config, delta);
+	            	if (compman.getMainResult()!=null)
+	            		renderHudInformation(context, mc.font, compman.getMainResult(), config, delta);
 	            	else
-	            		renderFail(context, HudCompilationManager.LastFailMessage);
+	            		renderFail(context, compman.LastFailMessage);
 				} catch (Exception e) {
 					if (Hudder.IS_DEBUG) e.printStackTrace();
 		    		renderFail(context, e.getMessage());

@@ -1,8 +1,9 @@
 package dev.ngspace.hudder;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -13,13 +14,14 @@ import org.slf4j.LoggerFactory;
 
 import com.mojang.blaze3d.platform.InputConstants;
 
+import dev.ngspace.hudder.api.HudderApi;
+import dev.ngspace.hudder.api.compilers.CompilerRegistry;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.api.functionsandconsumers.HudderBuiltInFunctions;
 import dev.ngspace.hudder.api.functionsandconsumers.HudderBuiltInMethods;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
-import dev.ngspace.hudder.compilers.utils.Compilers;
 import dev.ngspace.hudder.config.HudderConfig;
-import dev.ngspace.hudder.main.HudCompilationManager;
+import dev.ngspace.hudder.config.HudderNGSMCConfigMenu;
 import dev.ngspace.hudder.main.HudderRenderer;
 import dev.ngspace.hudder.main.HudderTickEvent;
 import dev.ngspace.hudder.testing.HudderUnitTestingCommand;
@@ -35,6 +37,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
@@ -48,6 +51,7 @@ import net.minecraft.server.LoggedPrintStream;
 public class Hudder implements ClientModInitializer {
 	
     private static final Logger LOGGER = LoggerFactory.getLogger("hudder");
+    private static final Path DEFAULT_CONFIG_FILE = HudFileUtils.FABRIC_CONFIG_FOLDER.resolve("hudder.json");
 
 
 
@@ -62,38 +66,50 @@ public class Hudder implements ClientModInitializer {
      * Hudder's config
      */
     public static HudderConfig config;
-
-
-
-	public static KeyMapping configkeybind;
-	public static KeyMapping reloadkeybind;
-
     
     
     /**
      * Errors usually happen beyond this point
      * @throws Exception Because I fuck up a lot.
      */
-	@SuppressWarnings("removal")
 	@Override public void onInitializeClient() {
 		
 		log("Starting Hudder " + HUDDER_VERSION);
 		
 		var keycategory = KeyMapping.Category.register(Identifier.parse("hudder.keybinds"));
 		
-		configkeybind = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+		KeyMapping configkeybind = KeyMappingHelper.registerKeyMapping(new KeyMapping(
             "hudder.configkeybind",
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_R,
             keycategory
         ));
 		
-		reloadkeybind = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+		KeyMapping reloadkeybind = KeyMappingHelper.registerKeyMapping(new KeyMapping(
             "hudder.reloadkeybind",
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_H,
             keycategory
         ));
+		
+		// I know this is registering 2 different client tick events but I wanted to clear out HudderTickEvent
+		ClientTickEvents.START_CLIENT_TICK.register(_->{
+			while (configkeybind.consumeClick()) {
+				Minecraft.getInstance().gui.setScreen(HudderNGSMCConfigMenu.createMenu(Minecraft.getInstance().gui.screen()));
+			}
+			while (reloadkeybind.consumeClick()) {
+		    	Hudder.log("Manual file refresh triggered!");
+				try {
+					HudFileUtils.reloadResources();
+					Hudder.showToast(Component.literal("Refreshed files!").withStyle(ChatFormatting.BOLD), 
+							Component.literal("\u00A7aDue to manual refresh."));
+				} catch (IOException e) {
+					Hudder.showToast(Component.literal("\u00A74Error refreshing files!")
+							.withStyle(ChatFormatting.BOLD),Component.literal(e.getMessage()));
+					e.printStackTrace();
+				}
+			}
+		});
 		
 		
 		Optional<ModContainer> containerOpt = FabricLoader.getInstance().getModContainer("hudder");
@@ -104,8 +120,8 @@ public class Hudder implements ClientModInitializer {
 		// If there is still no version (eg. when running through an IDE)
 		if (HUDDER_VERSION.equals("${version}")) {
 			// Read the version from gradle.properties
-			File gradleProp = new File("../gradle.properties");
-			if (gradleProp.exists()) {
+			Path gradleProp = Paths.get("../gradle.properties");
+			if (Files.exists(gradleProp)) {
 				try (Scanner scanner = new Scanner(gradleProp)) {
 					while (scanner.hasNext()) {
 						String line = scanner.nextLine();
@@ -113,18 +129,18 @@ public class Hudder implements ClientModInitializer {
 							HUDDER_VERSION = line.substring(12);
 						}
 					}
-				} catch (FileNotFoundException e) {
-					log("Can not determine Hudder version!");
+				} catch (IOException e) {
 					e.printStackTrace();
+					error("Can not determine Hudder version!");
 				}
 			}
 		}
 		
-		log("Loading default compilers");
-		Compilers.registerDefaultCompilers();
-		
 		log("Reading Hudder config");
-		config = new HudderConfig(HudderConfig.DEFAULT_CONFIG_FILE);
+		CompilerRegistry compiler_registry = HudderApi.COMPILER_REGISTRY;
+		config = new HudderConfig(DEFAULT_CONFIG_FILE, compiler_registry);
+		
+		compiler_registry.addRegistrationListener(_->config.readAndUpdateConfig());
 
 		if (IS_DEBUG) {
 			log("HUDDER'S DEBUG MODE IS TURNED ON");
@@ -139,42 +155,42 @@ public class Hudder implements ClientModInitializer {
 		try {
 			ClientCommandRegistrationCallback.EVENT.register(new HudderUnitTestingCommand(config));
 		} catch (Exception e) {
+			if (IS_DEBUG) e.printStackTrace();
 			Hudder.error("Could not load unit tests");
-			e.printStackTrace();
 		}
 		
 		HudderBuiltInMethods.registerMethods(FunctionAndConsumerAPI.getInstance());
 		HudderBuiltInFunctions.registerFunction(FunctionAndConsumerAPI.getInstance());
-		if (!new File(HudFileUtils.FOLDER).exists())
+		if (config.isFirstRun())
 			HudFileUtils.makeDefaultHud();
-		ClientTickEvents.START_CLIENT_TICK.register(new HudderTickEvent());
+		ClientTickEvents.START_CLIENT_TICK.register(new HudderTickEvent(config));
 		
 		Hudder.log("Loading variables.");
 		Misc.registerKeyVariables();
-		HudderBuiltInVariables.registerVariables();
+		HudderBuiltInVariables.registerVariables(config);
 		Hudder.log("Finished loading " + DataVariableRegistry.getTotalEntriesCount() + " variables!");
         
-		HudCompilationManager compman = new HudCompilationManager();
-		ClientTickEvents.END_CLIENT_TICK.register(compman);
+		ClientTickEvents.END_CLIENT_TICK.register(config.compilationManager);
         
-		HudderRenderer renderer = new HudderRenderer(compman);
+		HudderRenderer renderer = new HudderRenderer(config);
 		HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT, renderer.hudElementRegistryID, renderer);
         
         ClientLifecycleEvents.CLIENT_STARTED.register(_->{
 			try {
 				HudFileUtils.reloadResources();
-				if (config.globalVariables().size()>0)
-					showWarningToast(Component.literal("Hudder is deprecating global variables!"),
-							Component.literal("Please stop using them as they'll stop working in a future release."));
 			} catch (IOException e) {
-				e.printStackTrace();
+				if (IS_DEBUG) e.printStackTrace();
+				showWarningToast(Component.literal("Failed to load huds"), Component.literal("Failed to load huds"));
 			}
 		});
-		ClientLifecycleEvents.CLIENT_STOPPING.register(_ -> Compilers.shutdownAll());
+		ClientLifecycleEvents.CLIENT_STOPPING.register(_ -> compiler_registry.shutdownAll());
         
-        // Make sure the FPS variable is updated once every compilation instead of every time a number variable is used
+        // Make sure the variables are updated once per compilation instead of every time the variable is used
         var mc = Minecraft.getInstance();
-        HudCompilationManager.addPreCompilerListener(_->Misc.fps = Misc.getFPS(mc));
+        config.compilationManager.addCompilationListener(_->{
+    		Misc.updateCPS();
+    		Misc.fps = Misc.getFPS(mc);
+        });
 		
 		log("Hudder has finished loading!");
 	}
@@ -198,8 +214,5 @@ public class Hudder implements ClientModInitializer {
 	public static void debug(Object str) {LOGGER.debug(String.valueOf(str));}
 	public static void alert(Object str) {
 		Minecraft.getInstance().player.sendSystemMessage(Component.keybind(String.valueOf(str)));
-	}
-	public static void handle(Exception exception) {
-		if (IS_DEBUG) exception.printStackTrace();
 	}
 }

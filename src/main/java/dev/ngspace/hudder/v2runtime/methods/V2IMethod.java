@@ -1,8 +1,8 @@
 package dev.ngspace.hudder.v2runtime.methods;
 
-import dev.ngspace.hudder.compilers.abstractions.AV2Compiler;
-import dev.ngspace.hudder.compilers.utils.CompileState;
-import dev.ngspace.hudder.compilers.utils.TextPos;
+import dev.ngspace.hudder.api.compilers.compilers.AV2Compiler;
+import dev.ngspace.hudder.api.compilers.utils.CompileState;
+import dev.ngspace.hudder.api.compilers.utils.TextPos;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.utils.ObjectWrapper;

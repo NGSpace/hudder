@@ -1,10 +1,9 @@
 package dev.ngspace.hudder.api.functionsandconsumers;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.BindableConsumer;
+import dev.ngspace.hudder.api.compilers.compilers.AHudCompiler;
+import dev.ngspace.hudder.api.compilers.utils.TextPos;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
-import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
-import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.utils.ObjectWrapper;
@@ -17,15 +16,6 @@ public class DeprecatedConsumer implements BindablePositionedConsumer {
 	private String warning;
 	private BindablePositionedConsumer cons;
 	private String name;
-
-	/**
-	 * @deprecated use {@link #DeprecatedConsumer(String, BindablePositionedConsumer, String[])}
-	 */
-	@SuppressWarnings("removal")
-	@Deprecated(since = "10.3.0", forRemoval = false)
-	public DeprecatedConsumer(String warning, BindableConsumer cons, String[] names) {
-		this(warning, (BindablePositionedConsumer) cons, names);
-	}
 
 	public DeprecatedConsumer(String warning, BindablePositionedConsumer cons, String[] names) {
 		this.warning = warning;

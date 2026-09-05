@@ -18,7 +18,6 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.compilers.utils.Compilers;
 import dev.ngspace.hudder.config.HudderConfig;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -33,7 +32,7 @@ public class HudderUnitTestingCommand implements ClientCommandRegistrationCallba
 
     public HudderUnitTestingCommand(HudderConfig config) throws IOException {
 		this.config = config;
-		handler = new HudderTestsHandler(config, Compilers.hudderV3Compiler);
+		handler = new HudderTestsHandler(config, config.hudderV3Compiler);
 		handler.test_providers.add(handler::loadDefaultTests);
 		handler.test_providers.add(UnitTestsSuggestionProvider::updateSuggestions);
 		handler.loadTests();
@@ -44,7 +43,7 @@ public class HudderUnitTestingCommand implements ClientCommandRegistrationCallba
 		dispatcher.register(literal("hudderunittesting")
 				
 				.then(literal("test_all").executes(context -> {
-					context.getSource().sendFeedback(handler.hudderTester.testAllAndReturnComponent(config));
+					context.getSource().sendFeedback(handler.hudderTester.testAllAndReturnComponent());
 					return 1;
 				}))
 				
@@ -52,7 +51,7 @@ public class HudderUnitTestingCommand implements ClientCommandRegistrationCallba
 						.suggests(new UnitTestsSuggestionProvider()).executes(context -> {
 							String testname = StringArgumentType.getString(context, "name");
 							context.getSource().sendFeedback(
-									handler.hudderTester.test(config, testname).toText(testname));
+									handler.hudderTester.test(testname).toText(testname));
 							return 1;
 						})))
 				
@@ -77,7 +76,7 @@ public class HudderUnitTestingCommand implements ClientCommandRegistrationCallba
 						handler.loadTests();
 						context.getSource().sendFeedback(
 								Component.literal("Succesfully reloaded tests").withColor(CommonColors.GREEN));
-						context.getSource().sendFeedback(handler.hudderTester.testAllAndReturnComponent(config));
+						context.getSource().sendFeedback(handler.hudderTester.testAllAndReturnComponent());
 					} catch (Exception e) {
 						Hudder.error("Could not load unit tests");
 						e.printStackTrace();

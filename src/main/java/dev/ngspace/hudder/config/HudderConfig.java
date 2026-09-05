@@ -1,78 +1,96 @@
 package dev.ngspace.hudder.config;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.AccessFlag;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
-import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.Nullable;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.Expose;
+import com.google.gson.reflect.TypeToken;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
-import dev.ngspace.hudder.compilers.utils.Compilers;
-import dev.ngspace.hudder.compilers.utils.HudInformation;
-import dev.ngspace.hudder.exceptions.CompileException;
-import dev.ngspace.hudder.exceptions.ExecutionException;
+import dev.ngspace.hudder.api.compilers.CompilerRegistry;
+import dev.ngspace.hudder.api.compilers.compilers.AHudCompiler;
+import dev.ngspace.hudder.api.compilers.utils.CompilerEntry;
+import dev.ngspace.hudder.defaultcompilers.HudPackCompiler;
+import dev.ngspace.hudder.defaultcompilers.HudderV2Compiler;
+import dev.ngspace.hudder.defaultcompilers.HudderV3Compiler;
+import dev.ngspace.hudder.defaultcompilers.JavaScriptCompiler;
+import dev.ngspace.hudder.main.HudCompilationManager;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.hudder.utils.NoAccess;
 import net.minecraft.client.Minecraft;
 
 public class HudderConfig {
 	
-	public static final int HUDDER_CONFIG_VERSION = 5;
-	public static final File DEFAULT_CONFIG_FILE = new File(HudFileUtils.FABRIC_CONFIG_FOLDER + File.separator + "hudder.json");
+	public static final int HUDDER_CONFIG_VERSION = 6;
 	
-	public HudderUserSettings userSettings = new HudderUserSettings();
+	public final HudderUserSettings userSettings = new HudderUserSettings();
+
+	public final HudCompilationManager compilationManager;
 	
+	public final HudderV2Compiler hudderV2Compiler;
+	public final HudderV3Compiler hudderV3Compiler;
+	public final HudPackCompiler hudpackCompiler;
+	public final JavaScriptCompiler javaScriptCompiler;
+
+	public final CompilerRegistry registry;
+	private @Nullable AHudCompiler<?> compiler;
+	private final Path configFile;
+
+	private boolean first_run;
 	
-	private AHudCompiler<?> compiler = Compilers.hudderV3Compiler;
-	private File configFile;
-	
-	
-	
-    public Minecraft mc = Minecraft.getInstance();
+	private static final Minecraft mc = Minecraft.getInstance();
+	private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	
     
     /**
      * Initalize the config. 
      * @param configFile - the config file.
      */
-	public HudderConfig(File configFile) {
+	public HudderConfig(Path configFile, CompilerRegistry registry) {
+		this.registry = registry;
 		this.configFile = configFile;
-		if (!configFile.exists()) {
-			File oldconfigloc = new File(HudFileUtils.FOLDER + "hud.json");
-			if (oldconfigloc.exists()) {
+		this.compilationManager = new HudCompilationManager(this, registry);
+		
+		if (!Files.exists(configFile)) {
+			Path oldconfigloc = HudFileUtils.FOLDER.resolve("hud.json");
+			if (Files.exists(oldconfigloc)) {
 				Hudder.log("Migrating Hudder config");
-				if (!oldconfigloc.renameTo(configFile)) {
-					Hudder.log("Failed to migrate Hudder config file.");
-					throw new UnsupportedOperationException("Failed to migrate Hudder config file.");
+				try {
+					Files.move(oldconfigloc, configFile);
+				} catch (Exception _) {
+					// The config failing to initalize would just crash the entire game and imo
+					// aborting the config migration is preferable to crashing the game
+					Hudder.error("Failed to migrate old config");
 				}
 			}
 		}
+		this.hudderV3Compiler = new HudderV3Compiler(this);
+		registry.registerCompiler("hudder", "Hudder", false, false, 0, hudderV3Compiler);
+		this.hudpackCompiler = new HudPackCompiler(this);
+		registry.registerCompiler("pack", "Hudpack", false, false, 0, hudpackCompiler);
+		this.javaScriptCompiler = new JavaScriptCompiler(this);
+		registry.registerCompiler("js", "JavaScript", false, false, 0, javaScriptCompiler);
+		this.hudderV2Compiler = new HudderV2Compiler(this);
+		registry.registerCompiler("hudderv2", "V2 (Compatibility)", false, false, -1, hudderV2Compiler);
+		this.compiler = hudderV3Compiler;
 		readAndUpdateConfig();
 	}
-
-
-	/**
-	 * Compiles the main hud using the selected compiler
-	 * @return The result of the execution
-	 * @throws CompileException
-	 * @throws IOException
-	 */
-	public HudInformation compileMainHud() throws CompileException, ExecutionException, IOException {
-		if (getCompiler()!=null) return getCompiler().processAndExecuteSafe(this, mainfile(), mainfile());
-		else throw new CompileException("There is no Compiler!", -1, -1);
-	}
-
 
 	/**
 	 * Read the JSON values from the config file that was provided durinng the ConfigInfo's initalization and apply
@@ -80,7 +98,8 @@ public class HudderConfig {
 	 */
 	public void readAndUpdateConfig() {
 		try {
-			if (!configFile.exists()) {
+			if (!Files.exists(configFile)) {
+				first_run = true;
 				save();
 				return; // We already know it'll be default value, no need to waste resources.
 			}
@@ -93,15 +112,24 @@ public class HudderConfig {
 		try {
 			Hudder.log("Loading Hudder config");
 			String config = HudFileUtils.readFileUnsanitized(configFile);
-			Map<?,?> newinfo = new GsonBuilder().create().fromJson(config,HashMap.class);
+			Type type = new TypeToken<Map<String, JsonElement>>() {}.getType();
+			Map<String, JsonElement> newinfo = gson.fromJson(config, type);
 			
-			if (newinfo.containsKey("debug")) Hudder.IS_DEBUG = (boolean) newinfo.get("debug");
-			if (!newinfo.containsKey("config_version")) userSettings.config_version = 0;
+			if (newinfo.containsKey("debug"))
+				Hudder.IS_DEBUG = newinfo.get("debug").getAsBoolean();
+			if (!newinfo.containsKey("config_version"))
+				userSettings.config_version = 0;
 			
-			for(Field f : HudderUserSettings.class.getDeclaredFields()) {
-				if (f.getAnnotation(Expose.class)!=null&&newinfo.get(f.getName())!=null) {
-					setField(f, newinfo.get(f.getName()));
-				}
+			for(Field field : HudderUserSettings.class.getFields()) {
+				if (field.getAnnotation(Expose.class) == null)
+			        continue;
+				
+			    JsonElement element = newinfo.get(field.getName());
+
+			    if (element != null && !element.isJsonNull()) {
+			        Object value = gson.fromJson(element, field.getGenericType());
+			        field.set(userSettings, value);
+			    }
 			}
 			
 			if (userSettings.config_version<HUDDER_CONFIG_VERSION) {
@@ -114,7 +142,7 @@ public class HudderConfig {
 			Hudder.IS_DEBUG=true;
 			Hudder.log("Failed to read Hudder config file, enabling debug mode.");
 			e.printStackTrace();
-		} catch (ReflectiveOperationException | ClassCastException | NullPointerException e) {
+		} catch (IllegalAccessException e) {
 			Hudder.IS_DEBUG=true;
 			Hudder.log("Failed to set Hudder config values, enabling debug mode.");
 			e.printStackTrace();
@@ -124,62 +152,52 @@ public class HudderConfig {
 	
 	
 	
-	private void updateConfigFromVersion(int version, Map<?, ?> newinfo) {
+	private void updateConfigFromVersion(int version, Map<String, JsonElement> newinfo) {
 		if (version<1 && ((userSettings.color >> 24) & 0xFF)==0) {
 			userSettings.color = (255 << 24) | userSettings.color;
         }
-		if (version<2&&newinfo.containsKey("javascript")&&newinfo.get("javascript") instanceof Boolean) {
-			userSettings.unsafeoperations = (boolean) newinfo.get("javascript");
+		var js = newinfo.get("javascript");
+		if (version<2&&js!=null&&js.isJsonPrimitive()&&js.getAsJsonPrimitive().isBoolean()) {
+			userSettings.unsafeoperations = newinfo.get("javascript").getAsBoolean();
 		}
-		if (version<3&&newinfo.get("compilertype")!=null) {
-			userSettings.compilername = switch (String.valueOf(newinfo.get("compilertype"))) {
-				case "none","null" -> "empty";
+		if (version<3&&newinfo.containsKey("compilertype")) {
+			userSettings.compilername = switch (newinfo.get("compilertype").getAsString()) {
+				case "none","null" -> "auto";// Used to be "empty" but it was deleted
 				case "javascript" -> "js";
 				case "default", "defaultcompiler", "default compiler" -> "hudder";
-				default -> String.valueOf(newinfo.get("compilertype"));
+				default -> newinfo.get("compilertype").getAsString();
 			};
 		}
-		if (version<4) {
-			try {
-				// For the love of god, back up the user's data before doing literally anything to it.
-				FileUtils.copyDirectory(new File(HudFileUtils.FOLDER),
-						new File(HudFileUtils.FABRIC_CONFIG_FOLDER + File.separator + "hudder_backup"), true);
-				
-				String[] oldBuiltins = new String[] {"tutorial", "hand", "armorside", "hud", "basic"};
-				for (String name : oldBuiltins) {
-					File f = new File(HudFileUtils.FOLDER + name);
-					if (f.exists()) {
-						String res = new String(Files.readAllBytes(f.toPath()));
-						FileWriter writer = new FileWriter(f);
-						for (String name2 : oldBuiltins) {
-							res = res.replaceAll("; *run *, *[\"']?"+name2+"[\"']? *;",
-									";run, \""+name2+".hud\";");
-						}
-						writer.append(res);
-						writer.flush();
-						writer.close();
-						
-						if (!f.renameTo(new File(HudFileUtils.FOLDER + name + ".hud"))) {
-							Hudder.error("Failed to update old hud, stopping migration process.");
-							break;
-						}
-					}
-					
-					if (userSettings.mainfile.equals(name))
-						userSettings.mainfile = name + ".hud";
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
+		/*
+		 * Until version 6, migrating from version 3 or earlier used to rename the default
+		 * hudder huds to contain a .hud file extension (even going as far as rewriting user huds
+		 * to point to the newly renamed file). While working on some of the migration code
+		 * I realized that doing this to "claim" a specific file extension is stupid
+		 * and way too dangerous for what it's worth. Also doesn't help that:
+		 * 1. The rewriting of user huds only rewrote Hudder huds (Not javascript huds, meaning they point to
+		 *  the old filepaths)
+		 * 2. It served no functional purpose
+		 * 3. Newer Hudder shows a proper warning in the config screen for incorrect file extensions
+		 * The migration code was useful when it was added but it had served it's purpose and keeping it
+		 * was too much of a burden so I decided to get rid it.
+		 */
+		if (version<5) {
+			var xoffset = newinfo.get("xoffset");
+			var yoffset = newinfo.get("yoffset");
+			if (xoffset!=null&&!xoffset.isJsonNull()) {
+				userSettings.xoffset_left = xoffset.getAsInt();
+				userSettings.xoffset_right = xoffset.getAsInt();
+			}
+			if (yoffset!=null&&!yoffset.isJsonNull()) {
+				userSettings.yoffset_top = yoffset.getAsInt();
+				userSettings.yoffset_bottom = yoffset.getAsInt();
 			}
 		}
-		if (version<5) {
-			if (newinfo.containsKey("xoffset")&&newinfo.get("xoffset") instanceof Number) {
-				userSettings.xoffset_left = ((Number) newinfo.get("xoffset")).intValue();
-				userSettings.xoffset_right = ((Number) newinfo.get("xoffset")).intValue();
-			}
-			if (newinfo.containsKey("yoffset")&&newinfo.get("yoffset") instanceof Number) {
-				userSettings.yoffset_top = ((Number) newinfo.get("yoffset")).intValue();
-				userSettings.yoffset_bottom = ((Number) newinfo.get("yoffset")).intValue() - 1;
+		// The default Hudder implementation is now v3 so the unique identifier "hudderv3" has been removed
+		if (version<6&&newinfo.containsKey("compilername")) {
+			String compilername = newinfo.get("compilername").getAsString();
+			if ("hudderv3".equals(compilername)) {
+				userSettings.compilername = "hudder";
 			}
 		}
 	}
@@ -192,43 +210,31 @@ public class HudderConfig {
 	 * If unable to retrieve the compiler, switches to the default {@code HudderV3Compiler} instead.
 	 */
 	public void refreshCompiler() {
-		try {
-			compiler = Compilers.getCompilerFromName(compilerName());
-		} catch (Exception e) {
-			e.printStackTrace();
-			Hudder.log("Using default compiler due to error");
-			compiler = Compilers.hudderV3Compiler;
+		if ("auto".equals(compilerId())) {
+	        Optional<CompilerEntry> entry = Arrays.stream(registry.getValidCompilersForFilePath(mainfile()))
+	                .max(Comparator.comparingInt(CompilerEntry::priority));
+	        if (entry.isPresent()) {
+	        	compiler = entry.get().compiler();
+	        } else {
+	        	compiler = hudderV3Compiler;
+	        }
+		} else {
+			Optional<CompilerEntry> entry = registry.findEntryFromId(compilerId());
+			if (entry.isPresent()) {
+				compiler = entry.get().compiler();
+			} else {
+				Hudder.log("Couldn't find compiler \"" + compilerId() + "\".");
+				compiler = null;
+			}
 		}
 	}
 	
-	
-	/**
-	 * Sets the value of the provided field with type safety
-	 */
-	private void setField(Field f, Object object) throws ReflectiveOperationException {
-		if (object instanceof Number num) {
-			if (f.getType()==(int.class)) f.set(userSettings, num.intValue());
-			else if (f.getType()==(float.class)) f.set(userSettings, num.floatValue());
-			else if (f.getType()==(double.class)) f.set(userSettings, num.doubleValue());
-			else if (f.getType()==(long.class)) f.set(userSettings, num.longValue());
-			else if (f.getType()==(byte.class)) f.set(userSettings, num.byteValue());
-			else if (f.getType()==(short.class)) f.set(userSettings, num.shortValue());
-			else f.set(userSettings, object);
-		} else f.set(userSettings, object);
-	}
-	
-	
-	/**
-	 * Saves the information on this config to the file that was provided during the ConfigInfo Object's
-	 * initalizaiton.
-	 * @throws IOException When fails to write to the file
-	 */
 	public void save() throws IOException {
-		if (!configFile.exists()) {
-			configFile.getParentFile().mkdirs();
-			if (!configFile.createNewFile()) throw new IOException("Failed to create Hudder config file.");
+		if (!Files.exists(configFile)) {
+			Files.createDirectories(configFile.getParent());
+			Files.createFile(configFile);
 		}
-		try (FileWriter config_writer = new FileWriter(configFile)) {
+		try {
 			Map<String, Object> json_output = new HashMap<String, Object>();
 			for (Field f : HudderUserSettings.class.getDeclaredFields())
 				if (f.getAnnotation(Expose.class)!=null)
@@ -236,8 +242,7 @@ public class HudderConfig {
 
 			json_output.put("debug", Hudder.IS_DEBUG);
 			
-			config_writer.append(new GsonBuilder().setPrettyPrinting().create().toJson(json_output));
-			config_writer.flush();
+			Files.writeString(configFile, gson.toJson(json_output));
 		} catch (IOException e) {
 			e.printStackTrace();
 			Hudder.IS_DEBUG=true;
@@ -273,12 +278,10 @@ public class HudderConfig {
 	/**
 	 * Sets the compilertype to the provided compiler name and refreshes the compiler
 	 * @param compilername - the name of the compiler
-	 * @return the provided name (for clothconfig)
 	 */
-	public String setCompilerName(String compilername) {
+	public void setCompilerName(String compilername) {
 		userSettings.compilername=compilername;
 		refreshCompiler();
-		return compilername;
 	}
 
 	
@@ -286,7 +289,7 @@ public class HudderConfig {
 	 * Returns the compiler currently used to compile the main file.
 	 * @return The current compiler
 	 */
-	public AHudCompiler<?> getCompiler() {
+	public @Nullable AHudCompiler<?> getCompiler() {
 		return compiler;
 	}
 
@@ -317,7 +320,11 @@ public class HudderConfig {
 	    return userSettings.savedVariables;
 	}
 
-	public String mainfile() {
+	public Path mainfile() {
+	    return HudFileUtils.FOLDER.resolve(mainfileString());
+	}
+
+	public String mainfileString() {
 	    return userSettings.mainfile;
 	}
 
@@ -413,7 +420,7 @@ public class HudderConfig {
 	    return userSettings.config_version;
 	}
 
-	public String compilerName() {
+	public String compilerId() {
 	    return userSettings.compilername;
 	}
 	
@@ -421,13 +428,9 @@ public class HudderConfig {
 		return userSettings.hudSettings.computeIfAbsent(compiler,_->new HashMap<String, Map<String, Object>>())
 				.computeIfAbsent(hud, _->new HashMap<String, Object>());
 	}
-	
-	/**
-	 * @deprecated
-	 */
-	@Deprecated(since = "9.2.0", forRemoval = true)
-	public Map<String, Object> globalVariables() {
-		return userSettings.globalVariables;
+
+	public boolean isFirstRun() {
+		return first_run;
 	}
 	
 }

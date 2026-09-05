@@ -2,8 +2,8 @@ package dev.ngspace.hudder.hudderv3.instructions.compiler;
 
 import org.objectweb.asm.Label;
 
-import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
-import dev.ngspace.hudder.compilers.utils.TextPos;
+import dev.ngspace.hudder.api.compilers.compilers.AV3Compiler;
+import dev.ngspace.hudder.api.compilers.utils.TextPos;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.TokenizedCodeBlock;
@@ -20,12 +20,12 @@ public class DefineInstruction extends Instruction {
 	private String bytecodename;
 	private TokenizedCodeBlock tokenizedBlock;
 
-	public DefineInstruction(String block, String[] args, HudderConfig info, String name, String filename,
+	public DefineInstruction(String block, String[] args, String name, String filename,
 			AV3Compiler comp, TextPos pos) throws CompileException {
 		super(pos);
 		this.args = args;
 		this.name = name;
-		tokenizedBlock = comp.compile(info, block, filename, new TextPos(pos.line()+1, 0));
+		tokenizedBlock = comp.compile(block, filename, new TextPos(pos.line()+1, 0));
 		
 		bytecodename = "user_" + (tokenizedBlock.canReturnValue() ? "function" : "method") + "_"
 				+ (++user_defines_count);
@@ -40,14 +40,13 @@ public class DefineInstruction extends Instruction {
 		var method = writer.createExecuteMethod(bytecodename, new Class<?>[] {
 			HudderConfig.class,
 			String.class,
-			String.class,
 			Object[].class
 		});
 		
 		for (int i = 0;i<args.length;i++) {
 			method.defineVariable(args[i].toLowerCase().trim());
 			method.defineVariable("arg" + (i+1));
-			method.aload(4);
+			method.aload(3);
 			method.loadConstantUnsafe(i);
 			method.aaload();
 			method.dup();

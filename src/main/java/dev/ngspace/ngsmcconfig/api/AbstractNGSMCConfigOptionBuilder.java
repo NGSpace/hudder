@@ -8,70 +8,62 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 
-/**
- * @deprecated Use {@link AbstractFluentNGSMCConfigOptionBuilder}
- */
-@Deprecated(since = "10.1.0", forRemoval = true)
-@SuppressWarnings("removal")
-public abstract class AbstractNGSMCConfigOptionBuilder<T> {
+public abstract class AbstractNGSMCConfigOptionBuilder<T,
+		E extends AbstractNGSMCConfigOptionBuilder<T, ?>>  {
 	
-	@Deprecated(since = "10.1.0", forRemoval = true)
 	protected T value;
-	@Deprecated(since = "10.1.0", forRemoval = true)
 	protected T defaultValue;
-	@Deprecated(since = "10.1.0", forRemoval = true)
 	protected Component name;
-	@Deprecated(since = "10.1.0", forRemoval = true)
 	protected Consumer<T> saveOperation;
-	@Deprecated(since = "10.1.0", forRemoval = true)
 	protected Function<T, Component> validator;
+	protected Function<T, Component> warning;
 
-	@Deprecated(since = "10.1.0", forRemoval = true)
 	protected AbstractNGSMCConfigOptionBuilder(T value, Component name) {
 		this.value = value;
 		this.defaultValue = value;
 		this.name = name;
 		this.saveOperation = _->{};
 	}
+
+	protected abstract E self();
 	
-	@Deprecated(since = "10.1.0", forRemoval = true)
-	public AbstractNGSMCConfigOptionBuilder<T> setValue(T value) {
+	public E setValue(T value) {
 		this.value = value;
-		return this;
+		return self();
 	}
 
-	@Deprecated(since = "10.1.0", forRemoval = true)
-	public AbstractNGSMCConfigOptionBuilder<T> setDefaultValue(T defaultValue) {
+	public E setDefaultValue(T defaultValue) {
 		this.defaultValue = defaultValue;
-		return this;
+		return self();
 	}
 
-	@Deprecated(since = "10.1.0", forRemoval = true)
-	public AbstractNGSMCConfigOptionBuilder<T> setName(Component name) {
+	public E setName(Component name) {
 		this.name = name;
-		return this;
+		return self();
 	}
 
-	@Deprecated(since = "10.1.0", forRemoval = true)
-	public AbstractNGSMCConfigOptionBuilder<T> setSaveOperation(Consumer<T> saveOperation) {
+	public E setSaveOperation(Consumer<T> saveOperation) {
 		this.saveOperation = saveOperation;
-		return this;
+		return self();
 	}
 
-	@Deprecated(since = "10.1.0", forRemoval = true)
-	public AbstractNGSMCConfigOptionBuilder<T> setHoverComponent(MutableComponent hovercomponent) {
+	public E setHoverComponent(MutableComponent hovercomponent) {
 		if (name instanceof MutableComponent mutablename) {
 			mutablename.withStyle(s -> s.withHoverEvent(new HoverEvent.ShowText(hovercomponent)));
 		}
-		return this;
+		return self();
 	}
 
-	@Deprecated(since = "10.1.0", forRemoval = true)
-	public AbstractNGSMCConfigOptionBuilder<T> setValidator(Function<T, Component> validator) {
+	public E setValidator(Function<T, Component> validator) {
 		this.validator = validator;
-		return this;
+		return self();
 	}
 
-	@Deprecated(since = "10.1.0", forRemoval = true)
+	public E setWarningProvider(Function<T, Component> warning) {
+		this.warning = warning;
+		return self();
+	}
+
 	public abstract AbstractNGSMCConfigOption<T> build();
+	
 }

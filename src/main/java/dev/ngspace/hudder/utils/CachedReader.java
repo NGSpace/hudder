@@ -1,12 +1,11 @@
 package dev.ngspace.hudder.utils;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map.Entry;
-import java.util.Scanner;
 
 import com.mojang.blaze3d.platform.NativeImage;
 
@@ -21,15 +20,15 @@ public class CachedReader {
 	public Reader reader = new FilesRABReader();
 	
 
-	HashMap<String, byte[]> savedFiles = new HashMap<String, byte[]>();
-	HashMap<String, String> savedFilesStrings = new HashMap<String, String>();
-	HashMap<Identifier, DynamicTexture> savedImages = new HashMap<Identifier, DynamicTexture>();
-	HashMap<Identifier, NativeImage> unregisteredImages = new HashMap<Identifier, NativeImage>();
+	HashMap<Path, byte[]> savedFiles = new HashMap<>();
+	HashMap<Path, String> savedFilesStrings = new HashMap<>();
+	HashMap<Identifier, DynamicTexture> savedImages = new HashMap<>();
+	HashMap<Identifier, NativeImage> unregisteredImages = new HashMap<>();
 	
 	
 
-	public byte[] getCachedFile(String file) {return savedFiles.get(file);}
-	public String getCachedFileAsString(String file) {
+	public byte[] getCachedFile(Path file) {return savedFiles.get(file);}
+	public String getCachedFileAsString(Path file) {
 		String contents = savedFilesStrings.get(file);
 		if (contents == null) {
 			contents = new String(getCachedFile(file));
@@ -41,12 +40,12 @@ public class CachedReader {
 	
 	
 	
-	public boolean loadFileToCache(File file) throws IOException {
-		if (!file.exists()) {
-			file.getParentFile().mkdirs();
-			if (!file.createNewFile()) return false;
+	public boolean loadFileToCache(Path file) throws IOException {
+		if (!Files.exists(file)) {
+			Files.createDirectories(file.getParent());
+			Files.createFile(file);
 		}
-		savedFiles.put(file.getAbsolutePath(),reader.readFile(file));
+		savedFiles.put(file.toAbsolutePath(),reader.readFile(file));
 		return true;
 	}
 	
@@ -96,42 +95,20 @@ public class CachedReader {
 			mc.getTextureManager().release(v.getKey());
 			v.getValue().close();
 		}
+		unregisteredImages.clear();
 		savedImages.clear();
 		savedFiles.clear();
 		savedFilesStrings.clear();
 	}
 	
 	public static interface Reader {
-		public byte[] readFile(File f) throws IOException;
-	}
-	
-	/**
-	 * @deprecated Very limited
-	 */
-	@Deprecated(since = "8.6.0", forRemoval = true)
-	public static class ScannerReader implements Reader {
-		
-		@Deprecated
-		public byte[] readFile(File file) throws IOException {
-			Scanner reader = new Scanner(file);
-			String res = "";
-			while (reader.hasNextLine()) {
-				res += reader.nextLine();
-				res += '\n';
-			}
-			reader.close();
-			if (res.isEmpty()) return res.getBytes();
-			return res.substring(0, res.length()-1).getBytes();
-		}
-		
+		public byte[] readFile(Path f) throws IOException;
 	}
 	
 	public static class FilesRABReader implements Reader {
-		
-		public byte[] readFile(File file) throws IOException {
-			return Files.readAllBytes(file.toPath());
+		public byte[] readFile(Path file) throws IOException {
+			return Files.readAllBytes(file);
 		}
-		
 	}
 
 	public boolean imageLoaded(Identifier id) {

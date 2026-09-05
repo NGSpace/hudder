@@ -1,11 +1,11 @@
 package dev.ngspace.hudder.hudderv3.instructions.variables;
 
+import dev.ngspace.hudder.api.compilers.compilers.AHudCompiler;
+import dev.ngspace.hudder.api.compilers.compilers.AV3Compiler;
+import dev.ngspace.hudder.api.compilers.utils.TextPos;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.IUIElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
-import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
-import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
-import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.V3HudInformation;
@@ -94,11 +94,9 @@ public class FunctionCallVariableVisitor extends ExpressionVisitor {
 		methodWriter.aload(0);
 		methodWriter.aload(1);
 		methodWriter.aload(2);
-		methodWriter.aload(3);
 		methodWriter.aload(array_index);
 		methodWriter.callSelf(func.bytecode_name(), false, V3HudInformation.class,
 				HudderConfig.class,
-				String.class,
 				String.class,
 				Object[].class);
 		methodWriter.getField("return_value", V3HudInformation.class, Object.class);

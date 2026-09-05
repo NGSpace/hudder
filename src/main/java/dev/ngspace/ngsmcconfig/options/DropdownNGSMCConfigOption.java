@@ -6,7 +6,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import dev.ngspace.ngsmcconfig.api.AbstractFluentNGSMCConfigOptionBuilder;
+import dev.ngspace.ngsmcconfig.api.AbstractNGSMCConfigOptionBuilder;
 import dev.ngspace.ngsmcconfig.gui.NGSMCConfigDropdownWidget;
 import dev.ngspace.ngsmcconfig.gui.NGSMCConfigEntry;
 import net.minecraft.network.chat.Component;
@@ -41,11 +41,11 @@ public class DropdownNGSMCConfigOption<T> extends AbstractNGSMCConfigOption<T> {
 			widget.setValue(value);
 	}
 
-	public static <T> DropdownNGSMCConfigOptionBuilder<T> fluentBuilder(T value, Component name, List<T> options) {
+	public static <T> DropdownNGSMCConfigOptionBuilder<T> builder(T value, Component name, List<T> options) {
 		return new DropdownNGSMCConfigOptionBuilder<T>(value, name, options);
 	}
 
-	public static class DropdownNGSMCConfigOptionBuilder<T> extends AbstractFluentNGSMCConfigOptionBuilder<T, DropdownNGSMCConfigOptionBuilder<T>> {
+	public static class DropdownNGSMCConfigOptionBuilder<T> extends AbstractNGSMCConfigOptionBuilder<T, DropdownNGSMCConfigOptionBuilder<T>> {
 
 		protected List<T> options;
 		protected Function<T, Component> valueText = value -> Component.literal(String.valueOf(value));

@@ -6,30 +6,30 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Set;
 
 import org.mozilla.javascript.ScriptableObject;
 
 import dev.ngspace.hudder.Hudder;
+import dev.ngspace.hudder.api.compilers.compilers.AHudCompiler;
+import dev.ngspace.hudder.api.compilers.compilers.AV3Compiler;
+import dev.ngspace.hudder.api.compilers.utils.TextPos;
 import dev.ngspace.hudder.api.functionsandconsumers.IUIElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
-import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
-import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
-import dev.ngspace.hudder.compilers.utils.Compilers;
-import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
-import dev.ngspace.hudder.main.HudCompilationManager;
+import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.hudder.utils.NoAccess;
 import dev.ngspace.hudder.utils.ObjectWrapper;
 import dev.ngspace.hudder.utils.ValueGetter;
 
 public class HudderV3Helper {
-	public HudderConfig config;
-	private AV3Compiler compiler;
+	public final HudderConfig config;
+	public final AV3Compiler compiler;
 
 	public HudderV3Helper(HudderConfig config, AV3Compiler compiler) {
 		this.config = config;
@@ -56,15 +56,16 @@ public class HudderV3Helper {
 	}
 	
 	public void runLoadMethod(IUIElementManager man, AHudCompiler<?> comp, TextPos pos,
-			HudderConfig config, String type, StringBuilder topleft, StringBuilder topright,
-			 StringBuilder bottomleft,  StringBuilder bottomright, ObjectWrapper... args)
+			String type, StringBuilder topleft, StringBuilder topright,
+			 StringBuilder bottomleft,  StringBuilder bottomright, HudderConfig config, ObjectWrapper... args)
 					 throws ExecutionException {
-		String file = args[0].asString();
+		String filename = args[0].asString();
+		Path file = HudFileUtils.FOLDER.resolve(filename);
 		try {
 			boolean AddText = args.length>1&&args[1].asBoolean() || type.equals("add");
-			AHudCompiler<?> ecompiler=(args.length>2?Compilers.getCompilerFromName(args[2].asString()):comp);
-			for (var i : HudCompilationManager.precomplistners) i.accept(ecompiler);
-			var result = ecompiler.processAndExecute(config, file, file);
+			AHudCompiler<?> ecompiler=(args.length>2 ?
+					config.registry.findEntryFromId(args[2].asString()).orElseThrow().compiler():comp);
+			var result = config.compilationManager.compileAndExecuteSecondaryHud(ecompiler, file, filename);
 			for (var uielement : result.elements()) {
 				man.addUIElement(uielement);
 			}
@@ -74,7 +75,6 @@ public class HudderV3Helper {
 				bottomleft.append(result.BottomLeftText());
 				bottomright.append(result.BottomRightText());
 			}
-			for (var i : HudCompilationManager.postcomplistners) i.accept(ecompiler);
 		} catch (IllegalArgumentException e) {
 			throw new ExecutionException(e.getLocalizedMessage(), pos);
 		} catch (CompileException e) {

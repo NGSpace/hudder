@@ -13,7 +13,7 @@ import java.nio.file.WatchService;
 import java.nio.file.attribute.BasicFileAttributes;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.config.HudderNGSMCConfigMenu;
+import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.StartTick;
 import net.minecraft.ChatFormatting;
@@ -23,13 +23,16 @@ import net.minecraft.network.chat.Component;
 public class HudderTickEvent implements StartTick {
 	
     private WatchService watcherService;
+
+	private HudderConfig config;
     
     public static boolean TEMP_DISABLE = false;
     
-    public HudderTickEvent() {
+    public HudderTickEvent(HudderConfig config) {
+    	this.config = config;
 		try {
 			watcherService = FileSystems.getDefault().newWatchService();
-		    Files.walkFileTree(Path.of(HudFileUtils.FOLDER), new SimpleFileVisitor<Path>() {
+		    Files.walkFileTree(HudFileUtils.FOLDER, new SimpleFileVisitor<Path>() {
 		        @Override public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs)
 		                throws IOException {
 		            dir.register(watcherService,
@@ -41,33 +44,18 @@ public class HudderTickEvent implements StartTick {
 		    });
 		} catch (IOException e) {
 			if (Hudder.IS_DEBUG) e.printStackTrace();
-			Hudder.log("Failed to initalize watcher service!");
-			Hudder.log("Hudder's auto-refresh has been fully disabled for this session.");
+			Hudder.error("Failed to initalize watcher service!");
+			Hudder.error("Hudder's auto-refresh has been fully disabled for this session.");
 			watcherService = null;
 		}
 	}
     
 	@Override public void onStartTick(Minecraft client) {
-		while (Hudder.configkeybind.consumeClick()) {
-			Minecraft.getInstance().gui.setScreen(HudderNGSMCConfigMenu.createMenu(Minecraft.getInstance().gui.screen()));
-		}
-		while (Hudder.reloadkeybind.consumeClick()) {
-	    	Hudder.log("Manual file refresh triggered!");
-			try {
-				HudFileUtils.reloadResources();
-				Hudder.showToast(Component.literal("Refreshed files!").withStyle(ChatFormatting.BOLD), 
-						Component.literal("\u00A7aDue to manual refresh."));
-			} catch (IOException e) {
-				Hudder.showToast(Component.literal("\\u00A74Error refreshing files!")
-						.withStyle(ChatFormatting.BOLD),Component.literal(e.getMessage()));
-				e.printStackTrace();
-			}
-		}
     	try {
     		if (watcherService==null) return;
     		WatchKey wk;
 			while ((wk = watcherService.poll())!=null) {
-	        	if (!Hudder.config.enabled()||!Hudder.config.autorefresh()||TEMP_DISABLE) {
+	        	if (!config.enabled()||!config.autorefresh()||TEMP_DISABLE) {
 	        		while (!wk.pollEvents().isEmpty()) {/* Empty events */}
     				reset(wk);
 	        		continue;
@@ -85,7 +73,7 @@ public class HudderTickEvent implements StartTick {
 						e.printStackTrace();
 					}
 				    if (changed.toString().equals("hud.json")) {
-				    	Hudder.config.readAndUpdateConfig();
+				    	config.readAndUpdateConfig();
 				    	Hudder.showToast(Component.literal("Refreshed Config file!").withStyle(ChatFormatting.BOLD),
 				    			Component.literal("\u00A7aLoaded File"));
 				    }

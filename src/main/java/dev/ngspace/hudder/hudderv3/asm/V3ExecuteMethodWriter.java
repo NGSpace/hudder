@@ -34,7 +34,6 @@ public class V3ExecuteMethodWriter extends V3MethodWriter {
 		super(classWriter, name,
 				args==null?new Class<?>[] {
 					HudderConfig.class,
-					String.class,
 					String.class
 				}:args, V3HudInformation.class, null, new String[] {
 					"dev/ngspace/hudder/exceptions/ExecutionException"
