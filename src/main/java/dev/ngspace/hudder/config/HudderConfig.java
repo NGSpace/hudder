@@ -63,8 +63,10 @@ public class HudderConfig {
      * @param configFile - the config file.
      */
 	public HudderConfig(Path configFile, CompilerRegistry registry) {
-		compilationManager = new HudCompilationManager(this, registry);
+		this.registry = registry;
 		this.configFile = configFile;
+		this.compilationManager = new HudCompilationManager(this, registry);
+		
 		if (!Files.exists(configFile)) {
 			Path oldconfigloc = HudFileUtils.FOLDER.resolve("hud.json");
 			if (Files.exists(oldconfigloc)) {
@@ -78,16 +80,15 @@ public class HudderConfig {
 				}
 			}
 		}
-		this.hudderV2Compiler = new HudderV2Compiler(this);
-		registry.registerCompiler("hudderv2", "V2 (Compatibility)", false, false, -1, hudderV2Compiler);
 		this.hudderV3Compiler = new HudderV3Compiler(this);
 		registry.registerCompiler("hudder", "Hudder", false, false, 0, hudderV3Compiler);
 		this.hudpackCompiler = new HudPackCompiler(this);
 		registry.registerCompiler("pack", "Hudpack", false, false, 0, hudpackCompiler);
 		this.javaScriptCompiler = new JavaScriptCompiler(this);
 		registry.registerCompiler("js", "JavaScript", false, false, 0, javaScriptCompiler);
+		this.hudderV2Compiler = new HudderV2Compiler(this);
+		registry.registerCompiler("hudderv2", "V2 (Compatibility)", false, false, -1, hudderV2Compiler);
 		this.compiler = hudderV3Compiler;
-		this.registry = registry;
 		readAndUpdateConfig();
 	}
 
@@ -161,14 +162,14 @@ public class HudderConfig {
 		}
 		if (version<3&&newinfo.containsKey("compilertype")) {
 			userSettings.compilername = switch (newinfo.get("compilertype").getAsString()) {
-				case "none","null" -> "empty";
+				case "none","null" -> "auto";// Used to be "empty" but it was deleted
 				case "javascript" -> "js";
-				case "default", "defaultcompiler", "default compiler" -> "hudder";
+				case "default", "defaultcompiler", "default compiler" -> "auto"; // Used to be "hudder"
 				default -> newinfo.get("compilertype").getAsString();
 			};
 		}
 		/*
-		 * Until version 6, when migrating from version 3 or earlier used to rename the default
+		 * Until version 6, migrating from version 3 or earlier used to rename the default
 		 * hudder huds to contain a .hud file extension (even going as far as rewriting user huds
 		 * to point to the newly renamed file). While working on some of the migration code
 		 * I realized that doing this to "claim" a specific file extension is stupid
@@ -193,10 +194,12 @@ public class HudderConfig {
 			}
 		}
 		// The default Hudder implementation is now v3 so the unique identifier "hudderv3" has been removed
-		// and V3 has became simply "hudder"
-		if (version<6&&newinfo.containsKey("compilername")
-				&&"hudderv3".equals(newinfo.get("compilername").getAsString())) {
-			userSettings.compilername = "hudder";
+		if (version<6&&newinfo.containsKey("compilername")) {
+			String compilername = newinfo.get("compilername").getAsString();
+			if ("hudderv3".equals(compilername)
+				||"hudder".equals(compilername)) {
+				userSettings.compilername = "auto";
+			}
 		}
 	}
     
@@ -227,12 +230,6 @@ public class HudderConfig {
 		}
 	}
 	
-	
-	/**
-	 * Saves the information on this config to the file that was provided during the ConfigInfo Object's
-	 * initalizaiton.
-	 * @throws IOException When fails to write to the file
-	 */
 	public void save() throws IOException {
 		if (!Files.exists(configFile)) {
 			Files.createDirectories(configFile.getParent());

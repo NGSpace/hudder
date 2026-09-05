@@ -98,8 +98,7 @@ public abstract class AV2Value implements ObjectWrapper {
 		return "Incorrect type \""+type+"\" for value: \""+value+"\" of type "+(obj!=null?obj.getClass().getName():null);
 	}
 	
-	public abstract void setValue(AV2Compiler compiler, Object value)
-			throws ExecutionException, UnsupportedOperationException;
+	public abstract void setValue(AV2Compiler compiler, Object value) throws ExecutionException, UnsupportedOperationException;
 
 	/**
 	 * Returns true if the variable has a value and false if it does not

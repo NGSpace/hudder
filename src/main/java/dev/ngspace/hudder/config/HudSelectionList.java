@@ -110,12 +110,10 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 	}
 	
 	@Override
-	protected void scrollToEntry(HudEntry entry) {
-		/* I don like how it scrolls for me, disgusting, vile even... */}
+	protected void scrollToEntry(HudEntry entry) {/* I don like how it scrolls for me, disgusting, vile even... */}
 		
 	@Override
-	protected void extractListBackground(GuiGraphicsExtractor guiGraphics) {
-		/* It ugly ;_; */}
+	protected void extractListBackground(GuiGraphicsExtractor guiGraphics) {/* It ugly ;_; */}
 		
 	@Override
 	public int getRowWidth() {
