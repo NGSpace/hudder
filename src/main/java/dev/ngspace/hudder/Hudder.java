@@ -104,7 +104,7 @@ public class Hudder implements ClientModInitializer {
 					Hudder.showToast(Component.literal("Refreshed files!").withStyle(ChatFormatting.BOLD), 
 							Component.literal("\u00A7aDue to manual refresh."));
 				} catch (IOException e) {
-					Hudder.showToast(Component.literal("\\u00A74Error refreshing files!")
+					Hudder.showToast(Component.literal("\u00A74Error refreshing files!")
 							.withStyle(ChatFormatting.BOLD),Component.literal(e.getMessage()));
 					e.printStackTrace();
 				}
@@ -130,8 +130,8 @@ public class Hudder implements ClientModInitializer {
 						}
 					}
 				} catch (IOException e) {
-					error("Can not determine Hudder version!");
 					e.printStackTrace();
+					error("Can not determine Hudder version!");
 				}
 			}
 		}
@@ -155,8 +155,8 @@ public class Hudder implements ClientModInitializer {
 		try {
 			ClientCommandRegistrationCallback.EVENT.register(new HudderUnitTestingCommand(config));
 		} catch (Exception e) {
+			if (IS_DEBUG) e.printStackTrace();
 			Hudder.error("Could not load unit tests");
-			e.printStackTrace();
 		}
 		
 		HudderBuiltInMethods.registerMethods(FunctionAndConsumerAPI.getInstance());
@@ -179,13 +179,13 @@ public class Hudder implements ClientModInitializer {
 			try {
 				HudFileUtils.reloadResources();
 			} catch (IOException e) {
-				e.printStackTrace();
+				if (IS_DEBUG) e.printStackTrace();
 				showWarningToast(Component.literal("Failed to load huds"), Component.literal("Failed to load huds"));
 			}
 		});
 		ClientLifecycleEvents.CLIENT_STOPPING.register(_ -> compiler_registry.shutdownAll());
         
-        // Make sure the FPS variable is updated once every compilation instead of every time a number variable is used
+        // Make sure the variables are updated once per compilation instead of every time the variable is used
         var mc = Minecraft.getInstance();
         config.compilationManager.addCompilationListener(_->{
     		Misc.updateCPS();
