@@ -65,8 +65,11 @@ public class HudCompilationManager implements EndTick {
 		for (var entry : registry.entries())
 			if (entry.compiler() instanceof PreparedCompiler compiler)
 				compiler.prepareCompiler();
-		for (Consumer<AHudCompiler<?>> con : compilationlistners) con.accept(config.getCompiler());
-		HudInformation result = config.getCompiler().processAndExecuteMain(config.mainfile(), config.mainfileString());
+		AHudCompiler<?> comp = config.getCompiler();
+		if (comp==null)
+			throw new CompileException("No compiler set", -1, -1);
+		for (Consumer<AHudCompiler<?>> con : compilationlistners) con.accept(comp);
+		HudInformation result = comp.processAndExecuteMain(config.mainfile(), config.mainfileString());
 		HudFileUtils.loadMarkedResources();
 		return result;
 	}

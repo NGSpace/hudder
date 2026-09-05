@@ -25,6 +25,7 @@ public abstract class AHudCompiler<T> {
 	protected final Map<Path, Exception> errors = new HashMap<>();
 	protected final HudderConfig config;
 	protected T mainInstance = null;
+	protected CompileException mainError = null;
 	
 	protected AHudCompiler(HudderConfig config, Map<Path, T> instancesMap) {
 		this.config = config;
@@ -69,9 +70,16 @@ public abstract class AHudCompiler<T> {
 	 */
 	public HudInformation processAndExecuteMain(Path path, String debugname)
 			throws CompileException, ExecutionException, IOException {
-		if (mainInstance==null) {
-			mainInstance = processFile(path);
-			instances.put(path, mainInstance);
+		if (mainError!=null)
+			throw mainError;
+		try {
+			if (mainInstance==null) {
+				mainInstance = processFile(path);
+				instances.put(path, mainInstance);
+			}
+		} catch (CompileException e) {
+			mainError = e;
+			throw e;
 		}
 		return execute(mainInstance, debugname);
 	}
@@ -102,6 +110,7 @@ public abstract class AHudCompiler<T> {
 	 */
 	public void reset() throws IOException {
 		mainInstance = null;
+		mainError = null;
 		instances.clear();
 		errors.clear();
 	}
