@@ -164,7 +164,7 @@ public class HudderConfig {
 			userSettings.compilername = switch (newinfo.get("compilertype").getAsString()) {
 				case "none","null" -> "auto";// Used to be "empty" but it was deleted
 				case "javascript" -> "js";
-				case "default", "defaultcompiler", "default compiler" -> "auto"; // Used to be "hudder"
+				case "default", "defaultcompiler", "default compiler" -> "hudder";
 				default -> newinfo.get("compilertype").getAsString();
 			};
 		}
@@ -196,9 +196,8 @@ public class HudderConfig {
 		// The default Hudder implementation is now v3 so the unique identifier "hudderv3" has been removed
 		if (version<6&&newinfo.containsKey("compilername")) {
 			String compilername = newinfo.get("compilername").getAsString();
-			if ("hudderv3".equals(compilername)
-				||"hudder".equals(compilername)) {
-				userSettings.compilername = "auto";
+			if ("hudderv3".equals(compilername)) {
+				userSettings.compilername = "hudder";
 			}
 		}
 	}
