@@ -62,6 +62,9 @@ public class V2FunctionHandler {
 		bindFunction((_,_,args,_,_) -> Math.atan(args[0].asDouble()), 1, "atan");
 		
 		bindFunction((_,_,args,_,_) -> Math.sqrt(args[0].asDouble()), 1, "sqrt");
+
+		bindFunction((_,_,args,_,_) -> Math.toRadians(args[0].asDouble()), 1, "radians");
+		bindFunction((_,_,args,_,_) -> Math.toDegrees(args[0].asDouble()), 1, "degrees");
 		
 		bindFunction((_,_,args,_,_) -> Math.pow(args[0].asDouble(),args[1].asDouble()), 2, "pow");
 		bindFunction((_,_,args,_,_) -> Math.min(args[0].asDouble(),args[1].asDouble()), 2, "min");

@@ -4,14 +4,13 @@ import java.util.HashMap;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import dev.ngspace.hudder.api.compilers.compilers.AHudCompiler;
+import dev.ngspace.hudder.api.compilers.utils.TextPos;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.PositionedBinder;
-import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
-import dev.ngspace.hudder.compilers.utils.Compilers;
-import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.utils.ImplObjectWrapper;
@@ -28,12 +27,12 @@ public class FunctionAndConsumerAPITester implements PositionedBinder {
 	}
 	
 	public static void runFunction(String function, Object... args) {
-		testFunction(function, Hudder.config, Compilers.hudderV3Compiler, (_, _) -> true, args);
+		testFunction(function, Hudder.config, Hudder.config.hudderV3Compiler, (_, _) -> true, args);
 	}
 	
 	public static void testFunction(String function, BiFunction<Object, ArrayElementManager, Boolean> result_validator,
 			Object... args) {
-		testFunction(function, Hudder.config, Compilers.hudderV3Compiler, result_validator, args);
+		testFunction(function, Hudder.config, Hudder.config.hudderV3Compiler, result_validator, args);
 	}
 	
 	public static void testFunction(String function, HudderConfig config, AHudCompiler<?> comp,
@@ -52,12 +51,12 @@ public class FunctionAndConsumerAPITester implements PositionedBinder {
 	}
 	
 	public static void runConsumer(String function, Object... args) {
-		testConsumer(function, Hudder.config, Compilers.hudderV3Compiler, _ -> true, args);
+		testConsumer(function, Hudder.config, Hudder.config.hudderV3Compiler, _ -> true, args);
 	}
 	
 	public static void testConsumer(String function, Function<ArrayElementManager, Boolean> result_validator,
 			Object... args) {
-		testConsumer(function, Hudder.config, Compilers.hudderV3Compiler, result_validator, args);
+		testConsumer(function, Hudder.config, Hudder.config.hudderV3Compiler, result_validator, args);
 	}
 	
 	public static void testConsumer(String function, HudderConfig config, AHudCompiler<?> comp,

@@ -2,8 +2,8 @@ package dev.ngspace.hudder.hudderv3.instructions.variables.operations;
 
 import org.objectweb.asm.Label;
 
-import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
-import dev.ngspace.hudder.compilers.utils.TextPos;
+import dev.ngspace.hudder.api.compilers.compilers.AV3Compiler;
+import dev.ngspace.hudder.api.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
@@ -72,14 +72,13 @@ public class ClassAccessVariableVisitor extends ExpressionVisitor {
 			methodWriter.aload(parametersIndex);
 			methodWriter.loadConstantUnsafe(pos.line());
 			methodWriter.loadConstantUnsafe(pos.column());
-			methodWriter.callStatic(HudderV3Helper.class, "callClassMethod", "("
-					+ "Ljava/lang/Object;"
-					+ "Ljava/lang/String;"
-					+ "Ljava/lang/String;"
-					+ "[Ljava/lang/Object;"
-					+ "II"
-					+ ")Ljava/lang/Object;",
-					false);
+			methodWriter.callStatic(HudderV3Helper.class, "callClassMethod", false, Object.class,
+					Object.class,
+					String.class,
+					String.class,
+					Object[].class,
+					Integer.TYPE,
+					Integer.TYPE);
 			return;
 		}
 
@@ -94,18 +93,18 @@ public class ClassAccessVariableVisitor extends ExpressionVisitor {
 		methodWriter.loadConstant(fieldName);
 		methodWriter.loadConstantUnsafe(pos.line());
 		methodWriter.loadConstantUnsafe(pos.column());
-		methodWriter.callStatic(HudderV3Helper.class, "getClassProperty", "("
-				+ "Ljava/lang/Object;"
-				+ "Ljava/lang/String;"
-				+ "Ljava/lang/String;"
-				+ "II)"
-				+ "Ljava/lang/Object;", false);
+		methodWriter.callStatic(HudderV3Helper.class, "getClassProperty", false, Object.class,
+				Object.class,
+				String.class,
+				String.class,
+				Integer.TYPE,
+				Integer.TYPE);
 		methodWriter.jumpto(end);
 		
 		methodWriter.putLabel(value_getter);
 		methodWriter.checkcast(ValueGetter.class);
 		methodWriter.loadConstant(fieldName);
-		methodWriter.callInterface(ValueGetter.class, "get", "(Ljava/lang/String;)Ljava/lang/Object;");
+		methodWriter.callInterface(ValueGetter.class, "get", Object.class, String.class);
 		
 		methodWriter.putLabel(end);
 	}

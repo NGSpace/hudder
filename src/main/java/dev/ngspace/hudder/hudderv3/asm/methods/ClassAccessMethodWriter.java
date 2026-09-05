@@ -28,8 +28,17 @@ public abstract class ClassAccessMethodWriter extends VariableMethodWriter {
 				name, Type.getDescriptor(type));
 	}
 
+	/**
+	 * @deprecated use {@link #callSelf(String, boolean, Class, Class[])}
+	 */
+	@Deprecated(since = "10.4.0", forRemoval = false)
 	public void callSelf(String name, String descriptor, boolean isInterface) {
 		methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, getClassName(), name, descriptor,
 				isInterface);
+	}
+	
+	public void callSelf(String name, boolean isInterface, Class<?> returntype, Class<?>... args) {
+		methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, getClassName(), name,
+				getMethodDescriptor(returntype, args), isInterface);
 	}
 }

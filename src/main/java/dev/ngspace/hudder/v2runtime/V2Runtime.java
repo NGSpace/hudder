@@ -5,8 +5,8 @@ import java.util.HashMap;
 
 import org.jetbrains.annotations.Nullable;
 
-import dev.ngspace.hudder.compilers.abstractions.AV2Compiler;
-import dev.ngspace.hudder.compilers.utils.CompileState;
+import dev.ngspace.hudder.api.compilers.compilers.AV2Compiler;
+import dev.ngspace.hudder.api.compilers.utils.CompileState;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.v2runtime.runtime_elements.AV2RuntimeElement;
@@ -14,7 +14,7 @@ import dev.ngspace.hudder.v2runtime.runtime_elements.AV2RuntimeElement;
 public class V2Runtime {
 	public final AV2Compiler compiler;
 	protected @Nullable V2Runtime scope;
-	public HudderConfig config;
+	private HudderConfig config;
 	/**
 	 * Should stay mostly unused for now.
 	 */
@@ -23,17 +23,17 @@ public class V2Runtime {
 		@Override public int hashCode() {return super.hashCode();}
 		@Override public String toString() {return "null";}
 	};
-	public V2Runtime(AV2Compiler compiler, HudderConfig config, V2Runtime scope) {
+	public V2Runtime(AV2Compiler compiler, V2Runtime scope, HudderConfig config) {
 		this.compiler = compiler;
-		this.config = config;
 		this.scope = scope;
+		this.config = config;
 	}
 	
 	protected AV2RuntimeElement[] elements = new AV2RuntimeElement[0];
 	public CompileState compileState;
 	
 	public CompileState execute() throws ExecutionException {
-		compileState = new CompileState(CompileState.TOPLEFT);
+		compileState = new CompileState(CompileState.Sections.TOPLEFT, config);
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0;i<elements.length;i++) {
 			AV2RuntimeElement element = elements[i];

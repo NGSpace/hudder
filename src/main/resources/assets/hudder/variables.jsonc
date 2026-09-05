@@ -507,13 +507,18 @@
 		],
 		"World": [
 			{
+				"name": "game_time",
+				"desc": "The world's age in tick",
+				"version": "11.0.0"
+			},
+			{
 				"name": "worldtime",
-				"desc": "The ingame tick count (alias: world_time)",
+				"desc": "The world tick count (alias: world_time)",
 				"version": "3.2.0"
 			},
 			{
 				"name": "daytime",
-				"desc": "The ingame day time (alias: day_time)",
+				"desc": "The world day time (alias: day_time)",
 				"version": "7.2.0"
 			},
 			{

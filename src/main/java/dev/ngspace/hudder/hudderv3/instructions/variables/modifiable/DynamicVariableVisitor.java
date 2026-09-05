@@ -1,8 +1,9 @@
 package dev.ngspace.hudder.hudderv3.instructions.variables.modifiable;
 
-import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
-import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
-import dev.ngspace.hudder.compilers.utils.TextPos;
+import dev.ngspace.hudder.api.compilers.compilers.AV3Compiler;
+import dev.ngspace.hudder.api.compilers.interfaces.VariablesManager;
+import dev.ngspace.hudder.api.compilers.interfaces.VariablesProvider;
+import dev.ngspace.hudder.api.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
@@ -23,7 +24,7 @@ public class DynamicVariableVisitor extends ExpressionVisitor {
 		} else {
 			methodWriter.aload(0);
 			methodWriter.loadConstant(variable.toLowerCase());
-			methodWriter.call(AVarTextCompiler.class, "get", "(Ljava/lang/String;)Ljava/lang/Object;", false);
+			methodWriter.callInterface(VariablesProvider.class, "getVariable", Object.class, String.class);
 		}
 	}
 	
@@ -33,8 +34,7 @@ public class DynamicVariableVisitor extends ExpressionVisitor {
 		methodWriter.aload(0);
 		methodWriter.loadConstant(variable.toLowerCase());
 		methodWriter.aload(valueindex);
-		methodWriter.call(AVarTextCompiler.class, "put", "(Ljava/lang/String;Ljava/lang/Object;)V",
-				false);
+		methodWriter.callInterface(VariablesManager.class, "putVariable", null, String.class, Object.class);
 		methodWriter.aload(valueindex);
 	}
 }

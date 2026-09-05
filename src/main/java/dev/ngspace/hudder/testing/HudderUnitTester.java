@@ -12,19 +12,19 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
-import dev.ngspace.hudder.compilers.utils.Compilers;
-import dev.ngspace.hudder.config.HudderConfig;
+import dev.ngspace.hudder.api.HudderApi;
+import dev.ngspace.hudder.api.compilers.compilers.AHudCompiler;
+import dev.ngspace.hudder.api.compilers.utils.CompilerEntry;
 import dev.ngspace.hudder.testing.HudderTestReader.Result;
 import dev.ngspace.hudder.testing.HudderUnitTest.Mode;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
 public class HudderUnitTester {
-	public AVarTextCompiler compiler;
+	public AHudCompiler<?> compiler;
 	public Map<String, HudderUnitTest> UnitTests = new HashMap<String, HudderUnitTest>();
 	
-	public HudderUnitTester(AVarTextCompiler compiler) {this.compiler=compiler;}
+	public HudderUnitTester(AHudCompiler<?> compiler) {this.compiler=compiler;}
 	
 	public void loadModern(InputStream inputStream, String filename) throws IOException {
 		loadModern(IOUtils.toString(inputStream, UTF_8), filename);
@@ -44,27 +44,27 @@ public class HudderUnitTester {
 	
 	
 	
-	public HudderUnitTestResult test(HudderConfig info, String name) {
-		return UnitTests.get(name).test(compiler,info);
+	public HudderUnitTestResult test(String name) {
+		return UnitTests.get(name).test(compiler);
 	}
 	
 	
 	
-	public Map<String, HudderUnitTestResult> testAll(HudderConfig config) {
+	public Map<String, HudderUnitTestResult> testAll() {
 		Map<String, HudderUnitTestResult> results = new HashMap<String, HudderUnitTestResult>();
 		for (var test : UnitTests.entrySet()) {
-			results.put(test.getKey(), test(config, test.getKey()));
+			results.put(test.getKey(), test(test.getKey()));
 		}
 		return results;
 	}
 	
-	public MutableComponent testAllAndReturnComponent(HudderConfig config) {
+	public MutableComponent testAllAndReturnComponent() {
 		MutableComponent result = Component.literal("All tests:\n");
 		boolean failed = false;
 		Instant start = Instant.now();
 		Map<HudderUnitTestResult,String> failedtests = new HashMap<HudderUnitTestResult, String>();
 		for (String name : UnitTests.keySet()) {
-			var testresult = test(config, name);
+			var testresult = test(name);
 			result.append("\n").append(testresult.toText(name));
 			if (!testresult.isSucessful()) {
 				failed = true;
@@ -94,7 +94,10 @@ public class HudderUnitTester {
 		double v = Duration.between(start, end).toNanos()/1000000d;
 		double res = (int) (v*1000);
 		res/=1000;
+		String compname = HudderApi.COMPILER_REGISTRY.findEntryFromCompiler(compiler)
+			.map(CompilerEntry::id)
+			.orElseGet(() -> compiler.getClass().getSimpleName());
 		return "\n\n" + (success? "Successful, " : "") + "took "+ res + "ms. Passed "
-				+ (testscount-failedcount) + "/" + testscount + " tests using " + Compilers.getNameFromCompiler(compiler);
+				+ (testscount-failedcount) + "/" + testscount + " tests using " + compname;
 	}
 }

@@ -2,7 +2,7 @@ package dev.ngspace.ngsmcconfig.api;
 
 import net.minecraft.network.chat.Component;
 
-public abstract class NGSMCConfigOptionBuilder<T> extends AbstractFluentNGSMCConfigOptionBuilder<T,
+public abstract class NGSMCConfigOptionBuilder<T> extends AbstractNGSMCConfigOptionBuilder<T,
 		NGSMCConfigOptionBuilder<T>> {
 
 	protected NGSMCConfigOptionBuilder(T value, Component name) {

@@ -2,22 +2,20 @@ package dev.ngspace.hudder.utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.Nullable;
 
 import com.mojang.blaze3d.platform.NativeImage;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.compilers.utils.Compilers;
-import dev.ngspace.hudder.main.HudCompilationManager;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.Identifier;
 
@@ -26,8 +24,8 @@ public class HudFileUtils {private HudFileUtils() {}
 	private static CachedReader reader = new CachedReader();
 	private static List<ResourceReloadListener> reloadResourcesListeners = new ArrayList<ResourceReloadListener>();
 
-	public static String FABRIC_CONFIG_FOLDER = FabricLoader.getInstance().getConfigDir().toString();
-	public static String FOLDER = FABRIC_CONFIG_FOLDER + File.separator + "hudder" + File.separator;
+	public static Path FABRIC_CONFIG_FOLDER = FabricLoader.getInstance().getConfigDir();
+	public static Path FOLDER = FABRIC_CONFIG_FOLDER.resolve("hudder");
     public static String ASSETS = "/assets/hudder/";
     public static String[] DEFAULT_HUDS = {"hand.hud", "armorside.hud", "hud.hud", "basic.hud",
     		"hud.js", "hotbar.js"};
@@ -41,14 +39,14 @@ public class HudFileUtils {private HudFileUtils() {}
      * @return The text in the file
      * @throws IOException 
      */
-	public static String readFile(String file) throws IOException {
-		return reader.getCachedFileAsString(sanitize(FOLDER + file));
+	public static String readFile(Path path) throws IOException {
+		return reader.getCachedFileAsString(sanitize(FOLDER.resolve(path)));
 	}
 	
     
     
-	public static byte[] readFileBytes(String file) throws IOException {
-		return reader.getCachedFile(sanitize(FOLDER + file));
+	public static byte[] readFileBytes(Path path) throws IOException {
+		return reader.getCachedFile(sanitize(FOLDER.resolve(path)));
 	}
 	
 	
@@ -60,12 +58,12 @@ public class HudFileUtils {private HudFileUtils() {}
      * @throws IOException
      */
 	public static String readFileWithoutCache(String file) throws IOException {
-		return new String(reader.reader.readFile(new File(sanitize(FOLDER + file))));
+		return new String(reader.reader.readFile(sanitize(FOLDER.resolve(file))));
 	}
 
 
 
-	public static String readFileUnsanitized(File file) throws IOException {
+	public static String readFileUnsanitized(Path file) throws IOException {
 		return new String(reader.reader.readFile(file));
 	}
 	
@@ -78,29 +76,32 @@ public class HudFileUtils {private HudFileUtils() {}
 	public static void addReloadResourcesListener(ResourceReloadListener listener) {
 		reloadResourcesListeners.add(listener);
 	}
+	public static void addReloadResourcesListenerFirst(ResourceReloadListener listener) {
+		reloadResourcesListeners.add(0, listener);
+	}
 	
 	
 	
 	/**
 	 * Checks if a filename is dirty or not.
-	 * @param f - The name of the file
-	 * @return the filename provided
-	 * @throws SecurityException - If the provided filename is "dirty"
-	 * @throws IOException 
 	 */
-	public static String sanitize(String f) throws SecurityException, IOException {
-		if (!new File(f).getCanonicalFile().toPath().startsWith(new File(FOLDER).getCanonicalFile().toPath()))
+	public static Path sanitize(Path f) throws SecurityException, IOException {
+		Path d = f.toAbsolutePath().normalize();
+		Path folder = FOLDER.toAbsolutePath().normalize();
+		if (!d.startsWith(folder))
 			throw new FileNotFoundException(f + " (No such file or directory)");
+		
 		int j = 0;
 		int k = 0;
-		for (int i = 0;i<f.length();i++) {
-			char c = f.charAt(i);
+		for (int i = 0;i<f.toString().length();i++) {
+			char c = f.toString().charAt(i);
 			if (c=='.') j++;
 			else if (c=='/'||c=='\\') {
 				if (j==2&&k==0) throw new FileNotFoundException(f + " (No such file or directory)");
 				k = 0;
 			} else {j = 0;k++;}
 		}
+		
 		return f;
 	}
 	
@@ -115,47 +116,68 @@ public class HudFileUtils {private HudFileUtils() {}
 	 */
 	public static boolean exists(String file) throws SecurityException, IOException {
 		if ("".equals(file)) return false;
-		return new File(sanitize(FOLDER + file)).exists();
+		return Files.exists(sanitize(FOLDER.resolve(file)));
 	}
 	
 	
 	
 	/**
 	 * Creates any missing default huds and default textures
+	 * @throws  
 	 */
 	public static void makeDefaultHud() {
+		
+	    try {
+	    	Hudder.log("Creating config folder");
+	        Files.createDirectories(FOLDER);
+	    	Hudder.log("Done creating config folder");
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	        Hudder.error("Failed to create hudder folder");
+	        return;
+	    }
 
 		// Add missing huds to Hudder config folder (Assume one exists)
 		for (String file : DEFAULT_HUDS) {
-			File dest = new File(FOLDER, file);
-			if (dest.exists()) continue;
+			Path dest = FOLDER.resolve(file);
+			if (Files.exists(dest)) continue;
 			try {
-				FileUtils.copyURLToFile(HudFileUtils.class.getResource(ASSETS + "huds/" + file), dest);
+				Files.copy(HudFileUtils.class.getResourceAsStream(ASSETS + "huds/" + file), dest);
 			} catch (IOException e) {
 				if (Hudder.IS_DEBUG) e.printStackTrace();
-				Hudder.log("Failed to generate default hud " + file);
+				Hudder.error("Failed to generate default hud " + file);
 			}
 		}
 		
 		// Create A Textures folder if missing
-		if (!new File(FOLDER + "Textures").exists()) new File(FOLDER + "Textures").mkdir();
+		
+		Path textures = FOLDER.resolve("Textures");
+		
+		try {
+			if (!Files.exists(textures))
+				Files.createDirectories(textures);
+		} catch (IOException e) {
+			e.printStackTrace();
+			Hudder.error("Failed to generate textures");
+			return;
+		}
 		
 		// Add missing textures to Textures folder
 		for (String file : DEFAULT_TEXTURES) {
-			File dest = new File(FOLDER + "Textures", file);
-			if (dest.exists()) continue;
+			Path dest = textures.resolve(file);
+			if (Files.exists(dest)) continue;
 			try {
-				FileUtils.copyURLToFile(HudFileUtils.class.getResource(ASSETS + "Textures/" + file), dest);
+				Files.copy(HudFileUtils.class.getResourceAsStream(ASSETS + "Textures/" + file), dest);
 			} catch (IOException e) {
 				if (Hudder.IS_DEBUG) e.printStackTrace();
-				Hudder.log("Failed to generate default texture " + file);
+				Hudder.error("Failed to generate default texture " + file);
 			}
 		}
 	}
 	
 	@Nullable public static Identifier getTexture(String filename) throws SecurityException {
 		try {
-			sanitize(FOLDER + filename);
+			sanitize(FOLDER.resolve(filename));
 		} catch (IOException e) {
 			if (Hudder.IS_DEBUG) e.printStackTrace();
 			return null;
@@ -165,18 +187,16 @@ public class HudFileUtils {private HudFileUtils() {}
 
 	public static void reloadResources() throws IOException {
 		reader.clearCache();
-		loadResources(new File(FOLDER), "");
-		for (var comp : Compilers.compilers()) comp.resetState();
+		loadResources(FOLDER, "");
 		for (var listener : reloadResourcesListeners) listener.run();
-		HudCompilationManager.isFirstRunSinceCacheClear = true; // Reset the clock
 	}
 
 
 
-	public static void loadResources(File folder, String prefix) throws IOException {
-		for (File resource : folder.listFiles()) {
-			String path = prefix + ("".equals(prefix)?"":"/") + resource.getName();
-			if (resource.isDirectory()) {
+	public static void loadResources(Path folder, String prefix) throws IOException {
+		for (Path resource : Files.newDirectoryStream(folder)) {
+			String path = prefix + ("".equals(prefix)?"":"/") + resource.getFileName();
+			if (Files.isDirectory(resource)) {
 				loadResources(resource, path);
 				continue;
 			}
@@ -188,8 +208,8 @@ public class HudFileUtils {private HudFileUtils() {}
 
 
 
-	public static boolean loadImage(File resource, String path) throws IOException {
-		var image = ImageIO.read(resource);
+	public static boolean loadImage(Path resource, String path) throws IOException {
+		var image = ImageIO.read(Files.newInputStream(resource));
 		if (image!=null) {
 			ByteArrayOutputStream output = new ByteArrayOutputStream();
 			ImageIO.write(image, "PNG", output);

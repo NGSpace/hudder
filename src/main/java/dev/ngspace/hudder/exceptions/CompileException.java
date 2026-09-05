@@ -1,6 +1,6 @@
 package dev.ngspace.hudder.exceptions;
 
-import dev.ngspace.hudder.compilers.utils.TextPos;
+import dev.ngspace.hudder.api.compilers.utils.TextPos;
 
 public class CompileException extends Exception {
 	public final int line;

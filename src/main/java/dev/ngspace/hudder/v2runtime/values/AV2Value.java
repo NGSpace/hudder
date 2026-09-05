@@ -3,8 +3,8 @@ package dev.ngspace.hudder.v2runtime.values;
 import java.util.Collection;
 import java.util.Objects;
 
-import dev.ngspace.hudder.compilers.abstractions.AV2Compiler;
-import dev.ngspace.hudder.compilers.utils.CompileState;
+import dev.ngspace.hudder.api.compilers.compilers.AV2Compiler;
+import dev.ngspace.hudder.api.compilers.utils.CompileState;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.utils.ObjectWrapper;
@@ -98,8 +98,7 @@ public abstract class AV2Value implements ObjectWrapper {
 		return "Incorrect type \""+type+"\" for value: \""+value+"\" of type "+(obj!=null?obj.getClass().getName():null);
 	}
 	
-	public abstract void setValue(AV2Compiler compiler, Object value)
-			throws ExecutionException, UnsupportedOperationException;
+	public abstract void setValue(AV2Compiler compiler, Object value) throws ExecutionException, UnsupportedOperationException;
 
 	/**
 	 * Returns true if the variable has a value and false if it does not

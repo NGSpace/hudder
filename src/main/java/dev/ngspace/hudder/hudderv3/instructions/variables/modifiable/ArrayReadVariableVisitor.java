@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.objectweb.asm.Label;
 
-import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
-import dev.ngspace.hudder.compilers.utils.TextPos;
+import dev.ngspace.hudder.api.compilers.compilers.AV3Compiler;
+import dev.ngspace.hudder.api.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
@@ -39,7 +39,7 @@ public class ArrayReadVariableVisitor extends ExpressionVisitor {
 		indexValue.visit(methodWriter);
 		methodWriter.checkcastSafe(Number.class, pos);
 		methodWriter.intValue();
-		methodWriter.callInterface(List.class, "get", "(I)Ljava/lang/Object;");
+		methodWriter.callInterface(List.class, "get", Object.class, Integer.TYPE);
 		
 		methodWriter.jumpto(end);
 
@@ -69,7 +69,7 @@ public class ArrayReadVariableVisitor extends ExpressionVisitor {
 		methodWriter.dup();
 		int list_index = methodWriter.astore();
 		
-		methodWriter.callInterface(List.class, "size", "()I");
+		methodWriter.callInterface(List.class, "size", Integer.TYPE);
 		indexValue.visit(methodWriter);
 		methodWriter.checkcastSafe(Number.class, pos);
 		methodWriter.intValue();
@@ -88,7 +88,7 @@ public class ArrayReadVariableVisitor extends ExpressionVisitor {
 		methodWriter.aload(list_index);
 		methodWriter.iload(index_index);
 		methodWriter.aload(value_index);
-		methodWriter.callInterface(List.class, "set", "(ILjava/lang/Object;)Ljava/lang/Object;");
+		methodWriter.callInterface(List.class, "set", Object.class, Integer.TYPE, Object.class);
 		methodWriter.pop();
 		methodWriter.jumpto(end);
 
@@ -97,7 +97,7 @@ public class ArrayReadVariableVisitor extends ExpressionVisitor {
 		methodWriter.pop();
 		methodWriter.aload(list_index);
 		methodWriter.aload(value_index);
-		methodWriter.callInterface(List.class, "add", "(Ljava/lang/Object;)Z");
+		methodWriter.callInterface(List.class, "add", Boolean.TYPE, Object.class);
 		methodWriter.pop();
 		
 		methodWriter.putLabel(end);

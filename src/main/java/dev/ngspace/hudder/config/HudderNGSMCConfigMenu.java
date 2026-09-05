@@ -1,20 +1,19 @@
 package dev.ngspace.hudder.config;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.compilers.utils.Compilers;
-import dev.ngspace.hudder.compilers.utils.Compilers.CompilerEntry;
+import dev.ngspace.hudder.api.compilers.CompilerRegistry;
+import dev.ngspace.hudder.api.compilers.interfaces.SettingsProvider;
+import dev.ngspace.hudder.api.compilers.utils.CompilerEntry;
 import dev.ngspace.hudder.main.HudderTickEvent;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigBuilder;
@@ -34,7 +33,9 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 	protected static Minecraft mc = Minecraft.getInstance();
 
 	public static Screen createMenu(Screen parent) {
+		// I hate this. I hate this. I hate this. I hate this. I hate this. I hate this. I hate this.
 		HudderUserSettings config = Hudder.config.userSettings;
+		CompilerRegistry registry = Hudder.config.registry;
 		
 		Function<Boolean, Component> enabledDisabled = v -> Boolean.TRUE.equals(v) ? Component.translatable(
 				"hudder.ngsmcconfig.enabled") : Component.translatable("hudder.ngsmcconfig.disabled");
@@ -43,19 +44,20 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 		builder.setWriteOperation(() -> {
 			try {
 				Hudder.config.save();
+				HudFileUtils.reloadResources();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		});
 		builder.setDocsUri(URI.create("https://ngspace.dev/hudder"));
-		builder.setConfigFile(new File(HudFileUtils.FOLDER));
+		builder.setConfigFile(HudFileUtils.FOLDER.toFile());
 		builder.setConfigButtonText(Component.translatable("hudder.ngsmcconfig.config"));
 		
 		
 		
 		// Huds
 		// NGSMCConfig changes the size and position anyways
-		var widget = new HudSelectionList(Minecraft.getInstance(), new File(HudFileUtils.FOLDER), config);
+		var widget = new HudSelectionList(Minecraft.getInstance(), HudFileUtils.FOLDER, config, registry);
 		builder.addCustomWidgetCategory(Component.translatable("hudder.mainfile"),
 				new NGSMCConfigIcon.SpriteIcon("items", "item/map"),
 				widget, widget::save, widget::reset, widget::error, widget::warning);
@@ -63,20 +65,16 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 			for (Path p : files) {
 				try {
 					HudderTickEvent.TEMP_DISABLE = true;
-					File dest = new File(HudFileUtils.FOLDER + p.getFileName());
+					Path dest = HudFileUtils.FOLDER.resolve(p.getFileName());
 					
-					if (dest.exists()) {
+					if (Files.exists(dest)) {
 						throw new IOException("Hud already exists");
 					}
 					
-					if (p.toFile().isDirectory()) {
-						FileUtils.copyDirectory(p.toFile(), dest);
+					if (Files.isDirectory(p)) {
+						FileUtils.copyDirectory(p.toFile(), dest.toFile());
 					} else {
-						try (var input = new FileInputStream(p.toFile())) {
-							try (var output = new FileOutputStream(dest)) {
-								IOUtils.copy(input, output);
-							}
-						}
+						Files.copy(p, dest);
 					}
 				} catch (IOException e) {
 					Hudder.showWarningToast(Component.literal("Failed to copy hud"),
@@ -109,30 +107,42 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 				new NGSMCConfigIcon.SpriteIcon("items", "item/amethyst_shard"));
 		
 		/* General */
-		general.addOption(BooleanNGSMCConfigOption.fluentBuilder(config.enabled, Component.translatable("hudder.general.enabled"))
+		general.addOption(BooleanNGSMCConfigOption.builder(config.enabled, Component.translatable("hudder.general.enabled"))
 				.setHoverComponent(Component.translatable("hudder.general.enabled.tooltip"))
 				.setDefaultValue(true)
 				.setSaveOperation(b->config.enabled=b)
 				.setComponentProvider(enabledDisabled)
 				.build());
-		general.addOption(DropdownNGSMCConfigOption.fluentBuilder(Compilers.getDisplayNameFromCompilerName(Hudder.config.compilerName()),
+		String displayname = null;
+		if (Hudder.config.compilerId().equals("auto")) {
+			displayname = "Auto-detect";
+		} else {
+			displayname = registry.findEntryFromId(Hudder.config.compilerId())
+					.orElseThrow(()->new IllegalArgumentException("No compiler named "
+							+ Hudder.config.compilerId())).display_name();
+		}
+		general.addOption(DropdownNGSMCConfigOption.builder(displayname,
 					Component.translatable("hudder.general.compilertype"),
-					Compilers.entries().stream()
-						.sorted(Comparator.comparing(CompilerEntry::unstable)
-								.thenComparing(CompilerEntry::displayname, String.CASE_INSENSITIVE_ORDER))
-						.map(e->e.displayname())
-						.toList())
+					Stream.concat(
+							Stream.of("Auto-detect"),
+							registry.entries().stream()
+								.sorted(Comparator.comparing(CompilerEntry::unstable)
+										.thenComparing(CompilerEntry::deprecated)
+										.thenComparing(CompilerEntry::display_name, String.CASE_INSENSITIVE_ORDER))
+								.map(e->e.display_name()))
+					.toList())
 	    		.setHoverComponent(Component.translatable("hudder.general.compilertype.tooltip"))
-	    		.setDefaultValue("Hudder")
-	    		.setSaveOperation(b->Hudder.config.setCompilerName(Compilers.getCompilerNameFromDisplayname(b)))
+	    		.setDefaultValue("Auto-detect")
+	    		.setSaveOperation(b->Hudder.config.setCompilerName(b.equals("Auto-detect") ? "auto"
+	    				: registry.findEntryFromDisplayName(b).get().id()))
 	    		.setValidator(e->{
 	    			widget.comp = e;
-	    			return Compilers.hasCompilerFromDisplayName(e)
+	    			return "Auto-detect".equals(e) || registry.findEntryFromDisplayName(e).isPresent()
 	    					? null : Component.translatable("hudder.general.compilertype.error");
 	    		})
-	    		.setWarningProvider(e->getCompilerWarning(Compilers.getEntryFromDisplayName(e)))
+	    		.setWarningProvider(e->"Auto-detect".equals(e) ? null : getCompilerWarning(registry.findEntryFromDisplayName(e).get()))
 	    		.build());
-		general.addOption(DoubleNGSMCConfigOption.fluentBuilder(config.scale, Component.translatable("hudder.general.scale"))
+		general.addOption(DoubleNGSMCConfigOption.builder(config.scale, Component.translatable("hudder.general.scale"))
 				.setHoverComponent(Component.translatable("hudder.general.scale.tooltip"))
 				.setSaveOperation(b->config.scale=b.floatValue())
 				.setDefaultValue(1d)
@@ -141,30 +151,30 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 		
 		
 		/* Text */
-		text_rendering.addOption(HexNGSMCConfigOption.fluentBuilder(config.color, Component.translatable("hudder.text_rendering.color"))
+		text_rendering.addOption(HexNGSMCConfigOption.builder(config.color, Component.translatable("hudder.text_rendering.color"))
 				.setHoverComponent(Component.translatable("hudder.text_rendering.color.tooltip"))
 				.setDefaultValue(0xFFd6d6d6)
 				.setSaveOperation(b->config.color=b)
 				.build());
-		text_rendering.addOption(BooleanNGSMCConfigOption.fluentBuilder(config.shadow, Component.translatable("hudder.text_rendering.shadow"))
+		text_rendering.addOption(BooleanNGSMCConfigOption.builder(config.shadow, Component.translatable("hudder.text_rendering.shadow"))
 				.setHoverComponent(Component.translatable("hudder.text_rendering.shadow.tooltip"))
 				.setSaveOperation(b->config.shadow=b)
 				.setDefaultValue(true)
 				.setComponentProvider(enabledDisabled)
 				.build());
-		text_rendering.addOption(BooleanNGSMCConfigOption.fluentBuilder(config.background, Component.translatable("hudder.text_rendering.background"))
+		text_rendering.addOption(BooleanNGSMCConfigOption.builder(config.background, Component.translatable("hudder.text_rendering.background"))
 				.setHoverComponent(Component.translatable("hudder.text_rendering.background.tooltip"))
 				.setSaveOperation(b->config.background=b)
 				.setDefaultValue(true)
 				.setComponentProvider(enabledDisabled)
 				.build());
-		text_rendering.addOption(HexNGSMCConfigOption.fluentBuilder(config.backgroundcolor,
+		text_rendering.addOption(HexNGSMCConfigOption.builder(config.backgroundcolor,
 				Component.translatable("hudder.text_rendering.backgroundcolor"))
 				.setHoverComponent(Component.translatable("hudder.text_rendering.backgroundcolor.tooltip"))
 				.setDefaultValue(0x86353535)
 				.setSaveOperation(b->config.backgroundcolor=b)
 				.build());
-		text_rendering.addOption(IntNGSMCConfigOption.fluentBuilder(config.lineHeight, Component.translatable("hudder.text_rendering.height"))
+		text_rendering.addOption(IntNGSMCConfigOption.builder(config.lineHeight, Component.translatable("hudder.text_rendering.height"))
 				.setHoverComponent(Component.translatable("hudder.text_rendering.height.tooltip"))
 				.setSaveOperation(b->config.lineHeight=b)
 				.setDefaultValue(10)
@@ -172,22 +182,22 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 		
 		
 		/* Text Padding */
-		text_padding.addOption(IntNGSMCConfigOption.fluentBuilder(config.yoffset_top, Component.translatable("hudder.text_padding.yoffset_top"))
+		text_padding.addOption(IntNGSMCConfigOption.builder(config.yoffset_top, Component.translatable("hudder.text_padding.yoffset_top"))
 				.setHoverComponent(Component.translatable("hudder.text_padding.yoffset_top.tooltip"))
 				.setSaveOperation(b->config.yoffset_top=b)
 				.setDefaultValue(1)
 				.build());
-		text_padding.addOption(IntNGSMCConfigOption.fluentBuilder(config.yoffset_bottom, Component.translatable("hudder.text_padding.yoffset_bottom"))
+		text_padding.addOption(IntNGSMCConfigOption.builder(config.yoffset_bottom, Component.translatable("hudder.text_padding.yoffset_bottom"))
 				.setHoverComponent(Component.translatable("hudder.text_padding.yoffset_bottom.tooltip"))
 				.setSaveOperation(b->config.yoffset_bottom=b)
 				.setDefaultValue(0)
 				.build());
-		text_padding.addOption(IntNGSMCConfigOption.fluentBuilder(config.xoffset_left, Component.translatable("hudder.text_padding.xoffset_left"))
+		text_padding.addOption(IntNGSMCConfigOption.builder(config.xoffset_left, Component.translatable("hudder.text_padding.xoffset_left"))
 				.setHoverComponent(Component.translatable("hudder.text_padding.xoffset_left.tooltip"))
 				.setSaveOperation(b->config.xoffset_left=b)
 				.setDefaultValue(1)
 				.build());
-		text_padding.addOption(IntNGSMCConfigOption.fluentBuilder(config.xoffset_right, Component.translatable("hudder.text_padding.xoffset_right"))
+		text_padding.addOption(IntNGSMCConfigOption.builder(config.xoffset_right, Component.translatable("hudder.text_padding.xoffset_right"))
 				.setHoverComponent(Component.translatable("hudder.text_padding.xoffset_right.tooltip"))
 				.setSaveOperation(b->config.xoffset_right=b)
 				.setDefaultValue(1)
@@ -196,22 +206,22 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 		
 		
 		/* Vanilla Hud */
-		vanillahud.addOption(BooleanNGSMCConfigOption.fluentBuilder(config.showInF3, Component.translatable("hudder.vanillahud.f3"))
+		vanillahud.addOption(BooleanNGSMCConfigOption.builder(config.showInF3, Component.translatable("hudder.vanillahud.f3"))
 				.setHoverComponent(Component.translatable("hudder.vanillahud.f3.tooltip"))
 				.setSaveOperation(b->config.showInF3=b)
 				.setDefaultValue(false)
 				.build());
-		vanillahud.addOption(BooleanNGSMCConfigOption.fluentBuilder(config.removegui, Component.translatable("hudder.vanillahud.removehotbar"))
+		vanillahud.addOption(BooleanNGSMCConfigOption.builder(config.removegui, Component.translatable("hudder.vanillahud.removehotbar"))
 				.setHoverComponent(Component.translatable("hudder.vanillahud.removehotbar.tooltip"))
 				.setSaveOperation(b->config.removegui=b)
 				.setDefaultValue(false)
 				.build());
-		vanillahud.addOption(BooleanNGSMCConfigOption.fluentBuilder(config.removeeffects, Component.translatable("hudder.vanillahud.removeeffects"))
+		vanillahud.addOption(BooleanNGSMCConfigOption.builder(config.removeeffects, Component.translatable("hudder.vanillahud.removeeffects"))
 				.setHoverComponent(Component.translatable("hudder.vanillahud.removeeffects.tooltip"))
 				.setSaveOperation(b->config.removeeffects=b)
 				.setDefaultValue(false)
 				.build());
-		vanillahud.addOption(BooleanNGSMCConfigOption.fluentBuilder(config.removeBossBars, Component.translatable("hudder.vanillahud.removebossbars"))
+		vanillahud.addOption(BooleanNGSMCConfigOption.builder(config.removeBossBars, Component.translatable("hudder.vanillahud.removebossbars"))
 				.setHoverComponent(Component.translatable("hudder.vanillahud.removebossbars.tooltip"))
 				.setSaveOperation(b->config.removeBossBars=b)
 				.setDefaultValue(false)
@@ -219,35 +229,35 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 
         
 		/* Safety & Performance */
-        safety_perf.addOption(IntNGSMCConfigOption.fluentBuilder(config.methodBuffer, Component.translatable("hudder.safety_perf.method"))
+        safety_perf.addOption(IntNGSMCConfigOption.builder(config.methodBuffer, Component.translatable("hudder.safety_perf.method"))
 				.setHoverComponent(Component.translatable("hudder.safety_perf.method.tooltip"))
 				.setSaveOperation(b->config.methodBuffer=b)
 				.setDefaultValue(2)
 				.build());
-        safety_perf.addOption(BooleanNGSMCConfigOption.fluentBuilder(config.limitrate, Component.translatable("hudder.safety_perf.limitrate"))
+        safety_perf.addOption(BooleanNGSMCConfigOption.builder(config.limitrate, Component.translatable("hudder.safety_perf.limitrate"))
 				.setHoverComponent(Component.translatable("hudder.safety_perf.limitrate.tooltip"))
 				.setSaveOperation(b->config.limitrate=b)
 				.setDefaultValue(true)
 				.build());
-        safety_perf.addOption(BooleanNGSMCConfigOption.fluentBuilder(config.autorefresh, Component.translatable("hudder.safety_perf.autorefresh"))
+        safety_perf.addOption(BooleanNGSMCConfigOption.builder(config.autorefresh, Component.translatable("hudder.safety_perf.autorefresh"))
 				.setHoverComponent(Component.translatable("hudder.safety_perf.autorefresh.tooltip"))
 				.setSaveOperation(b->config.autorefresh=b)
 				.setDefaultValue(true)
 				.setComponentProvider(enabledDisabled)
 				.build());
-		safety_perf.addOption(BooleanNGSMCConfigOption.fluentBuilder(config.unsafeoperations, Component.translatable("hudder.safety_perf.unsafeoperations"))
+		safety_perf.addOption(BooleanNGSMCConfigOption.builder(config.unsafeoperations, Component.translatable("hudder.safety_perf.unsafeoperations"))
 				.setHoverComponent(Component.translatable("hudder.safety_perf.unsafeoperations.tooltip"))
 				.setSaveOperation(b->config.unsafeoperations=b)
 				.setDefaultValue(false)
 				.setComponentProvider(enabledDisabled)
 				.build());
-		safety_perf.addOption(BooleanNGSMCConfigOption.fluentBuilder(config.disableWarnings,
+		safety_perf.addOption(BooleanNGSMCConfigOption.builder(config.disableWarnings,
 				Component.translatable("hudder.safety_perf.disableWarnings"))
 				.setHoverComponent(Component.translatable("hudder.safety_perf.disableWarnings.tooltip"))
 				.setSaveOperation(b->config.disableWarnings=b)
 				.setDefaultValue(false)
 				.build());
-		safety_perf.addOption(BooleanNGSMCConfigOption.fluentBuilder(config.disableHudpackVersionCheck,
+		safety_perf.addOption(BooleanNGSMCConfigOption.builder(config.disableHudpackVersionCheck,
 				Component.translatable("hudder.safety_perf.disableHudpackVersionCheck"))
 				.setHoverComponent(Component.translatable("hudder.safety_perf.disableHudpackVersionCheck.tooltip"))
 				.setSaveOperation(b->config.disableHudpackVersionCheck=b)
@@ -257,17 +267,22 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 		
 		
 		/* Hud specific settings */
-		if (!Hudder.config.getCompiler().setupHudSettings(hudsettings))
+		if (Hudder.config.getCompiler() instanceof SettingsProvider provider) {
+			if (!provider.setupHudSettings(hudsettings)) {
+				builder.removeCategory(hudsettings);
+			}
+		} else {
 			builder.removeCategory(hudsettings);
+		}
 		
 		return builder.build();
 	}
 	
 	public static Component getCompilerWarning(CompilerEntry compilerEntry) {
 		if (compilerEntry.deprecated()) return Component.translatable(
-				"hudder.general.compilertype.deprecated_warning", compilerEntry.displayname());
+				"hudder.general.compilertype.deprecated_warning", compilerEntry.display_name());
 		if (compilerEntry.unstable()) return Component.translatable(
-				"hudder.general.compilertype.unstable_warning", compilerEntry.displayname());
+				"hudder.general.compilertype.unstable_warning", compilerEntry.display_name());
 		return null;
 	}
 	

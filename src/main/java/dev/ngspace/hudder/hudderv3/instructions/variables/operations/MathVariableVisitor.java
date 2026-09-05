@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.objectweb.asm.Label;
 
-import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
-import dev.ngspace.hudder.compilers.utils.TextPos;
+import dev.ngspace.hudder.api.compilers.compilers.AV3Compiler;
+import dev.ngspace.hudder.api.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
@@ -101,12 +101,7 @@ public class MathVariableVisitor extends ExpressionVisitor {
 			Object val = getConstantValue();
 			writer.loadConstant(val);
 			if (val instanceof Number) {
-			writer.callStatic(
-				    Double.class,
-				    "valueOf",
-				    "(D)Ljava/lang/Double;",
-				    false
-				);
+				writer.callStatic(Double.class, "valueOf", false, Double.class, Double.TYPE);
 			}
 			return;
 		}
@@ -138,7 +133,7 @@ public class MathVariableVisitor extends ExpressionVisitor {
 		if (onlyaddition) {
 			// Create StringBuilder
 			writer.newAndDup(StringBuilder.class);
-			writer.callInit(StringBuilder.class, "()V");
+			writer.callInit(StringBuilder.class);
 	
 			int builder_index = writer.astore();
 			
@@ -151,14 +146,14 @@ public class MathVariableVisitor extends ExpressionVisitor {
 				writer.ifeq(append);
 				writer.checkcast(Number.class);
 				writer.doubleValue();
-				writer.callStatic(HudderV3Helper.class, "cleanDouble", "(D)Ljava/lang/String;", false);
+				writer.callStatic(HudderV3Helper.class, "cleanDouble", false, String.class, Double.TYPE);
 				writer.putLabel(append);
-				writer.call(StringBuilder.class, "append", "(Ljava/lang/Object;)Ljava/lang/StringBuilder;", false);
+				writer.call(StringBuilder.class, "append", false, StringBuilder.class, Object.class);
 				writer.pop();
 			}
 			
 			writer.aload(builder_index);
-			writer.call(StringBuilder.class, "toString", "()Ljava/lang/String;", false);
+			writer.call(StringBuilder.class, "toString", false, String.class);
 			writer.jumpto(end);
 		} else {
 			writer.throwExecutionException("Strings may only be added to.", pos);
@@ -197,7 +192,7 @@ public class MathVariableVisitor extends ExpressionVisitor {
 			else writer.dsub();
 		}
 
-		writer.callStatic(Double.class, "valueOf", "(D)Ljava/lang/Double;", false);
+		writer.callStatic(Double.class, "valueOf", false, Double.class, Double.TYPE);
 		
 		writer.putLabel(end);
 	}

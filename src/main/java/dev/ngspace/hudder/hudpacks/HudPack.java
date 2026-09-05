@@ -1,9 +1,11 @@
 package dev.ngspace.hudder.hudpacks;
 
 import java.io.Closeable;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,9 +14,8 @@ import java.util.Set;
 import com.google.gson.Gson;
 import com.mojang.blaze3d.platform.NativeImage;
 
-import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.compilers.HudPackCompiler;
 import dev.ngspace.hudder.config.HudderConfig;
+import dev.ngspace.hudder.defaultcompilers.HudPackCompiler;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.hudder.utils.HudderUtils;
@@ -37,18 +38,19 @@ public class HudPack implements Closeable {
 	private HudPackCompiler compiler;
 	private BufferedTexture[] bufferedtextures;
 	private Map<String, HudPackSettings> settings;
+	private HudderConfig config;
 	
 	public HudPackPoint[] hudpackpoints;
 	public HudPackEngineManager engineManager;
 	public int format_version = 0;
 	public Map<String, byte[]> entries = new HashMap<String, byte[]>();
 	
-	public HudPack(HudderConfig config, String filepath, HudPackCompiler compiler) throws IOException, CompileException {
+	public HudPack(HudderConfig config, Path path, HudPackCompiler compiler) throws IOException, CompileException {
 		this.compiler = compiler;
 		this.engineManager = new HudPackEngineManager(this.compiler, this);
-		File file = new File(filepath);
-		try (EntryReaderConsumer reader = file.isDirectory() ? new EntryReaderConsumer.Directory(file) :
-				new EntryReaderConsumer.Zip(file)) {
+		this.config = config;
+		try (EntryReaderConsumer reader = Files.isDirectory(path) ? new EntryReaderConsumer.Directory(path) :
+				new EntryReaderConsumer.Zip(path)) {
 			int entries_count = 0;
 			int bytes_left = MAXIMUM_PACK_SIZE;
 			for (String entry : reader.listEntries()) {
@@ -77,10 +79,11 @@ public class HudPack implements Closeable {
 		if (!entries.containsKey("pack.json"))
 			throw new CompileException("Missing entry: pack.json", -1, -1);
 		// Read pack.json
-        configYaml = new Gson().fromJson(new String(entries.get("pack.json")), HudPackConfig.class);
+        configYaml = new Gson().fromJson(new String(entries.get("pack.json"), StandardCharsets.UTF_8),
+        		HudPackConfig.class);
         format_version = configYaml.format_version();
         // Check if format version is supported
-        if (format_version>MAXIMUM_SUPPORTED_FORMAT&&!Hudder.config.disableHudpackVersionCheck())
+        if (format_version>MAXIMUM_SUPPORTED_FORMAT&&!config.disableHudpackVersionCheck())
         	throw new CompileException("Unsupported Hud pack format version: " + format_version, -1, -1);
         // Read pack points
 		hudpackpoints = new HudPackPoint[configYaml.points().size()];
@@ -90,15 +93,17 @@ public class HudPack implements Closeable {
 			if (!entries.containsKey(point.path()))
 				throw new CompileException("Missing entry: " + point.path(), -1, -1);
 			// Read point
-			String point_code = new String(entries.get(point.path()));
-			hudpackpoints[i] = new HudPackPoint(point, config, engineManager.getOrCreateEngine(point.path(), config, point_code));
+			String point_code = new String(entries.get(point.path()), StandardCharsets.UTF_8);
+			hudpackpoints[i] = new HudPackPoint(point, engineManager.getOrCreateEngine(point.path(), config, point_code));
 		}
 	}
 	
-	private void bufferTextures(List<String> textures) {
+	private void bufferTextures(List<String> textures) throws CompileException {
 		this.bufferedtextures = new BufferedTexture[textures.size()];
 		for (int i = 0;i<textures.size();i++) {
 			String texture = textures.get(i);
+			if (!entries.containsKey(texture))
+				throw new CompileException("Missing Texture: " + texture, -1, -1);
         	bufferedtextures[i] = new BufferedTexture(texture, entries.get(texture));
 		}
 	}
@@ -125,7 +130,7 @@ public class HudPack implements Closeable {
 		HudPackSettings v = settings.get(setting);
 
 		if (format_version>1&&"dropdown".equals(v.type())) {
-			return DropdownNGSMCConfigOption.fluentBuilder((String) getSettingValue(setting),
+			return DropdownNGSMCConfigOption.builder((String) getSettingValue(setting),
 					Component.literal(v.name()),
 					List.of(v.values()))
 				.setDefaultValue((String) v.default_value())
@@ -133,7 +138,7 @@ public class HudPack implements Closeable {
 				.build();
 		}
 		if (format_version>2&&"integer".equals(v.type())) {
-			return IntNGSMCConfigOption.fluentBuilder(((Number) getSettingValue(setting)).intValue(),
+			return IntNGSMCConfigOption.builder(((Number) getSettingValue(setting)).intValue(),
 					Component.literal(v.name()))
 				.setDefaultValue(((Number) v.default_value()).intValue())
 				.setSaveOperation(val->setSettingValue(setting, val))
@@ -141,28 +146,28 @@ public class HudPack implements Closeable {
 		}
 		return switch (v.type()) {
 			case "boolean": {
-				yield BooleanNGSMCConfigOption.fluentBuilder(((Boolean) getSettingValue(setting)),
+				yield BooleanNGSMCConfigOption.builder(((Boolean) getSettingValue(setting)),
 						Component.literal(v.name()))
 					.setDefaultValue((Boolean) v.default_value())
 					.setSaveOperation(val->setSettingValue(setting, val))
 					.build();
 			}
 			case "string": {
-				yield StringNGSMCConfigOption.fluentBuilder(String.valueOf(getSettingValue(setting)),
+				yield StringNGSMCConfigOption.builder(String.valueOf(getSettingValue(setting)),
 						Component.literal(v.name()))
 					.setDefaultValue(String.valueOf(v.default_value()))
 					.setSaveOperation(val->setSettingValue(setting, val))
 					.build();
 			}
 			case "number": {
-				yield DoubleNGSMCConfigOption.fluentBuilder(((Number) getSettingValue(setting)).doubleValue(),
+				yield DoubleNGSMCConfigOption.builder(((Number) getSettingValue(setting)).doubleValue(),
 						Component.literal(v.name()))
 					.setDefaultValue(((Number) v.default_value()).doubleValue())
 					.setSaveOperation(val->setSettingValue(setting, val))
 					.build();
 			}
 			case "hex": {
-				yield HexNGSMCConfigOption.fluentBuilder(((Number) getSettingValue(setting)).intValue(),
+				yield HexNGSMCConfigOption.builder(((Number) getSettingValue(setting)).intValue(),
 						Component.literal(v.name()))
 					.setDefaultValue(((Number) v.default_value()).intValue())
 					.setSaveOperation(val->setSettingValue(setting, val))
@@ -174,12 +179,12 @@ public class HudPack implements Closeable {
 	}
 
 	public Object getSettingValue(String string) {
-		return Hudder.config.getHudSettings("hudpacks", Hudder.config.mainfile())
-				.getOrDefault(string, settings.get(string).default_value());
+		return config.getHudSettings("hudpacks", config.mainfileString()).getOrDefault(string,
+				settings.get(string).default_value());
 	}
 
 	public void setSettingValue(String string, Object value) {
-		Hudder.config.getHudSettings("hudpacks",  Hudder.config.mainfile()).put(string, value);
+		config.getHudSettings("hudpacks",  config.mainfileString()).put(string, value);
 	}
 
 	@Override

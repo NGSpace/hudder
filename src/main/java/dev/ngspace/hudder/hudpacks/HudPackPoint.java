@@ -8,12 +8,9 @@ import static dev.ngspace.hudder.hudpacks.HudPackHudState.TOPRIGHT;
 import java.io.IOException;
 import java.util.Arrays;
 
-import dev.ngspace.hudder.compilers.utils.Compilers;
-import dev.ngspace.hudder.compilers.utils.javascript.JavaScriptEngine;
-import dev.ngspace.hudder.config.HudderConfig;
+import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
+import dev.ngspace.hudder.defaultcompilers.javascript.JavaScriptEngine;
 import dev.ngspace.hudder.exceptions.ExecutionException;
-import dev.ngspace.hudder.v2runtime.V2Runtime;
-import dev.ngspace.hudder.v2runtime.values.AV2Value;
 
 public class HudPackPoint {
 	
@@ -21,20 +18,14 @@ public class HudPackPoint {
 	public JavaScriptEngine engine;
 	public String path;
 	public HudPackPointConfig config;
-	public AV2Value[] conditions;
+	public Boolean[] conditions;
 
-	public HudPackPoint(HudPackPointConfig config, HudderConfig info, JavaScriptEngine engine) {
+	public HudPackPoint(HudPackPointConfig config, JavaScriptEngine engine) {
 		this.config = config;
 		this.engine = engine;
 		this.conditions = config.conditions()==null ? null : Arrays.stream(config.conditions())
-				.map(s->{
-					try {
-						return Compilers.hudderV2Compiler.getV2Value(new V2Runtime(Compilers.hudderV2Compiler, info, null),s,-1,-1);
-					} catch (ExecutionException e) {
-						throw new IllegalArgumentException(e);
-					}
-				})
-				.toArray(AV2Value[]::new);
+				.map(DataVariableRegistry::getBoolean)
+				.toArray(Boolean[]::new);
 	}
 	
 	public void execute(HudPackHudState state) throws IOException, ExecutionException {
