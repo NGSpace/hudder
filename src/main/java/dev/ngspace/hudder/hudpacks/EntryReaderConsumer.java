@@ -1,10 +1,10 @@
 package dev.ngspace.hudder.hudpacks;
 
 import java.io.Closeable;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipFile;
@@ -18,8 +18,8 @@ public interface EntryReaderConsumer extends Closeable {
 		
 		private ZipFile file;
 
-		public Zip(File file) throws IOException {
-			this.file = new ZipFile(file);
+		public Zip(Path path) throws IOException {
+			this.file = new ZipFile(path.toFile());
 		}
 
 		@Override
@@ -48,15 +48,15 @@ public interface EntryReaderConsumer extends Closeable {
 	
 	public static class Directory implements EntryReaderConsumer {
 		
-		private File dir;
+		private Path dir;
 
-		public Directory(File dir) {
-			this.dir = dir;
+		public Directory(Path path) {
+			this.dir = path;
 		}
 
 		@Override
 		public InputStream readEntry(String t) throws IOException {
-			return new FileInputStream(new File(dir.getAbsolutePath() + "/" + t));
+			return Files.newInputStream(dir.toAbsolutePath().resolve(t));
 		}
 
 		@Override
@@ -67,14 +67,14 @@ public interface EntryReaderConsumer extends Closeable {
 			return listEntries("", dir).toArray(new String[0]);
 		}
 		
-		public List<String> listEntries(String prefix, File folder) throws IOException {
+		public List<String> listEntries(String prefix, Path folder) throws IOException {
 			List<String> list = new ArrayList<String>();
-			for (File file : folder.listFiles()) {
-				if (file.isDirectory()) {
-					list.addAll(listEntries(prefix + "/" + file.getName(), file));
+			for (Path path : Files.newDirectoryStream(folder)) {
+				if (Files.isDirectory(path)) {
+					list.addAll(listEntries(prefix + "/" + path.getFileName(), path));
 					continue;
 				}
-				list.add((prefix + "/" + file.getName()).substring(1));
+				list.add((prefix + "/" + path.getFileName()).substring(1));
 			}
 			return list;
 		}

@@ -1,16 +1,11 @@
 package dev.ngspace.hudder.v2runtime.methods;
 
-import static dev.ngspace.hudder.compilers.utils.CompileState.BOTTOMLEFT;
-import static dev.ngspace.hudder.compilers.utils.CompileState.BOTTOMRIGHT;
-import static dev.ngspace.hudder.compilers.utils.CompileState.MUTE;
-import static dev.ngspace.hudder.compilers.utils.CompileState.TOPLEFT;
-import static dev.ngspace.hudder.compilers.utils.CompileState.TOPRIGHT;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import com.mojang.datafixers.types.templates.List;
 
+import dev.ngspace.hudder.api.compilers.utils.CompileState;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 
@@ -18,19 +13,18 @@ public class MethodHandler {
 	
 	
 	public static Map<String, V2IMethod> methods = new HashMap<String,V2IMethod>();
-	public static final String[] Var = {"[Variable]"};
-	public static final String[] TextArg = {"[Text]"};
 	public MethodHandler() {
 		
 		//Text and compiling
-		bindConsumer((c,m,_,_,t,_,s)->m.setTextLocation(t,(float) (s.length>0?s[0].asDouble():c.scale())),
-				BOTTOMRIGHT, TOPLEFT, TOPRIGHT, BOTTOMLEFT, MUTE);
+		bindConsumer((c,m,_,_,t,_,s)->m.setTextLocation(CompileState.Sections.valueOf(t.toUpperCase()),
+				(float) (s.length>0?s[0].asDouble():c.scale())),
+				CompileState.Sections.sectionNames());
 		
 		//Compiler and Variables
 		bindConsumer(new LoadMethod(), "load", "execute", "compile", "run", "add");
 		
 		//Logging and errors
-		bindConsumer((_,_,_,_,_,ch,s)->{throw new ExecutionException(s[0].asString(),ch);},1, TextArg, "throw");
+		bindConsumer((_,_,_,_,_,ch,s)->{throw new ExecutionException(s[0].asString(),ch);},1, new String[] {"[Text]"}, "throw");
 	}
 	
 	
@@ -85,18 +79,18 @@ public class MethodHandler {
 		for (String arg : argtypes) errb += ", [" + arg + "]";
 		errb+=';';
 		String err = errb;
-		V2IMethod newmethod = (info,state,comp,_,type,pos,vals) -> {
+		V2IMethod newmethod = (_,state,comp,_,type,pos,vals) -> {
 			if (vals.length!=argtypes.length) throw new ExecutionException(err, defline, defcharpos);
 			for (int i = 0;i<vals.length;i++) {
-				if      (parameters[i]==1) comp.put("arg"+(i+1), vals[i].asString());
-				else if (parameters[i]==2) comp.put("arg"+(i+1), vals[i].asDouble());
-				else if (parameters[i]==3) comp.put("arg"+(i+1), vals[i].asBoolean());
-				else if (parameters[i]==4) comp.put("arg"+(i+1), vals[i].asType(List.class));
-				else if (parameters[i]==0) comp.put("arg"+(i+1), vals[i].get());
+				if      (parameters[i]==1) comp.putVariable("arg"+(i+1), vals[i].asString());
+				else if (parameters[i]==2) comp.putVariable("arg"+(i+1), vals[i].asDouble());
+				else if (parameters[i]==3) comp.putVariable("arg"+(i+1), vals[i].asBoolean());
+				else if (parameters[i]==4) comp.putVariable("arg"+(i+1), vals[i].asType(List.class));
+				else if (parameters[i]==0) comp.putVariable("arg"+(i+1), vals[i].get());
 			}
 			try {
-				state.combineWithResult(comp.execute(info, method, filename), false);
-			} catch (ExecutionException e) {
+				state.combineWithResult(comp.evalHud(method, filename).execute().toResult(), false);
+			} catch (CompileException e) {
 				throw new ExecutionException(e.getFailureMessage() +"\nMethod "+type+" threw an error ", pos);
 			}
 		};

@@ -2,9 +2,8 @@ package dev.ngspace.hudder.hudderv3.instructions.compiler;
 
 import org.objectweb.asm.Label;
 
-import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
-import dev.ngspace.hudder.compilers.utils.TextPos;
-import dev.ngspace.hudder.config.HudderConfig;
+import dev.ngspace.hudder.api.compilers.compilers.AV3Compiler;
+import dev.ngspace.hudder.api.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 import dev.ngspace.hudder.hudderv3.TokenizedCodeBlock;
@@ -17,11 +16,11 @@ public class WhileInstruction extends Instruction {
 	private ExpressionVisitor condition;
 	private TokenizedCodeBlock codeblock;
 	
-	public WhileInstruction(String condition, String block, AV3Compiler comp,
-			HudderConfig info, String filename, TextPos pos) throws CompileException {
+	public WhileInstruction(String condition, String block, AV3Compiler comp, String filename, TextPos pos)
+			throws CompileException {
 		super(pos);
 		this.condition = comp.parseVariable(condition, pos);
-		this.codeblock = comp.compile(info, block, filename, pos);
+		this.codeblock = comp.compile(block, filename, pos);
 	}
 
 	@Override

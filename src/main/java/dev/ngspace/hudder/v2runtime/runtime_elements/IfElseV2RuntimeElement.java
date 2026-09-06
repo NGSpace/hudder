@@ -3,10 +3,9 @@ package dev.ngspace.hudder.v2runtime.runtime_elements;
 import java.util.ArrayList;
 import java.util.List;
 
-import dev.ngspace.hudder.compilers.abstractions.AV2Compiler;
-import dev.ngspace.hudder.compilers.utils.CompileState;
-import dev.ngspace.hudder.compilers.utils.TextPos;
-import dev.ngspace.hudder.config.HudderConfig;
+import dev.ngspace.hudder.api.compilers.compilers.AV2Compiler;
+import dev.ngspace.hudder.api.compilers.utils.CompileState;
+import dev.ngspace.hudder.api.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.v2runtime.V2Runtime;
@@ -16,14 +15,13 @@ public class IfElseV2RuntimeElement extends AV2RuntimeElement {
 
 	private CompiledStatement[] compiled_statements;
 	
-	public IfElseV2RuntimeElement(HudderConfig info, Statement[] statements, V2Runtime runtime,
+	public IfElseV2RuntimeElement(Statement[] statements, V2Runtime runtime,
 			String filename, AV2Compiler compiler) throws CompileException, ExecutionException {
 		compiled_statements = new CompiledStatement[statements.length];
 		List<V2Runtime> runtimes = new ArrayList<V2Runtime>();
 		for (int i = 0;i<compiled_statements.length;i++) {
 			Statement statement = statements[i];
-			V2Runtime code = compiler.buildRuntime(info, statement.codeblock(),
-					statement.pos(), filename, runtime);
+			V2Runtime code = compiler.buildRuntime(statement.codeblock(), statement.pos(), filename, runtime);
 			runtimes.add(code);
 			
 			AV2Value condition;

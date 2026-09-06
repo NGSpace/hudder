@@ -1,18 +1,17 @@
 package dev.ngspace.hudder.api.functionsandconsumers;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
 
+import dev.ngspace.hudder.api.compilers.compilers.AHudCompiler;
+import dev.ngspace.hudder.api.compilers.utils.HudInformation;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI.TranslatedItemStack;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
-import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
-import dev.ngspace.hudder.compilers.utils.Compilers;
-import dev.ngspace.hudder.compilers.utils.HudInformation;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
-import dev.ngspace.hudder.main.HudCompilationManager;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.hudder.variables.advanced.Misc;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -34,11 +33,12 @@ public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 		
 		//Getters
 		
-		binder.registerPositionedFunction((_,c,_,_,s)->c.getVariable(s[0].asString()), "get", "getVal", "getVariable");
+		binder.registerPositionedFunction((_,_,_,_,s)->DataVariableRegistry.getAny     (s[0].asString()), "get", "getVal", "getVariable");
 		binder.registerPositionedFunction((_,_,_,_,s)->DataVariableRegistry.getNumber  (s[0].asString()), "getNumber" );
 		binder.registerPositionedFunction((_,_,_,_,s)->DataVariableRegistry.getString  (s[0].asString()), "getString" );
 		binder.registerPositionedFunction((_,_,_,_,s)->DataVariableRegistry.getObject  (s[0].asString()), "getObject" );
 		binder.registerPositionedFunction((_,_,_,_,s)->DataVariableRegistry.getBoolean (s[0].asString()), "getBoolean");
+		binder.registerPositionedFunction((_,_,_,_,s)->s[0].asMap().values(), "maps");
 		
 		binder.registerPositionedFunction((_,_,_,_,s)->new TranslatedItemStack(mc.player.getInventory().getItem(s[0].asInt())), "getItem");
 		
@@ -101,15 +101,15 @@ public class HudderBuiltInFunctions {private HudderBuiltInFunctions() {}
 			try {
 				var e = m.toUIElementArray();
 				
-				AHudCompiler<?> ecompiler = Compilers.getCompilerFromName(s[1].asString());
-				for (var i : HudCompilationManager.precomplistners) i.accept(ecompiler);
+				AHudCompiler<?> compiler = c.registry.findEntryFromId(s[1].asString()).orElseThrow().compiler();
+				String filename = s[0].asString();
+				Path file = HudFileUtils.FOLDER.resolve(filename);
 				
-				HudInformation result = ecompiler.processAndExecute(c,s[0].asString(),s[0].asString());
+				HudInformation result = c.compilationManager.compileAndExecuteSecondaryHud(compiler, file, filename);
 
 				for (var v : result.elements()) m.addUIElement(v);
 				for (var v : e) m.addUIElement(v);
 				
-				for (var i : HudCompilationManager.postcomplistners) i.accept(ecompiler);
 				return result;
 			} catch (CompileException e1) {
 				throw new ExecutionException(e1);

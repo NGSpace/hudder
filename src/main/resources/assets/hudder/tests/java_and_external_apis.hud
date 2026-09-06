@@ -18,11 +18,10 @@ END_TEST;
 |TEST:
 
 @name=Method API test method
-@mode=normal
+@mode=error
 
 input:
 	;MethodAPITestingMethod, "1";
-	{methodvalue}
 end_input;
 
 output:

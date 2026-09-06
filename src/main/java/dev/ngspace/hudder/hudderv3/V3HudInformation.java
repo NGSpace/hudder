@@ -1,6 +1,6 @@
 package dev.ngspace.hudder.hudderv3;
 
-import dev.ngspace.hudder.compilers.utils.HudInformation;
+import dev.ngspace.hudder.api.compilers.utils.HudInformation;
 import dev.ngspace.hudder.uielements.AUIElement;
 
 public class V3HudInformation {

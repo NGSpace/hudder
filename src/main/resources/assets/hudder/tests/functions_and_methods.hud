@@ -42,6 +42,26 @@ END_TEST;
 
 |TEST:
 
+@name=Write and Save
+@mode=normal
+
+input:
+	;writeValue, "value", 10;
+	{readValue("value")}
+	{readValue("value") + 1.5}
+end_input;
+
+output:
+	10
+	11.5
+end_output;
+
+END_TEST;
+
+
+
+|TEST:
+
 @name=Def and Break
 @mode=normal
 

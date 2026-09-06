@@ -2,7 +2,7 @@ package dev.ngspace.hudder.exceptions;
 
 import java.io.IOException;
 
-import dev.ngspace.hudder.compilers.utils.TextPos;
+import dev.ngspace.hudder.api.compilers.utils.TextPos;
 
 public class ExecutionException extends Exception {
 	public final int line;

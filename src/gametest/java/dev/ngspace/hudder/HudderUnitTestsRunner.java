@@ -17,7 +17,6 @@ public class HudderUnitTestsRunner implements FabricClientGameTest {
 			int before = context.computeOnClient(
 					client -> ((ChatComponentAccessor) client.gui.hud.getChat()).getMessages().size());
 			context.runOnClient(ins->{
-				Hudder.config.setCompilerName("hudderv3");
 				ins.getConnection().sendCommand("hudderunittesting reload_and_test_all");
     		});
 

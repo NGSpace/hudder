@@ -1,13 +1,20 @@
 package dev.ngspace.hudder.config;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 
-import dev.ngspace.hudder.compilers.utils.Compilers;
+import dev.ngspace.hudder.Hudder;
+import dev.ngspace.hudder.api.compilers.CompilerRegistry;
+import dev.ngspace.hudder.api.compilers.utils.CompilerEntry;
 import dev.ngspace.hudder.config.HudSelectionList.HudEntry;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.hudder.utils.ResourceReloadListener;
@@ -24,61 +31,67 @@ import net.minecraft.network.chat.Style;
 
 public class HudSelectionList extends ObjectSelectionList<HudEntry> implements ResourceReloadListener {
 	
-	private HudderUserSettings config;
+	private final HudderUserSettings config;
+	private final CompilerRegistry registry;
+	public final Path source;
 	public String comp;
-	public File source;
 	
 	// There are more formats but those are the only ones that matter, as far as I
 	// am aware minecraft only supports those formats
 	private static final Set<String> IMAGE_EXTENSIONS = Set.of("png", "jpg", "jpeg");
 	
-	public HudSelectionList(Minecraft minecraft, File source, HudderUserSettings config) {
+	public HudSelectionList(Minecraft minecraft, Path source, HudderUserSettings config, CompilerRegistry registry) {
 		super(minecraft, 0, 0, 0, 18);
 		this.config = config;
 		this.source = source;
-		comp = Compilers.findEntryFromName(config.compilername).orElse(Compilers.getEntryFromName("hudder"))
-				.displayname();
+		this.registry = registry;
+		var entry = registry.findEntryFromId(config.compilername);
+		if (entry.isPresent()) {
+			comp = entry.get().display_name();
+		} else {
+			comp = "Auto-detect";
+		}
 		
-		loadHuds(source);
+		try {
+			loadHuds(source);
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new IllegalArgumentException(e);
+		}
 		
 		HudFileUtils.addReloadResourcesListener(this);
 	}
 	
-	private void loadHuds(File folder) {
+	private void loadHuds(Path folder) throws IOException {
 		
 		addEntry(new TitleEntry(Component.translatable("hudder.mainfile.title"),
 				Component.translatable("hudder.mainfile.subtitle")), 24);
 		
-		for (File hud : folder.listFiles()) {
-			if (hud.isDirectory() && isEmptyOrImagesOnly(hud)) {
+		for (Path hud : Files.newDirectoryStream(folder)) {
+			if (Files.isDirectory(hud) && isEmptyOrImagesOnly(hud)) {
 				continue;
 			}
-			String name = hud.getName();
-			addEntry(name, hud, Compilers.getSupportedCompilersForFilepath(name), name.equals(config.mainfile));
+			String name = hud.getFileName().toString();
+			addEntry(name, hud, registry.getValidCompilersForFilePath(hud), name.equals(config.mainfile));
 		}
 	}
 
-	private static boolean isEmptyOrImagesOnly(File directory) {
-		File[] contents = directory.listFiles();
-		
-		if (contents == null)
-			return false;
-		
-		for (File file : contents) {
-			if (file.isDirectory()) {
-				if (!isEmptyOrImagesOnly(file)) {
-					return false;
-				}
-			} else if (!isImage(file)) {
-				return false;
-			}
+	private static boolean isEmptyOrImagesOnly(Path directory) {
+		try (Stream<Path> contents = Files.list(directory)) {
+		    return contents.allMatch(path -> {
+		        if (Files.isDirectory(path)) {
+		            return isEmptyOrImagesOnly(path);
+		        } else {
+		            return isImage(path);
+		        }
+		    });
+		} catch (IOException _) {
+		    return false;
 		}
-		
-		return true;
 	}
 	
-	private static boolean isImage(File file) {
-		String name = file.getName();
+	private static boolean isImage(Path file) {
+		String name = file.getFileName().toString();
 		int dot = name.lastIndexOf('.');
 		
 		if (dot < 0 || dot == name.length() - 1) {
@@ -89,7 +102,7 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 		return IMAGE_EXTENSIONS.contains(extension);
 	}
 	
-	public void addEntry(String filepath, File file, String[] compilers, boolean isSelected) {
+	public void addEntry(String filepath, Path file, CompilerEntry[] compilers, boolean isSelected) {
 		HudEntry entry = new HudEntry(filepath, compilers, file);
 		addEntry(entry);
 		if (isSelected)
@@ -97,12 +110,10 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 	}
 	
 	@Override
-	protected void scrollToEntry(HudEntry entry) {
-		/* I don like how it scrolls for me, disgusting, vile even... */}
+	protected void scrollToEntry(HudEntry entry) {/* I don like how it scrolls for me, disgusting, vile even... */}
 		
 	@Override
-	protected void extractListBackground(GuiGraphicsExtractor guiGraphics) {
-		/* It ugly ;_; */}
+	protected void extractListBackground(GuiGraphicsExtractor guiGraphics) {/* It ugly ;_; */}
 		
 	@Override
 	public int getRowWidth() {
@@ -113,16 +124,15 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 		
 		public MutableComponent component;
 		public String filepath;
-		public String[] compilers;
-		public File file;
+		public CompilerEntry[] compilers;
+		public Path file;
 		public NGSMCConfigButton editbutton;
 		
-		public static int EDIT_BUTTON_WIDTH = 40;
 		public static UnaryOperator<Style> COMPILER_TEXT_STYLE = t -> t.withItalic(true).withColor(ChatFormatting.GRAY);
 		
 		protected HudEntry() {}
 		
-		public HudEntry(String filepath, String[] compilers, File file) {
+		public HudEntry(String filepath, CompilerEntry[] compilers, Path file) {
 			this.file = file;
 			if (filepath != null) {
 				this.component = Component.literal(filepath);
@@ -133,7 +143,7 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 							String separator = i == compilers.length - 1 ? " and " : ", ";
 							component.append(Component.literal(separator).withStyle(COMPILER_TEXT_STYLE));
 						}
-						component.append(Component.literal(Compilers.getDisplayNameFromCompilerName(compilers[i]))
+						component.append(Component.literal(compilers[i].display_name())
 								.withStyle(COMPILER_TEXT_STYLE));
 					}
 				} else {
@@ -176,13 +186,23 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 					&& editbutton.isMouseOver(mouseX, mouseY);
 			
 			if (clickedEdit) {
-				for (String compiler : compilers) {
-					if (compiler.equals(config.compilername)) {
-						Compilers.getCompilerFromName(config.compilername).edit(file);
+				for (CompilerEntry compiler : compilers) {
+					if (compiler.id().equals(config.compilername)) {
+						registry.findEntryFromId(config.compilername).orElseThrow().compiler().edit(file);
 						return true;
 					}
 				}
-				Compilers.getCompilerFromDisplayname(comp).edit(file);
+				if ("Auto-detect".equals(comp)) {
+			        Optional<CompilerEntry> entry = Arrays.stream(registry.getValidCompilersForFilePath(file))
+			                .max(Comparator.comparingInt(CompilerEntry::priority));
+			        if (entry.isPresent()) {
+			        	entry.get().compiler().edit(file);
+			        } else {
+			        	Hudder.config.hudderV3Compiler.edit(file);
+			        }
+				} else {
+					registry.findEntryFromDisplayName(comp).orElseThrow().compiler().edit(file);
+				}
 				return true;
 			}
 			
@@ -260,6 +280,7 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 		if (selected == null)
 			return;
 		config.mainfile = selected.filepath;
+		Hudder.config.refreshCompiler();
 	}
 	
 	public void reset() {
@@ -282,9 +303,12 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 	
 	public Component warning() {
 		var selected = getSelected();
-		String file = selected != null ? selected.filepath : "";
-		return Compilers.getCompilerFromDisplayname(comp).isValidFilePath(file) ? null
-				: Component.translatable("hudder.mainfile.unsupportedformat", comp, file);
+		if (selected==null)
+			return Component.translatable("hudder.mainfile.noselection");
+		if ("Auto-detect".equals(comp))
+			return null;
+		return registry.findEntryFromDisplayName(comp).orElseThrow().compiler().isValidFilePath(selected.file) ? null
+				: Component.translatable("hudder.mainfile.unsupportedformat", comp, selected.filepath);
 	}
 
 	@Override

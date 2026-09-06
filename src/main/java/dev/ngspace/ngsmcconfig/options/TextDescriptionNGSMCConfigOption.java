@@ -1,6 +1,5 @@
 package dev.ngspace.ngsmcconfig.options;
 
-import dev.ngspace.ngsmcconfig.api.AbstractNGSMCConfigOptionBuilder;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigOptionBuilder;
 import dev.ngspace.ngsmcconfig.gui.NGSMCConfigEntry;
 import net.minecraft.client.Minecraft;
@@ -13,16 +12,8 @@ public class TextDescriptionNGSMCConfigOption extends AbstractNGSMCConfigOption<
 		super("", "", text, _->{}, _->null,_->null);
 		
 	}
-	
-	/**
-	 * @deprecated
-	 */
-	@Deprecated(since = "10.1.0", forRemoval = true)
-	public static AbstractNGSMCConfigOptionBuilder<String> builder(Component name) {
-	    return fluentBuilder(name);
-	}
 
-	public static NGSMCConfigOptionBuilder<String> fluentBuilder(Component name) {
+	public static NGSMCConfigOptionBuilder<String> builder(Component name) {
 		return new NGSMCConfigOptionBuilder<String>("", name) {
 			@Override public AbstractNGSMCConfigOption<String> build() {
 				return new TextDescriptionNGSMCConfigOption(name);
@@ -33,7 +24,6 @@ public class TextDescriptionNGSMCConfigOption extends AbstractNGSMCConfigOption<
 	@Override
 	public NGSMCConfigEntry buildEntry() {
 		return new NGSMCConfigEntry(null, Component.empty(), this) {
-			
 			@Override
 			public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered,
 					float partialTick) {

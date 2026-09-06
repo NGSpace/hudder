@@ -2,10 +2,10 @@ package dev.ngspace.hudder.v2runtime.runtime_elements;
 
 import java.util.Arrays;
 
-import dev.ngspace.hudder.compilers.abstractions.AV2Compiler;
-import dev.ngspace.hudder.compilers.utils.CompileState;
-import dev.ngspace.hudder.compilers.utils.HudInformation;
-import dev.ngspace.hudder.config.HudderConfig;
+import dev.ngspace.hudder.api.compilers.compilers.AV2Compiler;
+import dev.ngspace.hudder.api.compilers.utils.CompileState;
+import dev.ngspace.hudder.api.compilers.utils.HudInformation;
+import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.v2runtime.V2Runtime;
 import dev.ngspace.hudder.v2runtime.values.AV2Value;
@@ -15,14 +15,17 @@ public class ConditionV2RuntimeElement extends AV2RuntimeElement {
 	AV2Value[] results = {};
 	AV2Value[] conditions = {};
 	AV2Compiler compiler;
-	HudderConfig info;
 	boolean hasElse;
 	private String filename;
-	public ConditionV2RuntimeElement(String[] condArgs, AV2Compiler compiler, HudderConfig info, V2Runtime runtime,
-			int line, int charpos, String filename) throws ExecutionException {
+	private int line;
+	private int charpos;
+	
+	public ConditionV2RuntimeElement(String[] condArgs, AV2Compiler compiler, V2Runtime runtime, int line,
+			int charpos, String filename) throws ExecutionException {
 		this.compiler = compiler;
-		this.info = info;
 		this.filename = filename;
+		this.line = line;
+		this.charpos = charpos;
 		
 		hasElse = condArgs.length%2==1;
 		for (int i = 0;i<condArgs.length;i++) {
@@ -37,19 +40,24 @@ public class ConditionV2RuntimeElement extends AV2RuntimeElement {
 	}
 	
 	@Override public boolean execute(CompileState meta, StringBuilder builder) throws ExecutionException {
-		HudInformation res = null;
-		for (int i = 0;i<conditions.length;i++) {
-			if (conditions[i].asBoolean()) {
-				res = compiler.compileAndExecute(info,results[i].asString(),filename);
-				break;
+		try {
+			HudInformation res = null;
+			for (int i = 0;i<conditions.length;i++) {
+				if (conditions[i].asBoolean()) {
+					res = compiler.evalAndExecuteHud(results[i].asString(),filename);
+					break;
+				}
 			}
-		}
-		if (res==null&&hasElse) res = compiler.compileAndExecute(info,results[results.length-1].asString(),filename);
-		if (res!=null) {
-			builder.append(res.TopLeftText());
-			for (var v : res.elements()) meta.elements.add(v);
-		}
-		return true;
+			if (res==null&&hasElse)
+				res = compiler.evalAndExecuteHud(results[results.length-1].asString(),filename);
+			if (res!=null) {
+				builder.append(res.TopLeftText());
+				for (var v : res.elements()) meta.elements.add(v);
+			}
+			return true;
+		} catch (CompileException e) {
+			throw new ExecutionException(e, line, charpos);
+		} 
 	}
 
 	private static <T> T[] addToArray(T[] arr, T t) {

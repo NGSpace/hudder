@@ -5,10 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dev.ngspace.hudder.Hudder;
+import dev.ngspace.hudder.api.compilers.compilers.AHudCompiler;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
-import dev.ngspace.hudder.compilers.abstractions.AVarTextCompiler;
 import dev.ngspace.hudder.config.HudderConfig;
+import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.hudder.utils.ValueGetter;
 
@@ -20,7 +21,7 @@ public class HudderTestsHandler {
 	public HudderUnitTester hudderTester;
 	public HudderConfig config;
 	
-	public HudderTestsHandler(HudderConfig config, AVarTextCompiler compiler) throws IOException {
+	public HudderTestsHandler(HudderConfig config, AHudCompiler<?> compiler) throws IOException {
 		this.config = config;
 		this.hudderTester = new HudderUnitTester(compiler);
 		loadTests();
@@ -28,7 +29,7 @@ public class HudderTestsHandler {
 	
 	public void loadTests() throws IOException {
 		registerApis();
-		if (config.getCompiler() instanceof AVarTextCompiler comp)
+		if (config.getCompiler() instanceof AHudCompiler<?> comp)
 			hudderTester.compiler = comp;
 		hudderTester.UnitTests.clear();
 		for (TestProvider provider : test_providers)
@@ -38,7 +39,7 @@ public class HudderTestsHandler {
 	public void registerApis() {
 		FunctionAndConsumerAPI.getInstance().registerPositionedFunction((_,_,_,_,a) -> a[0].get(), "FunctionAPITestingFunction");
 		FunctionAndConsumerAPI.getInstance().registerPositionedConsumer(
-				(_,co,_,_,a) -> ((AVarTextCompiler) co).put("methodvalue", a[0].get()), "MethodAPITestingMethod");
+				(_,_,p,_,a) -> {throw new ExecutionException(a[0].asString(), p);}, "MethodAPITestingMethod");
 		
 		DataVariableRegistry.registerObjectVariable(_ -> new JavaTestObject(), "JavaObjectAccess");
 		DataVariableRegistry.registerObjectVariable(_ -> new JavaTestNoAccess(), "JavaTestNoAccess");

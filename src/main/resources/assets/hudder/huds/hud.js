@@ -1,4 +1,3 @@
-//;throw, can't run hud.js with the hudder compiler;
 function formatString(template, ...args) {
   return template.replace(/{(\d+)}/g, function (match, index) {
     return typeof args[index] === 'undefined' ? match : args[index];

@@ -2,7 +2,6 @@ package dev.ngspace.hudder;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.stream.Stream;
@@ -17,8 +16,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.api.functionsandconsumers.HudderBuiltInFunctions;
 import dev.ngspace.hudder.api.functionsandconsumers.HudderBuiltInMethods;
-import dev.ngspace.hudder.compilers.utils.Compilers;
 import dev.ngspace.hudder.config.HudderConfig;
+import dev.ngspace.hudder.config.ImplCompilerRegistry;
 import dev.ngspace.hudder.testing.HudderTestsHandler;
 import dev.ngspace.hudder.testing.HudderUnitTest;
 import dev.ngspace.hudder.testing.HudderUnitTestResult;
@@ -34,12 +33,12 @@ class HudderUnitTests {
 
 	@BeforeAll
 	void prepareHudder() throws IOException {
-		HudFileUtils.FABRIC_CONFIG_FOLDER = tempDir.toString();
-		HudFileUtils.FOLDER = HudFileUtils.FABRIC_CONFIG_FOLDER + File.separator + "hudder" + File.separator;
+		HudFileUtils.FABRIC_CONFIG_FOLDER = tempDir;
+		HudFileUtils.FOLDER = HudFileUtils.FABRIC_CONFIG_FOLDER.resolve("hudder");
 		
-		config = new HudderConfig(tempDir.resolve("hudder-test.json").toFile());
+		config = new HudderConfig(tempDir.resolve("hudder-test.json"), new ImplCompilerRegistry());
 		HudFileUtils.makeDefaultHud();
-		handler = new HudderTestsHandler(config, Compilers.hudderV3Compiler);
+		handler = new HudderTestsHandler(config, config.hudderV3Compiler);
 		handler.test_providers.add(handler::loadDefaultTests);
 		handler.loadTests();
 
@@ -56,10 +55,10 @@ class HudderUnitTests {
 	@MethodSource("testCases")
 	void individualTest(String name, String filename, HudderUnitTest test) {
 		System.out.println(name + " $ " + filename);
-		HudderUnitTestResult result = test.test(Compilers.hudderV3Compiler, config);
+		HudderUnitTestResult result = test.test(config.hudderV3Compiler);
 		if (!result.isSucessful()) {
 			System.out.println(result.getFailureMessage().toString());
-			fail();
+			fail(result.toString());
 		}
 	}
 }

@@ -1,12 +1,17 @@
 package dev.ngspace.hudder.main;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
 import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
-import dev.ngspace.hudder.compilers.utils.HudInformation;
+import dev.ngspace.hudder.api.compilers.CompilerRegistry;
+import dev.ngspace.hudder.api.compilers.compilers.AHudCompiler;
+import dev.ngspace.hudder.api.compilers.interfaces.PreparedCompiler;
+import dev.ngspace.hudder.api.compilers.utils.HudInformation;
+import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.utils.HudFileUtils;
@@ -16,46 +21,80 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 
 public class HudCompilationManager implements EndTick {
-	
-	protected static Minecraft mc = Minecraft.getInstance();
-	
-    public static List<Consumer<AHudCompiler<?>>> precomplistners = new ArrayList<Consumer<AHudCompiler<?>>>();
-    public static List<Consumer<AHudCompiler<?>>> postcomplistners = new ArrayList<Consumer<AHudCompiler<?>>>();
-    private HudInformation result = null;
-    
-    public static String LastFailMessage = "";
-    
-    public static boolean isFirstRunSinceCacheClear = true;
-    
-    
-	public void compile(DeltaTracker f) {
-		result = null;
+
+	private final HudderConfig config;
+	private final CompilerRegistry registry;
+	public boolean isFirstRunSinceCacheClear = true;
+
+	public String LastFailMessage = "";
+	private HudInformation mainresult = null;
+
+	private List<Consumer<AHudCompiler<?>>> compilationlistners = new ArrayList<>();
+
+	public HudCompilationManager(HudderConfig config, CompilerRegistry registry) {
+		this.config = config;
+		this.registry = registry;
+		HudFileUtils.addReloadResourcesListenerFirst(()->{
+			isFirstRunSinceCacheClear = true;
+			for (var comp : registry.compilers())
+				comp.reset();
+		});
+	}
+
+	public void compileAndExecute(DeltaTracker f) {
+		mainresult = null;
 		try {
-    		Misc.delta = f!=null?f.getGameTimeDeltaTicks():3;
-    		if (Hudder.config.shouldCompile()) {
-    			Misc.updateCPS();
-    			for (Consumer<AHudCompiler<?>> con : precomplistners)  con.accept(Hudder.config.getCompiler());
-    			result = Hudder.config.compileMainHud();
-    			HudFileUtils.loadMarkedResources();
-    			for (Consumer<AHudCompiler<?>> con : postcomplistners) con.accept(Hudder.config.getCompiler());
-    			isFirstRunSinceCacheClear = false;
-    		}
+			Misc.delta = f != null ? f.getGameTimeDeltaTicks() : 3;
+			if (config.shouldCompile()) {
+				mainresult = compileAndExecuteMainHud();
+				isFirstRunSinceCacheClear = false;
+			}
 		} catch (CompileException e) {
 			LastFailMessage = "Compiler error: " + e.getFailureMessage();
 		} catch (ExecutionException e) {
 			LastFailMessage = e.getFailureMessage();
 		} catch (Exception e) {
 			LastFailMessage = "E: " + e.getLocalizedMessage();
-			if (Hudder.IS_DEBUG) e.printStackTrace();
+			if (Hudder.IS_DEBUG) {
+				e.printStackTrace();
+			}
 		}
 	}
-	
-	
-	public static void addPreCompilerListener(Consumer<AHudCompiler<?>> consumer) {precomplistners.add(consumer);}
-	public static void addPostCompilerListener(Consumer<AHudCompiler<?>> consumer) {postcomplistners.add(consumer);}
 
-	
-	public HudInformation getResult() {return result;}
-	
-	@Override public void onEndTick(Minecraft client) {if (Hudder.config.limitrate()) compile(null);}
+	public HudInformation compileAndExecuteMainHud() throws CompileException, ExecutionException, IOException {
+		for (var entry : registry.entries())
+			if (entry.compiler() instanceof PreparedCompiler compiler)
+				compiler.prepareCompiler();
+		AHudCompiler<?> comp = config.getCompiler();
+		if (comp==null)
+			throw new CompileException("No compiler set", -1, -1);
+		for (Consumer<AHudCompiler<?>> con : compilationlistners) con.accept(comp);
+		HudInformation result = comp.processAndExecuteMain(config.mainfile(), config.mainfileString());
+		HudFileUtils.loadMarkedResources();
+		return result;
+	}
+
+	public HudInformation compileAndExecuteSecondaryHud(AHudCompiler<?> compiler, Path path, String filename)
+			throws CompileException, ExecutionException, IOException {
+		return compiler.processAndExecute(path, filename);
+	}
+
+	public HudInformation getMainResult() {
+		return mainresult;
+	}
+
+	@Override
+	public void onEndTick(Minecraft client) {
+		if (config.limitrate()) {
+			compileAndExecute(null);
+		}
+	}
+
+	public void addCompilationListener(Consumer<AHudCompiler<?>> consumer) {
+		compilationlistners.add(consumer);
+	}
+
+	public void removeCompilationListener(Consumer<AHudCompiler<?>> consumer) {
+		compilationlistners.remove(consumer);
+	}
 }

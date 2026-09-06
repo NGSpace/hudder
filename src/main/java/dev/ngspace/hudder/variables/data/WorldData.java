@@ -125,8 +125,9 @@ public class WorldData extends HudderBuiltInVariables {
 		}, "world_name");
 
 		// Time
-		registerNumber(_->ins.level.getGameTime(), "worldtime", "world_time");
-		registerNumber(_->ins.level.getGameTime() / 24000d, "daytime", "day_time");
+		registerNumber(_->ins.level.getGameTime(), "game_time");
+		registerNumber(_->ins.level.getDefaultClockTime(), "worldtime", "world_time");
+		registerNumber(_->ins.level.getDefaultClockTime() / 24000d, "daytime", "day_time");
 
 		// Slime chunk
 		registerBoolean(_->{

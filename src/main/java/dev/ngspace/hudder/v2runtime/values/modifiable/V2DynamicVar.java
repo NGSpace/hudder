@@ -1,6 +1,6 @@
 package dev.ngspace.hudder.v2runtime.values.modifiable;
 
-import dev.ngspace.hudder.compilers.abstractions.AV2Compiler;
+import dev.ngspace.hudder.api.compilers.compilers.AV2Compiler;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.v2runtime.V2Runtime;
 import dev.ngspace.hudder.v2runtime.values.AV2Value;
@@ -18,11 +18,11 @@ public class V2DynamicVar extends AV2Value {
 	}
 	
 	@Override public boolean hasValue() {
-		return !(runtime.getScoped(value)==null&&compiler.get(value)==null);
+		return !(runtime.getScoped(value)==null&&compiler.getRaw(value)==null);
 	}
 
 	@Override public void setValue(AV2Compiler compiler, Object value) throws ExecutionException {
-		compiler.put(this.value, value);
+		compiler.putVariable(this.value, value);
 	}
 	
 	@Override public boolean isConstant() throws ExecutionException {return false;}

@@ -2,9 +2,8 @@ package dev.ngspace.hudder.hudderv3.instructions.compiler;
 
 import org.objectweb.asm.Label;
 
-import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
-import dev.ngspace.hudder.compilers.utils.TextPos;
-import dev.ngspace.hudder.config.HudderConfig;
+import dev.ngspace.hudder.api.compilers.compilers.AV3Compiler;
+import dev.ngspace.hudder.api.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.TokenizedCodeBlock;
 import dev.ngspace.hudder.hudderv3.asm.V3ClassWriter;
@@ -16,8 +15,8 @@ public class IfElseInstuction extends Instruction {
 	private CompiledStatement[] compiled_statements;
 	private AV3Compiler comp;
 	
-	public IfElseInstuction(Statement[] statements, String filename, AV3Compiler compiler, HudderConfig info,
-			TextPos pos) throws CompileException {
+	public IfElseInstuction(Statement[] statements, String filename, AV3Compiler compiler, TextPos pos)
+			throws CompileException {
 		super(pos);
 		compiled_statements = new CompiledStatement[statements.length];
 		this.comp = compiler;
@@ -33,7 +32,7 @@ public class IfElseInstuction extends Instruction {
 				condition = compiler.parseVariable(statement.condition(), pos);
 			}
 			compiled_statements[i] = new CompiledStatement(condition,
-					comp.compile(info, statement.codeblock(), filename, pos));
+					comp.compile(statement.codeblock(), filename, pos));
 		}
 	}
 	

@@ -3,7 +3,6 @@ package dev.ngspace.ngsmcconfig.options;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import dev.ngspace.ngsmcconfig.api.AbstractNGSMCConfigOptionBuilder;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigOptionBuilder;
 import net.minecraft.network.chat.Component;
 
@@ -34,16 +33,8 @@ public class IntNGSMCConfigOption extends AbstractTextFieldNGSMCConfigOption<Int
 			return passfilter;
 		};
 	}
-	
-	/**
-	 * @deprecated
-	 */
-	@Deprecated(since = "10.1.0", forRemoval = true)
-	public static AbstractNGSMCConfigOptionBuilder<Integer> builder(int value, Component name) {
-	    return fluentBuilder(value, name);
-	}
 
-	public static NGSMCConfigOptionBuilder<Integer> fluentBuilder(int value, Component name) {
+	public static NGSMCConfigOptionBuilder<Integer> builder(int value, Component name) {
 		return new NGSMCConfigOptionBuilder<Integer>(value, name) {
 			@Override public AbstractNGSMCConfigOption<Integer> build() {
 				return new IntNGSMCConfigOption(defaultValue, value, name, saveOperation, validator, warning);

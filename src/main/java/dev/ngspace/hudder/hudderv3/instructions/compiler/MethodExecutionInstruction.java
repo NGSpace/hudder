@@ -2,12 +2,12 @@ package dev.ngspace.hudder.hudderv3.instructions.compiler;
 
 import org.objectweb.asm.Label;
 
+import dev.ngspace.hudder.api.compilers.compilers.AHudCompiler;
+import dev.ngspace.hudder.api.compilers.compilers.AV3Compiler;
+import dev.ngspace.hudder.api.compilers.utils.TextPos;
 import dev.ngspace.hudder.api.functionsandconsumers.ArrayElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.IUIElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
-import dev.ngspace.hudder.compilers.abstractions.AHudCompiler;
-import dev.ngspace.hudder.compilers.abstractions.AV3Compiler;
-import dev.ngspace.hudder.compilers.utils.TextPos;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
@@ -138,7 +138,6 @@ public class MethodExecutionInstruction extends Instruction {
 					methodWriter.loadConstantUnsafe(pos.line());
 					methodWriter.loadConstantUnsafe(pos.column());
 					methodWriter.callInit(TextPos.class, Integer.TYPE, Integer.TYPE);
-					methodWriter.aload(1);
 					if (run_method) {
 						methodWriter.loadConstant(builder[0].toLowerCase());
 						methodWriter.aload(methodWriter.topleft_builder_index);
@@ -146,6 +145,7 @@ public class MethodExecutionInstruction extends Instruction {
 						methodWriter.aload(methodWriter.bottomleft_builder_index);
 						methodWriter.aload(methodWriter.bottomright_builder_index);
 					}
+					methodWriter.aload(1);
 				}
 				
 				methodWriter.loadConstantUnsafe(builder.length-1);
@@ -174,12 +174,12 @@ public class MethodExecutionInstruction extends Instruction {
 							IUIElementManager.class,
 							AHudCompiler.class,
 							TextPos.class,
-							HudderConfig.class,
 							String.class,
 							StringBuilder.class,
 							StringBuilder.class,
 							StringBuilder.class,
 							StringBuilder.class,
+							HudderConfig.class,
 							ObjectWrapper[].class);
 				} else if (apiCall) {
 					if (!classWriter.helper.hasApiConsumer("api_consumer_"+builder[0].trim()))
@@ -212,12 +212,10 @@ public class MethodExecutionInstruction extends Instruction {
 		methodWriter.aload(0);
 		methodWriter.aload(1);
 		methodWriter.aload(2);
-		methodWriter.aload(3);
 		methodWriter.aload(array_index);
 		methodWriter.callSelf(cons.bytecode_name(), false,
 				V3HudInformation.class,
 				HudderConfig.class,
-				String.class,
 				String.class,
 				Object[].class);
 		methodWriter.pop();
