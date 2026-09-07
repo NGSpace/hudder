@@ -34,6 +34,7 @@ import dev.ngspace.hudder.main.HudCompilationManager;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.hudder.utils.NoAccess;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 
 public class HudderConfig {
 	
@@ -43,6 +44,7 @@ public class HudderConfig {
 
 	public final HudCompilationManager compilationManager;
 	
+	@SuppressWarnings("removal")
 	public final HudderV2Compiler hudderV2Compiler;
 	public final HudderV3Compiler hudderV3Compiler;
 	public final HudPackCompiler hudpackCompiler;
@@ -62,6 +64,7 @@ public class HudderConfig {
      * Initalize the config. 
      * @param configFile - the config file.
      */
+	@SuppressWarnings("removal")
 	public HudderConfig(Path configFile, CompilerRegistry registry) {
 		this.registry = registry;
 		this.configFile = configFile;
@@ -87,7 +90,7 @@ public class HudderConfig {
 		this.javaScriptCompiler = new JavaScriptCompiler(this);
 		registry.registerCompiler("js", "JavaScript", false, false, 0, javaScriptCompiler);
 		this.hudderV2Compiler = new HudderV2Compiler(this);
-		registry.registerCompiler("hudderv2", "V2 (Compatibility)", false, false, -1, hudderV2Compiler);
+		registry.registerCompiler("hudderv2", "V2 (Compatibility)", false, true, -1, hudderV2Compiler);
 		this.compiler = hudderV3Compiler;
 		readAndUpdateConfig();
 	}
@@ -210,8 +213,9 @@ public class HudderConfig {
 	 * If unable to retrieve the compiler, switches to the default {@code HudderV3Compiler} instead.
 	 */
 	public void refreshCompiler() {
+		Optional<CompilerEntry> entry;
 		if ("auto".equals(compilerId())) {
-	        Optional<CompilerEntry> entry = Arrays.stream(registry.getValidCompilersForFilePath(mainfile()))
+	        entry = Arrays.stream(registry.getValidCompilersForFilePath(mainfile()))
 	                .max(Comparator.comparingInt(CompilerEntry::priority));
 	        if (entry.isPresent()) {
 	        	compiler = entry.get().compiler();
@@ -219,13 +223,17 @@ public class HudderConfig {
 	        	compiler = hudderV3Compiler;
 	        }
 		} else {
-			Optional<CompilerEntry> entry = registry.findEntryFromId(compilerId());
+			entry = registry.findEntryFromId(compilerId());
 			if (entry.isPresent()) {
 				compiler = entry.get().compiler();
 			} else {
 				Hudder.log("Couldn't find compiler \"" + compilerId() + "\".");
 				compiler = null;
 			}
+		}
+		if (entry.isPresent()&&entry.get().deprecated()) {
+			Hudder.showWarningToast(Component.literal("The compiler " + entry.get().display_name() + " is Deprecated!"),
+					Component.literal("Continued usage is not recommended"));
 		}
 	}
 	

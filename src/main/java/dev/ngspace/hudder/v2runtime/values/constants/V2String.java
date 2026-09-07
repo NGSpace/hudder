@@ -4,6 +4,7 @@ import dev.ngspace.hudder.api.compilers.compilers.AV2Compiler;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.v2runtime.values.AV2Value;
 
+@SuppressWarnings("removal")
 public class V2String extends AV2Value {
 	public V2String(String value, AV2Compiler compiler, int line, int charpos) {super(line, charpos, value,compiler);}
 	

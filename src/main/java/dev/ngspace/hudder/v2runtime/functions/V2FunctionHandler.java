@@ -11,16 +11,24 @@ import dev.ngspace.hudder.v2runtime.V2Runtime;
 import dev.ngspace.hudder.v2runtime.values.AV2Value;
 import net.minecraft.client.Minecraft;
 
+/**
+ * @deprecated Use V3
+ */
+@Deprecated(since = "11.1.0", forRemoval = true)
+@SuppressWarnings("removal")
 public class V2FunctionHandler {
 
-	private static Map<String, IV2Function> functions = new HashMap<String,IV2Function>();
+	private Map<String, IV2Function> functions = new HashMap<String,IV2Function>();
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	protected static Minecraft mc = Minecraft.getInstance();
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public V2FunctionHandler() {
 		bindAllAPIFunctions();
 	}
 
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public void bindAllAPIFunctions() {
 		
 		
@@ -124,14 +132,17 @@ public class V2FunctionHandler {
 	
 	
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public void bindFunction(IV2Function function, String... names) {
 		for(String name:names) functions.put(name,function);
 	}
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public void bindFunction(IV2Function function, int length, String... names) {
 		bindFunction(function, length, length, names);
 	}
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public void bindFunction(IV2Function function, int minlength, int maxlength, String... names) {
 		IV2Function expandedFunction = (runtime, name, args, line, charpos) -> {
 			if (args.length<minlength) throw new ExecutionException("Too little parameters for "+name+" function!",line,charpos);
@@ -144,17 +155,20 @@ public class V2FunctionHandler {
 	
 	
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public IV2Function getFunction(String name) {
 		return functions.get(name);
 	}
 	
 	
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public static class RangedIterator implements Iterator<Integer> {
 		
 		private int index;
 		private int end;
 
+		@Deprecated(since = "11.1.0", forRemoval = true)
 		public RangedIterator(int start, int end) {
 			if (start>end)
 				throw new IllegalArgumentException("Start (" + start + ") can not be greater than end (" + end + ")!");
@@ -162,11 +176,13 @@ public class V2FunctionHandler {
 			this.end = end;
 		}
 
+		@Deprecated(since = "11.1.0", forRemoval = true)
 		@Override
 		public boolean hasNext() {
 			return index<end;
 		}
 		
+		@Deprecated(since = "11.1.0", forRemoval = true)
 		@Override
 		public Integer next() {
 			if (index>end) throw new NoSuchElementException("Went past end of iterable!");

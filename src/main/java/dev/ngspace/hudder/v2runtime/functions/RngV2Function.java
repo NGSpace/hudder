@@ -13,6 +13,7 @@ import dev.ngspace.hudder.utils.ObjectWrapper;
 import dev.ngspace.hudder.v2runtime.V2Runtime;
 import dev.ngspace.hudder.v2runtime.values.AV2Value;
 
+@SuppressWarnings("removal")
 public class RngV2Function implements IV2Function, BindablePositionedFunction {
 	
 	private Random random = new Random();

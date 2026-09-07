@@ -10,12 +10,11 @@ import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.ExecutionException;
-import dev.ngspace.hudder.utils.HudFileUtils;
 import dev.ngspace.hudder.utils.ValueGetter;
 
 public class HudderTestsHandler {
 	
-	public static final String TESTS_FOLDER = HudFileUtils.ASSETS + "tests/";
+	public static final String TESTS_FOLDER = "/assets/hudder/tests/";
 	
     public List<TestProvider> test_providers = new ArrayList<TestProvider>();
 	public HudderUnitTester hudderTester;

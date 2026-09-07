@@ -9,6 +9,7 @@ import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.utils.ObjectWrapper;
 
+@SuppressWarnings("removal")
 public abstract class AV2Value implements ObjectWrapper {
 	
 	

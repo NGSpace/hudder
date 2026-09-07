@@ -23,6 +23,7 @@ public class HudderJavaScriptWrapFactory extends WrapFactory {
 	}
 	
 	@Override
+	@SuppressWarnings("removal")
 	public Scriptable wrapAsJavaObject(Context cx, Scriptable scope, Object javaObject, TypeInfo staticType) {
 		if (javaObject == V2Runtime.NULL
     			|| javaObject instanceof Class<?>

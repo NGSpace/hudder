@@ -2,14 +2,15 @@ package dev.ngspace.hudder.hudderv3;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.PositionedBinder;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.v2runtime.functions.RngV2Function;
-import dev.ngspace.hudder.v2runtime.functions.V2FunctionHandler.RangedIterator;
 
 public class V3APIFunctions {
 	private V3APIFunctions() {/* */}
@@ -131,5 +132,29 @@ public class V3APIFunctions {
 	public static String cleanDouble(double d) {
 	    if(d%1==0) return Long.toString((long)d);
 	    else return Double.toString(d);
+	}
+	public static class RangedIterator implements Iterator<Integer> {
+		
+		private int index;
+		private int end;
+
+		public RangedIterator(int start, int end) {
+			if (start>end)
+				throw new IllegalArgumentException("Start (" + start + ") can not be greater than end (" + end + ")!");
+			this.index = start;
+			this.end = end;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return index<end;
+		}
+		
+		@Override
+		public Integer next() {
+			if (index>end) throw new NoSuchElementException("Went past end of iterable!");
+			return index++;
+		}
+		
 	}
 }

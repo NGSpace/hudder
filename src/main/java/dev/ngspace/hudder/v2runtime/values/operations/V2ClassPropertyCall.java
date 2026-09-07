@@ -20,6 +20,7 @@ import dev.ngspace.hudder.utils.ValueGetter;
 import dev.ngspace.hudder.v2runtime.V2Runtime;
 import dev.ngspace.hudder.v2runtime.values.AV2Value;
 
+@SuppressWarnings("removal")
 public class V2ClassPropertyCall extends AV2Value {
 	
 	public static final String[] forbiddenValuesAndFunctions = {"getClass","hashCode","wait","notify","notifyAll","clone","finalize"};

@@ -67,12 +67,14 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 		addEntry(new TitleEntry(Component.translatable("hudder.mainfile.title"),
 				Component.translatable("hudder.mainfile.subtitle")), 24);
 		
-		for (Path hud : Files.newDirectoryStream(folder)) {
-			if (Files.isDirectory(hud) && isEmptyOrImagesOnly(hud)) {
-				continue;
+		try (var dir = Files.newDirectoryStream(folder)) {
+			for (Path hud : dir) {
+				if (Files.isDirectory(hud) && isEmptyOrImagesOnly(hud)) {
+					continue;
+				}
+				String name = hud.getFileName().toString();
+				addEntry(name, hud, registry.getValidCompilersForFilePath(hud), name.equals(config.mainfile));
 			}
-			String name = hud.getFileName().toString();
-			addEntry(name, hud, registry.getValidCompilersForFilePath(hud), name.equals(config.mainfile));
 		}
 	}
 
