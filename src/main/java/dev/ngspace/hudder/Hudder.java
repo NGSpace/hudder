@@ -213,6 +213,8 @@ public class Hudder implements ClientModInitializer {
 	public static void error(Object str) {LOGGER.error(String.valueOf(str));}
 	public static void debug(Object str) {LOGGER.debug(String.valueOf(str));}
 	public static void alert(Object str) {
-		Minecraft.getInstance().player.sendSystemMessage(Component.keybind(String.valueOf(str)));
+		var player = Minecraft.getInstance().player;
+		if (player!=null)
+			player.sendSystemMessage(Component.literal(String.valueOf(str)));
 	}
 }

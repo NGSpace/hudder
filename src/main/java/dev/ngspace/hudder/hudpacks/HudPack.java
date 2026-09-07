@@ -55,7 +55,8 @@ public class HudPack implements Closeable {
 			int bytes_left = MAXIMUM_PACK_SIZE;
 			for (String entry : reader.listEntries()) {
 				if (entries_count==MAXIMUM_ENTRY_COUNT
-						&&!config.unsafeoperations())
+						&&!config.unsafeoperations()
+						||bytes_left<8)
 					throw new CompileException("Reached maximum entry count for Hudpacks!", -1, -1);
 				entries_count++;
 				InputStream input = reader.readEntry(entry);
