@@ -231,7 +231,7 @@ public class HudderConfig {
 				compiler = null;
 			}
 		}
-		if (entry.isPresent()&&entry.get().deprecated()) {
+		if (entry.isPresent()&&entry.get().deprecated()&&mc.gui!=null) {
 			Hudder.showWarningToast(Component.literal("The compiler " + entry.get().display_name() + " is Deprecated!"),
 					Component.literal("Continued usage is not recommended"));
 		}

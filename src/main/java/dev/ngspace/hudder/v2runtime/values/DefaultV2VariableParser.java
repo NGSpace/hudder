@@ -26,9 +26,14 @@ import dev.ngspace.hudder.v2runtime.values.operations.booloperations.V2LogicalAN
 import dev.ngspace.hudder.v2runtime.values.operations.booloperations.V2LogicalOR;
 import dev.ngspace.hudder.v2runtime.values.operations.booloperations.V2OppositeOperator;
 
+/**
+ * @deprecated Use V3
+ */
+@Deprecated(since = "11.1.0", forRemoval = true)
 @SuppressWarnings("removal")
 public class DefaultV2VariableParser implements IV2VariableParser {
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	@Override public AV2Value parse(V2Runtime runtime, String valuee, AV2Compiler comp, int line, int charpos) throws ExecutionException {
 		
 		String value = valuee.trim();

@@ -76,8 +76,7 @@ public class V2ClassPropertyCall extends AV2Value {
 	public Object smartGet() throws ExecutionException {
 		
 		Object objValue = classobj.get();
-		if (V2Runtime.NULL.equals(objValue)
-				|| objValue instanceof Class<?>
+		if (objValue instanceof Class<?>
 				|| objValue instanceof ClassLoader)
 			throw new ExecutionException("Can't read \"" + funcName+fieldName + "\" because \"" + classobj.value
 					+ "\" is null", line, charpos);

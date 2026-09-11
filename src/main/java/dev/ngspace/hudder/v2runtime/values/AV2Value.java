@@ -9,16 +9,25 @@ import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.utils.ObjectWrapper;
 
+/**
+ * @deprecated Use V3
+ */
+@Deprecated(since = "11.1.0", forRemoval = true)
 @SuppressWarnings("removal")
 public abstract class AV2Value implements ObjectWrapper {
 	
-	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	protected final int line;
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	protected final int charpos;
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public final String value;
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	protected final AV2Compiler compiler;
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	protected CompileState state;
 
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	protected AV2Value(int line, int charpos, String debugvalue, AV2Compiler compiler, CompileState state) {
 		this.line = line;
 		this.charpos = charpos;
@@ -26,11 +35,13 @@ public abstract class AV2Value implements ObjectWrapper {
 		this.compiler = compiler;
 		this.state = state;
 	}
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	protected AV2Value(int line, int charpos, String debugvalue, AV2Compiler compiler) {
 		this(line, charpos, debugvalue, compiler, null);
 	}
 
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public boolean compare(AV2Value other, String comparisonOperator) throws ExecutionException {
 		Object val1 = get();
 		Object val2 = other.get();
@@ -71,11 +82,15 @@ public abstract class AV2Value implements ObjectWrapper {
 	
 	
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	@Override public boolean asBoolean() throws ExecutionException {return asType(Boolean.class);}
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	@Override public double asDouble() throws ExecutionException {return asType(Number.class).doubleValue();}
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	@Override public String asString() throws ExecutionException {return asType(String.class);}
 	
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	@Override public Object[] asArray() throws ExecutionException {
 		Object get = get();
 		if (get instanceof Collection<?> c) return c.toArray();
@@ -83,6 +98,7 @@ public abstract class AV2Value implements ObjectWrapper {
 	}
 	
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public <T> T asType(Class<T> clazz) throws ExecutionException {
 		Object get = get();
 		if (clazz.isInstance(get)) return clazz.cast(get);
@@ -95,17 +111,22 @@ public abstract class AV2Value implements ObjectWrapper {
 	
 	
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public static String invalidTypeMessage(String type, String value, Object obj) {
 		return "Incorrect type \""+type+"\" for value: \""+value+"\" of type "+(obj!=null?obj.getClass().getName():null);
 	}
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public abstract void setValue(AV2Compiler compiler, Object value) throws ExecutionException, UnsupportedOperationException;
 
 	/**
 	 * Returns true if the variable has a value and false if it does not
 	 * @throws CompileException 
 	 */
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public boolean hasValue() throws ExecutionException {return true;}
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public abstract boolean isConstant() throws ExecutionException;
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	@Override public String toString() {return value;}
 }

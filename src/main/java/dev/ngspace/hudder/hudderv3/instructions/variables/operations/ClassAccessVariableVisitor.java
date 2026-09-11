@@ -10,9 +10,10 @@ import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
 import dev.ngspace.hudder.utils.HudderUtils;
 import dev.ngspace.hudder.utils.ValueGetter;
-import dev.ngspace.hudder.v2runtime.values.operations.V2ClassPropertyCall;
 
 public class ClassAccessVariableVisitor extends ExpressionVisitor {
+	
+	private static final String[] forbiddenValuesAndFunctions = {"getClass","hashCode","wait","notify","notifyAll","clone","finalize"};
 	
 	private ExpressionVisitor classobj;
 	private boolean isFunctionCall;
@@ -45,7 +46,7 @@ public class ClassAccessVariableVisitor extends ExpressionVisitor {
 			}
 		}
 		if (!isFunctionCall) fieldName = prop;
-		for (String forbidden : V2ClassPropertyCall.forbiddenValuesAndFunctions) {
+		for (String forbidden : forbiddenValuesAndFunctions) {
 			if (forbidden.equals(funcName)) throw new CompileException("No function named \""+funcName+'"',pos);
 			if (forbidden.equals(fieldName)) throw new CompileException("No property named \""+fieldName+'"',pos);
 		}

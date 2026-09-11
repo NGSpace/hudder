@@ -2,15 +2,21 @@ package dev.ngspace.hudder.hudderv3;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Random;
 
 import dev.ngspace.hudder.Hudder;
+import dev.ngspace.hudder.api.compilers.compilers.AHudCompiler;
+import dev.ngspace.hudder.api.compilers.utils.TextPos;
+import dev.ngspace.hudder.api.functionsandconsumers.IUIElementManager;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
 import dev.ngspace.hudder.api.functionsandconsumers.interfaces.PositionedBinder;
+import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.ExecutionException;
-import dev.ngspace.hudder.v2runtime.functions.RngV2Function;
+import dev.ngspace.hudder.utils.ObjectWrapper;
 
 public class V3APIFunctions {
 	private V3APIFunctions() {/* */}
@@ -156,5 +162,25 @@ public class V3APIFunctions {
 			return index++;
 		}
 		
+	}
+	static class RngV2Function implements BindablePositionedFunction {
+		
+		private Random random = new Random();
+		private HashMap<Integer, Random> randoms = new HashMap<Integer, Random>();
+		
+		public Random getRandom(int Seed) {
+			var rng = randoms.get(Seed);
+			if (rng==null) {
+				rng = new Random(Seed);
+				randoms.put(Seed, rng);
+			}
+			return rng;
+		}
+
+		@Override
+		public Object invoke(IUIElementManager man, AHudCompiler<?> comp, TextPos pos, HudderConfig config,
+				ObjectWrapper... args) throws ExecutionException {
+			return (args.length==3? getRandom(args[2].asInt()) : random).nextDouble(args[0].asDouble(),args[1].asDouble());
+		}
 	}
 }

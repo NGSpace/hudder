@@ -22,15 +22,6 @@ public class V2Runtime {
 	@Deprecated(since = "11.1.0", forRemoval = true)
 	protected @Nullable V2Runtime scope;
 	private HudderConfig config;
-	/**
-	 * Should stay mostly unused for now.
-	 */
-	@Deprecated(since = "11.1.0", forRemoval = true)
-	public static final Object NULL = new Object() {
-		@Override public boolean equals(Object obj) {return obj == this || obj == null;}
-		@Override public int hashCode() {return super.hashCode();}
-		@Override public String toString() {return "null";}
-	};
 	@Deprecated(since = "11.1.0", forRemoval = true)
 	public V2Runtime(AV2Compiler compiler, V2Runtime scope, HudderConfig config) {
 		this.compiler = compiler;

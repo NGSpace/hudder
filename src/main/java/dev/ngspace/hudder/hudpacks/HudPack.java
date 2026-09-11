@@ -29,7 +29,7 @@ import dev.ngspace.ngsmcconfig.options.StringNGSMCConfigOption;
 import net.minecraft.network.chat.Component;
 
 public class HudPack implements Closeable {
-
+	
 	public static final int MAXIMUM_SUPPORTED_FORMAT = 3;
 	public static final int MAXIMUM_ENTRY_COUNT = 255;
 	public static final int MAXIMUM_ENTRY_SIZE = 8388608; // 8 MiB
@@ -50,7 +50,7 @@ public class HudPack implements Closeable {
 		this.engineManager = new HudPackEngineManager(this.compiler, this);
 		this.config = config;
 		try (EntryReaderConsumer reader = Files.isDirectory(path) ? new EntryReaderConsumer.Directory(path) :
-				new EntryReaderConsumer.Zip(path)) {
+			new EntryReaderConsumer.Zip(path)) {
 			int entries_count = 0;
 			int bytes_left = MAXIMUM_PACK_SIZE;
 			for (String entry : reader.listEntries()) {
@@ -62,8 +62,8 @@ public class HudPack implements Closeable {
 				InputStream input = reader.readEntry(entry);
 				byte[] bytes = config.unsafeoperations() ?
 						input.readAllBytes() :
-						HudderUtils.limitedReadAllByte(input, Math.min(MAXIMUM_ENTRY_SIZE,
-								bytes_left));
+							HudderUtils.limitedReadAllByte(input, Math.min(MAXIMUM_ENTRY_SIZE,
+									bytes_left));
 				input.close();
 				bytes_left -= bytes.length;
 				entries.put(entry, bytes);
@@ -74,19 +74,19 @@ public class HudPack implements Closeable {
 		loadTextures();
 		loadSettings(configYaml.settingsOrEmpty());
 	}
-
+	
 	private void processConfig(HudderConfig config) throws CompileException {
 		// Check if pack.json exists
 		if (!entries.containsKey("pack.json"))
 			throw new CompileException("Missing entry: pack.json", -1, -1);
 		// Read pack.json
-        configYaml = new Gson().fromJson(new String(entries.get("pack.json"), StandardCharsets.UTF_8),
-        		HudPackConfig.class);
-        format_version = configYaml.format_version();
-        // Check if format version is supported
-        if (format_version>MAXIMUM_SUPPORTED_FORMAT&&!config.disableHudpackVersionCheck())
-        	throw new CompileException("Unsupported Hud pack format version: " + format_version, -1, -1);
-        // Read pack points
+		configYaml = new Gson().fromJson(new String(entries.get("pack.json"), StandardCharsets.UTF_8),
+				HudPackConfig.class);
+		format_version = configYaml.format_version();
+		// Check if format version is supported
+		if (format_version>MAXIMUM_SUPPORTED_FORMAT&&!config.disableHudpackVersionCheck())
+			throw new CompileException("Unsupported Hud pack format version: " + format_version, -1, -1);
+		// Read pack points
 		hudpackpoints = new HudPackPoint[configYaml.points().size()];
 		for (int i = 0;i<hudpackpoints.length;i++) {
 			HudPackPointConfig point = configYaml.points().get(i);
@@ -105,89 +105,89 @@ public class HudPack implements Closeable {
 			String texture = textures.get(i);
 			if (!entries.containsKey(texture))
 				throw new CompileException("Missing Texture: " + texture, -1, -1);
-        	bufferedtextures[i] = new BufferedTexture(texture, entries.get(texture));
+			bufferedtextures[i] = new BufferedTexture(texture, entries.get(texture));
 		}
 	}
-
+	
 	private void loadTextures() throws IOException {
 		for (BufferedTexture texture : bufferedtextures) {
 			HudFileUtils.loadImage(NativeImage.read(texture.img()), texture.path());
 		}
 	}
-
+	
 	private void loadSettings(Map<String, HudPackSettings> settings) {
 		this.settings = settings;
 	}
-
+	
 	public boolean hasSettings() {
 		return !settings.isEmpty();
 	}
-
+	
 	public Set<String> getSettingsKeys() {
 		return settings.keySet();
 	}
-
+	
 	public AbstractNGSMCConfigOption<? extends Object> buildSetting(String setting) {
 		HudPackSettings v = settings.get(setting);
-
+		
 		if (format_version>1&&"dropdown".equals(v.type())) {
 			return DropdownNGSMCConfigOption.builder((String) getSettingValue(setting),
 					Component.literal(v.name()),
 					List.of(v.values()))
-				.setDefaultValue((String) v.default_value())
-				.setSaveOperation(val->setSettingValue(setting, val))
-				.build();
+					.setDefaultValue((String) v.default_value())
+					.setSaveOperation(val->setSettingValue(setting, val))
+					.build();
 		}
 		if (format_version>2&&"integer".equals(v.type())) {
 			return IntNGSMCConfigOption.builder(((Number) getSettingValue(setting)).intValue(),
 					Component.literal(v.name()))
-				.setDefaultValue(((Number) v.default_value()).intValue())
-				.setSaveOperation(val->setSettingValue(setting, val))
-				.build();
+					.setDefaultValue(((Number) v.default_value()).intValue())
+					.setSaveOperation(val->setSettingValue(setting, val))
+					.build();
 		}
 		return switch (v.type()) {
 			case "boolean": {
 				yield BooleanNGSMCConfigOption.builder(((Boolean) getSettingValue(setting)),
 						Component.literal(v.name()))
-					.setDefaultValue((Boolean) v.default_value())
-					.setSaveOperation(val->setSettingValue(setting, val))
-					.build();
+				.setDefaultValue((Boolean) v.default_value())
+				.setSaveOperation(val->setSettingValue(setting, val))
+				.build();
 			}
 			case "string": {
 				yield StringNGSMCConfigOption.builder(String.valueOf(getSettingValue(setting)),
 						Component.literal(v.name()))
-					.setDefaultValue(String.valueOf(v.default_value()))
-					.setSaveOperation(val->setSettingValue(setting, val))
-					.build();
+				.setDefaultValue(String.valueOf(v.default_value()))
+				.setSaveOperation(val->setSettingValue(setting, val))
+				.build();
 			}
 			case "number": {
 				yield DoubleNGSMCConfigOption.builder(((Number) getSettingValue(setting)).doubleValue(),
 						Component.literal(v.name()))
-					.setDefaultValue(((Number) v.default_value()).doubleValue())
-					.setSaveOperation(val->setSettingValue(setting, val))
-					.build();
+				.setDefaultValue(((Number) v.default_value()).doubleValue())
+				.setSaveOperation(val->setSettingValue(setting, val))
+				.build();
 			}
 			case "hex": {
 				yield HexNGSMCConfigOption.builder(((Number) getSettingValue(setting)).intValue(),
 						Component.literal(v.name()))
-					.setDefaultValue(((Number) v.default_value()).intValue())
-					.setSaveOperation(val->setSettingValue(setting, val))
-					.build();
+				.setDefaultValue(((Number) v.default_value()).intValue())
+				.setSaveOperation(val->setSettingValue(setting, val))
+				.build();
 			}
 			default:
 				throw new IllegalArgumentException("No setting of type \"" + v.type() + '"');
 		};
 	}
-
+	
 	public Object getSettingValue(String string) {
 		return config.getHudSettings("hudpacks", config.mainfileString()).getOrDefault(string,
 				settings.get(string).default_value());
 	}
-
+	
 	public void setSettingValue(String string, Object value) {
 		config.getHudSettings("hudpacks",  config.mainfileString()).put(string, value);
 	}
-
+	
 	@Override
 	public void close() throws IOException {
 		engineManager.close();
