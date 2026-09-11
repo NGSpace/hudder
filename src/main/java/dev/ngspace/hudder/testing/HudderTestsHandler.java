@@ -10,7 +10,6 @@ import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.ExecutionException;
-import dev.ngspace.hudder.utils.ValueGetter;
 
 public class HudderTestsHandler {
 	
@@ -51,7 +50,7 @@ public class HudderTestsHandler {
 			@Override public String toString() {return "lol";}
 		}, "object_var");
 		
-		DataVariableRegistry.registerObjectVariable(_ -> ((ValueGetter) k->k), "value_getter");
+		DataVariableRegistry.registerObjectVariable(_->new WrapperTest.WrapperTestWrapper(new WrapperTest()), "value_getter");
 	}
     
     private static final String[] tests = {
@@ -63,9 +62,10 @@ public class HudderTestsHandler {
 		"control_flow.hud",
 		"functions_and_methods.hud",
 		"java_and_external_apis.hud",
-		"misc.hud"
+		"misc.hud",
+		"js/js_tests.js"
 	};
-
+    
 	public void loadDefaultTests(HudderUnitTester e) throws IOException {
 		for (String test : tests) {
 			boolean shouldTest = false;

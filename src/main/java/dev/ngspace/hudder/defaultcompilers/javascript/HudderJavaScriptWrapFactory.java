@@ -1,13 +1,16 @@
 package dev.ngspace.hudder.defaultcompilers.javascript;
 
 import java.util.List;
+import java.util.Map;
 
 import org.mozilla.javascript.Context;
-import org.mozilla.javascript.NativeJavaObject;
+import org.mozilla.javascript.NativeJavaArray;
+import org.mozilla.javascript.NativeJavaMap;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.Undefined;
 import org.mozilla.javascript.WrapFactory;
 import org.mozilla.javascript.lc.type.TypeInfo;
+import org.mozilla.javascript.lc.type.TypeInfoFactory;
 
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.utils.NoAccess;
@@ -27,17 +30,12 @@ public class HudderJavaScriptWrapFactory extends WrapFactory {
     			|| javaObject.getClass().isAnnotationPresent(NoAccess.class))
 			return Undefined.SCRIPTABLE_UNDEFINED;
 		if (javaObject instanceof ValueGetter r) {
-			return new NativeJavaObject(scope,r,staticType,true) {
-				private static final long serialVersionUID = -6145385781375908982L;
-
-				@Override public String getClassName() {return r.getClass().getName();}
-			    @Override public Object get(String name, Scriptable start) {
-			    	var v = r.get(name);
-			    	System.out.println(super.get(name, start));
-			    	//TODO ValueGetter should overwrite field access
-//			    	if (v==null||v==NOT_FOUND) return super.get(name, start);
-			        return v;
-			    }
+			return new JavaObject(scope,r,staticType) {
+				@Override
+				public Object getField(String name, Scriptable start) {
+					Object val = r.get(name);
+					return val == null ? Undefined.SCRIPTABLE_UNDEFINED : val;
+				}
 			};
 		}
 		if (javaObject instanceof ObjectWrapper r) {
@@ -49,6 +47,14 @@ public class HudderJavaScriptWrapFactory extends WrapFactory {
 		}
 		if (javaObject instanceof List<?> l)// What an L list hahahshhxhahshxsahujahsahhsfdfihuj I am dead inside :D
 			return cx.newArray(scope, l.toArray());
-		return super.wrapAsJavaObject(cx, scope, javaObject, staticType);
+        if (staticType.shouldReplace() && javaObject != null) {
+            staticType = TypeInfoFactory.getOrElse(scope, TypeInfoFactory.GLOBAL).create(javaObject.getClass());
+        }
+        if (Map.class.isAssignableFrom(staticType.asClass())) {
+            return new NativeJavaMap(scope, javaObject, staticType);
+        } else if (staticType.isArray()) {
+            return new NativeJavaArray(scope, javaObject, staticType);
+        }
+		return new JavaObject(scope, javaObject, staticType);
 	}
 }

@@ -24,6 +24,8 @@ public class WrapperTest {
 	
 		@Override
 		public Object get(String Id) {
+			if (Id.startsWith("val"))
+				return Id;
 			return null;
 		}
 		
