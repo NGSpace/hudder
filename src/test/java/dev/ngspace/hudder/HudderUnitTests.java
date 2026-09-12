@@ -81,6 +81,8 @@ class HudderUnitTests {
 	@ParameterizedTest
 	@MethodSource("jsTestCases")
 	void jsIndividualTests(String name, String filename, HudderUnitTest test) {
+		//I'll admit, AI gave me this solution to solve the ServiceConfigurationError
+		Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
 		test(name, filename, test, config.javaScriptCompiler);
 	}
 }
