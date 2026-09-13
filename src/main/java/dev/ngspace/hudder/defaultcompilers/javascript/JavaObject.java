@@ -49,7 +49,7 @@ public class JavaObject extends NativeJavaObject {
 			var field = javaObject.getClass().getDeclaredField(name);
 			if (!AccessUtils.isFieldAccessible(field))
 				return NOT_FOUND;
-			return field.get(field);
+			return field.get(javaObject);
 		} catch (NoSuchFieldException | IllegalAccessException _) {
 			return NOT_FOUND;
 		}
