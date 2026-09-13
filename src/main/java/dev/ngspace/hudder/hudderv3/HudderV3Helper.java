@@ -1,10 +1,8 @@
 package dev.ngspace.hudder.hudderv3;
 
 import java.io.IOException;
-import java.lang.reflect.AccessFlag;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -22,8 +20,8 @@ import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositione
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
+import dev.ngspace.hudder.utils.AccessUtils;
 import dev.ngspace.hudder.utils.HudFileUtils;
-import dev.ngspace.hudder.utils.NoAccess;
 import dev.ngspace.hudder.utils.ObjectWrapper;
 import dev.ngspace.hudder.utils.ValueGetter;
 
@@ -95,7 +93,7 @@ public class HudderV3Helper {
 		Class<?> objectClass = getClassSafe(object, objectExpression, fieldName, line, col);
 		try {
 			Field field = objectClass.getDeclaredField(fieldName);
-			if (!isAccessible(field)) {
+			if (!AccessUtils.isFieldAccessible(field)) {
 				throw new ExecutionException("No property named \"" + fieldName + "\" in type \""
 						+ objectClass.getSimpleName() + '"', line, col);
 			}
@@ -123,7 +121,7 @@ public class HudderV3Helper {
 		for (Method method : objectClass.getMethods()) {
 			if (!functionName.equals(method.getName())
 					|| method.getParameterCount() != parameterClasses.length
-					|| !isAccessible(method)) {
+					|| !AccessUtils.isMethodAccessible(method)) {
 				continue;
 			}
 
@@ -228,17 +226,5 @@ public class HudderV3Helper {
 			if (i + 1 < parameterClasses.length) result.append(", ");
 		}
 		return result.append(')').toString();
-	}
-
-	private static boolean isAccessible(Field field) {
-		return isAccessible((Member) field) && !field.isAnnotationPresent(NoAccess.class);
-	}
-
-	private static boolean isAccessible(Method method) {
-		return isAccessible((Member) method) && !method.isAnnotationPresent(NoAccess.class);
-	}
-
-	private static boolean isAccessible(Member member) {
-		return !member.accessFlags().contains(AccessFlag.PRIVATE);
 	}
 }

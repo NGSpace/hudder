@@ -25,7 +25,8 @@ public class HudderJavaScriptWrapFactory extends WrapFactory {
 	
 	@Override
 	public Scriptable wrapAsJavaObject(Context cx, Scriptable scope, Object javaObject, TypeInfo staticType) {
-		if (javaObject instanceof Class<?>
+		if (javaObject==null
+				|| javaObject instanceof Class<?>
     			|| javaObject instanceof ClassLoader
     			|| javaObject.getClass().isAnnotationPresent(NoAccess.class))
 			return Undefined.SCRIPTABLE_UNDEFINED;

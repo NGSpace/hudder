@@ -10,6 +10,8 @@ import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.lc.type.TypeInfo;
 
+import dev.ngspace.hudder.utils.AccessUtils;
+
 public class JavaObject extends NativeJavaObject {
 
 	private static final long serialVersionUID = -1287993552339794784L;
@@ -43,7 +45,14 @@ public class JavaObject extends NativeJavaObject {
 	}
 
 	public Object getField(String name, Scriptable start) {
-		return super.get(name, start);
+		try {
+			var field = javaObject.getClass().getDeclaredField(name);
+			if (!AccessUtils.isFieldAccessible(field))
+				return NOT_FOUND;
+			return field.get(field);
+		} catch (NoSuchFieldException | IllegalAccessException _) {
+			return NOT_FOUND;
+		}
 	}
 
 	@Override public String getClassName() {return javaObject.getClass().getName();}
