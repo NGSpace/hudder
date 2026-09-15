@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.Scanner;
 
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLScancode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,44 +74,6 @@ public class Hudder implements ClientModInitializer {
      */
 	@Override public void onInitializeClient() {
 		
-		log("Starting Hudder " + HUDDER_VERSION);
-		
-		var keycategory = KeyMapping.Category.register(Identifier.parse("hudder.keybinds"));
-		
-		KeyMapping configkeybind = KeyMappingHelper.registerKeyMapping(new KeyMapping(
-            "hudder.configkeybind",
-            InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_R,
-            keycategory
-        ));
-		
-		KeyMapping reloadkeybind = KeyMappingHelper.registerKeyMapping(new KeyMapping(
-            "hudder.reloadkeybind",
-            InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_H,
-            keycategory
-        ));
-		
-		// I know this is registering 2 different client tick events but I wanted to clear out HudderTickEvent
-		ClientTickEvents.START_CLIENT_TICK.register(_->{
-			while (configkeybind.consumeClick()) {
-				Minecraft.getInstance().gui.setScreen(HudderNGSMCConfigMenu.createMenu(Minecraft.getInstance().gui.screen()));
-			}
-			while (reloadkeybind.consumeClick()) {
-		    	Hudder.log("Manual file refresh triggered!");
-				try {
-					HudFileUtils.reloadResources();
-					Hudder.showToast(Component.literal("Refreshed files!").withStyle(ChatFormatting.BOLD), 
-							Component.literal("\u00A7aDue to manual refresh."));
-				} catch (IOException e) {
-					Hudder.showToast(Component.literal("\u00A74Error refreshing files!")
-							.withStyle(ChatFormatting.BOLD),Component.literal(e.getMessage()));
-					e.printStackTrace();
-				}
-			}
-		});
-		
-		
 		Optional<ModContainer> containerOpt = FabricLoader.getInstance().getModContainer("hudder");
 		
 		if (containerOpt.isPresent()) {
@@ -135,6 +97,43 @@ public class Hudder implements ClientModInitializer {
 				}
 			}
 		}
+		
+		log("Starting Hudder " + HUDDER_VERSION);
+		
+		var keycategory = KeyMapping.Category.register(Identifier.parse("hudder.keybinds"));
+		
+		KeyMapping configkeybind = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+            "hudder.configkeybind",
+            InputConstants.Type.KEYBOARD,
+            SDLScancode.SDL_SCANCODE_R,
+            keycategory
+        ));
+		
+		KeyMapping reloadkeybind = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+            "hudder.reloadkeybind",
+            InputConstants.Type.KEYBOARD,
+            SDLScancode.SDL_SCANCODE_H,
+            keycategory
+        ));
+		
+		// I know this is registering 2 different client tick events but I wanted to clear out HudderTickEvent
+		ClientTickEvents.START_CLIENT_TICK.register(_->{
+			while (configkeybind.consumeClick()) {
+				Minecraft.getInstance().gui.setScreen(HudderNGSMCConfigMenu.createMenu(Minecraft.getInstance().gui.screen()));
+			}
+			while (reloadkeybind.consumeClick()) {
+		    	Hudder.log("Manual file refresh triggered!");
+				try {
+					HudFileUtils.reloadResources();
+					Hudder.showToast(Component.literal("Refreshed files!").withStyle(ChatFormatting.BOLD), 
+							Component.literal("\u00A7aDue to manual refresh."));
+				} catch (IOException e) {
+					Hudder.showToast(Component.literal("\u00A74Error refreshing files!")
+							.withStyle(ChatFormatting.BOLD),Component.literal(e.getMessage()));
+					e.printStackTrace();
+				}
+			}
+		});
 		
 		log("Reading Hudder config");
 		CompilerRegistry compiler_registry = HudderApi.COMPILER_REGISTRY;

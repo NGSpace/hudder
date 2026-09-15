@@ -6,6 +6,8 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Consumer;
 
+import com.mojang.blaze3d.Blaze3D;
+
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigCategory;
 import dev.ngspace.ngsmcconfig.api.NGSMCConfigIcon;
 import net.minecraft.client.Minecraft;
@@ -15,7 +17,6 @@ import net.minecraft.client.gui.components.StringWidget.TextOverflow;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Util;
 
 public abstract class AbstractNGSMCConfigScreen extends Screen {
 
@@ -133,7 +134,7 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 					docsUri!=null?BUTTONS_WIDTH/3:0, resetBottom,
 					docsUri!=null?(BUTTONS_WIDTH/3)*2:BUTTONS_WIDTH, 20,
 					configButtonText,
-					_->Util.getPlatform().openFile(configfile),
+					_->Blaze3D.openPath(configfile.toPath()),
 					0xFFFFFFFF,
 					new NGSMCConfigIcon.SpriteIcon("items", "item/writable_book"));
 
