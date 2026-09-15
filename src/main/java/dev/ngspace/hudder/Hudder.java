@@ -74,6 +74,30 @@ public class Hudder implements ClientModInitializer {
      */
 	@Override public void onInitializeClient() {
 		
+		Optional<ModContainer> containerOpt = FabricLoader.getInstance().getModContainer("hudder");
+		
+		if (containerOpt.isPresent()) {
+			HUDDER_VERSION = containerOpt.get().getMetadata().getVersion().getFriendlyString();
+		}
+		// If there is still no version (eg. when running through an IDE)
+		if (HUDDER_VERSION.equals("${version}")) {
+			// Read the version from gradle.properties
+			Path gradleProp = Paths.get("../gradle.properties");
+			if (Files.exists(gradleProp)) {
+				try (Scanner scanner = new Scanner(gradleProp)) {
+					while (scanner.hasNext()) {
+						String line = scanner.nextLine();
+						if (line.startsWith("mod_version=")) {
+							HUDDER_VERSION = line.substring(12);
+						}
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+					error("Can not determine Hudder version!");
+				}
+			}
+		}
+		
 		log("Starting Hudder " + HUDDER_VERSION);
 		
 		var keycategory = KeyMapping.Category.register(Identifier.parse("hudder.keybinds"));
@@ -110,31 +134,6 @@ public class Hudder implements ClientModInitializer {
 				}
 			}
 		});
-		
-		
-		Optional<ModContainer> containerOpt = FabricLoader.getInstance().getModContainer("hudder");
-		
-		if (containerOpt.isPresent()) {
-			HUDDER_VERSION = containerOpt.get().getMetadata().getVersion().getFriendlyString();
-		}
-		// If there is still no version (eg. when running through an IDE)
-		if (HUDDER_VERSION.equals("${version}")) {
-			// Read the version from gradle.properties
-			Path gradleProp = Paths.get("../gradle.properties");
-			if (Files.exists(gradleProp)) {
-				try (Scanner scanner = new Scanner(gradleProp)) {
-					while (scanner.hasNext()) {
-						String line = scanner.nextLine();
-						if (line.startsWith("mod_version=")) {
-							HUDDER_VERSION = line.substring(12);
-						}
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-					error("Can not determine Hudder version!");
-				}
-			}
-		}
 		
 		log("Reading Hudder config");
 		CompilerRegistry compiler_registry = HudderApi.COMPILER_REGISTRY;
