@@ -5,12 +5,13 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.mojang.blaze3d.Blaze3D;
+
 import dev.ngspace.hudder.api.compilers.CompilerRegistry;
 import dev.ngspace.hudder.api.compilers.utils.HudInformation;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
-import net.minecraft.util.Util;
 
 /**
  * Defines the common operations required to process and execute HUD files.
@@ -98,7 +99,7 @@ public abstract class AHudCompiler<T> {
 	
 	public void edit(Path file) {
 		// I know openPath exists but for some reason it just doesn't work
-		Util.getPlatform().openFile(file.toFile());
+		Blaze3D.openUri(file.normalize().toAbsolutePath().toUri());
 	}
 	
 	/**

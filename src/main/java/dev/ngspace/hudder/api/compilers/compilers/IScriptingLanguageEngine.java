@@ -79,7 +79,7 @@ public interface IScriptingLanguageEngine extends Closeable {
 	 *         when applicable
 	 * @throws IOException if an I/O error occurs while calling the function
 	 */
-	public Object callFunctionSafe(String name, Object defualt, String... args) throws ExecutionException;
+	public Object callFunctionSafe(String name, Object defualt, String... args) throws IOException, ExecutionException;
 	
 	
 	
