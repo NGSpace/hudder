@@ -38,6 +38,11 @@ jobs:
         run: ./gradlew build
       - name: test
         run: ./gradlew test
+      - name: Install Software Vulkan Drivers
+        if: ${{ runner.os == 'Linux' }} # 26.3 things
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mesa-vulkan-drivers libvulkan1
       - name: gametest
         if: ${{ runner.os == 'Linux' }} # To run gametests on Headless systems fabric uses XVFB and that's a Linux exclusive. Linux>>>
         run: ./gradlew runClientGameTest
