@@ -1,10 +1,10 @@
-.gradle
-bin/
-run/
+/.gradle
+/bin/
+/run/
 **/build/
 !src/**/build/
 remappedSrc/
-tests/
+/tests/
 /config/
 
 # Ignore Gradle GUI config
@@ -27,5 +27,5 @@ gradle-app.setting
 
 # Eclipse
 **.launch
-.settings/
+/.settings/
 /mods/
