@@ -1,9 +1,7 @@
 package dev.ngspace.hudder.v2runtime.values.operations;
 
-import java.lang.reflect.AccessFlag;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Set;
@@ -12,10 +10,9 @@ import org.mozilla.javascript.ScriptableObject;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.compilers.compilers.AV2Compiler;
-import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.ExecutionException;
+import dev.ngspace.hudder.utils.AccessUtils;
 import dev.ngspace.hudder.utils.HudderUtils;
-import dev.ngspace.hudder.utils.NoAccess;
 import dev.ngspace.hudder.utils.ValueGetter;
 import dev.ngspace.hudder.v2runtime.V2Runtime;
 import dev.ngspace.hudder.v2runtime.values.AV2Value;
@@ -61,7 +58,7 @@ public class V2ClassPropertyCall extends AV2Value {
 	@Override public Object get() throws ExecutionException {
 		Object obj = smartGet();
 		if (obj==null) return null;
-		if (!HudderConfig.isAccessible(obj.getClass()))
+		if (!AccessUtils.isClassAccessible(obj.getClass()))
 			return null;
 		if (obj instanceof Set<?> r) return r.toArray();
 		if (obj instanceof ScriptableObject en) {
@@ -85,7 +82,7 @@ public class V2ClassPropertyCall extends AV2Value {
 		if (objClass.isPrimitive())
 			throw new SecurityException("Can not read properties of Numbers, Booleans and Chars : "+classobj.value);
 
-		if (!HudderConfig.isAccessible(objClass))
+		if (!AccessUtils.isClassAccessible(objClass))
 			throw new SecurityException("Access to this type is not allowed");
 		
 		if (isFunctionCall) {
@@ -99,7 +96,7 @@ public class V2ClassPropertyCall extends AV2Value {
 			Method finalmethod = null;
 			for (Method method : objClass.getMethods()) {
 				if (!funcName.equals(method.getName())||method.getParameterCount()!=classes.length
-						||!isAccessible(method)) continue;
+						||!AccessUtils.isMethodAccessible(method)) continue;
 				boolean isCompatible = true;
 				Class<?>[] v = method.getParameterTypes();
 				
@@ -138,7 +135,7 @@ public class V2ClassPropertyCall extends AV2Value {
 		
 		try {
 			Field f = objClass.getDeclaredField(fieldName);
-			if (!isAccessible(f)) throw new ExecutionException("No property named \""+fieldName+"\" in type \"" +objClass.getSimpleName()+'"',line,charpos);
+			if (!AccessUtils.isFieldAccessible(f)) throw new ExecutionException("No property named \""+fieldName+"\" in type \"" +objClass.getSimpleName()+'"',line,charpos);
 			return f.get(objValue);
 		} catch (NoSuchFieldException e) {
 			if (Hudder.IS_DEBUG) e.printStackTrace();
@@ -155,16 +152,6 @@ public class V2ClassPropertyCall extends AV2Value {
 		String res = funcName + "(";
 		for (int i = 0;i<classes.length;i++) res+=classes[i].getSimpleName()+(classes.length==i+1?"":", ");
 		return res + ")";
-	}
-
-	private boolean isAccessible(Field field) {
-		return isAccessible((Member) field)&&!field.isAnnotationPresent(NoAccess.class);
-	}
-	private boolean isAccessible(Method method) {
-		return isAccessible((Member) method)&&!method.isAnnotationPresent(NoAccess.class);
-	}
-	private boolean isAccessible(Member method) {
-		return !method.accessFlags().contains(AccessFlag.PRIVATE);
 	}
 	
 	

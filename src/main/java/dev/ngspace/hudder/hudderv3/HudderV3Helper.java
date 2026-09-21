@@ -93,7 +93,7 @@ public class HudderV3Helper {
 		Class<?> objectClass = getClassSafe(object, objectExpression, fieldName, line, col);
 		try {
 			Field field = objectClass.getDeclaredField(fieldName);
-			if (!AccessUtils.isFieldAccessible(field)) {
+			if (field==null||!AccessUtils.isFieldAccessible(field)) {
 				throw new ExecutionException("No property named \"" + fieldName + "\" in type \""
 						+ objectClass.getSimpleName() + '"', line, col);
 			}
@@ -141,13 +141,12 @@ public class HudderV3Helper {
 			}
 		}
 
-		if (selectedMethod == null) {
+		if (selectedMethod == null||!AccessUtils.isMethodAccessible(selectedMethod)) {
 			throw new ExecutionException("No function named \"" + getCallSign(functionName, parameterClasses)
 					+ "\" in type \"" + objectClass.getSimpleName() + '"', line, col);
 		}
 
 		try {
-			selectedMethod.setAccessible(true);
 			return normalizeResult(selectedMethod.invoke(object, selectedParameters));
 		} catch (InvocationTargetException e) {
 			Throwable target = e.getTargetException();
@@ -171,7 +170,7 @@ public class HudderV3Helper {
 			throw new SecurityException("Can not read properties of Numbers, Booleans and Chars : "
 					+ objectExpression);
 		}
-		if (!HudderConfig.isAccessible(objectClass)) {
+		if (!AccessUtils.isClassAccessible(objectClass)) {
 			throw new SecurityException("Access to this type is not allowed");
 		}
 		return objectClass;
@@ -200,7 +199,7 @@ public class HudderV3Helper {
 
 	private static Object normalizeResult(Object result) {
 		if (result == null) return null;
-		if (!HudderConfig.isAccessible(result.getClass())) return null;
+		if (!AccessUtils.isClassAccessible(result.getClass())) return null;
 		if (result instanceof Set<?> set) return set.toArray();
 		if (result instanceof ScriptableObject scriptable) {
 			return new ValueGetter() {

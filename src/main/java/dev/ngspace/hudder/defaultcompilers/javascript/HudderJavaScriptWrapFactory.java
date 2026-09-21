@@ -13,7 +13,7 @@ import org.mozilla.javascript.lc.type.TypeInfo;
 import org.mozilla.javascript.lc.type.TypeInfoFactory;
 
 import dev.ngspace.hudder.exceptions.ExecutionException;
-import dev.ngspace.hudder.utils.NoAccess;
+import dev.ngspace.hudder.utils.AccessUtils;
 import dev.ngspace.hudder.utils.ObjectWrapper;
 import dev.ngspace.hudder.utils.ValueGetter;
 
@@ -28,7 +28,7 @@ public class HudderJavaScriptWrapFactory extends WrapFactory {
 		if (javaObject==null
 				|| javaObject instanceof Class<?>
     			|| javaObject instanceof ClassLoader
-    			|| javaObject.getClass().isAnnotationPresent(NoAccess.class))
+    			|| !AccessUtils.isClassAccessible(javaObject.getClass()))
 			return Undefined.SCRIPTABLE_UNDEFINED;
 		if (javaObject instanceof ValueGetter r) {
 			return new JavaObject(scope,r,staticType) {

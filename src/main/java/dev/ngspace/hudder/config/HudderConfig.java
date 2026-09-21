@@ -1,7 +1,6 @@
 package dev.ngspace.hudder.config;
 
 import java.io.IOException;
-import java.lang.reflect.AccessFlag;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
@@ -32,7 +31,7 @@ import dev.ngspace.hudder.defaultcompilers.HudderV3Compiler;
 import dev.ngspace.hudder.defaultcompilers.JavaScriptCompiler;
 import dev.ngspace.hudder.main.HudCompilationManager;
 import dev.ngspace.hudder.utils.HudFileUtils;
-import dev.ngspace.hudder.utils.NoAccess;
+import dev.ngspace.hudder.utils.AccessUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
@@ -302,12 +301,19 @@ public class HudderConfig {
 	}
 
 
+	/**
+	 * @deprecated use {@link AccessUtils#isClassAccessible(Class)}
+	 */
+	@Deprecated(since = "11.2.0", forRemoval = true)
 	public static boolean isAccessible(Class<?> clazz) {
-		return !clazz.accessFlags().contains(AccessFlag.PRIVATE)
-				&&!clazz.isAnnotationPresent(NoAccess.class);
+		return AccessUtils.isClassAccessible(clazz);
 	}
+	/**
+	 * @deprecated use {@link AccessUtils#isPublic(Member)}
+	 */
+	@Deprecated(since = "11.2.0", forRemoval = true)
 	public static boolean isPublic(Member member) {
-		return member.accessFlags().contains(AccessFlag.PUBLIC)&&!member.accessFlags().contains(AccessFlag.PRIVATE);
+		return AccessUtils.isPublic(member);
 	}
 
 
