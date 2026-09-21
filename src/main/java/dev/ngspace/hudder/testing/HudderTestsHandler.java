@@ -41,6 +41,8 @@ public class HudderTestsHandler {
 		
 		DataVariableRegistry.registerObjectVariable(_ -> new JavaTestObject(), "JavaObjectAccess");
 		DataVariableRegistry.registerObjectVariable(_ -> new JavaTestNoAccess(), "JavaTestNoAccess");
+		DataVariableRegistry.registerObjectVariable(_ -> new JavaTestInheritedNoAccess(), "JavaTestInheritedNoAccess");
+		DataVariableRegistry.registerObjectVariable(_ -> new JavaTestPartialNoAccess(), "JavaTestPartialNoAccess");
 		
 		DataVariableRegistry.registerStringVariable(_ -> "Value", "string_var");
 		DataVariableRegistry.registerStringVariable(k -> k, "string_var2");

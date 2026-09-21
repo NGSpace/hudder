@@ -147,6 +147,7 @@ public class HudderV3Helper {
 		}
 
 		try {
+			selectedMethod.trySetAccessible();
 			return normalizeResult(selectedMethod.invoke(object, selectedParameters));
 		} catch (InvocationTargetException e) {
 			Throwable target = e.getTargetException();

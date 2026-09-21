@@ -46,10 +46,16 @@ public class JavaObject extends NativeJavaObject {
 
 	public Object getField(String name, Scriptable start) {
 		try {
-			var field = javaObject.getClass().getDeclaredField(name);
+			var clazz = javaObject.getClass();
+			if (!AccessUtils.isClassAccessible(clazz))
+				throw new SecurityException("Access to this type is not allowed");
+			var field = clazz.getDeclaredField(name);
 			if (!AccessUtils.isFieldAccessible(field))
 				return NOT_FOUND;
-			return field.get(javaObject);
+			var obj = field.get(javaObject);
+			if (obj!=null&&!AccessUtils.isClassAccessible(obj.getClass()))
+				return NOT_FOUND;
+			return obj;
 		} catch (NoSuchFieldException | IllegalAccessException _) {
 			return NOT_FOUND;
 		}
