@@ -10,6 +10,11 @@ import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.ExecutionException;
+import dev.ngspace.hudder.testing.types.JavaTestInheritedNoAccess;
+import dev.ngspace.hudder.testing.types.JavaTestNoAccess;
+import dev.ngspace.hudder.testing.types.JavaTestObject;
+import dev.ngspace.hudder.testing.types.JavaTestPartialNoAccess;
+import dev.ngspace.hudder.testing.types.WrapperTest;
 
 public class HudderTestsHandler {
 	

@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.testing;
+package dev.ngspace.hudder.testing.types;
 
 public class JavaTestInheritedNoAccess extends JavaTestNoAccess {
 	

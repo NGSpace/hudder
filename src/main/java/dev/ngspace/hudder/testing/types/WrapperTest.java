@@ -1,4 +1,4 @@
-package dev.ngspace.hudder.testing;
+package dev.ngspace.hudder.testing.types;
 
 import dev.ngspace.hudder.utils.ValueGetter;
 

@@ -6,7 +6,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.mozilla.javascript.NativeJavaMethod;
 import org.mozilla.javascript.NativeJavaObject;
+import org.mozilla.javascript.RhinoMethodFilter;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.lc.type.TypeInfo;
 
@@ -36,12 +38,13 @@ public class JavaObject extends NativeJavaObject {
 			return getField(name, start);
 	}
 	
-	/*
-	 * Both methods return the same thing, I separated them to make it easier when extending this class.
-	 */
-	
 	public Object getMethod(String name, Scriptable start) {
-		return super.get(name, start);
+		Object member = super.get(name, start);
+		if (member instanceof NativeJavaMethod function) {
+			NativeJavaMethod func = RhinoMethodFilter.filter(function, AccessUtils::isMethodAccessible);
+			return func == null ? NOT_FOUND : func;
+		}
+		return member;
 	}
 
 	public Object getField(String name, Scriptable start) {
