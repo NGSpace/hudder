@@ -31,10 +31,12 @@ import dev.ngspace.hudder.defaultcompilers.HudderV3Compiler;
 import dev.ngspace.hudder.defaultcompilers.JavaScriptCompiler;
 import dev.ngspace.hudder.main.HudCompilationManager;
 import dev.ngspace.hudder.utils.HudFileUtils;
+import dev.ngspace.hudder.utils.NoAccess;
 import dev.ngspace.hudder.utils.AccessUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
+@NoAccess
 public class HudderConfig {
 	
 	public static final int HUDDER_CONFIG_VERSION = 6;

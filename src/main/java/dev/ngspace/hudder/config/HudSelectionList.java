@@ -58,8 +58,6 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 			e.printStackTrace();
 			throw new IllegalArgumentException(e);
 		}
-		
-		HudFileUtils.addReloadResourcesListener(this);
 	}
 	
 	private void loadHuds(Path folder) throws IOException {

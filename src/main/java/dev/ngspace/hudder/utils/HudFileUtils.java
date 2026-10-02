@@ -78,6 +78,10 @@ public class HudFileUtils {private HudFileUtils() {}
 	public static void addReloadResourcesListenerFirst(ResourceReloadListener listener) {
 		reloadResourcesListeners.add(0, listener);
 	}
+
+	public static void removeReloadResourcesListener(ResourceReloadListener listener) {
+		reloadResourcesListeners.remove(listener);
+	}
 	
 	
 	
