@@ -4,8 +4,10 @@ import dev.ngspace.hudder.variables.HudderBuiltInVariables;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.PlayerRideableJumping;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.equine.AbstractChestedHorse;
 import net.minecraft.world.entity.animal.equine.AbstractHorse;
@@ -120,7 +122,6 @@ public class PlayerData extends HudderBuiltInVariables {
 		registerBoolean(_->ins.gameMode.getPlayerMode() == GameType.SPECTATOR, "isspectator", "is_spectator");
 	}
 	
-	@SuppressWarnings("deprecation")
 	private static void registerMountVariables() {
 		// --- Mount numeric stats (nullable) ---
 
@@ -136,13 +137,13 @@ public class PlayerData extends HudderBuiltInVariables {
 		registerNumber(_->(ins.player.getVehicle() instanceof LivingEntity entity)
 		        ? entity.getAttribute(Attributes.JUMP_STRENGTH).getBaseValue() : null, "mount_jump_strength");
 
-		registerNumber(_->(ins.player.getVehicle() instanceof AbstractHorse)
+		registerNumber(_->(ins.player.getVehicle()!=null)
 				? ins.player.getJumpRidingScale() : null, "mount_jump_scale");
 
-		registerNumber(_->(ins.player.getVehicle() instanceof AbstractHorse horse) ? horse.getArmorValue() : null,
+		registerNumber(_->(ins.player.getVehicle() instanceof LivingEntity horse) ? horse.getArmorValue() : null,
 		    "mount_armor");
 
-		registerNumber(_->(ins.player.getVehicle() instanceof AbstractHorse horse) ? horse.getJumpCooldown() : null,
+		registerNumber(_->(ins.player.getVehicle() instanceof PlayerRideableJumping horse) ? horse.getJumpCooldown() : null,
 		    "mount_jump_cooldown");
 
 
@@ -150,10 +151,11 @@ public class PlayerData extends HudderBuiltInVariables {
 
 		registerString(_->{
 		    var v = ins.player.getVehicle();
-		    return (v == null) ? null : v.getType().builtInRegistryHolder().key().identifier().toString();
+		    
+		    return (v == null) ? null : EntityType.getKey(v.getType()).toString();
 		}, "mount_type");
 
-		registerString(_->(ins.player.getVehicle() instanceof AbstractHorse horse)
+		registerString(_->(ins.player.getVehicle() instanceof Mob horse)
 		        ? horse.getBodyArmorItem().getItem().toString() : null, "mount_armor_type");
 
 		registerString(_->{
@@ -207,8 +209,8 @@ public class PlayerData extends HudderBuiltInVariables {
 		    		.getKey(ins.level.getFluidState(hit.getBlockPos()).getType()).toString();
 		}, "cam_fluid_in_front");
 
-		registerString(_->ins.crosshairPickEntity == null ? null : BuiltInRegistries.ENTITY_TYPE
-				.getKey(ins.crosshairPickEntity.getType()) .toString(), "entity_in_front");
+		registerString(_->ins.crosshairPickEntity == null ? null : EntityType.getKey(ins.crosshairPickEntity.getType())
+				.toString(), "entity_in_front");
 	}
 
 	private static void registerPositionVariables() {

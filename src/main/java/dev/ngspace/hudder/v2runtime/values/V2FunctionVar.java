@@ -8,6 +8,7 @@ import dev.ngspace.hudder.v2runtime.functions.IV2Function;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 
+@SuppressWarnings("removal")
 public class V2FunctionVar extends AV2Value {
 	IV2Function func;
 	V2Runtime runtime;

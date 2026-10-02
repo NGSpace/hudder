@@ -15,6 +15,7 @@ import dev.ngspace.hudder.utils.ObjectWrapper;
 import dev.ngspace.hudder.v2runtime.V2Runtime;
 import net.minecraft.network.chat.Component;
 
+@SuppressWarnings("removal")
 public class LoadMethod implements V2IMethod {
 	@Override
 	public void invoke(HudderConfig config, CompileState meta, AV2Compiler comp, V2Runtime runtime, String type,

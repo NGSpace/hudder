@@ -29,17 +29,29 @@ import dev.ngspace.hudder.v2runtime.values.AV2Value;
 import dev.ngspace.hudder.v2runtime.values.DefaultV2VariableParser;
 import dev.ngspace.hudder.v2runtime.values.IV2VariableParser;
 
+/**
+ * @deprecated Update to V3
+ */
+@Deprecated(since = "11.1.0", forRemoval = true)
+@SuppressWarnings("removal")
 public abstract class AV2Compiler extends AHudCompiler<V2Runtime> implements PositionedBinder,
 		HudEvaluator<V2Runtime>, PreparedCompiler, VariablesManager {
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public MethodHandler methodHandler = new MethodHandler();
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public V2FunctionHandler functionHandler = new V2FunctionHandler();
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	protected IV2VariableParser variableParser = new DefaultV2VariableParser();
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public boolean SYSTEM_VARIABLES_ENABLED = true;
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public Map<String, Object> tempVariables = new HashMap<String, Object>();
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public Map<String, Object> variables = new HashMap<String, Object>();
 
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	protected AV2Compiler(HudderConfig config) {
 		super(config, new HashMap<>());
 		FunctionAndConsumerAPI.getInstance().applyFunctionsAndConsumers(this);
@@ -56,6 +68,7 @@ public abstract class AV2Compiler extends AHudCompiler<V2Runtime> implements Pos
 	 * @returns The tokenized AV2Value
 	 * @throws CompileException
 	 */
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public AV2Value getV2Value(V2Runtime runtime, String string, int line, int col) throws ExecutionException {
 		return getVariableParser().parse(runtime, string, this, line, col);
 	}
@@ -63,6 +76,7 @@ public abstract class AV2Compiler extends AHudCompiler<V2Runtime> implements Pos
 	/**
 	 * @return The variable parser used by this compiler.
 	 */
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public IV2VariableParser getVariableParser() {
 		return variableParser;
 	}
@@ -70,36 +84,43 @@ public abstract class AV2Compiler extends AHudCompiler<V2Runtime> implements Pos
 	/**
 	 * Sets the variable parser used by this compiler.
 	 */
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public void setVariableParser(IV2VariableParser parser) {
 		variableParser = parser;
 	}
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	@Override
 	public V2Runtime processFile(Path path) throws CompileException, IOException {
 		String text = HudFileUtils.readFile(path);
 		return evalHud(text, path.getFileName().toString());
 	}
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	@Override
 	public V2Runtime evalHud(String text, String debugname) throws CompileException {
 		return buildRuntimeSafe(text, new TextPos(-1, -1), debugname, null);
 	}
 	
 
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	@Override public final HudInformation execute(V2Runtime runtime, String filename) throws ExecutionException {
 		return runtime.execute().toResult();
 	}
 	
 	
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public abstract V2Runtime buildRuntime(String text, TextPos charPosition, String debugname, V2Runtime scope)
 			throws CompileException, ExecutionException;
 	
 	
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	@Override public void bindConsumer(BindablePositionedConsumer cons, String... names) {
 		methodHandler.bindConsumer((ci,m,_,_,_,pos,s)->cons.invoke(m, this, pos, ci, s), names);
 	}
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	@Override public void bindFunction(BindablePositionedFunction cons, String... names) {
 		functionHandler.bindFunction((c,_,s,l,co)->cons.invoke(c.compileState, this, new TextPos(l, co),
 				c.compiler.config, s), names);
@@ -107,6 +128,7 @@ public abstract class AV2Compiler extends AHudCompiler<V2Runtime> implements Pos
 	
 
 
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public void defineFunctionOrMethod(String commands, String[] args, String name, TextPos pos, String filename)
 			throws CompileException {
 		V2Runtime runtime = buildRuntimeSafe(commands, pos, filename, null);
@@ -114,7 +136,7 @@ public abstract class AV2Compiler extends AHudCompiler<V2Runtime> implements Pos
 		boolean isMethod = !canReturnValue(runtime);
 		
 		if (isMethod) {
-			MethodHandler.methods.put(name, (_,state,_,type,_,charpos,vals) -> {
+			methodHandler.methods.put(name, (_,state,_,type,_,charpos,vals) -> {
 				if (vals.length<args.length) throw new ExecutionException("Not enough arguments", pos);
 				for (int i = 0;i<vals.length;i++) {
 					Object v = vals[i].get();
@@ -172,6 +194,7 @@ public abstract class AV2Compiler extends AHudCompiler<V2Runtime> implements Pos
 		return canReturnValue(runtime);
 	}
 
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public boolean canReturnValue(V2Runtime runtime) {
 		for (AV2RuntimeElement element : runtime.getElements()) {
 			if (element.returnsAValue()) return true;
@@ -183,9 +206,11 @@ public abstract class AV2Compiler extends AHudCompiler<V2Runtime> implements Pos
 	}
 	
 	// V2 is the only one using those...
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	protected TextPos getPosition(int ind, String string) {
 		return getPosition(new TextPos(0, 0), ind, string);
 	}
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	protected TextPos getPosition(TextPos charPosition, int ind, String text) {
 		int line = charPosition.line();
 		int charpos = charPosition.column();
@@ -205,21 +230,25 @@ public abstract class AV2Compiler extends AHudCompiler<V2Runtime> implements Pos
 		return new TextPos(line, charpos);
 	}
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	@Override
 	public HudInformation evalAndExecuteHud(String text, String debugname) throws CompileException, ExecutionException {
 		return execute(evalHud(text, debugname), debugname);
 	}
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public Object getDynamicVariable(String key) {
 		Object obj = getRaw(key);
 		if (obj!=null) return obj;
 		return key;
 	}
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public Object getRaw(String key) {
 		return variables.get(key);
 	}
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	@Override public Object getVariable(String key) {
 		Object obj = DataVariableRegistry.getAny(key);
 		if (obj==null&&(obj=getDynamicVariable(key))!=null) return obj;
@@ -227,8 +256,10 @@ public abstract class AV2Compiler extends AHudCompiler<V2Runtime> implements Pos
 		return key;
 	}
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	@Override public void putVariable(String key, Object value) {variables.put(key, value);}
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	@Override
 	public void reset() throws IOException {
 		SYSTEM_VARIABLES_ENABLED = true;
@@ -237,6 +268,7 @@ public abstract class AV2Compiler extends AHudCompiler<V2Runtime> implements Pos
 		super.reset();
 	}
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	@Override
     public void prepareCompiler() {
 		tempVariables.clear();

@@ -3,6 +3,7 @@ package dev.ngspace.hudder.v2runtime.runtime_elements;
 import dev.ngspace.hudder.api.compilers.utils.CompileState;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 
+@SuppressWarnings("removal")
 public class BreakV2RuntimeElement extends AV2RuntimeElement {
 	@Override public boolean execute(CompileState compileState, StringBuilder builder) throws ExecutionException {
 		compileState.addString(builder.toString(), false);

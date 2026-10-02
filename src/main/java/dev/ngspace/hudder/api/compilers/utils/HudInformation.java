@@ -4,11 +4,12 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import dev.ngspace.hudder.uielements.AUIElement;
+import dev.ngspace.hudder.utils.NoAccess;
 
 public record HudInformation(String TopLeftText, float TLScale, String BottomLeftText, float BLScale,
 		String TopRightText, float TRScale, String BottomRightText, float BRScale, AUIElement[] elements) {
 
-	public static HudInformation of(String s) {
+	@NoAccess public static HudInformation of(String s) {
 		return new HudInformation(s, 1, "", 1, "", 1, "", 1, new AUIElement[0]);
 	}
 	

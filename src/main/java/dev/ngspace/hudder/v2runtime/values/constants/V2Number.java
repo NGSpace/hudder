@@ -4,6 +4,7 @@ import dev.ngspace.hudder.api.compilers.compilers.AV2Compiler;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.v2runtime.values.AV2Value;
 
+@SuppressWarnings("removal")
 public class V2Number extends AV2Value {
 	double doubleVal;
 	public V2Number(String value, int line, int charpos, AV2Compiler compiler) {

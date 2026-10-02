@@ -25,8 +25,7 @@ public class HudderUnitTest {
 	public HudderUnitTestResult test(AHudCompiler<?> compiler) {
 		if (!(compiler instanceof HudEvaluator))
 			throw new IllegalArgumentException("Compiler must implement StringEvaluator to be tested!");
-		@SuppressWarnings("unchecked")
-		HudEvaluator<String> evaluator = (HudEvaluator<String>) compiler;
+		HudEvaluator<?> evaluator = (HudEvaluator<?>) compiler;
 		Hudder.log("Running unit test: " + texttocompile);
 		return switch (mode) {
 			case NORMAL: {

@@ -144,18 +144,18 @@ public class JavaScriptEngine implements IScriptingLanguageEngine, PositionedBin
 	
 
 	@Override
-	public synchronized ObjectWrapper callFunction(String name, String... args) throws IOException {
+	public synchronized ObjectWrapper callFunction(String name, String... args) throws ExecutionException {
 		Object func = withContext(_ -> scope.get(name, scope));
 		if (func instanceof Function f) return withContext(context -> new JavaScriptValue(f.call(context, scope, scope, args)));
-		else throw new IOException(name + " is not a function or is not defined!");
+		else throw new ExecutionException(name + " is not a function or is not defined!");
 	}
 	
 	@Override
-	public synchronized ObjectWrapper callFunctionSafe(String name, Object defualt, String... args) throws IOException {
+	public synchronized ObjectWrapper callFunctionSafe(String name, Object defualt, String... args) throws ExecutionException {
 		Object func = withContext(_ -> scope.get(name, scope));
 		if (func==null||func==Scriptable.NOT_FOUND) return new JavaScriptValue(defualt);
 		else if (func instanceof Function f) return withContext(context -> new JavaScriptValue(f.call(context, scope, scope, args)));
-		else throw new IOException(name + " is not a function!");
+		else throw new ExecutionException(name + " is not a function!");
 	}
 	
 	

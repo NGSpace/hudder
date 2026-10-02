@@ -26,7 +26,6 @@ public class HudFileUtils {private HudFileUtils() {}
 
 	public static Path FABRIC_CONFIG_FOLDER = FabricLoader.getInstance().getConfigDir();
 	public static Path FOLDER = FABRIC_CONFIG_FOLDER.resolve("hudder");
-    public static String ASSETS = "/assets/hudder/";
     public static String[] DEFAULT_HUDS = {"hand.hud", "armorside.hud", "hud.hud", "basic.hud",
     		"hud.js", "hotbar.js"};
     public static String[] DEFAULT_TEXTURES = {"pointer.png","selection.png"};
@@ -78,6 +77,10 @@ public class HudFileUtils {private HudFileUtils() {}
 	}
 	public static void addReloadResourcesListenerFirst(ResourceReloadListener listener) {
 		reloadResourcesListeners.add(0, listener);
+	}
+
+	public static void removeReloadResourcesListener(ResourceReloadListener listener) {
+		reloadResourcesListeners.remove(listener);
 	}
 	
 	
@@ -142,7 +145,7 @@ public class HudFileUtils {private HudFileUtils() {}
 			Path dest = FOLDER.resolve(file);
 			if (Files.exists(dest)) continue;
 			try {
-				Files.copy(HudFileUtils.class.getResourceAsStream(ASSETS + "huds/" + file), dest);
+				Files.copy(HudFileUtils.class.getResourceAsStream("/assets/hudder/huds/" + file), dest);
 			} catch (IOException e) {
 				if (Hudder.IS_DEBUG) e.printStackTrace();
 				Hudder.error("Failed to generate default hud " + file);
@@ -167,7 +170,7 @@ public class HudFileUtils {private HudFileUtils() {}
 			Path dest = textures.resolve(file);
 			if (Files.exists(dest)) continue;
 			try {
-				Files.copy(HudFileUtils.class.getResourceAsStream(ASSETS + "Textures/" + file), dest);
+				Files.copy(HudFileUtils.class.getResourceAsStream("/assets/hudder/Textures/" + file), dest);
 			} catch (IOException e) {
 				if (Hudder.IS_DEBUG) e.printStackTrace();
 				Hudder.error("Failed to generate default texture " + file);
@@ -194,15 +197,17 @@ public class HudFileUtils {private HudFileUtils() {}
 
 
 	public static void loadResources(Path folder, String prefix) throws IOException {
-		for (Path resource : Files.newDirectoryStream(folder)) {
-			String path = prefix + ("".equals(prefix)?"":"/") + resource.getFileName();
-			if (Files.isDirectory(resource)) {
-				loadResources(resource, path);
-				continue;
+		try (var dir = Files.newDirectoryStream(folder)) {
+			for (Path resource : dir) {
+				String path = prefix + ("".equals(prefix)?"":"/") + resource.getFileName();
+				if (Files.isDirectory(resource)) {
+					loadResources(resource, path);
+					continue;
+				}
+				if (loadImage(resource, path))
+					continue;
+				reader.loadFileToCache(resource);
 			}
-			if (loadImage(resource, path))
-				continue;
-			reader.loadFileToCache(resource);
 		}
 	}
 

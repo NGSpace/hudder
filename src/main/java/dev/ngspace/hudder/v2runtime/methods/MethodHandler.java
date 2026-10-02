@@ -9,10 +9,17 @@ import dev.ngspace.hudder.api.compilers.utils.CompileState;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 
+/**
+ * @deprecated Use V3
+ */
+@Deprecated(since = "11.1.0", forRemoval = true)
+@SuppressWarnings("removal")
 public class MethodHandler {
 	
 	
-	public static Map<String, V2IMethod> methods = new HashMap<String,V2IMethod>();
+	@Deprecated(since = "11.1.0", forRemoval = true)
+	public Map<String, V2IMethod> methods = new HashMap<String,V2IMethod>();
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public MethodHandler() {
 		
 		//Text and compiling
@@ -28,11 +35,13 @@ public class MethodHandler {
 	}
 	
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public void bindConsumer(V2IMethod method, String... names) {
 		for(String name:names)
 			methods.put(name,method);
 	}
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public void bindConsumer(V2IMethod method, int length, String[] args, String... names) {
 		V2IMethod newmethod = (config,meta,compiler,runtime,name,charpos,vals) -> {
 			if (vals.length<length) {
@@ -53,6 +62,7 @@ public class MethodHandler {
 	 * @return The method
 	 * @throws CompileException - if there is no method with that name.
 	 */
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public V2IMethod getMethodFromName(String name) throws IllegalArgumentException {
 		V2IMethod method = methods.get(name.trim());
 		if (method==null) throw new IllegalArgumentException("Unknown method " + name);

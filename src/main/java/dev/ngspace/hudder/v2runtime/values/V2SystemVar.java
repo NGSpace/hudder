@@ -4,6 +4,7 @@ import dev.ngspace.hudder.api.compilers.compilers.AV2Compiler;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 
+@SuppressWarnings("removal")
 public class V2SystemVar extends AV2Value {
 	public V2SystemVar(String value, AV2Compiler compiler, int line, int charpos) {
 		super(line, charpos, value.toLowerCase(), compiler);

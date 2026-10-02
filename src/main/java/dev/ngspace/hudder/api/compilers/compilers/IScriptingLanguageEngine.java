@@ -52,6 +52,7 @@ public interface IScriptingLanguageEngine extends Closeable {
 	 * @param code the source code to evaluate
 	 * @param filename the name of the source file, used to provide source context
 	 *        such as debugging information
+	 * @throws CompileException if compliation failed
 	 */
 	public void evaluateCode(String code, String filename) throws CompileException;
 	
@@ -88,7 +89,7 @@ public interface IScriptingLanguageEngine extends Closeable {
 	 * @param name the name of the variable to read
 	 * @return a wrapper containing the variable's value
 	 */
-	public ObjectWrapper readVariable(String name) throws ExecutionException;
+	public ObjectWrapper readVariable(String name) throws IOException, ExecutionException;
 
 	/**
 	 * Reads a variable from the scripting environment, using the supplied value
@@ -98,7 +99,7 @@ public interface IScriptingLanguageEngine extends Closeable {
 	 * @param t the fallback value
 	 * @return a wrapper containing the variable's value or the fallback value
 	 */
-	public ObjectWrapper readVariableSafe(String name, Object t);
+	public ObjectWrapper readVariableSafe(String name, Object t) throws ExecutionException;
 	
 	
 	

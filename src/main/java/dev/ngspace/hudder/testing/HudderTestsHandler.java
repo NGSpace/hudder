@@ -10,12 +10,15 @@ import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
 import dev.ngspace.hudder.api.variableregistry.DataVariableRegistry;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.ExecutionException;
-import dev.ngspace.hudder.utils.HudFileUtils;
-import dev.ngspace.hudder.utils.ValueGetter;
+import dev.ngspace.hudder.testing.types.JavaTestInheritedNoAccess;
+import dev.ngspace.hudder.testing.types.JavaTestNoAccess;
+import dev.ngspace.hudder.testing.types.JavaTestObject;
+import dev.ngspace.hudder.testing.types.JavaTestPartialNoAccess;
+import dev.ngspace.hudder.testing.types.WrapperTest;
 
 public class HudderTestsHandler {
 	
-	public static final String TESTS_FOLDER = HudFileUtils.ASSETS + "tests/";
+	public static final String TESTS_FOLDER = "/assets/hudder/tests/";
 	
     public List<TestProvider> test_providers = new ArrayList<TestProvider>();
 	public HudderUnitTester hudderTester;
@@ -43,6 +46,8 @@ public class HudderTestsHandler {
 		
 		DataVariableRegistry.registerObjectVariable(_ -> new JavaTestObject(), "JavaObjectAccess");
 		DataVariableRegistry.registerObjectVariable(_ -> new JavaTestNoAccess(), "JavaTestNoAccess");
+		DataVariableRegistry.registerObjectVariable(_ -> new JavaTestInheritedNoAccess(), "JavaTestInheritedNoAccess");
+		DataVariableRegistry.registerObjectVariable(_ -> new JavaTestPartialNoAccess(), "JavaTestPartialNoAccess");
 		
 		DataVariableRegistry.registerStringVariable(_ -> "Value", "string_var");
 		DataVariableRegistry.registerStringVariable(k -> k, "string_var2");
@@ -52,7 +57,7 @@ public class HudderTestsHandler {
 			@Override public String toString() {return "lol";}
 		}, "object_var");
 		
-		DataVariableRegistry.registerObjectVariable(_ -> ((ValueGetter) k->k), "value_getter");
+		DataVariableRegistry.registerObjectVariable(_->new WrapperTest.WrapperTestWrapper(new WrapperTest()), "value_getter");
 	}
     
     private static final String[] tests = {
@@ -64,9 +69,10 @@ public class HudderTestsHandler {
 		"control_flow.hud",
 		"functions_and_methods.hud",
 		"java_and_external_apis.hud",
-		"misc.hud"
+		"misc.hud",
+		"js/js_tests.js"
 	};
-
+    
 	public void loadDefaultTests(HudderUnitTester e) throws IOException {
 		for (String test : tests) {
 			boolean shouldTest = false;

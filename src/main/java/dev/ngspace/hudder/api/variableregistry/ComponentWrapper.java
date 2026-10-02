@@ -1,5 +1,6 @@
 package dev.ngspace.hudder.api.variableregistry;
 
+import dev.ngspace.hudder.utils.NoAccess;
 import dev.ngspace.hudder.utils.ValueGetter;
 import net.minecraft.network.chat.Component;
 
@@ -17,7 +18,7 @@ public class ComponentWrapper implements ValueGetter {
 	/**
 	 * The wrapped Minecraft component.
 	 */
-	public Component component;
+	@NoAccess public Component component;
 	
 	/**
 	 * Creates a new wrapper for the specified component.
