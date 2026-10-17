@@ -192,7 +192,7 @@ public class NGSMCConfigColorPickerWidget extends EditBox implements NGSMCConfig
 			}
 			case HUE -> hue = clampUnit((float) ((mouseY - svY) / (SATURATION_VALUE_HEIGHT - 1.0)));
 			case ALPHA -> {
-				int alpha = Mth.clamp((int) Math.round((mouseX - svX) * 255.0 / (alphaWidth - 1.0)), 0, 255);
+				int alpha = (int) Mth.clampedLerp((int) Math.round((mouseX - svX) * 255.0 / (alphaWidth - 1.0)), 0, 255);
 				applyPickerColor(alpha);
 				return;
 			}
@@ -309,7 +309,7 @@ public class NGSMCConfigColorPickerWidget extends EditBox implements NGSMCConfig
 	}
 
 	private static float clampUnit(float value) {
-		return Mth.clamp(value, 0.0F, 1.0F);
+		return Mth.clampedLerp(value, 0.0F, 1.0F);
 	}
 
 	private static boolean contains(double mouseX, double mouseY, int x, int y, int width, int height) {
@@ -377,10 +377,10 @@ public class NGSMCConfigColorPickerWidget extends EditBox implements NGSMCConfig
 		}
 
 		float match = brightness - chroma;
-		int redByte = Mth.clamp(Math.round((red + match) * 255.0F), 0, 255);
-		int greenByte = Mth.clamp(Math.round((green + match) * 255.0F), 0, 255);
-		int blueByte = Mth.clamp(Math.round((blue + match) * 255.0F), 0, 255);
-		return Mth.clamp(alpha, 0, 255) << 24 | redByte << 16 | greenByte << 8 | blueByte;
+		int redByte = (int) Mth.clampedLerp(Math.round((red + match) * 255.0F), 0, 255);
+		int greenByte = (int) Mth.clampedLerp(Math.round((green + match) * 255.0F), 0, 255);
+		int blueByte = (int) Mth.clampedLerp(Math.round((blue + match) * 255.0F), 0, 255);
+		return ((int) Mth.clampedLerp(alpha, 0, 255)) << 24 | redByte << 16 | greenByte << 8 | blueByte;
 	}
 
 	@Override

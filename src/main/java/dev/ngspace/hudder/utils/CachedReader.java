@@ -10,7 +10,7 @@ import java.util.Map.Entry;
 import com.mojang.blaze3d.platform.NativeImage;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.TextureResources;
 import net.minecraft.resources.Identifier;
 
 public class CachedReader {
@@ -22,7 +22,7 @@ public class CachedReader {
 
 	HashMap<Path, byte[]> savedFiles = new HashMap<>();
 	HashMap<Path, String> savedFilesStrings = new HashMap<>();
-	HashMap<Identifier, DynamicTexture> savedImages = new HashMap<>();
+	HashMap<Identifier, TextureResources> savedImages = new HashMap<>();
 	HashMap<Identifier, NativeImage> unregisteredImages = new HashMap<>();
 	
 	
@@ -75,7 +75,7 @@ public class CachedReader {
 			savedImages.get(id).close();
 			savedImages.remove(id);
 		}
-		DynamicTexture tex = new DynamicTexture(id::getPath,img);
+		TextureResources tex = TextureResources.from2dImage(id::getPath,img);
 		mc.getTextureManager().register(id, tex);
 		
 		savedImages.put(id,tex);
@@ -87,7 +87,7 @@ public class CachedReader {
 	 * Clears Cache
 	 */
 	public void clearCache() {
-		for (Entry<Identifier, DynamicTexture> v : savedImages.entrySet()) {
+		for (Entry<Identifier, TextureResources> v : savedImages.entrySet()) {
 			mc.getTextureManager().release(v.getKey());
 			v.getValue().close();
 		}
