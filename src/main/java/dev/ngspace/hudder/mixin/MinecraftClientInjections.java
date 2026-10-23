@@ -10,7 +10,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.debug.DebugScreenEntry;
 import net.minecraft.client.gui.components.debug.DebugScreenEntryList;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 
 @Environment(EnvType.CLIENT)

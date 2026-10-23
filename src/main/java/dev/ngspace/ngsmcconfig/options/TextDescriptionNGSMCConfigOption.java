@@ -25,9 +25,8 @@ public class TextDescriptionNGSMCConfigOption extends AbstractNGSMCConfigOption<
 	public NGSMCConfigEntry buildEntry() {
 		return new NGSMCConfigEntry(null, Component.empty(), this) {
 			@Override
-			public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered,
-					float partialTick) {
-				super.extractContent(graphics, mouseX, mouseY, hovered, partialTick);
+			public void extractContent(GuiGraphicsExtractor graphics, boolean hovered) {
+				super.extractContent(graphics, hovered);
 				graphics.centeredText(Minecraft.getInstance().font, text, getX()+getWidth()/2, getY(), 0xFFFFFFFF);
 			}
 		};

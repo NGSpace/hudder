@@ -44,7 +44,7 @@ public class NGSMCConfigButton extends Button {
 	}
 
 	@Override
-	public void extractContents(final GuiGraphicsExtractor graphics, final int mouseX, final int mouseY, final float a) {
+	public void extractContents(final GuiGraphicsExtractor graphics) {
     	int x = getX();
     	int width = getWidth();
     	int height = getHeight();
@@ -72,7 +72,7 @@ public class NGSMCConfigButton extends Button {
 		NGSMCScrollingText.render(graphics, getMessage(), textX, y+1, textRight, height, textcolor,
 				marqueeStartTime, centerText, scrollingTextX);
     	if (currenticon!=null)
-    		currenticon.extractRenderState(graphics, mouseX, mouseY, a, height-4, height-4, x+2, y+2);
+    		currenticon.extractRenderState(graphics, height-4, height-4, x+2, y+2);
 	}
 
 	public void setCenterText(boolean centerText) {

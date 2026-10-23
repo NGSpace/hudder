@@ -72,9 +72,9 @@ public class NGSMCConfigColorPickerWidget extends EditBox implements NGSMCConfig
 	}
 
 	@Override
-	public void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+	public void extractWidgetRenderState(GuiGraphicsExtractor graphics) {
 		graphics.enableScissor(getX(), getY(), getRight() - SWATCH_WIDTH, getBottom());
-		super.extractWidgetRenderState(graphics, mouseX, mouseY, partialTick);
+		super.extractWidgetRenderState(graphics);
 		graphics.disableScissor();
 
 		int swatchX = getRight() - SWATCH_WIDTH;
@@ -82,12 +82,17 @@ public class NGSMCConfigColorPickerWidget extends EditBox implements NGSMCConfig
 		graphics.fill(swatchX, getY(), getRight(), getBottom(), color);
 		drawBorder(graphics, swatchX, getY(), SWATCH_WIDTH, getHeight(), open ? 0xFFFFFFFF : 0xFF9C9C9C);
 
+        var win = Minecraft.getInstance().getWindow();
+        var mouse = Minecraft.getInstance().mouseHandler;
+        var mouseX = mouse.getScaledXPos(win);
+        var mouseY = mouse.getScaledYPos(win);
+        
 		if (contains(mouseX, mouseY, swatchX, getY(), SWATCH_WIDTH, getHeight()))
 			graphics.requestCursor(CursorTypes.POINTING_HAND);
 	}
 
 	@Override
-	public void extractOverlayRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick,
+	public void extractOverlayRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY,
 			int overlayTop, int overlayBottom) {
 		if (!open)
 			return;

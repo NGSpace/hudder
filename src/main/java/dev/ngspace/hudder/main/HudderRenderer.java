@@ -22,7 +22,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.render.TextureSetup;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.Identifier;
@@ -42,17 +42,16 @@ public class HudderRenderer implements HudElement {
 	
 	
 	
-	public final RenderPipeline GUI_TEXTURED_TRIANGLES = RenderPipelines.register(
+	public final RenderPipeline GUI_TEXTURED_TRIANGLES = 
 		RenderPipeline.builder(RenderPipelines.GUI_TEXTURED_SNIPPET).withLocation("pipeline/gui_textured_triangles")
 				.withVertexBinding(0, DefaultVertexFormat.POSITION_TEX_COLOR)
 				.withCull(false)
-				.withPrimitiveTopology(PrimitiveTopology.TRIANGLE_STRIP).build());
+				.withPrimitiveTopology(PrimitiveTopology.TRIANGLE_STRIP).build();
 	
-	public final RenderPipeline GUI_COLORED_TRIANGLES = RenderPipelines
-		.register(RenderPipeline.builder(RenderPipelines.GUI_SNIPPET).withLocation("pipeline/gui_colored_triangles")
+	public final RenderPipeline GUI_COLORED_TRIANGLES = RenderPipeline.builder(RenderPipelines.GUI_SNIPPET).withLocation("pipeline/gui_colored_triangles")
 				.withVertexBinding(0, DefaultVertexFormat.POSITION_COLOR)
 				.withCull(false)
-				.withPrimitiveTopology(PrimitiveTopology.TRIANGLE_STRIP).build());
+				.withPrimitiveTopology(PrimitiveTopology.TRIANGLE_STRIP).build();
 	
 	
 	
@@ -321,7 +320,8 @@ public class HudderRenderer implements HudElement {
 	
 	
 	
-	@Override public void extractRenderState(GuiGraphicsExtractor context, DeltaTracker delta) {
+	@Override public void extractRenderState(GuiGraphicsExtractor context) {
+		var delta = Minecraft.getInstance().getDeltaTracker();
 		try {
 			if (!config.limitrate()) compman.compileAndExecute(delta);
 			if (config.shouldDrawResult()) {

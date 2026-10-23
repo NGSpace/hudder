@@ -59,16 +59,16 @@ public class GameHudElement extends AUIElement {
 					contextualInfoBar = Pair.of(contextualInfo, contextualInfoBarRenderers.get(contextualInfo).get());
 				}
 
-				contextualInfoBar.getSecond().extractBackground(context, delta);
+				contextualInfoBar.getSecond().extractBackground(context);
 				if (mc.gameMode.hasExperience() && mc.player.experienceLevel > 0) {
 					ContextualBar.extractExperienceLevel(context, mc.font, mc.player.experienceLevel);
 				}
 
-				contextualInfoBar.getSecond().extractRenderState(context, delta);
+				contextualInfoBar.getSecond().extractRenderState(context);
 				break;
 			case HOTBAR:
 		        matrixStack.translate(x-scaledWidth/2, y-scaledHeight);
-		        acchud.callRenderHotbarAndDecorations(context, delta);
+		        acchud.callRenderHotbarAndDecorations(context);
 				break;
 			case ITEM_TOOLTIP:
 				int tooltipy = 44;
