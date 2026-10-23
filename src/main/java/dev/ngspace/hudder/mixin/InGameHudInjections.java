@@ -8,7 +8,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import dev.ngspace.hudder.Hudder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.Hud;
 
@@ -20,7 +19,7 @@ public class InGameHudInjections {
     public boolean shouldNotDrawBossBars() {return Hudder.config.removeBossBars()&&Hudder.config.shouldCompile();}
 
 	@Inject(method = "extractHotbarAndDecorations", at = @At("HEAD"),cancellable=true)
-    public void disableHotbarAndDecorations(GuiGraphicsExtractor context, DeltaTracker tickCounter, CallbackInfo i) {
+    public void disableHotbarAndDecorations(GuiGraphicsExtractor context, CallbackInfo i) {
 		if(shouldNotDraw()) {
 			i.cancel();
 		}

@@ -9,7 +9,6 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 import com.mojang.datafixers.util.Pair;
 
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.Hud;
 import net.minecraft.client.gui.contextualbar.ContextualBar;
@@ -19,7 +18,7 @@ public interface InGameHudAccessor {
     @Invoker("extractPlayerHealth") public void callRenderPlayerHealth(GuiGraphicsExtractor context);
     @Invoker("extractVehicleHealth") public void callRenderVehicleHealth(GuiGraphicsExtractor context);
     @Invoker("extractSelectedItemName") public void callRenderSelectedItemName(GuiGraphicsExtractor context);
-    @Invoker("extractHotbarAndDecorations") public void callRenderHotbarAndDecorations(GuiGraphicsExtractor context, DeltaTracker timeDelta);
+    @Invoker("extractHotbarAndDecorations") public void callRenderHotbarAndDecorations(GuiGraphicsExtractor context);
 
     @Invoker public Hud.ContextualInfo callNextContextualInfoState();
     @Accessor("contextualInfoBar") public Pair<Hud.ContextualInfo, ContextualBar> contextualInfoBar();

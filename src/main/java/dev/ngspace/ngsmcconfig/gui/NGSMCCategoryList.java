@@ -60,7 +60,7 @@ public class NGSMCCategoryList extends ContainerObjectSelectionList<NGSMCCategor
 		}
 		
 		@Override
-		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
+		public void extractContent(GuiGraphicsExtractor graphics, boolean hovered) {
 	    	int x = getX();
 	    	int width = getWidth();
 	    	int height = getHeight();
@@ -81,7 +81,7 @@ public class NGSMCCategoryList extends ContainerObjectSelectionList<NGSMCCategor
 	    	
 	    	renderCategoryTitle(graphics, x, y, width, height, selected ? 0xFFFFFFFF : 0xFF9C9C9C);
 	    	if (icon!=null)
-	    		icon.extractRenderState(graphics, mouseX, mouseY, a, height-4, height-4, x+2, y+2);
+	    		icon.extractRenderState(graphics, height-4, height-4, x+2, y+2);
 	    	
 	    	if (categoryButton.isFocused()) {
 	    		graphics.fill(x+width-2, y, x+width, y+height, 0xFF00FFFF);

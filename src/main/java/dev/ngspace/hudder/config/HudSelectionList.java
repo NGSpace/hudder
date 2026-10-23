@@ -169,12 +169,17 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 		}
 		
 		@Override
-		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
+		public void extractContent(GuiGraphicsExtractor graphics, boolean hovered) {
 			graphics.text(Minecraft.getInstance().font, component, getX() + 4, getY() + 4, 0xFFFFFFFF);
+	        
+	        var win = Minecraft.getInstance().getWindow();
+	        var mouse = Minecraft.getInstance().mouseHandler;
+	        var mouseX = mouse.getScaledXPos(win);
+	        var mouseY = mouse.getScaledYPos(win);
 			if (editbutton.isMouseOver(mouseX, mouseY))
 				graphics.requestCursor(CursorTypes.POINTING_HAND);
 			editbutton.setPosition(getContentRight() - editbutton.getWidth(), getContentY());
-			editbutton.extractContents(graphics, mouseX, mouseY, a);
+			editbutton.extractContents(graphics);
 		}
 		
 		@Override
@@ -226,8 +231,7 @@ public class HudSelectionList extends ObjectSelectionList<HudEntry> implements R
 		}
 		
 		@Override
-		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered,
-				float delta) {
+		public void extractContent(GuiGraphicsExtractor graphics, boolean hovered) {
 			var font = Minecraft.getInstance().font;
 			
 			float centerX = getX() + getWidth() / 2.0f;

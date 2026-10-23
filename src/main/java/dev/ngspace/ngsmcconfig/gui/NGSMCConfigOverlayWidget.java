@@ -10,7 +10,7 @@ import net.minecraft.client.input.MouseButtonEvent;
  */
 public interface NGSMCConfigOverlayWidget {
 
-	void extractOverlayRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick,
+	void extractOverlayRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY,
 			int overlayTop, int overlayBottom);
 
 	boolean mouseClickedOverlay(MouseButtonEvent event, boolean doubleClick, int overlayTop, int overlayBottom);
@@ -27,4 +27,5 @@ public interface NGSMCConfigOverlayWidget {
 	boolean isOverlayOpen();
 
 	void closeOverlay();
+
 }
