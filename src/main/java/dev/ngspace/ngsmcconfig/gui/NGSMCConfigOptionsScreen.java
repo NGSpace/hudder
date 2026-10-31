@@ -31,9 +31,13 @@ public class NGSMCConfigOptionsScreen extends AbstractNGSMCConfigScreen {
 	}
 	
 	@Override
-	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-		super.extractRenderState(graphics, mouseX, mouseY, partialTick);
-        container.extractOverlayRenderState(graphics, mouseX, mouseY, partialTick);
+	public void extractRenderState(GuiGraphicsExtractor graphics) {
+		super.extractRenderState(graphics);
+	    var win = Minecraft.getInstance().getWindow();
+	    var mouse = Minecraft.getInstance().mouseHandler;
+	    int mouseX = (int) mouse.getScaledXPos(win);
+	    int mouseY = (int) mouse.getScaledYPos(win);
+        container.extractOverlayRenderState(graphics, mouseX, mouseY);
 	}
 	
 	@Override

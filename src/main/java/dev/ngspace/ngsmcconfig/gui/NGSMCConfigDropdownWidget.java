@@ -61,7 +61,7 @@ public class NGSMCConfigDropdownWidget<T> extends AbstractWidget implements NGSM
 	}
 
 	@Override
-	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics) {
 		renderControl(graphics);
 		
 		if (this.isHovered()) {
@@ -79,7 +79,7 @@ public class NGSMCConfigDropdownWidget<T> extends AbstractWidget implements NGSM
 	}
 
 	@Override
-	public void extractOverlayRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick,
+	public void extractOverlayRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY,
 			int overlayTop, int overlayBottom) {
 		if (!open)
 			return;

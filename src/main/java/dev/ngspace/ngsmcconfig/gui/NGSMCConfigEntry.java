@@ -54,7 +54,7 @@ public class NGSMCConfigEntry extends ContainerObjectSelectionList.Entry<NGSMCCo
     }
 
     @Override
-    public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float partialTick) {
+    public void extractContent(GuiGraphicsExtractor graphics, boolean hovered) {
     	int x = getX();
     	int width = getWidth();
     	int height = getHeight();
@@ -63,20 +63,27 @@ public class NGSMCConfigEntry extends ContainerObjectSelectionList.Entry<NGSMCCo
         if (widget!=null) {
         	resetButton.setPosition(x+width-40, y);
             resetButton.active = !option.isDefault();
-            resetButton.extractRenderState(graphics, mouseX, mouseY, partialTick);
+            resetButton.extractRenderState(graphics);
             
         	widget.setPosition(x+width-50-widget.getWidth(), y);
-        	widget.extractRenderState(graphics, mouseX, mouseY, partialTick);
+        	widget.extractRenderState(graphics);
         } else {
         	text.setSize(width, height);
         }
         text.setPosition(x, y);
-        text.extractWidgetRenderState(graphics, mouseX, mouseY, partialTick);
+        text.extractWidgetRenderState(graphics);
+        
+        var win = Minecraft.getInstance().getWindow();
+        var mouse = Minecraft.getInstance().mouseHandler;
+        var mouseX = mouse.getScaledXPos(win);
+        var mouseY = mouse.getScaledYPos(win);
+        
+        
         var c = getChildAt(mouseX, mouseY);
         if (c.isPresent()) {
         	var child = c.get();
         	if (child==text) {
-        		text.extractWidgetRenderState(graphics, height, mouseY, partialTick);
+        		text.extractWidgetRenderState(graphics);
         	}
         }
         
@@ -84,7 +91,7 @@ public class NGSMCConfigEntry extends ContainerObjectSelectionList.Entry<NGSMCCo
         
         if (hoveredwidget.isPresent() && hoveredwidget.get() instanceof AbstractWidget hoveredawidget) {
             Style style = hoveredawidget.getMessage().getStyle();
-            ((GuiGraphicsExtractorAccessor) graphics).callComponentHoverEffect(Minecraft.getInstance().font, style, mouseX-5, mouseY+10);
+            ((GuiGraphicsExtractorAccessor) graphics).callComponentHoverEffect(Minecraft.getInstance().font, style, (int) mouseX-5, (int) mouseY+10);
         }
     }
 
@@ -92,10 +99,9 @@ public class NGSMCConfigEntry extends ContainerObjectSelectionList.Entry<NGSMCCo
 
 	@Override public List<? extends NarratableEntry> narratables() {return children;}
 
-	public void extractOverlayRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick,
-			int overlayTop, int overlayBottom) {
+	public void extractOverlayRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int overlayTop, int overlayBottom) {
 		if (renderlast && widget instanceof NGSMCConfigOverlayWidget overlayWidget)
-			overlayWidget.extractOverlayRenderState(graphics, mouseX, mouseY, partialTick, overlayTop, overlayBottom);
+			overlayWidget.extractOverlayRenderState(graphics, mouseX, mouseY, overlayTop, overlayBottom);
 	}
 
 	public boolean mouseClickedOverlay(MouseButtonEvent event, boolean doubleClick, int overlayTop, int overlayBottom) {

@@ -29,3 +29,6 @@ gradle-app.setting
 **.launch
 /.settings/
 /mods/
+
+#IDEA
+.idea/

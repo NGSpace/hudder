@@ -5,11 +5,11 @@ import java.util.function.Consumer;
 
 import org.joml.Matrix3x2fStack;
 
-import com.mojang.blaze3d.platform.NativeImage;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
-import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
+import com.mojang.renderpearl.api.textures.GpuTextureView;
 
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.compilers.utils.HudInformation;
@@ -22,8 +22,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.render.TextureSetup;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.Identifier;
@@ -43,17 +42,16 @@ public class HudderRenderer implements HudElement {
 	
 	
 	
-	public final RenderPipeline GUI_TEXTURED_TRIANGLES = RenderPipelines.register(
+	public final RenderPipeline GUI_TEXTURED_TRIANGLES = 
 		RenderPipeline.builder(RenderPipelines.GUI_TEXTURED_SNIPPET).withLocation("pipeline/gui_textured_triangles")
 				.withVertexBinding(0, DefaultVertexFormat.POSITION_TEX_COLOR)
 				.withCull(false)
-				.withPrimitiveTopology(PrimitiveTopology.TRIANGLE_STRIP).build());
+				.withPrimitiveTopology(PrimitiveTopology.TRIANGLE_STRIP).build();
 	
-	public final RenderPipeline GUI_COLORED_TRIANGLES = RenderPipelines
-		.register(RenderPipeline.builder(RenderPipelines.GUI_SNIPPET).withLocation("pipeline/gui_colored_triangles")
+	public final RenderPipeline GUI_COLORED_TRIANGLES = RenderPipeline.builder(RenderPipelines.GUI_SNIPPET).withLocation("pipeline/gui_colored_triangles")
 				.withVertexBinding(0, DefaultVertexFormat.POSITION_COLOR)
 				.withCull(false)
-				.withPrimitiveTopology(PrimitiveTopology.TRIANGLE_STRIP).build());
+				.withPrimitiveTopology(PrimitiveTopology.TRIANGLE_STRIP).build();
 	
 	
 	
@@ -173,12 +171,12 @@ public class HudderRenderer implements HudElement {
 	public void renderTexture9Slice(GuiGraphicsExtractor context, Identifier id, float x, float y, float width,
 			float height, float[] slices) {
 		var tex = mc.getTextureManager().getTexture(id);
-		context.guiRenderState.addGuiElement(new TextureRenderState(TextureSetup.singleTexture(tex.getTextureView(),
-				tex.getSampler()), RenderPipelines.GUI_TEXTURED, vconsumer->{
+		context.guiRenderState.addGuiElement(new TextureRenderState(TextureSetup.singleTexture(tex.textureView(),
+				tex.sampler()), RenderPipelines.GUI_TEXTURED, vconsumer->{
 		    Matrix3x2fStack matrix = context.pose();
-	        NativeImage img = ((DynamicTexture)mc.getTextureManager().getTexture(id)).getPixels();
-	        int texwidth = img.getWidth();
-	        int texheight = img.getHeight();
+	        GpuTextureView texture = mc.getTextureManager().getTexture(id).textureView();
+	        int texwidth = texture.getWidth(texture.mipLevels());
+	        int texheight = texture.getHeight(texture.mipLevels());
 
 	        float left = Math.min(slices[0],texwidth/2f);
 	        float right = Math.min(slices[1],texwidth/2f);
@@ -259,8 +257,8 @@ public class HudderRenderer implements HudElement {
 	public void renderTexturedVertexArray(GuiGraphicsExtractor context, float[] vertices, float[] textures,
 			Identifier id, boolean triangles) {
 		var tex = mc.getTextureManager().getTexture(id);
-		context.guiRenderState.addGuiElement(new TextureRenderState(TextureSetup.singleTexture(tex.getTextureView(),
-				tex.getSampler()),
+		context.guiRenderState.addGuiElement(new TextureRenderState(TextureSetup.singleTexture(tex.textureView(),
+				tex.sampler()),
 				triangles ? GUI_TEXTURED_TRIANGLES : RenderPipelines.GUI_TEXTURED, vconsumer->{
 		        Matrix3x2fStack matrix = context.pose();
 		        
@@ -322,7 +320,8 @@ public class HudderRenderer implements HudElement {
 	
 	
 	
-	@Override public void extractRenderState(GuiGraphicsExtractor context, DeltaTracker delta) {
+	@Override public void extractRenderState(GuiGraphicsExtractor context) {
+		var delta = Minecraft.getInstance().getDeltaTracker();
 		try {
 			if (!config.limitrate()) compman.compileAndExecute(delta);
 			if (config.shouldDrawResult()) {

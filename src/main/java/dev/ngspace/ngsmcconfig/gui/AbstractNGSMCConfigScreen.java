@@ -240,13 +240,13 @@ public abstract class AbstractNGSMCConfigScreen extends Screen {
 	}
 	
     @Override
-    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(GuiGraphicsExtractor graphics) {
 		Component error = getError();
 		
 		saveButton.active = error==null;
 		errorWidget.setMessage(stylizeErrorWarningComponment(getWarning(), error));
 		
-        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
+        super.extractRenderState(graphics);
     }
 
 	protected static Component stylizeErrorWarningComponment(Component warning, Component error) {

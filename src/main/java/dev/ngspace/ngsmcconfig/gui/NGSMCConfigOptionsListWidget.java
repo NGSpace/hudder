@@ -25,9 +25,9 @@ public class NGSMCConfigOptionsListWidget extends ContainerObjectSelectionList<N
     	return ROW_WIDTH;
     }
 
-	public void extractOverlayRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+	public void extractOverlayRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
 		for (NGSMCConfigEntry entry : children())
-			entry.extractOverlayRenderState(graphics, mouseX, mouseY, partialTick, getY(), getBottom());
+			entry.extractOverlayRenderState(graphics, mouseX, mouseY, getY(), getBottom());
 	}
 
 	@Override
