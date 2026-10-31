@@ -1,19 +1,6 @@
 package dev.ngspace.hudder;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Optional;
-import java.util.Scanner;
-
-import org.jetbrains.annotations.Nullable;
-import org.lwjgl.sdl.SDLScancode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.mojang.blaze3d.platform.InputConstants;
-
 import dev.ngspace.hudder.api.HudderApi;
 import dev.ngspace.hudder.api.compilers.CompilerRegistry;
 import dev.ngspace.hudder.api.functionsandconsumers.FunctionAndConsumerAPI;
@@ -44,6 +31,18 @@ import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.LoggedPrintStream;
+import org.jetbrains.annotations.Nullable;
+import org.lwjgl.sdl.SDLScancode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
+import java.util.Scanner;
+
 /**
  * <h1>If you expect any comments or JavaDocs explaining the bug-filled shithole I call "my code"
  * then you're gonna have a bad time.</h1>
