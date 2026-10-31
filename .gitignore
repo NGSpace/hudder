@@ -6,6 +6,7 @@
 remappedSrc/
 /tests/
 /config/
+.idea/
 
 # Ignore Gradle GUI config
 gradle-app.setting
