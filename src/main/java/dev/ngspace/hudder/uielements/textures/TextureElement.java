@@ -5,6 +5,7 @@ import dev.ngspace.hudder.uielements.AUIElement;
 import dev.ngspace.hudder.utils.HudFileUtils;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.resources.Identifier;
 
@@ -30,7 +31,7 @@ public class TextureElement extends AUIElement {
         context.pose().pushMatrix();
         context.pose().translate(x, y);
         context.pose().scale(width, height);
-		context.blit(RenderPipelines.GUI_TEXTURED,id, 0, 0, 0, 0, 1, 1, 1, 1);
+		context.blit(GuiPipeline.TEXTURED,id, 0, 0, 0, 0, 1, 1, 1, 1);
 //        context.fill(0, 0, 1, 1, argb);
         context.pose().popMatrix();
 	}

@@ -7,6 +7,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.Identifier;
@@ -35,6 +36,6 @@ public class BuiltInTextureElement extends AUIElement {
 	@Override
 	public void renderElement(GuiGraphicsExtractor context, HudderRenderer renderer, DeltaTracker delta) {
 		TextureAtlasSprite sprite = mc.getAtlasManager().getAtlasOrThrow(atlasId).getSprite(spriteId);
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, x, y, width, height);
+		context.blitSprite(GuiPipeline.TEXTURED, sprite, x, y, width, height);
     }
 }

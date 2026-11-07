@@ -1,16 +1,12 @@
 package dev.ngspace.hudder.main;
 
-import java.util.List;
-import java.util.function.Consumer;
-
-import org.joml.Matrix3x2fStack;
-
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.renderpearl.api.pipeline.BlendFunction;
+import com.mojang.renderpearl.api.pipeline.ColorTargetState;
 import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
 import com.mojang.renderpearl.api.textures.GpuTextureView;
-
 import dev.ngspace.hudder.Hudder;
 import dev.ngspace.hudder.api.compilers.utils.HudInformation;
 import dev.ngspace.hudder.config.HudderConfig;
@@ -20,14 +16,21 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.gui.render.TextureSetup;
+import net.minecraft.client.renderer.BindGroupLayouts;
 import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
+import org.joml.Matrix3x2fStack;
+
+import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Hudder.java was too messy so I moved all rendering functions into this one class
@@ -42,16 +45,33 @@ public class HudderRenderer implements HudElement {
 	
 	
 	
-	public final RenderPipeline GUI_TEXTURED_TRIANGLES = 
-		RenderPipeline.builder(RenderPipelines.GUI_TEXTURED_SNIPPET).withLocation("pipeline/gui_textured_triangles")
-				.withVertexBinding(0, DefaultVertexFormat.POSITION_TEX_COLOR)
-				.withCull(false)
-				.withPrimitiveTopology(PrimitiveTopology.TRIANGLE_STRIP).build();
+	public final GuiPipeline GUI_TEXTURED_TRIANGLES = GuiPipeline.of(() ->
+			RenderPipeline.builder()
+					.withLocation(Identifier.fromNamespaceAndPath("hudder", "pipeline/gui_textured_triangles"))
+					.withBindGroupLayout(BindGroupLayouts.GLOBALS)
+					.withBindGroupLayout(BindGroupLayouts.PROJECTION)
+					.withBindGroupLayout(BindGroupLayouts.DYNAMIC_TRANSFORMS)
+					.withBindGroupLayout(BindGroupLayouts.SAMPLER0)
+					.withVertexShader("core/position_tex_color")
+					.withFragmentShader("core/position_tex_color")
+					.withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
+					.withVertexBinding(0, DefaultVertexFormat.POSITION_TEX_COLOR)
+					.withCull(false)
+					.withPrimitiveTopology(PrimitiveTopology.TRIANGLE_STRIP)
+					.build());
 	
-	public final RenderPipeline GUI_COLORED_TRIANGLES = RenderPipeline.builder(RenderPipelines.GUI_SNIPPET).withLocation("pipeline/gui_colored_triangles")
-				.withVertexBinding(0, DefaultVertexFormat.POSITION_COLOR)
-				.withCull(false)
-				.withPrimitiveTopology(PrimitiveTopology.TRIANGLE_STRIP).build();
+	public final GuiPipeline GUI_COLORED_TRIANGLES = GuiPipeline.of(() -> RenderPipeline.builder()
+			.withBindGroupLayout(BindGroupLayouts.GLOBALS)
+			.withBindGroupLayout(BindGroupLayouts.PROJECTION)
+			.withBindGroupLayout(BindGroupLayouts.DYNAMIC_TRANSFORMS)
+			.withVertexShader("core/gui")
+			.withFragmentShader("core/gui")
+			.withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
+			.withLocation(Identifier.withDefaultNamespace("pipeline/gui_colored_triangles"))
+			.withVertexBinding(0, DefaultVertexFormat.POSITION_COLOR)
+			.withCull(false)
+			.withPrimitiveTopology(PrimitiveTopology.TRIANGLE_STRIP)
+			.build());
 	
 	
 	
@@ -172,7 +192,7 @@ public class HudderRenderer implements HudElement {
 			float height, float[] slices) {
 		var tex = mc.getTextureManager().getTexture(id);
 		context.guiRenderState.addGuiElement(new TextureRenderState(TextureSetup.singleTexture(tex.textureView(),
-				tex.sampler()), RenderPipelines.GUI_TEXTURED, vconsumer->{
+				tex.sampler()), GuiPipeline.TEXTURED, vconsumer->{
 		    Matrix3x2fStack matrix = context.pose();
 	        GpuTextureView texture = mc.getTextureManager().getTexture(id).textureView();
 	        int texwidth = texture.getWidth(texture.mipLevels());
@@ -259,7 +279,7 @@ public class HudderRenderer implements HudElement {
 		var tex = mc.getTextureManager().getTexture(id);
 		context.guiRenderState.addGuiElement(new TextureRenderState(TextureSetup.singleTexture(tex.textureView(),
 				tex.sampler()),
-				triangles ? GUI_TEXTURED_TRIANGLES : RenderPipelines.GUI_TEXTURED, vconsumer->{
+				triangles ? GUI_TEXTURED_TRIANGLES : GuiPipeline.TEXTURED, vconsumer->{
 		        Matrix3x2fStack matrix = context.pose();
 		        
 	        for (int i = 0;i<vertices.length;i+=2) {
@@ -301,7 +321,7 @@ public class HudderRenderer implements HudElement {
 	 */
 	public void renderColoredVertexArray(GuiGraphicsExtractor context, float[] vertices, int argb, boolean triangle_strip) {
 		context.guiRenderState.addGuiElement(new TextureRenderState(TextureSetup.noTexture(),
-			triangle_strip ? GUI_COLORED_TRIANGLES : RenderPipelines.GUI, vconsumer -> {
+			triangle_strip ? GUI_COLORED_TRIANGLES : GuiPipeline.DEFAULT, vconsumer -> {
 			
 	        Matrix3x2fStack matrix = context.pose();
 	        
@@ -311,10 +331,10 @@ public class HudderRenderer implements HudElement {
 	}
 
 	public void renderWithVertexConsumer(GuiGraphicsExtractor context, Consumer<VertexConsumer> cons) {
-		renderWithVertexConsumer(context, TextureSetup.noTexture(), RenderPipelines.GUI, cons);
+		renderWithVertexConsumer(context, TextureSetup.noTexture(), GuiPipeline.DEFAULT, cons);
 	}
 	public void renderWithVertexConsumer(GuiGraphicsExtractor context, TextureSetup textureSetup,
-			RenderPipeline pipeline, Consumer<VertexConsumer> cons) {
+			GuiPipeline pipeline, Consumer<VertexConsumer> cons) {
 		context.guiRenderState.addGuiElement(new TextureRenderState(textureSetup, pipeline, cons));
 	}
 	

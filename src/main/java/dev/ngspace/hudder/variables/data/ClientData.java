@@ -10,6 +10,7 @@ import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CraftingScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import org.lwjgl.sdl.SDLMouse;
 
 public class ClientData extends HudderBuiltInVariables {
 	static Minecraft ins;
@@ -38,9 +39,9 @@ public class ClientData extends HudderBuiltInVariables {
 
 	private static void registerInputVariables() {
 		// Mouse buttons
-		registerBoolean(_->ins.mouseHandler.isLeftPressed(), "mouse_left");
-		registerBoolean(_->ins.mouseHandler.isMiddlePressed(), "mouse_middle");
-		registerBoolean(_->ins.mouseHandler.isRightPressed(), "mouse_right");
+		registerBoolean(_ -> (SDLMouse.SDL_GetMouseState(null, null) & SDLMouse.SDL_BUTTON_LMASK) != 0, "mouse_left");
+		registerBoolean(_ -> (SDLMouse.SDL_GetMouseState(null, null) & SDLMouse.SDL_BUTTON_MMASK) != 0, "mouse_middle");
+		registerBoolean(_ -> (SDLMouse.SDL_GetMouseState(null, null) & SDLMouse.SDL_BUTTON_RMASK) != 0, "mouse_right");
 
 		// Clicks per second
 		registerNumber(_->Misc.getLeftCPS() + Misc.getRightCPS(), "cps");

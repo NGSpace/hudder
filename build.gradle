@@ -43,6 +43,7 @@ dependencies {
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 	
 	implementation(include("org.mozilla:rhino:${project.rhino_version}"))
+	implementation(include("com.github.oshi:oshi-core:${project.oshi_version}"))
 	
 	compileOnly("com.terraformersmc:modmenu:${project.modmenu_version}")
 	

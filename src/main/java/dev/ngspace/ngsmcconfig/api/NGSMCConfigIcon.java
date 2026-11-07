@@ -1,10 +1,9 @@
 package dev.ngspace.ngsmcconfig.api;
 
-import org.joml.Matrix3x2fStack;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.component.DataComponentPatch;
@@ -12,6 +11,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.joml.Matrix3x2fStack;
 
 public abstract class NGSMCConfigIcon {
 
@@ -38,7 +38,7 @@ public abstract class NGSMCConfigIcon {
 
 		@Override
 		public void extractRenderState(GuiGraphicsExtractor graphics, int width, int height, int x, int y) {
-			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, x, y, width, height);
+			graphics.blitSprite(GuiPipeline.TEXTURED, sprite, x, y, width, height);
 		}
 	}
 	
@@ -57,7 +57,7 @@ public abstract class NGSMCConfigIcon {
 
 		@Override
 		public void extractRenderState(GuiGraphicsExtractor graphics, int width, int height, int x, int y) {
-			graphics.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, 0, 0f, width, height, width, height);
+			graphics.blit(GuiPipeline.TEXTURED, texture, x, y, 0, 0f, width, height, width, height);
 		}
 	}
 	
