@@ -1,17 +1,17 @@
 package dev.ngspace.hudder.utils;
 
+import com.mojang.blaze3d.platform.NativeImage;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.ExternalTextureProvider;
+import net.minecraft.client.renderer.texture.TextureResources;
+import net.minecraft.resources.Identifier;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map.Entry;
-
-import com.mojang.blaze3d.platform.NativeImage;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.TextureResources;
-import net.minecraft.resources.Identifier;
 
 public class CachedReader {
 	
@@ -76,7 +76,7 @@ public class CachedReader {
 			savedImages.remove(id);
 		}
 		TextureResources tex = TextureResources.from2dImage(id::getPath,img);
-		mc.getTextureManager().register(id, tex);
+		mc.getTextureManager().registerProvider(id, new ExternalTextureProvider(tex));
 		
 		savedImages.put(id,tex);
 	}
