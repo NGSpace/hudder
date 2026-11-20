@@ -7,10 +7,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Don't want Hudder to expose your deepest, darkest methods or fields to the user?<br>
+ * Don't want Hudder to expose your deepest, darkest methods, fields and/or classes to the user?<br>
  * WELL THEN JUST SLAP THIS GAL ONTO ALL YOUR IMPORTANT SHIT AND I WILL DO MY BEST TO KEEP YOUR SECRET SOMEWHAT SECURE.
+ * (no promises)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
+@Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD})
 @Inherited
 public @interface NoAccess {}

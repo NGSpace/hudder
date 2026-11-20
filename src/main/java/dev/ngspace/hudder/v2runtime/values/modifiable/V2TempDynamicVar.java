@@ -4,6 +4,7 @@ import dev.ngspace.hudder.api.compilers.compilers.AV2Compiler;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.v2runtime.values.AV2Value;
 
+@SuppressWarnings("removal")
 public class V2TempDynamicVar extends AV2Value {
 
 	public V2TempDynamicVar(String value, AV2Compiler compiler, int line, int charpos) {

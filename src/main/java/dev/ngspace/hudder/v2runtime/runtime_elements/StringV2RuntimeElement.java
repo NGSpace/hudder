@@ -4,6 +4,7 @@ import dev.ngspace.hudder.api.compilers.utils.CompileState;
 import dev.ngspace.hudder.config.HudderConfig;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 
+@SuppressWarnings("removal")
 public class StringV2RuntimeElement extends AV2RuntimeElement {
 	
 	public final String string;

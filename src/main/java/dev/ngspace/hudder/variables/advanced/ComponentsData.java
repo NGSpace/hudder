@@ -3,6 +3,7 @@ package dev.ngspace.hudder.variables.advanced;
 import java.util.HashMap;
 
 import dev.ngspace.hudder.mixin.ItemCooldownsAccessor;
+import dev.ngspace.hudder.utils.NoAccess;
 import dev.ngspace.hudder.utils.ValueGetter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
@@ -78,7 +79,7 @@ public class ComponentsData extends HashMap<String, Object> {
 	}
 	
 	public static class EnchantmentInfo implements ValueGetter {
-		private ItemEnchantments d;
+		@NoAccess private ItemEnchantments d;
 		public EnchantmentInfo(ItemEnchantments r) {this.d=r;}
 		@Override public Object get(String n) {
 			for (var e : d.keySet())
@@ -103,7 +104,7 @@ public class ComponentsData extends HashMap<String, Object> {
 	}
 	public static class LevelHolder {
 		public int level;
-		private Enchantment e;
+		@NoAccess private Enchantment e;
 		public LevelHolder(ItemEnchantments d, Holder<Enchantment> e) {
 			this.e = e.value();
 			this.level = d.getLevel(e);

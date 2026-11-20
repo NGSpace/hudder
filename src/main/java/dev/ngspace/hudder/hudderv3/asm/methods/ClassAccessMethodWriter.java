@@ -4,10 +4,12 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
+import java.util.Map;
+
 public abstract class ClassAccessMethodWriter extends VariableMethodWriter {
 
-	protected ClassAccessMethodWriter(MethodVisitor methodVisitor) {
-		super(methodVisitor);
+	protected ClassAccessMethodWriter(Map<String, LocalVariable> variables, MethodVisitor methodVisitor) {
+		super(variables, methodVisitor);
 	}
 	
 	public abstract String getClassName();

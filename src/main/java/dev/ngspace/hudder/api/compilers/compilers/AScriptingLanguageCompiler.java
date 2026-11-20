@@ -24,7 +24,7 @@ public abstract class AScriptingLanguageCompiler extends AHudCompiler<IScripting
 		super(config, new HashMap<>());
 	}
 	
-	protected abstract IScriptingLanguageEngine createLangEngine() throws CompileException;
+	protected abstract IScriptingLanguageEngine createLangEngine() throws IOException;
 
 	@Override
 	public IScriptingLanguageEngine processFile(Path filepath) throws CompileException, IOException {
@@ -45,15 +45,15 @@ public abstract class AScriptingLanguageCompiler extends AHudCompiler<IScripting
 				throw wrapper.processCompileException(e);
 			}
 			return wrapper;
-		} catch (Exception e) {
+		} catch (CompileException e) {
+			throw e;
+		} catch (IOException e) {
 			if (Hudder.IS_DEBUG) e.printStackTrace();
 			if (wrapper!=null) {
 				throw wrapper.processCompileException(e);
 			} 
-			if (e instanceof RuntimeException ex) throw ex;
 			throw new CompileException(e.getMessage(),-1,-1,e);
 		}
-		
 	}
 
 	@Override public HudInformation execute(IScriptingLanguageEngine wrapper, String filename)

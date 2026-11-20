@@ -24,26 +24,45 @@ import dev.ngspace.hudder.v2runtime.runtime_elements.VariableV2RuntimeElement;
 import dev.ngspace.hudder.v2runtime.runtime_elements.WhileV2RuntimeElement;
 import net.minecraft.network.chat.Component;
 
+/**
+ * @deprecated see HudderV3Compiler
+ */
+@SuppressWarnings("removal")
+@Deprecated(since = "11.1.0", forRemoval = true)
 public class HudderV2Compiler extends AV2Compiler {
 
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public static final int TEXT_STATE = 0;
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public static final int VARIABLE_STATE = 1;
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public static final int CONDITION_STATE = 2;
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public static final int METHOD_STATE = 3;
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public static final int HASHTAG_STATE = 4;
 
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public static final byte UNDEFINED_INSTRUCTION = 0x0;
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public static final byte IF_INSTRUCTION = 0x1;
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public static final byte WHILE_LOOP_INSTRUCTION = 0x2;
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public static final byte DEFINE_INSTRUCTION = 0x3;
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public static final byte FOR_LOOP_INSTRUCTION = 0x4;
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public static final byte ELSE_IF_INSTRUCTION = 0x5;
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public static final byte ELSE_INSTRUCTION = 0x6;
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public HudderV2Compiler(HudderConfig config) {
 		super(config);
 	}
 
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	@Override public V2Runtime buildRuntime(String text, TextPos charPosition, String filename,
 			V2Runtime scope) throws CompileException, ExecutionException {
 		V2Runtime runtime = new V2Runtime(this, scope, config);
@@ -319,6 +338,7 @@ public class HudderV2Compiler extends AV2Compiler {
 		return runtime;
 	}
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public CodeBlock getCodeBlock(String text, int index) {
 		StringBuilder instructions = new StringBuilder();
 		int ind = index;
@@ -349,6 +369,7 @@ public class HudderV2Compiler extends AV2Compiler {
 		return new CodeBlock(instructions.toString(), text, index, ind);
 	}
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public Instruction getInstruction(String text, int index) {
 		byte instruction = 0x0;
 		char c;
@@ -381,6 +402,7 @@ public class HudderV2Compiler extends AV2Compiler {
 		return b.toString();
 	}
 
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	public String getCompilerErrorMessage(int compileState) {
 		StringBuilder strb = new StringBuilder();
 		strb.append(switch(compileState) {
@@ -393,6 +415,7 @@ public class HudderV2Compiler extends AV2Compiler {
 		return strb.toString();
 	}
 	
+	@Deprecated(since = "11.1.0", forRemoval = true)
 	@Override
 	public String[] getSupportedFileFormats() {
 		return new String[] {"hud"};

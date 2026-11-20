@@ -14,6 +14,7 @@ import dev.ngspace.hudder.v2runtime.values.AV2Value;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 
+@SuppressWarnings("removal")
 public class MethodV2RuntimeElement extends AV2RuntimeElement {
 
 	private AV2Value[] values = {};

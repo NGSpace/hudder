@@ -47,9 +47,8 @@ public class ForInstruction extends Instruction {
 		methodWriter.ifeq(end);
 
 		methodWriter.aload(iterator_index);
-		Integer previousVariableIndex = methodWriter.defineScopedVariable(localVariableName);
 		methodWriter.callInterface(Iterator.class, "next", Object.class);
-		methodWriter.storeVariable(localVariableName);
+		var previousVariableIndex = methodWriter.defineScopedVariableWithValue(localVariableName, true);
 		
 		block.writeInstructions(methodWriter, classWriter, end);
 		

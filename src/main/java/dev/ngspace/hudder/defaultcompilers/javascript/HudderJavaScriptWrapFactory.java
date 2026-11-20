@@ -1,9 +1,11 @@
 package dev.ngspace.hudder.defaultcompilers.javascript;
 
 import java.util.List;
+import java.util.Map;
 
 import org.mozilla.javascript.Context;
-import org.mozilla.javascript.NativeJavaObject;
+import org.mozilla.javascript.NativeJavaArray;
+import org.mozilla.javascript.NativeJavaMap;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.Undefined;
 import org.mozilla.javascript.WrapFactory;
@@ -11,10 +13,9 @@ import org.mozilla.javascript.lc.type.TypeInfo;
 import org.mozilla.javascript.lc.type.TypeInfoFactory;
 
 import dev.ngspace.hudder.exceptions.ExecutionException;
-import dev.ngspace.hudder.utils.NoAccess;
+import dev.ngspace.hudder.utils.AccessUtils;
 import dev.ngspace.hudder.utils.ObjectWrapper;
 import dev.ngspace.hudder.utils.ValueGetter;
-import dev.ngspace.hudder.v2runtime.V2Runtime;
 
 public class HudderJavaScriptWrapFactory extends WrapFactory {
 	
@@ -24,21 +25,18 @@ public class HudderJavaScriptWrapFactory extends WrapFactory {
 	
 	@Override
 	public Scriptable wrapAsJavaObject(Context cx, Scriptable scope, Object javaObject, TypeInfo staticType) {
-		if (javaObject == V2Runtime.NULL
-    			|| javaObject instanceof Class<?>
+		if (javaObject==null
+				|| javaObject instanceof Class<?>
     			|| javaObject instanceof ClassLoader
-    			|| javaObject.getClass().isAnnotationPresent(NoAccess.class))
+    			|| !AccessUtils.isClassAccessible(javaObject.getClass()))
 			return Undefined.SCRIPTABLE_UNDEFINED;
 		if (javaObject instanceof ValueGetter r) {
-			return new NativeJavaObject(scope,r,TypeInfoFactory.GLOBAL.create(r.getClass()),true) {
-				private static final long serialVersionUID = -6145385781375908982L;
-
-				@Override public String getClassName() {return r.getClass().getName();}
-			    @Override public Object get(String name, Scriptable start) {
-			    	var v = r.get(name);
-			    	if (v==null||v==NOT_FOUND) return super.get(name, start);
-			        return v;
-			    }
+			return new JavaObject(scope,r,staticType) {
+				@Override
+				public Object getField(String name, Scriptable start) {
+					Object val = r.get(name);
+					return val == null ? Undefined.SCRIPTABLE_UNDEFINED : val;
+				}
 			};
 		}
 		if (javaObject instanceof ObjectWrapper r) {
@@ -50,6 +48,14 @@ public class HudderJavaScriptWrapFactory extends WrapFactory {
 		}
 		if (javaObject instanceof List<?> l)// What an L list hahahshhxhahshxsahujahsahhsfdfihuj I am dead inside :D
 			return cx.newArray(scope, l.toArray());
-		return super.wrapAsJavaObject(cx, scope, javaObject, staticType);
+        if (staticType.shouldReplace() && javaObject != null) {
+            staticType = TypeInfoFactory.getOrElse(scope, TypeInfoFactory.GLOBAL).create(javaObject.getClass());
+        }
+        if (Map.class.isAssignableFrom(staticType.asClass())) {
+            return new NativeJavaMap(scope, javaObject, staticType);
+        } else if (staticType.isArray()) {
+            return new NativeJavaArray(scope, javaObject, staticType);
+        }
+		return new JavaObject(scope, javaObject, staticType);
 	}
 }

@@ -115,10 +115,10 @@ input:
 		{str=int(arg1)}
 		{num=str(arg2)}
 		{bool=arg3==false}
-		{array=arg4[0]}
-		{any=arg5}
+		{arr=arg4[0]}
+		{anytype=arg5}
 	;putall, "1", 10, true, ["yes","no"], "no";
-	{str} {num} {bool} {array} {any}
+	{str} {num} {bool} {arr} {anytype}
 end_input;
 
 output:

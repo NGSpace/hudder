@@ -5,6 +5,7 @@ import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.v2runtime.V2Runtime;
 import dev.ngspace.hudder.v2runtime.values.AV2Value;
 
+@SuppressWarnings("removal")
 public class V2DynamicVar extends AV2Value {
 	private V2Runtime runtime;
 

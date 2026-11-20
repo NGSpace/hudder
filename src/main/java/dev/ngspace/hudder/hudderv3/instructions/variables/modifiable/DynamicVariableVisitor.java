@@ -7,6 +7,9 @@ import dev.ngspace.hudder.api.compilers.utils.TextPos;
 import dev.ngspace.hudder.exceptions.CompileException;
 import dev.ngspace.hudder.hudderv3.asm.V3MethodWriter;
 import dev.ngspace.hudder.hudderv3.instructions.variables.ExpressionVisitor;
+import org.objectweb.asm.Label;
+
+import java.util.Locale;
 
 public class DynamicVariableVisitor extends ExpressionVisitor {
 
@@ -14,27 +17,24 @@ public class DynamicVariableVisitor extends ExpressionVisitor {
 
 	public DynamicVariableVisitor(AV3Compiler comp, String variable, TextPos pos, String expression) {
 		super(comp, pos, expression);
-		this.variable = variable;
+		this.variable = variable.toLowerCase();
 	}
 
 	@Override
 	public void visit(V3MethodWriter methodWriter) throws CompileException {
-		if (methodWriter.hasVariable(variable.toLowerCase())) {
-			methodWriter.getVariable(variable.toLowerCase());
+		if (methodWriter.hasVariable(variable)) {
+			methodWriter.getVariable(variable);
 		} else {
-			methodWriter.aload(0);
-			methodWriter.loadConstant(variable.toLowerCase());
-			methodWriter.callInterface(VariablesProvider.class, "getVariable", Object.class, String.class);
+			methodWriter.nullConstant();
 		}
 	}
 	
 	@Override
 	public void visitSetValue(V3MethodWriter methodWriter) {
-		int valueindex = methodWriter.astore();
-		methodWriter.aload(0);
-		methodWriter.loadConstant(variable.toLowerCase());
-		methodWriter.aload(valueindex);
-		methodWriter.callInterface(VariablesManager.class, "putVariable", null, String.class, Object.class);
-		methodWriter.aload(valueindex);
+		if (!methodWriter.hasVariable(variable))
+			methodWriter.defineVariableWithValue(variable, false);
+		else
+			methodWriter.storeVariable(variable);
+		methodWriter.getVariable(variable);
 	}
 }

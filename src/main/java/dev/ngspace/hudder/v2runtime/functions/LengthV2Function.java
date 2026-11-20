@@ -6,6 +6,7 @@ import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.v2runtime.V2Runtime;
 import dev.ngspace.hudder.v2runtime.values.AV2Value;
 
+@SuppressWarnings("removal")
 public class LengthV2Function implements IV2Function {
 
 	@Override public Object execute(V2Runtime runtime, String functionName, AV2Value[] args, int line, int charpos)

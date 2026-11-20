@@ -4,6 +4,7 @@ import dev.ngspace.hudder.api.compilers.compilers.AV2Compiler;
 import dev.ngspace.hudder.exceptions.ExecutionException;
 import dev.ngspace.hudder.v2runtime.values.AV2Value;
 
+@SuppressWarnings("removal")
 public class V2SetValue extends AV2Value {
 	public AV2Value key;
 	public AV2Value v2value;

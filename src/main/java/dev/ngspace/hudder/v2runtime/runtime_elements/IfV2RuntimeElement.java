@@ -12,6 +12,7 @@ import dev.ngspace.hudder.v2runtime.values.AV2Value;
  * @deprecated Use {@link IfElseV2RuntimeElement}
  */
 @Deprecated(since = "10.1.0", forRemoval = false)
+@SuppressWarnings("removal")
 public class IfV2RuntimeElement extends AV2RuntimeElement {
 
 	private AV2Value condition;

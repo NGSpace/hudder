@@ -69,14 +69,16 @@ public interface EntryReaderConsumer extends Closeable {
 		
 		public List<String> listEntries(String prefix, Path folder) throws IOException {
 			List<String> list = new ArrayList<String>();
-			for (Path path : Files.newDirectoryStream(folder)) {
-				if (Files.isDirectory(path)) {
-					list.addAll(listEntries(prefix + "/" + path.getFileName(), path));
-					continue;
+			try (var dir_stream = Files.newDirectoryStream(folder)) {
+				for (Path path : dir_stream) {
+					if (Files.isDirectory(path)) {
+						list.addAll(listEntries(prefix + "/" + path.getFileName(), path));
+						continue;
+					}
+					list.add((prefix + "/" + path.getFileName()).substring(1));
 				}
-				list.add((prefix + "/" + path.getFileName()).substring(1));
+				return list;
 			}
-			return list;
 		}
 		
 	}

@@ -41,14 +41,6 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 				"hudder.ngsmcconfig.enabled") : Component.translatable("hudder.ngsmcconfig.disabled");
 		
 		var builder = new NGSMCConfigBuilder(parent);
-		builder.setWriteOperation(() -> {
-			try {
-				Hudder.config.save();
-				HudFileUtils.reloadResources();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		});
 		builder.setDocsUri(URI.create("https://ngspace.dev/hudder"));
 		builder.setConfigFile(HudFileUtils.FOLDER.toFile());
 		builder.setConfigButtonText(Component.translatable("hudder.ngsmcconfig.config"));
@@ -58,6 +50,7 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 		// Huds
 		// NGSMCConfig changes the size and position anyways
 		var widget = new HudSelectionList(Minecraft.getInstance(), HudFileUtils.FOLDER, config, registry);
+		HudFileUtils.addReloadResourcesListener(widget);
 		builder.addCustomWidgetCategory(Component.translatable("hudder.mainfile"),
 				new NGSMCConfigIcon.SpriteIcon("items", "item/map"),
 				widget, widget::save, widget::reset, widget::error, widget::warning);
@@ -86,9 +79,21 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 			}
 		});
 		
+
+		
+		builder.setWriteOperation(() -> {
+			try {
+				Hudder.config.save();
+				HudFileUtils.removeReloadResourcesListener(widget);
+				HudFileUtils.reloadResources();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
 		
 		
-		// General
+		
+		// Categories
 		NGSMCConfigCategory general = builder.createCategory(Component.translatable("hudder.general"),
 				new NGSMCConfigIcon.SpriteIcon("items", "item/compass_00"));
 		NGSMCConfigCategory text_rendering = builder.createCategory(Component.translatable("hudder.text_rendering"),
@@ -117,6 +122,7 @@ public class HudderNGSMCConfigMenu { private HudderNGSMCConfigMenu() {}
 		if (Hudder.config.compilerId().equals("auto")) {
 			displayname = "Auto-detect";
 		} else {
+			
 			displayname = registry.findEntryFromId(Hudder.config.compilerId())
 					.orElseThrow(()->new IllegalArgumentException("No compiler named "
 							+ Hudder.config.compilerId())).display_name();

@@ -44,14 +44,12 @@ public class DefineInstruction extends Instruction {
 		});
 		
 		for (int i = 0;i<args.length;i++) {
-			method.defineVariable(args[i].toLowerCase().trim());
-			method.defineVariable("arg" + (i+1));
 			method.aload(3);
 			method.loadConstantUnsafe(i);
 			method.aaload();
 			method.dup();
-			method.storeVariable(args[i].toLowerCase().trim());
-			method.storeVariable("arg" + (i+1));
+			method.defineVariableWithValue(args[i].toLowerCase().trim(), true);
+			method.defineVariableWithValue("arg" + (i+1), true);
 		}
 
 		Label end = new Label();
