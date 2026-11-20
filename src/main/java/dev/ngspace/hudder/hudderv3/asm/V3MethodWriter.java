@@ -18,7 +18,7 @@ public class V3MethodWriter extends ClassAccessMethodWriter {
 	
 	public V3MethodWriter(V3ClassWriter classWriter, String name, Class<?>[] parameters, Class<?> returntype,
 			String signature, String[] exceptions) {
-		super(classWriter.classWriter.visitMethod(Opcodes.ACC_PUBLIC, name,
+		super(classWriter.variables, classWriter.classWriter.visitMethod(Opcodes.ACC_PUBLIC, name,
 				Type.getMethodDescriptor(returntype == null ? Type.VOID_TYPE : Type.getType(returntype),
 						List.of(parameters).stream().map(Type::getType).toList().toArray(new Type[0])),
 				signature, exceptions));

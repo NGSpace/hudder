@@ -1,5 +1,16 @@
 package dev.ngspace.hudder.hudderv3.asm;
 
+import dev.ngspace.hudder.Hudder;
+import dev.ngspace.hudder.api.compilers.compilers.AV3Compiler;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
+import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
+import dev.ngspace.hudder.hudderv3.GeneratedCompiler;
+import dev.ngspace.hudder.hudderv3.HudderV3Helper;
+import dev.ngspace.hudder.hudderv3.asm.methods.VariableMethodWriter;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -8,17 +19,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
-
-import dev.ngspace.hudder.Hudder;
-import dev.ngspace.hudder.api.compilers.compilers.AV3Compiler;
-import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedConsumer;
-import dev.ngspace.hudder.api.functionsandconsumers.interfaces.BindablePositionedFunction;
-import dev.ngspace.hudder.hudderv3.GeneratedCompiler;
-import dev.ngspace.hudder.hudderv3.HudderV3Helper;
 
 public class V3ClassWriter {
 	
@@ -33,6 +33,8 @@ public class V3ClassWriter {
 	
 	public Map<String, UserMethod> user_methods = new HashMap<String, UserMethod>();
 	public Map<String, UserMethod> user_functions = new HashMap<String, UserMethod>();
+	
+	public Map<String, VariableMethodWriter.LocalVariable> variables = new HashMap<>();
 	
 	public V3ClassWriter(String classname, String debugfilename, HudderV3Helper helper) {
 		this.classname = classname;
